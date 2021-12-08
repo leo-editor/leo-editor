@@ -5,7 +5,7 @@ This plugin intentially reports that it fails to load.
 It is used for testing Leo's plugin loading logic.
 """
 
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    return False # Report failure to load.
+def init():
+    """Return True if the plugin has loaded successfully."""
+    return False  # Report failure to load.
 #@-leo

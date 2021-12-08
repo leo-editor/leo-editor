@@ -2,7 +2,7 @@
 #@+node:peckj.20140804114520.9427: * @file ../plugins/nodetags.py
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
-'''Provides node tagging capabilities to Leo
+"""Provides node tagging capabilities to Leo
 
 By Jacob M. Peck
 
@@ -92,33 +92,23 @@ however, due to searching capabilities, may *not* be used to tag (or search for)
 nodes with tags containing the special search characters, `&|-^`. The UI also
 cannot search for tags of zero-length, and it automatically removes surrounding
 whitespace (calling .strip()).
-'''
+"""
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:peckj.20140804103733.9241: ** << imports >>
 import re
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.core.leoQt import isQt6, QtWidgets, QtCore
-#
-# Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
+from leo.core.leoQt import QtCore, QtWidgets
+from leo.core.leoQt import MouseButton
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    # if g.app.gui is None: g.app.createQtGui(__file__)
-    ok = g.app.gui.guiName().startswith('qt')
-    if ok:
-        #g.registerHandler(('new','open2'),onCreate)
-        g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon(__name__)
-    elif g.app.gui.guiName() != 'curses':
-        g.es('Plugin %s not loaded.' % __name__, color='red')
-    return ok
+def init():
+    """Return True if the plugin has loaded successfully."""
+    # 2031: Allow this plugin to run without Qt.
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:peckj.20140804103733.9245: ** onCreate (nodetags.py)
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if c:
@@ -137,20 +127,22 @@ def show_all_tags(event):
         print('nodetags plugin not enabled')
 #@+node:peckj.20140804103733.9246: ** class TagController
 class TagController:
-    
+
     TAG_LIST_KEY = '__node_tags'
 
     #@+others
     #@+node:peckj.20140804103733.9262: *3* tag_c.__init__
     def __init__(self, c):
-        
+
         self.c = c
         self.taglist = []
         self.initialize_taglist()
         c.theTagController = self
-        self.ui = LeoTagWidget(c)
-        c.frame.log.createTab('Tags', widget=self.ui)
-        self.ui.update_all()
+        # #2031: Init the widgets only if we are using Qt.
+        if g.app.gui.guiName().startswith('qt'):
+            self.ui = LeoTagWidget(c)
+            c.frame.log.createTab('Tags', widget=self.ui)
+            self.ui.update_all()
     #@+node:peckj.20140804103733.9263: *3* tag_c.initialize_taglist
     def initialize_taglist(self):
         taglist = []
@@ -163,7 +155,7 @@ class TagController:
     #@+node:peckj.20140804103733.9264: *3* tag_c.outline-level
     #@+node:peckj.20140804103733.9268: *4* tag_c.get_all_tags
     def get_all_tags(self):
-        ''' return a list of all tags in the outline '''
+        """ return a list of all tags in the outline """
         return self.taglist
     #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
     def show_all_tags(self):
@@ -176,7 +168,7 @@ class TagController:
             for tag in tags:
                 aList = d.get(tag, [])
                 aList.append(p.h)
-                d [tag] = aList
+                d[tag] = aList
         # Print all tags.
         if d:
             for key in sorted(d):
@@ -184,20 +176,22 @@ class TagController:
                 for h in sorted(aList):
                     print(f"{key:>8} {h}")
         else:
-            print(f"no tags in {c.shortFileName()}")
-     
+            if not g.unitTesting:
+                print(f"no tags in {c.shortFileName()}")
+
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):
-        ''' ensures the outline's taglist is consistent with the state of the nodes in the outline '''
+        """ ensures the outline's taglist is consistent with the state of the nodes in the outline """
         if tag not in self.taglist:
             self.taglist.append(tag)
         nodelist = self.get_tagged_nodes(tag)
         if not nodelist:
             self.taglist.remove(tag)
-        self.ui.update_all()
+        if hasattr(self, 'ui'):
+            self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
     def get_tagged_nodes(self, tag):
-        ''' return a list of *positions* of nodes containing the tag, with * as a wildcard '''
+        """ return a list of *positions* of nodes containing the tag, with * as a wildcard """
         nodelist = []
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
@@ -220,14 +214,14 @@ class TagController:
     #@+node:peckj.20140804103733.9265: *3* tag_c.individual nodes
     #@+node:peckj.20140804103733.9259: *4* tag_c.get_tags
     def get_tags(self, p):
-        ''' returns a list of tags applied to position p.'''
+        """ returns a list of tags applied to position p."""
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
             return list(tags)
         return []
     #@+node:peckj.20140804103733.9260: *4* tag_c.add_tag
     def add_tag(self, p, tag):
-        ''' adds 'tag' to the taglist of v '''
+        """ adds 'tag' to the taglist of v """
         # cast to set() incase JSON storage (leo_cloud plugin) converted to list
         tags = set(p.v.u.get(self.TAG_LIST_KEY, set([])))
         tags.add(tag)
@@ -236,7 +230,7 @@ class TagController:
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* tag_c.remove_tag
     def remove_tag(self, p, tag):
-        ''' removes 'tag' from the taglist of position p. '''
+        """ removes 'tag' from the taglist of position p. """
         v = p.v
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
             # in case JSON storage (leo_cloud plugin) converted to list.
@@ -256,7 +250,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self,c,parent=None):
+        def __init__(self, c, parent=None):
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
@@ -266,31 +260,31 @@ if QtWidgets:
             self.search_re = r'(&|\||-|\^)'
             self.custom_searches = []
             g.registerHandler('select2', self.select2_hook)
-            g.registerHandler('create-node', self.command2_hook) # fix tag jumplist positions after new node insertion
+            g.registerHandler('create-node', self.command2_hook)  # fix tag jumplist positions after new node insertion
             g.registerHandler('command2', self.command2_hook)
         #@+node:peckj.20140804114520.15202: *4* tag_w.initUI
         def initUI(self):
-            '''create GUI components.'''
+            """create GUI components."""
             self.setObjectName("LeoTagWidget")
             #
             # verticalLayout_2: contains
             # verticalLayout
             self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
-            self.verticalLayout_2.setContentsMargins(0,1,0,1)
+            self.verticalLayout_2.setContentsMargins(0, 1, 0, 1)
             self.verticalLayout_2.setObjectName("nodetags-verticalLayout_2")
             #
             # horizontalLayout: contains:
             #   "Refresh" button
             #   comboBox
             self.horizontalLayout = QtWidgets.QHBoxLayout()
-            self.horizontalLayout.setContentsMargins(0,0,0,0)
+            self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
             self.horizontalLayout.setObjectName("nodetags-horizontalLayout")
             #
             # horizontalLayout2: contains:
             #   label2
             #   not much by default -- it's a place to add buttons for current tags
             self.horizontalLayout2 = QtWidgets.QHBoxLayout()
-            self.horizontalLayout2.setContentsMargins(0,0,0,0)
+            self.horizontalLayout2.setContentsMargins(0, 0, 0, 0)
             self.horizontalLayout2.setObjectName("nodetags-horizontalLayout2")
             label2 = QtWidgets.QLabel(self)
             label2.setObjectName("nodetags-label2")
@@ -313,8 +307,8 @@ if QtWidgets:
             # The "+" button
             self.pushButton = QtWidgets.QPushButton("+", self)
             self.pushButton.setObjectName("nodetags-pushButton")
-            self.pushButton.setMinimumSize(24,24)
-            self.pushButton.setMaximumSize(24,24)
+            self.pushButton.setMinimumSize(24, 24)
+            self.pushButton.setMaximumSize(24, 24)
             #
             self.horizontalLayout.addWidget(self.pushButton)
             self.verticalLayout.addLayout(self.horizontalLayout)
@@ -333,7 +327,7 @@ if QtWidgets:
             QtCore.QMetaObject.connectSlotsByName(self)
         #@+node:peckj.20140804114520.15203: *4* tag_w.registerCallbacks
         def registerCallbacks(self):
-            '''Connect events to widgets.'''
+            """Connect events to widgets."""
             self.listWidget.itemSelectionChanged.connect(self.item_selected)
             self.listWidget.itemClicked.connect(self.item_selected)
             self.comboBox.currentIndexChanged.connect(self.update_list)
@@ -374,15 +368,14 @@ if QtWidgets:
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
         def callback_factory(self, tag):
             c = self.c
-            
+
             def callback(event):
                 p = c.p
                 tc = c.theTagController
                 ui = tc.ui
                 # Right click on a tag to remove it from the node
-                MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
-                if event.button() == MouseButtons.RightButton:
-                    tc.remove_tag(p,tag)
+                if event.button() == MouseButton.RightButton:
+                    tc.remove_tag(p, tag)
                 # Other clicks make the jumplist open that tag for browsing
                 else:
                     idx = ui.comboBox.findText(tag)
@@ -399,7 +392,8 @@ if QtWidgets:
 
         #@+node:peckj.20140804114520.15207: *4* tag_w.update_list
         def update_list(self):
-            c = self.c; gnxDict = c.fileCommands.gnxDict
+            c = self.c
+            gnxDict = c.fileCommands.gnxDict
             key = str(self.comboBox.currentText()).strip()
             current_tags = self.tc.get_all_tags()
             if key not in current_tags and key not in self.custom_searches:
@@ -443,12 +437,13 @@ if QtWidgets:
             self.label.setText("Total: %s nodes" % count)
         #@+node:peckj.20140804114520.15208: *4* tag_w.update_all
         def update_all(self):
-            ''' updates the tag GUI '''
+            """ updates the tag GUI """
             key = str(self.comboBox.currentText())
             self.update_combobox()
             if key:
                 idx = self.comboBox.findText(key)
-                if idx == -1: idx = 0
+                if idx == -1:
+                    idx = 0
             else:
                 idx = 0
             self.comboBox.setCurrentIndex(idx)
@@ -459,11 +454,11 @@ if QtWidgets:
             p = self.c.p
             tag = str(self.comboBox.currentText()).strip()
             if not tag:
-                return # no error message, probably an honest mistake
-            if len(re.split(self.search_re,tag)) > 1:
+                return  # no error message, probably an honest mistake
+            if len(re.split(self.search_re, tag)) > 1:
                 g.es('Cannot add tags containing any of these characters: &|^-', color='red')
-                return # don't add unsearchable tags
-            self.tc.add_tag(p,tag)
+                return  # don't add unsearchable tags
+            self.tc.add_tag(p, tag)
         #@+node:peckj.20140811082039.6623: *3* tag_w:event hooks
         #@+node:peckj.20140804195456.13487: *4* tag_w.select2_hook
         def select2_hook(self, tag, keywords):

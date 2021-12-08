@@ -1,13 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090815203828.5235: * @file ../plugins/spydershell.py
-''' Launches the spyder environment with access to Leo instance.
+""" Launches the spyder environment with access to Leo instance.
 See http://packages.python.org/spyder/
 
 Execute alt-x spyder-launch to start spyder. Execute alt-x spyder-update to pass
 current c,p,g to spyder interactive session. spyder-update also shows the window
 if it was closed before.
 
-'''
+"""
 # Written by VMV.
 #@+<< imports >>
 #@+node:ville.20090815203828.5238: ** << imports >>
@@ -19,8 +19,8 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #@+others
 #@+node:ville.20090815203828.5239: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     return g.app.gui.guiName() == 'qt'
 #@+node:ville.20090815203828.5240: ** Leo commands
 @g.command('spyder-launch')

@@ -62,7 +62,7 @@ To make a button to toggle the editor on and off, use::
 import time
 from urllib.parse import unquote
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -73,13 +73,13 @@ real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__)
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if not QtWebKit:
         return False
     name = g.app.gui.guiName()
     ok = name == 'qt'
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.registerHandler('select3', at_rich_check)
         g.plugin_signon(__name__)
     elif name != 'nullGui':
@@ -111,7 +111,7 @@ if QtWidgets:
             # make widget containing QWebView
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setSpacing(0)
-            self.layout().setContentsMargins(0,0,0,0)
+            self.layout().setContentsMargins(0, 0, 0, 0)
             # enable inspector, if this really is QtWebKit
             if real_webkit:
                 QtWebKit.QWebSettings.globalSettings().setAttribute(
@@ -161,7 +161,7 @@ if QtWidgets:
 
             # replace textarea with CKEditor, with or without config.
             if self.config:
-                data = data.replace('[CONFIG]', ', '+self.config)
+                data = data.replace('[CONFIG]', ', ' + self.config)
             else:
                 data = data.replace('[CONFIG]', '')
 
@@ -176,7 +176,7 @@ if QtWidgets:
                 if g.os_path_isdir(nodepath):  # append if it's a directory
                     path = nodepath
 
-            self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path+"/"))
+            self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
         #@+node:tbrown.20130813134319.7228: *3* unselect_node
         def unselect_node(self, tag, kwargs):
 
@@ -188,7 +188,7 @@ if QtWidgets:
             ele = frame.findFirstElement("#initial")
             text = str(ele.toPlainText()).strip()
             if text == '[empty]':
-                return None # no edit
+                return None  # no edit
             frame.evaluateJavaScript('save_final();')
             ele = frame.findFirstElement("#final")
             for attempt in range(10):  # wait for up to 1 second
@@ -245,7 +245,7 @@ class CKEPaneProvider:
                 splitter.register_provider(self)
 
     def ns_provides(self):
-        return[('Rich text CKE editor', self.ns_id)]
+        return [('Rich text CKE editor', self.ns_id)]
 
     def ns_provide(self, id_):
         if id_ == self.ns_id:
@@ -258,7 +258,7 @@ class CKEPaneProvider:
         # providers of the same service
         return self.ns_id
 #@+node:tbrown.20130813134319.14339: ** onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
 
     c = key.get('c')
 
@@ -284,7 +284,7 @@ def at_rich_check(tag, key):
 #@+node:tbrown.20130813134319.5692: ** @g.command('cke-text-open')
 @g.command('cke-text-open')
 def cmd_OpenEditor(event, at_rich=False):
-    '''Open the rich text editor, hide the regular editor.'''
+    """Open the rich text editor, hide the regular editor."""
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -300,7 +300,7 @@ def cmd_OpenEditor(event, at_rich=False):
 #@+node:tbrown.20130813134319.5693: ** @g.command('cke-text-close')
 @g.command('cke-text-close')
 def cmd_CloseEditor(event, at_rich=False):
-    '''Close the rich text editor, unhide the regular editor.'''
+    """Close the rich text editor, unhide the regular editor."""
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     if not splitter:
@@ -320,7 +320,7 @@ def cmd_CloseEditor(event, at_rich=False):
 #@+node:tbrown.20130813134319.7233: ** @g.command('cke-text-switch')
 @g.command('cke-text-switch')
 def cmd_SwitchEditor(event):
-    '''Switch between regular and rich text editor.'''
+    """Switch between regular and rich text editor."""
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -331,13 +331,13 @@ def cmd_SwitchEditor(event):
 #@+node:tbrown.20130813134319.7231: ** @g.command('cke-text-toggle-autosave')
 @g.command('cke-text-toggle-autosave')
 def cmd_ToggleAutosave(event):
-    '''
+    """
     Toggle autosaving of changes when you leave a node.
 
     Be careful not to convert plain text (e.g. source code) to rich
     text unintentionally.  As long as you make no edits, the original
     text will not be changed.
-    '''
+    """
     c = event.get('c')
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " +

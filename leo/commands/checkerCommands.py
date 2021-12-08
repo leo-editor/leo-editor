@@ -6,6 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import os
+import re
 import shlex
 import sys
 import time
@@ -13,24 +14,28 @@ import time
 # Third-party imports.
 # pylint: disable=import-error
 try:
+    from mypy import api as mypy_api
+except Exception:
+    mypy_api = None
+try:
     import flake8
-    from flake8 import engine, main
-except Exception:  # May not be ImportError.
-    flake8 = None  # type: ignore
+    # #2248: Import only flake8.
+except ImportError:
+    flake8 = None  # type:ignore
 try:
     import mypy
 except Exception:
-    mypy = None  # type: ignore
+    mypy = None  # type:ignore
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None  # type: ignore
+    pyflakes = None  # type:ignore
 try:
     # pylint: disable=import-error
     from pylint import lint
 except Exception:
-    lint = None  # type: ignore
+    lint = None  # type:ignore
 #
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -41,7 +46,7 @@ from leo.core import leoGlobals as g
 @g.command('find-long-lines')
 def find_long_lines(event):
     """Report long lines in the log, with clickable links."""
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     #@+others # helper functions
@@ -93,7 +98,7 @@ def find_long_lines(event):
 @g.command('find-missing-docstrings')
 def find_missing_docstrings(event):
     """Report missing docstrings in the log, with clickable links."""
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     #@+others # Define functions
@@ -144,29 +149,35 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es_clickable_link(c, p, i+1, line)  # *Local* index.
+                    g.es_clickable_link(c, p, i + 1, line)  # *Local* index.
                     break
     g.es_print('')
     g.es_print(
         f"found {count} missing docstring{g.plural(count)} "
         f"in {files} file{g.plural(files)} "
         f"in {time.process_time() - t1:5.2f} sec.")
-#@+node:ekr.20160517133001.1: *3* flake8 command
-@g.command('flake8')
+#@+node:ekr.20160517133001.1: *3* flake8-files command
+@g.command('flake8-files')
 def flake8_command(event):
     """
     Run flake8 on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     """
-    c = event.get('c')
-    if not c:
+    tag = 'flake8-files'
+    if not flake8:
+        g.es_print(f"{tag} can not import flake8")
         return
-    if c.isChanged():
-        c.save()
-    if flake8:
-        Flake8Command(c).run()
-    else:
-        g.es_print('can not import flake8')
+    c = event and event.get('c')
+    if not c or not c.p:
+        return
+    python = sys.executable
+    for root in g.findRootsWithPredicate(c, c.p):
+        path = g.fullPath(c, root)
+        if path and os.path.exists(path):
+            g.es_print(f"{tag}: {path}")
+            g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
+        else:
+            g.es_print(f"{tag}: file not found:{path}")
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -180,22 +191,30 @@ def mypy_command(event):
     Run mypy on all @<file> nodes of the selected tree, or the first
     @<file> node in an ancestor. Running mypy on a single file usually
     suffices.
-    
-    For example, you can run mypy on most of Leo's files by selecting
-    
+
+    For example, in LeoPyRef.leo, you can run mypy on most of Leo's files
+    by running this command with the following node selected:
+
       `@edit ../../launchLeo.py`
-      
-    in leoPy.leo, then running Leo's mypy command.
-    
+
     Unlike running mypy outside of Leo, Leo's mypy command creates
     clickable links in Leo's log pane for each error.
+
+    Settings
+    --------
+
+    @data mypy-arguments
+    @int mypy-link-limit = 0
+    @string mypy-config-file=''
+
+    See leoSettings.leo for details.
     """
-    c = event.get('c')
+    c = event and event.get('c')
     if not c:
         return
     if c.isChanged():
         c.save()
-    if mypy:
+    if mypy_api:
         MypyCommand(c).run(c.p)
     else:
         g.es_print('can not import mypy')
@@ -206,7 +225,7 @@ def pyflakes_command(event):
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     """
-    c = event.get('c')
+    c = event and event.get('c')
     if c:
         if c.isChanged():
             c.save()
@@ -225,7 +244,7 @@ def pylint_command(event):
     or the last checked @<file> node.
     """
     global last_pylint_path
-    c = event.get('c')
+    c = event and event.get('c')
     if c:
         if c.isChanged():
             c.save()
@@ -237,33 +256,88 @@ def pylint_command(event):
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
 
-    # bpm.put_log uses this pattern and assumes the pattern has these groups:
-    # m.group(1): A full file path.
-    # m.group(2): The line number.
-    # m.group(3): The error message.
-    link_pattern = r'^(.+):([0-9]+): error: (.*)\s*$'
-
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen = []  # List of checked paths.
+        self.link_limit = None  # Set in check_file.
+        self.unknown_path_names = []
+        # Settings.
+        self.args = c.config.getData('mypy-arguments') or []
+        self.config_file = c.config.getString('mypy-config-file') or None
+        self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
     def check_all(self, roots):
-        """Run pyflakes on all files in paths."""
+        """Run mypy on all files in paths."""
         c = self.c
-        bpm = g.app.backgroundProcessManager
+        self.unknown_path_names = []
         for root in roots:
-            fn = self.finalize(root)
-            bpm.start_process(c,
-                command=f"mypy {fn}",
-                fn=fn,
-                kind='mypy',
-                link_pattern=self.link_pattern,
-                link_root=None,  # Use the file name in the mypy error messages.
-                shell=True, # 2021/04/30.
-            )
+            fn = os.path.normpath(g.fullPath(c, root))
+            self.check_file(fn)
+
+    #@+node:ekr.20210727212625.1: *3* mypy.check_file
+    def check_file(self, fn):
+        """Run mypy on one file."""
+        c = self.c
+        # Init.
+        c.frame.log.clearLog()
+        link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
+        # Change working directory.
+        directory = os.path.dirname(fn)
+        os.chdir(directory)
+        # Check the config file.
+        if self.config_file:
+            config_file = g.os_path_finalize_join(directory, self.config_file)
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file!r}")
+                return
+            args = [f"--config-file={config_file}"] + self.args
+        args_s = ' '.join(args + [g.shortFileName(fn)])
+        args = self.args + [fn]
+        # Run mypy.
+        g.es_print(f"mypy {args_s}")
+        result = mypy.api.run(args)
+        # Print result, making clickable links.
+        print('Exit status:', result[2])
+        lines = g.splitLines(result[0] or [])  # type:ignore
+        s_head = directory.lower() + os.path.sep
+        for i, s in enumerate(lines):
+            # Print the shortened form of s *without* changing s.
+            if s.lower().startswith(s_head):
+                print(f"{i:<3}", s[len(s_head) :].rstrip())
+            else:
+                print(f"{i:<3}", s.rstrip())
+            # Create links only up to the link limit.
+            if 0 < self.link_limit <= i:
+                print(lines[-1].rstrip())
+                break
+            m = link_pattern.match(s)
+            if not m:
+                g.es(s.strip())
+                continue
+            # m.group(1) should be an absolute path.
+            path = g.os_path_finalize_join(directory, m.group(1))
+            # m.group(2) should be the line number.
+            try:
+                line_number = int(m.group(2))
+            except Exception:
+                g.es(s.strip())
+                continue  # Not an error.
+            # Look for the @<file> node.
+            link_root = g.findNodeByPath(c, path)
+            if link_root:
+                unl = link_root.get_UNL(with_proto=True, with_count=True)
+                if s.lower().startswith(s_head):
+                    s = s[len(s_head) :]  # Do *not* strip the line!
+                c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")
+            elif path not in self.unknown_path_names:
+                self.unknown_path_names.append(path)
+                print(f"no @<file> node found: {path}")
+        # Print stderr.
+        if result[1]:
+            print('stderr...')
+            print(result[1])
     #@+node:ekr.20210302111935.5: *3* mypy.finalize
     def finalize(self, p):
         """Finalize p's path."""
@@ -282,94 +356,6 @@ class MypyCommand:
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         self.check_all(roots)
     #@-others
-#@+node:ekr.20160517133049.1: ** class Flake8Command
-class Flake8Command:
-    """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
-
-    def __init__(self, c, quiet=False):
-        """ctor for Flake8Command class."""
-        self.c = c
-        self.quiet = quiet
-        self.seen = []  # List of checked paths.
-    #@+others
-    #@+node:ekr.20160517133049.2: *3* flake8.check_all
-    def check_all(self, paths):
-        """Run flake8 on all paths."""
-        config_file = self.get_flake8_config()
-        if config_file:
-            style = engine.get_style_guide(parse_argv=False, config_file=config_file)
-            report = style.check_files(paths=paths)
-            # Set statistics here, instead of from the command line.
-            options = style.options
-            options.statistics = True
-            options.total_errors = True
-            # options.benchmark = True
-            main.print_report(report, style)
-    #@+node:ekr.20160517133049.3: *3* flake8.find
-    def find(self, p):
-        """Return True and add p's path to self.seen if p is a Python @<file> node."""
-        c = self.c
-        fn = p.anyAtFileNodeName()
-        found = fn and fn.endswith('.py')
-        if found:
-            path = g.fullPath(c, p)  # #1914.
-            self.seen.append(path)
-        return found
-    #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
-    def get_flake8_config(self):
-        """Return the path to the pylint configuration file."""
-        join = g.os_path_finalize_join
-        dir_table = (
-            g.app.homeDir,
-            join(g.app.homeDir, '.leo'),
-            join(g.app.loadDir, '..', '..', 'leo', 'test'),
-        )
-        for base in ('flake8', 'flake8.txt'):
-            for path in dir_table:
-                fn = g.os_path_abspath(join(path, base))
-                if g.os_path_exists(fn):
-                    return fn
-        if not g.unitTesting:
-            table_s = '\n'.join(dir_table)
-            g.es_print(f"no flake8 configuration file found in\n{table_s}")
-        return None
-    #@+node:ekr.20160517133049.5: *3* flake8.run
-    def run(self, p=None):
-        """Run flake8 on all Python @<file> nodes in c.p's tree."""
-        if not flake8:
-            g.es_print('flake8 is not installed')
-            return
-        c = self.c
-        root = p or c.p
-        # Make sure Leo is on sys.path.
-        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-        if leo_path not in sys.path:
-            sys.path.append(leo_path)
-        # Run flake8 on all Python @<file> nodes in root's tree.
-        t1 = time.time()
-        found = False
-        for p in root.self_and_subtree():
-            found |= self.find(p)
-        # Look up the tree if no @<file> nodes were found.
-        if not found:
-            for p in root.parents():
-                if self.find(p):
-                    found = True
-                    break
-        # If still not found, expand the search if root is a clone.
-        if not found:
-            isCloned = any(p.isCloned() for p in root.self_and_parents())
-            if isCloned:
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode():
-                        isAncestor = any(z.v == root.v for z in p.self_and_subtree())
-                        if isAncestor and self.find(p):
-                            break
-        paths = list(set(self.seen))
-        if paths:
-            self.check_all(paths)
-        g.es_print(f"flake8: {len(paths)} file{g.plural(paths)} in {g.timeSince(t1)}")
-    #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand
 class PyflakesCommand:
     """A class to run pyflakes on all Python @<file> nodes in c.p's tree."""
@@ -378,6 +364,7 @@ class PyflakesCommand:
         """ctor for PyflakesCommand class."""
         self.c = c
         self.seen = []  # List of checked paths.
+
     #@+others
     #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
     class LogStream:
@@ -385,8 +372,8 @@ class PyflakesCommand:
         """A log stream for pyflakes."""
 
         def __init__(self, fn_n=0, roots=None):
-             self.fn_n = fn_n
-             self.roots = roots
+            self.fn_n = fn_n
+            self.roots = roots
 
         def write(self, s):
             fn_n, roots = self.fn_n, self.roots
@@ -487,9 +474,9 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
+    # m.group(1) is the line number.
+    # m.group(2) is the (unused) test name.
     link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-        # m.group(1) is the line number.
-        # m.group(2) is the (unused) test name.
 
     # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
 
@@ -580,7 +567,7 @@ class PylintCommand:
         command = (
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
-            command = shlex.split(command)
+            command = shlex.split(command)  # type:ignore
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
@@ -590,12 +577,6 @@ class PylintCommand:
             link_pattern=self.link_pattern,
             link_root=p,
         )
-
-        # Old code: Invoke g.run_pylint.
-            # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
-            # # When shell is True, it's recommended to pass a string, not a sequence.
-            # command = '%s -c "from leo.core import leoGlobals as g; g.run_pylint(%s)"' % (
-                # sys.executable, ','.join(args))
     #@-others
 #@-others
 #@@language python

@@ -232,6 +232,8 @@
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
+<v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
+<v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -544,6 +546,7 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
@@ -583,6 +586,11 @@
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
+</v>
+<v t="ekr.20210728045642.1"><vh>mypy settings</vh>
+<v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
+<v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
+<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=''</vh></v>
 </v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
@@ -646,7 +654,7 @@
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
-<v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
+<v t="ekr.20181018113730.1"><vh>@string external-editor = None</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
@@ -694,6 +702,7 @@
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
+<v t="ekr.20210901110017.1"><vh>@bool reverse-find-defs = False</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
@@ -1004,7 +1013,6 @@
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
-<v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
@@ -1014,6 +1022,7 @@
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
 <v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
+<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-two-leo-files</vh></v>
@@ -1027,7 +1036,7 @@
 <v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
 </v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
-<v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
+<v t="ekr.20131213135427.21842"><vh>@@@item check-derived-file</vh></v>
 <v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
@@ -1098,10 +1107,6 @@
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
 <v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
-<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert/Refresh Files</vh>
-<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
-<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
-</v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
@@ -1122,6 +1127,7 @@
 <v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
 </v>
 <v t="ekr.20131213135427.21904"><vh>@menu &amp;Edit Headline</vh>
+<v t="tom.20210922141748.1"><vh>@item &amp;capitalize-headline</vh></v>
 <v t="ekr.20131213135427.21905"><vh>@item edit-&amp;headline</vh></v>
 <v t="ekr.20131213135427.21906"><vh>@item &amp;end-edit-headline</vh></v>
 <v t="ekr.20131213135427.21908"><vh>@item insert-headline-&amp;time</vh></v>
@@ -1355,6 +1361,7 @@
 <v t="ekr.20131213135427.22014"><vh>@item demote</vh></v>
 <v t="ekr.20131213135427.22013"><vh>@item promote</vh></v>
 <v t="ekr.20180405112755.1"><vh>@item -</vh></v>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
 <v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
 <v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
@@ -1468,15 +1475,6 @@
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
 <v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
-</v>
-<v t="ekr.20131213135427.22226"><vh>@menu &amp;Run Unit Tests</vh>
-<v t="ekr.20131213135427.22229"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22230"><vh>@item run-&amp;marked-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22231"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22232"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22233"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22234"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22235"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
@@ -1943,6 +1941,10 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
 </v>
+<v t="ekr.20210823172721.1"><vh>freewin plugin</vh>
+<v t="ekr.20210823172729.1"><vh>@bool fw-copy-html = False</vh></v>
+<v t="ekr.20210823173032.1"><vh>@string fw-render-pane = ''</vh></v>
+</v>
 <v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
 <v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
 </v>
@@ -2052,9 +2054,11 @@
 <v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
 <v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
 <v t="ekr.20201021110503.1"><vh>@bool vr3-prefer-asciidoc3 = False</vh></v>
+<v t="ekr.20210823172944.1"><vh>@bool vr3-rst-use-dark-theme = False</vh></v>
 <v t="ekr.20201021110638.1"><vh>@int qweb-view-font-size = 16</vh></v>
 <v t="ekr.20201021105651.1"><vh>@string vr3-asciidoc-path = None</vh></v>
 <v t="ekr.20201021105654.1"><vh>@string vr3-default-kind = None</vh></v>
+<v t="ekr.20210823173736.1"><vh>@string vr3-ext-editor = NOne</vh></v>
 <v t="ekr.20201021105654.3"><vh>@string vr3-mathjax-url = None</vh></v>
 <v t="ekr.20201021110716.1"><vh>@string vr3-md-stylesheet = None</vh></v>
 <v t="ekr.20201021110839.1"><vh>@string vr3-prefer-external = None</vh></v>
@@ -2307,10 +2311,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20071213060239"></v>
-<v t="ekr.20210412113510.1"></v>
-<v t="ekr.20210530064911.1"></v>
-<v t="ekr.20210530064922.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2616,7 +2616,6 @@ Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be cha
 <t tx="ekr.20041119042929.4"></t>
 <t tx="ekr.20041119042929.7"></t>
 <t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
-This setting is also used to encode files created by the Tangle commands.
 Default is UTF-8 (case not important).</t>
 <t tx="ekr.20041119044139"></t>
 <t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
@@ -3627,12 +3626,6 @@ dabbrev-expands             = Alt-slash
 edit-setting                = None
 execute-script              = Ctrl-B
 redo                        = Shift-Ctrl-Z
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -3776,13 +3769,13 @@ free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 leo_to_html.py
 mod_scripting.py
-nav_qt.py
+nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
-quicksearch.py
+quicksearch.py      # Nav pane.
 screen_capture.py
 stickynotes.py
-todo.py
-viewrendered.py
+todo.py             # Task pane.
+viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.
@@ -5084,7 +5077,7 @@ Controller(c).run()
         elif ch == '#':
             i = g.skip_to_end_of_line(s, i)
         elif ch in ('"', "'"):
-            i = g.skip_python_string(s, i, verbose=False)
+            i = g.skip_python_string(s, i)
         elif ch == '_' or ch.isalpha():
             j = g.skip_id(s, i)
             kind = s[i: j]
@@ -5773,14 +5766,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22212"></t>
 <t tx="ekr.20131213135427.22223"></t>
 <t tx="ekr.20131213135427.22225"></t>
-<t tx="ekr.20131213135427.22226"></t>
-<t tx="ekr.20131213135427.22229"></t>
-<t tx="ekr.20131213135427.22230"></t>
-<t tx="ekr.20131213135427.22231"></t>
-<t tx="ekr.20131213135427.22232"></t>
-<t tx="ekr.20131213135427.22233"></t>
-<t tx="ekr.20131213135427.22234"></t>
-<t tx="ekr.20131213135427.22235"></t>
 <t tx="ekr.20131213135427.22236"></t>
 <t tx="ekr.20131213135427.22237"></t>
 <t tx="ekr.20131213135427.22238"></t>
@@ -6165,9 +6150,6 @@ spell-ignore                    = None
 split-line                      = Alt-Ctrl-o
 suspend                         = None
 tabify                          = None
-tangle                          = None      
-tangle-all                      = None
-tangle-marked                   = None
 toggle-abbrev-mode              = None
 toggle-active-pane              = None      # Ctrl-T conflicts with swap-characters.
 toggle-angle-brackets           = None
@@ -6188,9 +6170,6 @@ unindent-region                 = None
 # universal-argument            = Ctrl-u
 unmark-all                      = None         # Alt-U: conflicts with upcase-word.
 untabify                        = None
-untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
-untangle-all                    = None
-untangle-marked                 = None
 upcase-region                   = None
 upcase-word                     = Alt-u
 view-lossage                    = None
@@ -6579,12 +6558,6 @@ reverse-region                      = None
 reverse-sort-lines                  = None
 reverse-sort-lines-ignoring-case    = None
 revert                              = None
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
 save-buffers-kill-leo               = None
 save-file                           = None
 save-file-as                        = None
@@ -6648,9 +6621,6 @@ suspend                             = None
 tab-cycle-next                      = None
 tab-cycle-previous                  = None
 tabify                              = None
-tangle                              = None
-tangle-all                          = None
-tangle-marked                       = None
 toggle-abbrev-mode                  = None
 toggle-active-pane                  = None
 toggle-angle-brackets               = None
@@ -6674,9 +6644,6 @@ unindent-region                     = None
 # universal-argument                  = None
 unmark-all                          = None
 untabify                            = None
-untangle                            = None
-untangle-all                        = None
-untangle-marked                     = None
 upcase-region                       = None
 upcase-word                         = None
 view-lossage                        = None
@@ -9707,7 +9674,6 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about Python errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
-<t tx="ekr.20151225094956.1">&amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
 <t tx="ekr.20151225193848.1">leoP&amp;y.leo</t>
 <t tx="ekr.20160112111247.1"># Lines to be inserted at the start of each stub file.
@@ -9720,7 +9686,7 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 Node = Any
 </t>
-<t tx="ekr.20160127043440.1">For use by make-stub-files command.</t>
+<t tx="ekr.20160127043440.1"></t>
 <t tx="ekr.20160127043520.1">AstFormatter.*: str
 Pattern.all_matches: Sequence
 Pattern.full_balanced_match: Optional[int]
@@ -10302,13 +10268,6 @@ redo                        = Shift-Ctrl-Z
 
 dabbrev-completion  = Meta-Ctrl-slash
 dabbrev-expands     = Meta-slash
-
-run-all-unit-tests-externally       = None
-run-all-unit-tests-locally          = None
-run-marked-unit-tests-externally    = None
-run-marked-unit-tests-locally       = None
-run-selected-unit-tests-externally  = None
-run-selected-unit-tests-locally     = None
 
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
@@ -11043,7 +11002,6 @@ Use different names instead.</t>
 <t tx="ekr.20180403122225.1"></t>
 <t tx="ekr.20180403123734.1"></t>
 <t tx="ekr.20180403124541.1"></t>
-<t tx="ekr.20180403153650.1"></t>
 <t tx="ekr.20180403153949.1"></t>
 <t tx="ekr.20180403154314.1"></t>
 <t tx="ekr.20180403154327.1"></t>
@@ -11249,7 +11207,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018113502.1"></t>
 <t tx="ekr.20181018113612.1"></t>
 <t tx="ekr.20181018113656.1"></t>
-<t tx="ekr.20181018113730.1"></t>
+<t tx="ekr.20181018113730.1"># Name of external editor.</t>
 <t tx="ekr.20181018113812.1">
 </t>
 <t tx="ekr.20181018113813.1"></t>
@@ -11642,6 +11600,36 @@ rust: rustc
 go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
+<t tx="ekr.20210728045642.1"></t>
+<t tx="ekr.20210728045723.1"># Arguments to mypy.api, excluding the file name.
+
+# --disable-error-code=attr-defined
+# --disallow-untyped-defs
+# --follow-imports=skip</t>
+<t tx="ekr.20210728045750.1"># 0 means no limit.</t>
+<t tx="ekr.20210802064734.1">Path to .mypy.ini file.
+
+Relative paths are resolved starting from the location of the file being checked.</t>
+<t tx="ekr.20210823172721.1"></t>
+<t tx="ekr.20210823172729.1"></t>
+<t tx="ekr.20210823172944.1"></t>
+<t tx="ekr.20210823173032.1">Valid values:  '', 'browser_view', 'nav-view'</t>
+<t tx="ekr.20210823173736.1">Path to external editor.</t>
+<t tx="ekr.20210901110017.1">True: search for definitions starting from the last node of the ouline.</t>
+<t tx="ekr.20210914081311.1"></t>
+<t tx="ekr.20210914081428.1"></t>
+<t tx="ekr.20211014064402.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Commands
+ch, character
+gnx, string
+d, dictionary
+i, number
+j, number
+k, number
+n, number
+p, Position
+s, string
+v, VNode</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12275,6 +12263,7 @@ AltControlShift hoist
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
+<t tx="tom.20210922141748.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
@@ -12289,11 +12278,14 @@ a single @data contextmenu_commands node. </t>
 
 undo Undo
 redo Redo
--
-copy-text Copy Text
-cut-text Cut Text
-paste-text Paste Text
-select-all Select All Text
+
+# EKR: I highly recommend *not* adding the following text-related items.
+#      These popup commands do not work in all of Leo's text panes!
+    # -
+    # copy-text Copy Text
+    # cut-text Cut Text
+    # paste-text Paste Text
+    # select-all Select All Text
 -
 copy-node Copy Node
 cut-node Cut Node

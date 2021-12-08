@@ -79,7 +79,7 @@ class InputHandler:
         trace = False
         trace_entry = True
         trace_parent = False
-        
+
         def tell(f):
             pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
             m = re.match(pattern, repr(f))
@@ -883,7 +883,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def when_value_edited(self):
         """
         Called when the user edits the value of the widget.
-        
+
         Will usually also be called the first time that the user edits the
         widget.
         """

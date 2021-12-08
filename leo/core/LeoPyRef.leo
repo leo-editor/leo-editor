@@ -14,12 +14,12 @@
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20190406193429.1"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
-<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
+<v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh></v>
+<v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
-<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 <v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
 <v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
 <v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
@@ -31,6 +31,7 @@
 </v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
+<v t="ekr.20150413091056.1"><vh>@@button check-clones</vh></v>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
@@ -49,12 +50,6 @@
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
-<v t="ekr.20190406154306.1"><vh>@@button open-pyzo</vh></v>
-<v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
-<v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
-<v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
-</v>
-<v t="ekr.20201013034742.1"><vh>Unused buttons re plugins</vh>
 <v t="ekr.20201013034742.2"><vh>@@button make-importer</vh>
 <v t="ekr.20201013034742.3"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
 <v t="ekr.20201013034742.4"><vh>copy_tree</vh></v>
@@ -75,6 +70,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20190406154306.1"><vh>@@button open-pyzo</vh></v>
 <v t="ekr.20201013034742.16"><vh>@@button pep8 @key=Ctrl-5</vh>
 <v t="ekr.20201013034742.17"><vh>class Pep8</vh>
 <v t="ekr.20201013034742.18"><vh>change_all &amp; helpers</vh>
@@ -87,8 +83,11 @@
 </v>
 <v t="ekr.20201013034742.24"><vh>clear</vh></v>
 </v>
+<v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
+<v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
 <v t="ekr.20201013034742.25"><vh>@@button test-jup-export</vh></v>
 <v t="ekr.20201013034742.26"><vh>@@button test-jup-import</vh></v>
+<v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 </v>
 </v>
 <v t="ekr.20210110092457.1"><vh>leojs buttons</vh>
@@ -128,12 +127,34 @@
 <v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
 <v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20210911191729.1"><vh>@data:@auto ../test/external_files/at-auto-line-number-test.py</vh>
+<v t="ekr.20211107080227.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191730.1"><vh>@data:@auto ../test/external_files/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20211107080227.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191730.3"><vh>@data:@auto ../test/external_files/at-auto-section-ref-test.py</vh>
+<v t="ekr.20211107080227.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
+<v t="ekr.20211118024343.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
+<v t="ekr.20211107080227.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191731.5"><vh>@data:@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh>
+<v t="ekr.20211107080227.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
+<v t="ekr.20211107080227.7"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
+<v t="ekr.20210429045101.1"><vh>script: check gnxDict</vh></v>
 <v t="ekr.20210309083845.1"><vh>script: check-files</vh></v>
 <v t="ekr.20210118013157.1"><vh>script: convert-LeoFind</vh>
 <v t="ekr.20210118024739.1"><vh>convert</vh></v>
@@ -141,13 +162,22 @@
 <v t="ekr.20210118020530.1"><vh>new_name</vh></v>
 <v t="ekr.20210118021337.1"><vh>exists</vh></v>
 </v>
+<v t="ekr.20210829132319.1"><vh>script: cvt-tests</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20201208114843.1"><vh>script: diff-pr</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
+<v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
+<v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
+<v t="ekr.20210701044513.1"><vh>&lt;&lt; read into a1_s, b1_s &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20210630103405.1"><vh>script: restore gnxs in leoserver.py (simple version)</vh></v>
 <v t="ekr.20200222083959.1"><vh>script: start loggin</vh></v>
-<v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
+<v t="ekr.20211014103433.1"><vh>script: web-to-outline</vh>
+<v t="ekr.20211014112513.1"><vh>Handlers</vh></v>
+<v t="ekr.20211014120710.1"><vh>new_node</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -188,7 +218,6 @@
 <v t="ekr.20150419124739.1"><vh>@file leoPrinting.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
-<v t="ekr.20210407010904.1"><vh>@file leoQt4.py</vh></v>
 <v t="ekr.20210407010914.1"><vh>@file leoQt5.py</vh></v>
 <v t="ekr.20210407011013.1"><vh>@file leoQt6.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
@@ -220,6 +249,7 @@
 <v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
 <v t="ekr.20150514040236.1"><vh>@file ../commands/searchCommands.py</vh></v>
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
+<v t="ekr.20210907103011.1"><vh>@file ../commands/testCommands.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -277,7 +307,6 @@
 <v t="edream.110203113231.732"><vh>@file ../plugins/enable_gc.py</vh></v>
 <v t="edream.110203113231.734"><vh>@file ../plugins/quit_leo.py</vh></v>
 <v t="edream.110203113231.735"><vh>@file ../plugins/trace_gc_plugin.py</vh></v>
-<v t="edream.110203113231.736"><vh>@file ../plugins/trace_keys.py</vh></v>
 <v t="edream.110203113231.738"><vh>@file ../plugins/trace_tags.py</vh></v>
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
@@ -299,7 +328,6 @@
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
 <v t="ekr.20170313020320.1"><vh>@file ../plugins/settings_finder.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
-<v t="ekr.20140225222704.16748"><vh>@file ../plugins/viewrendered2.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file ../plugins/mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file ../plugins/mod_leo2ascd.txt</vh></v>
@@ -345,7 +373,6 @@
 <v t="ekr.20150107090324.1"><vh>@file ../plugins/cursesGui.py</vh></v>
 <v t="ekr.20170419092835.1"><vh>@file ../plugins/cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file ../plugins/leoflexx.py</vh></v>
-<v t="ekr.201811100000000.1"><vh>@file ../plugins/leoflexx_js.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file ../plugins/python_terminal.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
@@ -394,7 +421,6 @@
 </v>
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
 <v t="ajones.20070122160142"><vh>@file ../plugins/textnode.py</vh></v>
-<v t="ekr.20181028052650.1"><vh>@file ../plugins/leowapp.py</vh></v>
 <v t="ekr.20190410171646.1"><vh>Unused: pyzo_support.py</vh>
 <v t="ekr.20190412042616.1"><vh>&lt;&lt; copyright &gt;&gt;</vh></v>
 <v t="ekr.20190410171905.1"><vh>init (pyzo_support.py)</vh></v>
@@ -434,6 +460,7 @@
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
+<v t="ekr.20211021200745.1"><vh>@file ../plugins/picture_viewer.py</vh></v>
 <v t="ekr.20120913110135.10579"><vh>@file ../plugins/screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file ../plugins/screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file ../plugins/slideshow.py</vh></v>
@@ -443,7 +470,6 @@
 <v t="ekr.20050130120433"><vh>@@file ../plugins/test/failed_import.py</vh></v>
 <v t="ekr.20071113085315"><vh>@file ../plugins/test/failed_to_load_plugin.py</vh></v>
 <v t="ekr.20051016160700"><vh>@file ../plugins/testRegisterCommand.py</vh></v>
-<v t="ekr.20210517152714.1"><vh>@file ../plugins/leo_mypy_plugin.py</vh></v>
 </v>
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="timo.20050213160555"><vh>@file ../plugins/bibtex.py</vh></v>
@@ -464,6 +490,7 @@
 <v t="tbrown.20091029123555.5319"><vh>@file ../plugins/attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file ../plugins/colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file ../plugins/contextmenu.py</vh></v>
+<v t="tom.20210613135525.1"><vh>@file ../plugins/freewin.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file ../plugins/graphcanvas.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file ../plugins/nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file ../plugins/notebook.py</vh></v>
@@ -475,6 +502,7 @@
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file ../plugins/todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
@@ -547,6 +575,7 @@
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
+<v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
@@ -638,21 +667,50 @@
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
 </v>
-<v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
+<v t="ekr.20210710031237.1"><vh>In leo/scripts</vh>
+<v t="ekr.20210709045755.1"><vh>@file ../scripts/wax_off.py</vh></v>
+</v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
-<v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
 <v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
-<v t="ekr.20170805060844.1"><vh>@file ../test/leo-bridge-test.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904"><vh>@file leoTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
-<v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
-<v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 </v>
+<v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
+<v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
+<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
+<v t="ekr.20211013081056.1"><vh>@file ../unittests/commands/test_convertCommands.py</vh></v>
+</v>
+<v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
+<v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
+<v t="ekr.20210902073413.1"><vh>@file ../unittests/core/test_leoAst.py</vh></v>
+<v t="ekr.20210901172411.1"><vh>@file ../unittests/core/test_leoAtFile.py</vh></v>
+<v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
+<v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
+<v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
+<v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
+<v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
+<v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
+<v t="ekr.20210829124658.1"><vh>@file ../unittests/core/test_leoFind.py</vh></v>
+<v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
+<v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
+<v t="ekr.20210904064440.2"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
+<v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
+<v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
+<v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
+<v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
+<v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
+<v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
+<v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
+<v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
+</v>
+<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
+<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
+<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
+<v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -664,9 +722,9 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">pylint
-cov
-moz
+<t tx="ekr.20150425145248.1">test-one
+test-import
+pylint
 backup</t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
 # Format: language-name: command
@@ -731,14 +789,6 @@ viewrendered.py
 # xdb_pane.py
 </t>
 <t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20131111060930.18010"># Standard bindings...
-# run-selected-unit-tests-externally = Alt-4 
-# run-marked-unit-tests-externally = Alt-5
-# run-marked-unit-tests-locally = Alt-6
-run-selected-unit-tests-locally = Alt-4
-do-nothing = Alt-5
-run-marked-unit-tests-locally = Alt-6
-</t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -746,6 +796,32 @@ Valid values are (case is ignored):
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20160122104332.1">@language python
+</t>
+<t tx="ekr.20211011090013.1">"""Find hanging comments."""
+import re
+pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
+
+# Find:  ^(\s*)(.*?)\n(\s*)(.*?)\n
+# Repl: \1\2  \4\n      Single line (best)
+# Repl: \1\2\n\1\4\n
+    
+def predicate(p):
+    for m in pat.finditer(p.b):
+        if (
+            not m.group(2).startswith('def ')
+            and not m.group(2).startswith('#')
+            and m.group(4).startswith('#')
+            and len(m.group(1)) &lt; len(m.group(3))
+            and not (m.group(4).startswith('"""'))
+        ):
+            g.trace('Found', p.h)
+            return True
+    return False
+
+c.cloneFindByPredicate(p.self_and_subtree, predicate, flatten=True)
+print('done')
+</t>
+<t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
@@ -755,10 +831,10 @@ import subprocess
 import sys
 import time
 win = sys.platform.startswith('win')
-old_dir = g.os_path_abspath('.')
+old_dir = os.getcwd()
 if win:
     new_dir = r'C:\leo.repo\leo-editor'
-    path = r'C:\Users\edreamleo\Backup'
+    path = r'C:\Users\Edward~1\Backup'
 else:
     new_dir = '/home/edward/leo.repo/leo-editor'
     path = '/home/edward/Backup'
@@ -769,50 +845,10 @@ fn = g.os_path_finalize_join(path, f"leo-bundle-all-{stamp}")
 bundle_command = 'git bundle create %s --all' % fn
 print(bundle_command)
 os.chdir(new_dir)
-# os.system(bundle_command)
 proc = subprocess.Popen(bundle_command, shell=True)
 proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
-</t>
-<t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
-
-clones,nodes,seen = 0,0,set()
-table = (
-  '@file ../doc/leoProjects.txt',
-  '@file ../doc/leoToDo.txt',
-)
-
-def check_clone(c,p0,root):
-    """Warn if p appears in any @&lt;file&gt; node outside of root's tree."""
-    global nodes,seen
-    v = p0.v
-    for p in c.all_positions():
-        nodes += 1
-        if p.v == v:
-            # Check *all* ancestors, not just the nearest one.
-            for parent in p.self_and_parents():
-                nodes += 1
-                if parent.isAnyAtFileNode() and parent.v != root.v:
-                    if parent.v not in seen:
-                        seen.add(parent.v)
-                        g.es_print('%s and %s contain clone: %s' % (
-                            root.h,parent.h,p0.h))
-
-for h in table:
-    root = g.findNodeAnywhere(c,h)
-    if root:
-        for p in root.self_and_subtree():
-            nodes += 1
-            if p.isCloned():
-                clones += 1
-                check_clone(c,p,root)
-    else:
-        g.es_print('not found',h,color='red')
-print('done: %s nodes, %s clones' % (nodes,clones))
-
-@tabwidth -4
-@language python
 </t>
 <t tx="ekr.20201018062305.1">"""
 Overwrite LeoPyRef.leo from the given list of nodes.
@@ -944,6 +980,45 @@ main(node_list = ['Startup', 'Notes', 'Code'])
 <t tx="ekr.20210113054702.1">import os
 print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
 <t tx="ekr.20201013034659.1"></t>
+<t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
+
+clones,nodes,seen = 0,0,set()
+table = (
+  '@file ../doc/leoProjects.txt',
+  '@file ../doc/leoToDo.txt',
+)
+
+def check_clone(c,p0,root):
+    """Warn if p appears in any @&lt;file&gt; node outside of root's tree."""
+    global nodes,seen
+    v = p0.v
+    for p in c.all_positions():
+        nodes += 1
+        if p.v == v:
+            # Check *all* ancestors, not just the nearest one.
+            for parent in p.self_and_parents():
+                nodes += 1
+                if parent.isAnyAtFileNode() and parent.v != root.v:
+                    if parent.v not in seen:
+                        seen.add(parent.v)
+                        g.es_print('%s and %s contain clone: %s' % (
+                            root.h,parent.h,p0.h))
+
+for h in table:
+    root = g.findNodeAnywhere(c,h)
+    if root:
+        for p in root.self_and_subtree():
+            nodes += 1
+            if p.isCloned():
+                clones += 1
+                check_clone(c,p,root)
+    else:
+        g.es_print('not found',h,color='red')
+print('done: %s nodes, %s clones' % (nodes,clones))
+
+@tabwidth -4
+@language python
+</t>
 <t tx="ekr.20180324065741.1">"""Copy the selected text to the next node."""
 w = c.frame.body.wrapper
 s = w.getSelectedText()
@@ -1143,8 +1218,7 @@ CreateDecorators(c,make_changes=False).run()
 # leoUndo.py
 # qt_frame.py
 
-make_changes = True
-    # True, actually make the change
+make_changes = True  # True, actually make the change
 
 class CreateDecorators:
     """
@@ -1171,9 +1245,8 @@ CreateDecorators().run()
         c_name,f_name = aList[0].strip(),aList[1].strip()
         if ' ' not in f_name:
             f_name = f_name.split('.')[-1]
-        # if '(' in f_name:
-            # f_name = f_name[:f_name.find('(')]
-        if trace: g.trace('%45s %s' % (c_name,f_name))
+        if trace:
+            g.trace('%45s %s' % (c_name,f_name))
         d [f_name] = c_name
     return d
 </t>
@@ -1195,13 +1268,10 @@ CreateDecorators().run()
                 else:
                     changed,found = True,True
                     result.append(decorator)
-                    # print('%s%s' % (decorator,s))
             result.append(s)
         if changed and make_changes:
             new_body = ''.join(result)
             print('%40s %s' % (p.h[:40],decorator.rstrip()))
-            # use git as our undo :-)
-            # p.b = new_body
     return found
 </t>
 <t tx="ekr.20150509183433.4">def create_decorators(self,d):
@@ -1248,37 +1318,12 @@ CreateDecorators().run()
     self.create_decorators(d)
     print('%s commands %s failed' % (self.n,self.n_fail))
 </t>
-<t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
-<t tx="ekr.20150703061709.1">@language python
-
-"""myLeoSettings.py: save the outline and run the pylint command"""
-
-# print('@button run-pylint: %s' % c.shortFileName())
-if c.isChanged():
-    c.save()
-c.k.simulateCommand('pylint')
-</t>
-<t tx="ekr.20180824065751.1">print(p.gnx)</t>
-<t tx="ekr.20131121084830.16362">@language python
-
-# Toggle the settings.
-g.app.debug_app = not g.app.debug_app
-g.app.debug_widgets = not g.app.debug_widgets
-# Report the new settings.
-print('g.app.debug_app: %s' % g.app.debug_app)
-print('g.app.debug_widgets: %s' % g.app.debug_widgets)
-</t>
-<t tx="ekr.20201013034742.1"></t>
 <t tx="ekr.20201013034742.2">g.cls()
 # define constants that describe the new language.
-name = 'php'
-    # The name of the file, and the prefix for classes.
-language = 'php'
-    # The name of the language, case doesn't matter.
-extensions = ['.php',]
-    # A list of file extensions supported by this importer.
-strict = False
-    # True if leading whitespace is particularly significant.
+name = 'php'  # The name of the file, and the prefix for classes.
+language = 'php'  # The name of the language, case doesn't matter.
+extensions = ['.php',]  # A list of file extensions supported by this importer.
+strict = False  # True if leading whitespace is particularly significant.
 state_ivar = 'self.curlies'
     # 'self.indent' for python, coffeescript.
     # 'self.curlies' for many other languages
@@ -1288,26 +1333,24 @@ run(extensions, language, name, state_ivar)
 </t>
 <t tx="ekr.20201013034742.3">@others</t>
 <t tx="ekr.20201013034742.4">def copy_tree(source, root, h):
-    '''Copy the source tree to the node after p, with headline h.'''
+    """Copy the source tree to the node after p, with headline h."""
     p2 = root.insertAfter()
     source.copyTreeFromSelfTo(p2)
     p2.h = h
     return p2
  </t>
 <t tx="ekr.20201013034742.5">def make_substitutions(destination, patterns):
-    '''Make all substitutions in the destination tree.'''
+    """Make all substitutions in the destination tree."""
     for p in destination.self_and_subtree():
         h = substitute(p.h, patterns)
         if p.h != h:
-            # g.trace('CHANGED:', p.h, '==&gt;', h)
             p.h = h
         b = substitute(p.b, patterns)
         if p.b != b:
-            # g.trace('CHANGED:', p.b, '==&gt;', b)
             p.b = b
 </t>
 <t tx="ekr.20201013034742.6">def run(extensions, language, name, state_ivar):
-    '''The driver for this script.'''
+    """The driver for this script."""
     patterns = {
         'cap_name': name.capitalize(),
         'extensions': '[%s]' % ', '.join(["'%s'" % (z) for z in extensions]),
@@ -1327,7 +1370,7 @@ run(extensions, language, name, state_ivar)
     c.contractAllHeadlines()
     c.redraw()</t>
 <t tx="ekr.20201013034742.7">def substitute(s, patterns):
-    '''Make all substitutions in s.'''
+    """Make all substitutions in s."""
     for pattern in patterns:
         find = '{{%s}}' % pattern
         replace = patterns.get(pattern)
@@ -1341,7 +1384,7 @@ run(extensions, language, name, state_ivar)
             assert progress &lt; i
     return s
 </t>
-<t tx="ekr.20201013034742.8">'''The @auto importer for the {{name}} language.'''
+<t tx="ekr.20201013034742.8">"""The @auto importer for the {{name}} language."""
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 @others
@@ -1355,10 +1398,10 @@ importer_dict = {
 
 </t>
 <t tx="ekr.20201013034742.9">class {{cap_name}}_Importer(Importer):
-    '''The importer for the {{name}} lanuage.'''
+    """The importer for the {{name}} lanuage."""
 
     def __init__(self, importCommands, atAuto):
-        '''{{cap_name}}_Importer.__init__'''
+        """{{cap_name}}_Importer.__init__"""
         # Init the base class.
         Importer.__init__(self,
             importCommands,
@@ -1372,16 +1415,16 @@ importer_dict = {
 </t>
 <t tx="ekr.20201013034742.10"># These can be overridden in subclasses.
 </t>
-<t tx="ekr.20201013034742.11">### Define an override if desired...
+<t tx="ekr.20201013034742.11"># Define an override if desired...
 
 if 0: # The base class
     def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         return s.strip()
         
 if 0: # A more complex example, for the C language.
     def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         import re
         type1 = r'(static|extern)*'
         type2 = r'(void|int|float|double|char)*'
@@ -1401,31 +1444,31 @@ if 0: # A more complex example, for the C language.
             return s
 </t>
 <t tx="ekr.20201013034742.12">def clean_nodes(self, parent):
-    '''
+    """
     Clean all nodes in parent's tree.
     Subclasses override this as desired.
     See perl_i.clean_nodes for an examplle.
-    '''
+    """
     pass
 </t>
 <t tx="ekr.20201013034742.13">class {{cap_name}}_ScanState:
-    '''A class representing the state of the {{name}} line-oriented scan.'''
+    """A class representing the state of the {{name}} line-oriented scan."""
     
     def __init__(self, d=None):
-        '''{{cap_name}}_ScanState.__init__'''
+        """{{cap_name}}_ScanState.__init__"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
-            ### Adjust these by hand.
+            # Adjust these by hand.
             self.curlies = prev.curlies
         else:
             self.context = ''
-            ### Adjust these by hand.
+            # Adjust these by hand.
             self.curlies = 0
 
     def __repr__(self):
-        '''{{cap_name}}_ScanState.__repr__'''
-        ### Adjust these by hand.
+        """{{cap_name}}_ScanState.__repr__"""
+        # Adjust these by hand.
         return "{{cap_name}}_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
 
@@ -1434,28 +1477,29 @@ if 0: # A more complex example, for the C language.
     @others
 </t>
 <t tx="ekr.20201013034742.14">def level(self):
-    '''{{cap_name}}_ScanState.level.'''
+    """{{cap_name}}_ScanState.level."""
     return {{state_ivar}}
 
 </t>
 <t tx="ekr.20201013034742.15">def update(self, data):
-    '''
+    """
     {{cap_name}}_ScanState.update
 
     Update the state using the 6-tuple returned by v2_scan_line.
     Return i = data[1]
-    '''
+    """
     context, i, delta_c, delta_p, delta_s, bs_nl = data
     # All ScanState classes must have a context ivar.
     self.context = context
     self.curlies += delta_c  
-    ### Update {{cap_name}}_ScanState ivars
+    # Update {{cap_name}}_ScanState ivars
     # self.bs_nl = bs_nl
     # self.parens += delta_p
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20201013034742.16">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
+<t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
+<t tx="ekr.20201013034742.16">"""Converts the word at the cursor to pep8 style throughout a given tree."""
 # aTestExample notFoundExample.
 import re
 # clear()
@@ -1468,20 +1512,20 @@ table = (
 Pep8(table, change=True).run()
 </t>
 <t tx="ekr.20201013034742.17">class Pep8:
-    '''
+    """
     Convert the word under the cursor to pep8 style in all subtrees in
     table.
-    '''
+    """
     
     def __init__ (self, table, change=False):
-        '''Ctor for Pep8 class.'''
+        """Ctor for Pep8 class."""
         self.change = change
         self.table = table
         
     @others
 </t>
 <t tx="ekr.20201013034742.18">def change_all(self, name, new_name, root):
-    '''Change name to new_name throughout root's tree.'''
+    """Change name to new_name throughout root's tree."""
     u = c.undoer
     bunch = u.beforeChangeTree(root)
     found = False
@@ -1541,8 +1585,8 @@ Pep8(table, change=True).run()
         g.es_print('already pep8:', name)
     else:
         g.es_print('%s -&gt; %s' % (name, new_name))
+        # Preload the replacement text.
         c.findCommands.ftm.set_find_text(new_name)
-            # Preload the replacement text.
         found = False
         for target in table:
             root = g.findNodeAnywhere(c, target)
@@ -1571,6 +1615,16 @@ Pep8(table, change=True).run()
     g.cls()
     c.k.simulateCommand('clear-log')
 </t>
+<t tx="ekr.20150703061709.1">@language python
+
+"""myLeoSettings.py: save the outline and run the pylint command"""
+
+# print('@button run-pylint: %s' % c.shortFileName())
+if c.isChanged():
+    c.save()
+c.k.simulateCommand('pylint')
+</t>
+<t tx="ekr.20180824065751.1">print(p.gnx)</t>
 <t tx="ekr.20201013034742.25"># g.cls()
 import re
 import sys
@@ -1585,7 +1639,7 @@ assert p, h
 @others
 Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
-<t tx="ekr.20201013034742.26">'''Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb'''
+<t tx="ekr.20201013034742.26">"""Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb"""
 import nbformat
 @others
 g.cls()
@@ -1611,6 +1665,15 @@ if not g.unitTesting:
     # c.expandAllSubheads()
     c.redraw() 
     g.es_print('done')
+</t>
+<t tx="ekr.20131121084830.16362">@language python
+
+# Toggle the settings.
+g.app.debug_app = not g.app.debug_app
+g.app.debug_widgets = not g.app.debug_widgets
+# Report the new settings.
+print('g.app.debug_app: %s' % g.app.debug_app)
+print('g.app.debug_widgets: %s' % g.app.debug_widgets)
 </t>
 <t tx="ekr.20210110092457.1">@language python
 @nosearch
@@ -1767,6 +1830,63 @@ unl: class LeoCloud--&gt;LeoCloud.write_current
 <t tx="ekr.20210509083811.2">gnx: ekr.20201012111338.43
 unl: Declarations (leo_cloud_server.py)
 </t>
+<t tx="ekr.20210911191729.1">gnx: ekr.20190113123439.5
+</t>
+<t tx="ekr.20211107080227.1">gnx: ekr.20210911191226.3
+unl: at_auto_child (at-auto-line-number-test.py)
+</t>
+<t tx="ekr.20210911191730.1">gnx: ekr.20190113123439.7
+</t>
+<t tx="ekr.20211107080227.2">gnx: ekr.20210911191226.4
+unl: !Declarations
+gnx: ekr.20210911191226.5
+unl: section 1
+gnx: ekr.20210911191226.6
+unl: section 2
+</t>
+<t tx="ekr.20210911191730.3">gnx: ekr.20190113123439.11
+</t>
+<t tx="ekr.20211107080227.3">gnx: ekr.20210911191226.7
+unl: Declarations (at-auto-section-ref-test.py)
+</t>
+<t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
+</t>
+<t tx="ekr.20211118024343.1">gnx: ekr.20210911191226.8
+unl: spam (at-auto-test.py)
+gnx: ekr.20210911191226.9
+unl: eggs (at-auto-test.py)
+</t>
+<t tx="ekr.20210911191731.3">gnx: ekr.20190113123439.16
+</t>
+<t tx="ekr.20211107080227.5">gnx: ekr.20210911191226.10
+unl: class class1
+gnx: ekr.20210911191226.11
+unl: class class1--&gt;class1_method1
+gnx: ekr.20210911191226.12
+unl: class class1--&gt;class1_method2
+gnx: ekr.20210911191226.13
+unl: class class2
+gnx: ekr.20210911191226.14
+unl: class class2--&gt;class2_method1
+gnx: ekr.20210911191226.15
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20210911191731.5">gnx: ekr.20190113123635.2
+</t>
+<t tx="ekr.20211107080227.6">gnx: ekr.20210911191226.16
+unl: section 1
+gnx: ekr.20210911191226.17
+unl: section 2
+</t>
+<t tx="ekr.20210911191731.7">gnx: ekr.20190113123635.5
+</t>
+<t tx="ekr.20211107080227.7">gnx: ekr.20210911191226.18
+unl: First line.
+gnx: ekr.20210911191226.19
+unl: section 1
+gnx: ekr.20210911191226.20
+unl: section 2
+</t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
@@ -1798,12 +1918,13 @@ if 0:
     import leo.core.leoImport as leoImport
     importlib.reload(leoImport)
 # dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
-dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+dir_ = r'C:\Users\Edward Ream\Python\python39\Lib\site-packages\mypy'
 assert g.os_path_exists(dir_), repr(dir_)
 c.recursiveImport(
     add_context = False,
     dir_ = dir_,
-    kind = '@edit', # '@clean', '@edit', '@nosent','@auto','@file',
+    kind = '@clean', # '@clean', '@edit', '@nosent','@auto','@file',
     recursive = False,
     safe_at_file = False,
     theTypes = ['.py',]
@@ -1845,6 +1966,19 @@ for v in c.all_nodes():
             print(f"gnx clash: {gnx}")
             g.printObj(aList)
 print('done')</t>
+<t tx="ekr.20210429045101.1">g.cls()
+fc = c.fileCommands
+d = fc.gnxDict
+for key in sorted(d.keys()):
+    v = d.get(key)
+    if v.h.lower() == 'newheadline':
+        print('in dict', key, v)
+        for p in c.all_positions():
+            if p.v == v:
+                print(p)
+        else:
+            print('no position for', v)
+print('done')</t>
 <t tx="ekr.20210309083845.1">"""
 Issue https://github.com/leo-editor/leo-editor/issues/1789
 """
@@ -1857,7 +1991,6 @@ def munge(s):
 ignore = [
     # Core...
     'format-code.py',       # Script.
-    'leoTangle.py',         # To be deleted.
     # External...
     'leoftsindex.py',       # User contributed.
     'sax2db.py',            # User contributed.
@@ -1887,6 +2020,7 @@ for module in ('core', 'external', 'plugins'):
         if path not in seen and g.shortFileName(path) not in ignore:
             print(f"Missing: {path}")
     print('')
+print('done')
 </t>
 <t tx="ekr.20210118013157.1">"""
 Convert defs in LeoFind to pep8 names.
@@ -1955,17 +2089,30 @@ else:
         if s in p.b:
             return True
     return False</t>
-<t tx="ekr.20180816105258.1">import os
-import leo.commands.editFileCommands as efc
+<t tx="ekr.20210829132319.1">"""Convert old-style tests to new-style tests"""
+g.cls()
+import importlib
+from leo.commands import convertCommands
+importlib.reload(convertCommands)
 
-path = os.path.join(g.app.loadDir, '..', '..')
+root_h = '--- To be converted'
+root = g.findNodeAnywhere(c, root_h)
+converter = convertCommands.ConvertAtTests()
+# converter = convertCommands.ConvertShadowTests()
+# converter = convertCommands.ConvertUndoTests()
+# converter = convertCommands.ConvertColorizerTests()
+convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
+<t tx="ekr.20180816105258.1">g.cls()
+import os
+import leo.commands.editFileCommands as efc
+path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+print('path:', path)
 os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='master', # '6bd282f', # 'bc24e607a5', # old branch/rev
-    branch2='devel', # new branch/rev
-    fn='leo/core/leoTangle.py',
-    directory=None,
+    branch1='devel', # old branch/rev
+    branch2='ekr-git-diff', # new branch/rev
+    fn='leo/commands/editFileCommands.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
@@ -1976,8 +2123,8 @@ x.diff_pull_request()
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='51715f5', # Before, the *original* base of ekr-theme.
-    rev2='HEAD',    # After: Latest ekr-theme (or devel) commit.
+    rev1='fc48ebca97ea430', # Before.
+    rev2='HEAD',   # After.
 )
 </t>
 <t tx="ekr.20201015145257.1">import leo.core.leoImport as leoImport
@@ -1990,6 +2137,145 @@ assert g.os_path_exists(path)
 x = leoImport.LegacyExternalFileImporter(c)
 x.import_file(path)
 </t>
+<t tx="ekr.20210630070717.1">"""
+See #2025: https://github.com/leo-editor/leo-editor/issues/2025
+
+Note: I have chosen *not* to update the gnx's. Félix deserves the credit for the changes.
+
+A script to restore gnx's in sentinels in leoserver.py from the devel branch to the felix-server2 branch.
+
+devel-leoserver.py: the version of leoserver.py from devel
+felix_server.py:    The version of leoserver.py from felix-server-2
+new_server.py:      leoserver.py, with updated gnx's.
+
+After running this script, `kdiff3 devel-leoserver.py new-leoserver.py` shows *only*
+the expected changes to sentinel lines.
+"""
+
+g.cls()
+import difflib
+import os
+verbose = True
+ekr_server = r'c:\diffs\devel-leoserver.py'
+felix_server = r'c:\diffs\felix-server2-leoserver.py'
+new_server = r'c:\diffs\new-leoserver.py'
+assert os.path.exists(ekr_server), ekr_server
+assert os.path.exists(felix_server), felix_server
+#
+# The target (new!) version should be the ekr_server code.
+# With this convention:
+#   all '-' opcodes will refer to felix gnx's!
+#   These lines refer to lines that Félix *inserted* or *changed*
+with open(felix_server) as f:
+    a1_s = f.read()
+with open(ekr_server) as f:
+    b1_s = f.read()
+print('len ekr', len(b1_s), 'len felix', len(a1_s))
+# ndiff compares *lists* of strings.
+# a and b are lists of @+node sentinels.
+a_list = [z for z in g.splitLines(a1_s) if z.strip().startswith('#@+node:')]
+b_list = [z for z in g.splitLines(b1_s) if z.strip().startswith('#@+node:')]
+changed, deleted, inserted = [], [], []
+diff = list(difflib.ndiff(a_list, b_list))
+i = 0
+while i &lt; len(diff):
+    progress = i
+    s = diff[i]
+    code = s[0]
+    line1 = s[2:]
+    if code == '-':  # Félix inserted or changed the node.
+        line2_s = diff[i+1] if i+1 &lt; len(diff) else ''
+        line3_s = diff[i+2] if i+2 &lt; len(diff) else ''
+        line2_code = line2_s[0] if line2_s else ''
+        line3 = line3_s[2:]
+        assert 'felix' in line1, s
+        if line2_code == '?':  # The line changed. Remember the first and third lines.
+            assert line2_s
+            assert line3_s
+            changed.append((line1, line3))
+            i += 4
+        else: # Félix inserted the node.
+            inserted.append(line1)
+            i += 1
+    elif code == '+':  # Félix deleted the node.
+        assert 'ekr' in line1, s
+        deleted.append(line1)
+        i += 1
+    else:
+        print(f"{i:&gt;3}: UNKNOWN CODE")
+        print(f"{i:&gt;3}: {s!r}")
+        print('')
+        for j, s in enumerate(diff[:i+1]):
+            print(f"{j:&gt;3}: {s!r}")
+        break
+    assert i &gt; progress
+#
+# Print the results.
+print('')
+print(f"Inserted {len(inserted)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(inserted):
+        print(f"{i:&gt;3}: {z!r}")
+    print('')
+print(f" Deleted {len(deleted)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(deleted):
+        print(f"{i:&gt;3}: {z!r}")
+    print('')
+print(f" Changed {len(changed)} nodes")
+if verbose:
+    print('')
+    for i, z in enumerate(changed):
+        a, b = z
+        print(f"{i:&gt;3}: felix: {a!r}")
+        print(f"{i:&gt;3}:   ekr: {b!r}")
+        print('')
+#
+# Change the leoserver.py, *not* the ekr file.
+result = a1_s
+for z in changed:
+    a, b = z
+    assert '#@+node:felix' not in b, repr(b)
+    result = result.replace(a, b)
+if 0:
+    g.printObj(g.splitLines(result), tag=result)
+if 0:
+    i, n = 0, 0
+    tag = '#@+node:felix'
+    while True:
+        i = result.find(tag, i)
+        if i == -1:
+            break
+        print(n, repr(result[i: i+50]))
+        i += len(tag)
+        n += 1
+if 1:
+    # Write the file.
+    with open(new_server, 'w') as f:
+        f.write(result)
+    print(f"wrote {new_server}")
+    
+</t>
+<t tx="ekr.20210701044426.1"></t>
+<t tx="ekr.20210701044513.1"></t>
+<t tx="ekr.20210630103405.1">g.cls()
+import difflib, os, re
+ekr_server = r'c:\diffs\devel-leoserver.py'
+felix_server = r'c:\diffs\felix-server2-leoserver.py'
+with open(ekr_server) as f:
+    a1_s = f.read()
+with open(felix_server) as f:
+    b1_s = f.read()
+# a and b are lists of @+node sentinel lines.
+a_list = [z.lstrip() for z in g.splitLines(a1_s) if z.strip().startswith('#@+node:')]
+b_list = [z.lstrip() for z in g.splitLines(b1_s) if z.strip().startswith('#@+node:')]
+# Show the diffs.
+diff = difflib.ndiff(a_list, b_list)
+for i, s in enumerate(diff):
+    print(f"{i:&lt;3}: {s.rstrip()}")
+</t>
 <t tx="ekr.20200222083959.1">import logging
 rootLogger = logging.getLogger('')
 rootLogger.setLevel(logging.DEBUG)
@@ -2000,17 +2286,6 @@ socketHandler = logging.handlers.SocketHandler(
 rootLogger.addHandler(socketHandler)
 logging.info('-' * 20)
 </t>
-<t tx="ekr.20181102040815.1">files = [
-    'test/unittest.leo',
-]
-for fn in files:
-    path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
-    assert g.os_path_exists(path), repr(path)
-    with open(path, 'r') as f:
-        s = f.read()
-        for line in g.splitLines(s):
-            if len(line) &gt; 150:
-                print(line)</t>
 <t tx="ekr.20200222151754.1">import yoton
 
 # Create another context and a sub channel
@@ -2027,11 +2302,94 @@ while True:
     if i == 10:
         break
 </t>
+<t tx="ekr.20211014103433.1">"""
+Convert the TeX sources, assumed to be in ~/tex.web, to an outline.
+
+https://mirror.las.iastate.edu/tex-archive/systems/knuth/dist/tex/tex.web
+
+"""
+g.cls()
+import os
+import re
+# Read
+path = os.path.expanduser('~/tex.web')
+with open(path) as f:
+    contents = f.read()
+# Create root.
+last = c.lastTopLevel()
+if last.h == 'tex.web':
+    last.doDelete()
+last = c.lastTopLevel()
+root = last.insertAfter()
+root.h = 'tex.web'
+root.b = '@language tex'
+prefix = root.insertAsLastChild()
+prefix.h = 'prefix'
+# Patterns
+at_star_pat = re.compile(r'^@\*(.*?)$')
+at_space_pat = re.compile(r'^@ (.*?)$')
+at_p_pat = re.compile(r'^@p (.*?)$')
+at_sec_pat = re.compile(r'^@&lt;(.*?)@&gt;=(.*?)$')
+@others  # Define handlers and helpers.
+table = (
+    (at_star_pat, do_at_star),
+    (at_space_pat, do_at_space),
+    (at_p_pat, do_p),
+    (at_sec_pat, do_sec),
+)
+count = 0
+parents = [('prefix', prefix)]  # Tuples: (kind, p)
+for i, s in enumerate(g.splitLines(contents)):
+    for pattern, helper in table:
+        m = pattern.match(s)
+        if m:
+            helper(i, m, s)  # m not used at present.
+            count += 1
+    else:
+        parent = parents[-1][1]
+        parent.b += s
+# Finish
+root.expand()
+c.redraw(root)
+print(f"done: {count} pattern{g.plural(count)}")</t>
+<t tx="ekr.20211014112513.1">def do_at_star(i, m, s):
+    global parents
+    print(s.rstrip())  # A good progress indicator.
+    parent = root.insertAsLastChild()
+    parent.h = s.strip()
+    parents = [('@*', parent)]  # Always prune the stack.
+
+def do_at_space(i, m, s):
+    new_node('@ ', s)
+    
+def do_p(i, m, s):
+    new_node('@p', s)
+
+def do_sec(i, m, s):
+    new_node('@&lt;', s)
+</t>
+<t tx="ekr.20211014120710.1">def new_node(kind, h):
+    """Create a new node as the last child of an '@*' node."""
+    global parents
+    kind = parents[-1][0]
+    if kind == '@*':
+        parent = parents[-1][1]
+    else:
+        # Prune the stack back to the '@*' entry.
+        parent_tuple = parents[0]
+        assert parent_tuple[0] == '@*', parents
+        parents = [parent_tuple]
+        parent = parent_tuple[1]
+    child = parent.insertAsLastChild()
+    child.h = h.strip()
+    parents.append(('@ ', child))
+</t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
+
 </t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
@@ -2066,7 +2424,7 @@ Leo's code uses the following conventions throughout:
 
 c:  a commander.
 ch: a character.
-d:  a dialog or a dict.
+d:  a dict.
 f:  an open file.
 fn: a file name.
 g:  the leoGlobals module.
@@ -2405,7 +2763,7 @@ The full license can be found in 'license.txt'.
 <t tx="ekr.20190418161712.1">class PyzoInterface:
     """
     A class representing the singleton running instance of pyzo.
-    
+
     Instantiated in the top-level init() function.
     """
 
@@ -2440,14 +2798,14 @@ import pyzo
 
 def init(): # pyzo_file_browser.py
     """Return True if this plugin can be loaded."""
-    
+
     def oops(message):
         global init_warning_given
         if not init_warning_given:
             init_warning_given = True
             print('%s %s' % (__name__, message))
         return False
-        
+
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
      if not getattr(g.app, 'dock'):
@@ -2838,9 +3196,11 @@ from .eveventhandler import Event
 
 </t>
 <t tx="ekr.20180225010850.1"></t>
-<t tx="ekr.20181013081645.1">@path test</t>
+<t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20201202144529.1"></t>
+<t tx="ekr.20210912064148.1"></t>
+<t tx="ekr.20210912064205.1"></t>
 <t tx="ekr.20090802181029.5988"></t>
 </tnodes>
 </leo_file>

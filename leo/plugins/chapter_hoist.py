@@ -22,7 +22,7 @@ from leo.plugins.mod_scripting import scriptingController
 #@+others
 #@+node:ekr.20060328125925.4: ** init
 def init ():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     # Note: call onCreate _after_ reading the .leo file.
     # That is, the 'after-create-leo-frame' hook is too early!
     g.registerHandler(('new','open2'),onCreate)
@@ -76,13 +76,13 @@ class chapterHoist:
     #@+node:ekr.20060328125925.10: *3* createChapterHoistButton
     def createChapterHoistButton (self,sc,c,p):
 
-        '''Generates a hoist button for the headline at the given position'''
+        """Generates a hoist button for the headline at the given position"""
         h = p.h
         buttonText = sc.getButtonText(h)
         statusLine = "Hoist %s" % h
 
         def hoistButtonCallback (event=None,self=self,c=c,p=p.copy()):
-            while (c.canDehoist()):
+            while c.canDehoist():
                 c.dehoist()
             c.selectPosition(p)
             c.hoist()

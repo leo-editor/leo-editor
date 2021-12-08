@@ -6,16 +6,14 @@ import getpass
 import os
 import subprocess
 import tempfile
-import unittest
 from leo.core import leoGlobals as g
-from leo.core import leoTest2
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:
-    '''A class holding all data about an external file.'''
+    """A class holding all data about an external file."""
 
     def __init__(self, c, ext, p, path, time):
-        '''Ctor for ExternalFile class.'''
+        """Ctor for ExternalFile class."""
         self.c = c
         self.ext = ext
         self.p = p and p.copy()
@@ -34,7 +32,7 @@ class ExternalFile:
         return g.shortFilename(self.path)
     #@+node:ekr.20161011174800.1: *3* ef.exists
     def exists(self):
-        '''Return True if the external file still exists.'''
+        """Return True if the external file still exists."""
         return g.os_path_exists(self.path)
     #@-others
 #@+node:ekr.20150405073203.1: ** class ExternalFilesController
@@ -283,7 +281,8 @@ class ExternalFilesController:
         """Return the file extension to be used in the temp file."""
         if ext:
             for ch in ("'", '"'):
-                if ext.startswith(ch): ext = ext.strip(ch)
+                if ext.startswith(ch):
+                    ext = ext.strip(ch)
         if not ext:
             # if node is part of @<file> tree, get ext from file name
             for p2 in p.self_and_parents(copy=False):
@@ -323,8 +322,10 @@ class ExternalFilesController:
                 # Found the nearest ancestor @<file> node.
                 found = True
                 base, ext2 = g.os_path_splitext(h)
-                if p2 == p: h = base
-                if ext2: ext = ext2
+                if p2 == p:
+                    h = base
+                if ext2:
+                    ext = ext2
             ancestors.append(g.sanitize_filename(h))
         # The base directory is <tempdir>/Leo<id(v)>.
         ancestors.append("Leo" + str(id(p.v)))
@@ -422,7 +423,8 @@ class ExternalFilesController:
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = f"os.spawnl({arg},{filename},{fn})"
-                if not testing: os.spawnl(os.P_NOWAIT, arg, filename, fn)
+                if not testing:
+                    os.spawnl(os.P_NOWAIT, arg, filename, fn)
             elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0])
                 vtuple = arg_tuple[1:]
@@ -447,10 +449,12 @@ class ExternalFilesController:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
                 command = f"{kind}({fn})"
-                if not testing: kind(fn)
+                if not testing:
+                    kind(fn)
             else:
                 command = 'bad command:' + str(kind)
-                if not testing: g.trace(command)
+                if not testing:
+                    g.trace(command)
             return command  # for unit testing.
         except Exception:
             g.es('exception executing open-with command:', command)
@@ -484,7 +488,8 @@ class ExternalFilesController:
     def ask(self, c, path, p=None):
         """
         Ask user whether to overwrite an @<file> tree.
-        Return True if the user agrees.
+
+        Return one of ('yes', 'no', 'yes-all', 'no-all')
         """
         if g.unitTesting:
             return False
@@ -613,7 +618,7 @@ class ExternalFilesController:
     def warn(self, c, path, p):
         """
         Warn that an @asis or @nosent node has been changed externally.
-        
+
         There is *no way* to update the tree automatically.
         """
         if g.unitTesting or c not in g.app.commanders():
@@ -632,36 +637,7 @@ class ExternalFilesController:
             title='External file changed',
         )
     #@-others
-#@+node:ekr.20210427165225.1: ** class TestExternalFiles (unittest.TestCase)
-class TestExternalFiles(unittest.TestCase):
-    #@+others
-    #@+node:ekr.20210428090950.1: *3* TEF.setUp & tearDown
-    def setUp(self):
-        """setUp for TestFind class"""
-        # pylint: disable=import-self
-        import leo.core.leoApp as leoApp
-        import leo.core.leoExternalFiles as leoExternalFiles
-        self.c = c = leoTest2.create_app()
-        g.app.idleTimeManager = leoApp.IdleTimeManager()
-        g.app.idleTimeManager.start()
-        g.app.externalFilesController = leoExternalFiles.ExternalFilesController(c=c)
-
-    def tearDown(self):
-        pass
-    #@+node:ekr.20210428094339.1: *3* TEF.test_on_idle
-    def test_on_idle(self):
-        """
-        A minimal test of the on_idle and all its helpers.
-        
-        More detail tests would be difficult.
-        """
-        efc = g.app.externalFilesController
-        for i in range(100):
-            efc.on_idle()
-    #@-others
 #@-others
-if __name__ == '__main__':
-    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

@@ -2,7 +2,7 @@
 #@+node:ville.20110409151021.5699: * @file ../plugins/jinjarender.py
 #@+<< docstring >>
 #@+node:ville.20110409151021.5700: ** << docstring >>
-''' Render @jinja nodes.
+""" Render @jinja nodes.
 
 - sudo apt-get install python-jinja2
 
@@ -17,7 +17,7 @@ template is expanded and content is written to the file.
 
 Requires "valuespace" plugin. Fetches vars from valuespace.
 
-'''
+"""
 #@-<< docstring >>
 
 # By Ville M. Vainio.
@@ -36,8 +36,8 @@ from leo.core import leoPlugins
 
 #@+others
 #@+node:ville.20110409151021.5703: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     ok = bool(Template)
     if ok:
         g.plugin_signon(__name__)
@@ -45,9 +45,9 @@ def init ():
     return ok
 #@+node:ville.20110409151021.5705: ** install & act-on-node
 #@+node:ekr.20120525090541.10863: *3* untangle
-def untangle(c,p):
+def untangle(c, p):
 
-    return g.getScript(c,p,
+    return g.getScript(c, p,
         useSelectedText=False,
         useSentinels=False)
 
@@ -55,10 +55,10 @@ def untangle(c,p):
 def jinja_render(template, fname, d):
     tmpl = Template(template)
     out = tmpl.render(d)
-    open(fname,"w").write(out)
+    open(fname, "w").write(out)
 
 #@+node:ekr.20120525090541.10865: *3* jinja_act_on_node
-def jinja_act_on_node(c,p, event):
+def jinja_act_on_node(c, p, event):
     h = p.h
 
     #print "try act"
@@ -69,8 +69,8 @@ def jinja_act_on_node(c,p, event):
     tail = h[7:].strip()
     pth = c.getNodePath(p)
     fullpath = g.os_path_finalize_join(pth, tail)
-    g.es("Rendering "+ fullpath)
-    body = untangle(c,p)
+    g.es("Rendering " + fullpath)
+    body = untangle(c, p)
     jinja_render(body, fullpath, c.vs)
 
 #@+node:ekr.20120525090541.10866: *3* jinja_install
@@ -84,7 +84,7 @@ class JinjaCl:
     def __init__(self, c):
         self.c = c
     #@+node:ekr.20120525090541.10869: *4* __call__
-    def __call__(self,body):
+    def __call__(self, body):
         """ Render body through jinja
 
         To be used from @cl nodes

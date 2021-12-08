@@ -125,11 +125,11 @@ class TestCmdr:
     #@+node:bob.20180116154657.1: *3* __init__()
     def __init__(self, cmdrT, fdR):
         """ Initialize Test Globals
-        
+
         Arguments:
             cmdrT:  Commander for Leo-Editor file containing the tests
             fdR:    File descriptor for results files
-        
+
         Returns:
             None
         """
@@ -166,7 +166,7 @@ class TestCmdr:
         fdR.write('||* Tests *|| {0}\n'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%s')))
     #@-others
 #@+node:bob.20180125160225.14: ** runTests()
-def  runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
+def runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
     """ Run the tests polling at idle time
 
     Arguments:
@@ -205,7 +205,7 @@ def  runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
         testCmdr.babelExecCnt = 0
     else:
         if testCmdr.babelExecCnt >= babelCmdr.babelExecCnt:
-            return # Waiting for test to complete
+            return  # Waiting for test to complete
         #
         # Most Recent Test has finished.
         testCmdr.babelExecCnt = babelCmdr.babelExecCnt

@@ -135,9 +135,9 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:bob.20080107154936: ** module level functions
 #@+node:bob.20080107154936.1: *3* init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler("create-optional-menus",createExportMenus)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    g.registerHandler("create-optional-menus", createExportMenus)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     # I think this should be ok for unit testing.
@@ -155,7 +155,7 @@ def abspath(*args):
 
     return g.os_path_finalize_join(*args)
 #@+node:bob.20080107154936.3: *3* onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     """
     Handle 'after-create-leo-frame' hooks by creating a plugin
@@ -165,7 +165,7 @@ def onCreate (tag, keys):
     if c:
         pluginController(c)
 #@+node:bob.20080107154936.4: *3* createExportMenus
-def createExportMenus (tag,keywords):
+def createExportMenus(tag, keywords):
 
     """Create menu items in File -> Export menu.
 
@@ -189,8 +189,8 @@ def createExportMenus (tag,keywords):
         ('Save Outline as HTML', 'export-html'),
     ):
         c.frame.menu.insert('Export...', 3,
-            label = item,
-            command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
+            label=item,
+            command=lambda c=c, cmd=cmd: c.k.simulateCommand(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
 class pluginController:
@@ -200,7 +200,7 @@ class pluginController:
 
     #@+others
     #@+node:bob.20080107154757.1: *3* __init__(pluginController, leo_to_html.py)
-    def __init__ (self,c):
+    def __init__(self, c):
         """
         Initialze pluginController by registering minibuffer commands.
         """
@@ -227,7 +227,7 @@ class pluginController:
             'show-html-node-number',
             'show-html-node-head'
         ):
-            method = getattr(self, command.replace('-','_'))
+            method = getattr(self, command.replace('-', '_'))
             c.k.registerCommand(command, method)
     #@+node:bob.20080107154757.3: *3* export_html
     # EXPORT ALL
@@ -252,7 +252,7 @@ class pluginController:
     # EXPORT NODE
 
 
-    def export_html_node(self,event=None, bullet=None,):
+    def export_html_node(self, event=None, bullet=None,):
         """Command handler for leo_to_html. See modules docstring for details."""
         self.export_html(bullet=bullet, node=True)
 
@@ -378,7 +378,7 @@ class Leo_to_HTML:
         self.doBodyElement(p, level)
         if p.hasChildren() and self.showSubtree(p):
             for item in p.children():
-                self.doItemHeadlineTags(item, level+1)
+                self.doItemHeadlineTags(item, level + 1)
     #@+node:bob.20080107165629: *4* doItemBulletList
     def doItemBulletList(self, p):
         """" Recursivley proccess an outline node into an xhtml list."""
@@ -409,12 +409,13 @@ class Leo_to_HTML:
             return
 
         h = '%s' % min(level, 6)
-        self.xhtml.append( self.openHeadlineString % h + headline + self.closeHeadlineString % h)
+        self.xhtml.append(self.openHeadlineString % h + headline + self.closeHeadlineString % h)
     #@+node:bob.20080107154746.6: *4* doBodyElement
     def doBodyElement(self, pp, level=None):
         """Append wrapped body string to output stream."""
 
-        if not self.include_body: return
+        if not self.include_body:
+            return
 
         self.xhtml.append(
             self.openBodyString +
@@ -433,7 +434,7 @@ class Leo_to_HTML:
         """
 
         s = p.h
-        if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
+        if not self.flagIgnoreFiles or s[: len('@file')] != '@file':
             return True
         return False
     #@+node:bob.20080107154746.9: *3* main
@@ -481,7 +482,7 @@ class Leo_to_HTML:
         self.announce(msg, prefix, color)
 
     def announce_fail(self, msg='failed', prefix=None, color=None):
-        self.announce(msg, prefix, color= color or self.errorColor, silent=False)
+        self.announce(msg, prefix, color=color or self.errorColor, silent=False)
     #@+node:bob.20080107154746.11: *3* loadConfig
     def loadConfig(self):
 
@@ -489,12 +490,13 @@ class Leo_to_HTML:
 
         def config(s):
 
-            ss = self.c.config.getString("leo_to_html_%s"%s)
+            ss = self.c.config.getString("leo_to_html_%s" % s)
             if ss is None:
                 s = configParser.get("Main", s)
             else:
                 s = ss
-            if not s: s = ''
+            if not s:
+                s = ''
             return s.strip()
 
         def flag(s):
@@ -503,24 +505,24 @@ class Leo_to_HTML:
                 return ss.lower()[0] in ('y', 't', '1')
             return None
 
-        fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
+        fileName = abspath(g.app.loadDir, "..", "plugins", "leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
         configParser.read(fileName)
 
-        self.flagIgnoreFiles =  flag("flagIgnoreFiles")
+        self.flagIgnoreFiles = flag("flagIgnoreFiles")
         self.include_body = not flag("flagJustHeadlines")
 
-        self.basedir = config("exportPath") # "/"
+        self.basedir = config("exportPath")  # "/"
 
         self.browser_command = config("browser_command").strip()
 
-        self.use_xhtml =  flag("use_xhtml")
+        self.use_xhtml = flag("use_xhtml")
         if self.use_xhtml:
             self.template = self.getXHTMLTemplate()
         else:
             self.template = self.getPlainTemplate()
 
-        self.bullet_type = config( "bullet_type").lower()
+        self.bullet_type = config("bullet_type").lower()
         if self.bullet_type not in ('bullet', 'number', 'head'):
             self.bulletType = 'number'
 
@@ -564,14 +566,14 @@ class Leo_to_HTML:
             self.closeBlockquoteString = '</div>'
 
 
-        myFileName = self.c.frame.shortFileName()    # Get current outline filename
+        myFileName = self.c.frame.shortFileName()  # Get current outline filename
         if not myFileName:
             myFileName = 'untitiled'
 
         self.title = myFileName
 
         if myFileName[-4:].lower() == '.leo':
-            myFileName = myFileName[:-4]    # Remove .leo suffix
+            myFileName = myFileName[:-4]  # Remove .leo suffix
 
         self.myFileName = myFileName + '.html'
     #@+node:bob.20080107154746.10: *3* applyTemplate
@@ -592,7 +594,7 @@ class Leo_to_HTML:
         if template is None:
             template = self.template
 
-        self.xhtml = template%(
+        self.xhtml = template % (
             self.title,
             xhtml
         )
@@ -607,7 +609,7 @@ class Leo_to_HTML:
         Setting browser_command to a bad command will slow down browser launch.
 
         """
-        tempdir = g.os_path_finalize_join(tempfile.gettempdir(),'leo_show')
+        tempdir = g.os_path_finalize_join(tempfile.gettempdir(), 'leo_show')
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
         filename = g.sanitize_filename(self.myFileName)
@@ -621,7 +623,7 @@ class Leo_to_HTML:
                 subprocess.Popen([self.browser_command, url])
                 return
             except Exception:
-                msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
+                msg = 'can\'t open browser using \n    %s\n' % self.browser_command + \
                 'Using default browser instead.'
         if msg:
             self.announce_fail(msg)
@@ -647,12 +649,12 @@ class Leo_to_HTML:
             basedir = self.basedir
         if path is None:
             path = self.path
-        filepath = abspath(basedir,path,name)
+        filepath = abspath(basedir, path, name)
         try:
             f = open(filepath, 'wb')
         except Exception:
             g.error('can not open: %s' % (filepath))
-            g.es_exception(full=False,c=self.c)
+            g.es_exception(full=False, c=self.c)
             return False
         try:
             try:
@@ -662,7 +664,7 @@ class Leo_to_HTML:
                 ok = True
             except Exception:
                 g.error('write failed: %s' % (filepath))
-                g.es_exception(full=False,c=self.c)
+                g.es_exception(full=False, c=self.c)
                 ok = False
         finally:
             f.close()

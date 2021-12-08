@@ -3,7 +3,7 @@
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
 #@@language rest
-r''' Allows Leo to write a file to multiple locations.
+r""" Allows Leo to write a file to multiple locations.
 
 This plugin acts as a post-write mechanism, a file must be written to the
 file system for it to work. At this point it is not a replacement for @path or an
@@ -43,7 +43,7 @@ The @multiprefix stays in effect for the entire tree until reset with another
 @multiprefix directive. @multipath is cumulative, in that for each @multipath in
 an ancestor a copy of the file is created. These directives must at the
 beginning of the line and by themselves.
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
@@ -60,8 +60,8 @@ files = {}
 original_precheck = None
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     global original_precheck
     #
     # Append to the module list, not to the g.copy.
@@ -74,27 +74,27 @@ def init ():
     g.funcToMethod(decorated_precheck, at, name='precheck')
     #
     # g.registerHandler('save1',start)
-    g.registerHandler('save2',stop)
-    g.registerHandler(('new','menu2'),addMenu)
+    g.registerHandler('save2', stop)
+    g.registerHandler(('new', 'menu2'), addMenu)
     g.plugin_signon(__name__)
-    return True # gui-independent.
+    return True  # gui-independent.
 #@+node:mork.20041019091317: *3* addMenu
 haveseen = weakref.WeakKeyDictionary()
 
-def addMenu (tag,keywords):
+def addMenu(tag, keywords):
 
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get('c')
     if not c or c in haveseen:
         return
-    haveseen [c] = None
+    haveseen[c] = None
     m = c.frame.menu.getMenu('Edit')
     c.add_command(m,
-        label = "Insert Directory String",
-        command = lambda c = c: insertDirectoryString(c))
+        label="Insert Directory String",
+        command=lambda c=c: insertDirectoryString(c))
 #@+node:mork.20041019091524: *3* insertDirectoryString
-def insertDirectoryString (c):
+def insertDirectoryString(c):
 
     d = g.app.gui.runOpenDirectoryDialog(
         title='Select a directory',
@@ -106,8 +106,8 @@ def insertDirectoryString (c):
         #w.event_generate('<Key>')
         #w.update_idletasks()
 #@+node:mork.20041018204908.3: ** decorated_precheck
-def decorated_precheck (self, fileName, root):
-    '''Call at.precheck, then add fileName to the global files list.'''
+def decorated_precheck(self, fileName, root):
+    """Call at.precheck, then add fileName to the global files list."""
     #
     # Call the original method.
     global files
@@ -116,10 +116,10 @@ def decorated_precheck (self, fileName, root):
     #
     # Save a pointer to the root for later.
     if val and root.isDirty():
-        files [fileName] = root.copy()
+        files[fileName] = root.copy()
     return val
 #@+node:mork.20041018204908.6: ** stop
-def stop (tag,keywords):
+def stop(tag, keywords):
 
     c = keywords.get('c')
     if not c:
@@ -131,24 +131,24 @@ def stop (tag,keywords):
         for path in paths:
             try:
                 if os.path.isdir(path):
-                    shutil.copy2(fileName,path)
-                    g.blue("multifile:\nWrote %s to %s" % (fileName,path))
+                    shutil.copy2(fileName, path)
+                    g.blue("multifile:\nWrote %s to %s" % (fileName, path))
                 else:
-                    g.error("multifile:\n%s is not a directory, not writing %s" % (path,fileName))
+                    g.error("multifile:\n%s is not a directory, not writing %s" % (path, fileName))
             except Exception:
-                g.error("multifile:\nCant write %s to %s" % (fileName,path))
+                g.error("multifile:\nCant write %s to %s" % (fileName, path))
                 g.es_exception_type()
     files.clear()
 #@+node:mork.20041018204908.5: ** scanForMultiPath
-def scanForMultiPath (c):
+def scanForMultiPath(c):
 
-    '''Return a dictionary whose keys are fileNames and whose values are
+    """Return a dictionary whose keys are fileNames and whose values are
     lists of paths to which the fileName is to be written.
-    New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements.'''
+    New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements."""
 
     global multiprefix, multipath
     d, sep = {}, ';'
-    for fileName in files: # Keys are fileNames, values are root positions.
+    for fileName in files:  # Keys are fileNames, values are root positions.
         root = files[fileName]
         default_directory = g.os_path_dirname(fileName)
         fileName = g.os_path_join(default_directory, fileName)
@@ -160,18 +160,18 @@ def scanForMultiPath (c):
             # Calculate the prefix fisrt.
             for s in lines:
                 if s.startswith(multiprefix):
-                    prefix = s[len(multiprefix):].strip()
+                    prefix = s[len(multiprefix) :].strip()
             # Handle the paths after the prefix is in place.
             for s in lines:
                 if s.startswith(multipath):
-                    s = s[len(multipath):].strip()
+                    s = s[len(multipath) :].strip()
                     paths = s.split(sep)
                     paths = [z.strip() for z in paths]
                     if prefix:
-                        paths = [g.os_path_join(default_directory,prefix,z) for z in paths]
+                        paths = [g.os_path_join(default_directory, prefix, z) for z in paths]
                     else:
-                        paths = [g.os_path_join(default_directory,z) for z in paths]
-                    aList = d.get(fileName,[])
+                        paths = [g.os_path_join(default_directory, z) for z in paths]
+                    aList = d.get(fileName, [])
                     aList.extend(paths)
                     d[fileName] = aList
     return d

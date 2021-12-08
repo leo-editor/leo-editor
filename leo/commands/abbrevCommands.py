@@ -8,6 +8,7 @@
 import functools
 import re
 import string
+from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -115,14 +116,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         at = c.atFileCommands
         if c.abbrev_place_start and self.enabled:
             aList = self.subst_env
-            script = []
+            script_list = []
             for z in aList:
                 # Compatibility with original design.
                 if z.startswith('\\:'):
-                    script.append(z[2:])
+                    script_list.append(z[2:])
                 else:
-                    script.append(z)
-            script = ''.join(script)
+                    script_list.append(z)
+            script = ''.join(script_list)
             # Allow Leo directives in @data abbreviations-subst-env trees.
             # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
             root = c.rootPosition()
@@ -140,7 +141,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 sentinels=False)
             script = script.replace("\r\n", "\n")
             try:
-                exec(script, c.abbrev_subst_env, c.abbrev_subst_env)
+                exec(script, c.abbrev_subst_env, c.abbrev_subst_env)  # type:ignore
             except Exception:
                 g.es('Error exec\'ing @data abbreviations-subst-env')
                 g.es_exception()
@@ -187,7 +188,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         data = c.config.getOutlineData('tree-abbreviations')
         if data is None:
             return
-        d = {}
+        d: Dict[str, str] = {}
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
@@ -240,11 +241,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
         if not w:
-            if trace and verbose: g.trace('no w')
+            if trace and verbose:
+                g.trace('no w')
             return False
         ch = self.get_ch(event, stroke, w)
         if not ch:
-            if trace and verbose: g.trace('no ch')
+            if trace and verbose:
+                g.trace('no ch')
             return False
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
@@ -260,10 +263,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # Do not call c.endEditing here.
                 break
         else:
-            if trace and verbose: g.trace(f"No prefix in {s!r}")
+            if trace and verbose:
+                g.trace(f"No prefix in {s!r}")
             return False
         c.abbrev_subst_env['_abr'] = word
-        if trace: g.trace(f"Found {word!r} = {val!r}")
+        if trace:
+            g.trace(f"Found {word!r} = {val!r}")
         if tag == 'tree':
             self.root = p.copy()
             self.last_hit = p.copy()
@@ -332,7 +337,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         for p in old_p.self_and_subtree():
             # Search for the next place-holder.
             val, do_placeholder = self.make_script_substitutions(0, 0, p.b)
-            if not do_placeholder: p.b = val
+            if not do_placeholder:
+                p.b = val
         # Now search for all place-holders.
         for p in old_p.subtree():
             if self.find_place_holder(p, do_placeholder):
@@ -359,7 +365,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         """
-        c = self.c
+        c, u = self.c, self.c.undoer
         # Do #438: Search for placeholder in headline.
         s = p.h
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
@@ -377,15 +383,15 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if i is None:
                 return False
             w = c.frame.body.wrapper
+            bunch = u.beforeChangeBody(c.p)
             switch = p != c.p
             if switch:
                 c.selectPosition(p)
             else:
                 scroll = w.getYScrollPosition()
-            oldSel = w.getSelectionRange()
             w.setAllText(new_s)
-            c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
-            c.p.b = new_s
+            p.v.b = new_s
+            u.afterChangeBody(p, 'find-place-holder', bunch)
             if switch:
                 c.redraw()
             w.setSelectionRange(i, j, insert=j)
@@ -404,12 +410,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
         """Make scripting substitutions in node p."""
-        c = self.c
+        c, u, w = self.c, self.c.undoer, self.c.frame.body.wrapper
         if not c.abbrev_subst_start:
             return val, False
         # Nothing to undo.
         if c.abbrev_subst_start not in val:
             return val, False
+        # The *before* snapshot.
+        bunch = u.beforeChangeBody(c.p)
         # Perform all scripting substitutions.
         self.save_ins = None
         self.save_sel = None
@@ -429,10 +437,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             finally:
                 self.expanding = False
             x = c.abbrev_subst_env.get('x')
-            if x is None: x = ''
+            if x is None:
+                x = ''
             val = f"{prefix}{x}{rest}"
             # Save the selection range.
-            w = c.frame.body.wrapper
             self.save_ins = w.getInsertPoint()
             self.save_sel = w.getSelectionRange()
         if val == "__NEXT_PLACEHOLDER":
@@ -442,8 +450,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
-            oldSel = i, j
-            c.frame.body.onBodyChanged(undoType='make-script-substitution', oldSel=oldSel)
+            c.p.v.b = w.getAllText()
+            u.afterChangeBody(c.p, 'make-script-substitution', bunch)
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
@@ -534,8 +542,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w, i, j, s):
         """Replace w[i:j] by s."""
+        p, u = self.c.p, self.c.undoer
         w_name = g.app.gui.widget_name(w)
-        c = self.c
+        bunch = u.beforeChangeBody(p)
         if i == j:
             abbrev = ''
         else:
@@ -547,8 +556,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             pass  # Don't set p.h here!
         else:
             # Fix part of #438. Don't leave the headline.
-            oldSel = j, j
-            c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
+            p.v.b = w.getAllText()
+            u.afterChangeBody(p, 'Abbreviation', bunch)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence
@@ -561,8 +570,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def get_ch(self, event, stroke, w):
         """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
-        if self.expanding: return None
-        if w.hasSelection(): return None
+        if self.expanding:
+            return None
+        if w.hasSelection():
+            return None
         assert g.isStrokeOrNone(stroke), stroke
         if stroke in ('BackSpace', 'Delete'):
             return None
@@ -606,14 +617,17 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """
         c, p = self.c, self.c.p
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = ins1 = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
         i, j = g.getWord(s, ins1)
         word = w.get(i, j)
         aList = self.getDynamicList(w, word)
-        if not aList: return
+        if not aList:
+            return
         # Bug fix: remove s itself, otherwise we can not extend beyond it.
         if word in aList and len(aList) > 1:
             aList.remove(word)
@@ -641,7 +655,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
         s = w.getAllText()
         ins = ins1 = w.getInsertPoint()
-        if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+        if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+            ins1 -= 1
         i, j = g.getWord(s, ins1)
         w.setInsertPoint(j)
             # This allows the cursor to be placed anywhere in the word.
@@ -659,7 +674,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
         self.w = w
-        if prefix is None: prefix = ''
+        if prefix is None:
+            prefix = ''
         prefix2 = 'dabbrev-expand: '
         c.frame.log.deleteTab('Completion')
         g.es('', '\n'.join(aList or []), tabName='Completion')
@@ -681,7 +697,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ypos = w.getYScrollPosition()
             b = c.undoer.beforeChangeNodeContents(p)
             ins = ins1 = w.getInsertPoint()
-            if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
+            if 0 < ins < len(s) and not g.isWordChar(s[ins]):
+                ins1 -= 1
             i, j = g.getWord(s, ins1)
             # word = s[i: j]
             s = s[:i] + k.arg + s[j:]
@@ -715,7 +732,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Do *not* strip ws so the user can specify ws.
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
-            if val.endswith('\n'): val = val[:-1]
+            if val.endswith('\n'):
+                val = val[:-1]
             val = self.n_regex.sub('\n', val).replace('\\\\n', '\\n')
             old, tag = d.get(name, (None, None),)
             if old and old != val and not g.unitTesting:

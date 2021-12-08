@@ -28,7 +28,8 @@ def about(self, event=None):
 @g.commander_command('edit-setting')
 def editOneSetting(self, event=None):
     """Opens correct dialog for selected setting type"""
-    c = self; p = c.p; func = None
+    c, p = self, self.c.p
+    func = None
     if p.h.startswith('@font'):
         func = c.commandsDict.get('show-fonts')
     elif p.h.startswith('@color '):
@@ -64,19 +65,22 @@ def leoDocumentation(self, event=None):
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20090628075121.5994: *3* c_help.leoQuickStart
 @g.commander_command('open-quickstart-leo')
 @g.commander_command('leo-quickstart-leo')
 def leoQuickStart(self, event=None):
     """Open quickstart.leo in a new Leo window."""
-    c = self; name = "quickstart.leo"
+    c = self
+    name = "quickstart.leo"
     fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20131028155339.17096: *3* c_help.openCheatSheet
 @g.commander_command('open-cheat-sheet-leo')
@@ -86,7 +90,6 @@ def openCheatSheet(self, event=None, redraw=True):
     """Open leo/doc/cheatSheet.leo"""
     c = self
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-    # g.es_debug(g.os_path_exists(fn),fn)
     if g.os_path_exists(fn):
         c2 = g.openWithFileName(fn, old_c=c)
         if redraw:
@@ -109,7 +112,8 @@ def openDesktopIntegration(self, event=None):
     # only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es('not found:', fileName)
 #@+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
@@ -121,7 +125,8 @@ def openLeoDist(self, event=None):
     fileName = g.os_path_finalize_join(g.app.loadDir, "..", "dist", name)
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es("not found:", name)
 #@+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
@@ -135,7 +140,8 @@ def openLeoPy(self, event=None):
         # Only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
-            if c2: return
+            if c2:
+                return
     g.es('not found:', ', '.join(names))
 #@+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
@@ -160,7 +166,8 @@ def openLeoScripts(self, event=None):
     # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
     if g.os_path_exists(fileName):
         c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
+        if c2:
+            return
     g.es('not found:', fileName)
 #@+node:ekr.20031218072017.2943: *3* c_help.openLeoSettings & openMyLeoSettings & helper
 @g.commander_command('open-leo-settings')
@@ -209,6 +216,8 @@ def createMyLeoSettings(c):
     fileName = g.os_path_join(configDir, "leoSettings.leo")
     leosettings = g.openWithFileName(fileName, old_c=c)
     enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
+    if not enabledplugins:
+        return None
     enabledplugins = enabledplugins.b
     leosettings.close()
     # now create "~/.leo/myLeoSettings.leo"
@@ -241,17 +250,6 @@ def createMyLeoSettings(c):
     )
     c2.redraw()
     return c2
-#@+node:ekr.20151225095102.1: *3* c_help.openUnittest
-@g.commander_command('open-unittest-leo')
-@g.commander_command('leo-unittest-leo')
-def openUnittest(self, event=None):
-    """Open unittest.leo."""
-    c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-    if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
-    g.es('not found:', fileName)
 #@+node:ekr.20171124093507.1: ** c_help.Open Leo web pages
 #@+node:ekr.20031218072017.2941: *3* c_help.leoHome
 @g.commander_command('open-online-home')

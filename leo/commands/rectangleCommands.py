@@ -70,7 +70,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         # Return if any part of the selection contains something other than whitespace.
         for r in range(r1, r3 + 1):
             s = w.get(f"{r}.{r2}", f"{r}.{r4}")
-            if s.strip(): return
+            if s.strip():
+                return
         # Change the text.
         for r in range(r1, r3 + 1):
             w.delete(f"{r}.{r2}", f"{r}.{r4}")
@@ -143,17 +144,17 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         with a string on each line.
         """
         k = self.c.k
-        if g.app.unitTesting:
+        if g.unitTesting:
             k.arg = 's...s'  # This string is known to the unit test.
             self.w = self.editWidget(event)
             self.stringRect = self.getRectanglePoints(self.w)
             self.stringRectangle1(event)
-        else:
-            self.w = self.editWidget(event)
-            if self.w and self.check(event):
-                self.stringRect = self.getRectanglePoints(self.w)
-                k.setLabelBlue('String rectangle: ')
-                k.get1Arg(event, handler=self.stringRectangle1)
+            return
+        self.w = self.editWidget(event)
+        if self.w and self.check(event):
+            self.stringRect = self.getRectanglePoints(self.w)
+            k.setLabelBlue('String rectangle: ')
+            k.get1Arg(event, handler=self.stringRectangle1)
 
     def stringRectangle1(self, event):
         c, k = self.c, self.c.k
@@ -187,7 +188,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         killRect = killRect or self.theKillRectangle
-        if g.app.unitTesting:
+        if g.unitTesting:
             # This value is used by the unit test.
             killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']
         elif not killRect:
@@ -197,7 +198,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         n = 0
         for r in range(r1, r3 + 1):
-            if n >= len(killRect): break
+            if n >= len(killRect):
+                break
             w.delete(f"{r}.{r2}", f"{r}.{r4}")
             w.insert(f"{r}.{r2}", killRect[n])
             n += 1

@@ -4,7 +4,7 @@
 #@+node:ekr.20050912175750: ** << docstring >>
 #@@nocolor-node
 #@@wrap
-r''' Creates a BibTex file from an  '@bibtex <filename>' tree.
+r""" Creates a BibTex file from an  '@bibtex <filename>' tree.
 
 Nodes of the form '@<x> key' create entries in the file.
 
@@ -60,7 +60,7 @@ in the headline. Double-clicking it will read the file and parse it into a
 @bibtex tree. No syntax checks are made: the file is expected to be a valid
 BibTeX file.
 
-'''
+"""
 #@-<< docstring >>
 from leo.core import leoGlobals as g
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
@@ -69,6 +69,7 @@ from leo.core import leoGlobals as g
 #@+node:timo.20050215183130: ** <<define templates dict>>
 #@@nobeautify
 
+# pylint: disable=line-too-long
 templates = {
     '@article':         'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
     '@book':            'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
@@ -107,8 +108,8 @@ entrytypes.append('@string')
 #@+others
 #@+node:ekr.20100128073941.5370: ** init (bibtex.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting
     if ok:
         # Register the handlers...
         g.registerHandler("headdclick1", onIconDoubleClick)
@@ -129,10 +130,11 @@ def onHeadKey(tag, keywords):
     # c = keywords.get("c")
     # To do: check for duplicate keys here.
     p = keywords.get("p")
-    if not p: return
+    if not p:
+        return
     h = p.h.strip()
     i = h.find(' ')
-    kind = h[: i]
+    kind = h[:i]
     if kind in templates.keys() and not p.b.strip():
         # Fix bug 142: plugin overwrites body text.
         # Iterate on p2, not p!
@@ -169,7 +171,7 @@ def onIconDoubleClick(tag, keywords):
             readBibTexFileIntoTree(c, fn, p)
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(c, fn, p):
-    '''Import a BibTeX file into a @bibtex tree.'''
+    """Import a BibTeX file into a @bibtex tree."""
     root = p.copy()
     g.es('reading:', fn)
     s = g.readFileIntoEncodedString(fn)
@@ -182,14 +184,14 @@ def readBibTexFileIntoTree(c, fn, p):
         # aList is a list of tuples (h,b).
     s = '\n' + ''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
-        kind, rest = line[: 6], line[7:].strip()
+        kind, rest = line[:6], line[7:].strip()
         if kind == 'string':
-            strings.append(rest[: -1] + '\n')
+            strings.append(rest[:-1] + '\n')
         else:
             i = min(line.find(','), line.find('\n'))
-            h = '@' + line[: i]
+            h = '@' + line[:i]
             h = h.replace('{', ' ').replace('(', ' ').replace('\n', '')
-            b = line[i + 1:].rstrip().lstrip('\n')[: -1]
+            b = line[i + 1 :].rstrip().lstrip('\n')[:-1]
             entries.append((h, b),)
     if strings:
         h, b = '@string', ''.join(strings)
@@ -211,15 +213,15 @@ def writeTreeAsBibTex(c, fn, root):
                 for z in g.splitLines(p.b) if z.strip()])
         else:
             i = h.find(' ')
-            kind, rest = h[: i].lower(), h[i + 1:].rstrip()
+            kind, rest = h[:i].lower(), h[i + 1 :].rstrip()
             if kind in entrytypes:
                 entries.append('%s{%s,\n%s}\n\n' % (kind, rest, p.b.rstrip()))
     if strings or entries:
         g.es('writing:', fn)
-        encoding=g.getEncodingAt(root)
+        encoding = g.getEncodingAt(root)
         with open(fn, 'wb') as f:
             s = ''.join(strings + entries)
-            f.write(g.toEncodedString(s,encoding=encoding))
+            f.write(g.toEncodedString(s, encoding=encoding))
 #@-others
 #@@language python
 #@@tabwidth -4

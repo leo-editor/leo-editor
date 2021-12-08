@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150107090324.1: * @file ../plugins/cursesGui.py
-'''A minimal text-oriented gui.'''
+"""A minimal text-oriented gui."""
 #@+at
 # Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
 # are labeled: # undoc: where the AttributeError comes from other implementations
@@ -46,13 +46,13 @@ get_input = input
 #@+others
 #@+node:ekr.20150107090324.4: ** init
 def init():
-    ok = not g.app.gui and not g.app.unitTesting # Not Ok for unit testing!
+    ok = not g.app.gui and not g.unitTesting  # Not Ok for unit testing!
     if ok:
         g.app.gui = textGui()
         g.app.root = g.app.gui.createRootWindow()
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
+    elif g.app.gui and not g.unitTesting:
         s = "Can't install text gui: previous gui installed"
         g.es_print(s, color="red")
     return ok
@@ -60,7 +60,7 @@ def init():
 def underline(s, idx):
     if idx < 0 or idx > len(s) - 1:
         return s
-    return s[: idx] + '&' + s[idx:]
+    return s[:idx] + '&' + s[idx:]
 #@+node:ekr.20150107090324.6: ** class textGui
 class textGui(leoGui.LeoGui):
     #@+others
@@ -82,7 +82,7 @@ class textGui(leoGui.LeoGui):
         return ret
     #@+node:ekr.20150107090324.10: *3* createRootWindow
     def createRootWindow(self):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.11: *3* destroySelf
     def destroySelf(self):
         self.killed = True
@@ -97,7 +97,7 @@ class textGui(leoGui.LeoGui):
         pass
     #@+node:ekr.20150107090324.13: *3* isTextWidget
     def isTextWidget(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and isinstance(w, leoFrame.StringTextWrapper)
     #@+node:ekr.20150107090324.14: *3* oops
     def oops(self):
@@ -184,9 +184,11 @@ class TextFrame(leoFrame.LeoFrame):
         p._linkAsRoot()
         # c.setRootPosition(p) # New in 4.4.2.
     #@+node:ekr.20150107090324.24: *3* deiconify
-    def deiconify(self): pass # N/A
+    def deiconify(self):
+        pass  # N/A
 
-    def lift(self): pass # N/A
+    def lift(self):
+        pass  # N/A
     #@+node:ekr.20150107090324.25: *3* destroySelf
     def destroySelf(self):
         pass
@@ -201,25 +203,29 @@ class TextFrame(leoFrame.LeoFrame):
             c.chapterController = leoChapters.ChapterController(c)
         f.createFirstTreeNode()
         # (*after* setting self.log)
-        c.setLog() # writeWaitingLog hangs without this(!)
+        c.setLog()  # writeWaitingLog hangs without this(!)
         # So updateRecentFiles will update our menus.
         g.app.windowList.append(f)
     #@+node:ekr.20161118195504.1: *3* getFocus
     def getFocus(self):
         return None
     #@+node:ekr.20150107090324.27: *3* setInitialWindowGeometry
-    def setInitialWindowGeometry(self): pass # N/A
+    def setInitialWindowGeometry(self):
+        pass  # N/A
     #@+node:ekr.20150107090324.28: *3* setMinibufferBindings
     def setMinibufferBindings(self):
         pass
 
     def setTopGeometry(self, w, h, x, y):
-        pass # N/A
+        pass  # N/A
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
-        c = self.c; k = c.k; w = self.body.bodyCtrl
+        c = self.c
+        k = c.k
+        w = self.body.bodyCtrl
         key = get_input('Keystroke > ')
-        if not key: return
+        if not key:
+            return
 
         class leoTypingEvent:
 
@@ -237,11 +243,13 @@ class TextFrame(leoFrame.LeoFrame):
         stroke = c.k.shortcutFromSetting(char)
         g.trace('char', repr(char), 'stroke', repr(stroke))
         e = leoTypingEvent(c, w, char, stroke)
-        k.masterKeyHandler(event=e) ## ,stroke=key)
+        k.masterKeyHandler(event=e)  ## ,stroke=key)
     #@+node:ekr.20150107090324.30: *3* update
-    def update(self): pass
+    def update(self):
+        pass
 
-    def resizePanesToRatio(self, ratio, ratio2): pass # N/A
+    def resizePanesToRatio(self, ratio, ratio2):
+        pass  # N/A
     #@-others
 #@+node:ekr.20150107090324.31: ** class textBody
 class textBody(leoFrame.LeoBody):
@@ -260,11 +268,11 @@ class textBody(leoFrame.LeoBody):
     def bind(self, bindStroke, callback):
         pass
     #@+node:ekr.20150107090324.34: *3* setEditorColors
-    # TODO Tkinter onBodyChanged undo call and many others. =(
+    def setEditorColors(self, bg, fg):
+        pass  # N/A
 
-    def setEditorColors(self, bg, fg): pass # N/A
-
-    def createBindings(self, w=None): pass
+    def createBindings(self, w=None):
+        pass
     #@+node:ekr.20150107090324.35: *3* text_show
     def text_show(self):
         w = self.bodyCtrl
@@ -367,7 +375,8 @@ class textLeoMenu(leoMenu.LeoMenu):
             g.pr(len(last_menu.entries), ')', '[Prev]')
             which = get_input('Which menu entry? > ')
             which = which.strip()
-            if not which: continue
+            if not which:
+                continue
             try:
                 n = int(which)
             except ValueError:
@@ -396,9 +405,11 @@ class textLog(leoFrame.LeoLog):
     #@+node:ekr.20150107090324.58: *3* createControl
     # < < HACK Quiet, oops. >>
 
-    def createControl(self, parentFrame): pass
+    def createControl(self, parentFrame):
+        pass
 
-    def setFontFromConfig(self): pass # N/A
+    def setFontFromConfig(self):
+        pass  # N/A
     #@+node:ekr.20150107090324.68: *3* finishCreate
     def finishCreate(self):
         pass
@@ -409,14 +420,14 @@ class textLog(leoFrame.LeoLog):
     def putnl(self, tabName='log'):
         g.pr('')
     #@+node:ekr.20150107090324.59: *3* setColorFromConfig
-    def setColorFromConfig(self): pass
+    def setColorFromConfig(self):
+        pass
     #@+node:ekr.20150107090324.55: *3* setTabBindings
     def setTabBindings(self, tabName):
         pass
     #@-others
 #@+node:ekr.20150107090324.60: ** class textTree
 class textTree(leoFrame.LeoTree):
-    # undoc: k.makeAllBindings ; nullTree
     #@+others
     #@+node:ekr.20150107090324.61: *3* setBindings
     def setBindings(self):
@@ -424,7 +435,7 @@ class textTree(leoFrame.LeoTree):
     #@+node:ekr.20150107090324.62: *3* begin/endUpdate & redraw/now
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.text_draw_tree()
-        
+
     redraw_now = redraw
 
     # def redraw_now(self, p=None, scroll=True, forceDraw=False):
@@ -449,7 +460,7 @@ class textTree(leoFrame.LeoTree):
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
     def editLabel(self, v, selectAll=False, selection=None):
-        pass # N/A?
+        pass  # N/A?
 
     def edit_widget(self, p):
         return None

@@ -87,7 +87,7 @@ class LeoNode:
         """iterate this node and all its descendants in a flat list,
         useful for finding things and building an UNL based view"""
         if self.parent != self:
-            yield(self)
+            yield self
         for i in self.children:
             for j in i.flat():
                 yield j
@@ -122,7 +122,7 @@ class LeoReader(ContentHandler):
         super().__init__(*args, **kwargs)
         self.root = LeoNode()
 
-        self.root.h = g.u('ROOT')
+        self.root.h = 'ROOT'
         # changes type from [] to str, done by endElement() for other vnodes
 
         self.cur = self.root
@@ -162,7 +162,7 @@ class LeoReader(ContentHandler):
         # character collection, so it doesn't matter
 
         if name == 'v':
-            self.cur.h = g.u('').join(self.cur.h)
+            self.cur.h = ''.join(self.cur.h)
             self.cur = self.cur.parent
             if self.path:
                 del self.path[-1]

@@ -1,11 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ville.20120604212857.4215: * @file ../plugins/notebook.py
-''' QML Notebook
+""" QML Notebook
 
 Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
-'''
+"""
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtDeclarative, QtGui
 #
@@ -17,32 +17,32 @@ controllers = {}
 
 #@+others
 #@+node:ville.20120604212857.4219: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
 #@+node:ville.20120604212857.4231: ** onCreate
-def onCreate (tag, keys):
-    '''notebook.py onCreate'''
+def onCreate(tag, keys):
+    """notebook.py onCreate"""
     global controllers
     c = keys.get('c')
     if c:
         h = c.hash()
         nb = controllers.get(h)
         if not nb:
-            controllers [h] = NbController(c)
+            controllers[h] = NbController(c)
 #@+node:ville.20120604212857.4227: ** class ModelWrapper
 class ModelWrapper:
     #@+others
     #@+node:ville.20120604212857.4228: *3* __init__
     def __init__(self, fieldlist):
-        '''Ctor for ModelWrapper class.'''
+        """Ctor for ModelWrapper class."""
         self.rolenames = rn = {}
         self.roleids = ri = {}
-        for n,f in enumerate(fieldlist):
+        for n, f in enumerate(fieldlist):
             rid = n + 100
             rn[rid] = f
             ri[f] = rid
@@ -55,7 +55,7 @@ class ModelWrapper:
     def mkitem(self, d):
         """ dict with field->value """
         si = QtGui.QStandardItem()
-        for k,v in d.items():
+        for k, v in d.items():
             rid = self.roleids[k]
             si.setData(v, rid)
         return si
@@ -65,14 +65,14 @@ class NbController:
     #@+others
     #@+node:ville.20120604212857.4241: *3* __init__
     def __init__(self, c):
-        '''Ctor for NbController class.'''
+        """Ctor for NbController class."""
         self.c = c
         self.gnxcache = {}
         self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])
         #self.add_all_nodes()
         #self.add_subtree(p)
         try:
-            # pylint: disable=no-name-in-module
+            # pylint: disable=import-error, no-name-in-module
             from PyQt5.QtQuick import QQuickView
             self.view = view = QQuickView()
         except Exception:  #1746.
@@ -109,24 +109,25 @@ class NbController:
         for p in self.c.all_positions():
             self.addNode(p)
     #@+node:ville.20120604212857.4240: *3* add_subtree
-    def add_subtree(self,pos):
+    def add_subtree(self, pos):
         self.mw.model.clear()
         for p in pos.self_and_subtree():
             self.addNode(p)
 
     #@+node:ville.20120604212857.4238: *3* addNode
     def addNode(self, p, styling=None):
-        if styling is None: styling = {}
+        if styling is None:
+            styling = {}
         v = p.v
         d = {
-            "h" : v.h,
-            "b" : v.b,
-            "gnx" : v.gnx,
-            "level" : p.level(),
+            "h": v.h,
+            "b": v.b,
+            "gnx": v.gnx,
+            "level": p.level(),
         }
         d.update(styling)
         self.gnxcache[v.gnx] = v
-        si = self.mw.mkitem(d )
+        si = self.mw.mkitem(d)
         self.mw.model.appendRow(si)
     #@-others
 #@-others

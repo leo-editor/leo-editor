@@ -4,7 +4,7 @@
 #@+node:ekr.20120913110135.10589: ** << docstring >>
 #@@language rest
 
-r'''
+r"""
 
 Overview
 ========
@@ -212,14 +212,15 @@ You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20120913110135.10590: ** << imports >>
 import random
 from leo.core import leoGlobals as g
-from leo.core import leoGui # for LeoKeyEvents.
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core import leoGui  # for LeoKeyEvents.
+from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import ScrollBarPolicy
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -236,7 +237,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20120913110135.10608: ** top-level
 #@+node:ekr.20170128183737.1: *3* controller
 def controller(c):
-    '''Return the controller for c, creating it if necessary.'''
+    """Return the controller for c, creating it if necessary."""
     try:
         x = c.screenCastController
     except AttributeError:
@@ -244,7 +245,7 @@ def controller(c):
     return x
 #@+node:ekr.20120913110135.10603: *3* init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() in ('qt', 'qttabs')
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
@@ -252,14 +253,14 @@ def init():
     return ok
 #@+node:ekr.20120913110135.10604: *3* onCreate
 def onCreate(tag, keys):
-    '''Inject c.screenshot_controller into the commander.'''
+    """Inject c.screenshot_controller into the commander."""
     c = keys.get('c')
     if c:
         c.screencast_controller = ScreenCastController(c)
 #@+node:ekr.20120922041923.10609: *3* @g.command('screencast-start')
 @g.command('screencast-start')
 def screencast_start(event=None, command_list=None):
-    '''Start a screencast (screencast.py)'''
+    """Start a screencast (screencast.py)"""
     c = event.get('c')
     if c:
         m = c.screenCastController
@@ -279,33 +280,35 @@ class ScreenCastController:
         self.commands = []
         self.command_index = 0
         self.log_color = 'black'
-        self.log_focus = True # True: writing to log sets focus to log.
-        self.ignore_keys = False # True: ignore keys in state_handler.
-        self.quit_flag = False # True if m.quit has been called.
-        self.k_state = g.bunch(kind=None, n=None, handler=None) # Saved k.state.
-        self.key_w = None # Saved widget for passed-along key handling.
-        self.n1 = 0.02 # default minimal typing delay.
-        self.n2 = 0.175 # default maximum typing delay.
-        self.p1 = None # The first slide of the show.
-        self.p = None # The present slide of the show.
-        self.speed = 1.0 # Amount to multiply wait times.
-        self.state_name = 'screencast' # The state name to enable m.state_handler.
-        self.node_stack = [] # For m.prev and m.undo.
-        self.text_flag = False # True: m.next shows body text instead of executing it.
-        self.user_dict = {} # For use by scripts.
-        self.widgets = [] # List of (popup) widgets created by this class.
+        self.log_focus = True  # True: writing to log sets focus to log.
+        self.ignore_keys = False  # True: ignore keys in state_handler.
+        self.quit_flag = False  # True if m.quit has been called.
+        self.k_state = g.bunch(kind=None, n=None, handler=None)  # Saved k.state.
+        self.key_w = None  # Saved widget for passed-along key handling.
+        self.n1 = 0.02  # default minimal typing delay.
+        self.n2 = 0.175  # default maximum typing delay.
+        self.p1 = None  # The first slide of the show.
+        self.p = None  # The present slide of the show.
+        self.speed = 1.0  # Amount to multiply wait times.
+        self.state_name = 'screencast'  # The state name to enable m.state_handler.
+        self.node_stack = []  # For m.prev and m.undo.
+        self.text_flag = False  # True: m.next shows body text instead of executing it.
+        self.user_dict = {}  # For use by scripts.
+        self.widgets = []  # List of (popup) widgets created by this class.
         # inject c.screenCastController
         c.screenCastController = self
     #@+node:ekr.20120916193057.10605: *3* sc.Entry points
     #@+node:ekr.20120913110135.10580: *4* sc.body_keys (screencast.py)
     def body_keys(self, s, n1=None, n2=None):
-        '''Simulate typing in the body pane.
+        """Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
-        '''
+        """
         c, m, p, u = self.c, self, self.c.p, self.c.undoer
         w = c.frame.body.wrapper.widget
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
+        if n1 is None:
+            n1 = 0.02
+        if n2 is None:
+            n2 = 0.095
         m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
         bunch = u.beforeChangeBody(p)
@@ -317,8 +320,8 @@ class ScreenCastController:
             m.wait(n1, n2)
         c.redraw()
     #@+node:ekr.20120914133947.10578: *4* sc.caption and abbreviations: body, log, tree
-    def caption(self, s, pane): # To do: center option.
-        '''Pop up a QPlainTextEdit in the indicated pane.'''
+    def caption(self, s, pane):  # To do: center option.
+        """Pop up a QPlainTextEdit in the indicated pane."""
         m = self
         parent = m.pane_widget(pane)
         if not parent:
@@ -333,7 +336,6 @@ class ScreenCastController:
         w2 = m.pane_widget(pane)
         geom = w2.geometry()
         w.resize(geom.width(), min(150, geom.height() / 2))
-        ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
         w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
         w.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
         w.show()
@@ -349,13 +351,14 @@ class ScreenCastController:
         return self.caption(s, 'tree')
     #@+node:ekr.20120913110135.10612: *4* sc.clear_log
     def clear_log(self):
-        '''Clear the log.'''
+        """Clear the log."""
         m = self
         m.c.frame.log.clearTab('Log')
     #@+node:ekr.20120913110135.10581: *4* sc.command
     def command(self, command_name):
-        '''Execute the command whose name is given and update the screen immediately.'''
-        m = self; c = m.c
+        """Execute the command whose name is given and update the screen immediately."""
+        m = self
+        c = m.c
         c.k.simulateCommand(command_name)
             # Named commands handle their own undo!
             # The undo handling in m.next should suffice.
@@ -363,7 +366,8 @@ class ScreenCastController:
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
     def dismiss_menu_bar(self):
-        m = self; c = m.c
+        m = self
+        c = m.c
         # c.frame.menu.deactivateMenuBar()
         g.trace()
         menubar = c.frame.top.leo_menubar
@@ -371,8 +375,8 @@ class ScreenCastController:
         menubar.repaint()
     #@+node:ekr.20120915091327.13816: *4* sc.find_screencast & helpers
     def find_screencast(self, p):
-        '''Find the nearest screencast, prefering previous screencasts
-        because that makes it easier to create screencasts.'''
+        """Find the nearest screencast, prefering previous screencasts
+        because that makes it easier to create screencasts."""
         m = self
         return m.find_prev_screencast(p) or m.find_next_screencast(p)
     #@+node:ekr.20120916193057.10608: *5* sc.find_next_screencast
@@ -395,8 +399,9 @@ class ScreenCastController:
         return None
     #@+node:ekr.20120913110135.10582: *4* sc.focus
     def focus(self, pane):
-        '''Immediately set the focus to the given pane.'''
-        m = self; c = m.c
+        """Immediately set the focus to the given pane."""
+        m = self
+        c = m.c
         d = {
             'body': c.bodyWantsFocus,
             'log': c.logWantsFocus,
@@ -411,13 +416,18 @@ class ScreenCastController:
             g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20120913110135.10583: *4* sc.head_keys (screencast.py)
     def head_keys(self, s, n1=None, n2=None):
-        '''Simulate typing in the headline.
+        """Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.
-        '''
-        m = self; c = m.c; p = c.p; undoType = 'Typing'
+        """
+        m = self
+        c = m.c
+        p = c.p
+        undoType = 'Typing'
         tree = c.frame.tree
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
+        if n1 is None:
+            n1 = 0.02
+        if n2 is None:
+            n2 = 0.095
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
@@ -431,7 +441,7 @@ class ScreenCastController:
             m.key_w = w
             for ch in s:
                 p.h = p.h + ch
-                tree.repaint() # *not* tree.update.
+                tree.repaint()  # *not* tree.update.
                 m.wait(n1, n2)
                 event = m.get_key_event(ch, w)
                 c.k.masterKeyHandler(event)
@@ -441,7 +451,7 @@ class ScreenCastController:
         c.redraw()
     #@+node:ekr.20120913110135.10615: *4* sc.image
     def image(self, pane, fn, center=None, height=None, width=None):
-        '''Put an image in the indicated pane.'''
+        """Put an image in the indicated pane."""
         m = self
         parent = m.pane_widget(pane)
         if not parent:
@@ -469,13 +479,14 @@ class ScreenCastController:
         return w
     #@+node:ekr.20120921064434.10605: *4* sc.open_menu
     def open_menu(self, menu_name):
-        '''Activate the indicated *top-level* menu.'''
-        m = self; c = m.c
+        """Activate the indicated *top-level* menu."""
+        m = self
+        c = m.c
         menu = c.frame.menu.getMenu(menu_name)
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
-            if 0: # None of this works.
+            if 0:  # None of this works.
                 g.trace('repaint', c.frame.top)
                 c.frame.top.repaint()
                 g.trace('repaint', menu)
@@ -491,14 +502,16 @@ class ScreenCastController:
         return menu
     #@+node:ekr.20120916062255.10590: *4* sc.plain_keys
     def plain_keys(self, s, n1=None, n2=None, pane='body'):
-        '''Simulate typing a string of plain keys.'''
+        """Simulate typing a string of plain keys."""
         m = self
         for ch in s:
             m.single_key(ch, n1=n1, n2=n2, pane=pane)
     #@+node:ekr.20120914074855.10722: *4* sc.quit
     def quit(self):
-        '''Terminate the slide show.'''
-        m = self; c = m.c; k = c.k
+        """Terminate the slide show."""
+        m = self
+        c = m.c
+        k = c.k
         if m.quit_flag:
             return
         if not m.p1:
@@ -515,7 +528,7 @@ class ScreenCastController:
         m.c.redraw(p)
     #@+node:ekr.20120913110135.10585: *4* sc.repaint
     def repaint(self, pane):
-        '''Repaint the given pane.'''
+        """Repaint the given pane."""
         m = self
         w = m.pane_widget(pane)
         if w:
@@ -529,12 +542,15 @@ class ScreenCastController:
         m.redraw(p)
     #@+node:ekr.20120916062255.10593: *4* sc.single_key
     def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
-        '''Simulate typing a single key, properly saving and restoring m.k_state.'''
-        m = self; k = m.c.k
+        """Simulate typing a single key, properly saving and restoring m.k_state."""
+        m = self
+        k = m.c.k
         w = w or m.pane_widget(pane or 'body')
         force = n1 is not None or n2 is not None
-        if force and n1 is None: n1 = 0.02
-        if force and n2 is None: n2 = 0.095
+        if force and n1 is None:
+            n1 = 0.02
+        if force and n2 is None:
+            n2 = 0.095
         try:
             if m.k_state.kind:
                 # old_state_kind = m.k_state.kind
@@ -542,7 +558,7 @@ class ScreenCastController:
             else:
                 # old_state_kind = None
                 k.clearState()
-            w.repaint() # *not* tree.update.
+            w.repaint()  # *not* tree.update.
             m.wait(n1, n2)
             event = m.get_key_event(ch, w)
             k.masterKeyHandler(event)
@@ -555,9 +571,11 @@ class ScreenCastController:
     #@+node:ekr.20120916193057.10607: *3* sc.State handling
     #@+node:ekr.20120914074855.10721: *4* sc.next & helper
     def next(self):
-        '''Find the next screencast node and execute its script.
-        Call m.quit if no more nodes remain.'''
-        m = self; c = m.c; k = c.k
+        """Find the next screencast node and execute its script.
+        Call m.quit if no more nodes remain."""
+        m = self
+        c = m.c
+        k = c.k
         m.delete_widgets()
         # Restore k.state from m.k_state.
         if m.k_state.kind and m.k_state.kind != m.state_name:
@@ -572,7 +590,7 @@ class ScreenCastController:
                 p_next = m.p.threadNext()
                 p_old = m.p.copy()
                 if g.match_word(m.p.h, 0, '@text'):
-                    c.redraw(m.p) # Selects the node, thereby showing the body text.
+                    c.redraw(m.p)  # Selects the node, thereby showing the body text.
                 else:
                     m.exec_node(m.p)
                 # Save k.state in m.k_state.
@@ -595,8 +613,9 @@ class ScreenCastController:
             m.quit()
     #@+node:ekr.20120918103526.10596: *5* sc.exec_node
     def exec_node(self, p):
-        '''Execute the script in node p.'''
-        m = self; c = m.c
+        """Execute the script in node p."""
+        m = self
+        c = m.c
         assert p
         assert p.b
         d = {'c': c, 'g:': g, 'm': m, 'p': p}
@@ -611,8 +630,8 @@ class ScreenCastController:
             m.quit()
     #@+node:ekr.20120917132841.10609: *4* sc.prev
     def prev(self):
-        '''Show the previous slide.  This will recreate the slide's widgets,
-        but the user may have to adjust the minibuffer or other widgets by hand.'''
+        """Show the previous slide.  This will recreate the slide's widgets,
+        but the user may have to adjust the minibuffer or other widgets by hand."""
         m = self
         if m.p and m.p == m.p1:
             g.trace('at start: %s' % (m.p and m.p.h))
@@ -628,11 +647,13 @@ class ScreenCastController:
                 m.start(m.p1)
     #@+node:ekr.20120914074855.10720: *4* sc.start
     def start(self, p):
-        '''Start a screencast whose root node is p.
+        """Start a screencast whose root node is p.
 
         Important: p is not necessarily c.p!
-        '''
-        m = self; c = m.c; k = c.k
+        """
+        m = self
+        c = m.c
+        k = c.k
         assert p
         # Reset Leo's state.
         k.keyboardQuit()
@@ -648,10 +669,10 @@ class ScreenCastController:
         m.state_handler()
     #@+node:ekr.20170128184559.1: *4* sc.start_commands (new)
     def start_commands(self, commands):
-        '''Start a screencast given by a list of commands.
+        """Start a screencast given by a list of commands.
 
         Important: p is not necessarily c.p!
-        '''
+        """
         k, m = self.c.k, self
         self.commands = commands
         self.command_index = 0
@@ -669,8 +690,10 @@ class ScreenCastController:
         m.state_handler()
     #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):
-        '''Handle keys while in the "screencast" input state.'''
-        m = self; c = m.c; k = c.k
+        """Handle keys while in the "screencast" input state."""
+        m = self
+        c = m.c
+        k = c.k
         state = k.getState(m.state_name)
         char = event.char if event else ''
         if m.ignore_keys:
@@ -707,7 +730,7 @@ class ScreenCastController:
             m.set_state(m_state_copy)
     #@+node:ekr.20120914195404.11208: *4* sc.undo
     def undo(self):
-        '''Undo the previous screencast scene.'''
+        """Undo the previous screencast scene."""
         m = self
         m.delete_widgets()
         if not m.node_stack:
@@ -732,7 +755,9 @@ class ScreenCastController:
     #@+node:ekr.20120916193057.10606: *3* sc.Utilities
     #@+node:ekr.20120916062255.10589: *4* sc.get_key_event
     def get_key_event(self, ch, w):
-        m = self; c = m.c; k = c.k
+        m = self
+        c = m.c
+        k = c.k
         m.key_w = w
         if len(ch) > 1:
             key = None
@@ -752,8 +777,9 @@ class ScreenCastController:
         m.widgets = []
     #@+node:ekr.20120914133947.10579: *4* sc.pane_widget
     def pane_widget(self, pane):
-        '''Return the pane's widget.'''
-        m = self; c = m.c
+        """Return the pane's widget."""
+        m = self
+        c = m.c
         d = {
             'all': c.frame.top,
             'body': c.frame.body.wrapper.widget,
@@ -764,7 +790,7 @@ class ScreenCastController:
         return d.get(pane)
     #@+node:ekr.20120914163440.10582: *4* sc.resolve_icon_fn
     def resolve_icon_fn(self, fn):
-        '''Resolve fn relative to the Icons directory.'''
+        """Resolve fn relative to the Icons directory."""
         # m = self
         dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
         path = g.os_path_finalize_join(dir_, fn)
@@ -774,10 +800,12 @@ class ScreenCastController:
         return None
     #@+node:ekr.20120913110135.10587: *4* sc.wait
     def wait(self, n1=1, n2=0):
-        '''Wait for an interval between n1 and n2.'''
+        """Wait for an interval between n1 and n2."""
         m = self
-        if n1 is None: n1 = 0
-        if n2 is None: n2 = 0
+        if n1 is None:
+            n1 = 0
+        if n2 is None:
+            n2 = 0
         if n1 > 0 and n2 > 0:
             n = random.uniform(n1, n2)
         else:

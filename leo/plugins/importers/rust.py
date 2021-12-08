@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
-'''The @auto importer for rust.'''
+"""The @auto importer for rust."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -12,15 +12,15 @@ Target = linescanner.Target
 class Rust_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
-        '''rust_Importer.__init__'''
+        """rust_Importer.__init__"""
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'rust',
-            state_class = Rust_ScanState,
+            language='rust',
+            state_class=Rust_ScanState,
         )
         self.headline = None
-      
+
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
     arg_pat = re.compile(r'(\(.*?\))')
@@ -29,9 +29,9 @@ class Rust_Importer(Importer):
     body_pat = re.compile(r'(\{.*\})')
 
     def clean_headline(self, s, p=None):
-        '''
+        """
         Remove argument list and return value.
-        '''
+        """
         s = s.strip()
         m = self.func_pattern.match(s)
         if not m:
@@ -60,21 +60,21 @@ class Rust_Importer(Importer):
     func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
 
     def match_start_patterns(self, line):
-        '''
+        """
         True if line matches any block-starting pattern.
         If true, set self.headline.
-        '''
+        """
         m = self.func_pattern.match(line)
         if m:
             self.headline = line.strip()
         return bool(m)
     #@+node:ekr.20200623083608.1: *3* rust_i.promote_last_lines
     def promote_last_lines(self, parent):
-        '''
+        """
         Move trailing comment and macro lines to the start of the next node.
-        
+
         For now, @others anywhere in a node prevents all moves.
-        '''
+        """
         for p in parent.subtree():
             next = p.threadNext()
             if not next:
@@ -98,7 +98,7 @@ class Rust_Importer(Importer):
                 self.set_lines(p, lines)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         line = lines[i]
         target = stack[-1]
         # Insert the reference in *this* node.
@@ -116,7 +116,7 @@ class Rust_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1
@@ -125,7 +125,7 @@ class Rust_Importer(Importer):
             self.add_line(child, lines[i])
     #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         self.headline = None
         line = lines[i]
         if prev_state.context:
@@ -140,10 +140,10 @@ class Rust_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''
+        """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
-        '''
+        """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, pattern, data):
@@ -187,10 +187,10 @@ class Rust_Importer(Importer):
     #@-others
 #@+node:ekr.20200316101240.7: ** class Rust_ScanState
 class Rust_ScanState:
-    '''A class representing the state of the line-oriented scan for rust.'''
+    """A class representing the state of the line-oriented scan for rust."""
 
     def __init__(self, d=None):
-        '''Rust_ScanSate ctor'''
+        """Rust_ScanSate ctor"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -202,7 +202,7 @@ class Rust_ScanState:
             self.parens = 0
 
     def __repr__(self):
-        '''Rust_ScanState.__repr__'''
+        """Rust_ScanState.__repr__"""
         return (
             f"<Rust_ScanState "
             f"context: {self.context!r} "
@@ -214,15 +214,15 @@ class Rust_ScanState:
     #@+others
     #@+node:ekr.20200316101240.8: *3* rust_state.level
     def level(self):
-        '''Rust_ScanState.level.'''
+        """Rust_ScanState.level."""
         # return self.curlies
         return (self.curlies, self.parens)
     #@+node:ekr.20200316101240.9: *3* rust_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.context = context
         self.curlies += delta_c

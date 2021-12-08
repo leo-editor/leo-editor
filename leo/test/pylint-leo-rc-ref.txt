@@ -40,18 +40,30 @@ load-plugins=
 disable=
     #
     # Always disable these. Imo, they cause more harm than good.
-    #
-        design,import,format,similarities, # Make work.
-    
+    # 
+        design,import,similarities, # Make work.
+
+        # format,  # Allow bad-indentation and other checks.
+        
+        arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
         broad-except, # except Exception is justified if followed by g.es_exception.
+        c-extension-no-member,  # Too many errors re pyQt6.
         condition-evals-to-constant,
+        consider-iterating-dictionary,
+        consider-using-from-import,
+        consider-using-f-string,  # complains about regex's!
         consider-using-in,
         consider-using-dict-comprehension,
+        consider-using-dict-items,
+        consider-using-fstring,
+        consider-using-max-builtin,
         consider-using-set-comprehension,
         consider-using-ternary,
+        consider-using-with,
+        deprecated-module,
         exec-used,
         f-string-without-interpolation,  # Useful for concatenated f-strings.
         global-statement, #  Assume we know what we are doing.
@@ -70,18 +82,23 @@ disable=
         redefined-outer-name,
         redefined-variable-type,
         too-few-public-methods,
+        trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-pass, # Can be pedantic in some situations.
+        unspecified-encoding,  # Huh?
         unused-argument,
-        using-constant-test,
+        unused-private-member, # too many false positives.
         unused-variable, # way too many false positives, esp. tuple unpacking.
+        use-dict-literal,
+        use-list-literal,
+        use-maxsplit-arg, # What is this??
+        using-constant-test,
     #
     # Good warnings. Don't suppress these.
     #
         # bad-builtin,
         # bad-continuation,
         # bad-option-value, # obsolete pylint option.
-        # deprecated-module,
         # chained-comparison,
         # len-as-condition,
         # import-error, # Warns when an import fails: useful now that we are only using python 3.
@@ -102,7 +119,6 @@ disable=
         # singleton-comparison,
         # superfluous-parens,
         # trailing-comma-tuple,
-        # trailing-whitespace,
         # unsupported-assignment-operation,
         # unsupported-delete-operation,
         # unsubscriptable-object,

@@ -15,7 +15,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20101101135104.15789: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.tree_popup_handlers.append(bzr_qcommands)
     return True
 #@+node:ekr.20140918072425.17927: ** bzr_qcommands
@@ -26,11 +26,11 @@ def bzr_qcommands(c, p, menu):
 
     # special case, no q* command for stat
     def bzr_stat(c=c, p=p):
-        path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         cmd = subprocess.Popen(['bzr', 'stat', path], stdin=subprocess.PIPE,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout,stderr = cmd.communicate()
-        g.es("\n\n".join([stdout,stderr]))
+        stdout, stderr = cmd.communicate()
+        g.es("\n\n".join([stdout, stderr]))
     action = menu.addAction('stat')
     # action.connect(action, QtCore.SIGNAL("triggered()"), bzr_stat)
     action.triggered.connect(bzr_stat)
@@ -41,7 +41,7 @@ def bzr_qcommands(c, p, menu):
             "qswitch qtag qunbind quncommit qupdate qversion qviewer".split()
     for qcom in qcoms:
         def cmd(c=c, p=p, qcom=qcom):
-            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
             cmd = subprocess.Popen(['bzr', qcom, path])
             cmd.communicate()
         action = menu.addAction(qcom)

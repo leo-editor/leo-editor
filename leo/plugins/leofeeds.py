@@ -2,7 +2,7 @@
 #@+node:ville.20110206142055.10640: * @file ../plugins/leofeeds.py
 #@+<< docstring >>
 #@+node:ville.20110206142055.10641: ** << docstring >>
-'''
+"""
 Read feeds from rss / atom / whatever sources
 
 Usage: Create node with a headline like:
@@ -13,7 +13,7 @@ Usage: Create node with a headline like:
 
 Do alt-x act-on-node on that node to populate the subtree from the feed data. Requires "feedparser" python module
 
-'''
+"""
 #@-<< docstring >>
 # By Ville M. Vainio.
 #@+<< imports >>
@@ -29,20 +29,19 @@ from leo.core import leoPlugins
 
 #@+others
 #@+node:ville.20110206142055.10644: ** init
-def init ():
+def init():
 
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
 
     return True
 #@+node:ville.20110206142055.10645: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
-    if not c: return
-
+    if not c:
+        return
     # c not needed
-
     feeds_install()
 #@+node:ville.20110206142055.10648: ** fetch
 
@@ -79,17 +78,12 @@ def emitfeed(url, p):
     r = p.insertAsLastChild()
     r.h = d.channel.title
     for ent in d.entries:
-        #print "Entry"
-        #pprint.pprint(ent)
         e = chi(r)
         try:
             cnt = ent.content[0].value
         except AttributeError:
             cnt = ent['summary']
-
         e.b = strip_tags(cnt)
-
-        #e.b = str(ent)
         e.h = ent.title
         for li in ent.links:
             lnk = chi(e)
@@ -98,15 +92,13 @@ def emitfeed(url, p):
         if 'enclosures' in ent:
             for enc in ent.enclosures:
                 ec = chi(e)
-                ec.h = '@url Enclosure: ' +  enc.get('type','notype') + " " + enc.get('length','')
+                ec.h = '@url Enclosure: ' + enc.get('type', 'notype') + " " + enc.get('length', '')
                 ec.b = enc.get('href', '')
-
         full = chi(e)
         full.h = "orig"
         full.b = cnt
 
-
-def feeds_act_on_node(c,p,event):
+def feeds_act_on_node(c, p, event):
 
     sp = p.h.split(None, 1)
     if sp[0] not in ['@feed']:
@@ -118,9 +110,7 @@ def feeds_act_on_node(c,p,event):
 def feeds_install():
     g.act_on_node.add(feeds_act_on_node, 99)
 
-
-
-#emitfeed("http://feedparser.org/docs/examples/atom10.xml", p)
-#c.redraw()
+# emitfeed("http://feedparser.org/docs/examples/atom10.xml", p)
+# c.redraw()
 #@-others
 #@-leo

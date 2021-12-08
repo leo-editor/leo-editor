@@ -19,7 +19,7 @@ def reloadSettings(self, event=None):
 def reloadSettingsHelper(c):
     """
     Reload settings in all commanders, or just c.
-    
+
     A helper function for reload-settings and reload-all-settings.
     """
     lm = g.app.loadManager
@@ -84,7 +84,8 @@ def restartLeo(self, event=None):
     g.app.finishQuit()
     # 7. Restart, restoring the original command line.
     args = ['-c'] + [z for z in lm.old_argv]
-    if trace: g.trace('restarting with args', args)
+    if trace:
+        g.trace('restarting with args', args)
     sys.stdout.flush()
     sys.stderr.flush()
     os.execv(sys.executable, args)
@@ -340,11 +341,13 @@ def refreshFromDisk(self, event=None):
     word = p.h[0:i]
     if word == '@auto':
         # This includes @auto-*
-        if shouldDelete: p.v._deleteAllChildren()
+        if shouldDelete:
+            p.v._deleteAllChildren()
         # Fix #451: refresh-from-disk selects wrong node.
         p = at.readOneAtAutoNode(p)
     elif word in ('@thin', '@file'):
-        if shouldDelete: p.v._deleteAllChildren()
+        if shouldDelete:
+            p.v._deleteAllChildren()
         at.read(p)
     elif word == '@clean':
         # Wishlist 148: use @auto parser if the node is empty.
@@ -387,7 +390,7 @@ def save(self, event=None, fileName=None):
     """
     Save a Leo outline to a file, using the existing file name unless
     the fileName kwarg is given.
-    
+
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
     c = self
@@ -397,13 +400,6 @@ def save(self, event=None, fileName=None):
     inBody = g.app.gui.widget_name(w).startswith('body')
     if inBody:
         p.saveCursorAndScroll()
-    if g.unitTesting and g.app.unitTestDict.get('init_error_dialogs') is not None:
-        # A kludge for unit testing:
-        # indicated that c.init_error_dialogs and c.raise_error_dialogs
-        # will be called below, *without* actually saving the .leo file.
-        c.init_error_dialogs()
-        c.raise_error_dialogs(kind='write')
-        return
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
@@ -485,15 +481,16 @@ def saveAs(self, event=None, fileName=None):
     """
     Save a Leo outline to a file, prompting for a new filename unless the
     fileName kwarg is given.
-    
+
     kwarg: a file name, for use by file-save-as-zipped,
     file-save-as-unzipped and scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody: p.saveCursorAndScroll()
+    if inBody:
+        p.saveCursorAndScroll()
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
@@ -549,10 +546,10 @@ def saveTo(self, event=None, fileName=None, silent=False):
     """
     Save a Leo outline to a file, prompting for a new file name unless the
     fileName kwarg is given. Leave the file name of the Leo outline unchanged.
-    
+
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
@@ -815,7 +812,7 @@ def weave(self, event=None):
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self, event=None):
     """Read all @auto nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -827,7 +824,7 @@ def readAtAutoNodes(self, event=None):
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self, event=None):
     """Read all @file nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     # c.init_error_dialogs() # Done in at.readAll.
     undoData = u.beforeChangeTree(p)
@@ -839,7 +836,7 @@ def readAtFileNodes(self, event=None):
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
     """Read all @shadow nodes in the presently selected outline."""
-    c = self; u = c.undoer; p = c.p
+    c, p, u = self, self.p, self.undoer
     c.endEditing()
     c.init_error_dialogs()
     undoData = u.beforeChangeTree(p)
@@ -859,7 +856,8 @@ def readFileIntoNode(self, event=None):
         title="Read File Into Node",
         filetypes=filetypes,
         defaultextension=None)
-    if not fileName: return
+    if not fileName:
+        return
     s, e = g.readFileIntoString(fileName)
     if s is None:
         return
@@ -902,7 +900,7 @@ def writeFileFromNode(self, event=None):
     If node starts with @read-file-into-node, use the full path name in the headline.
     Otherwise, prompt for a file name.
     """
-    c = self; p = c.p
+    c, p = self, self.p
     c.endEditing()
     h = p.h.rstrip()
     s = p.b
@@ -936,7 +934,7 @@ def writeFileFromNode(self, event=None):
 def cleanRecentFiles(self, event=None):
     """
     Remove items from the recent files list that no longer exist.
-    
+
     This almost never does anything because Leo's startup logic removes
     nonexistent files from the recent files list.
     """
@@ -985,7 +983,7 @@ def sortRecentFiles(self, event=None):
 #@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):
-    """ 
+    """
     Write content of "edit_headline" node as recentFiles and recreates
     menues.
     """
@@ -1000,10 +998,10 @@ def updateRefLeoFile(self, event=None):
     file. The public part consists of all nodes above the **special
     separator node**, a top-level node whose headline is
     `---begin-private-area---`.
-   
+
     Below this special node is **private area** where one can freely make
     changes that should not be copied (published) to the reference Leo file.
-    
+
     **Note**: Use the set-reference-file command to create the separator node.
     """
     c = self
@@ -1019,7 +1017,7 @@ def readRefLeoFile(self, event=None):
 
     Below this special node is **private area** where one can freely make
     changes that should not be copied (published) to the reference Leo file.
-    
+
     **Note**: Use the set-reference-file command to create the separator node.
     """
     c = self
@@ -1030,15 +1028,15 @@ def setReferenceFile(self, event=None):
     """
     Shows a file open dialog allowing you to select a **reference** Leo
     document to which this outline will be connected.
-       
+
     This command creates a **special separator node**, a top-level node
     whose headline is `---begin-private-area---` and whose body is the path
     to reference Leo file.
-    
+
     The separator node splits the outline into two parts. The **public
     part** consists of all nodes above the separator node. The **private
     part** consists of all nodes below the separator node.
-       
+
     The update-ref-file and read-ref-file commands operate on the **public
     part** of the outline. The update-ref-file command saves *only* the
     public part of the outline to reference Leo file. The read-ref-file
@@ -1050,42 +1048,9 @@ def setReferenceFile(self, event=None):
             title="Select reference Leo file",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
-    if not fileName: return
+    if not fileName:
+        return
     c.fileCommands.setReferenceFile(fileName)
-#@+node:ekr.20031218072017.2841: ** Tangle
-#@+node:ekr.20031218072017.2842: *3* c_file.tangleAll
-@g.commander_command('tangle-all')
-def tangleAll(self, event=None):
-    """
-    Tangle all @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangleAll()
-#@+node:ekr.20031218072017.2843: *3* c_file.tangleMarked
-@g.commander_command('tangle-marked')
-def tangleMarked(self, event=None):
-    """
-    Tangle all marked @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangleMarked()
-#@+node:ekr.20031218072017.2844: *3* c_file.tangle
-@g.commander_command('tangle')
-def tangle(self, event=None):
-    """
-    Tangle all @root nodes in the selected outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.tangle()
 #@+node:ekr.20180312043352.1: ** Themes
 #@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
@@ -1116,41 +1081,5 @@ def open_theme_file(self, event):
     command = f'"{g.sys.executable}" "{g.app.loadDir}/runLeo.py" "{fn}"'
     g.execute_shell_commands(command)
     os.chdir(leo_dir)
-#@+node:ekr.20031218072017.2845: ** Untangle
-#@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
-@g.commander_command('untangle-all')
-def untangleAll(self, event=None):
-    """
-    Untangle all @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangleAll()
-    c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2847: *3* c_file.untangleMarked
-@g.commander_command('untangle-marked')
-def untangleMarked(self, event=None):
-    """
-    Untangle all marked @root nodes in the entire outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangleMarked()
-    c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2848: *3* c_file.untangle
-@g.commander_command('untangle')
-def untangle(self, event=None):
-    """Untangle all @root nodes in the selected outline.
-
-    **Important**: @root and all tangle and untangle commands are
-    deprecated. They are documented nowhere but in these docstrings.
-    """
-    c = self
-    c.tangleCommands.untangle()
-    c.undoer.clearUndoState()
 #@-others
 #@-leo

@@ -140,6 +140,7 @@
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
 <v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="maphew.20200605112532.1"><vh>@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
@@ -163,7 +164,8 @@
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
 </v>
 </v>
-<v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
+<v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
+<v t="ekr.20210815105140.1"><vh>Overview</vh></v>
 <v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
@@ -175,17 +177,8 @@
 <v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
+<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
-</v>
-<v t="mhw.20191107063807.1"><vh>Clean up root dir</vh>
-<v t="mhw.20191101123146.1"><vh>To Delete</vh>
-<v t="ekr.20151227063335.1"><vh>@@clean ../../About leo.exe.TXT</vh></v>
-<v t="maphew.20190208142757.1"><vh>@@clean ../../optional-tools.txt</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@@clean ../../INSTALL.TXT</vh></v>
-</v>
-<v t="mhw.20191107063030.1"><vh>To Move</vh>
-<v t="ekr.20150416081546.7"></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -194,7 +187,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2020 by Edward K. Ream.
+Copyright (c) 1997-2021 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +231,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.3
+Version: 6.6b1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -257,22 +250,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&amp;count_bg=%2379C83D&amp;title_bg=%23555555&amp;icon=&amp;icon_color=%23E7E7E7&amp;title=PAGE+VIEWS&amp;edge_flat=false)](https://hits.seeyoufarm.com)
-
-Leo 6.3, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.3**
+**The highlights of Leo 6.6**
 
-- leoAst.py: The unification of Python's token and ast worlds.
-- Retired all Qt Dock code.
-- Improved viewrendered and viewrendered3 plugins.
-- Improved several importer plugins.
-- Refactored Leo's key handling code.
+- Replace @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Many improvements to python-to-typescript command.
+- picture_viewer.py is a stand-alone app that displays images in a folder.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Complete coverage testing for leoAtFile.py.
 
-**Links**
+**6.6 Links**
+
+- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
+- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
+- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
+- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
+- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+
+**General Links**
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)
@@ -321,7 +320,7 @@ have not yet tried Leo, you are wrong...I rate Leo as a "must have"
 for Python programmers. The code makes for a good read.
 -- John Tobler  http://weblogs.asp.net/Jtobler/
 </t>
-<t tx="EKR.20040519091259.4">I've written documentation in WordPerfert, Ventura, Word, PageMaker, and
+<t tx="EKR.20040519091259.4">I've written documentation in WordPerfect, Ventura, Word, PageMaker, and
 FrameMaker and even though they create wonderfully looking and useful
 documents, they've never been able to do what I've been looking for. HTML,
 compiled help files, and later PDF came closer, but still not there. I think
@@ -330,7 +329,7 @@ of discrete parts that can be re-organized on the fly to meet the needs of a
 varying audience...Being a convert for less than a day I've still got a lot to
 learn, but just the possibility of keeping system maintenance scripts in the IT
 manual is mind boggling.  -- David Nichols dnichols@amci.com</t>
-<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. Ive
+<t tx="ekr.20040630210818">HTML Editing in Leo is soooo much easier then with NoNodeEditors. I've
 had a blast working on a web page. Usually I had to look at a bunch of
 gunk all at once. Now I can look at little pieces of gunk! :) 
 
@@ -419,152 +418,6 @@ This checklist is obsolete, for the following reasons:
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20130809141000.1990">@language rest
-System requirements
--------------------
-
-Leo requires the `Python`_ and `PyQt_` package.
-The `PyEnchant`_ package is optional. 
-
-**Python**: Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. To install Python, see
-http://python.org.
-
-**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
-package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
-The PyQt version must match your installed Python version. Remember that
-Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
-binary PyQt installer.
-
-**PyEnchant**: You must install the PyEnchant package if you want to use
-Leo's Spell tab. Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html There is an executable
-installer for Windows users.
-
-
-Leo's HOME directory
---------------------
-
-Python's HOME environment variable specifies Leo's HOME directory.
-See http://docs.python.org/lib/os-procinfo.html for details.
-
-Leo puts several files in your HOME/.leo directory:
-.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-There are various fallback directories if there is no home directory.
-
-Installing Leo on Linux
------------------------
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.2 (or /usr/bin, etc.)
-
-To gain access to Leo, you have two choices:
-
-A. Add  ~/leo-5.2 to your path.
-B. Create alias for Leo.
-
-I prefer using aliases because they allow me to start Leo using Python 2 or 3,
-or other distributions, like Anaconda 2 or 3.
-
-See `Running Leo`_ for how to run Leo after installing it.
-
-Installing Leo on Windows
---------------------------
-
-Install Python and Qt, as described above.
-
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unpack them
-into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
-
-
-Running Leo
------------
-
-You can run Leo from a Python interpreter as follows::
-
-    import leo
-    leo.run() # runs Leo, opening a new outline or,
-    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
-
-Another way to run Leo is as follows::
-
-    cd &lt;path-to-launchLeo.py&gt;
-    python launchLeo.py
-
-Creating File Associations
---------------------------
-
-**Linux**
-
-The following shell script will allow you to open foo.leo files by typing leo foo::
-
-    #!/bin/sh 
-    python &lt;leopath&gt;launchLeo.py $1
-
-where &lt;leopath&gt; is the path to the directory *containing* the leo directory. 
-
-**Windows**
-
-*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
-
-**Method 1: Using the Windows Control Panel**
-
-The goal is that you want to associate .leo files with the following command::
-
-    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
-    
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
-
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
-
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
-
-**Method 2: Using the Windows Console**
-
-Open a Windows console with administrator privileges, then type::
-
-    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
-    
-You may omit the /b option if you want to create a separate console window for Leo.
-
-Adding Leo to Your Path
------------------------
-
-After you have installed Leo, you should add the location of your leo/core folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:
-
-    import sys
-    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
-
-Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
-
-Running Leo for the first time
-------------------------------
-
-The first time you start Leo, a dialog will ask you for a unique identifier. If
-you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
-stores this identifier in the file ``.leoID.txt``. Leo attempts to create
-``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
-finally in Leo's core directory. You can change this identifier at any time by
-editing ``.leoID.txt``.
-</t>
 <t tx="ekr.20141016105045.2119"># .gitattributes file for Leo distribution
 
 # Commit this file after changing it!
@@ -599,7 +452,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
 
 2. Search for copyright
 
-    Latest copyright date: 2020.
+    Latest copyright date: 2021.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
@@ -826,24 +679,6 @@ print('done: %s nodes, %s clones' % (nodes,clones))
     system bin/"python", "-c", "import leo"
   end
 end
-</t>
-<t tx="ekr.20151227063335.1">leo.exe contains everything you need to run Leo on Windows without
-installing *anything* else. It contains all needed libraries, including
-Python itself, PyQt, pylint and other packages. It also contains many data
-files, including Leo's source code and various .leo files.
-
-Notes:
-
-1. leo.exe was created by PyInstaller: http://pythonhosted.org/PyInstaller
-
-2. Before Leo starts, PyInstaller unpacks all libraries and data files to a
-   temp folder: ~\AppData\Local\Temp\_MEInnn. As a result, starting leo.exe
-   is slower than usual.
-
-3. *Warning*: You can open Leo files from the "Files:Open Leo File" menu,
-   but these files will be in the temp folder. They will be *destroyed*
-   when you exit leo.exe. If you want to do real work with Leo you must
-   create .leo files in a permanent folder on your machine.
 </t>
 <t tx="ekr.20160510090441.1">@language nsi
 
@@ -1502,7 +1337,8 @@ I get the following:
     sh: -c: line 0: syntax error near unexpected token `python'
     sh: -c: line 0: `%x(python -c "import sys;print(sys.version[:3])")'
 
-This looks like an old version of leo.rb is being used, but a thorough search shows no such file. Any help would be appreciated.</t>
+This looks like an old version of leo.rb is being used, but a thorough
+search shows no such file. Any help would be appreciated.</t>
 <t tx="ekr.20161024115257.1">*Note*: Brew create now computes the hash automatically.
 
 http://stackoverflow.com/questions/32673943/how-to-update-homebrew-sha256
@@ -1625,28 +1461,17 @@ g.es_print('done')
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
-<t tx="ekr.20180405171433.1">@language rest
+<t tx="ekr.20180405171433.1">@language rest</t>
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
+- Run beautify-files.
 
-Overview:
-
-1. Create a **release branch**, called 6.3.
-   This branch should be based on devel.
-   This branch will hold all work for 6.3-b1 and 6.3 final.
-
-2. *Never* merge devel into the release branch.
-   It's fine to merge the release branch into devel.
-   
-3. Fix last-minute bugs in a **bug-fix branch**.
-   Base bug-fix branches on the *release* branch, not devel.
-   After fixing the bug, merge the bug-fix branch into both devel and the release branch.
-   
-4. Update leoVersion.py (in devel) after merging the release branch into devel.</t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
+LeoDocs.leo:
 - Make sure copyright dates are correct.
+- Update the version numbers in index.html.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
-- Remove @language rest where possible in new notes.
+- Remove @language rest where possible in new nodes.
 - Create new "what's new" section.
 - Remove top-level clones.
 - Spell check entire file.
@@ -1655,26 +1480,33 @@ Overview:
 
 LeoDist.leo:
 - Make sure copyright dates are correct.
+- Update version numbers. Search for ##version
+  The final version in PKG-INFO.TXT must be called 6.x, not 6.x-final.
+  See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
-- Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
+- Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
+  
+LeoSettings.leo:
+- Run all "check" buttons in leoSettings.leo.
 
 LeoPyRef.leo:
-- Regenerate from leoPy.leo:
-  - Run `script: check-files`.
-  - run write-LeoPyRef button in LeoPy.leo.
-</t>
+- run write-LeoPyRef button in LeoPy.leo.
+- Run `script: check-files`.</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
-- Copy files to web, including leo/doc/html/index.html
+  - Run rst3 command in LeoDocs.leo.
+  - In leo/doc/html run:
+    make clean
+    make html
+- Copy files from leo/doc/html/_build/html to web (FileZilla)
   Do **not** copy searchindex.js.
-- tools/webroot/*  go to top of website, e.g.
-      tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
+- Copy leo/doc/html/index.html to web (FileZilla)
+</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run all "check" buttons in leoSettings.leo.
-- Run all unit tests, on Windows and Linux.
-- Run pylint (EKR's ll -a script).
+- Run all unit tests.
+- Run pylint on all files.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
@@ -1683,20 +1515,21 @@ LeoPyRef.leo:
   - Tags should start with "v"
 
 git checkout master
-git tag -a v6.3 -m "Added v6.3 tag"
+git tag -a v6.NNN -m "Added v6.NNN tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
-- Update date of the release.</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge, create dev tag that matches
+- Update static date.
+- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.</t>
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.4-devel'
+    #static version = '6.N-devel'
 
 git checkout devel
-git tag -a v6.4-devel -m "Added v6.4.devel tag"
-git push --follow-tags
 update version in leoVersion.py.
+git tag -a v6.NNN-devel -m "Added v6.NNN-devel tag"
+git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
 
@@ -2154,14 +1987,14 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.3 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.NNN branch:
     
 - Push any changes to release branch.
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
 - git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: When a release tag is created on Master it should be merged to Devel quickly.
+<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">When a release tag is created on Master it should be merged to Devel quickly.
 
 git checkout devel
 git merge master (will update leoVersion.py, so tags are also updated)
@@ -2173,7 +2006,7 @@ There is a "Draft New Release" button at the top-right of the page.
 </t>
 <t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
 
-Public announcements, after Matt creates a package:
+Public announcements, after creating a package.
 
 - Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
@@ -2185,21 +2018,96 @@ Public announcements, after Matt creates a package:
    **Paste source-forge or leo-editor announcement**.
 
   - Check it by visiting the archive:
-  https://mail.python.org/pipermail/python-announce-list/
+    https://mail.python.org/archives/list/python-announce-list@python.org/
   
-- Send email to Matt.
-
-- [Matt] Register Leo at https://pypi.python.org/pypi/leo
-
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
-<t tx="ekr.20200313063940.1">git checkout -b 6.3
-git push origin 6.3
+<t tx="ekr.20200313063940.1">git checkout -b 6.N
+git push origin 6.N
 </t>
+<t tx="ekr.20210814054641.1">@language unknown_language
+# Processed in order listed
+# Global
+#recursive-include leo *.*     # not needed when using `graft`
+graft leo
+global-exclude *.py[cod] __pycache__ *.so
+
+# Root folder
+include *.TXT
+include launchLeo.py
+include profileLeo.py
+include pylint-leo.bat
+include pylint-leo.py
+include *.nsi
+include LICENSE
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+include pyproject.toml
+
+# Exclusions
+# same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
+prune leo/test
+prune leo/doc/html
+# EKR: 2021/08/14: further exclusions.
+prune leo/core/.mypy_cache
+prune leo/core/mypy_stubs
+print leo/core/.gitattributes
+
+# Issue #603, https://github.com/leo-editor/leo-editor/issues/603
+include leo/doc/html/conf.py
+include leo/doc/html/index.html
+</t>
+<t tx="ekr.20210815103531.1">**build**
+
+- git checkout 6.5
+- Delete files in leoeditor/dist
+- python -m build
+
+**upload**
+
+Testing
+- python -m twine upload --repository testpypi dist/*
+
+--or--
+
+Production
+python -m twine upload -r pypi dist/*
+
+username:  __token__
+password:  EKR: Copy contents ofleo_pypi_token.txt
+           Then paste using "Paste" from console Edit menu.
+           
+File names must be unique.
+If there are conflicting names, add -NNN to the filename, like this:
+    leo-6.5-2-py3-none-any.whl
+    leo-6.5-2.tar.gz
+
+**install**
+
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.5b1
+
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.5b1
+
+**test**
+
+cd ~  # Anywhere except leo-editor folder!
+python -m leo.core.runLeo
+
+**uninstall after testint**
+
+python -m pip uninstall leo</t>
+<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.N.  Base this branch on devel.
+   This branch holds all work for 6.N, including beta and rc releases.
+
+2. Fix last-minute bugs in a **bug-fix branch**.
+   Then merge into devel and 6.N.
+   
+3. Create pypi version by running `python -m build` in the leo-editor folder.
+   
+4. Update leoVersion.py in devel after merging the release branch into devel.</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -2356,6 +2264,7 @@ needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
 </t>
 <t tx="maphew.20190206032329.1">[build-system]
 requires = ["setuptools&gt;=38.6.0",
+    "build&gt;=0.6.0",
     "setupext-janitor&gt;=1.1",
     "wheel&gt;=0.31.0",
     "twine&gt;=1.11.0"]
@@ -2363,22 +2272,9 @@ requires = ["setuptools&gt;=38.6.0",
 build-backend = 'setuptools.build_meta'
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
-# This flag says that the code is written to work on both Python 2 and Python
-# 3. If at all possible, it is good practice to do this. If you cannot, you
-# will need to generate wheels for each Python version that you support.
-universal=0
-</t>
-<t tx="maphew.20190208142757.1">@language python
-# A list of pip installable tools and libraries in the Requirements File Format
-# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
-#
-# Install with:
-#   
-#       pip install -r optional-tools.txt
-#
 
-pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
-pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
+# Leo 6.4: Leo only supports Python 3, so universal should be zero.
+universal=0
 </t>
 <t tx="maphew.20200424174643.1">@language md
 
@@ -2418,7 +2314,7 @@ Follow up as needed.
  
  [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
  </t>
-<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+<t tx="maphew.20200426185115.1"># Preliminary build recipe
 
     pushd code\leo-editor
     python setup.py sdist
@@ -2626,26 +2522,6 @@ deploy:
     on:
       tags: true
       branch: master
-</t>
-<t tx="mhw.20191101123146.1">Refresh / audit MANIFEST.in excludes and includes
-https://github.com/leo-editor/leo-editor/issues/1077
-
-Files in this tree are or will be deleted from the Leo's root directory. They're
-kept here for easy restoration or migration to another place if it's decided
-they should be kept.
-
--matt (@maphew)
-</t>
-<t tx="mhw.20191107063030.1">_Files and nodes which could probably live somewhere else._
-
-
-This is an organizer node of clones for the things-to-be-moved, e.g. use "Go to
-clone" and move that. These nodes can be removed when satisfied nothing was
-broken.</t>
-<t tx="mhw.20191107063807.1">Refresh / audit MANIFEST.in excludes and includes
-https://github.com/leo-editor/leo-editor/issues/1077
-
--matt (@maphew)
 </t>
 <t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
 scripts held in Scripts.leo. My current thinking is the scripts should be moved

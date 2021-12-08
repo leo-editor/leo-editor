@@ -28,8 +28,8 @@ patternAscDirectiveSkipToggle = re.compile(r"^@ascskip\s*(\w+)+.*")
 #@+others
 #@+node:ekr.20140920145803.17999: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    leoPlugins.registerHandler(('new','menu2'), CreateAscMenu)
+    """Return True if the plugin has loaded successfully."""
+    leoPlugins.registerHandler(('new', 'menu2'), CreateAscMenu)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20140920145803.18000: ** Functions
@@ -54,9 +54,9 @@ def CodeChunk(text, width=72):
             chunkEnd = chunkStart + shortWidth
             if chunkEnd > textLen:
                 chunkList.append(prefix + text[chunkStart:])
-                chunkEnd = textLen          # get out of jail
+                chunkEnd = textLen  # get out of jail
             else:
-                lastSpacePosition = text.rfind(' ',chunkStart, chunkEnd +1)
+                lastSpacePosition = text.rfind(' ', chunkStart, chunkEnd + 1)
                 if lastSpacePosition != -1:  # success
                     chunkList.append(prefix + text[chunkStart:lastSpacePosition] + ' \\')
                     chunkStart = lastSpacePosition + 1
@@ -66,20 +66,21 @@ def CodeChunk(text, width=72):
                     chunkStart = chunkEnd
     return chunkList
 #@+node:ekr.20101110094152.5847: *3* CreateAscMenu
-def CreateAscMenu(tag,keywords):
+def CreateAscMenu(tag, keywords):
     """Create the Outline to AsciiDoc menu item in the Export menu."""
     c = keywords.get('c')
-    if not c: return
+    if not c:
+        return
     exportMenu = c.frame.menu.getMenu('export')
     table = (
         ("-", None, None),
         ("Export all to &AsciiDoc", "Alt+Shift+A", WriteAll),
-        ("Export current tree to AsciiDoc","Alt+Shift+T", WriteTreeOfCurrentNode),
-        ("Log all root and ascfile to log pane","Alt+Shift+L", WriteAllRoots),
+        ("Export current tree to AsciiDoc", "Alt+Shift+T", WriteTreeOfCurrentNode),
+        ("Log all root and ascfile to log pane", "Alt+Shift+L", WriteAllRoots),
     )
     c.frame.menu.createMenuEntries(exportMenu, table)
 #@+node:ekr.20101110094152.5836: *3* GetAscFilename
-def GetAscFilename(c,p):
+def GetAscFilename(c, p):
     'Checks a node for a filename directive.'
     # f is the Leo outline
     ascFileName = None
@@ -88,16 +89,16 @@ def GetAscFilename(c,p):
         containsAscFileDirective = patternAscDirectiveFile.match(line)
         if containsAscFileDirective:
             ascFileName = containsAscFileDirective.group(1)
-            if (ascFileName is not None):
+            if ascFileName is not None:
                 base = os.path.split(c.mFileName)[0]  # linux or windows
-                if (((base[0]=="/") and (ascFileName[0] != "/")) or
-                   ((base[1]==":") and (ascFileName[1] != ":"))):
+                if (((base[0] == "/") and (ascFileName[0] != "/")) or
+                   ((base[1] == ":") and (ascFileName[1] != ":"))):
                     # no full pathname specified
                     ascFileName = os.path.join(base, ascFileName)
-                Conf.GetCurrentOptions(c,p)
+                Conf.GetCurrentOptions(c, p)
     return ascFileName
 #@+node:ekr.20101110094152.5835: *3* SectionUnderline
-def SectionUnderline(h,level,v):
+def SectionUnderline(h, level, v):
     'Return a section underline string.'
     asciiDocSectionLevels = int(Conf.current["asciiDocSectionLevels"])
     if level < 0:
@@ -108,15 +109,15 @@ def SectionUnderline(h,level,v):
             asciiDocSectionLevels, v.headString()))
         level = asciiDocSectionLevels - 1
     str = Conf.current["headingUnderlines"][level]  #'
-    return str*max(len(h),1)
+    return str * max(len(h), 1)
 #@+node:ekr.20101110094152.5843: *3* WriteAll
 def WriteAll(c):
 
     p = c.rootPosition()
     while p:
-        ascFileN = GetAscFilename(c,p)
+        ascFileN = GetAscFilename(c, p)
         if ascFileN:
-            WriteTreeAsAsc(p,ascFileN)
+            WriteTreeAsAsc(p, ascFileN)
             p.moveToNodeAfterTree()
         else:
             p.moveToThreadNext()
@@ -142,7 +143,7 @@ def WriteAllRoots(c):
                     printedHeading = True
                 g.es('  ' + line)
 #@+node:ekr.20101110094152.5839: *3* WriteNode
-def WriteNode(v,startinglevel, ascFile):
+def WriteNode(v, startinglevel, ascFile):
     'Writes the contents of the node v to the ascFile.'
     containsAscIignore = None
     skippingDocLines = False
@@ -162,7 +163,7 @@ def WriteNode(v,startinglevel, ascFile):
     h = v.headString()
     markedupAsSection = patternSectionName.match(h)
     if markedupAsSection:
-        h = markedupAsSection.group(1) # dump the angle brackets
+        h = markedupAsSection.group(1)  # dump the angle brackets
 
     # Put the body text into a list of lines.
     bodyString = v.bodyString()
@@ -185,7 +186,7 @@ def WriteNode(v,startinglevel, ascFile):
         if containsCodeDirective:
             pendinglineType = CV.LINE_PENDING_CODE
             skippingDocLines = False
-            continue                    # don't print this line
+            continue  # don't print this line
 
         containsDocDirective = patternDocDirective.match(line)
         if containsDocDirective:
@@ -227,7 +228,7 @@ def WriteNode(v,startinglevel, ascFile):
         if lastLinePrintedType == CV.LINE_WAS_NONE:
             if h and (Conf.current["PrintHeadings"] == "on"):
                 WriteOutputLine("\n\n%s" % h)
-                WriteOutputLine(SectionUnderline(h,v.level()-startinglevel,v))
+                WriteOutputLine(SectionUnderline(h, v.level() - startinglevel, v))
                 lastLinePrintedType = CV.LINE_WAS_HEAD
         if pendinglineType == CV.LINE_PENDING_DOC:
             if lastLinePrintedType != CV.LINE_WAS_DOC and \
@@ -238,7 +239,7 @@ def WriteNode(v,startinglevel, ascFile):
                     inCodeExtract = False
                 lastLinePrintedType = CV.LINE_WAS_DOC
             if skippingDocLines:
-                if not containsRootDirective: # always document a root directive
+                if not containsRootDirective:  # always document a root directive
                     continue
         if pendinglineType == CV.LINE_PENDING_CODE:
             if lastLinePrintedType != CV.LINE_WAS_CODE:
@@ -273,25 +274,25 @@ def WriteNode(v,startinglevel, ascFile):
             WriteOutputLine("\n%s" % Conf.current["delimiterForCodeSectionDefinition"])
             inCodeExtract = False
     if containsAscIignore is not None:
-        return CV.NODE_IGNORE # flag ignore tree to caller
+        return CV.NODE_IGNORE  # flag ignore tree to caller
     return None
 #@+node:ekr.20101110094152.5838: *3* WriteTreeAsAsc
-def WriteTreeAsAsc(p,fn):
+def WriteTreeAsAsc(p, fn):
     'Writes the tree under p to the file ascFile'
     try:
-        ascFile = open(fn,'w')
+        ascFile = open(fn, 'w')
     except IOError:
         g.es("Could not open output file: %s" % fn)
         return
     stopHere = p.nodeAfterTree()
     startinglevel = p.level()
     while p and p != stopHere:
-        val = WriteNode(p,startinglevel,ascFile)
-        if  val == CV.END_PROGRAM:
+        val = WriteNode(p, startinglevel, ascFile)
+        if val == CV.END_PROGRAM:
             ascFile.close()
             return
         if val == CV.NODE_IGNORE:
-            p.moveToNodeAfterTree() # ran into an @ascignore
+            p.moveToNodeAfterTree()  # ran into an @ascignore
         else:
             p.moveToThreadNext()
     ascFile.close()
@@ -301,7 +302,7 @@ def WriteTreeOfCurrentNode(c):
 
     p = c.p
     while p:
-        ascFileN = GetAscFilename(c,p)
+        ascFileN = GetAscFilename(c, p)
         if ascFileN:
             break
         else:
@@ -309,9 +310,9 @@ def WriteTreeOfCurrentNode(c):
     if ascFileN is None:
         g.es("Sorry, there was no @ascfile directive in this outline tree.")
     else:
-        WriteTreeAsAsc(p,ascFileN)
+        WriteTreeAsAsc(p, ascFileN)
 #@+node:ekr.20101110094152.5824: ** class _AssignUniqueConstantValue
-class   _AssignUniqueConstantValue:
+class _AssignUniqueConstantValue:
     """ Provide unique value to be used as a constant """
 
     #@+others
@@ -324,30 +325,30 @@ class   _AssignUniqueConstantValue:
     class ConstError(TypeError):
         pass
     #@+node:ekr.20101110094152.5827: *3* __setattr__
-    def __setattr__(self,name,value):
+    def __setattr__(self, name, value):
 
         if name in self.__dict__:
             if name != "UniqueInternalValue":
-                raise self.ConstError("Can't rebind const(%s)"%name)
-        self.__dict__[name]=value
+                raise self.ConstError("Can't rebind const(%s)" % name)
+        self.__dict__[name] = value
     #@+node:ekr.20101110094152.5828: *3* Assign_at_start
     def Assign_at_start(self):
-        self.END_PROGRAM = self.Next()   # signal abort
-        self.LINE_WAS_NONE = self.Next() # describe last line printed
+        self.END_PROGRAM = self.Next()  # signal abort
+        self.LINE_WAS_NONE = self.Next()  # describe last line printed
         self.LINE_WAS_CODE = self.Next()
-        self.LINE_WAS_DOC  = self.Next()
+        self.LINE_WAS_DOC = self.Next()
         self.LINE_WAS_HEAD = self.Next()
-        self.LINE_PENDING_NONE  = self.Next() # describe next line to be printed
-        self.LINE_PENDING_CODE  = self.Next()
-        self.LINE_PENDING_DOC   = self.Next()
+        self.LINE_PENDING_NONE = self.Next()  # describe next line to be printed
+        self.LINE_PENDING_CODE = self.Next()
+        self.LINE_PENDING_DOC = self.Next()
     #@+node:ekr.20101110094152.5829: *3* Next
     def Next(self):
         self.UniqueInternalValue += 1
-        return(self.UniqueInternalValue)
+        return self.UniqueInternalValue
     #@-others
 
 CV = _AssignUniqueConstantValue()
-CV.NODE_IGNORE = CV.Next()      # demo of adding in code
+CV.NODE_IGNORE = CV.Next()  # demo of adding in code
 #@+node:ekr.20101110094152.5830: ** class _ConfigOptions
 class _ConfigOptions:
     """Hold current configuration options."""
@@ -358,7 +359,7 @@ class _ConfigOptions:
         self.default = {}
         self.default["maxCodeLineLength"] = '76'
         self.default["delimiterForCodeStart"] = '~-~--- code starts --------'
-        self.default["delimiterForCodeEnd"]   = '~-~--- code ends ----------'
+        self.default["delimiterForCodeEnd"] = '~-~--- code ends ----------'
         self.default["delimiterForCodeSectionDefinition"] = '*example*'
         self.default["headingUnderlines"] = '=-~^+'
         self.default["asciiDocSectionLevels"] = '5'
@@ -381,7 +382,7 @@ class _ConfigOptions:
                     g.es("  No such config option: %s" % name)
 
     #@+node:ekr.20101110094152.5833: *3* GetCurrentOptions
-    def GetCurrentOptions(self,c,p):
+    def GetCurrentOptions(self, c, p):
         self.current.clear()
         self.current = self.default.copy()
         self.__GetNodeOptions(c.rootPosition())

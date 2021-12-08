@@ -159,49 +159,49 @@ keywordsDictDict = {
 def md_heading(colorer,s,i):
     # issue 386.
     # print('md_heading',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^[#]+",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_link(colorer,s,i):
     # issue 386.
     # print('md_link',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\[[^]]+\]\([^)]+\)",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_star_emphasis1(colorer,s,i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*[^\\s*][^*]*\\*",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_star_emphasis2(colorer,s,i):
     # issue 386.
     # print('md_star_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_underscore_emphasis1(colorer,s,i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="_[^_]+_",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_underline_equals(colorer,s,i):
     # issue 386.
     # print('md_underline_equals',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^===[=]+$",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
         
 def md_underline_minus(colorer,s,i):
     # issue 386.
     # print('md_underline_minus',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="---[-]+$",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_underscore_emphasis2(colorer,s,i):
     # issue 386.
     # print('md_underscore_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="__[^_]+__",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_rule0(colorer, s, i):

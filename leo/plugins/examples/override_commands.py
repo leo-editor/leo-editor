@@ -7,8 +7,8 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20111104210837.9691: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting
         # Not for unit testing: overrides core methods.
     if ok:
         # Register the handlers...
@@ -20,7 +20,7 @@ def onCommand(tag, keywords):
 
     if keywords.get("label") == "equalsizedpanes":
         g.es("over-riding Equal Sized Panes")
-        return "override" # Anything other than None overrides.
+        return "override"  # Anything other than None overrides.
     return None
 #@-others
 #@@language python

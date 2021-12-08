@@ -29,7 +29,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 warning_given = False
 
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     global warning_given
     if g.unitTesting:
         return False
@@ -160,8 +160,8 @@ class LiveCodeDisplay:
             if n == len(nodes) - 1:
                 next_node = len(lines)
             else:
-                next_node = nodes[n+1].lineno
-            block.append("".join(lines[node.lineno-1:next_node-1]))
+                next_node = nodes[n + 1].lineno
+            block.append("".join(lines[node.lineno - 1 : next_node - 1]))
         result = []
         for n, node in enumerate(nodes):
             node_result = None
@@ -181,7 +181,7 @@ class LiveCodeDisplay:
                     else:
                         # exec block[n] in self.scope
                         # EKR: Python 3 compatibility.
-                        exec(block[n],self.scope)
+                        exec(block[n], self.scope)
                 except Exception:
                     self.status.setText("ACTIVE: fail at %s" %
                         block[n].split('\n')[0])
@@ -203,14 +203,14 @@ class LiveCodeDisplay:
                         # pylint: disable=eval-used
                         node_result.append("%s = %r" %
                             (code.strip(), eval(code, self.scope)))
-                    node_result = ''.join(node_result) # was '\n'.join
+                    node_result = ''.join(node_result)  # was '\n'.join
             assert node_result is None or isinstance(node_result, str)
             if node_result is None:
                 self.codeblocks.append(self.CodeBlock(block[n], None))
             else:
                 self.codeblocks.append(self.CodeBlock(block[n], node_result))
                 result.append(node_result)
-        self.text.setText('\n'.join(result)) ###was '\n\n.join
+        self.text.setText('\n'.join(result))
         if run_count:
             self.status.setText("ACTIVE: %d blocks" % run_count)
     #@-others
@@ -226,7 +226,7 @@ class LiveCodeDisplayProvider:
             splitter.register_provider(self)
     #@+node:tbrown.20140806084727.30205: *3* ns_provides
     def ns_provides(self):
-        return[('Live Code', '_leo_livecode_show')]
+        return [('Live Code', '_leo_livecode_show')]
     #@+node:tbrown.20140806084727.30206: *3* ns_provide
     def ns_provide(self, id_):
         if id_.startswith('_leo_livecode_show'):

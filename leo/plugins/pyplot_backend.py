@@ -1,14 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160928073518.1: * @file ../plugins/pyplot_backend.py
-'''
+"""
     A helper for the viewrendered plugin.
     This is *NOT* a real plugin.
-'''
+"""
 #@+<< pyplot_backend imports >>
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
 from leo.plugins import viewrendered as vr
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
+from leo.core.leoQt import isQt5, isQt6, QtWidgets
+from leo.core.leoQt import FocusPolicy
 try:
     if isQt5 or isQt6:
         import matplotlib.backends.backend_qt5agg as backend_qt5agg
@@ -28,7 +29,7 @@ except ImportError:
 #@+others
 #@+node:ekr.20160928073605.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.trace('pyplot_backend.py is not a plugin.')
     return False
 #@+node:ekr.20160928082006.1: ** Leo backend
@@ -71,7 +72,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         # pylint: disable=non-parent-init-called
 
     def __init__(self, canvas, num):
-        '''Ctor for the LeoFigureManagerQt class.'''
+        """Ctor for the LeoFigureManagerQt class."""
         self.c = c = g.app.log.c
         super().__init__(canvas, num)
         self.canvas = canvas
@@ -97,7 +98,6 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.window = DummyWindow(c)
 
         # See comments in the base class ctor, in backend_qt5.py.
-        FocusPolicy = QtCore.Qt.FocusPolicy if isQt6 else QtCore.Qt
         self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
         self.canvas.setFocus()
         self.canvas._destroying = False
@@ -112,7 +112,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             layout.addWidget(self.statusbar_label)
             # pylint: disable=no-member
             if isQt5 or isQt6:
-                pass # The status bar doesn't work yet.
+                pass  # The status bar doesn't work yet.
             else:
                 self.toolbar.message.connect(self._show_message)
 

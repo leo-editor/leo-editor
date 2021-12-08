@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20050301084207: ** << docstring >>
-'''
+"""
 Allows Leo to read a complete directory tree into a Leo outline. Converts
 directories into headlines and puts the list of file names into bodies.
 
@@ -19,7 +19,7 @@ Feedback on this plugin can be sent to::
     Frédéric Momméja
     <frederic [point] mommeja [at] laposte [point] net>
 
-'''
+"""
 #@-<< docstring >>
 
 #@@language python
@@ -28,18 +28,18 @@ Feedback on this plugin can be sent to::
 import os
 from leo.core import leoGlobals as g
 
-language = 'english' # Anything except 'french' uses english.
+language = 'english'  # Anything except 'french' uses english.
 
 #@+others
 #@+node:ekr.20050301083306.4: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     # This plugin is now gui independent.
-    g.registerHandler(("new2","menu2"), onCreate)
+    g.registerHandler(("new2", "menu2"), onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20050301083306.5: ** onCreate
-def onCreate (tag, keywords):
+def onCreate(tag, keywords):
 
     c = keywords.get('c')
     cc = controller(c)
@@ -50,7 +50,7 @@ def onCreate (tag, keywords):
         mess1 = "Read a Directory..."
     table = (
         ("-", None, None),
-        (mess1, "Shift+Ctrl+Alt+D",cc.readDir),
+        (mess1, "Shift+Ctrl+Alt+D", cc.readDir),
     )
     c.frame.menu.createMenuEntries(menu, table)
 #@+node:ekr.20050301083306.6: ** class controller
@@ -58,15 +58,16 @@ class controller:
 
     #@+others
     #@+node:ekr.20050301083306.7: *3* ctor
-    def __init__ (self,c):
+    def __init__(self, c):
 
         self.c = c
     #@+node:ekr.20050301083306.8: *3* readDir
-    def readDir (self,event=None):
+    def readDir(self, event=None):
 
         # fr - Modifier pour adapter à votre environnement
         # en - Change it to select the starting browsing directory
-        c = self.c ; startdir = "/home/"
+        c = self.c
+        startdir = "/home/"
 
         if language == 'french':
             titledialog = "Choisir le répertoire..."
@@ -80,15 +81,15 @@ class controller:
 
         if dirName:
             g.es(dirName)
-            compteurglobal = self.importDir(dirName,compteurglobal=0)
+            compteurglobal = self.importDir(dirName, compteurglobal=0)
             c.selectPosition(c.p)
             c.redraw()
             if language == 'french':
-                g.es(str(compteurglobal)+" fichiers traités.")
+                g.es(str(compteurglobal) + " fichiers traités.")
             else:
-                g.es(str(compteurglobal)+" files outlined.")
+                g.es(str(compteurglobal) + " files outlined.")
     #@+node:ekr.20050301083306.10: *3* importDir
-    def importDir (self,dir,compteurglobal):
+    def importDir(self, dir, compteurglobal):
 
         """ La routine récursive de lecture des fichiers """
 
@@ -99,11 +100,12 @@ class controller:
                 g.es("No such Directory: %s" + dir)
             return compteurglobal
 
-        head,tail = g.os_path_split(dir)
-        c = self.c ; current = c.p
+        head, tail = g.os_path_split(dir)
+        c = self.c
+        current = c.p
         try:
             #ici, on liste le contenu du répertoire
-            body=""
+            body = ""
             #@+<< listdir >>
             #@+node:ekr.20050301083306.11: *4* << listdir >>
             try:
@@ -111,10 +113,10 @@ class controller:
                 dossiers = []
                 for f in fichiers:
                     # mettre ici le code de création des noeuds
-                    path = g.os_path_join(dir,f)
+                    path = g.os_path_join(dir, f)
                     # est-ce un fichier ?
                     if g.os_path_isfile(path):
-                        body += (f+"\n")
+                        body += (f + "\n")
                     else:
                         # c'est alors un répertoire
                         dossiers.append(path)
@@ -126,11 +128,11 @@ class controller:
                     g.es("os.listdir error...")
                 g.es_exception()
             #@-<< listdir >>
-            p = c.importCommands.createHeadline(current,body,tail)
+            p = c.importCommands.createHeadline(current, body, tail)
             c.selectPosition(p)
             if dossiers:
                 for d in dossiers:
-                    compteurglobal = self.importDir(d,compteurglobal)
+                    compteurglobal = self.importDir(d, compteurglobal)
             c.setChanged()
             #sélectionne le noeud parent
             c.selectPosition(current)

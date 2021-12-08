@@ -10,8 +10,8 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20100128073941.5375: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Not for unit testing: modifies core class.
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting  # Not for unit testing: modifies core class.
     if ok:
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)
@@ -19,9 +19,9 @@ def init():
 #@+node:edream.110203113231.721: ** newMoreHead
 # Returns the headline string in MORE format.
 
-def newMoreHead (self,firstLevel,useVerticalBar=True):
+def newMoreHead(self, firstLevel, useVerticalBar=True):
 
-    useVerticalBar = True # Force the vertical bar
+    useVerticalBar = True  # Force the vertical bar
 
     v = self
     level = self.level() - firstLevel
@@ -36,10 +36,10 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
     s += v.h
     return s
 #@+node:ekr.20100128073941.5376: ** onStart
-def onStart (tag,keywords):
+def onStart(tag, keywords):
 
     from leo.core import leoNodes
 
-    g.funcToMethod(newMoreHead,leoNodes.VNode,"moreHead")
+    g.funcToMethod(newMoreHead, leoNodes.VNode, "moreHead")
 #@-others
 #@-leo

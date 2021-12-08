@@ -3,26 +3,26 @@
 """This plugin adds few commands for those who use Leo for writing
    markdown documentation with code samples taken from real source
    files.
-   
+
    md-write-files command scans outline for nodes whose headline is
                   like `md:<filename>`, and for each node it generates
                   output file adding extension .md.
                   The output is written relative to the @path in effect
                   for the given md node.
-                  
+
                   headlines of descendant nodes are written as headlines
                   of the appropriate level.
-                  
+
                   Any line which startswith `LEO:<some gnx>` will be
                   replaced with the lines of node with given gnx indented
                   as much as LEO:<gnx> line was indented.
-    
+
     md-copy-leo-gnx command puts in clipboard marker of the currently selected
                   node. This marker can be pasted in the documentation where
                   source code example should be.
-    
+
     md-sync-transformations command updates body of all @transform-node nodes.
-    
+
         transformations can be defined in nodes with headline like:
             @transformer <name>
         body (and possibly subtree), should be script which has predefined
@@ -30,7 +30,7 @@
         transformed and out is file like object where transformer script
         can write its output. This synchronization is done before save
         automatically.
-    
+
     Author: vitalije(at)kviziracija.net
 """
 import io
@@ -38,7 +38,7 @@ import re
 from leo.core import leoGlobals as g
 pat = re.compile(r'^(\s*)LEOGNX:(.+)$')
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('save1', beforeSave)
     g.plugin_signon(__name__)
     return True
@@ -46,8 +46,8 @@ def init():
 #@+node:vitalije.20180804174131.1: ** md_write_files
 @g.command('md-write-files')
 def md_write_files(event):
-    '''writes all md nodes. A md node is node whose headline
-       starts with 'md:' followed by file name.'''
+    """writes all md nodes. A md node is node whose headline
+       starts with 'md:' followed by file name."""
     c = event.get('c')
     #@+others
     #@+node:vitalije.20180804180150.1: *3* hl
@@ -63,7 +63,7 @@ def md_write_files(event):
             if m:
                 v1 = c.fileCommands.gnxDict.get(m.group(2))
                 if not v1:
-                    g.es('gnx not found:[%s]'%m.group(2))
+                    g.es('gnx not found:[%s]' % m.group(2))
                 else:
                     for x in v1.b.splitlines(False):
                         yield m.group(1) + x
@@ -104,7 +104,7 @@ def md_write_files(event):
 #@+node:vitalije.20180804180928.1: ** md_copy_leo_gnx
 @g.command('md-copy-leo-gnx')
 def md_copy_leo_gnx(event):
-    '''Puts on clipboard `LEOGNX:<gnx of currently selected node>`.'''
+    """Puts on clipboard `LEOGNX:<gnx of currently selected node>`."""
     c = event.get('c')
     g.app.gui.replaceClipboardWith('LEOGNX:' + c.p.gnx)
 #@+node:vitalije.20180805114033.1: ** beforeSave
@@ -131,7 +131,7 @@ def sync_transformations(event):
             h = v.h
             if h.startswith('@transformer '):
                 name = h.partition(' ')[2].strip()
-                trscripts[name] = g.getScript(c, p.copy(), 
+                trscripts[name] = g.getScript(c, p.copy(),
                     useSentinels=False, forcePythonSentinels=True)
                 p.moveToNodeAfterTree()
             elif h.startswith('@transform-node '):
@@ -169,6 +169,6 @@ def sync_transformations(event):
         except Exception:
             g.es_exception(True, c)
     if count:
-        g.es('%d node(s) transformed'%count)
+        g.es('%d node(s) transformed' % count)
 #@-others
 #@-leo

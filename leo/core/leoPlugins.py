@@ -2,6 +2,7 @@
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
 """Classes relating to Leo's plugin architecture."""
 import sys
+from typing import List
 from leo.core import leoGlobals as g
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
@@ -18,7 +19,7 @@ def init():
 def registerHandler(tags, fn):
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
-#@+node:ville.20090222141717.2: ** TryNext (exception)
+#@+node:ville.20090222141717.2: ** TryNext (Exception)
 class TryNext(Exception):
     """Try next hook exception.
 
@@ -29,7 +30,7 @@ class TryNext(Exception):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.args = args
         self.kwargs = kwargs
 #@+node:ekr.20100908125007.6033: ** class CommandChainDispatcher
@@ -263,7 +264,7 @@ class LeoPluginsController:
         self.signonModule = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
-        assert(g)
+        assert g
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
@@ -368,7 +369,7 @@ class LeoPluginsController:
             s = 'all plugin handlers...\n'
         g.es(s + '\n', tabName=tabName)
         data = []
-        modules = {}
+        modules: dict[str, List[str]] = {}
         for tag in self.handlers:
             bunches = self.handlers.get(tag)
             for bunch in bunches:
@@ -407,7 +408,8 @@ class LeoPluginsController:
         d = self.loadedModulesFilesDict
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
-        data = []; n = 4
+        data = []
+        n = 4
         for moduleName in d:
             fileName = d.get(moduleName)
             n = max(n, len(moduleName))
@@ -418,7 +420,7 @@ class LeoPluginsController:
     def regularizeName(self, moduleOrFileName):
         """
         Return the module name used as a key to this modules dictionaries.
-        
+
         We *must* allow .py suffixes, for compatibility with @enabled-plugins nodes.
         """
         if not moduleOrFileName.endswith('.py'):
@@ -440,11 +442,12 @@ class LeoPluginsController:
         """
 
         def pr(*args, **keys):
-            if not g.app.unitTesting:
+            if not g.unitTesting:
                 g.es_print(*args, **keys)
 
         s = g.app.config.getEnabledPlugins()
-        if not s: return
+        if not s:
+            return
         if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
             if 0:
                 s2 = f"@enabled-plugins found in {g.app.config.enabledPluginsFileName}"
@@ -500,7 +503,7 @@ class LeoPluginsController:
                 return callInitFunction(result)
             #
             # No top-level init function.
-            if g.app.unitTesting:
+            if g.unitTesting:
                 # Do *not* load the module.
                 self.loadedModules[moduleName] = None
                 return None
@@ -616,10 +619,9 @@ class LeoPluginsController:
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
-        if 0:
-            if g.app.unitTesting: g.pr('')
-            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
-        if g.app.unitTesting: return
+        # print(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+        if g.unitTesting:
+            return
         if tag in self.handlers:
             g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
@@ -640,9 +642,7 @@ class LeoPluginsController:
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
-        if 0:
-            if g.app.unitTesting: g.pr('')
-            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
+        # print(f"{g.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
         items = self.handlers.get(tag, [])
         functions = [z.fn for z in items]
         if fn not in functions:  # Vitalije

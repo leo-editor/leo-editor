@@ -7,7 +7,8 @@
 import os
 import sys
 import re
-from typing import Dict, Tuple, Union
+import textwrap
+from typing import Any, Dict, List, Tuple, Union
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -107,7 +108,8 @@ class ParserBaseClass:
     def computeModeName(self, name):
         s = name.strip().lower()
         j = s.find(' ')
-        if j > -1: s = s[:j]
+        if j > -1:
+            s = s[:j]
         if s.endswith('mode'):
             s = s[:-4].strip()
         if s.endswith('-'):
@@ -167,10 +169,10 @@ class ParserBaseClass:
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
+                    # #2011: put rclicks in aList. Do not inject into command_p.
                     command_p = p.copy()
-                    aList.append((command_p, script))
                     rclicks = build_rclick_tree(command_p, top_level=True)
-                    command_p.rclicks = rclicks
+                    aList.append((command_p, script, rclicks))
                 p.moveToThreadNext()
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -180,10 +182,6 @@ class ParserBaseClass:
             g.app.config.buttonsFileName = (
                 c.shortFileName() if c else '<no settings file>'
             )
-        d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
-        aList = d.get(key, [])
-        aList.append(c.shortFileName())
-        d[key] = aList
     #@+node:ekr.20041120094940.2: *4* pbc.doColor
     def doColor(self, p, kind, name, val):
         # At present no checking is done.
@@ -193,7 +191,9 @@ class ParserBaseClass:
     #@+node:ekr.20080312071248.6: *4* pbc.doCommands
     def doCommands(self, p, kind, name, val):
         """Handle an @commands tree."""
-        aList = []; c = self.c; tag = '@command'
+        c = self.c
+        aList = []
+        tag = '@command'
         seen = []
         after = p.nodeAfterTree()
         while p and p != after:
@@ -217,10 +217,6 @@ class ParserBaseClass:
         if aList:
             g.app.config.atCommonCommandsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-        d, key = g.app.config.unitTestDict, 'config.doCommands-file-names'
-        aList = d.get(key, [])
-        aList.append(c.shortFileName())
-        d[key] = aList
     #@+node:ekr.20071214140900: *4* pbc.doData
     def doData(self, p, kind, name, val):
         # New in Leo 4.11: do not strip lines.
@@ -271,8 +267,10 @@ class ParserBaseClass:
         aList, lines = [], g.splitLines(s)
         for s in lines:
             i = s.find('#')
-            if i > -1: s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
-            if s.strip(): aList.append(s.lstrip())
+            if i > -1:
+                s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
+            if s.strip():
+                aList.append(s.lstrip())
         s = ''.join(aList)
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
@@ -388,7 +386,7 @@ class ParserBaseClass:
         """Handle @menuat setting."""
         if g.app.config.menusList:
             # get the patch fragment
-            patch = []
+            patch: List[Any] = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(), patch)
@@ -437,7 +435,8 @@ class ParserBaseClass:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* pbc.getName
     def getName(self, val, val2=None):
-        if val2 and val2.strip(): val = val2
+        if val2 and val2.strip():
+            val = val2
         val = val.split('\n', 1)[0]
         for i in "*.-& \t\n":
             val = val.replace(i, '')
@@ -478,7 +477,7 @@ class ParserBaseClass:
 
         c = self.c
         p = p.copy()
-        aList = []
+        aList: List[Any] = []  # This entire logic is mysterious, and likely buggy.
         after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
@@ -491,7 +490,7 @@ class ParserBaseClass:
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
-                    aList2 = []
+                    aList2: List[Any] = []  # Huh?
                     kind = f"{'@menu'} {name}"
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
@@ -525,9 +524,9 @@ class ParserBaseClass:
                             # Only the first body line is significant.
                             # This allows following comment lines.
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = []  # Huh?
                             kind = f"{tag} {itemName}"
-                            self.doItems(p, aList2)
+                            self.doItems(p, aList2)  # Huh?
                             aList.append((kind, aList2, body),)
                                 # #848: Body was None.
                             p.moveToNodeAfterTree()
@@ -594,7 +593,7 @@ class ParserBaseClass:
         """
         popupName = name
         # popupType = val
-        aList = []
+        aList: List[Any] = []
         p = p.copy()
         self.doPopupItems(p, aList)
         if not hasattr(g.app.config, 'context_menus'):
@@ -602,7 +601,8 @@ class ParserBaseClass:
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5: *5* pbc.doPopupItems
     def doPopupItems(self, p, aList):
-        p = p.copy(); after = p.nodeAfterTree()
+        p = p.copy()
+        after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
             h = p.h
@@ -611,10 +611,10 @@ class ParserBaseClass:
                     itemName = h[len(tag) :].strip()
                     if itemName:
                         if tag == '@menu':
-                            aList2 = []
+                            aList2: List[Any] = []
                             kind = f"{itemName}"
                             body = p.b
-                            self.doPopupItems(p, aList2)
+                            self.doPopupItems(p, aList2)  # Huh?
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
                             break
@@ -641,7 +641,8 @@ class ParserBaseClass:
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
-        if s is None: s = p.b
+        if s is None:
+            s = p.b
         fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
@@ -696,7 +697,7 @@ class ParserBaseClass:
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
     def parseFont(self, p):
-        d = {
+        d: Dict[str, Any] = {
             'comments': [],
             'family': None,
             'size': None,
@@ -713,7 +714,8 @@ class ParserBaseClass:
     #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
     def parseFontLine(self, line, d):
         s = line.strip()
-        if not s: return
+        if not s:
+            return
         try:
             s = str(s)
         except UnicodeError:
@@ -778,7 +780,8 @@ class ParserBaseClass:
     #@+node:ekr.20070411101643.4: *5* pbc.parseOpenWithLine
     def parseOpenWithLine(self, line, d):
         s = line.strip()
-        if not s: return
+        if not s:
+            return
         i = g.skip_ws(s, 0)
         if g.match(s, i, '#'):
             return
@@ -822,7 +825,8 @@ class ParserBaseClass:
         # c = self.c
         s = s.replace('\x7f', '')
             # Can happen on MacOS. Very weird.
-        name = val = nextMode = None; nextMode = 'none'
+        name = val = nextMode = None
+        nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'):  # New in 4.4.1 b1: allow mode-entry commands.
             j = g.skip_ws(s, i + 3)
@@ -850,7 +854,8 @@ class ParserBaseClass:
             j = g.skip_ws(s, i + 1)
             i = g.skip_id(s, j)
             pane = s[j:i]
-            if not pane.strip(): pane = 'all'
+            if not pane.strip():
+                pane = 'all'
         else: pane = 'all'
         i = g.skip_ws(s, i)
         if g.match(s, i, '='):
@@ -888,13 +893,17 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
-            unl=(p and p.get_UNL(with_proto=True)))
+        d[key] = g.GeneralSetting(kind,  # type:ignore
+            path=c.mFileName,
+            tag='setting',
+            unl=(p and p.get_UNL(with_proto=True)),
+            val=val,
+        )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
     def traverse(self):
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict = g.TypedDict(
+        self.settingsDict = g.TypedDict(  # type:ignore
             name=f"settingsDict for {c.shortFileName()}",
             keyType=type('settingName'),
             valType=g.GeneralSetting)
@@ -1056,7 +1065,7 @@ class ActiveSettingsOutline:
             '''
         if lm.theme_path:
             legend = legend + f"[T] theme file: {g.shortFileName(lm.theme_path)}\n"
-        return g.adjustTripleString(legend, c.tab_width)
+        return textwrap.dedent(legend)
     #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
         """
@@ -1135,7 +1144,7 @@ class ActiveSettingsOutline:
     def add(self, p, h=None):
         """
         Add a node for p.
-        
+
         We must *never* alter p in any way.
         Instead, the org flag tells whether the "ORG:" prefix.
         """
@@ -1194,7 +1203,7 @@ class ActiveSettingsOutline:
             if kind == 'ignore':
                 g.trace('IGNORE:', kind, key)
                 continue
-            if kind in ('error'):
+            if kind == 'error':  # 2021/09/18.
                 g.trace('ERROR:', kind, key)
                 continue
             if kind == target_kind:
@@ -1343,7 +1352,6 @@ class GlobalConfigManager:
         self.atLocalCommandsList = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
-        self.unitTestDict = {}  # For unit testing: *not* the same as g.app.unitTestDict.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
@@ -1767,9 +1775,9 @@ class LocalConfigManager:
     def createActivesSettingsOutline(self):
         """
         Create and open an outline, summarizing all presently active settings.
-        
+
         The outline retains the organization of all active settings files.
-        
+
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
         ActiveSettingsOutline(self.c)
@@ -1794,12 +1802,13 @@ class LocalConfigManager:
         for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(tag.lower()):
                 if setting.kind == 'color':
-                    if trace: g.trace(
-                        'FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                    if trace:
+                        g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
                 return tag.rstrip('.leo')
         theme_path = g.app.loadManager.theme_path
         if theme_path and g.shortFileName(theme_path.lower()) in path:
-            if trace: g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
+            if trace:
+                g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
             return "theme_file"
         # g.trace('NOT FOUND', repr(theme_path), repr(path))
         if path == 'register-command' or path.find('mode') > -1:
@@ -1870,7 +1879,8 @@ class LocalConfigManager:
         """
         tag = 'c.config.getValFromDict'
         gs = d.get(g.app.config.munge(setting))
-        if not gs: return None, False
+        if not gs:
+            return None, False
         assert isinstance(gs, g.GeneralSetting), repr(gs)
         val = gs.val
         isNone = val in ('None', 'none', '')
@@ -2068,8 +2078,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: Dict[str, Cmdr] = {}
-        # Keys are file names.
+    no_menu_dict: Dict[Cmdr, bool] = {}
 
     def getShortcut(self, commandName):
         """Return rawKey,accel for shortcutName"""
@@ -2085,7 +2094,7 @@ class LocalConfigManager:
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '')  # Allow '&' in names.
             aList = d.get(commandName, [])
-            if aList:  # A list of g.BindingIndo objects.
+            if aList:  # A list of g.BindingInfo objects.
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']
@@ -2148,7 +2157,8 @@ class LocalConfigManager:
         d = self.settingsDict
         if d:
             junk, found = self.getValFromDict(d, setting, kind)
-            if found: return True
+            if found:
+                return True
         return False
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings(self):
@@ -2172,7 +2182,7 @@ class LocalConfigManager:
     [T] theme .leo file.
     '''
         c = self.c
-        legend = g.adjustTripleString(legend, c.tab_width)
+        legend = textwrap.dedent(legend)
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"
@@ -2187,7 +2197,7 @@ class LocalConfigManager:
     def set(self, p, kind, name, val, warn=True):
         """
         Init the setting for name to val.
-        
+
         The "p" arg is not used.
         """
         c = self.c
@@ -2218,11 +2228,13 @@ class LocalConfigManager:
         p = self.findSettingsPosition(setting)
         if not p:
             c = c.openMyLeoSettings()
-            if not c: return
+            if not c:
+                return
             p = c.config.findSettingsPosition(setting)
         if not p:
             root = c.config.settingsRoot()
-            if not root: return
+            if not root:
+                return
             p = c.config.findSettingsPosition(setting)
             if not p:
                 p = root.insertAsLastChild()
@@ -2268,7 +2280,7 @@ class SettingsTreeParser(ParserBaseClass):
             f = self.dispatchDict.get(kind)
             if f:
                 try:
-                    return f(p, kind, name, val)
+                    return f(p, kind, name, val)  # type:ignore
                 except Exception:
                     g.es_exception()
             else:
@@ -2284,9 +2296,11 @@ def parseFont(b):
     settings_name = None
     for line in g.splitLines(b):
         line = line.strip()
-        if line.startswith('#'): continue
+        if line.startswith('#'):
+            continue
         i = line.find('=')
-        if i < 0: continue
+        if i < 0:
+            continue
         name = line[:i].strip()
         if name.endswith('_family'):
             family = line[i + 1 :].strip()
@@ -2295,9 +2309,9 @@ def parseFont(b):
         elif name.endswith('_size'):
             size = line[i + 1 :].strip()
             try:
-                size = float(size)
+                size = float(size)  # type:ignore
             except ValueError:
-                size = 12
+                size = 12  # type:ignore
         elif name.endswith('_slant'):
             slant = line[i + 1 :].strip()
         if settings_name is None and name.endswith(

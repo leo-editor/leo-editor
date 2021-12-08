@@ -1,19 +1,25 @@
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=PAGE+VIEWS&edge_flat=false)](https://hits.seeyoufarm.com)
-
-Leo 6.3, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
+Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.3**
+**The highlights of Leo 6.6**
 
-- leoAst.py: The unification of Python's token and ast worlds.
-- Retired all Qt Dock code.
-- Improved viewrendered and viewrendered3 plugins.
-- Improved several importer plugins.
-- Refactored Leo's key handling code.
+- Replace @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Many improvements to python-to-typescript command.
+- picture_viewer.py is a stand-alone app that displays images in a folder.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Complete coverage testing for leoAtFile.py.
 
-**Links**
+**6.6 Links**
+
+- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
+- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
+- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
+- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
+- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+
+**General Links**
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)

@@ -2,22 +2,22 @@
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
+# pylint: disable=line-too-long,multiple-statements
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
-Creates a window for live rendering of reSTructuredText, 
+Creates a window for live rendering of reSTructuredText,
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.2
+About Viewrendered3 V3.7
 ===========================
 
-The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
-ViewRendered plugin and enhances the display of Restructured Text (RsT),
-Markdown (MD), asnd Asciidoc (nodes and subtrees.  For RsT, MD, and Asciidoc
-the plugin can:
+The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
+Markdown (MD), and Asciidoc (nodes and subtrees) in a separate pane.
+it duplicates and extendes the functionality of the ViewRendered plugin.  The plugin can:
 
     #. Render entire subtrees starting at the selected node;
     #. Render code and literal blocks in a visually distinct way;
@@ -27,7 +27,7 @@ the plugin can:
     #. Colorize code blocks;
     #. Execute Python code in the code blocks;
     #. Execute non-Python code blocks for certain languages.  Command line
-       parameters can be passed to these language processors.
+       parameters can be passed to these language processors. [RsT only]
     #. Insert the print() output of an execution at the bottom of the rendered display;
     #. Identify code blocks by either an @language directive or by the code block
        syntax normally used by RsT, MD, or Asciidoc (e.g., code fences for MD);
@@ -35,24 +35,23 @@ the plugin can:
     #. Insert an image using the ``@image`` directive in addition to the image
        syntax for the structured text in use.
     #. Export the rendered node or subtree to the system browser;
-    #. Optionally render mathematics symbols and equations using MathJax (not in
-       Asciidoc yet);
-    #. Correctly handle RsT or MD (not tested for Asciidoc as yet) in a docstring;
+    #. Export the generated markup to a chosen text editor.
+    #. Optionally render mathematics symbols and equations using MathJax.
     #. While an entire subtree rendering is visible, the display can be locked
        so that the entire tree shows even while a single node is being edited.
-    #. When an entire subtree is rendered, and editing is being done in one
+    #. When an entire subtree is rendered, and editing is being done in one 
        node, the display can be frozen (no changes will be displayed) if
        necessary to avoid excessive delay in re-rendering, or visual anomalies.
     #. The default rendering language for a node can be selected to by one of
-       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node 
+       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node
        or subtree has no @rst or @md headline.
     #. Display a node's headline text as the overall heading for the rendering.
        However, if the first line of a node exactly equals the headline text
        (not counting a directive like "@rst"), only one copy of that heading
        will be displayed.
 
-A number of other special types of nodes can be rendered (see the 
-section *Special Renderings*)
+A number of other special types of nodes can be rendered (see the
+section `Special Renderings`_.
 
 @setting nodes in an @settings tree can modify the behavior of the plugin.
 #@+node:TomP.20200309205046.1: *3* Compatibility
@@ -69,8 +68,8 @@ Alt-0 for VR3 and Alt-F10 for VR.
 Limitations and Quirks
 ======================
 
-    #. The plugin requires QT5 and Python 3.6+. All Leo versions since 6.0 also
-       use them, so this requirement should always be met.
+    #. The plugin requires pyqt5 or pyqt6. All Leo versions since 6.0 can
+       use at least pyqt5 so this requirement should always be met.
 
     #. The RsT processor (``docutils``) is fussy about having blank lines after
        blocks.  A node may render correctly on its own, but will show errors
@@ -87,7 +86,7 @@ Limitations and Quirks
        executed with a Leo environment the includes the standard Leo
        variables c, g, and c.p.
 
-    #. All code blocks in a node or subtree must contain the same code language 
+    #. All code blocks in a node or subtree must contain the same code language
        or they cannot be executed.
 
     #. Non-Python code can currently only be executed in RsT trees.
@@ -126,10 +125,10 @@ Settings and Configuration
 ==========================
 
 Settings
-========
+---------
 
-Settings are put into nodes with the headlines ``@setting ....``.  
-They must be placed into an ``@settings`` tree, preferably 
+Settings are put into nodes with the headlines ``@setting ...``.
+They must be placed into an ``@settings`` tree, preferably
 in the myLeoSettings file.
 
 All settings are of type @string unless shown as ``@bool``
@@ -139,8 +138,10 @@ All settings are of type @string unless shown as ``@bool``
    :widths: 18, 5, 5, 30
 
    "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
-   "@bool vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
-   "@bool vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
+   "vr3-ext-editor", "", "Path to external editor", "Specify
+   desired external editor to receive generated markup"
+   "vr3-math-output", "False", "bool (True, False)", "RsT MathJax math rendering"
+   "vr3-md-math-output", "False", "bool (True, False)", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "Optional URL for RsT Stylesheet"
    "vr3-rst-use-dark-theme", "''", "True, False", "Whether to force the use of the default dark stylesheet"
@@ -183,27 +184,67 @@ example for the VR3 plugin::
 Stylesheets
 ===========
 
-ReStructured Text
+#@+node:tom.20211118000408.1: *5* ReStructuredText
+ReStructuredText
 ------------------
 
-Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  For Restructured Text, stylesheet handling is quite flexible.
+Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory. For
+Restructured Text, stylesheet handling is quite flexible.
 
-There are dark-theme and light-theme default stylesheets for RsT.  If no related settings are present, then VR3 chooses the dark one if the Leo theme name contains "dark" or the theme name is "DefaultTheme".
+There are dark-theme and light-theme default stylesheets for RsT and MD. If no
+related settings are present, then VR3 chooses the dark one if the Leo
+theme name contains "dark" or the theme name is "DefaultTheme".
 
-If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will be used.  If it is set to ``False``, then the light one will be used.
+If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will
+be used. If it is set to ``False``, then the light one will be used.
 
-The use of these default stylesheets can be overridden by the setting ``@string vr3-rst-stylesheet``.  This setting must be set to the path of a .css stylesheet file.  If it is a relative path, it is taken to be relative to the user's .leo/vr3 directory.  If it is an absolute path, then the string ``file:///`` may be prepended to the path; it will be removed if present.
+The use of these default stylesheets can be overridden by the setting ``@string
+vr3-rst-stylesheet``. This setting must be set to the path of a css stylesheet
+file. If it is a relative path, it is taken to be relative to the user's
+.leo/vr3 directory. If it is an absolute path, then the string ``file:///`` may
+be prepended to the path; it will be removed if present.
 
-These stylesheet settings can be changed and will take effect when the settings are reloaded, and VR3 is refreshed or restarted.  There is no need to close Leo and restart it.
+These stylesheet settings can be changed and will take effect when the settings
+are reloaded, and VR3 is refreshed or restarted. There is no need to close Leo
+and restart it.
 
-These settings can be placed into the @settings tree of an outline, and then that outline's settings will be used when that outline is active.  It is possible for one outline to use the dark stylesheet, another to use the light stylesheet, and a third to use a custom one.
-
+These settings can be placed into the @settings tree of an outline, and then
+that outline's settings will be used when that outline is active. It is possible
+for one outline to use the dark stylesheet, another to use the light stylesheet,
+and a third to use a custom one.
+#@+node:tom.20211118000432.1: *5* Markdown
 Markdown
 ---------
-If the default MD stylesheet is removed, the
-plugin will re-create it on startup, but the RsT stylesheet will not be
-recreated if removed.
-#@+node:tom.20210612193820.1: *4* Mathjax
+
+Markdown stylesheets can be specified in very flexible ways. Css stylesheets are
+looked for first in the user's `~/.leo/vr3 directory`, and then in the
+`leo/plugins/viewrendered3` directory.  The choice of stylesheet is as follows:
+
+- If the string setting `vr3-md-stylesheet` contains an absolute path, that file will
+  be used if it is found;  if it contains a bare file name, it will be used if it can 
+  be found in either of the two stylesheet directories.
+
+Otherwise:
+
+- If the boolean setting `vr3-md-style-auto` is ``True``, then the current Leo theme
+  will be examined to see if it is a dark theme or not.  If the theme is dark (light),
+  a stylesheet named `md_styles_solarized_dark.css` (`md_styles_solarized_light.css`)
+  will be looked for in the two stylesheet directories and used if found.
+
+Otherwise:
+
+- A default stylesheet named `md_styles.css` will be looked for in the two stylesheet
+  directories. If is not found, the plugin will re-create it on startup
+  (however, the RsT stylesheet will not be recreated if removed).
+
+The dark, light, and default stylesheets are included in the `leo/plugins/viewrendered3` directory.
+
+This priority scheme allow a user to modify any of the standard stylesheets in the default location
+(`leo/plugins/viewrendered3`) and put them in the `~/.leo/vr3` in order to override the standard ones.
+
+When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
+can be any mix of Windows and Linux separators.
+#@+node:tom.20210612193820.1: *4* MathJax Script Location
 MathJax Script Location
 =======================
 
@@ -217,6 +258,9 @@ that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
 include a ``?config`` specifer.  The one shown in the example above works well.
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
+External Processors For Other Languages
+========================================
+
 VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
 
     <processor> [optional parameters] filename
@@ -239,6 +283,9 @@ A language that is specified here will not automatically be executed: only langu
 
 VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
 #@+node:TomP.20210423000029.1: *5* @param Optional Parameters
+Optional Parameters
+====================
+
 \@param - Specify parameter(s) to be passed to a non-Python language processor.
 -------------------------------------------------------------------------------
 The `@param` directive specifies command-line parameters to be passed
@@ -256,7 +303,7 @@ then the julia processor will be invoked with the command line::
     <path-to-julia> -q <progfile>
 
 Any number of parameters may be included on one @param line, and
-multiple @param directives are allowed.
+multiple @param directives are allowed.  Parameters can include redirection symbols (e.g., "<", ">").
 
 Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
 outside a code block::
@@ -269,6 +316,9 @@ outside a code block::
     # ...
 
 #@+node:TomP.20210423002026.1: *5* Limitations
+Limitations
+============
+
 1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
 
 2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
@@ -277,12 +327,25 @@ Commands
 ========
 
 viewrendered3-specific commands all start with a "vr3-" prefix.  There is
-rarely a reason to invoke any of them, except for ``vr3-toggle``, which shows
-or hides the VR3 pane. This is best bound to a hot key (see `Hot Key`_).
+rarely a reason to invoke any of them, except three:
+
+    1. ``vr3-toggle``, which shows or hides the VR3 pane.
+    This is best bound to a hot key (see `Hot Key`_).
+
+    2.``vr3-open-markup-in-editor`` exports the generated markup
+    to temporary file and opens it in a text editor. The editor
+    is one specified by the setting ``@string vr3-ext-editor``,
+    the setting ``@string external-editor``, by the environmental
+    variable ``EDITOR`` or ``LEO-EDITOR``, or is the default
+    editor chosen by Leo.
+
+    3. ``vr3-help-plot-2d`` opens a help page in the system browser
+    for the *Plot 2D* capability.
+
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
----------------
+===============
 
 VR3 renders three kinds of structured text: reStructured Text (RsT), Markdown (MD),
 and Asciidoc.  Normally the currently selected node is rendered, but a toolbar menu item
@@ -314,7 +377,7 @@ If a node or the top of a subtree begins with `@rst`, `@md`, or `asciidoc`,
 that language will be the default language of the node or subtree.  If the
 node or subtree is not marked with one of these `@xxx` types, then the
 default language is given by the setting `@string vr3-default-kind = xxx`.
-This can be overidden by the ``Default Kind`` toolbar menu.
+This can be overridden by the ``Default Kind`` toolbar menu.
 
 Within a node, the ``@language`` directive will set the language to be used
 until another ``@language`` directive or the end of the node.
@@ -358,7 +421,7 @@ Rendering reStructuredText
 The VR3 plugin will render a node using RsT if its headline, or the headline of
 a parent, starts with ``@rst``. The type of rendering is called its "kind". If
 no kind is known, then RsT rendering will be used unless the ``vr3-default-kind``
-setting is set to another allowed value.  The default kind can also be changed 
+setting is set to another allowed value.  The default kind can also be changed
 using the ``Default Kind`` menu.
 
 **Note**: reStructuredText errors and warnings will appear in red in the
@@ -399,95 +462,104 @@ the language instead::
 .. note::
     No space is allowed between the fence characters and the language.
 
-As with RsT rendering, do not mix multiple structured languages in a single 
+As with RsT rendering, do not mix multiple structured languages in a single
 node or subtree.
 
 #@+node:TomP.20200820170225.1: *4* Rendering Asciidoc
 Rendering Asciidoc
-------------------
+===================
 
 The VR3 plugin will render a node using Asciidoc if
-an Asciidoc or Asciidoc3 processor has been installed and the node type 
+an Asciidoc or Asciidoc3 processor has been installed and the node type
 is ``@asciidoc`` or if the node starts with ``@language asciidoc``.
-
-If a Python Asciidoc processor is used (as opposed to Asciidoc3),
-the asciidoc processor must be in a directory directory pointed 
-to by the system setting named ``vr3-asciidoc-path``.  As an
-alternative, VR3 will use an executable processor named ``asciidoc``
-if it is on the system path.
-
-It is also possible to use the Ruby ``asciidoctor.rb`` program as an external 
-processor.  This will render the Asciidoc much faster than the Python 
-``asciidoc`` module.
-
-.. note:: The Asciidoc processors are quite slow at rendering
-          long documents, as can happen when the "Entire Tree"
-          setting is used.  Restructured Text or Markdown are
-          recommended in those cases, or the Ruby version
-          ``asciidoctor`` (see below).
 
 The asciidoc processor must be one of:
 
-    1. ``asciidoctor``, which requires a Ruby environment to be
+    1. *asciidoctor*, which requires a Ruby environment to be
        installed on your computer;
 
-    2. ``asciidoc`` from https://asciidoc.org/index.html.
+    2. *asciidoc* from https://asciidoc.org/index.html.
        This may be available pre-installed or as a package
        in some Linux distributions;
 
-    3. ``asciidoc3``, which is available as a python installable
-       package but may be hard to get working on Windows;  or
+    3. *asciidoc3*, which is available as a python pip-installable
+       package but may be hard to get working on Windows.
 
-    4. Other external asciidoc processors may work if they can be
-       launched from the system path (either directly or by
-       an external batch file), but they will need to have the same 
-       command line parameters as 1. or 2. above.
+Processor Priority
+-------------------
+A user may have both *asciidoc* and asciidoc3* installed.  VR3 will
+try processors using the following priority:
 
-Asciidoc can be imported into VR3 instead of being run as an external file 
-by specifying its folder location in the ``@vr3-asciidoc-path`` setting.
-This will only work for ``asciidoc`` from the source stated in 1. above.
-This *may* provide faster rendering.
+1. The Ruby *asciidoctor* processor if it is requested by the setting::
 
-If both ``asciidoc`` and ``asciidoc3`` are found, then which one will 
-be used can be set by the setting
+    @string vr3-prefer-external = asciidoctor
 
-    ``@bool vr3-prefer-asciidoc3``
+2. *asciidoc3* if requested by the setting::
 
-Its default setting is False, meaning that Asciidoc will be preferred
-over Asciidoc3.
+    @bool vr3-prefer-asciidoc3 = True
 
-AsciiDoctor
------------
+3. *asciidoc* .  If the setting *vr3-prefer-asciidoc3* is not *True*, then asciidoc will be tried before asciidoc3.
 
-Installing the ``asciidoctor`` Ruby Program
-===========================================
-First install the Ruby code environment.  It is not necessary to install 
-the entire development system. A minimal install will be enough.
-Next, run the following commands in a terminal or Windows console::
+asciidoctor
+-------------
+To use *asciidoctor* first install Ruby.  First install the Ruby code environment.
+It is not necessary to install the entire development system. A minimal
+install will be enough. Next, run the following commands in a terminal 
+or Windows console::
 
     gem install asciidoctor
     gem install pygments.rb
 
-Specifying a Preference for the External AsciiDoctor Processor
-==============================================================
-To specify that VR3 should use the ``asciidoctor`` external program, add a
-setting to the @settings tree in MyLeoSettings.leo or
-in an outline you wish to render, then reload the settings. This
-setting is::
+There is more information at https://docs.asciidoctor.org/asciidoctor/latest/install/ruby-packaging/.
+VR3 will attempt to find the program when it starts up.  The program should
+be on your PATH.
 
-    @string vr3-prefer-external = asciidoctor
+asciidoc
+--------
+*asciidoc* comes as a zip file, and is normally unzipped in some convenient
+location.  The setting *@string vr3-asciidoc-path* must point to the
+unzipped directory, e.g.::
 
-You can use another program of the same name as long as it accepts the same commandline parameters as asciidoctor.  This program must be on the system path.  Ruby and its ``gem`` installer set this up for you.  You can also use a different name for the external program, and you can include the complete path to the processor.
+    @string vr3-asciidoc-path = c:\utility\asciidoc-9.1.0
 
-.. note::
+asciidoc3
+----------
+asciidoc3 is a Python package that can be installed with pip.  On Windows, 
+a post-install program must be run.  Sometimes, and with some versions,
+asciidoc3 will malfunction on Windows.  If that happens, a message will
+be written to Leo's Log pane and VR3 will try to use *asciidoc* if it is
+present.
 
-    If a different program name is used, source highlighting may not work.
+
+.. note:: The Asciidoc processors are quite slow at rendering
+          long documents, as can happen when the "Entire Tree"
+          setting is used.The Ruby *asciidoctor* is much faster,
+          but there will be a delay as the Ruby runtime is loaded.
+
+          When rendering is slow, typing into a node can be annoying.
+          If so, use VR3's *Freeze* and *Reload* toolbar functions.
+
+Rendering Equations and Formulas
+---------------------------------
+When the setting *@bool vr3-math-output* is set to *True*, then a MathJax script
+will be included in the HTML output. Mathjax interprets a subset of Latex to
+render mathematics.  The Latex expressions must be enclosed by delimiters. The following seem to work with all three processors, although  you may need to experiment if
+math renderings do not look right.
+
+1. Inline math: enclose the latex with ``\( ....\ \)`` characters, where where ``....`` represents the Latex math expression.  Example::
+
+    \(a = \sqrt{b}\ \)
+
+.. Note:: There must be a backslash following the last character of the inline math, with no space bfore that added backslash.
+
+2. Blocks, such as aligned equations: enclose the latex block with ``$$ .... $$``,
+where ``....`` represents the Latex expressions.
 
 Asciidoc Dialects
 =================
-Asciidoc dialects vary somewhat.  The dialect used by the 
-asciidoc processors described above does not use the 
-syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead, 
+Asciidoc dialects vary somewhat.  The dialect used by the
+asciidoc processors described above does not use the
+syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead,
 the leading period must be omitted: ``[big]``. There may be
 other differences.
 
@@ -499,9 +571,12 @@ Currently the languages that can be colorized are python, javascript,
 java, julia, css, xml, and sql.
 
 #@+node:TomP.20210225000326.1: *3* Code Execution
+Code Execution
+===============
+
 Code that occurs inside one or more code blocks can be executed.
 Execution is initiated when the "Execute" button on the
-VR3 toolbar is pressed.  Output from the processor to stdout and 
+VR3 toolbar is pressed.  Output from the processor to stdout and
 stderr is displayed under the node (or last node of a subtree).
 
 A node may contain multiple code blocks, but they can only successfully
@@ -600,10 +675,10 @@ relative to Leo's load directory.
 
       Linux:   ``file:///home/a_notebook.ipynb``
 
-- ``@movie`` plays a file as a movie. @movie also works for music files. 
-  The path to the file must be on the first line of the body of the node. 
-  Media can be started or paused using the *vr3-pause-play-movie* command.  
-  Movies might not render in the current version, depending in video 
+- ``@movie`` plays a file as a movie. @movie also works for music files.
+  The path to the file must be on the first line of the body of the node.
+  Media can be started or paused using the *vr3-pause-play-movie* command.
+  Movies might not render in the current version, depending in video
   type and installed codecs.
 
 - ``@networkx`` is non-functional at present.  It is intended to
@@ -615,6 +690,24 @@ relative to Leo's load directory.
 
   .. note:: if the first character of the body text is ``<`` after removing
             Leo directives, the contents of body pane is taken to svg code.
+
+#@+node:tom.20211104225431.1: *3* Easy Plotting Of X-Y Data
+Easy Plotting Of X-Y Data
+--------------------------
+
+If the selected node contains data in one or two columns, VR3 can
+plot the data as an X-Y graph. The labeling and appearance of the
+plot can optionally and easily adjusted. The graph is produced
+when the toolbar menu labeled *Other Actions* is pressed and
+*Plot 2D* is clicked.
+
+If the selected node has an optional section *[source]* containing the key *file*, the value of the key will be used as the path to
+the data, instead of using the selected node itself as the data source.
+
+Help for the plotting capability is displayed in the system
+browser when *Other Actions/Help For Plot 2D* is clicked. This
+help is also invoked by the minibuffer command
+*vr3-help-plot-2d*.
 
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
@@ -631,7 +724,8 @@ adding the ability to change from RsT to Python and back within a node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality with
 Python 3/QT5. VR3 brings more enhancements to ReStructured Text and Markdown
-rendering, and adds Asciidoc rendering.  Other functionality is the same as for the Viewrendered plugin.
+rendering, and adds Asciidoc rendering.  Most functionality of the Viewrendered 
+is included, and some additional capability has been added..
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
@@ -639,7 +733,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
@@ -648,16 +741,21 @@ from configparser import ConfigParser
 from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
-import io
-from io import StringIO
+from inspect import cleandoc
+from io import StringIO, open as ioOpen
+
 import json
 import os
 import os.path
 from pathlib import PurePath
+import re
 import shutil
+import site
 import string
+
 import subprocess
 import sys
+import textwrap
 import webbrowser
 from urllib.request import urlopen
 
@@ -673,30 +771,43 @@ from leo.core.leoApp import LoadManager as LM
 #@+<< Qt Imports >>
 #@+node:tom.20210517102737.1: *3* << Qt Imports >>
 try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt6, isQt5, QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg#, QtWebKitWidgets
+    from leo.plugins import qt_text
+    from leo.plugins import free_layout
+    from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
+    from leo.core.leoQt import phonon, QtMultimedia, QtSvg
+    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
-    #QtWidgets = False
 
 QWebView = None
-if isQt5:
-    try:
-        from leo.core.leoQt import QtWebKitWidgets
-        QWebView = QtWebKitWidgets.QWebView
-    except ImportError:
-        g.trace("Can' import QtWebKitWidgets")
-    except Exception as e:
-        g.trace(e)
-else:
+try:
+    from leo.core.leoQt import QtWebKitWidgets
+    QWebView = QtWebKitWidgets.QWebView
+except ImportError:
+    if not g.unitTesting:
+        g.trace("Can't import QtWebKitWidgets")
+except AttributeError:
+    if not g.unitTesting:
+        g.trace('No QWebView')
+except Exception as e:
+    g.trace(e)
+
+if not QWebView:
     try:
         QWebView = QtWidgets.QTextBrowser
+        if not g.unitTesting:
+            print("VR3: *** limited RsT rendering in effect")
     except Exception as e:
         g.trace(e)
         # The top-level init function gives the error.
+
+if QtSvg:
+    if hasattr(QtSvg, 'QSvgWidget'):
+        QSvgWidget = QtSvg.QSvgWidget
+    else:
+        QtSvg = None
 #@-<< Qt Imports >>
 
 #1946
@@ -733,7 +844,7 @@ except ImportError:
 try:
     import matplotlib # Make *sure* this is imported.
     import matplotlib.pyplot as plt
-    import matplotlib.animation as animation
+    from matplotlib import animation
 except ImportError:
     matplotlib = None
     print('VR3: *** No matplotlib')
@@ -745,7 +856,7 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
-    from nbconvert import HTMLExporter
+    from nbconvert.exporters import HTMLExporter
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
@@ -777,6 +888,29 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+
+ASCIIDOC_CONF_FILENAME = 'html5.conf'
+MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
+MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js'
+
+#@+<< RsT Error styles>>
+#@+node:tom.20210621192144.1: *3* << RsT Error styles>>
+RST_ERROR_BODY_STYLE = ('color:#606060;'
+                        'background: aliceblue;'
+                        'padding-left:1em;'
+                        'padding-right:1em;'
+                        'border:thin solid gray;'
+                        'border-radius:.4em;')
+
+RST_ERROR_MSG_STYLE = ('color:red;'
+                       'background:white;'
+                       'padding-left:1em;'
+                       'padding-right:1em;'
+                       'border:thin solid gray;'
+                       'border-radius:.4em;')
+#@-<< RsT Error styles>>
+#RST_HEADING_CHARS = '''=-:.`'"-~^_*+#'''# Symbol hierarchy - maybe some day
+RST_HEADING_CHARS = '''=============='''  # For now, same symbol for all levels
 RST_NO_WARNINGS = 5
 
 SQL = 'sql'
@@ -785,9 +919,15 @@ VR3_TEMP_FILE = 'leo_rst_html.html'
 XML = 'xml'
 ZOOM_FACTOR = 1.1
 
+#@+<< MD stylesheets >>
+#@+node:tom.20211117122509.1: *3* << MD stylesheets >>
+MD_BASE_STYLESHEET_NAME = 'md_styles.css'
+MD_STYLESHEET_DARK = 'md_styles_solarized_dark.css'
+MD_STYLESHEET_LIGHT = 'md_styles_solarized_light.css'
+
 MD_STYLESHEET_APPEND = '''pre {
    font-size: 110%;
-   border: 1px solid gray; 
+   border: 1px solid gray;
    border-radius: .7em; padding: 1em;
    background-color: #fff8f8
 }
@@ -798,13 +938,28 @@ body, th, td {
 }
 '''
 
+MD_STYLESHEET_DARK_APPEND = '''pre {
+   font-size: 110%;
+   border: 1px solid gray;
+   border-radius: .7em; padding: 1em;
+   background-color: #fff8f8
+}
+body, th, td {
+  font-family: Verdana,Arial,"Bitstream Vera Sans", sans-serif;
+  color: #839496;
+  background: #002b36;
+  font-size: 90%;
+}
+'''
+#@-<< MD stylesheets >>
+
 TEXT_HTML_HEADER = f'''<html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset={ENCODING}">
 </head>
 '''
+
 LEO_THEME_NAME = 'DefaultTheme.leo'
-MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
@@ -828,8 +983,18 @@ VR3_DIR = 'vr3'
 VR3_CONFIG_FILE = 'vr3_config.ini'
 EXECUTABLES_SECTION = 'executables'
 LEO_PLUGINS_DIR = os.path.dirname(__file__)
+NO_SVG_WIDGET_MSG = 'QSvgWidget not available'
 
-
+#@+<< Misc Globals >>
+#@+node:tom.20211126230402.1: *3* << Misc Globals >>
+ad3_file = ''
+asciidoc = None
+asciidoctor = None
+asciidoc_ok = False
+asciidoc3_ok = False
+asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors = []
+#@-<< Misc Globals >>
 #@-<< declarations >>
 
 trace = False
@@ -838,24 +1003,21 @@ trace = False
 #@+<< define html templates >>
 #@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
 image_template = '''\
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head></head>
+<html>
 <body bgcolor="#fffbdc">
-<img src="%s">
+<img style="width: 100%%" src="%s">
 </body>
 </html>
 '''
 
 # http://docs.mathjax.org/en/latest/start.html
-latex_template = '''\
+latex_template = f'''\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
-    </script>
+    <script src="{MATHJAX_POLYFILL_URL}"></script> 
+    <script src='{MATHJAX_URL}'></script>
 </head>
 <body bgcolor="#fffbdc">
 %s
@@ -867,44 +1029,152 @@ controllers = {}
     # Keys are c.hash(): values are PluginControllers (QWidget's).
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
-##
+
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
 def find_exe(exename):
     """Locate an executable and return its path.
-    
+
     Works for Windows and Linux.  Works whether or not a virtual
     environment is in effect.
-    
+
     Finds executables that are in:
         - the Python Scripts directory;
         - the system path.
-        
+
     ARGUMENT
     exename -- the name of the executable file to find.
-    
+
     RETURNS
     the full path to the executable as a string, or None.
     Returns None if the found executable is not marked as executable.
     """
-
     # Works for Linux and Windows
     venvdir = os.getenv("VIRTUAL_ENV")
     if venvdir:
-        scriptsdir = os.path.join(venvdir, 'Scripts')
+        scriptsdir = os.path.join(venvdir,'Scripts')
+        scripts_local_dir = ''
     else:
         scriptsdir = os.path.join(os.path.dirname(sys.executable), 'Scripts')
+        local_python_appdata_dir = os.path.dirname(site.getusersitepackages())
+        scripts_local_dir = os.path.join(local_python_appdata_dir, 'Scripts')
 
-    exe = shutil.which(exename, os.X_OK, scriptsdir) or \
-          shutil.which(exename, os.X_OK)
+    exe = shutil.which(exename, os.X_OK, scriptsdir) \
+            or shutil.which(exename, os.X_OK, scripts_local_dir) \
+            or shutil.which(exename, os.X_OK)
 
     return exe
-#@+node:TomP.20200508125029.1: ** Find External Executables
-asciidoctor_exec = find_exe('asciidoc') or None
-asciidoc3_exec = find_exe('asciidoc3') or None
-pandoc_exec = find_exe('pandoc') or None
+#@+node:tom.20211127234312.1: ** find_dir()
+def find_dir(name, path):
+    """Given a starting directory, return the full path to the named directory.
+    
+    RETURNS
+    A full directory, or None if the named directory is not found.
+    """
+    for root, dirs, files in os.walk(path):
+        if name in dirs:
+            return os.path.join(root, name)
+    return None
+#@+node:tom.20211125003406.1: ** configure_asciidoc
+def configure_asciidoc():
+    r"""
+    #@+<< asciidoc docstring >>
+    #@+node:tom.20211125003406.2: *3* << asciidoc docstring >>
+    #@@nocolor
+    Determine which Asciidoc processor to use.
 
-os.path.dirname(__file__)
+    There are three possible processors:  asciidoc, asciidoc3, and asciidoctor.
+    asciidoctor is a Ruby program and must be run as an external program.
+    asciidoc comes as a zip file that gets unzipped somewhere.
+    asciidoc3 can be installed with pip, but on Windows can be a problem
+    to get working right.
+
+    Each one has its own way to be called.  The rendering code needs to know
+    which one to use.  VR3 will attempt to use one or the other depending
+    on these settings:
+
+        ``@string vr3-prefer-external = asciidoctor``
+        Specifies the use of the external Ruby program, if available.
+
+        ``@bool vr3-prefer-asciidoc3 = False``
+        When an internal processor will be used, whether to try asciidoc3 
+        or asciidoc first.  Some installations will have both.
+
+    Sets several variables::
+
+        asciidoc3_ok      # imported asciidoc3
+        asciidoc_ok       # imported asciidoc
+        asciidoctor       # path to asciidoctor program
+    #@-<< asciidoc docstring >>
+    """
+    # pylint: disable = import-outside-toplevel
+    global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
+    global asciidoc_ok, asciidoc3_ok, asciidoc_processors
+    global asciidoc_dirs
+
+    asciidoc_ok = False
+    asciidoc3_ok = False
+    #@+<< get asciidoc >>
+    #@+node:tom.20211125003406.3: *3* << get asciidoc >>
+    try:
+        from asciidoc import AsciiDocAPI
+        from asciidoc.asciidoc import VERSION
+        version = VERSION.split('.')
+        major = int(version[0])
+        goldilocks = int(version[1])
+        minor = int(version[-1])
+        dopatch = major == 10 and goldilocks == 0 and minor < 3
+
+        def new_init(self, asciidoc_py=None):
+            self.options = Options()
+            self.attributes = {}
+            self.messages = ['AsciiDocError']
+            self.asciidoc = self
+            self.cmd = 'asciidoc'
+
+        if dopatch:
+            print('.... Patching asciidoc')
+            from asciidoc.api import Options
+            AsciiDocAPI.__init__ = new_init
+
+        asciidoc_ok = True
+
+    except ImportError:
+        g.es('VR3 -- no asciidoc processor')
+
+    if asciidoc_ok:
+        # These locations are needed by our custom config file html5.conf
+        d_ = {}
+        file_ = sys.modules['asciidoc.asciidoc'].__file__
+        asciidoc_dir = os.path.dirname(file_)
+        d_['stylesheets'] = find_dir('stylesheets', asciidoc_dir)
+        d_['javascripts'] = find_dir('javascripts', asciidoc_dir)
+        asciidoc_dirs['asciidoc'] = d_
+    #@-<< get asciidoc >>
+    #@+<< get asciidoc3 >>
+    #@+node:tom.20211125003406.4: *3* << get asciidoc3 >>
+    try:
+        from asciidoc3.asciidoc3api import AsciiDoc3API
+        from asciidoc3 import asciidoc3 as ad3
+        ad3_file = ad3.__file__
+        asciidoc3_ok = True
+    except ImportError:
+        asciidoc3_ok = False
+        g.es('VR3 -- no asciidoc3 processor')
+
+    if asciidoc3_ok:
+        # These locations are needed by our custom config file html5.conf
+        d_ = {}
+        asciidoc3_dir = os.path.dirname(ad3_file)
+        d_['stylesheets'] = find_dir('stylesheets', asciidoc3_dir)
+        d_['javascripts'] = find_dir('javascripts', asciidoc3_dir)
+        asciidoc_dirs['asciidoc3'] = d_
+    #@-<< get asciidoc3 >>
+
+configure_asciidoc()
+#@+node:TomP.20200508125029.1: ** Find External Executables
+pandoc_exec = find_exe('pandoc') or None
+asciidoctor = find_exe('asciidoctor') or None
 
 #@+node:TomP.20210218231600.1: ** Find executables in VR3_CONFIG_FILE
 #@@language python
@@ -1052,7 +1322,6 @@ def viewrendered(event):
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
-    Orientations = QtCore.Qt.Orientations if isQt6 else QtCore.Qt
 
     if splitter:
         vr3.store_layout('closed')
@@ -1060,12 +1329,12 @@ def viewrendered(event):
         ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
-        elif splitter.orientation() == Orientations.Horizontal:
+        elif splitter.orientation() == Orientation.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
 
     c.bodyWantsFocusNow()
-    
+
     return vr3
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
@@ -1192,7 +1461,7 @@ def update_rendering_pane(event):
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
-    """Execute code in a RsT or MS node or subtree."""
+    """Execute code in a RsT or MD node or subtree."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -1213,12 +1482,13 @@ def export_rst_html(event):
         return
     if not _html:
         return
+
     _html = g.toUnicode(_html)
     # Write to temp file
     c = vr3.c
     path = c.getNodePath(c.rootPosition())
     pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
-    with io.open(pathname, 'w', encoding='utf-8') as f:
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
@@ -1269,6 +1539,73 @@ def zoom_view(event):
 def shrink_view(event):
     vr3 = getVr3(event)
     vr3.shrinkView()
+#@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
+@g.command('vr3-open-markup-in-editor')
+def markup_to_editor(event):
+    """Send VR3's markup to an external editor.
+
+    This is to make it easier to understand the markup, in case it
+    isn't what was expected.  There is currently no way to
+    write the text back from the editor into VR3.
+    """
+    vr3 = getVr3(event)
+    editor_from_settings = vr3.external_editor
+    if editor_from_settings.lower() == 'none': # weird but has happened
+        editor_from_settings = ''
+    editor = editor_from_settings or g.guessExternalEditor(event.get('c'))
+
+    if not editor:
+        g.es('No external editor defined', color = 'red')
+        return
+
+    with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
+        f.write(vr3.last_markup)
+
+    cmd = [editor, 'vr3_last_markup.txt']
+    # pylint: disable = consider-using-with
+    subprocess.Popen(cmd)
+
+#@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
+@g.command('vr3-plot-2d')
+def vr3_plot_2d(event):
+    vr3 = getVr3(event)
+    vr3.plot_2d()
+#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
+@g.command('vr3-help-plot-2d')
+def vr3_help_for_plot_2d(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+
+    doc_ = vr3.plot_2d.__doc__
+    doclines = doc_.split('\n')
+    doclines = [line for line in doclines
+                if not line.lstrip().startswith('#@')]
+    doc = '\n'.join(doclines)
+    docstr = cleandoc(doc)
+    docstr = ('Help For VR3 Plot 2D\n'
+              '=====================\n'
+              + docstr)
+
+    args = {'output_encoding': 'utf-8'}
+    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
+        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
+        args['embed_stylesheet'] = True
+        args['report_level'] = RST_NO_WARNINGS
+
+    try:
+        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
+        _html = _html.decode(ENCODING)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
+
+    path = c.getNodePath(c.rootPosition())
+    pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+        f.write(_html)
+    webbrowser.open_new_tab(pathname)
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
@@ -1319,7 +1656,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
         global _in_code_block
-
         self.c = c
         # Create the widget.
         QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
@@ -1361,6 +1697,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.lock_to_tree = False
         self.current_tree_root = None
         self.freeze = False
+        self.last_markup = ''
 
         # User settings.
         self.reloadSettings()
@@ -1374,7 +1711,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
-        
+
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1398,6 +1735,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'html': pc.update_html,
             'graphics-script': pc.update_graphics_script,
             'image': pc.update_image,
+            'jupyter': pc.update_jupyter,
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
@@ -1435,8 +1773,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">        
-    <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     <script type="text/javascript" src="{self.mathjax_url}"></script>
@@ -1453,7 +1790,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_pane(self, parent):
         """Create the vr3 pane."""
 
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         # Create the inner contents.
         self.setObjectName('viewrendered3_pane')
@@ -1480,9 +1817,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
 
         c = self.c
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
-        QActionGroup = QtGui.QActionGroup if isQt6 else QtWidgets.QActionGroup
-        
         _toolbar = QtWidgets.QToolBar('Menus')
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
@@ -1490,6 +1824,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         _default_type_button = QtWidgets.QPushButton("Default Kind")
         _toolbar.addWidget(_default_type_button)
+
+        _other_actions_button = QtWidgets.QPushButton("Other Actions")
 
         #@+others  # functions.
         #@+node:TomP.20200329223820.7: *5* function: vr3.set_action
@@ -1582,6 +1918,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('Text', TEXT)
         set_group_action('Asciidoc', ASCIIDOC)
         _default_type_button.setMenu(menu)
+
+        menu = QtWidgets.QMenu()
+        _action = QAction('Plot 2D', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-plot-2d'))
+        menu.addAction(_action)
+
+        _action = QAction('Help For Plot 2D', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-help-plot-2d'))
+        menu.addAction(_action)
+
+        _action =  QAction('Reload', self, checkable=False)
+        _action.triggered.connect(lambda: c.k.simulateCommand('vr3-update'))
+        menu.addAction(_action)
+
+        _other_actions_button.setMenu(menu)
         #@-<< vr3: create menus >>
         #@+<< vr3: finish toolbar >>
         #@+node:TomP.20200329223820.14: *5* << vr3: finish toolbar >>
@@ -1590,15 +1941,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
         _toolbar.addWidget(_export_button)
 
-        _reload_button = QtWidgets.QPushButton("Reload")
-        _reload_button.setDefault(True)
-        _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
-        _toolbar.addWidget(_reload_button)
+        # _reload_button = QtWidgets.QPushButton("Reload")
+        # _reload_button.setDefault(True)
+        # _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
+        # _toolbar.addWidget(_reload_button)
 
         _execute_button = QtWidgets.QPushButton('Execute')
         _execute_button.setDefault(True)
         _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
         _toolbar.addWidget(_execute_button)
+
+        _toolbar.addWidget(_other_actions_button)
 
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
@@ -1611,8 +1964,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
-                                    
-        self.set_rst_stylesheet()
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
@@ -1622,56 +1973,147 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
+        self.md_style_switch_auto = c.config.getBool('vr3-md-style-auto', default=True)
+
         self.set_md_stylesheet()
+        self.set_rst_stylesheet()
         self.create_md_header()
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
-        self.set_asciidoc_import()
-
-        self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', False)
+        self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
+        self.asciidoc_show_proc_fail_msgs = True
 
-        if self.prefer_asciidoc3:
-            self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
-        else:
-            self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
+        self.external_editor = c.config.getString('vr3-ext-editor') or ''
+
+        self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
-        """Verify or create css stylesheet for Markdown node.
+        """Set or create css stylesheet for Markdown node.
 
-        If there is no custom css stylesheet specified by self.md_stylesheet,
-        check if there is one at the standard location.  If not, create
-        a default stylesheet and write it to a file at that place.
+        Stylesheet files are looked for first in ~/.leo/vr3,
+        then in the default location of leo/plugins/viewrendered3,
+        if their full path is not given.
 
-        The default location is assumed to be at leo/plugins/viewrendered3.
+        If a stylesheet file is specified by the setting "vr3-md-stylesheet",
+        then use this stylesheet if it is found.  
 
-        VARIABLE USED
+        Otherwise, if the setting "vr3-md-style-auto" is True, then attempt to
+        use a dark-vs-light theme according to whether the Leo theme
+        is marked dark or not.
+
+        Otherwise use the default stylesheet at leo/plugins/viewrendered3. 
+        If not present, create a default stylesheet and write it to a 
+        file at that place.
+
+
+        VARIABLES USED
         self.md_stylesheet -- The URL to the stylesheet.  Need not include
                               the "file:///", and must be an absolute path
                               if it is a local file.
 
                               Set by @string vr3-md-stylesheet.
+
+        self.md_style_switch_auto -- If True, try to use a dark-vs-light
+                                     stylesheet according to the Leo theme
+                                     in use.
         """
+
+        #@+others
+        #@+node:tom.20211117180937.1: *5* check_paths()
+        def check_paths(filename, dir_list):
+            """Given a file name, check for its existence in one of
+            a sequence of directories.  Return the first full path where 
+            the file is found, or None.
+            """
+
+            for direc in dir_list:
+                abs_file = os.path.join(direc, filename)
+                if os.path.exists(abs_file):
+                    return abs_file
+            return None
+        #@-others
+
+        # Style file locations
+        default_style_dir = os.path.join(g.app.leoDir, 'plugins', 'viewrendered3')
+        home_style_dir = os.path.join(g.app.homeDir, '.leo', 'vr3')
+        if g.isWindows:
+            default_style_dir = default_style_dir.replace('/', '\\')
+            home_style_dir = home_style_dir.replace('/', '\\')
+        style_dirs = (home_style_dir, default_style_dir)
+
+        style_path = ''
+
+        # If user has specified a stylesheet file, try to use it.
+        # Can be absolute path or file name. Can use either path separator.
+        if self.md_stylesheet:
+            #@+<< fix path separators >>
+            #@+node:tom.20211117161459.1: *5* << fix path separators >>
+            # Fix up path
+            # Defensive programming; only the first form should be needed
+            # but check the others just in case:
+            expr = ('file:///', 'file://', 'file:/', 'file:')
+            stylefile = self.md_stylesheet
+            for ex_ in expr:
+                if self.md_stylesheet.startswith(ex_):
+                    stylefile = self.md_stylesheet.replace(ex_, '')
+                    break
+
+            # Make all separators consistent and correct for the OS
+            stylefile = str(PurePath(stylefile))
+            #@-<< fix path separators >>
+            #@+<< check existence >>
+            #@+node:tom.20211117161734.1: *5* << check existence >>
+            # Check for style file's existence
+            style_path = None
+            if os.path.isabs(stylefile):
+                style_path = stylefile
+            else:
+                style_path = check_paths(stylefile, style_dirs)
+            #@-<< check existence >>
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
+
+        # See if we should try to use stylesheet for Leo theme's light/dark character
+        if self.md_style_switch_auto:
+            dict_ = g.app.loadManager.globalSettingsDict
+            is_dark = dict_.get_setting('color-theme-is-dark')
+            stylefile = MD_STYLESHEET_DARK if is_dark else MD_STYLESHEET_LIGHT
+            style_path = check_paths(stylefile, style_dirs)
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
+            g.es("Can't find light/dark style file")
 
         # If no custom stylesheet specified, use standard one.
         if not self.md_stylesheet:
             # Look for the standard one
-            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
+            style_path = check_paths(MD_BASE_STYLESHEET_NAME, style_dirs)
+            if style_path:
+                self.md_stylesheet = 'file:///' + style_path
+                g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+                return
 
             # If there is no stylesheet at the standard location, have Pygments
             # generate a default stylesheet there.
             # Note: "cmdline" is a function imported from pygments
-            if not os.path.exists(style_path):
-                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
-                # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with io.open(style_path, 'w') as out:
-                    with redirect_stdout(out):
-                        cmdline.main(args)
-                # Add some fine-tuning css
-                with io.open(style_path, 'a') as out:
-                    out.write(MD_STYLESHEET_APPEND)
+            args = [cmdline.__name__, '-S', 'default', '-f', 'html']
+            # pygments cmdline() writes to stdout; we have to redirect it to a file
+            g.es('VR3-- creating new MD style sheet')
+            style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
+            with ioOpen(style_path, 'w') as out:
+                with redirect_stdout(out):
+                    cmdline.main(args)
+            # Add some fine-tuning css
+            with ioOpen(style_path, 'a') as out:
+                out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
+
+        g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+
 
     #@+node:TomP.20200329223820.17: *4* vr3.set_rst_stylesheet
     #@@language python
@@ -1697,7 +2139,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(LEO_PLUGINS_DIR, 'viewrendered3')
-     
+
         # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
         # If so, check if it exists.
         use_default = not self.rst_stylesheet
@@ -1731,20 +2173,427 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 stylesheet = RST_DEFAULT_STYLESHEET_NAME
             self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
-    #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
-    def set_asciidoc_import(self):
-        # pylint: disable=import-outside-toplevel
-        global AsciiDocAPI, AsciiDocError
-        if self.asciidoc_path:
-            if os.path.exists(self.asciidoc_path):
-                try:
-                    sys.path.append(self.asciidoc_path)
-                    from asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
-                except ImportError:
-                    self.asciidoc_path = ''
-            else:
-                self.asciidoc_path = ''
+        g.es('VR3 RsT stylesheet:', self.rst_stylesheet)
+    #@+node:tom.20210621132824.1: *4* vr3.dbg_print
+    def dbg_print(self, *args):
+        if self.DEBUG:
+            g.es(*args)
+    #@+node:tom.20211104105903.1: *4* vr3.plot_2d
+    def plot_2d(self):
+        r"""
+        #@+<< docstring >>
+        #@+node:tom.20211104105903.2: *5* << docstring >>
+        Show a plot of x-y data in the selected node.
 
+        The data can be either a one-column or two-column list
+        of rows.  Columns are separated by whitespace.  Optionally,
+        the node may contain a config file-like set of sections
+        that define the labels, and plot styling.
+
+        Optionally, the data can be read from a file instead of taken 
+        from the selected node.
+
+        The matplotlib package is required for plotting.
+
+        #@+others
+        #@+node:tom.20211104105903.3: *6* Data Format
+        Data Format
+        ------------
+        Data must be in one or two columns separated by whitespace  Here
+        is an example of two-column data::
+
+            1 1
+            2 2
+            3 4
+            # comment
+            ; comment
+
+            4 16
+            5 32
+
+        Comment lines start with one of ";", "#". Comment, non-numeric, and 
+        blank lines are ignored.
+
+        Here is an example of one-column data - the missing first column will 
+        assigned integers starting with 0::
+
+            1
+            .5
+            6
+            # comment
+            ; comment
+
+            16
+            32
+
+        Whether the data contains one or two columns is determined
+        from the first non-comment, non-blank, all numeric row.
+        If one-column, an implicit first column is added starting
+        with zero.
+
+
+        #@+node:tom.20211108101908.1: *6* Configuration Sections
+        Configuration Sections
+        -----------------------
+        The labeling, styling, and data source for the plot can be
+        specified in configuration sections.  Each section starts with
+        a *[name]*, has zero or more lines in the form *key = value*,
+        and must end with a blank line or the end of the node.
+
+        Sections may be placed anywhere in the selected node.  The 
+        *[sectionname]* must be left-justified.  Currently the
+        following sections are recognized::
+
+            [style]
+            [labels]
+            [source]
+
+        #@+node:tom.20211108100421.1: *6* Optional Data Source
+        Optional Data Source
+        ---------------------
+        Data to be plotted can be read from a file.  The selected node must
+        contain a section *[source]* with a *file* key, like this::
+
+            [source]
+            file = c:\example\datafile.txt
+
+        If the file exists, it will be used as the data source instead of the
+        selected Leo node.  All configuration sections in the selected nodes 
+        will still take effect.
+
+        #@+node:tom.20211104105903.4: *6* Graph And Data Labels
+        Graph And Data Labels
+        ----------------------
+
+        A figure title and axis labels can optionally be added. These are
+        specified by the configuration section *[labels]*.
+
+        Here is an example::
+
+            [labels]
+            title = Plot Example
+            xaxis = Days
+            yaxis = Values
+
+        Any or all of the entries may be omitted.
+
+        #@+node:tom.20211104183046.1: *6* Plot Styling
+        Plot Styling
+        -------------
+
+        The appearance of the plot can optionally be changed in several
+        ways. By default, a certain Matplotlib style file will be used if
+        present (see below), or default Matplotlib styling will be
+        applied. If the data node has a section *[style]*, one of two
+        styling methods can be used:
+
+        1. A named style. Matplotlib has a number of named
+           styles, such as *ggplot*. One of these built-in
+           style names can be specified by the *stylename*
+           key. The style *xkcd* can also be used even
+           though it is not one of the named styles.
+
+        2. A Matplotlib style file. The name of this file
+           is specified by the *stylefile* key. The file
+           can be located Leo's home directory, typically
+           *~/.leo* or its equivalent in Windows.
+
+        Here is an example *[data]* section, with explanatory comments added::
+
+            [style]
+            # For VR3 "Plot 2D", only one of these 
+            # will be used. "stylename" has priority
+            # over "stylefile".
+            stylename = ggplot
+            #stylefile = styles.mpl
+
+        The section may be placed anywhere in the node.
+
+        The Default Style File
+        ........................
+
+        When no *[data]* section is present, a style file named
+        *local_mplstyle* will be used if found. It will first be looked
+        for in Leo's home directory, and then in the *site.userbase()*
+        directory. On Windows, this is usually the *%APPDATA%\\Python*
+        directory. On Linux, this is usually *~/.local*.
+
+        When no style file can be found, Matplotlib will use its default
+        styling, as modified by a *matplotlibrc* file if Matplotlib can
+        find one.
+        #@-others
+        #@-<< docstring >>
+        """
+        # pylint: disable = too-many-branches, too-many-locals
+        # pylint: disable = too-many-statements
+        if not matplotlib:
+            g.es('VR3 -- Matplotlib is needed to plot 2D data')
+            return
+
+        page = self.c.p.b
+        page_lines = page.split('\n')
+        data_lines = []
+
+        #@+others
+        #@+node:tom.20211104105903.5: *5* declarations
+        ENCODING = 'utf-8'
+        STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
+        SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
+        #@+node:tom.20211104105903.6: *5* functions
+        #@+node:tom.20211104105903.7: *6* has_config_section()
+        def has_config_section(pagelines):
+            """Find config-like sections in the data page.
+            
+            Sections are defined by:
+                1. A left-justified term in [brackets].
+                2. A blank line or the end of the list of lines.
+            
+            ARGUMENT
+            pagelines -- a list of text lines.
+            
+            RETURNS
+            a dictionary keyed by section label: {label: line_num, ...}
+            """
+            sections = {}
+            for i, line in enumerate(pagelines):
+                m = SECTION_RE.match(line)
+                if m:
+                    sections[m[1]] = i
+            return sections
+        #@+node:tom.20211104105903.8: *6* set custom_style()
+        #@@pagewidth 65
+        def set_custom_style():
+            r"""Apply custom matplotlib styles from a file.
+            
+            The style file has the name given by STYLEFILE. The .leo
+            directory (usually ~/.leo) will be checked first for the
+            style file.
+
+            If not found, the site.getuserbase() directory will be
+            checked for the style file. On Windows, this is usually the
+            %APPDATA%\Python directory. On Linux, this is usually at
+            /home/tom/.local.
+            
+            """
+            found_styles = False
+            lm = g.app.loadManager
+            style_dir = lm.computeHomeLeoDir()
+            if g.isWindows:
+                style_dir = style_dir.replace('/', '\\')
+            style_file=os.path.join(style_dir, STYLEFILE)
+            if os.path.exists(style_file):
+                plt.style.use(style_file)
+                found_styles = True
+            else:
+                style_dir=site.getuserbase()
+                style_file=os.path.join(style_dir, STYLEFILE)
+                if os.path.exists(style_file):
+                    plt.style.use(style_file)
+                    found_styles = True
+
+            if not found_styles:
+                g.es(f'Pyplot style file "{style_file}" not found, using default styles')
+        #@+node:tom.20211104105903.12: *6* plot_plain_data()
+        def plot_plain_data(pagelines):
+            """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
+
+
+            # from leo.plugins import viewrendered3 as vr3
+            # from leo.plugins import viewrendered as vr
+
+            # Helper functions
+            #@+<< is_numeric >>
+            #@+node:tom.20211104105903.13: *7* << is_numeric >>
+            def is_numeric(line):
+                """Test if first or 1st and 2nd cols are numeric"""
+                fields = line.split()
+                numfields = len(fields)
+                fields = line.split()
+                numfields = len(fields)
+
+                numeric = False
+                try:
+                    _ = float(fields[0])
+                    if numfields > 1:
+                        _ = float(fields[1])
+                    numeric = True
+                except ValueError:
+                    pass
+
+                return numeric
+            #@-<< is_numeric >>
+            #@+<< get_data >>
+            #@+node:tom.20211104105903.14: *7* << get_data >>
+            def get_data(pagelines):
+                num_cols = 0
+
+                # Skip lines starting with """ or '''
+                lines = [line.replace('"""', '') for line in pagelines]
+                lines = [line.replace("'''", '') for line in lines]
+
+                # Skip blank lines
+                lines = [line for line in lines if line.strip()]
+
+                # skip non-data lines (first or 2nd col is not a number)
+                t = []
+                for line in lines:
+                    line = line.replace(',', '') # remove formatting commas
+                    if is_numeric(line):
+                        t.append(line.strip())
+                        # Check if first all-numeric row has one or more fields
+                        if not num_cols:
+                            num_cols = min(len(t[0].split()), 2)
+                if not t:
+                    return None, None
+
+                # Extract x, y values into separate lists; ignore columns after col. 2
+                if num_cols == 1:
+                    x = range(len(t))
+                    y = [float(b.strip()) for b in t]
+                else:
+                    xy = [line.split()[:2] for line in t]
+                    xs, ys = zip(*xy)
+                    x = [float(a) for a in xs]
+                    y = [float(b) for b in ys]
+
+                return x, y
+            #@-<< get_data >>
+
+            x, y = get_data(pagelines)
+            if not x:
+                g.es('VR3 -- cannot find data')
+                return
+
+            plt.plot(x,y)
+            plt.show()
+
+
+            # try:
+                # plot2d(page)
+            # except Exception as e:
+                # g.es('VR3:', e)
+        #@+node:tom.20211104155447.1: *6* set_user_style()
+        #@@pagewidth 65
+        def set_user_style(style_config_lines):
+            """Set special plot styles.
+
+            If the data node has a section [style], then if there is a
+            key "stylename", apply that named style; otherwise if there
+            is a key "stylefile", look for a file of that name ins the
+            user's Leo home directory (usually ~/.leo) and use those
+            styles.
+            
+            The stylename must be one of the built-in style names, such
+            as "ggplot". "xkcd" also works even though it is not actually
+            one of the style names.
+            
+            ARGUMENT style_config_lines -- a sequence of lines starting
+            at the [style] section of the data node.
+            
+            RETURNS
+            True if a style was set.
+            """
+            set_style = False
+            for line in style_config_lines:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'stylename':
+                    if val == 'xkcd':
+                        plt.xkcd()
+                    else:
+                        plt.style.use(val)
+                    set_style = True
+                    break
+            if not set_style:
+                for line in style_config_lines:
+                    if not line.strip:
+                        break
+                    fields = line.split('=')
+                    if len(fields) < 2:
+                        continue
+                    kind, val = fields[0].strip(), fields[1].strip()
+
+                    if kind == 'stylefile':
+                        lm = g.app.loadManager
+                        style_dir = lm.computeHomeLeoDir()
+                        if g.isWindows:
+                            style_dir = style_dir.replace('/', '\\')
+                        style_file = os.path.join(style_dir, val)
+                        if os.path.exists(style_file):
+                            plt.style.use(style_file)
+                            set_style = True
+                        break
+
+            return set_style
+        #@-others
+
+        config_sections = has_config_section(page_lines)
+        source_start = config_sections.get('source', -1)
+        if source_start > 0:
+            #@+<< set_data >>
+            #@+node:tom.20211106174814.1: *5* << set_data >>
+            for line in page_lines[source_start:]:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'file':
+                    _, filename = fields[0].strip(), fields[1].strip()
+                    g.es(filename)
+                    if os.path.exists(filename):
+                        with open(filename, encoding = ENCODING) as f:
+                            data_lines = f.readlines()
+                        if not data_lines:
+                            g.es(f'VR3 -- no data in file {filename}')
+                    else:
+                        g.es(f'VR3 -- cannot open data file {filename}')
+            #@-<< set_data >>
+        else:
+            data_lines = page_lines
+
+        if not data_lines:
+            return
+
+        style_start = config_sections.get('style', -1)
+        if style_start >= 0:
+            if not set_user_style(page_lines[style_start:]):
+                set_custom_style()
+        else:
+            set_custom_style()
+
+        plt.ion()
+        fig, ax = plt.subplots()
+        fig.clear()
+
+        label_start = config_sections.get('labels', -1)
+        if label_start >= 0:
+            #@+<< configure labels >>
+            #@+node:tom.20211104105903.11: *5* << configure labels >>
+            # Get lines for the labels section
+            for line in page_lines[label_start:]:
+                if not line.strip:
+                    break
+                fields = line.split('=')
+                if len(fields) < 2:
+                    continue
+                kind, val = fields[0].strip(), fields[1].strip()
+                if kind == 'title':
+                    plt.title(val)
+                elif kind == 'xaxis':
+                    plt.xlabel(val)
+                elif kind == 'yaxis':
+                    plt.ylabel(val)
+
+            #@-<< configure labels >>
+
+        plot_plain_data(data_lines)
+        plt.rcdefaults()
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
@@ -1773,6 +2622,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _kind = pc.get_kind(p) or self.default_kind
             if _kind in ('edit', 'file', 'clean', 'auto'):
                 _kind = RST
+            if _kind == RST and p.h.startswith('@jupyter'):
+                _kind = 'jupyter'
             f = pc.dispatch_dict.get(_kind)
         # if f in (pc.update_rst, pc.update_md, pc.update_text):
             # self.show_toolbar()
@@ -1844,7 +2695,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     # pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-        '''Embed widget w in the free_layout splitter.'''
+        """Embed widget w in the free_layout splitter."""
         pc = self; c = pc.c #X ; splitter = pc.splitter
         pc.w = w
         layout = self.layout()
@@ -1865,12 +2716,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-
-            if isQt6:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
-            else:
-                WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere
-            w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            # if isQt6:
+                # WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            # else:
+                # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
+            # w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
+            w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
@@ -1887,10 +2738,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
-        '''Return True if we must update the rendering pane.'''
+        """Return True if we must update the rendering pane."""
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
+
         if g.unitTesting:
             _must_update = False
         elif keywords.get('force'):
@@ -1933,24 +2785,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_html = ''
 
         ascdoc = self.process_asciidoc_nodes(node_list)
+        self.last_markup = ascdoc
         h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
         h = g.toUnicode(h)  # EKR.
         self.set_html(h, w)
     #@+node:TomP.20200825083904.1: *5* vr3.process_asciidoc_nodes
     def process_asciidoc_nodes(self, node_list, s=''):
         """Convert content of Leo nodes, or a string, to Asciidoc.
-        
+
         If the input contains Python code and self.execute_flag is True,
         execute the code and capture stdout and stderr output.
         Return the Asciidoc output with any execution results
         appended in a literal block.
-        
+
         This method uses a rudimentary state machine.
-        
+
         ARGUMENTS
         node_list -- a list of Leo nodes to process.
         s -- a string.  The node_list must be empty.
-        
+
         RETURNS
         a string containing the Asciidoc and execution results.
         """
@@ -2011,105 +2864,159 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         return result
     #@+node:TomP.20200824155122.1: *5* vr3.convert_to_asciidoc
-
     def convert_to_asciidoc(self, s):
-        """Convert a string to html using an asciidoc processor.
+        r"""
+        #@+<< convert asciidoc docstring >>
+        #@+node:tom.20211122114736.1: *6* << convert asciidoc docstring >>
+        Convert a string to html using an asciidoc processor.
+
+        If the settings prefer an external asciidoctor (Ruby) processor,
+        use that if it can be found.  Else try to use either asciidoc or
+        asciidoc3, if either or both are installed; try asciidoc3 first if
+        requested by a setting.
+
+        Asciidoc3 can be a problem on Windows and might not work. If
+        so, we fall back on asciidoc.
+
+        If the "use math" setting is present, then tell the processors to
+        include a MathJax script in the output.
+
+        We use a customized .conf file with both asciidoc and asciidoc3
+        to insert Mathjax scripts into the  output when math output is 
+        requested.
+
+        Settings used::
+
+               Setting            Instance Variable
+            vr3-math-output        self.math_output
+            vr3-prefer-external    self.prefer_external
+            vr3-prefer-asciidoc3   self.prefer_asciidoc3
+            vr3-asciidoc-path      self.asciidoc_path   
 
         ARGUMENT
-        s -- a string
+        s -- the asciidoc string to convert.
 
         RETURNS
-        the html returned by the processor.
+        the html returned by the processor, or an error message.
+        #@-<< convert asciidoc docstring >>
         """
-
-        global AsciiDocError
-        h = None
-        if self.prefer_external:
+        global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
+        h = ''
+        if self.prefer_external == 'asciidoctor' and asciidoctor:
             h =  self.convert_to_asciidoc_external(s)
             self.rst_html = h
             return h
 
-        if self.asciidoc_proc == asciidoctor_exec:
-            try:
-                # in case using the imported processor fails,
-                # fall back to launching external asciidoc program
-                asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
-                infile = io.StringIO(s)
-                outfile = io.StringIO()
-                asciidoc.attributes['stem'] = 'latexmath'
-                asciidoc.execute(infile, outfile, backend='html5')
-                h = outfile.getvalue()
+        #@+<< function proc_string >>
+        #@+node:tom.20211122104550.1: *6* << function proc_string >>
+        def proc_string(proc):
+            st = f'{type(proc)}'.lower()
+            name = 'asciidoc3' if 'doc3' in st else 'asciidoc'
+            return name
+        #@-<< function proc_string >>
+
+        # Reuse cached processors if possible
+        if not asciidoc_processors:
+            asciidoc_processors = []
+            #@+<< Find available processors >>
+            #@+node:tom.20211122104636.1: *6* << Find available processors >>
+            # pylint: disable = undefined-variable
+            if asciidoc_ok:
+                asciidoc_processors.append(AsciiDocAPI())
+            if asciidoc3_ok:
+                asciidoc_processors.append(AsciiDoc3API(ad3_file))
+            if not asciidoc_processors:
+                h = '<h1>No asciidoc processors found</h1>'
                 self.rst_html = h
                 return h
-            except AttributeError:
-                if self.asciidoc_internal_ok:
-                    g.es('VR3 - asciidoc error, launching external program')
-                self.asciidoc_internal_ok = False
-                try:
-                    h = self.convert_to_asciidoc_external(s)
-                    self.rst_html = h
-                    return h
-                except Exception:
-                    g.es_exception()
-                except AsciiDocError as e:  #pylint: disable=undefined-variable
-                    g.es(f'==== asciidoc syntax error: {e}')
-            finally:
-                infile.close()
-                outfile.close()
-        else:
-            # This code is nearly the same as for asciidoc. It is
-            # repeated here in case we may want to add something else to
-            # the calling parameters.
-            try:
-                # asciidoc3api bug may cause this to fail,
-                # so fall back to launching the external asciidoc3 program.
-                if not self.asciidoc3_internal_ok:
-                    raise AttributeError
-                from asciidoc3.asciidoc3api import AsciiDoc3API #pylint: disable=import-outside-toplevel
-                adoc = AsciiDoc3API()
-                infile = io.StringIO(s)
-                outfile = io.StringIO()
-                adoc.execute(infile, outfile, backend='html5')
-                h = outfile.getvalue()
+
+            #@-<< Find available processors >>
+            if not asciidoc_processors:
+                h = '<h1>VR3 -- Cannot find an asciidoc processor</h1>'
                 self.rst_html = h
                 return h
-            except (AttributeError, ImportError):
-                if self.asciidoc3_internal_ok:
-                    g.es('VR3 - asciidoc3 error, launching external program')
-                self.asciidoc3_internal_ok = False
-                try:
-                    h =  self.convert_to_asciidoc_external(s)
-                    self.rst_html = h
-                    return h
-                except Exception:
-                    g.es_exception()
-                    return None
-            finally:
-                infile.close()
-                outfile.close()
+
+        #@+<< set processor priority >>
+        #@+node:tom.20211125140326.1: *6* << set processor priority >>
+        if self.prefer_asciidoc3:
+            if proc_string(asciidoc_processors[0]) != 'asciidoc3':
+                asciidoc_processors.reverse()
+        elif proc_string(asciidoc_processors[0]) != 'asciidoc':
+            asciidoc_processors.reverse()
+        #@-<< set processor priority >>
+
+        infile = StringIO(s)
+        outfile = StringIO()
+        h = ''
+        succeeded = None
+        failed = []
+
+        # Path of directory for our own asciidoc config file
+        asciidoc_conf_file = os.path.join(LEO_PLUGINS_DIR, 'viewrendered3', ASCIIDOC_CONF_FILENAME)
+        if not os.path.exists(asciidoc_conf_file):
+            asciidoc_conf_file = ''
+
+        #@+<< try all processors >>
+        #@+node:tom.20211122104319.1: *6* << try all processors >>
+        for processor in asciidoc_processors:
+            proc_name = proc_string(processor)
+
+            user_dir = PurePath(LEO_PLUGINS_DIR) / 'viewrendered3' / proc_name
+            conf_file = str(user_dir / ASCIIDOC_CONF_FILENAME)
+            stylesdir = asciidoc_dirs[proc_name]['stylesheets']
+            scriptsdir = asciidoc_dirs[proc_name]['javascripts']
+
+            processor.attributes['stylesdir'] = stylesdir
+            processor.attributes['scriptsdir'] = scriptsdir
+
+            if conf_file not in processor.options.values:
+                processor.options.append('--conf-file', conf_file)
+            if self.math_output:
+                processor.attributes['mathjax'] = True  # Can be anything
+            else:
+                processor.attributes.pop('mathjax', None)
+
+            h = ''
+            bkend = os.path.splitext(conf_file)[0]
+            try:
+                processor.execute(infile, outfile, backend=bkend)
+                h = outfile.getvalue()
+                succeeded = proc_name
+                break
+            except Exception as e:
+                failed.append(proc_name)
+                h += f'{proc_name} Failed: {e}\n'
+        #@-<< try all processors >>
+        self.rst_html = h
+        #@+<< show fail-succeed processors >>
+        #@+node:tom.20211122104420.1: *6* << show fail-succeed processors >>
+        if self.asciidoc_show_proc_fail_msgs:
+            if failed:
+                failed_procs = ','.join([f'{fail}' for fail in failed])
+                g.es(f'VR3 -- Asciidoc processing failed trying {failed_procs}')
+            if succeeded:
+                g.es(f'VR3 -- Asciidoc succeeded using {succeeded}')
+            # Reset to True on reload of settings:
+            self.asciidoc_show_proc_fail_msgs = False
+        #@-<< show fail-succeed processors >>
+
+        if succeeded:
+            infile.close()
+            outfile.close()
         return h
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
-        """Convert s to html using external asciidoc or asciidoc3 processor."""
-        pc = self
-        c, p = pc.c, pc.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
-        if not os.path.isdir(path):
-            path = os.path.dirname(path)
-        if os.path.isdir(path):
-            os.chdir(path)
-        s = pc.run_asciidoctor_external(s)
+        """Convert s to html using the Ruby asciidoctor3 processor."""
+        s = self.run_asciidoctor_external(s)
         return g.toUnicode(s)
-    #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor_external
+    #@+node:TomP.20191215195433.57: *6* vr3.run_asciidoctor_external
     def run_asciidoctor_external(self, s):
         """
-        Process s with asciidoc or asciidoc3 external processor.
+        Process s with an asciidoctor3 external processor.
         Return the contents of the html file.
         The caller handles all exceptions.
         """
 
-        global asciidoctor_exec, asciidoc3_exec
-        assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
         o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
@@ -2119,31 +3026,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             f.write(s)
 
         # Call the external program to write the output file.
-        # Assume that the command line may be different between asciidoc and asciidoc3
-        if 'asciidoctor' in self.prefer_external:
-            command = f"del {o_path} & {self.prefer_external} -b html5 -a mathjax {i_path}"
-        elif self.asciidoc_proc == asciidoctor_exec:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
-        else:
-            command = f"del {o_path} & {self.asciidoc_proc} -b html5 -a mathjax {i_path}"
-
-        ext_proc = self.prefer_external or self.asciidoc_proc
-        if ext_proc:
-            if not self.using_ext_proc_msg_shown:
-                g.es(f"=== Using external asciidoc processor: {ext_proc}")
-                self.using_ext_proc_msg_shown = True
-
-            g.execute_shell_commands(command)
-            # Read the output file and return it.
-            try:
-                with open(o_path, 'r', encoding='utf-8') as f:
-                    return f.read()
-            except Exception as e:
-                message = f'asciidoc output file not found\n {e}'
-                g.es(message)
-                return message
-        else:
-            return 'Asciidoc processor not found - cannot render the text'
+        attr = '-a stem' if self.math_output else ''
+        command = (f'asciidoctor -b html5 {attr} {i_path}')
+        g.execute_shell_commands(command)
+        # Read the output file and return it.
+        try:
+            with open(o_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            message = f'asciidoctor output file not found:\n {e}'
+            g.es(message)
+            return message
 
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
@@ -2230,14 +3123,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
-        template = g.adjustTripleString(template, pc.c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
             # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
-        pc.show()
-        # For file URLs, we need to give a base URL to the file system as the 2nd param.
-        # Otherwise the QT widget will not allow a file:/// location.
-        w.setHtml(template, QtCore.QUrl(path))
+        pc.set_html(template, w)
         w.show()
     #@+node:TomP.20191215195433.61: *4* vr3.update_jupyter & helper
     update_jupyter_count = 0
@@ -2253,8 +3143,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         s = self.get_jupyter_source(c)
-        if isQt5 or isQt6:
-            w.hide() # This forces a proper update.
+        self.rst_html = s
+        w.hide() # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -2269,13 +3159,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Leo 5.7.1: Allow raw JSON.
             s = body
         else:
-            url = g.getUrlFromNode(c.p)
+            url = c.p.h.split()[1]
             if not url:
                 return ''
             if not nbformat:
                 return 'can not import nbformat to render url: %r' % url
             try:
-                s = urlopen(url).read().decode()
+                with urlopen(url) as u:
+                    s = u.read().decode()
             except Exception:
                 return 'url not found: %s' % url
         try:
@@ -2311,11 +3202,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
-        template = g.adjustTripleString(template, c.tab_width).strip()
+        template = textwrap.dedent(template).strip()
         return template
     #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
     def update_md(self, node_list, keywords):
@@ -2347,6 +3237,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = keywords.get('s', '')
             s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
+            if s.startswith('<svg'):
+                g.es(NO_SVG_WIDGET_MSG, color = 'red')
+                return
             self.rst_html = ''
             if s and isHtml:
                 h = s
@@ -2447,9 +3340,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
 
-        print(result)
         try:
             _html = Markdown.reset().convert(result)
+            self.last_markup = result
 
         except SystemMessage as sm:
             msg = sm.args[0]
@@ -2534,6 +3427,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.show()
         if pandoc_exec:
             try:
+                self.last_markup = s
                 s2 = self.convert_to_pandoc(s)
                 self.set_html(s2, w)
             except Exception:
@@ -2651,6 +3545,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
+    #@+at
+    #         if s.startswith('<svg'):
+    #             if QtSvg is None:
+    #                 g.es(NO_SVG_WIDGET_MSG, color = 'red')
+    #                 return
+    #             else:
+    #                 self.update_svg(s, keywords)
+    #@@c
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]
@@ -2659,6 +3561,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
+                self.rst_html = h
         else:
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
@@ -2770,13 +3673,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _html = ''.encode(ENCODING)
         if result.strip():
             try:
+                self.last_markup = result
                 _html = publish_string(result, writer_name='html',
                                        settings_overrides=args)
             except SystemMessage as sm:
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
-                    result = f'RST error:\n{msg}\n\n{result}'
-                    _html = result.encode(ENCODING)
+                    output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+                    output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
+                    _html = output.encode(ENCODING)
 
         self.rst_html = _html
         return _html
@@ -2789,14 +3694,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20210218232648.1: *6* ext_execute_code
     def ext_execute_code(self, lang, code):
         """Execute code using an external processor.
-        
+
         The path to the processor will have been stored in
         the exepath dictionary.
-        
+
         ARGUMENTS
         lang -- a string representing the code language; e.g. 'javascript'.
         code -- a string containing the code to be run.
-        
+
         RETURNS
         a tuple (result.stdout, result.stderr) with any console output from
         the external processor.
@@ -2813,7 +3718,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
     #@+node:TomP.20200112103934.1: *5* process_rst_node
@@ -2957,7 +3862,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+<< handle at-image >>
             #@+node:TomP.20200416153716.1: *7* << handle at-image >>
             # Handle @image and @param directives.
-            # param format: space separated words, stored in self.params 
+            # param format: space separated words, stored in self.params
             # as a list of the words.
 
             if not _in_code_block:
@@ -2966,7 +3871,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        line = f'\n.. image:: {url}\n\n'
+                        line = f'\n.. image:: {url}\n      :width: 100%\n\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
@@ -3111,39 +4016,63 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         return final_text, codelines
         #@-<< Finalize Node >>
+    #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
+    def make_title_from_headline(self, p, h):
+        """From node title, return title with over- and underline- strings.
+
+           Symbol is chosen based on the indent level of the node.
+           Note that might differe from p.h because of, e.g.,
+           directive removal.
+
+           ARGUMENTS
+           p -- the node position whose indent level is to be used.
+           h -- the headline string to be processed.
+
+           RETURNS
+           a string
+        """
+        level = min(p.level(), 4) - 1
+        heading_str = RST_HEADING_CHARS[level] * (len(h) + 1)
+        return f'{heading_str}\n{h}\n{heading_str}'
     #@+node:TomP.20200107232540.1: *5* vr3.make_rst_headline
     #@@language python
     def make_rst_headline(self, p, s):
         """Turn node's title into a headline and add to front of text.
+
+        If the headline text (without directives and leading whitespace)
+        equals the first line of the body text, don't insert a title.
 
         ARGUMENTS
         p -- the node being processed.
         s -- a string
 
         RETURNS
-        a string s1 where s1 = _headline + s.
+        a string s1 where s1 = (modified headline) + s.
         """
 
-        _underline = ''
         _headline_str = ''
         if p.h:
             if p.h.startswith('@'):
-                _headline = p.h.split()
-                if len(_headline) > 1:
-                    _headline = _headline[1:]
-                _headline_str = ' '.join(_headline)
+                fields = p.h.split()
+                if len(fields) > 1:
+                    _headline = fields[1:]
+                    _headline_str = ' '.join(_headline)
             else:
                 _headline_str = p.h
+
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
-            _headline_str = _headline_str.replace('\\', r'\\')
-            _underline = '='*len(_headline_str)
+            _headline_str = _headline_str.replace('\\', '\\\\')
+
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
         # node headline == body's first line.
         body_lines = p.b.split('\n', 1)
-        if _headline_str != body_lines[0].strip():
-            s = f'{_underline}\n{_headline_str}\n{_underline}\n\n{s}'
+        first_line = body_lines[0].strip()
+
+        if not first_line or _headline_str != first_line:
+            headline_str = self.make_title_from_headline(p, _headline_str)
+            s = f'{headline_str}\n\n{s}'
 
         return s
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
@@ -3151,20 +4080,24 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
     def update_svg(self, s, keywords):
+        if not QtSvg:
+            g.es(NO_SVG_WIDGET_MSG, color = 'red')
+            return
         pc = self
-        if pc.must_change_widget(QtSvg.QSvgWidget):
-            w = QtSvg.QSvgWidget()
+
+        if pc.must_change_widget(QSvgWidget):
+            w = QSvgWidget()
             pc.embed_widget(w)
             assert w == pc.w
         else:
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
-            s = g.adjustTripleString(s, pc.c.tab_width).strip()
+            s = textwrap.dedent(s).strip()
                 # Sensitive to leading blank lines.
-            s = g.toEncodedString(s)
+            bytes = g.toEncodedString(s)
             pc.show()
-            w.load(QtCore.QByteArray(s))
+            w.load(QtCore.QByteArray(bytes))
             w.show()
         else:
             # Get a filename from the headline or body text.
@@ -3264,7 +4197,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Look for @language directives.
         # Warning: (see #344): don't use c.target_language as a default.
         colorizer = getattr(c.frame.body.colorizer, 'findFirstValidAtLanguageDirective', g)
-        return colorizer.findFirstValidAtLanguageDirective(p.copy())
+        return colorizer.findFirstValidAtLanguageDirective(p.b)
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag):
         pc = self
@@ -3500,15 +4433,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         QObject-descended objects. Currently, check only for <CNTRL-=> and
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
-
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
-
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-        if modifiers and modifiers == KeyboardModifiers.ControlModifier:
+        if modifiers and modifiers == KeyboardModifier.ControlModifier:
             mod = 'cntrl'
-
         if bare_key == '=' and mod == 'cntrl':
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':
@@ -3516,18 +4445,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230503.1: *4* vr3: utils
     #@+node:TomP.20200329230503.2: *5* vr3.set_html
     def set_html(self, s, w):
-        """Set text in w to s, preserving scroll position."""
+        """Set text in w to s."""
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
-        if isQt6:
-            url_base = QtCore.QUrl('file:///' + path + '/' + s)
-            w.setHtml(s)
-        else:
+        try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             w.setHtml(s, url_base)
+        except Exception as e:
+            # Oops, don't have a QWebviewEngine
+            g.es(e)
+            w.setHtml(s)
+
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
     def underline(self, s):
@@ -3915,7 +4846,7 @@ class StateMachine:
 
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
-        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): 
+        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER):
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
         (State.BASE, Marker.IMAGE_MARKER):          (Action.add_image, State.BASE),

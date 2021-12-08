@@ -52,7 +52,7 @@ except ImportError:
 #@+others
 #@+node:tbrown.20090603104805.4938: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
@@ -151,7 +151,7 @@ class InteractPSQL(Interact):
                 dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
                 self.leftover = ''
                 #X print dat
-                if not(dat.endswith('\n')):
+                if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n',1)
                     else:
@@ -255,7 +255,7 @@ class InteractBASH(Interact):
                 dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
                 self.leftover = ''
                 #X print dat
-                if not(dat.endswith('\n')):
+                if not dat.endswith('\n'):
                     if '\n' in dat:
                         dat, self.leftover = dat.rsplit('\n',1)
                     else:
@@ -321,7 +321,7 @@ class InteractController:
         self.addButton(first=False)
     #@+node:tbrown.20090603104805.4965: *3* addButton (interact.py)
     def addButton(self,first):
-        '''Add a button for an interact class.'''
+        """Add a button for an interact class."""
         c = self.c
         sc = scriptingController(c)
         mb = InteractButton(c,class_=first)
@@ -348,7 +348,7 @@ class InteractButton:
     #@+node:tbrown.20090603104805.4968: *3* run
     def run(self):
 
-        '''Move the current position to the last child of self.target.'''
+        """Move the current position to the last child of self.target."""
 
         c = self.c
         p = c.p

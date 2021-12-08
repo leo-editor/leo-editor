@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
-'''The @auto importer for the C language and other related languages.'''
+"""The @auto importer for the C language and other related languages."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -10,16 +10,16 @@ Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-    
+
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):
-        '''C_Importer.__init__'''
+        """C_Importer.__init__"""
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'c',
-            state_class = C_ScanState,
+            language='c',
+            state_class=C_ScanState,
         )
         self.headline = None
         # Fix #545 by supporting @data c_import_typedefs.
@@ -36,7 +36,7 @@ class C_Importer(Importer):
         self.c_type_names = '(%s)' % '|'.join(list(aSet))
         self.c_types_pattern = re.compile(self.c_type_names)
         self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
-        self.c_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
+        self.c_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
         self.c_keywords = '(%s)' % '|'.join([
             'break', 'case', 'continue', 'default', 'do', 'else', 'enum',
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
@@ -44,9 +44,9 @@ class C_Importer(Importer):
         self.c_keywords_pattern = re.compile(self.c_keywords)
     #@+node:ekr.20200819073508.1: *3* c_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''
+        """
         Adjust headline for templates.
-        '''
+        """
         if not p:
             return s.strip()
         lines = self.get_lines(p)
@@ -64,7 +64,7 @@ class C_Importer(Importer):
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 
     def match_name_patterns(self, line):
-        '''Set self.headline if the line defines a typedef name.'''
+        """Set self.headline if the line defines a typedef name."""
         m = self.c_name_pattern.match(line)
         if m:
             word = m.group(1)
@@ -77,10 +77,10 @@ class C_Importer(Importer):
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
 
     def match_start_patterns(self, line):
-        '''
+        """
         True if line matches any block-starting pattern.
         If true, set self.headline.
-        '''
+        """
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
@@ -112,13 +112,14 @@ class C_Importer(Importer):
         return bool(m)
     #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         line = lines[i]
         target = stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        if self.headline: h = self.headline
+        if self.headline:
+            h = self.headline
         if new_state.level() > prev_state.level():
             child = self.create_child_node(target.p, line, h)
         else:
@@ -129,7 +130,7 @@ class C_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1
@@ -142,7 +143,7 @@ class C_Importer(Importer):
             self.add_line(child, lines[i])
     #@+node:ekr.20161204155335.1: *3* c_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         self.headline = None
         line = lines[i]
         if prev_state.context:
@@ -171,10 +172,10 @@ class C_Importer(Importer):
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
-    '''A class representing the state of the C line-oriented scan.'''
+    """A class representing the state of the C line-oriented scan."""
 
     def __init__(self, d=None):
-        '''C_ScanSate ctor'''
+        """C_ScanSate ctor"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -184,7 +185,7 @@ class C_ScanState:
             self.curlies = 0
 
     def __repr__(self):
-        '''C_ScanState.__repr__'''
+        """C_ScanState.__repr__"""
         return 'C_ScanState context: %r curlies: %s' % (self.context, self.curlies)
 
     __str__ = __repr__
@@ -192,14 +193,14 @@ class C_ScanState:
     #@+others
     #@+node:ekr.20161119115315.1: *3* c_state.level
     def level(self):
-        '''C_ScanState.level.'''
+        """C_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118051111.1: *3* c_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context

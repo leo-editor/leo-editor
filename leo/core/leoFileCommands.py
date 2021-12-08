@@ -16,6 +16,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
+from typing import Dict
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -33,6 +34,7 @@ def cmd(name):
 #@+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
 def dump_clone_parents(event):
+    """Print the parent vnodes of all cloned vnodes."""
     c = event.get('c')
     if not c:
         return
@@ -46,6 +48,7 @@ def dump_clone_parents(event):
 #@+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
 def dump_gnx_dict(event):
+    """Dump c.fileCommands.gnxDict."""
     c = event.get('c')
     if not c:
         return
@@ -96,7 +99,7 @@ class FastRead:
     def readFileFromClipboard(self, s):
         """
         Recreate a file from a string s, and return its hidden vnode.
-        
+
         Unlike readFile above, this does not affect splitter sizes.
         """
         v, g_element = self.readWithElementTree(path=None, s=s)
@@ -202,7 +205,7 @@ class FastRead:
             byte_keys = [i for i in ob if type(i) is bytes]
             for bk in byte_keys:
                 v = ob[bk]
-                del(ob[bk])
+                del ob[bk]
                 ob[str(bk, 'utf-8')] = v
             for k in ob:
                 if type(ob[k]) is bytes:
@@ -278,7 +281,8 @@ class FastRead:
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
     def scanTnodes(self, t_elements):
 
-        gnx2body, gnx2ua = {}, defaultdict(dict)
+        gnx2body: Dict[str, str] = {}
+        gnx2ua: Dict[str, dict] = defaultdict(dict)
         for e in t_elements:
             # First, find the gnx.
             gnx = e.attrib['tx']
@@ -315,7 +319,7 @@ class FastRead:
                     v.parents.append(parent_v)
                     # The body overrides any previous body text.
                     body = g.toUnicode(gnx2body.get(gnx) or '')
-                    assert g.isUnicode(body), body.__class__.__name__
+                    assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
                 else:
                     #@+<< Make a new vnode, linked to the parent >>
@@ -325,7 +329,7 @@ class FastRead:
                     parent_v.children.append(v)
                     v.parents.append(parent_v)
                     body = g.toUnicode(gnx2body.get(gnx) or '')
-                    assert g.isUnicode(body), body.__class__.__name__
+                    assert isinstance(body, str), body.__class__.__name__
                     v._bodyString = body
                     v._headString = 'PLACE HOLDER'
                     #@-<< Make a new vnode, linked to the parent >>
@@ -743,7 +747,7 @@ class FileCommands:
     def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
         """
         Open a Leo file.
-        
+
         readAtFileNodesFlag: False when reading settings files.
         silent:              True when creating hidden commanders.
         """
@@ -854,12 +858,12 @@ class FileCommands:
     def retrieveVnodesFromDb(self, conn):
         """
         Recreates tree from the data contained in table vnodes.
-        
+
         This method follows behavior of readSaxFile.
         """
 
         c, fc = self.c, self
-        sql = '''select gnx, head, 
+        sql = '''select gnx, head,
              body,
              children,
              parents,
@@ -911,7 +915,7 @@ class FileCommands:
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
     def initNewDb(self, conn):
         """ Initializes tables and returns None"""
-        fc = self; c = self.c
+        c, fc = self.c, self
         v = leoNodes.VNode(context=c)
         c.hiddenRootNode.children = [v]
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
@@ -929,12 +933,13 @@ class FileCommands:
         try:
             d = dict(
                 conn.execute(
-                '''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''',
-                keys,
-            ).fetchall(),
+                    '''select * from extra_infos
+                    where name in (?, ?, ?, ?, ?, ?, ?)''',
+                    keys,
+                ).fetchall(),
             )
-            geom = (d.get(*x) for x in zip(keys, geom))
+            # mypy complained that geom must be a tuple, not a generator.
+            geom = tuple(d.get(*x) for x in zip(keys, geom))  # type:ignore
         except sqlite3.OperationalError:
             pass
         return geom
@@ -954,7 +959,7 @@ class FileCommands:
     #@+node:vitalije.20170831144643.1: *5* fc.updateFromRefFile
     def updateFromRefFile(self):
         """Updates public part of outline from the specified file."""
-        fc = self; c = self.c
+        c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
         def get_ref_filename():
@@ -972,7 +977,8 @@ class FileCommands:
             for v in c.hiddenRootNode.children:
                 if v.h == PRIVAREA:
                     pub = False
-                if pub: continue
+                if pub:
+                    continue
                 yield v
         #@+node:vitalije.20170831144827.6: *6* function: pub_gnxes
         def sub_gnxes(children):
@@ -1237,7 +1243,7 @@ class FileCommands:
         self.c.nodeConflictFileName = None  # 2010/01/05
     #@+node:ekr.20100124110832.6212: *5* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
-        fc = self; c = fc.c
+        c = self.c
         aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
@@ -1302,15 +1308,15 @@ class FileCommands:
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
-                    v._p_changed = 1
+                    v._p_changed = True
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
-                    v._p_changed = 1
-        marks = {}; expanded = {}
+                    v._p_changed = True
+        expanded, marks = {}, {}
         for gnx in self.descendentExpandedList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
@@ -1319,7 +1325,8 @@ class FileCommands:
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
-            if v: marks[v] = v
+            if v:
+                marks[v] = v
         if marks or expanded:
             for p in c.all_unique_positions():
                 if marks.get(p.v):
@@ -1340,7 +1347,8 @@ class FileCommands:
             str_pos = c.db.get('current_position')
         if str_pos is None:
             d = root.v.u
-            if d: str_pos = d.get('str_leo_pos')
+            if d:
+                str_pos = d.get('str_leo_pos')
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
@@ -1482,11 +1490,11 @@ class FileCommands:
             c.sqlite_connection = sqlite3.connect(fileName, isolation_level='DEFERRED')
         conn = c.sqlite_connection
 
-        def dump_u(v):
+        def dump_u(v) -> bytes:
             try:
                 s = pickle.dumps(v.u, protocol=1)
             except pickle.PicklingError:
-                s = ''
+                s = b''  # 2021/06/25: fixed via mypy complaint.
                 g.trace('unpickleable value', repr(v.u))
             return s
 
@@ -1715,7 +1723,7 @@ class FileCommands:
         c = self.c
         width, height, left, top = c.frame.get_window_info()
         if 1:  # Write to the cache, not the file.
-            d = {}
+            d: Dict[str, str] = {}
             c.db['body_outline_ratio'] = str(c.frame.ratio)
             c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
             c.db['window_position'] = str(top), str(left), str(height), str(width)
@@ -1810,8 +1818,9 @@ class FileCommands:
             self.mFileName,
             self.leo_file_encoding, reportErrors=True)
         # Write the archive.
-        theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
-        theFile.writestr(contentsName, s)
+        # These mypy complaints look valid.
+        theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)  # type:ignore
+        theFile.writestr(contentsName, s)  # type:ignore
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle
@@ -1845,14 +1854,17 @@ class FileCommands:
         #
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
-        pDict = {}; aList = []
+        aList = []
+        pDict = {}
         for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
                 aList.append((p2.copy(), p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
         # Create aList of pairs (v,d) where d contains only pickleable entries.
-        if aList: aList = self.createUaList(aList)
-        if not aList: return ''
+        if aList:
+            aList = self.createUaList(aList)
+        if not aList:
+            return ''
         # Create d, an enclosing dict to hold all the inner dicts.
         d = {}
         for v, d2 in aList:
@@ -2062,8 +2074,10 @@ class FileCommands:
                 p.moveToFirstChild()
                 while 1:
                     fc.putVnode(p, isIgnore)
-                    if p.hasNext(): p.moveToNext()
-                    else: break
+                    if p.hasNext():
+                        p.moveToNext()
+                    else:
+                        break
                 p.moveToParent()  # Restore p in the caller.
                 fc.put('</v>\n')
             else:

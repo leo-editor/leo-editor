@@ -28,8 +28,16 @@ free-layout-zoom
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
 import json
+from typing import Any, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtWidgets, QtCore
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import QtWidgets
+    from leo.core.leoQt import MouseButton
+except Exception:
+    QtWidgets = None
+    MouseButton = None
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter
         # NestedSplitterChoice
@@ -149,7 +157,8 @@ class FreeLayoutController:
         """
         # Careful: we could be unit testing.
         top_splitter = self.get_top_splitter()
-        if not top_splitter: return
+        if not top_splitter:
+            return
         c = self.c
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
@@ -157,7 +166,7 @@ class FreeLayoutController:
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()
-                settings.h = "@settings"
+                settings.h = "@settings"  # type:ignore
             nd = settings.insertAsNthChild(0)
         nd.h = "@data free-layout-layout"
         nd.b = json.dumps(layout, indent=4)
@@ -253,7 +262,9 @@ class FreeLayoutController:
         if d:
             for name in sorted(d.keys()):
 
-                def func(event, c=c, d=d, name=name):
+                # pylint: disable=cell-var-from-loop
+
+                def func(event):
                     layout = d.get(name)
                     if layout:
                         c.free_layout.get_top_splitter().load_layout(c, layout)
@@ -270,7 +281,7 @@ class FreeLayoutController:
                 splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
-        ans = [
+        ans: List[Any] = [
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
         ]
@@ -397,8 +408,7 @@ class FreeLayoutController:
         :param bool release: was it a Press or Release event
         :param bool double: was it a double click event
         """
-        MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
-        if not release or event.button() != MouseButtons.MiddleButton:
+        if not release or event.button() != MouseButton.MiddleButton:
             return
         if splitter.root.zoomed:  # unzoom if *any* handle clicked
             splitter.zoom_toggle()

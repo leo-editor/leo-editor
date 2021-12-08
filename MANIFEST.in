@@ -12,13 +12,17 @@ include pylint-leo.bat
 include pylint-leo.py
 include *.nsi
 include LICENSE
-# obscure pip bugfix https://github.com/pypa/setuptools/issues/1694
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
 include pyproject.toml
 
 # Exclusions
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
 prune leo/test
 prune leo/doc/html
+# EKR: 2021/08/14: further exclusions.
+prune leo/core/.mypy_cache
+prune leo/core/mypy_stubs
+print leo/core/.gitattributes
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py

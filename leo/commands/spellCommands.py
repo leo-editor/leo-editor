@@ -39,7 +39,8 @@ class BaseSpellWrapper:
             f.close()
             # Blanks lines cause troubles.
             s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
-            if s2.startswith(b'\n'): s2 = s2[1:]
+            if s2.startswith(b'\n'):
+                s2 = s2[1:]
             if s != s2:
                 g.es_print('cleaning', fn)
                 f = open(fn, mode='wb')
@@ -186,9 +187,9 @@ class DefaultDict:
 class DefaultWrapper(BaseSpellWrapper):
     """
     A default spell checker for when pyenchant is not available.
-    
+
     Based on http://norvig.com/spell-correct.html
-    
+
     Main dictionary: ~/.leo/main_spelling_dict.txt
     User dictionary:
     - @string enchant_local_dictionary or
@@ -291,7 +292,7 @@ class DefaultWrapper(BaseSpellWrapper):
             g.es_print('\nSpell checking has been disabled.')
             g.es_print('To enable, put a main dictionary at:')
             g.es_print('~/.leo/main_spelling_dict.txt')
-            table = (
+            table = (  # type:ignore
                 ('user', self.user_fn),
             )
         for kind, fn in table:
@@ -368,7 +369,8 @@ class EnchantWrapper(BaseSpellWrapper):
             f.close()
             # Blanks lines cause troubles.
             s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
-            if s2.startswith(b'\n'): s2 = s2[1:]
+            if s2.startswith(b'\n'):
+                s2 = s2[1:]
             if s != s2:
                 g.es_print('cleaning', fn)
                 f = open(fn, mode='wb')
@@ -444,6 +446,8 @@ class SpellCommandsClass(BaseEditCommandsClass):
     @cmd('spell-tab-open')
     def openSpellTab(self, event=None):
         """Open the Spell Checker tab in the log pane."""
+        if g.unitTesting:
+            return
         c = self.c
         log = c.frame.log
         tabName = 'Spell'
@@ -576,8 +580,8 @@ class SpellCommandsClass(BaseEditCommandsClass):
         if not self.suggestions:
             g.es('[no suggestions]')
             return
-        word = self.suggestions[self.suggestion_idx]
-        self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)
+        word = self.suggestions[self.suggestion_idx]  # type:ignore
+        self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)  # type:ignore
         self.as_you_type_replace(word)
     #@+node:ekr.20150514063305.496: *4* as_you_type_undo
     @cmd('spell-as-you-type-undo')
@@ -696,7 +700,7 @@ class SpellTabHandler:
             self.loaded = True
             return
         # Create the spellController for the show-spell-info command.
-        self.spellController = DefaultWrapper(c)
+        self.spellController = DefaultWrapper(c)  # type:ignore
         self.loaded = bool(self.spellController.main_fn)
         if self.loaded:
             # Create the spell tab only if the main dict exists.
@@ -718,24 +722,26 @@ class SpellTabHandler:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
         if selection:
+            bunch = u.beforeChangeBody(p)
             # Use getattr to keep pylint happy.
             i = getattr(self.tab, 'change_i', None)
             j = getattr(self.tab, 'change_j', None)
             if i is not None:
                 start, end = i, j
-                oldSel = start, end
             else:
-                start, end = oldSel = w.getSelectionRange()
+                start, end = w.getSelectionRange()
             if start is not None:
-                if start > end: start, end = end, start
+                if start > end:
+                    start, end = end, start
                 w.delete(start, end)
                 w.insert(start, selection)
                 w.setSelectionRange(start, start + len(selection))
-                c.frame.body.onBodyChanged("Change", oldSel=oldSel)
+                p.v.b = w.getAllText()
+                u.afterChangeBody(p, 'Change', bunch)
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return True
@@ -838,7 +844,7 @@ def clean_main_spell_dict(event):
     """
     Clean the main spelling dictionary used *only* by the default spell
     checker.
-    
+
     This command works regardless of the spell checker being used.
     """
     c = event and event.get('c')
@@ -850,7 +856,7 @@ def clean_user_spell_dict(event):
     """
     Clean the user spelling dictionary used *only* by the default spell
     checker. Mostly for debugging, because this happens automatically.
-    
+
     This command works regardless of the spell checker being used.
     """
     c = event and event.get('c')

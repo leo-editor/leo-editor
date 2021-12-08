@@ -7,6 +7,13 @@ import time
 assert time
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
+from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
+from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
+from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
+
+QColor = QtGui.QColor
+FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
+
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
@@ -55,6 +62,29 @@ def zoom_helper(event, delta):
     colorizer.configure_fonts()
     wrapper.setAllText(wrapper.getAllText())
         # Recolor everything.
+#@+node:tom.20210904233317.1: ** Show Hilite Settings command
+# Add item to known "help-for" commands
+hilite_doc = r'''
+Changing The Current Line Highlighting Color
+--------------------------------------------
+
+The highlight color will be computed based on the Leo theme in effect, unless the `line-highlight-color` setting is set to a non-blank string.
+
+The setting will always override the color computation.  If the setting is changed, after the settings are reloaded the new color will take effect the next time the cursor is moved.
+
+Settings for Current Line Highlighting
+---------------------------------------
+\@bool highlight-body-line -- if True, highlight current line.
+
+\@string line-highlight-color -- override highlight color with css value.
+Valid values are standard css color names like `lightgrey`, and css rgb values like `#1234ad`.
+'''
+
+@g.command('help-for-highlight-current-line')
+def helpForLineHighlight(self, event=None):
+    """Displays Settings used by current line highlighter."""
+    self.c.putHelpFor(hilite_doc)
+
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
@@ -120,7 +150,7 @@ class QTextMixin:
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
         w = self
-        c = self.c; p = c.p
+        c, p = self.c, self.c.p
         tree = c.frame.tree
         if w.changingText:
             return
@@ -181,10 +211,12 @@ class QTextMixin:
     def delete(self, i, j=None):
         """QTextMixin"""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
         self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
@@ -258,8 +290,9 @@ class QTextMixin:
         v = self.c.p.v  # Always accurate.
         v.insertSpot = w.getInsertPoint()
         i, j = w.getSelectionRange()
-        if i > j: i, j = j, i
-        assert(i <= j)
+        if i > j:
+            i, j = j, i
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
@@ -365,7 +398,8 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18129: *4* qlew.setInsertPoint
     def setInsertPoint(self, i, s=None):
         """QHeadlineWrapper."""
-        if not self.check(): return
+        if not self.check():
+            return
         w = self.widget
         if s is None:
             s = w.text()
@@ -375,9 +409,11 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """QHeadlineWrapper."""
-        if not self.check(): return
+        if not self.check():
+            return
         w = self.widget
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         if s is None:
             s = w.text()
         n = len(s)
@@ -405,7 +441,7 @@ class QLineEditWrapper(QTextMixin):
 class LeoLineTextWidget(QtWidgets.QFrame):
     """
     A QFrame supporting gutter line numbers.
-    
+
     This class *has* a QTextEdit.
     """
     #@+others
@@ -414,9 +450,8 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
-        # Sunken = QtWidgets.QFrame.Shadow.Sunken if isQt6 else self.Sunken
-        Raised = QtWidgets.QFrame.Shadow.Raised if isQt6 else self.StyledPanel
-        NoFrame = QtWidgets.QFrame.Shape.NoFrame if isQt6 else self.NoFrame
+        Raised = Shadow.Raised if isQt6 else self.StyledPanel
+        NoFrame = Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
         e.setFrameStyle(NoFrame)
@@ -463,7 +498,8 @@ if QtWidgets:
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
             # #1286
                 self.textChanged.connect(self.onTextChanged)
-            ContextMenuPolicy = QtCore.Qt.ContextMenuPolicy if isQt6 else QtCore.Qt
+            self.cursorPositionChanged.connect(self.highlightCurrentLine)
+            self.textChanged.connect(self.highlightCurrentLine)
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -473,6 +509,14 @@ if QtWidgets:
             self.leo_q_completer = None
             self.leo_options = None
             self.leo_model = None
+
+            hl_color_setting = c.config.getString('line-highlight-color') or ''
+            hl_color = QColor(hl_color_setting)
+            self.hiliter_params = {
+                    'lastblock': -2, 'last_style_hash': 0,
+                    'last_color_setting': hl_color_setting,
+                    'last_hl_color': hl_color
+                    }
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
             return f"(LeoQTextBrowser) {id(self)}"
@@ -486,8 +530,7 @@ if QtWidgets:
             def __init__(self, c):
                 """ctor for LeoQListWidget class"""
                 super().__init__()
-                WindowFlags = QtCore.Qt.WindowFlags if isQt6 else QtCore.Qt
-                self.setWindowFlags(WindowFlags.Popup | self.windowFlags())
+                self.setWindowFlags(WindowType.Popup | self.windowFlags())
                 # Inject the ivars
                 self.leo_w = c.frame.body.wrapper.widget
                     # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
@@ -521,10 +564,8 @@ if QtWidgets:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
-                Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
-                Modifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
                 key = event.key()
-                if event.modifiers() != Modifiers.NoModifier and not event.text():
+                if event.modifiers() != Modifier.NoModifier and not event.text():
                     # A modifier key on it's own.
                     pass
                 elif key in (Key.Key_Up, Key.Key_Down):
@@ -574,7 +615,8 @@ if QtWidgets:
                 """Called when user hits tab on an item in the QListWidget."""
                 c = self.leo_c
                 w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
-                if w is None: return
+                if w is None:
+                    return
                 # Replace the tail of the prefix with the completion.
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
                 parts = prefix.split('.')
@@ -671,6 +713,177 @@ if QtWidgets:
         def show_completions(self, aList):
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
+        #@+node:tom.20210827230127.1: *3* lqtb Highlight Current Line
+        #@+node:tom.20210827225119.3: *4* lqtb.parse_css
+        #@@language python
+        @staticmethod
+        def parse_css(css_string, clas=''):
+            """Extract colors from a css stylesheet string.
+
+            This is an extremely simple-minded function. It assumes
+            that no quotation marks are being used, and that the
+            first block in braces with the name clas is the controlling
+            css for our widget.
+
+            Returns a tuple of strings (color, background).
+            """
+            # Get first block with name matching "clas'
+            block = css_string.split(clas, 1)
+            block = block[1].split('{', 1)
+            block = block[1].split('}', 1)
+
+            # Split into styles separated by ";"
+            styles = block[0].split(';')
+
+            # Split into fields separated by ":"
+            fields = [style.split(':') for style in styles if style.strip()]
+
+            # Only get fields whose names are "color" and "background"
+            color = bg = ''
+            for style, val in fields:
+                style = style.strip()
+                if style == 'color':
+                    color = val.strip()
+                elif style == 'background':
+                    bg = val.strip()
+                if color and bg:
+                    break
+            return color, bg
+
+        #@+node:tom.20210827225119.4: *4* lqtb.assign_bg
+        #@@language python
+        @staticmethod
+        def assign_bg(fg):
+            """If fg or bg colors are missing, assign
+            reasonable values.  Can happen with incorrectly
+            constructed themes, or no-theme color schemes.
+
+            Intended to be called when bg color is missing.
+
+            RETURNS
+            a QColor object for the background color
+            """
+            if not fg:
+                fg = 'black'  # QTextEdit default
+                bg = 'white'  # QTextEdit default
+            if fg == 'black':
+                bg = 'white'  # QTextEdit default
+            else:
+                fg_color = QColor(fg)
+                h, s, v, a = fg_color.getHsv()
+                if v < 128:  # dark foreground
+                    bg = 'white'
+                else:
+                    bg = 'black'
+            return QColor(bg)
+        #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
+        #@@language python
+        @staticmethod
+        def calc_hl(bg_color):
+            """Return the line highlight color.
+
+            ARGUMENT
+            bg_color -- a QColor object for the background color
+
+            RETURNS
+            a QColor object for the highlight color
+            """
+            h, s, v, a = bg_color.getHsv()
+
+            if v < 40:
+                v = 60
+                bg_color.setHsv(h, s, v, a)
+            elif v > 240:
+                v = 220
+                bg_color.setHsv(h, s, v, a)
+            elif v < 128:
+                bg_color = bg_color.lighter(130)
+            else:
+                bg_color = bg_color.darker(130)
+
+            return bg_color
+        #@+node:tom.20210827225119.2: *4* lqtb.highlightCurrentLine
+        #@@language python
+        def highlightCurrentLine(self):
+            """Highlight cursor line."""
+            c = self.leo_c
+            params = self.hiliter_params
+            editor = c.frame.body.wrapper.widget
+
+            if not c.config.getBool('highlight-body-line', True):
+                editor.setExtraSelections([])
+                return
+
+            curs = editor.textCursor()
+            blocknum = curs.blockNumber()
+
+            # Some cursor movements don't change the line: ignore them
+        #    if blocknum == params['lastblock'] and blocknum > 0:
+        #        return
+
+            if blocknum == 0:  # invalid position
+                blocknum = 1
+            params['lastblock'] = blocknum
+
+            hl_color = params['last_hl_color']
+
+            #@+<< Recalculate Color >>
+            #@+node:tom.20210909124441.1: *5* << Recalculate Color >>
+            config_setting = c.config.getString('line-highlight-color') \
+                or ''
+            config_setting = (config_setting.replace("'", '')
+                              .replace('"', '').lower()
+                              .replace('none', ''))
+
+            last_color_setting = params['last_color_setting']
+            config_setting_changed = config_setting != last_color_setting
+
+            if config_setting:
+                if config_setting_changed:
+                    hl_color = QColor(config_setting)
+                    params['last_hl_color'] = hl_color
+                    params['last_color_setting'] = config_setting
+                else:
+                    hl_color = params['last_hl_color']
+            else:
+                ssm = c.styleSheetManager
+                sheet = ssm.expand_css_constants(c.active_stylesheet)
+                h = hash(sheet)
+                params['last_color_setting'] = ''
+                if params['last_style_hash'] != h or config_setting_changed:
+                    fg, bg = self.parse_css(sheet, 'QTextEdit')
+                    bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    hl_color = self.calc_hl(bg_color)
+                    # g.trace('fg', fg, 'bg', bg, 'hl_color', hl_color.name())
+                    params['last_hl_color'] = hl_color
+                    params['last_style_hash'] = h
+            #@-<< Recalculate Color >>
+            #@+<< Apply Highlight >>
+            #@+node:tom.20210909124551.1: *5* << Apply Highlight >>
+            # Based on code from
+            # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+
+            selection = editor.ExtraSelection()
+            selection.format.setBackground(hl_color)
+            selection.format.setProperty(FullWidthSelection, True)
+            selection.cursor = curs
+            selection.cursor.clearSelection()
+
+            editor.setExtraSelections([selection])
+            #@-<< Apply Highlight >>
+        #@+node:tom.20210905130804.1: *4* Add Help Menu Item
+        # Add entry to Help menu
+        new_entry = ('@item', 'help-for-&highlight-current-line', '')
+
+        if g.app.config:
+            for item in g.app.config.menusList:
+                if 'Help' in item[0]:
+                    for entry in item[1]:
+                        if entry[0].lower() == '@menu &open help topics':
+                            menu_items = entry[1]
+                            menu_items.append(new_entry)
+                            menu_items.sort()
+                            break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
@@ -696,23 +909,23 @@ if QtWidgets:
         def setYScrollPosition(self, pos):
             """Set the position of the vertical scrollbar."""
             w = self
-            if pos is None: pos = 0
+            if pos is None:
+                pos = 0
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
-
-            MouseButtons = QtCore.Qt.MouseButtons if isQt6 else QtCore.Qt
             button = event.button()
             table = (
-                (MouseButtons.NoButton, 'no button'),
-                (MouseButtons.LeftButton, 'left-button'),
-                (MouseButtons.RightButton, 'right-button'),
-                (MouseButtons.MiddleButton, 'middle-button'),
+                (MouseButton.NoButton, 'no button'),
+                (MouseButton.LeftButton, 'left-button'),
+                (MouseButton.RightButton, 'right-button'),
+                (MouseButton.MiddleButton, 'middle-button'),
             )
             for val, s in table:
                 if button == val:
-                    kind = s; break
+                    kind = s
+                    break
             else:
                 kind = f"unknown: {repr(button)}"
             return kind
@@ -744,7 +957,7 @@ if QtWidgets:
         def paintEvent(self, event):
             """
             LeoQTextBrowser.paintEvent.
-            
+
             New in Leo 6.4: Draw a box around the cursor in command mode.
                             This is as close as possible to vim's look.
             """
@@ -792,8 +1005,7 @@ if QtWidgets:
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
-            KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-            if KeyboardModifiers.ControlModifier & event.modifiers():
+            if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
                 try:  # Qt5 or later.
                     point = event.angleDelta()
@@ -1092,7 +1304,8 @@ class QScintillaWrapper(QTextMixin):
         """Delete s[i:j]"""
         w = self.widget
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         self.setSelectionRange(i, j)
         try:
@@ -1106,7 +1319,7 @@ class QScintillaWrapper(QTextMixin):
         if 0:  # This causes a lot of problems: Better to use Scintilla matching.
             # This causes problems during unit tests:
             # The selection point isn't restored in time.
-            if g.app.unitTesting:
+            if g.unitTesting:
                 return
             #@+others
             #@+node:ekr.20140902084950.18635: *5* after
@@ -1137,9 +1350,10 @@ class QScintillaWrapper(QTextMixin):
                     w.setFocus()
             #@-others
             # Numbered color names don't work in Ubuntu 8.10, so...
-
-            if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
-            if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
+            if bg and bg[-1].isdigit() and bg[0] != '#':
+                bg = bg[:-1]
+            if fg and fg[-1].isdigit() and fg[0] != '#':
+                fg = fg[:-1]
             # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
@@ -1173,7 +1387,8 @@ class QScintillaWrapper(QTextMixin):
         w = self.widget
         i = int(w.SendScintilla(w.SCI_GETCURRENTPOS))
         j = int(w.SendScintilla(w.SCI_GETANCHOR))
-        if sort and i > j: i, j = j, i
+        if sort and i > j:
+            i, j = j, i
         return i, j
     #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition (to do)
     def getXScrollPosition(self):
@@ -1218,12 +1433,18 @@ class QScintillaWrapper(QTextMixin):
             lineSpacing = w.fontMetrics().lineSpacing()
             n = h / lineSpacing
             n = max(2, n - 3)
-            if kind == 'down-half-page': delta = n / 2
-            elif kind == 'down-line': delta = 1
-            elif kind == 'down-page': delta = n
-            elif kind == 'up-half-page': delta = -n / 2
-            elif kind == 'up-line': delta = -1
-            elif kind == 'up-page': delta = -n
+            if kind == 'down-half-page':
+                delta = n / 2
+            elif kind == 'down-line':
+                delta = 1
+            elif kind == 'down-page':
+                delta = n
+            elif kind == 'up-half-page':
+                delta = -n / 2
+            elif kind == 'up-line':
+                delta = -1
+            elif kind == 'up-page':
+                delta = -n
             else:
                 delta = 0
                 g.trace('bad kind:', kind)
@@ -1296,7 +1517,6 @@ class QTextEditWrapper(QTextMixin):
     def set_config(self):
         """Set configuration options for QTextEdit."""
         w = self.widget
-        WrapMode = QtGui.QTextOption.WrapMode if isQt6 else QtGui.QTextOption
         w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         if isQt6:
@@ -1329,8 +1549,7 @@ class QTextEditWrapper(QTextMixin):
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
-                KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
-                if KeyboardModifiers.ControlModifier & event.modifiers():
+                if KeyboardModifier.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)
                 else:
                     if name == 'body':
@@ -1351,13 +1570,13 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1381,8 +1600,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
             bg = bg[:-1]
@@ -1390,9 +1607,11 @@ class QTextEditWrapper(QTextMixin):
             fg = fg[:-1]
         # This might causes problems during unit tests.
         # The selection point isn't restored in time.
-        if g.app.unitTesting:
+        if g.unitTesting:
             return
         w = self.widget  # A QTextEdit.
+        # Remember highlighted line:
+        last_selections = w.extraSelections()
 
         def after(func):
             QtCore.QTimer.singleShot(delay, func)
@@ -1408,13 +1627,14 @@ class QTextEditWrapper(QTextMixin):
                 extra.format.setBackground(QtGui.QColor(self.flashBg))
             if self.flashFg:
                 extra.format.setForeground(QtGui.QColor(self.flashFg))
-            self.extraSelList = [extra]  # keep the reference.
+            self.extraSelList = last_selections[:]
+            self.extraSelList.append(extra)  # must be last
             w.setExtraSelections(self.extraSelList)
             self.flashCount -= 1
             after(removeFlashCallback)
 
         def removeFlashCallback(self=self, w=w):
-            w.setExtraSelections([])
+            w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)
             else:
@@ -1425,6 +1645,7 @@ class QTextEditWrapper(QTextMixin):
         self.flashBg = None if bg.lower() == 'same' else bg
         self.flashFg = None if fg.lower() == 'same' else fg
         addFlashCallback()
+
     #@+node:ekr.20110605121601.18081: *4* qtew.getAllText
     def getAllText(self):
         """QTextEditWrapper."""
@@ -1479,8 +1700,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         """QTextEditWrapper."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
         w = self.widget
         d = {
             'begin-line': MoveOperation.StartOfLine,  # Was start-line
@@ -1534,8 +1753,6 @@ class QTextEditWrapper(QTextMixin):
         straight port of the C++ code found in the pageUpDown method of
         gui/widgets/qtextedit.cpp.
         """
-        MoveOperation = QtGui.QTextCursor.MoveOperation if isQt6 else QtGui.QTextCursor
-        SliderAction = QtWidgets.QAbstractSlider.SliderAction if isQt6 else QtWidgets.QAbstractSlider
         control = self.widget
         cursor = control.textCursor()
         moved = False
@@ -1551,7 +1768,7 @@ class QTextEditWrapper(QTextMixin):
                 break
         sb = control.verticalScrollBar()
         if moved:
-            if (op == MoveOperation.Up):
+            if op == MoveOperation.Up:
                 cursor.movePosition(MoveOperation.Down, moveMode)
                 sb.triggerAction(SliderAction.SliderPageStepSub)
             else:
@@ -1580,12 +1797,18 @@ class QTextEditWrapper(QTextMixin):
         lineSpacing = w.fontMetrics().lineSpacing()
         n = h / lineSpacing
         n = max(2, n - 3)
-        if kind == 'down-half-page': delta = n / 2
-        elif kind == 'down-line': delta = 1
-        elif kind == 'down-page': delta = n
-        elif kind == 'up-half-page': delta = -n / 2
-        elif kind == 'up-line': delta = -1
-        elif kind == 'up-page': delta = -n
+        if kind == 'down-half-page':
+            delta = n / 2
+        elif kind == 'down-line':
+            delta = 1
+        elif kind == 'down-page':
+            delta = n
+        elif kind == 'up-half-page':
+            delta = -n / 2
+        elif kind == 'up-line':
+            delta = -1
+        elif kind == 'up-page':
+            delta = -n
         else:
             delta = 0
             g.trace('bad kind:', kind)
@@ -1630,7 +1853,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         """Set the selection range and the insert point."""
-        MoveMode = QtGui.QTextCursor.MoveMode if isQt6 else QtGui.QTextCursor
         #
         # Part 1
         w = self.widget
@@ -1674,8 +1896,9 @@ class QTextEditWrapper(QTextMixin):
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v  # Always accurate.
         v.insertSpot = ins
-        if i > j: i, j = j, i
-        assert(i <= j)
+        if i > j:
+            i, j = j, i
+        assert i <= j
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()
@@ -1731,6 +1954,7 @@ class QTextEditWrapper(QTextMixin):
         return i, row, col
     #@-others
 #@-others
+
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

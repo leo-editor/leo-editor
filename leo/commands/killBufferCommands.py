@@ -134,7 +134,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             else:
                 i = commands.reset
                 commands.reset = None
-            if i < 0 or i >= len(aList): i = 0
+            if i < 0 or i >= len(aList):
+                i = 0
             val = aList[i]
             self.index = i + 1
             return val
@@ -147,7 +148,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def kill(self, event, frm, to, force=False, undoType=None):
         """A helper method for all kill commands."""
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         # 2016/03/05: all kill commands kill selected text, if it exists.
         if not force:
             # Delete the selection range if it spans a line.
@@ -169,7 +171,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killToEndOfLine(self, event):
         """Kill from the cursor to end of the line."""
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -191,7 +194,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def killLine(self, event):
         """Kill the line containing the cursor."""
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -218,9 +222,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     def killRegionHelper(self, event, deleteFlag):
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         i, j = w.getSelectionRange()
-        if i == j: return
+        if i == j:
+            return
         s = w.getSelectedText()
         if deleteFlag:
             self.beginCommand(w, undoType='kill-region')
@@ -253,12 +259,14 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Kill whitespace."""
         ws = ''
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         s = w.getAllText()
         i = j = ins = w.getInsertPoint()
         while i >= 0 and s[i] in (' ', '\t'):
             i -= 1
-        if i < ins: i += 1
+        if i < ins:
+            i += 1
         while j < len(s) and s[j] in (' ', '\t'):
             j += 1
         if j > i:
@@ -295,8 +303,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             if not pop or self.lastYankP and self.lastYankP != current:
                 self.reset = 0
             s = self.kbiterator.__next__()
-            if s is None: s = clip_text or ''
-            if i != j: w.deleteTextSelection()
+            if s is None:
+                s = clip_text or ''
+            if i != j:
+                w.deleteTextSelection()
             if s != s.lstrip():  # s contains leading whitespace.
                 i2, j2 = g.getLine(text, i)
                 k = g.skip_ws(text, i2)
@@ -335,7 +345,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             ins = w.getInsertPoint()
             i = s.find(ch, ins)
-            if i == -1: return
+            if i == -1:
+                return
             self.beginCommand(w, undoType='zap-to-char')
             self.addToKillBuffer(s[ins:i])
             g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.

@@ -2,7 +2,7 @@
 #@+node:ville.20110125222411.10536: * @file ../plugins/leomail.py
 #@+<< docstring >>
 #@+node:ekr.20170228181049.1: ** << docstring >>
-'''
+"""
 Sync local mailbox files over to Leo.
 
 Creates mail-refresh command, which can only be applied to @mbox nodes of the form:
@@ -12,7 +12,7 @@ Creates mail-refresh command, which can only be applied to @mbox nodes of the fo
 The command parses the .mbox file and creates a separate node for each thread.
 
 Replies to the original messages become children of that message.
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20110125222411.10539: ** << imports >>
@@ -23,7 +23,7 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20110125222411.10540: ** init
-def init ():
+def init():
     g.plugin_signon(__name__)
     return True
 #@+node:ville.20110125222411.10546: ** mail_refresh & helpers
@@ -67,13 +67,13 @@ class MLStripper(HTMLParser):
         return ''.join(self.fed)
 #@+node:ekr.20170228150717.1: *3* emit_message
 def emit_message(c, parent, root, message):
-    '''Create all the children of p.'''
+    """Create all the children of p."""
     for part in message.walk():
         part.get_content_maintype()
         payload = part.get_payload()
         subject = g.toUnicode(message.get('subject'))
         from_ = g.toUnicode(message.get('from'))
-        if parent and subject.lower().startswith ('re:'):
+        if parent and subject.lower().startswith('re:'):
             p = parent.insertAsLastChild()
         else:
             p = parent = root.insertAsLastChild()

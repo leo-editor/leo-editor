@@ -2,7 +2,7 @@
 #@+node:ajones.20070122153625: * @file ../plugins/expfolder.py
 #@+<< docstring >>
 #@+node:ajones.20070122153625.1: ** << docstring >> (expfolder.py)
-''' Adds @expfolder nodes that represent folders in the file system.
+""" Adds @expfolder nodes that represent folders in the file system.
 
 The double-click-icon-box command on an @expfolder node reads the files in
 the directory at the path specified and creates child nodes for each file
@@ -21,7 +21,7 @@ For the @text and @expfolder nodes to interact correctly, the textnode plugin
 must load before the expfolder plugin. This can be set using the Plugin
 Manager's Plugin Load Order pane.
 
-'''
+"""
 #@-<< docstring >>
 
 import os
@@ -35,10 +35,10 @@ textexts = []
 #@+others
 #@+node:ajones.20070122154835: ** init (expfolder.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.plugin_signon(__name__)
     g.registerHandler("icondclick1", on_icondclick)
-    fileName = os.path.join(g.app.loadDir,"../","plugins","expfolder.ini")
+    fileName = os.path.join(g.app.loadDir, "../", "plugins", "expfolder.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
     # pylint: disable=no-member
@@ -54,9 +54,9 @@ def on_icondclick(tag, keywords):
     c = keywords.get("c")
     p = keywords.get("p")
     h = p.h
-    if g.match_word(h,0,"@expfolder"):
+    if g.match_word(h, 0, "@expfolder"):
         if p.hasChildren():
-            result = g.app.gui.runAskYesNoDialog(c, "Reread?", "Reread contents of folder "+h[11:]+"?")
+            result = g.app.gui.runAskYesNoDialog(c, "Reread?", "Reread contents of folder " + h[11:] + "?")
             if result == "no":
                 return
             kids = []
@@ -92,13 +92,13 @@ def on_icondclick(tag, keywords):
         for f in files:
             pn = p.insertAsNthChild(0)
             if os.path.splitext(f)[1] in textexts:
-                c.setHeadString(pn, "@text "+f)
+                c.setHeadString(pn, "@text " + f)
                 pn.clearDirty()
             else:
                 pn.h = f
         for d in dirs:
             pn = p.insertAsNthChild(0)
-            c.setHeadString(pn, "@expfolder "+d)
+            c.setHeadString(pn, "@expfolder " + d)
         c.expandSubtree(p)
 #@-others
 #@@language python

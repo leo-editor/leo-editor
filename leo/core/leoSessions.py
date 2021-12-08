@@ -4,6 +4,7 @@
 #@+<< imports >>
 #@+node:ekr.20120420054855.14344: ** <<imports>> (leoSessions.py)
 import json
+from typing import List
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< exception classes>>
@@ -38,7 +39,7 @@ class SessionManager:
     #@+node:ekr.20120420054855.14245: *3* SessionManager.get_session
     def get_session(self):
         """Return a list of UNLs for open tabs."""
-        result = []
+        result: List[str] = []
         # Fix #1118, part 2.
         if not getattr(g.app.gui, 'frameFactory', None):
             return result

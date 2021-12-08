@@ -7,10 +7,26 @@
 #@+node:ekr.20080921091311.1: ** << imports and inits >> (runLeo.py)
 import os
 import sys
+import traceback
+#
+# Override sys.excepthook
+def leo_excepthook(typ, val, tb):
+    # Like g.es_exception.
+    lines = traceback.format_exception(typ, val, tb)
+    # #2144: The python_terminal crashes if this method uses the "flush" kwarg.
+    #        This is a bug in the plugin, but it's not worth fixing.
+    print('')
+    print('Uncaught exception in Leo...')
+    for line in lines:
+        print(line.rstrip())
+    print('')
+
+sys.excepthook = leo_excepthook
+#
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
 if sys.executable.endswith("pythonw.exe"):
-    sys.stdout = open(os.devnull, "w");
+    sys.stdout = open(os.devnull, "w")
     sys.stderr = open(
         os.path.join(os.getenv("TEMP", default=""),  # #1557.
         "stderr-" + os.path.basename(sys.argv[0])),
@@ -36,7 +52,7 @@ except Exception as e:
 def profile_leo():
     """
     Gather and print statistics about Leo.
-    
+
     @ To gather statistics, do the following in a console window:
 
     python profileLeo.py <list of .leo files> > profile.txt

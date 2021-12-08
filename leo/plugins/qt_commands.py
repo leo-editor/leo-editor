@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
+from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
@@ -80,7 +81,7 @@ def showColorNames(event=None):
     if getattr(c, ivar, None):
         g.es('The color picker already exists in the icon bar.')
     else:
-        color_list = []
+        color_list: List[str] = []
         box = QtWidgets.QComboBox()
 
         def onActivated(n, *args, **keys):
@@ -110,7 +111,7 @@ def showColorNames(event=None):
 @g.command('show-color-wheel')
 def showColorWheel(self, event=None):
     """Show a Qt color dialog."""
-    c = self.c; p = c.p
+    c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
     try:
@@ -121,7 +122,7 @@ def showColorWheel(self, event=None):
         picker.setCurrentColor(color)
     except(ValueError, IndexError) as e:
         g.trace('error caught', e)
-        
+
     result = picker.exec_()
     if not result:
         g.es("No color selected")
@@ -137,8 +138,7 @@ def showColorWheel(self, event=None):
 @g.command('show-fonts')
 def showFonts(self, event=None):
     """Open a tab in the log pane showing a font picker."""
-    c = self.c; p = c.p
-
+    c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
     if p.h.startswith('@font'):
         (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
@@ -146,7 +146,8 @@ def showFonts(self, event=None):
         name, family, weight, slant, size = None, None, False, False, 12
     try:
         font = QtGui.QFont()
-        if family: font.setFamily(family)
+        if family:
+            font.setFamily(family)
         font.setBold(weight)
         font.setItalic(slant)
         font.setPointSize(size)

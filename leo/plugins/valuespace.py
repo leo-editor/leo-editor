@@ -2,7 +2,7 @@
 #@+node:ville.20110403115003.10348: * @file ../plugins/valuespace.py
 #@+<< docstring >>
 #@+node:ville.20110403115003.10349: ** << docstring >>
-'''Supports Leo scripting using per-Leo-outline namespaces.
+"""Supports Leo scripting using per-Leo-outline namespaces.
 
 Commands
 ========
@@ -118,7 +118,7 @@ vars. In addition, *g.vs* is a dictionary whose keys are *c.hash()* and whose
 values are the namespaces for each commander. This allows communication between
 different namespaces, while keeping namespaces generally separate.
 
-'''
+"""
 
 # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
 #@-<< docstring >>
@@ -135,7 +135,7 @@ try:
     import yaml
 except ImportError:
     yaml = None
-    
+
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.external.stringlist import SList
@@ -150,25 +150,25 @@ controllers = {}
 #@+others
 #@+node:ekr.20110408065137.14221: ** Top level
 #@+node:ville.20110403115003.10353: *3* colorize_headlines_visitor
-def colorize_headlines_visitor(c,p, item):
+def colorize_headlines_visitor(c, p, item):
     """ Changes @thin, @auto, @shadow to bold """
     if p.h.startswith("!= "):
         f = item.font(0)
         f.setBold(True)
-        item.setFont(0,f)
+        item.setFont(0, f)
     raise leoPlugins.TryNext
 #@+node:ville.20110403115003.10352: *3* init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     # vs_reset(None)
     global controllers
     # create global valuaspace controller for ipython
     g.visit_tree_item.add(colorize_headlines_visitor)
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20110408065137.14222: *3* onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
 
     global controllers
     c = key.get('c')
@@ -176,16 +176,16 @@ def onCreate (tag,key):
         h = c.hash()
         vc = controllers.get(h)
         if not vc:
-            controllers [h] = vc = ValueSpaceController(c)
+            controllers[h] = vc = ValueSpaceController(c)
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20130127115643.3695: *3* get_vs
 def get_vs(c):
-    '''deal with singleton "ipython" controller'''
+    """deal with singleton "ipython" controller"""
     if g.app.ipk:
         vsc = controllers.get('ipython')
         if not vsc:
-            controllers['ipython'] = vsc = ValueSpaceController(c = None,
-                ns = g.app.ipk.namespace)
+            controllers['ipython'] = vsc = ValueSpaceController(c=None,
+                ns=g.app.ipk.namespace)
         vsc.set_c(c)
         return vsc
     return controllers[c.hash()]
@@ -214,9 +214,9 @@ def vs_update(event):
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController:
 
-    '''A class supporting per-commander evaluation spaces
+    """A class supporting per-commander evaluation spaces
     containing @a, @r and @= nodes.
-    '''
+    """
 
     #@+others
     #@+node:ekr.20110408065137.14223: *3*  ctor
@@ -229,12 +229,11 @@ class ValueSpaceController:
             # This must come after self.reset()
             c.keyHandler.autoCompleter.namespaces.append(self.d)
     #@+node:ekr.20110408065137.14224: *3* create_tree
-    def create_tree (self):
-
-        '''The vs-create-tree command.'''
-
-        c = self.c ; p = c.p ; tag = 'valuespace'
-
+    def create_tree(self):
+        """The vs-create-tree command."""
+        c = self.c
+        p = c.p
+        tag = 'valuespace'
         # Create a 'valuespace' node if p's headline is not 'valuespace'.
         if p.h == tag:
             r = p
@@ -243,18 +242,18 @@ class ValueSpaceController:
             r.h = tag
 
         # Create a child of r for all items of self.d
-        for k,v in self.d.items():
+        for k, v in self.d.items():
             if not k.startswith('__'):
                 child = r.insertAsLastChild()
                 child.h = '@@r ' + k
-                self.render_value(child,v) # Create child.b from child.h
+                self.render_value(child, v)  # Create child.b from child.h
 
         c.bodyWantsFocus()
         c.redraw()
     #@+node:ekr.20110408065137.14228: *3* dump
-    def dump (self):
+    def dump(self):
 
-        c,d = self.c,self.d
+        c, d = self.c, self.d
 
         exclude = (
             '__builtins__',
@@ -267,17 +266,17 @@ class ValueSpaceController:
         keys.sort()
         max_s = 5
         for key in keys:
-            max_s = max(max_s,len(key))
+            max_s = max(max_s, len(key))
         for key in keys:
             val = d.get(key)
-            pad = max(0,max_s-len(key))*' '
-            print('%s%s = %s' % (pad,key,val))
+            pad = max(0, max_s - len(key)) * ' '
+            print('%s%s = %s' % (pad, key, val))
 
         c.bodyWantsFocus()
     #@+node:ekr.20110408065137.14225: *3* reset
-    def reset (self):
+    def reset(self):
 
-        '''The vs-reset command.'''
+        """The vs-reset command."""
 
         # do not allow resetting the dict if using ipython
         if not g.app.ipk:
@@ -287,7 +286,7 @@ class ValueSpaceController:
         self.init_ns(self.d)
 
     #@+node:ville.20110409221110.5755: *3* init_ns
-    def init_ns(self,ns):
+    def init_ns(self, ns):
         """ Add 'builtin' methods to namespace """
 
         def slist(body):
@@ -299,44 +298,44 @@ class ValueSpaceController:
         # xxx todo perhaps add more?
 
     #@+node:ville.20130127122722.3696: *3* set_c
-    def set_c(self,c):
+    def set_c(self, c):
         """ reconfigure vsc for new c
 
         Needed by ipython integration
         """
         self.c = c
     #@+node:ekr.20110408065137.14226: *3* update & helpers
-    def update (self):
+    def update(self):
 
-        '''The vs-update command.'''
+        """The vs-update command."""
 
         # names are reversed, xxx TODO fix later
-        self.render_phase() # Pass 1
-        self.update_vs()    # Pass 2
+        self.render_phase()  # Pass 1
+        self.update_vs()  # Pass 2
         self.c.bodyWantsFocus()
     #@+node:ekr.20110407174428.5781: *4* render_phase (pass 1) & helpers
     def render_phase(self):
-        '''Update p's tree (or the entire tree) as follows:
+        """Update p's tree (or the entire tree) as follows:
 
         - Evaluate all @= nodes and assign them to variables
         - Evaluate the body of the *parent* nodes for all @a nodes.
         - Read in @vsi nodes and assign to variables
 
-        '''
+        """
 
         c = self.c
-        self.d['c'] = c # g.vs.c = c
-        self.d['g'] = g # g.vs.g = g
+        self.d['c'] = c  # g.vs.c = c
+        self.d['g'] = g  # g.vs.g = g
         for p in c.all_unique_positions():
             h = p.h.strip()
             if h.startswith('@= '):
-                self.d['p'] = p.copy() # g.vs.p = p.copy()
+                self.d['p'] = p.copy()  # g.vs.p = p.copy()
                 var = h[3:].strip()
-                self.let_body(var,self.untangle(p))
+                self.let_body(var, self.untangle(p))
             elif h.startswith("@vsi "):
                 fname = h[5:]
                 bname, ext = os.path.splitext(fname)
-                g.es("@vsi " + bname +" " + ext)
+                g.es("@vsi " + bname + " " + ext)
                 if ext.lower() == '.json':
                     pth = c.getNodePath(p)
                     fn = os.path.join(pth, fname)
@@ -353,42 +352,42 @@ class ValueSpaceController:
                 parent = p.parent()
 
                 if tail:
-                    self.let_body(tail,self.untangle(parent))
+                    self.let_body(tail, self.untangle(parent))
                 try:
                     self.parse_body(parent)
                 except Exception:
                     g.es_exception()
                     g.es("Error parsing " + parent.h)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
-    def let(self,var,val):
+    def let(self, var, val):
 
-        '''Enter var into self.d with the given value.
-        Both var and val must be strings.'''
+        """Enter var into self.d with the given value.
+        Both var and val must be strings."""
 
-        self.d ['__vstemp'] = val
+        self.d['__vstemp'] = val
         if var.endswith('+'):
             rvar = var.rstrip('+')
             # .. obj = eval(rvar,self.d)
-            exec("%s.append(__vstemp)" % rvar,self.d)
+            exec("%s.append(__vstemp)" % rvar, self.d)
         else:
-            exec(var + " = __vstemp",self.d)
-        del self.d ['__vstemp']
+            exec(var + " = __vstemp", self.d)
+        del self.d['__vstemp']
 
     def let_cl(self, var, body):
         """ handle @cl node """
         lend = body.find('\n')
         firstline = body[0:lend]
         rest = firstline[4:].strip()
-        print("rest",rest)
+        print("rest", rest)
         try:
             translator = eval(rest, self.d)
         except Exception:
             g.es_exception()
             g.es("Can't instantate @cl xlator: " + rest)
-        translated = translator(body[lend+1:])
+        translated = translator(body[lend + 1 :])
         self.let(var, translated)
 
-    def let_body(self,var,val):
+    def let_body(self, var, val):
         if var.endswith(".yaml"):
             if yaml:
                 #print "set to yaml", `val`
@@ -409,15 +408,15 @@ class ValueSpaceController:
             self.let_cl(var, val)
             return
 
-        self.let(var,val)
+        self.let(var, val)
 
     #@+node:ekr.20110407174428.5780: *5* parse_body & helpers
-    def parse_body(self,p):
+    def parse_body(self, p):
 
-        body = self.untangle(p) # body is the script in p's body.
-        self.d ['p'] = p.copy()
+        body = self.untangle(p)  # body is the script in p's body.
+        self.d['p'] = p.copy()
         backop = []
-        segs = re.finditer('^(@x (.*))$',body,re.MULTILINE)
+        segs = re.finditer('^(@x (.*))$', body, re.MULTILINE)
         for mo in segs:
             op = mo.group(2).strip()
             # print("Oper",op)
@@ -436,45 +435,45 @@ class ValueSpaceController:
             else:
                 self.runblock(op)
     #@+node:ekr.20110407174428.5779: *6* runblock
-    def runblock(self,block):
+    def runblock(self, block):
 
-        exec(block,self.d)
+        exec(block, self.d)
     #@+node:ekr.20110407174428.5778: *6* untangle (getScript)
-    def untangle(self,p):
+    def untangle(self, p):
 
-        return g.getScript(self.c,p,
+        return g.getScript(self.c, p,
             useSelectedText=False,
             useSentinels=False)
     #@+node:ekr.20110407174428.5782: *4* update_vs (pass 2) & helper
     def update_vs(self):
-        '''
+        """
         Evaluate @r <expr> nodes, puting the result in their body text.
         Output @vso nodes, based on file extension
-        '''
+        """
         c = self.c
         for p in c.all_unique_positions():
             h = p.h.strip()
             if h.startswith('@r '):
                 expr = h[3:].strip()
                 try:
-                    result = eval(expr,self.d)
+                    result = eval(expr, self.d)
                 except Exception:
                     g.es_exception()
                     g.es("Failed to render " + h)
                     continue
-                self.render_value(p,result)
+                self.render_value(p, result)
 
             if h.startswith("@vso "):
                 expr = h[5:].strip()
                 bname, ext = os.path.splitext(expr)
                 try:
-                    result = eval(bname,self.d)
+                    result = eval(bname, self.d)
                 except Exception:
                     g.es_exception()
                     g.es("@vso failed: " + h)
                     continue
                 if ext.lower() == '.json':
-                    cnt = json.dumps(result, indent = 2)
+                    cnt = json.dumps(result, indent=2)
                     pth = os.path.join(c.getNodePath(p), expr)
                     self.render_value(p, cnt)
                     g.es("Writing @vso: " + pth)
@@ -482,9 +481,9 @@ class ValueSpaceController:
                 else:
                     g.es_error("Unknown vso extension (should be .json, ...): " + ext)
     #@+node:ekr.20110407174428.5784: *5* render_value
-    def render_value(self,p,value):
+    def render_value(self, p, value):
 
-        '''Put the rendered value in p's body pane.'''
+        """Put the rendered value in p's body pane."""
 
         if isinstance(value, SList):
             p.b = value.n

@@ -1,12 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20101110094759.5843: * @file ../plugins/mod_speedups.py
-''' Experimental speedups
+""" Experimental speedups
 
 Various optimizations. Use at your own risk.
 
 If stuff breaks, disable this plugin before reporting bugs.
 
-'''
+"""
 
 # By VMV.
 import os.path
@@ -14,8 +14,8 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20090804155017.7594: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:ville.20090804155017.12332: ** os.path shortcuts
 g.os_path_basename = os.path.basename
@@ -39,7 +39,7 @@ _finalized_cache = {}
 _finalized_join_cache = {}
 _expanduser_cache = {}
 
-def os_path_finalize_cached (path,**keys):
+def os_path_finalize_cached(path, **keys):
     res = _finalized_cache.get(path)
     if res:
         return res
@@ -47,7 +47,7 @@ def os_path_finalize_cached (path,**keys):
     _finalized_cache[path] = res
     return res
 
-def os_path_finalize_join_cached (*args,**keys):
+def os_path_finalize_join_cached(*args, **keys):
     res = _finalized_join_cache.get(args)
     if res:
         #print "cache hit", args
@@ -57,7 +57,7 @@ def os_path_finalize_join_cached (*args,**keys):
     _finalized_join_cache[args] = res
     return res
 
-def os_path_expanduser_cached(path, encoding = None):
+def os_path_expanduser_cached(path, encoding=None):
     res = _expanduser_cache.get(path)
     if res:
         #print "cache hit", path

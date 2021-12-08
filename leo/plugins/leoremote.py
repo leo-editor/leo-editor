@@ -2,7 +2,7 @@
 #@+node:ville.20091009202416.10040: * @file ../plugins/leoremote.py
 #@+<< docstring >>
 #@+node:ville.20091009202416.10041: ** << docstring >> (leoremote.py)
-''' Remote control for Leo.
+""" Remote control for Leo.
 
     NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
     the mod_http plug-in is intended to replace this module's functionality.
@@ -20,28 +20,28 @@ Example client::
     addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
     print("will connect to",addr)
     pc  = lproto.LProtoClient(addr)
-    pc.send("""
+    pc.send(\"""
         g.es("hello world from remote")
         c = g.app.commanders()[0]
-    """)
+    \""")
 
     # note how c persists between calls
-    pc.send("""c.k.simulateCommand('stickynote')""")
+    pc.send('''c.k.simulateCommand('stickynote')''')
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20160519045636.1: ** << imports >> (leoremote.py)
 import os
-import socket # For a test of its capabilities.
+import socket  # For a test of its capabilities.
 import tempfile
 from leo.external import lproto
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ville.20091009202416.10045: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     ok = True
     if ok:
         #g.registerHandler('start2',onStart2)
@@ -58,12 +58,12 @@ def leoserv_start(event):
     def dispatch_script(msg, ses):
         # print("leoremote.py: dispatch script", msg)
         fd, pth = tempfile.mkstemp(suffix='.py')
-        f = os.fdopen(fd,"w")
+        f = os.fdopen(fd, "w")
         f.write(msg)
         f.close()
         # first run
         if 'pydict' not in ses:
-            ses['pydict'] = {'g' : g }
+            ses['pydict'] = {'g': g}
         # print("run file",pth)
         d = ses['pydict']
         g.exec_file(pth, d)
@@ -71,14 +71,14 @@ def leoserv_start(event):
 
     lps.set_receiver(dispatch_script)
     # EKR: 2011/10/12
-    if hasattr(socket,'AF_UNIX'):
+    if hasattr(socket, 'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
     else:
-        uniqid = '172.16.0.0',1
+        uniqid = '172.16.0.0', 1
     lps.listen(uniqid)
     fullpath = lps.srv.fullServerName()
     socket_file = os.path.expanduser('~/.leo/leoserv_sockname')
-    open(socket_file,'w').write(fullpath)
+    open(socket_file, 'w').write(fullpath)
     print('leoremote.py: file:   %s' % socket_file)
     print('leoremote.py: server: %s' % fullpath)
 #@+node:ville.20091009211846.10039: ** script execution
@@ -86,7 +86,7 @@ def run_remote_script(fname):
 
     # c and p are ambiguous for remote script
     print("rrs")
-    d = {'g': g }
+    d = {'g': g}
     g.exec_file(fname, d)
 #@-others
 #@@language python

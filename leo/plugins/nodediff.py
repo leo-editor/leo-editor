@@ -2,7 +2,7 @@
 #@+node:peckj.20140113150237.7083: * @file ../plugins/nodediff.py
 #@+<< docstring >>
 #@+node:peckj.20140113131037.5792: ** << docstring >>
-'''Provides commands to run text diffs on node bodies within Leo.
+"""Provides commands to run text diffs on node bodies within Leo.
 
 By Jacob M. Peck
 
@@ -77,7 +77,7 @@ positions as input::
     c.theNodeDiffController.run_ndiff()
     c.theNodeDiffController.run_unified_diff()
 
-'''
+"""
 #@-<< docstring >>
 
 # By JMP.
@@ -94,22 +94,23 @@ from leo.external import leosax
 
 #@+others
 #@+node:peckj.20140113131037.5795: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
-        g.registerHandler(('new','open2'),onCreate)
+        g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Error loading plugin nodediff.py', color='red')
     return ok
 #@+node:peckj.20140113131037.5796: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theNodeDiffController = NodeDiffController(c)
     c.theNodeDiffController = theNodeDiffController
@@ -135,7 +136,7 @@ class NodeDiffController:
         c.k.registerCommand('diff-subtree', self.run_diff_on_subtree)
         c.k.registerCommand('diff-saved', self.run_diff_on_saved)
         c.k.registerCommand('diff-vcs', self.run_diff_on_vcs)
-        
+
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -167,9 +168,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
+            if l.startswith('?'):
+                color = 'grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -184,9 +188,12 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
-            if l.startswith('?'): color='grey'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
+            if l.startswith('?'):
+                color = 'grey'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -201,8 +208,10 @@ class NodeDiffController:
         g.es('Node 2: %s' % n2.h, color='blue', tabName=self.tab_name)
         for l in diff:
             color = None
-            if l.startswith('+'): color='forestgreen'
-            if l.startswith('-'): color='red'
+            if l.startswith('+'):
+                color = 'forestgreen'
+            if l.startswith('-'):
+                color = 'red'
             if color is not None:
                 g.es(l, color=color, tabName=self.tab_name)
             else:
@@ -214,7 +223,7 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5807: *4* run_diff_on_marked
     # for command 'diff-marked'
     def run_diff_on_marked(self, event=None):
-        '''Runs a diff on the marked nodes.  Will only work if exactly 2 marked nodes exist in the outline.'''
+        """Runs a diff on the marked nodes.  Will only work if exactly 2 marked nodes exist in the outline."""
         ns = self.get_marked()
         if ns is None:
             g.es('nodediff.py: Make sure that exactly two nodes are marked.', color='red')
@@ -223,7 +232,7 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5808: *4* run_diff_on_selected
     # for command 'diff-selected'
     def run_diff_on_selected(self, event=None):
-        '''Runs a diff on the selected nodes.  Will only work if exactly two nodes are selected.'''
+        """Runs a diff on the selected nodes.  Will only work if exactly two nodes are selected."""
         ns = self.get_selection()
         if ns is None:
             g.es('nodediff.py: Make sure that exactly two nodes are selected.', color='red')
@@ -232,10 +241,10 @@ class NodeDiffController:
     #@+node:peckj.20140113131037.5809: *4* run_diff_on_subtree
     # for command 'diff-subtree'
     def run_diff_on_subtree(self, event=None):
-        '''
+        """
         Runs a diff on the children of the currently selected node.
         Will only work if the node has exactly two children.
-        '''
+        """
         ns = self.get_subtree()
         if ns is None:
             g.es('nodediff.py: Make sure that the selected node has exactly two children.',
@@ -281,7 +290,7 @@ class NodeDiffController:
         path = dir_
         while not mode:
             for vcs in 'git', 'bzr':
-                if g.os_path_exists(g.os_path_join(path, '.'+vcs)):
+                if g.os_path_exists(g.os_path_join(path, '.' + vcs)):
                     mode = vcs
                     break
             else:
@@ -291,7 +300,7 @@ class NodeDiffController:
                 relative_path[0:0] = [subpath]
 
         if not mode:
-            g.es("No supported VCS found in '%s'"%dir_)
+            g.es("No supported VCS found in '%s'" % dir_)
             return
 
         gnx = c.p.gnx
@@ -301,7 +310,7 @@ class NodeDiffController:
                 'git',
                 '--work-tree=%s' % path,
                 'show',
-                'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) ),
+                'HEAD:%s' % g.os_path_join(* (relative_path + [filename])),
             ]
 
         if mode == 'bzr':

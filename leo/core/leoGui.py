@@ -378,30 +378,41 @@ class NullGui(LeoGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
-    def alert(self, c, message): pass
+    def alert(self, c, message):
+        pass
 
-    def attachLeoIcon(self, window): pass
+    def attachLeoIcon(self, window):
+        pass
 
-    def destroySelf(self): pass
+    def destroySelf(self):
+        pass
 
-    def finishCreate(self): pass
+    def finishCreate(self):
+        pass
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return g.app.config.defaultFont
 
-    def getIconImage(self, name): return None
+    def getIconImage(self, name):
+        return None
 
-    def getImageImage(self, name): return None
+    def getImageImage(self, name):
+        return None
 
-    def getTreeImage(self, c, path): return None
+    def getTreeImage(self, c, path):
+        return None
 
-    def get_window_info(self, window): return 600, 500, 20, 20
+    def get_window_info(self, window):
+        return 600, 500, 20, 20
 
-    def onActivateEvent(self, *args, **keys): pass
+    def onActivateEvent(self, *args, **keys):
+        pass
 
-    def onDeactivateEvent(self, *args, **keys): pass
+    def onDeactivateEvent(self, *args, **keys):
+        pass
 
-    def set_top_geometry(self, w, h, x, y): pass
+    def set_top_geometry(self, w, h, x, y):
+        pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True  # Must be True for unit tests.
@@ -514,7 +525,7 @@ class StringFindTabManager:
     def get_settings(self):
         """
         Return a g.bunch representing all widget values.
-        
+
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
         return g.Bunch(
@@ -540,16 +551,16 @@ class StringFindTabManager:
         """
         c, find = self.c, self.c.findCommands
         # Find/change text boxes.
-        table = (
+        table1 = (
             ('find_findbox', 'find_text', '<find pattern here>'),
             ('find_replacebox', 'change_text', ''),
         )
-        for widget_ivar, setting_name, default in table:
+        for widget_ivar, setting_name, default in table1:
             w = getattr(self, widget_ivar)
             s = c.config.getString(setting_name) or default
             w.insert(s)
         # Check boxes.
-        table = (
+        table2 = (
             ('ignore_case', 'check_box_ignore_case'),
             ('mark_changes', 'check_box_mark_changes'),
             ('mark_finds', 'check_box_mark_finds'),
@@ -558,19 +569,19 @@ class StringFindTabManager:
             ('search_headline', 'check_box_search_headline'),
             ('whole_word', 'check_box_whole_word'),
         )
-        for setting_name, widget_ivar in table:
+        for setting_name, widget_ivar in table2:
             w = getattr(self, widget_ivar)
             val = c.config.getBool(setting_name, default=False)
             setattr(find, setting_name, val)
             if val != w.isChecked():  # Support leoInteg.
                 w.toggle()
         # Radio buttons
-        table = (
+        table3 = (
             ('node_only', 'node_only', 'radio_button_node_only'),
             ('entire_outline', None, 'radio_button_entire_outline'),
             ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
         )
-        for setting_name, ivar, widget_ivar in table:
+        for setting_name, ivar, widget_ivar in table3:
             w = getattr(self, widget_ivar)
             val = c.config.getBool(setting_name, default=False)
             if ivar is not None:

@@ -8,6 +8,7 @@
 import io
 import re
 import sys
+import textwrap
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
@@ -23,8 +24,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
-    def help(self, event=None):
-        """Prints and introduction to Leo's help system."""
+    def help_command(self, event=None):
+        """Prints an introduction to Leo's help system."""
         #@+<< define rst_s >>
         #@+node:ekr.20150514063305.374: *4* << define rst_s >> (F1)
         #@@language rest
@@ -377,7 +378,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 underline = '+' * len(s2)
                 title = f"{s2}\n{underline}\n\n"
                 if 1:  # 2015/03/24
-                    s = title + g.adjustTripleString(s, c.tab_width)
+                    s = title + textwrap.dedent(s)
                 else:
                     # Fixes bug 618570:
                     s = title + ''.join([
@@ -418,25 +419,27 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
                 '''
                 #@-<< set s to about help-for-command >>
-            c.putHelpFor(s)  # calls g.adjustTripleString.
+            c.putHelpFor(s)
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
     def replaceBindingPatterns(self, s):
         """
-        For each instance of the pattern !<command-name>! is s,
+        For each instance of the pattern !<command-name>! in s,
         replace the pattern by the key binding for command-name.
         """
         c = self.c
         pattern = re.compile(r'!<(.*)>!')
         while True:
             m = pattern.search(s, 0)
-            if m is None: break
+            if m is None:
+                break
             name = m.group(1)
             junk, aList = c.config.getShortcut(name)
             for bi in aList:
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)
                     break
-            else: key = f"<Alt-X>{name}<Return>"
+            else:
+                key = f"<Alt-X>{name}<Return>"
             s = s[: m.start()] + key + s[m.end() :]
         return s
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles
@@ -922,10 +925,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
             g: The leo.core.leoGlobals module.
             p: The presently selected position, c.p.
 
-        @test scripts predefine all the above, plus::
-
-            self: The instance of unittest.TestCase
-
         Commands class
         ==============
 
@@ -1150,9 +1149,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
     def showSettingsOutline(self, event=None):
         """
         Create and open an outline, summarizing all presently active settings.
-        
+
         The outline retains the organization of all active settings files.
-        
+
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
 
@@ -1160,7 +1159,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
     def pythonHelp(self, event=None):
-        """Prompt for a arg for Python's help function, and put it to the log pane."""
+        """Prompt for a arg for Python's help function, and put it to the VR pane."""
         c, k = self.c, self.c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')
@@ -1171,18 +1170,23 @@ class HelpCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         s = k.arg.strip()
-        if s:
-            # Capture the output of Python's help command.
-            old = sys.stdout
-            try:
-                sys.stdout = stdout = io.StringIO()
-                help(str(s))
-                s2 = stdout.read()
-            finally:
-                sys.stdout = old
-            # Send it to the vr pane as a <pre> block
-            s2 = '<pre>' + s2 + '</pre>'
-            c.putHelpFor(s2)
+        if not s:
+            return ''
+        old = sys.stdout
+        try:
+            sys.stdout = io.StringIO()
+            #  If the argument is a string, the string is looked up as a name...
+            # and a help page is printed on the console.
+            help(str(s))
+            s2 = sys.stdout.getvalue()  # #2165
+        finally:
+            sys.stdout = old
+        if not s2:
+            return ''
+        # Send it to the vr pane as a <pre> block
+        s2 = '<pre>' + s2 + '</pre>'
+        c.putHelpFor(s2)
+        return s2  # For unit tests.
     #@-others
 #@-others
 #@-leo

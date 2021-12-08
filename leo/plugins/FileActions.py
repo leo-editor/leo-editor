@@ -58,8 +58,8 @@ from leo.core import leoGlobals as g
 
 file_directives = [
    "@file",
-   "@thin",   "@file-thin",   "@thinfile",
-   "@asis",   "@file-asis",   "@silentfile",
+   "@thin", "@file-thin", "@thinfile",
+   "@asis", "@file-asis", "@silentfile",
    "@nosent", "@file-nosent", "@nosentinelsfile",
    "@file-ref", "@shadow",
 ]
@@ -68,8 +68,8 @@ file_directives = [
 #@+others
 #@+node:ekr.20060108162524: ** init (FileActions.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting # Dangerous for unit testing.
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting  # Dangerous for unit testing.
     if ok:
         g.registerHandler("icondclick1", onIconDoubleClick)
         g.plugin_signon(__name__)
@@ -95,7 +95,7 @@ def onIconDoubleClick(tag, keywords):
     # This writes all modified files, not just the one that has been clicked on.
     # This generates a slightly confusing warning if there are no dirty nodes.
     c.fileCommands.writeDirtyAtFileNodes()
-    if doFileAction(filename,c):
+    if doFileAction(filename, c):
         return True
             # Action was taken - Stop other double-click handlers from running
     return None
@@ -104,7 +104,7 @@ def onIconDoubleClick(tag, keywords):
 #@+node:ekr.20040915105758.15: ** doFileAction
 def doFileAction(filename, c):
 
-    p = g.findNodeAnywhere(c,"FileActions")
+    p = g.findNodeAnywhere(c, "FileActions")
     if p:
         done = False
         name = os.path.split(filename)[1]
@@ -116,10 +116,10 @@ def doFileAction(filename, c):
                 break
         if not done:
             g.warning("no file action matches " + filename)
-            return False #TL - Inform onIconDoubleClick that no action was taken
-        return True #TL - Inform onIconDoubleClick that action was taken
+            return False  #TL - Inform onIconDoubleClick that no action was taken
+        return True  #TL - Inform onIconDoubleClick that action was taken
     g.warning("no FileActions node")
-    return False #TL - Inform onIconDoubleClick that no action was taken
+    return False  #TL - Inform onIconDoubleClick that no action was taken
 #@+node:ekr.20040915105758.16: ** applyFileAction
 def applyFileAction(p, filename, c):
 
@@ -133,16 +133,16 @@ def applyFileAction(p, filename, c):
         #@+node:ekr.20040915105758.17: *3* << redirect output >>
         if c.config.redirect_execute_script_output_to_log_pane:
 
-            g.redirectStdout() # Redirect stdout
-            g.redirectStderr() # Redirect stderr
+            g.redirectStdout()  # Redirect stdout
+            g.redirectStderr()  # Redirect stderr
         #@-<< redirect output >>
         try:
             namespace = {
-                'c':c, 'g':g,
+                'c': c, 'g': g,
                 'filename': filename,
-                'shellScriptInWindow': shellScriptInWindow }
+                'shellScriptInWindow': shellScriptInWindow}
             # exec script in namespace
-            exec(script,namespace)
+            exec(script, namespace)
             #@+<< unredirect output >>
             #@+node:ekr.20040915105758.18: *3* << unredirect output >>
             if c.config.redirect_execute_script_output_to_log_pane:
@@ -159,11 +159,11 @@ def applyFileAction(p, filename, c):
                 g.restoreStdout()
             #@-<< unredirect output >>
             g.es("exception in FileAction plugin")
-            g.es_exception(full=False,c=c)
+            g.es_exception(full=False, c=c)
 
         os.chdir(working_directory)
 #@+node:ekr.20040915105758.20: ** shellScriptInWindow
-def shellScriptInWindow(c,script):
+def shellScriptInWindow(c, script):
 
     if sys.platform == 'darwin':
         #@+<< write script to temporary MacOS file >>
@@ -173,7 +173,7 @@ def shellScriptInWindow(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path,0x700)
+        os.chmod(path, 0x700)
         #@-<< write script to temporary MacOS file >>
         os.system("open -a /Applications/Utilities/Terminal.app " + path)
 
@@ -188,7 +188,7 @@ def shellScriptInWindow(c,script):
         script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
         os.write(handle, script)
         os.close(handle)
-        os.chmod(path,0x700)
+        os.chmod(path, 0x700)
         #@-<< write script to temporary Unix file >>
         os.system("xterm -e sh  " + path)
 #@-others

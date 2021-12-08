@@ -22,7 +22,6 @@ import subprocess
 import sys
 import time
 from leo.core import leoGlobals as g
-from leo.core import leoTest
 #@+others
 #@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):
@@ -122,6 +121,7 @@ def scanOptions():
     add('-g', action='store_true', help='gui plugins')
     add('-m', action='store_true', help='modes')
     add('-p', action='store_true', help='plugins')
+    add('-t', action='store_true', help='unit tests')
     add('-u', action='store_true', help='user commands')
     add('-v', action='store_true', help='report pylint version')
     add('--verbose', action='store_true', help='verbose output')
@@ -131,20 +131,32 @@ def scanOptions():
         # -v anywhere just prints the version.
         return 'version', False
     verbose = options.verbose
-    if options.a: scope = 'all'
-    elif options.c: scope = 'core'
-    elif options.e: scope = 'external'
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
     elif options.filename:
         fn = options.filename
-        if fn.startswith('='): fn = fn[1:]
+        if fn.startswith('='):
+            fn = fn[1:]
         g_option_fn = fn.strip('"')
         scope = 'file'
-    elif options.g: scope = 'gui'
-    elif options.m: scope = 'modes'
-    elif options.p: scope = 'plugins'
-    elif options.u: scope = 'commands'
-    elif options.v: scope = 'version'
-    else: scope = 'all'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
+    elif options.t:
+        scope = 'tests'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
     return scope, verbose
 #@-others
 #@@language python
@@ -156,7 +168,7 @@ scope, verbose = scanOptions()
 if scope == 'version':
     report_version()
 else:
-    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    files = g.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
     main(files, verbose)
 #@@beautify
 

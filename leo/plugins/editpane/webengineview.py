@@ -5,6 +5,7 @@
 # EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
 # TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
 #      it's ok if it fails to load
+# pylint: disable=no-name-in-module
 from PyQt5 import QtWebEngineWidgets
 from leo.core import leoGlobals as g
 assert g

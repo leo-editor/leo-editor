@@ -1,17 +1,20 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160412101008.1: * @file ../plugins/importers/ipynb.py
-'''The @auto importer for Jupyter (.ipynb) files.'''
+"""The @auto importer for Jupyter (.ipynb) files."""
 import re
+from typing import List
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position as Pos
 try:
     import nbformat
 except ImportError:
     nbformat = None
+
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB:
-    '''A class to import .ipynb files.'''
-    
+    """A class to import .ipynb files."""
+
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
@@ -26,10 +29,10 @@ class Import_IPYNB:
     #@+node:ekr.20180408112531.1: *3* ipynb.Entries & helpers
     #@+node:ekr.20160412101537.14: *4* ipynb.import_file
     def import_file(self, fn, root):
-        '''
+        """
         Import the given .ipynb file.
         https://nbformat.readthedocs.org/en/latest/format_description.html
-        '''
+        """
         # #1601:
         if not nbformat:
             g.es_print('import-jupyter-notebook requires nbformat package')
@@ -50,9 +53,9 @@ class Import_IPYNB:
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.run
     def run(self, s, parent, parse_body=False):
-        '''
+        """
         @auto entry point. Called by code in leoImport.py.
-        '''
+        """
         # #1601:
         if not nbformat:
             g.es_print('import-jupyter-notebook requires nbformat package')
@@ -81,13 +84,13 @@ class Import_IPYNB:
     re_header2 = re.compile(r'^\s*([#]+)')
 
     def indent_cells(self):
-        '''
+        """
         Indent md nodes in self.root.children().
         <h1> nodes and non-md nodes stay where they are,
         <h2> nodes become children of <h1> nodes, etc.
-        
+
         Similarly for indentation based on '#' headline markup.
-        '''
+        """
         def to_int(n):
             try:
                 return int(n)
@@ -96,7 +99,7 @@ class Import_IPYNB:
 
         # Careful: links change during this loop.
         p = self.root.firstChild()
-        stack = []
+        stack: List[Pos] = []
         after = self.root.nodeAfterTree()
         root_level = self.root.level()
         n = 1
@@ -122,13 +125,13 @@ class Import_IPYNB:
                 n = meta and meta.get('leo_level')
                 n = to_int(n)
             else:
-                p.b = ''.join(lines[:found] + lines[found+1:])
+                p.b = ''.join(lines[:found] + lines[found + 1 :])
             assert p.level() == root_level + 1, (p.level(), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
     #@+node:ekr.20160412101537.9: *4* ipynb.add_markup
     def add_markup(self):
-        '''Add @language directives, but only if necessary.'''
+        """Add @language directives, but only if necessary."""
         for p in self.root.subtree():
             level = p.level() - self.root.level()
             language = g.getLanguageAtPosition(self.c, p)
@@ -136,7 +139,7 @@ class Import_IPYNB:
             # # Always put @language directives in top-level imported nodes.
             if cell.get('cell_type') == 'markdown':
                 if level < 2 or language not in ('md', 'markdown'):
-                   p.b = '@language md\n@wrap\n\n%s' % p.b
+                    p.b = '@language md\n@wrap\n\n%s' % p.b
             else:
                 if level < 2 or language != 'python':
                     p.b = '@language python\n\n%s' % p.b
@@ -162,25 +165,25 @@ class Import_IPYNB:
         if val and val.strip():
             cell_p.b = val.strip() + '\n'
                 # add_markup will add directives later.
-        del cell ['source']
+        del cell['source']
         self.set_ua(cell_p, 'cell', cell)
     #@+node:ekr.20160412101537.13: *4* ipynb.do_prefix
     def do_prefix(self, d):
-        '''Handle everything except the 'cells' attribute.'''
+        """Handle everything except the 'cells' attribute."""
         if d:
             # Expand the root if requested.
-            if 1: # The @auto logic defeats this, but this is correct.
+            if 1:  # The @auto logic defeats this, but this is correct.
                 meta = d.get('metadata')
                 collapsed = meta and meta.get('collapsed')
                 if collapsed is not None and not collapsed:
                     self.root.v.expand()
-            self.cells = d.get('cells',[])
+            self.cells = d.get('cells', [])
             if self.cells:
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
-        '''Return True if cell is an empty code cell.'''
+        """Return True if cell is an empty code cell."""
         if cell.get('cell_type') != 'code':
             return False
         metadata = cell.get('metadata')
@@ -194,7 +197,7 @@ class Import_IPYNB:
     nb_warning_given = False
 
     def parse(self, fn):
-        '''Parse the file, which should be JSON format.'''
+        """Parse the file, which should be JSON format."""
         if not nbformat:
             if not self.nb_warning_given:
                 self.nb_warning_given = True
@@ -218,7 +221,7 @@ class Import_IPYNB:
     #@+node:ekr.20180408112636.1: *3* ipynb.Utils
     #@+node:ekr.20160412101845.24: *4* ipynb.get_file_name
     def get_file_name(self):
-        '''Open a dialog to write a Jupyter (.ipynb) file.'''
+        """Open a dialog to write a Jupyter (.ipynb) file."""
         c = self.c
         fn = g.app.gui.runOpenFileDialog(
             c,
@@ -233,7 +236,7 @@ class Import_IPYNB:
         return fn
     #@+node:ekr.20180409152738.1: *4* ipynb.get_ua
     def get_ua(self, p, key=None):
-        '''Return the ipynb uA. If key is given, return the inner dict.'''
+        """Return the ipynb uA. If key is given, return the inner dict."""
         d = p.v.u.get('ipynb')
         if not d:
             return {}
@@ -242,7 +245,7 @@ class Import_IPYNB:
         return d
     #@+node:ekr.20160412101537.16: *4* ipynb.move_node
     def move_node(self, n, p, stack):
-        '''Move node to level n'''
+        """Move node to level n"""
         # Cut back the stack so that p will be at level n (if possible).
         if n is None:
             n = 1
@@ -262,16 +265,16 @@ class Import_IPYNB:
         return stack
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
-        '''Set p.v.u'''
+        """Set p.v.u"""
         d = p.v.u
         d2 = d.get('ipynb') or {}
-        d2 [key] = val
-        d ['ipynb'] = d2
+        d2[key] = val
+        d['ipynb'] = d2
         p.v.u = d
     #@-others
 #@-others
 importer_dict = {
-    '@auto': [], # '@auto-jupyter', '@auto-ipynb',],
+    '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
     'class': Import_IPYNB,
     'extensions': ['.ipynb',],
 }

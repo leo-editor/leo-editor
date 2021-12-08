@@ -19,8 +19,9 @@ to the first element.
 
 """
 #@-<< docstring >>
-debug = False
+# import pdb
 # Define globals
+debug = False
 vnode_count = 0
 if debug:
     allvnodes = {
@@ -28,8 +29,6 @@ if debug:
     }
     vnode_count = 0
     vnode_stack = []
-#@@language python
-#@@tabwidth -4
 #@+others
 #@+node:ekr.20101110092416.5699: ** escape
 def escape(s):
@@ -39,7 +38,7 @@ def escape(s):
     return s
 #@+node:ekr.20101112045055.60165: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     return True
 #@+node:ekr.20101110092416.5700: ** class node_with_parent
 class node_with_parent:
@@ -106,7 +105,7 @@ class LeoNode:
             write('%s="%s" ' % (name, value))
         write("/>\n")
     #@+node:ekr.20101110092416.5721: *3* nthChild
-    def nthChild (self, n):
+    def nthChild(self, n):
         return self.children[n]
     #@-others
 #@+node:ekr.20101110092416.5722: ** class leo_file
@@ -158,7 +157,7 @@ class leo_file(LeoNode):
     def gen_vnodes(self, file):
         if debug:
             global allvnodes, vnode_stack
-            allvnodes = {file:None}
+            allvnodes = {file: None}
             vnode_stack = []
         for child in self.children:
             child.gen_vnodes(file)
@@ -201,7 +200,7 @@ class leo_node(LeoNode, node_with_parent):
         super().__init__()
         leo_node.count += 1
         self.nr = leo_node.count
-        self.headline =  headline
+        self.headline = headline
         self.body = body
     #@+node:ekr.20101110092416.5753: *3* bodyString
     def bodyString(self, body):
@@ -230,12 +229,12 @@ class leo_node(LeoNode, node_with_parent):
                 x.reverse()
                 for i in x:
                     print(i.headline)
-                import pdb; pdb.set_trace()
+                # pdb.set_trace()
                 return
             global vnode_count
             attributes.append(('model_node_number', repr(vnode_count)))
             vnode_count += 1
-            allvnodes[self]=None
+            allvnodes[self] = None
         self.mark_with_attributes(file, "v", attributes, self.gen_vnodes1)
         if debug:
             del allvnodes[self]
@@ -302,11 +301,13 @@ def leotree():
     f = leo_file()
     return f
 #@-others
-
 if __name__ == "__main__":
     import sys
     f = leotree()
     r = leo_node("Some headline", "some Body")
     f.add_child(r)
     f.gen(sys.stdout)
+
+#@@language python
+#@@tabwidth -4
 #@-leo

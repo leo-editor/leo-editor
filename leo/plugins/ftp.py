@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110110105526.5463: * @file ../plugins/ftp.py
-'''Uploading of file by ftp.'''
+"""Uploading of file by ftp."""
 
 # 0.1 05.01.2011 by Ivanov Dmitriy.
 #@+<< ftp imports >>
@@ -10,16 +10,15 @@ import os
 from ftplib import FTP
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.core.leoQt import isQt6, QtGui, QtWidgets
-QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
+from leo.core.leoQt import QAction
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ftp imports >>
 #@+others
 #@+node:ekr.20110110105526.5467: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         print('ftp.py plugin not loading because gui is not Qt')
         return False
@@ -27,7 +26,7 @@ def init ():
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20110110105526.5468: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         # Check whether the node @data ftp exists in the file being opened.
@@ -40,17 +39,17 @@ class pluginController:
 
     #@+others
     #@+node:ekr.20110110105526.5470: *3* __init__(pluginController, ftp.py)
-    def __init__ (self,c):
+    def __init__(self, c):
         self.c = c
         ib_w = self.c.frame.iconBar.w
         action = QAction('Upload', ib_w)
-        self.c.frame.iconBar.add(qaction = action, command = self.upload)
+        self.c.frame.iconBar.add(qaction=action, command=self.upload)
 
 
     #@+node:ekr.20110110105526.5471: *3* upload
-    def upload (self,event=None):
-        c = self.c ; p = c.p
-
+    def upload(self, event=None):
+        c = self.c
+        p = c.p
         g.es("upload started")
         p = g.findTopLevelNode(c, '@data ftp')
         if p:
@@ -80,7 +79,7 @@ class pluginController:
                     if time != file[2]:
                         files[i][2] = time
                         g.es(files[i][0])
-                        FH = open(files[i][0],"rb")
+                        FH = open(files[i][0], "rb")
                         ftp.storbinary('STOR ' + files[i][1], FH)
                         FH.close()
                 #@-<<upload all the modified files>>

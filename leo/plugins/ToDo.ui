@@ -56,7 +56,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri1.png</normaloff>cleo/pri1.png</iconset>
+         <normaloff>../Icons/cleo/pri1.png</normaloff>../Icons/cleo/pri1.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -76,7 +76,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/chkblk.png</normaloff>cleo/chkblk.png</iconset>
+         <normaloff>../Icons/cleo/chkblk.png</normaloff>../Icons/cleo/chkblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -96,7 +96,8 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri2.png</normaloff>cleo/pri2.png</iconset>
+         <normaloff>../Icons/cleo/pri2.png</normaloff>
+         <normalon>../Icons/cleo/pri2.png</normalon>../Icons/cleo/pri2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -116,7 +117,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri4.png</normaloff>cleo/pri4.png</iconset>
+         <normaloff>../Icons/cleo/pri4.png</normaloff>../Icons/cleo/pri4.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -136,7 +137,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri5.png</normaloff>cleo/pri5.png</iconset>
+         <normaloff>../Icons/cleo/pri5.png</normaloff>../Icons/cleo/pri5.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -156,7 +157,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/chkboxblk.png</normaloff>cleo/chkboxblk.png</iconset>
+         <normaloff>../Icons/cleo/chkboxblk.png</normaloff>../Icons/cleo/chkboxblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -176,7 +177,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/xgry.png</normaloff>cleo/xgry.png</iconset>
+         <normaloff>../Icons/cleo/xgry.png</normaloff>../Icons/cleo/xgry.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -196,7 +197,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/bngblk.png</normaloff>cleo/bngblk.png</iconset>
+         <normaloff>../Icons/cleo/bngblk.png</normaloff>../Icons/cleo/bngblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -216,7 +217,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/xblk.png</normaloff>cleo/xblk.png</iconset>
+         <normaloff>../Icons/cleo/xblk.png</normaloff>../Icons/cleo/xblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -236,7 +237,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri3.png</normaloff>cleo/pri3.png</iconset>
+         <normaloff>../Icons/cleo/pri3.png</normaloff>../Icons/cleo/pri3.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -256,7 +257,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri6.png</normaloff>cleo/pri6.png</iconset>
+         <normaloff>../Icons/cleo/pri6.png</normaloff>../Icons/cleo/pri6.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -276,7 +277,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri7.png</normaloff>cleo/pri7.png</iconset>
+         <normaloff>../Icons/cleo/pri7.png</normaloff>../Icons/cleo/pri7.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -296,7 +297,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri8.png</normaloff>cleo/pri8.png</iconset>
+         <normaloff>../Icons/cleo/pri8.png</normaloff>../Icons/cleo/pri8.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -316,7 +317,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri9.png</normaloff>cleo/pri9.png</iconset>
+         <normaloff>../Icons/cleo/pri9.png</normaloff>../Icons/cleo/pri9.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -336,7 +337,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/pri0.png</normaloff>cleo/pri0.png</iconset>
+         <normaloff>../Icons/cleo/pri0.png</normaloff>../Icons/cleo/pri0.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -356,7 +357,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/qryblk.png</normaloff>cleo/qryblk.png</iconset>
+         <normaloff>../Icons/cleo/qryblk.png</normaloff>../Icons/cleo/qryblk.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -376,7 +377,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/bullet.png</normaloff>cleo/bullet.png</iconset>
+         <normaloff>../Icons/cleo/bullet.png</normaloff>../Icons/cleo/bullet.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -400,7 +401,7 @@ setting</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>cleo/edit-clear.png</normaloff>cleo/edit-clear.png</iconset>
+         <normaloff>../Icons/cleo/edit-clear.png</normaloff>../Icons/cleo/edit-clear.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -418,10 +419,6 @@ interface</string>
        </property>
        <property name="text">
         <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>cleo/document-save.png</normaloff>cleo/document-save.png</iconset>
        </property>
       </widget>
      </item>
@@ -888,11 +885,6 @@ progress</string>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-      <!-- EKR
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-      -->
      <item>
       <widget class="QPushButton" name="butMenu">
        <property name="sizePolicy">

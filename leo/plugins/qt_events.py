@@ -35,15 +35,17 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Key, KeyboardModifier, Type
 #@+others
 #@+node:ekr.20210512101604.1: ** class LossageData
 class LossageData:
-    
+
     def __init__(self, actual_ch, binding, ch, keynum, mods, mods2, mods3, text, toString):
-    
+
         self.actual_ch = actual_ch
         self.binding = binding
         self.ch = ch
@@ -54,8 +56,8 @@ class LossageData:
         self.stroke = None  # Set later.
         self.text = text
         self.toString = toString
-        
-    def __repr__ (self):
+
+    def __repr__(self):
         return (
             f"keynum: {self.keynum:>7x} "
             f"binding: {self.binding}"
@@ -95,6 +97,8 @@ class LeoQtEventFilter(QtCore.QObject):
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
+        if not g.app:
+            return False  # For unit tests, but g.unitTesting may be False!
         if not self.c.p:
             return False  # Startup.
         #
@@ -156,7 +160,6 @@ class LeoQtEventFilter(QtCore.QObject):
     def doNonKeyEvent(self, event, obj):
         """Handle all non-key event. """
         c = self.c
-        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         eventType = event.type()
         if eventType == Type.WindowActivate:
             g.app.gui.onActivateEvent(event, c, obj, self.tag)
@@ -176,12 +179,11 @@ class LeoQtEventFilter(QtCore.QObject):
     def shouldIgnoreKeyEvent(self, event, obj):
         """
         Return True if we should ignore the key event.
-        
+
         Alas, QLineEdit *only* generates ev.KeyRelease on Windows, Ubuntu,
         so the following hack is required.
         """
         c = self.c
-        Type = QtCore.QEvent.Type if isQt6 else QtCore.QEvent
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
@@ -231,7 +233,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, actual_ch, keynum, mods, toString):
         """Turn AltGr and some Alt-Ctrl keys into plain keys."""
-        Key = QtCore.Qt.Key if isQt6 else QtCore.Qt
 
         def removeAltCtrl(mods):
             for mod in ('Alt', 'Control'):
@@ -261,7 +262,7 @@ class LeoQtEventFilter(QtCore.QObject):
         ):
             mods.remove('Shift')
         elif kind == 'us-international':
-            pass  ### To do.
+            pass  # To do.
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
@@ -331,19 +332,19 @@ class LeoQtEventFilter(QtCore.QObject):
         #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()
         if keynum in (
-            0x01000020, # Key_Shift	
-            0x01000021, # Key_Control
-            0x01000022, # Key_Meta
-            0x01000023, # Key_Alt
-            0x01001103, # Key_AltGr	
-            0x01000024, # Key_CapsLock
-        ):	
+            0x01000020,  # Key_Shift
+            0x01000021,  # Key_Control
+            0x01000022,  # Key_Meta
+            0x01000023,  # Key_Alt
+            0x01001103,  # Key_AltGr
+            0x01000024,  # Key_CapsLock
+        ):
             # Disallow bare modifiers.
             return keynum, text, toString, ch
         #
         # Compute toString and ch.
         text = event.text()  # This is the unicode character!
-        toString = QtGui.QKeySequence(keynum).toString()  
+        toString = QtGui.QKeySequence(keynum).toString()
         #
         # #1244461: Numpad 'Enter' key does not work in minibuffer
         if toString == 'Enter':
@@ -358,16 +359,16 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         """Return the text version of the modifiers of the key event."""
-        KeyboardModifiers = QtCore.Qt.KeyboardModifiers if isQt6 else QtCore.Qt
         modifiers = event.modifiers()
         mod_table = (
-            (KeyboardModifiers.AltModifier, 'Alt'),
-            (KeyboardModifiers.ControlModifier, 'Control'),
-            (KeyboardModifiers.MetaModifier, 'Meta'),
-            (KeyboardModifiers.ShiftModifier, 'Shift'),
-            (KeyboardModifiers.KeypadModifier, 'KeyPad'),
+            (KeyboardModifier.AltModifier, 'Alt'),
+            (KeyboardModifier.ControlModifier, 'Control'),
+            (KeyboardModifier.MetaModifier, 'Meta'),
+            (KeyboardModifier.ShiftModifier, 'Shift'),
+            (KeyboardModifier.KeypadModifier, 'KeyPad'),
                 # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
+        # pylint: disable=superfluous-parens.
         mods = [b for a, b in mod_table if (modifiers & a)]
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
@@ -388,7 +389,8 @@ class LeoQtEventFilter(QtCore.QObject):
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
-        if g.unitTesting: return
+        if g.unitTesting:
+            return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         exclude_names = ('tree', 'log', 'body', 'minibuffer')
         traceActivate = True
@@ -403,7 +405,7 @@ class LeoQtEventFilter(QtCore.QObject):
         c, e = self.c, QtCore.QEvent
         eventType = event.type()
         # http://doc.qt.io/qt-5/qevent.html
-        show = []
+        show: List[Any] = []
         ignore = [
             e.MetaCall,  # 43
             e.Timer,  # 1
@@ -512,8 +514,10 @@ class LeoQtEventFilter(QtCore.QObject):
                     obj.objectName() if hasattr(obj, 'objectName')
                     else f"id: {id(obj)}, {obj.__class__.__name__}"
                 )
-                if traceKey: g.trace(
-                    f"{kind:-25} {self.tag:-25} in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
+                if traceKey:
+                    g.trace(
+                        f"{kind:-25} {self.tag:-25} "
+                        f"in-state: {repr(c.k and c.k.inState()):5} obj: {tag}")
                 return
         if eventType not in ignore:
             tag = (
@@ -602,7 +606,8 @@ class LeoQtEventFilter(QtCore.QObject):
         if verbose:  # Too verbose for --trace-events.
             for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
                 t = d.get(et)
-                if t: break
+                if t:
+                    break
             else:
                 t = et
             g.trace(f"{t:20} {w.__class__}")

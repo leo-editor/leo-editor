@@ -64,10 +64,12 @@ def scanOptions():
     parser.add_option('--verbose', action='store_true', dest='verbose')
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
-    sys.argv = [sys.argv[0]]; sys.argv.extend(args)
+    sys.argv = [sys.argv[0]]
+    sys.argv.extend(args)
     # -- gui
     gui = options.gui
-    if gui: gui = gui.lower()
+    if gui:
+        gui = gui.lower()
     if gui not in ('qttabs', 'qt'):
         options.gui = None
     return options

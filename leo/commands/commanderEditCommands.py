@@ -4,6 +4,7 @@
 #@@first
 """Edit commands that used to be defined in leoCommands.py"""
 import re
+from typing import List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
@@ -46,7 +47,8 @@ def addComments(self, event=None):
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
     d1, d2, d3 = g.set_delims_from_language(language)
-    d2 = d2 or ''; d3 = d3 or ''
+    d2 = d2 or ''
+    d3 = d3 or ''
     if d1:
         openDelim, closeDelim = d1 + ' ', ''
     else:
@@ -86,7 +88,8 @@ def addComments(self, event=None):
 @g.commander_command('set-colors')
 def colorPanel(self, event=None):
     """Open the color dialog."""
-    c = self; frame = c.frame
+    c = self
+    frame = c.frame
     if not frame.colorPanel:
         frame.colorPanel = g.app.gui.createColorPanel(c)
     frame.colorPanel.bringToFront()
@@ -94,7 +97,8 @@ def colorPanel(self, event=None):
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self, event=None):
     """Convert all blanks to tabs in the selected outline."""
-    c = self; u = c.undoer; undoType = 'Convert All Blanks'
+    c, u = self, self.undoer
+    undoType = 'Convert All Blanks'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -110,20 +114,21 @@ def convertAllBlanks(self, event=None):
             if changed:
                 count += 1
         else:
-            changed = False; result = []
+            changed = False
+            result = []
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, abs(tabWidth)) + line[i:]  # use positive width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
                 p.setDirty()
-                result = '\n'.join(result)
-                p.setBodyString(result)
+                p.setBodyString('\n'.join(result))
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -135,7 +140,9 @@ def convertAllBlanks(self, event=None):
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self, event=None):
     """Convert all tabs to blanks in the selected outline."""
-    c = self; u = c.undoer; undoType = 'Convert All Tabs'
+    c = self
+    u = c.undoer
+    undoType = 'Convert All Tabs'
     current = c.p
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -151,20 +158,21 @@ def convertAllTabs(self, event=None):
             if changed:
                 count += 1
         else:
-            result = []; changed = False
+            result = []
+            changed = False
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
                 s = g.computeLeadingWhitespace(
                     w, -abs(tabWidth)) + line[i:]  # use negative width.
-                if s != line: changed = True
+                if s != line:
+                    changed = True
                 result.append(s)
             if changed:
                 count += 1
                 p.setDirty()
-                result = '\n'.join(result)
-                p.setBodyString(result)
+                p.setBodyString('\n'.join(result))
                 u.afterChangeNodeContents(p, undoType, undoData)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
@@ -238,7 +246,8 @@ def convertTabs(self, event=None):
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
         s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
             # use negative width.
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
     if not changed:
         return False
@@ -391,7 +400,7 @@ def deleteComments(self, event=None):
 def editHeadline(self, event=None):
     """
     Begin editing the headline of the selected node.
-    
+
     This is just a wrapper around tree.editLabel.
     """
     c = self
@@ -423,7 +432,7 @@ def extract(self, event=None):
        JavaScript, CoffeeScript or Clojure languages) the
        class/function/method name becomes the child's headline and all
        selected lines become the child's body text.
-       
+
        You may add additional regex patterns for definition lines using
        @data extract-patterns nodes. Each line of the body text should a
        valid regex pattern. Lines starting with # are comment lines. Use \#
@@ -528,13 +537,15 @@ def extractDef(c, s):
         try:
             pat = re.compile(pat)
             m = pat.search(s)
-            if m: return m.group(1)
+            if m:
+                return m.group(1)
         except Exception:
             g.es_print('bad regex in @data extract-patterns', color='blue')
             g.es_print(pat)
     for pat in extractDef_patterns:
         m = pat.search(s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* def extractDef_find
 def extractDef_find(c, lines):
@@ -625,7 +636,8 @@ def findMatchingBracket(self, event=None):
 @g.commander_command('set-font')
 def fontPanel(self, event=None):
     """Open the font dialog."""
-    c = self; frame = c.frame
+    c = self
+    frame = c.frame
     if not frame.fontPanel:
         frame.fontPanel = g.app.gui.createFontPanel(c)
     frame.fontPanel.bringToFront()
@@ -707,7 +719,7 @@ def indentBody(self, event=None):
     The indent-region command indents each line of the selected body text.
     Unlike the always-indent-region command, this command inserts a tab
     (soft or hard) when there is no selected text.
-    
+
     The @tabwidth directive in effect determines amount of indentation.
     """
     c, event_w, w = self, event and event.w, self.frame.body.wrapper
@@ -728,17 +740,19 @@ def indentBody(self, event=None):
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
     """Insert a time/date stamp at the cursor."""
-    c = self; undoType = 'Insert Body Time'
+    c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
+    undoType = 'Insert Body Time'
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = self.getTime(body=True)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):
@@ -757,7 +771,7 @@ def justify_toggle_auto(self, event=None):
 def line_to_headline(self, event=None):
     """
     Create child node from the selected line.
-    
+
     Cut the selected line and make it the new node's headline
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
@@ -897,9 +911,9 @@ def find_bound_paragraph(c):
         else:
             head_lines.append(s)
     if started:
-        head = g.joinLines(head_lines)
+        head = ''.join(head_lines)
         tail_lines = para_lines[i:] if ended else []
-        tail = g.joinLines(tail_lines)
+        tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
     return None, None, None
 #@+node:ekr.20171123135625.45: *3* function: rp_get_args
@@ -996,17 +1010,18 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
                 indents[1] = i
                 leading_ws[1] = ' ' * i
     # Wrap the lines, decreasing the page width by indent.
-    result = g.wrap_lines(lines,
+    result_list = g.wrap_lines(lines,
         pageWidth - indents[1],
         pageWidth - indents[0])
     # prefix with the leading whitespace, if any
     paddedResult = []
-    paddedResult.append(leading_ws[0] + result[0])
-    for line in result[1:]:
+    paddedResult.append(leading_ws[0] + result_list[0])
+    for line in result_list[1:]:
         paddedResult.append(leading_ws[1] + line)
     # Convert the result to a string.
     result = '\n'.join(paddedResult)
-    if trailingNL: result = result + '\n'
+    if trailingNL:
+        result = result + '\n'
     return result
 #@+node:ekr.20171123135625.44: *3* function: startsParagraph
 def startsParagraph(s):
@@ -1025,7 +1040,7 @@ def startsParagraph(s):
         # This could cause problems in some situations.
         val = (
             (g.match(s, 1, ')') or g.match(s, 1, '.')) and
-            (len(s) < 2 or s[2] in (' \t\n')))
+            (len(s) < 2 or s[2] in ' \t\n'))
     else:
         val = s.startswith('@') or s.startswith('-')
     return val
@@ -1091,11 +1106,12 @@ def showInvisiblesHelper(c, val):
     colorizer.highlighter.showInvisibles = val
     # It is much easier to change the menu name here than in the menu updater.
     menu = frame.menu.getMenu("Edit")
-    index = frame.menu.getMenuLabel(menu,
-        'Hide Invisibles' if val else 'Show Invisibles')
+    index = frame.menu.getMenuLabel(menu, 'Hide Invisibles' if val else 'Show Invisibles')
     if index is None:
-        if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
-        else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
+        if val:
+            frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
+        else:
+            frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
     # #240: Set the status bits here.
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
@@ -1104,7 +1120,7 @@ def showInvisiblesHelper(c, val):
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self, event=None):
     """Add or remove double angle brackets from the headline of the selected node."""
-    c = self; p = c.p
+    c, p = self, self.p
     if g.app.batchMode:
         c.notValidInBatchMode("Toggle Angle Brackets")
         return
@@ -1114,8 +1130,10 @@ def toggleAngleBrackets(self, event=None):
     lt = "<<"
     rt = ">>"
     if s[0:2] == lt or s[-2:] == rt:
-        if s[0:2] == "<<": s = s[2:]
-        if s[-2:] == ">>": s = s[:-2]
+        if s[0:2] == "<<":
+            s = s[2:]
+        if s[-2:] == ">>":
+            s = s[:-2]
         s = s.strip()
     else:
         s = g.angleBrackets(' ' + s + ' ')
@@ -1149,13 +1167,15 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
 #@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
-    body, w = c.frame.body, c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
     ins = max(len(head), len(head) + len(result) - 1)
+    bunch = u.beforeChangeBody(p)
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
-        body.onBodyChanged(undoType, oldSel=oldSel)
+        p.v.b = w.getAllText()
+        u.afterChangeBody(p, undoType, bunch)
     # Advance to the next paragraph.
     ins += 1  # Move past the selection.
     while ins < len(s):
@@ -1191,17 +1211,19 @@ def insertMarkdownTOC(self, event=None):
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
-    undoType = f"Insert {kind.capitalize()} TOC"
+    p, u = c.p, c.undoer
     w = c.frame.body.wrapper
+    undoType = f"Insert {kind.capitalize()} TOC"
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    oldSel = w.getSelectionRange()
+    bunch = u.beforeChangeBody(p)
     w.deleteTextSelection()
     s = make_toc(c, kind=kind, root=c.p)
     i = w.getInsertPoint()
     w.insert(i, s)
-    c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
+    p.v.b = w.getAllText()
+    u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20180410054926.1: *3* make_toc
 def make_toc(c, kind, root):
     """Return the toc for root.b as a list of lines."""
@@ -1215,7 +1237,8 @@ def make_toc(c, kind, root):
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
 
-    result, stack = [], []
+    result: List[str] = []
+    stack: List[int] = []
     for p in root.subtree():
         if cell_type(p) == 'markdown':
             level = p.level() - root.level()

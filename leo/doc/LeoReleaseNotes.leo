@@ -3341,6 +3341,58 @@
 <v t="ekr.20200313080216.6"><vh>6.2: Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20201019144336.1"><vh>Leo 6.3: leoAst.py, removed Qt docks</vh></v>
+<v t="ekr.20210917085922.1"><vh>Leo 6.4: leoInteg, qt6, remove @root</vh>
+<v t="ekr.20210917085922.2"><vh>6.4: Bugs</vh></v>
+<v t="ekr.20210917085922.3"><vh>6.4: Code</vh>
+<v t="ekr.20210917085922.4"><vh>#1413: New undo pattern</vh></v>
+<v t="ekr.20210917085922.23"><vh>#1715: Add execute-general-script</vh></v>
+<v t="ekr.20210917085922.6"><vh>#1721: Remove most calls to c.setBody/HeadString</vh></v>
+<v t="ekr.20210917085922.7"><vh>#1806: Rewrite leoFind.py, with unit tests</vh></v>
+<v t="ekr.20210917085922.8"><vh>#1944: Annotations &amp; stub files</vh></v>
+<v t="ekr.20210917085922.9"><vh>#1973 and #2005: Support Qt6</vh></v>
+<v t="ekr.20210917085922.10"><vh>#2005: Add more qt imports</vh></v>
+<v t="ekr.20210917085922.11"><vh>#2081: Use sys.excepthook, not @g.callback</vh></v>
+<v t="ekr.20210917085922.12"><vh>#2103: stubs for leoGlobals.py</vh></v>
+</v>
+<v t="ekr.20210917085922.13"><vh>6.4: Commands</vh>
+<v t="ekr.20210917085922.23"></v>
+<v t="ekr.20210917085922.15"><vh>#1754: reformat-paragraph</vh></v>
+<v t="ekr.20210917085922.16"><vh>#1831 &amp; #2049: mypy command</vh></v>
+<v t="ekr.20210917085922.17"><vh>#1841: copy-gnx</vh></v>
+<v t="ekr.20210917085922.18"><vh>#1955: improve extract command</vh></v>
+<v t="ekr.20210917085922.19"><vh>PR #1849: reload-settings now changes all settings</vh></v>
+</v>
+<v t="ekr.20210917085922.20"><vh>6.4: Major features</vh>
+<v t="ekr.20210917085922.21"><vh>#0442: json: .leojs files</vh></v>
+<v t="ekr.20210917085922.22"><vh>#1672: Remove support for Qt docks</vh></v>
+<v t="ekr.20210917085922.23"></v>
+<v t="ekr.20210917085922.24"><vh>#1768: Change cursor in command mode</vh></v>
+<v t="ekr.20210917085922.25"><vh>#1772: Add git-diff-pr command</vh></v>
+<v t="ekr.20210917085922.26"><vh>#1781: Leonine diffs of .leo files</vh></v>
+<v t="ekr.20210917085922.27"><vh>#1813: Add leoserver.py and leoclient.py</vh></v>
+<v t="ekr.20210917085922.28"><vh>#1832: Retire @root and convert-at-root command</vh></v>
+<v t="ekr.20210917085922.29"><vh>#1846: Support pyQt6</vh></v>
+<v t="ekr.20210917085922.30"><vh>#1867: Simplify rst3</vh></v>
+</v>
+<v t="ekr.20210917085922.31"><vh>6.4: Other features</vh>
+<v t="ekr.20210917085922.32"><vh>#1240: Alert for changed .leo file</vh></v>
+<v t="ekr.20210917085922.33"><vh>#1780: Improve support for backup scripts</vh></v>
+<v t="ekr.20210917085922.34"><vh>#1792: Improve themes for newbies</vh></v>
+<v t="ekr.20210917085922.35"><vh>#1798: Better error reports</vh></v>
+<v t="ekr.20210917085922.36"><vh>#1808: Pylint checks last file by default</vh></v>
+<v t="ekr.20210917085922.37"><vh>#1840: one-shot headline-only</vh></v>
+<v t="ekr.20210917085922.38"><vh>#2023: make find-all links clickable</vh></v>
+<v t="ekr.20210917085922.39"><vh>Add leo/scripts/wax_off.py</vh></v>
+</v>
+<v t="ekr.20210917085922.40"><vh>6.4: Settings &amp; command-line options</vh></v>
+</v>
+<v t="ekr.20211015090213.1"><vh>Leo 6.5: Remove @test, @suite. Clean code</vh>
+<v t="ekr.20211015090301.2"><vh>6.5: Commands</vh></v>
+<v t="ekr.20211015090301.3"><vh>6.5: Features</vh></v>
+<v t="ekr.20211015090301.4"><vh>6.5: Settings</vh></v>
+<v t="ekr.20211015090301.5"><vh>6.5: Testing</vh></v>
+</v>
+<v t="ekr.20211110122850.1"><vh>Leo 6.6: Remove @raw, @end-raw. Add @section-delims. section refs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26230,5 +26282,227 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
+<t tx="ekr.20210917085922.1">Leo http://leoeditor.com 6.4 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.4**
+
+- Support for leoInteg: "Leo in vs-code".
+  - Add leoserver.py, stand-alone server for Leo.
+  - Add support for .leojs, a json outline format.
+- Support for Qt6.
+- The wax_off.py script converts function annotations to stub (.pyi) files.
+- Remove support for @root. Create a conversion script.
+- Simplify and generalize rst3 command.
+- Add git-diff-pr command: Leonine diffs for Pull Requests and .leo files.
+- Add execute-general-script command and c.general_script_helper.
+- Several significant code-level changes.
+- Fixed 160+ issues and merged almost 400 Pull Requests.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20210917085922.10">https://github.com/leo-editor/leo-editor/issues/2005</t>
+<t tx="ekr.20210917085922.11">https://github.com/leo-editor/leo-editor/issues/2081</t>
+<t tx="ekr.20210917085922.12">https://github.com/leo-editor/leo-editor/issues/2103</t>
+<t tx="ekr.20210917085922.13">Add commands:
+- convert-at-root: #1832.
+- copy-gnx: #1841.
+- mypy: #1831.
+- reformat-selection: #1754.
+- show-all-tags.
+
+Change commands:
+- reload-settings now changes settings in all open outlines.
+</t>
+<t tx="ekr.20210917085922.15">https://github.com/leo-editor/leo-editor/issues/1754
+
+w.see works for the first time ever!</t>
+<t tx="ekr.20210917085922.16">https://github.com/leo-editor/leo-editor/issues/1831
+
+https://github.com/leo-editor/leo-editor/issues/2049
+</t>
+<t tx="ekr.20210917085922.17">https://github.com/leo-editor/leo-editor/issues/1841</t>
+<t tx="ekr.20210917085922.18">https://github.com/leo-editor/leo-editor/issues/1955</t>
+<t tx="ekr.20210917085922.19">https://github.com/leo-editor/leo-editor/issues/1849
+</t>
+<t tx="ekr.20210917085922.2">For a list of all the bugs fixed in Leo 6.4 see:
+https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.4+label%3Abug+</t>
+<t tx="ekr.20210917085922.20"></t>
+<t tx="ekr.20210917085922.21">https://github.com/leo-editor/leo-editor/issues/442</t>
+<t tx="ekr.20210917085922.22">https://github.com/leo-editor/leo-editor/issues/1672
+
+Leo's Qt docks caused great confusion. Leo is better off without them.
+</t>
+<t tx="ekr.20210917085922.23">https://github.com/leo-editor/leo-editor/issues/1715
+
+Add c.general_script_helper.</t>
+<t tx="ekr.20210917085922.24">https://github.com/leo-editor/leo-editor/issues/1768</t>
+<t tx="ekr.20210917085922.25">https://github.com/leo-editor/leo-editor/issues/1772
+
+Added gdc.diff_pull_request.</t>
+<t tx="ekr.20210917085922.26">https://github.com/leo-editor/leo-editor/issues/1781</t>
+<t tx="ekr.20210917085922.27">https://github.com/leo-editor/leo-editor/issues/1813
+</t>
+<t tx="ekr.20210917085922.28">https://github.com/leo-editor/leo-editor/issues/1832</t>
+<t tx="ekr.20210917085922.29">https://github.com/leo-editor/leo-editor/issues/1846
+</t>
+<t tx="ekr.20210917085922.3">For a list of all changes to codebase see:
+https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.4+label%3Acode+
+
+Only the highlights are shown below.</t>
+<t tx="ekr.20210917085922.30">https://github.com/leo-editor/leo-editor/issues/1867</t>
+<t tx="ekr.20210917085922.31"></t>
+<t tx="ekr.20210917085922.32">https://github.com/leo-editor/leo-editor/issues/1240</t>
+<t tx="ekr.20210917085922.33">https://github.com/leo-editor/leo-editor/issues/1780</t>
+<t tx="ekr.20210917085922.34">https://github.com/leo-editor/leo-editor/issues/1792</t>
+<t tx="ekr.20210917085922.35">https://github.com/leo-editor/leo-editor/issues/1798
+
+Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
+<t tx="ekr.20210917085922.36">https://github.com/leo-editor/leo-editor/issues/1808</t>
+<t tx="ekr.20210917085922.37">https://github.com/leo-editor/leo-editor/issues/1840</t>
+<t tx="ekr.20210917085922.38">https://github.com/leo-editor/leo-editor/issues/2023</t>
+<t tx="ekr.20210917085922.39">This script creates stub (.pyi) files from def lines containing annotations,
+then removes the annotations.
+
+The wax_off script allows you to add annotations directly in your .py
+files, and then move most of the clutter to stub files.
+
+Imo, the wax_off script makes my make_stub_files project obsolete.</t>
+<t tx="ekr.20210917085922.4">https://github.com/leo-editor/leo-editor/issues/1413
+
+PR: https://github.com/leo-editor/leo-editor/issues/1759
+</t>
+<t tx="ekr.20210917085922.40">Add @bool allow-text-zoom = True
+https://github.com/leo-editor/leo-editor/issues/1923
+
+Add support for --trace-speed.
+https://github.com/leo-editor/leo-editor/issues/1936
+
+Add settings for Leo's mypy command:
+https://github.com/leo-editor/leo-editor/issues/1831
+https://github.com/leo-editor/leo-editor/issues/2049
+@data mypy-arguments
+@int mypy-link-limit
+@string mypy-config-file
+
+Add settings for highlighting the selected line:
+@bool highlight-body-line = False
+@string line-highlight-color = None</t>
+<t tx="ekr.20210917085922.6">https://github.com/leo-editor/leo-editor/issues/1721</t>
+<t tx="ekr.20210917085922.7">https://github.com/leo-editor/leo-editor/issues/1806</t>
+<t tx="ekr.20210917085922.8">https://github.com/leo-editor/leo-editor/issues/1944
+PR: https://github.com/leo-editor/leo-editor/pull/1948</t>
+<t tx="ekr.20210917085922.9">https://github.com/leo-editor/leo-editor/issues/2005
+https://github.com/leo-editor/leo-editor/issues/1973</t>
+<t tx="ekr.20211015090213.1">Leo http://leoeditor.com 6.5 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.5**
+
+- Add python-to-typescript and view-recent-commands.
+- Add c.findCommands.interactive_search_helper.
+- Leo now uses only traditional unit tests.
+  Remove support for @test and @suite.
+  Remove leoTest.py.
+- Many code-level cleanups.
+- 450+ pull requests.
+
+**6.5 Links**
+
+- [6.5 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5)
+- [6.5 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.5)
+- [6.5 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.5+)
+- [6.5 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.5+label%3Aenhancement+)
+- [6.5 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.5+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20211015090301.2">#2256: view-recent-commands
+https://github.com/leo-editor/leo-editor/issues/2256
+
+#2267: python-to-typescript
+https://github.com/leo-editor/leo-editor/issues/2267
+</t>
+<t tx="ekr.20211015090301.3">#1766: Use traditional unit tests
+https://github.com/leo-editor/leo-editor/issues/1766
+PR: https://github.com/leo-editor/leo-editor/pull/2159
+
+#2194: black-compatible sentinels
+https://github.com/leo-editor/leo-editor/issues/2194
+
+#2219: c.findCommands.interactive_search_helper
+https://github.com/leo-editor/leo-editor/issues/2219
+</t>
+<t tx="ekr.20211015090301.4">@data python-to-typescript-types
+
+A list of key/value pairs. Keys are argument names (as used in Leo); values
+are typescript type names.</t>
+<t tx="ekr.20211015090301.5">- leoTest2.py create temporary Leo applications and outlines for unit tests.
+- Remove `@test`, `@suite`, unitTest.leo and leoTest.py.</t>
+<t tx="ekr.20211110122850.1">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6**
+
+- Replace @raw and @end_raw with @section-delims.
+- Leo recognizes section references only when they appear on an otherwise blank line.
+- Many improvements to python-to-typescript command.
+- picture_viewer.py is a stand-alone app that displays images in a folder.
+- The user may choose *other* commands after starting repeat-complex-command.
+- Complete coverage testing for leoAtFile.py.
+
+**6.6 Links**
+
+- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
+- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
+- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
+- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
+- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+
+**General Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)</t>
 </tnodes>
 </leo_file>

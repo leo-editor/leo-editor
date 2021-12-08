@@ -1,18 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170619151859.2: * @file ../plugins/auto_colorize2_0.py
-''' Manipulates appearance of individual tree widget items based on Yaml file.
+""" Manipulates appearance of individual tree widget items based on Yaml file.
 
 Settings are defined in a node labeled "Headline Formats".
 
 By Adrian Calvin.
-'''
+"""
 #@+<< imports auto_colorize2_0.py >>
 #@+node:ekr.20170619151859.3: ** << imports auto_colorize2_0.py >>
 import yaml
 from leo.core import leoGlobals as g
 try:
-    from PyQt5.QtGui import QBrush
-    from PyQt5.QtGui import QColor
+    from leo.core.leoQt import QtGui
+    QBrush = QtGui.QBrush
+    QColor = QtGui.QColor
 except Exception:
     QBrush = QColor = None
 #
@@ -21,8 +22,8 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports auto_colorize2_0.py >>
 #@+others
 #@+node:ekr.20170619151859.4: ** onCreate
-def onCreate (tag, keys):
-    '''auto_colorize onCreate handler.'''
+def onCreate(tag, keys):
+    """auto_colorize onCreate handler."""
     # pylint: disable=no-member
     # g.visit_tree_item does exist.
     try:
@@ -72,12 +73,12 @@ def init_dict(c):
     except Exception as e:
         g.es_error(e)
 #@+node:ekr.20170619151859.7: ** colorize
-def colorize(c,p, item):
+def colorize(c, p, item):
     """Colorize by reading "Headline Formats" node, or symbol in headline"""
     cs = str(c)
     font = item.font(0)
     try:
-        g.app.permanentScriptDict[cs  + 'formats']
+        g.app.permanentScriptDict[cs + 'formats']
     except Exception:
         g.app.permanentScriptDict[cs + 'formats'] = {}
     for k, f in g.app.permanentScriptDict[cs + 'formats'].items():

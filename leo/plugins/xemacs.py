@@ -2,7 +2,7 @@
 #@+node:EKR.20040517075715.12: * @file ../plugins/xemacs.py
 #@+<< docstring >>
 #@+node:ekr.20101112195628.5434: ** << docstring >> (xemacs.py)
-''' Allows you to edit nodes in emacs/xemacs.
+""" Allows you to edit nodes in emacs/xemacs.
 
 Provides the emacs-open-node command which passes the body
 text of the node to emacs.
@@ -10,7 +10,7 @@ text of the node to emacs.
 You may edit the node in the emacs buffer and changes will
 appear in Leo.
 
-'''
+"""
 #@-<< docstring >>
 
 # Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
@@ -37,7 +37,6 @@ elif sys.platform.startswith("linux"):
             _emacs_cmd = path
             break
     if not _emacs_cmd:
-        # print >> sys.stderr, "Unable to locate a usable version of *Emacs"
         print("Unable to locate a usable version of *Emacs")
 else:
     _emacs_cmd = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
@@ -45,7 +44,7 @@ else:
 #@+others
 #@+node:ekr.20050218023308: ** xemacs.init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = not g.unitTesting
     if ok:
         g.plugin_signon(__name__)
@@ -88,7 +87,7 @@ def open_in_emacs_helper(c, p):
                 # if efc: efc.forget_path(path)
             os.remove(path)
             os.system(emacs_cmd)
-        v.OpenWithOldBody = v.b # Remember the old contents
+        v.OpenWithOldBody = v.b  # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         # data = "os.spawnl", emacs_cmd, None
         d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}

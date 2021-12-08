@@ -8,6 +8,7 @@ import os
 import pickle
 import sqlite3
 import stat
+from typing import Any, Dict, Sequence
 import zlib
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -31,7 +32,7 @@ class CommanderCacher:
             path = join(g.app.homeLeoDir, 'db', 'global_data')
             self.db = SqlitePickleShare(path)
         except Exception:
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
@@ -42,7 +43,7 @@ class CommanderCacher:
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+node:ekr.20180627062431.1: *3* cacher.close
     def close(self):
         # Careful: self.db may be a dict.
@@ -76,7 +77,7 @@ class CommanderCacher:
             # a PickleShareDB instance.
         # Make sure g.guessExternalEditor works.
         g.app.db.get("LEO_EDITOR")
-        self.initFileDB('~/testpickleshare')
+        # self.initFileDB('~/testpickleshare')
         db = self.db
         db.clear()
         assert not list(db.items())
@@ -84,16 +85,16 @@ class CommanderCacher:
         db['aku ankka'] = [1, 2, 313]
         db['paths/nest/ok/keyname'] = [1, (5, 46)]
         db.uncache()  # frees memory, causes re-reads later
-        if 0: print(db.keys())
+        # print(db.keys())
         db.clear()
         return True
     #@+node:ekr.20100210163813.5747: *3* cacher.save
     def save(self, c, fn):
         """
         Save the per-commander cache.
-        
+
         Change the cache prefix if changeName is True.
-        
+
         save and save-as set changeName to True, save-to does not.
         """
         self.commit()
@@ -154,7 +155,8 @@ class GlobalCacher:
         except Exception:
             if trace:
                 g.es_exception()
-            self.db = {}  # Use a plain dict as a dummy.
+            # Use a plain dict as a dummy.
+            self.db = {}  # type:ignore
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
@@ -163,14 +165,13 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
-            # pylint: disable=unexpected-keyword-arg
-            self.db.clear(verbose=True)
+            self.db.clear()
         except TypeError:
             self.db.clear()
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}
+            self.db = {}  # type:ignore
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self):
         # Careful: self.db may be a dict.
@@ -552,8 +553,8 @@ class SqlitePickleShare:
             self.conn.execute(
                 '''replace into cachevalues(key, data) values(?,?);''',
                 (key, data))
-        except sqlite3.OperationalError as e:
-            g.es_exception(e)
+        except sqlite3.OperationalError:
+            g.es_exception()
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
 
@@ -635,7 +636,7 @@ class SqlitePickleShare:
         """Return all keys in DB, or all keys matching a glob"""
         if globpat is None:
             sql = 'select key from cachevalues;'
-            args = tuple()
+            args: Sequence[Any] = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
             # pylint: disable=trailing-comma-tuple
@@ -645,7 +646,8 @@ class SqlitePickleShare:
     #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
     def reset_protocol_in_values(self):
         PROTOCOLKEY = '__cache_pickle_protocol__'
-        if self.get(PROTOCOLKEY, 3) == 2: return
+        if self.get(PROTOCOLKEY, 3) == 2:
+            return
         #@+others
         #@+node:vitalije.20170818115606.1: *4* viewrendered special case
         import json
@@ -688,7 +690,7 @@ def dump_cache(db, tag):
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d = {}
+    d: Dict[str, Any] = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)

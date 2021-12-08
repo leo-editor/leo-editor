@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20091214233510.5347: * @file ../plugins/geotag.py
-''' Tags nodes with latitude and longitude. '''
+""" Tags nodes with latitude and longitude. """
 
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
@@ -13,34 +13,34 @@ from leo.plugins.pygeotag import pygeotag
 #@+others
 #@+node:tbrown.20091214233510.5351: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     if not hasattr(g, 'pygeotag'):
         try:
             g.pygeotag = pygeotag.PyGeoTag(synchronous=True)
             g.pygeotag.start_server()
-            g.registerHandler('after-create-leo-frame',onCreate)
-            g.registerHandler('end1',onQuit)
+            g.registerHandler('after-create-leo-frame', onCreate)
+            g.registerHandler('end1', onQuit)
             g.plugin_signon(__name__)
         except socket.error:
             g.es('Geotag plugin init failed, perhaps port in use')
     return True
 #@+node:tbrown.20091214233510.5352: ** onCreate
-def onCreate (tag,key):
+def onCreate(tag, key):
 
     c = key.get('c')
 
     geotag_Controller(c)
 #@+node:tbrown.20101103145611.5658: ** onQuit
-def onQuit(tag,key):
+def onQuit(tag, key):
     g.pygeotag.stop_server()
 #@+node:tbrown.20091214233510.5353: ** class geotag_Controller
 class geotag_Controller:
 
-    '''A per-commander class that manages geotagging.'''
+    """A per-commander class that manages geotagging."""
 
     #@+others
     #@+node:tbrown.20091214233510.5354: *3* __init__
-    def __init__ (self, c):
+    def __init__(self, c):
 
         self.c = c
         c.geotag = self
@@ -78,7 +78,7 @@ def cmd_OpenServerPage(event):
 @g.command('geotag-tag-node')
 def cmd_TagNode(event):
     c = event.get('c')
-    data = g.pygeotag.get_position({'description':c.p.h})
+    data = g.pygeotag.get_position({'description': c.p.h})
     c.geotag.callback(data)
 #@+node:tbrown.20091215204347.11402: ** cmd_show_node (gettag_Controller)
 @g.command('geotag-show-node')
@@ -95,8 +95,8 @@ def cmd_ShowNode(event):
             data['zoom'] = int(data['zoom'])
         if 'description' not in data or not data['description'].strip():
             data['description'] = c.p.h
-    except (ValueError,TypeError):
-        data = {'description':c.p.h}
+    except(ValueError, TypeError):
+        data = {'description': c.p.h}
     g.pygeotag.show_position(data)
 #@-others
 #@@language python

@@ -76,13 +76,15 @@ def init():
     except ImportError:
         print('leoPymacs.init: can not import runLeo')
         print('leoPymacs.init: sys.path:')
-        for z in sys.path: print(z)
+        for z in sys.path:
+            print(z)
     leo.run(pymacs=True)
     try:
         from leo.core import leoGlobals
     except ImportError:
         print('leoPymacs.init: can not import leoGlobals')
-    global g; g = leoGlobals
+    global g
+    g = leoGlobals
     # print('leoPymacs:init:g',g)
     if 1:  # These traces show up in the pymacs buffer.
         g.trace('app', g.app)
@@ -91,7 +93,7 @@ def init():
 def open(fileName=None):
     global g
     init()
-    if g.app.unitTesting:
+    if g.unitTesting:
         return None
     if not fileName:
         g.es_print('', 'leoPymacs.open:', 'no file name')

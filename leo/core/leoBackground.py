@@ -5,6 +5,7 @@
 """Handling background processes"""
 import re
 import subprocess
+from typing import List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
@@ -71,6 +72,7 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
+            self.number_of_lines = 0
             self.shell = shell
             #
             # Check and compile the link pattern.
@@ -96,7 +98,10 @@ class BackgroundProcessManager:
         """Check the running process, and switch if necessary."""
         if self.pid:
             if self.pid.poll() is None:
-                pass
+                # Unblock the process by reading immediately.
+                for s in self.pid.stdout:
+                    self.data.number_of_lines += 1
+                    self.put_log(s)
             else:
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
@@ -106,8 +111,13 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
+        # print('BPM.end:')
+        n = self.data.number_of_lines
         for s in self.pid.stdout:
+            n += 1
             self.put_log(s)
+        if n > 0:
+            g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -121,7 +131,7 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()
         else:
-            self.put_log(f"{self.data.kind} finished")
+            g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
@@ -147,16 +157,19 @@ class BackgroundProcessManager:
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
+    unknown_path_names: List[str] = []
+
     def put_log(self, s):
         """
         Put a string to the originating log.
         This is not what g.es_print does!
-        
+
         Create clickable links if s matches self.data.link_pattern.
         See p.get_UNL.
-        
+
         New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
+        tag = 'BPM.put_log'
         #
         # Warning: don't use g.es or g.es_print here!
         s = s and s.rstrip()
@@ -164,9 +177,11 @@ class BackgroundProcessManager:
             return
         data = self.data
         if not data:
+            print(f"{tag} NO DATA")
             return
         c = data.c
         if not c or not c.exists:
+            print(f"{tag} NO C")
             return
         log = c.frame.log
         link_pattern, link_root = data.link_pattern, data.link_root
@@ -183,6 +198,7 @@ class BackgroundProcessManager:
         except Exception:
             m = None
         if not m:
+            # print(f"{tag}: NO LINK_PATTERN MATCH")
             log.put(s + '\n')
             return
         #
@@ -192,7 +208,7 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(1))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
         else:
@@ -202,13 +218,17 @@ class BackgroundProcessManager:
             try:
                 line = int(m.group(2))
             except Exception:
-                # g.es_exception()
+                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
                 log.put(s + '\n')
                 return
             # Look for the @<file> node.
             link_root = g.findNodeByPath(c, path)
             if not link_root:
-                g.trace(f"no @<file> node found for : {path}")
+                if path not in self.unknown_path_names:
+                    self.unknown_path_names.append(path)
+                    print('')
+                    print(f"{tag}: no @<file> node found: {path}")
+                    print('')
                 log.put(s + '\n')
                 return
         #
@@ -224,16 +244,18 @@ class BackgroundProcessManager:
     ):
         """
         Start or queue a process described by command and fn.
-        
+
         Don't set self.data unless we start the process!
         """
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
+            # This trace is annoying.
+                # g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                self.put_log(f'{kind}: {g.shortFileName(data.fn)}\n')
+                g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -248,7 +270,7 @@ class BackgroundProcessManager:
             # Start the process immediately.
             self.data = data
             self.kind = kind
-            self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
+            g.es_print(f'{kind}: {g.shortFileName(fn)}')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
-'''The @auto importer for the elisp language.'''
+"""The @auto importer for the elisp language."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -8,16 +8,16 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer
 class Elisp_Importer(Importer):
-    '''The importer for the elisp lanuage.'''
+    """The importer for the elisp lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Elisp_Importer.__init__'''
+        """Elisp_Importer.__init__"""
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'lisp',
-            state_class = Elisp_ScanState,
-            strict = False,
+            language='lisp',
+            state_class=Elisp_ScanState,
+            strict=False,
         )
 
     #@+others
@@ -25,7 +25,7 @@ class Elisp_Importer(Importer):
     #@@nobeautify
 
     def get_new_dict(self, context):
-        '''elisp state dictionary for the given context.'''
+        """elisp state dictionary for the given context."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, pattern, data):
@@ -67,21 +67,21 @@ class Elisp_Importer(Importer):
     elisp_clean_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
     def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         m = self.elisp_clean_pattern.match(s)
         if m and m.group(1):
             return 'defun %s' % m.group(1)
         return s.strip()
     #@+node:ekr.20161127185851.1: *3* elisp_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         line = lines[i]
         return self.elisp_clean_pattern.match(line)
     #@+node:ekr.20170205194802.1: *3* elisp_i.trace_status
     def trace_status(self, line, new_state, prev_state, stack, top):
-        '''Print everything important in the i.gen_lines loop.'''
+        """Print everything important in the i.gen_lines loop."""
         if line.isspace() or line.strip().startswith(';'):
-            return # for elisp
+            return  # for elisp
         print('')
         try:
             g.trace('===== %r' % line)
@@ -95,10 +95,10 @@ class Elisp_Importer(Importer):
     #@-others
 #@+node:ekr.20161127184128.6: ** class Elisp_ScanState
 class Elisp_ScanState:
-    '''A class representing the state of the elisp line-oriented scan.'''
+    """A class representing the state of the elisp line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Elisp_ScanState.__init__'''
+        """Elisp_ScanState.__init__"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -108,7 +108,7 @@ class Elisp_ScanState:
             self.parens = 0
 
     def __repr__(self):
-        '''Elisp_ScanState.__repr__'''
+        """Elisp_ScanState.__repr__"""
         return "Elisp_ScanState context: %r parens: %s" % (
             self.context, self.parens)
 
@@ -117,17 +117,17 @@ class Elisp_ScanState:
     #@+others
     #@+node:ekr.20161127184128.7: *3* elisp_state.level
     def level(self):
-        '''Elisp_ScanState.level.'''
+        """Elisp_ScanState.level."""
         return self.parens
 
     #@+node:ekr.20161127184128.8: *3* elisp_state.update
     def update(self, data):
-        '''
+        """
         Elisp_ScanState.update
 
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context

@@ -7,8 +7,8 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20111104210837.9690: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting
         # Not for unit testing: overrides core methods.
     if ok:
         g.registerHandler("start2", onStart)
@@ -19,7 +19,7 @@ def init():
 # Python makes this is almost too easy :-)
 
 def onStart(tag, keywords):
-    '''redefine methods when Leo starts.'''
+    """redefine methods when Leo starts."""
     c = keywords.get('c')
     if c:
         log = c.frame.log
@@ -33,7 +33,8 @@ def onStart(tag, keywords):
 
 def newPut(self, s, color="black"):
     g.pr("newPut", s, newline=False)
-    if g.app.quitting > 0: return
+    if g.app.quitting > 0:
+        return
     s = s.upper()
     t = self.logCtrl
     if t:
@@ -45,7 +46,8 @@ def newPut(self, s, color="black"):
 
 def newPutNl(self):
     g.pr("newPutNl")
-    if g.app.quitting > 0: return
+    if g.app.quitting > 0:
+        return
     t = self.logCtrl
     if t:
         t.insert("end", "\n\n")

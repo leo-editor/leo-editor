@@ -23,9 +23,9 @@ except ImportError:
 
 #@+others
 #@+node:ekr.20050311165238: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = client is not None # Ok for unit test: just uses Plugins menu.
+def init():
+    """Return True if the plugin has loaded successfully."""
+    ok = client is not None  # Ok for unit test: just uses Plugins menu.
     if ok:
         # No hooks, we just use the cmd_Export to trigger an export
         g.plugin_signon(__name__)
@@ -35,7 +35,7 @@ def getConfiguration():
 
     """Called when the user presses the "Apply" button on the Properties form"""
 
-    fileName = g.os_path_join(g.app.loadDir,"../","plugins","word_export.ini")
+    fileName = g.os_path_join(g.app.loadDir, "../", "plugins", "word_export.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
     return config
@@ -69,40 +69,40 @@ def doPara(word, text, style=None):
     sel.TypeText(text)
     sel.TypeParagraph()
 #@+node:EKR.20040517075715.18: ** writeNodeAndTree
-def writeNodeAndTree (c, word, header_style, level,
-    maxlevel = 3,
-    usesections = 1,
-    sectionhead = "",
-    vnode = None
+def writeNodeAndTree(c, word, header_style, level,
+    maxlevel=3,
+    usesections=1,
+    sectionhead="",
+    vnode=None
 ):
     """Write a node and its children to Word"""
     if vnode is None:
         vnode = c.currentVnode()
     #
     dict = c.scanAllDirectives(p=vnode)
-    encoding = dict.get("encoding",None)
+    encoding = dict.get("encoding", None)
     if encoding is None:
         # encoding = c.config.default_derived_file_encoding
         encoding = sys.getdefaultencoding()
     #
     s = vnode.b
-    s = g.toEncodedString(s,encoding,reportErrors=True)
-    doPara(word,s)
+    s = g.toEncodedString(s, encoding, reportErrors=True)
+    doPara(word, s)
     #
     for i in range(vnode.numberOfChildren()):
         if usesections:
-            thishead = "%s%d." % (sectionhead,i+1)
+            thishead = "%s%d." % (sectionhead, i + 1)
         else:
             thishead = ""
         child = vnode.nthChild(i)
         h = child.h
-        h = g.toEncodedString(h,encoding,reportErrors=True)
-        doPara(word,"%s %s" % (thishead,h),"%s %d" % (header_style,min(level,maxlevel)))
-        writeNodeAndTree(c,word,header_style,level+1,maxlevel,usesections,thishead,child)
+        h = g.toEncodedString(h, encoding, reportErrors=True)
+        doPara(word, "%s %s" % (thishead, h), "%s %d" % (header_style, min(level, maxlevel)))
+        writeNodeAndTree(c, word, header_style, level + 1, maxlevel, usesections, thishead, child)
 #@+node:EKR.20040517075715.19: ** word-export-export
 @g.command('word-export-export')
 def cmd_Export(event):
-    '''Export the current node to Word'''
+    """Export the current node to Word"""
     c = event.get('c')
     try:
         word = getWordConnection()
@@ -111,7 +111,7 @@ def cmd_Export(event):
             # Based on the rst plugin
             g.blue("Writing tree to Word")
             config = getConfiguration()
-            writeNodeAndTree(c,word,
+            writeNodeAndTree(c, word,
                 config.get("Main", "header_style").strip(),
                 1,
                 int(config.get("Main", "max_headings")),

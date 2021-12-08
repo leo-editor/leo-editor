@@ -45,8 +45,10 @@
 #   Host programs can use these commanders as described in Leo's scripting
 #   chapter.
 #@-<< about the leoBridge module >>
+import os
+import traceback
+# This module must import *no* Leo modules at the outer level!
 gBridgeController = None  # The singleton bridge controller.
-# This module must import *no* modules at the outer level!
 #@+others
 #@+node:ekr.20070227092442: ** controller
 def controller(
@@ -76,7 +78,9 @@ class BridgeController:
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
     def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose):
+        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose,
+        vs_code_flag=False,  # #2098.
+    ):
         """Ctor for the BridgeController class."""
         self.g = None
         self.gui = None
@@ -87,6 +91,7 @@ class BridgeController:
         self.tracePlugins = tracePlugins
         self.useCaches = useCaches
         self.verbose = verbose
+        self.vs_code_flag = vs_code_flag  # #2098
         self.mainLoop = False  # True only if a non-null-gui mainloop is active.
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* bridge.globals
@@ -112,9 +117,10 @@ class BridgeController:
         #
         # Create the application object.
         try:
-            g.in_bridge = True
+            g.in_bridge = self.vs_code_flag  # #2098.
                 # Tell leoApp.createDefaultGui not to create a gui.
                 # This module will create the gui later.
+            g.in_vs_code = True  # 2098.
             from leo.core import leoApp
             g.app = leoApp.LeoApp()
         except ImportError:
@@ -131,12 +137,12 @@ class BridgeController:
             from leo.core import leoNodes
         except ImportError:
             print("Error importing leoNodes.py")
-            import traceback; traceback.print_exc()
+            traceback.print_exc()
         try:
             from leo.core import leoConfig
         except ImportError:
             print("Error importing leoConfig.py")
-            import traceback; traceback.print_exc()
+            traceback.print_exc()
         #@-<< initLeo imports >>
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
@@ -165,7 +171,8 @@ class BridgeController:
             lm.globalSettingsDict = settings_d
             lm.globalBindingsDict = bindings_d
         self.createGui()  # Create the gui *before* loading plugins.
-        if self.verbose: self.reportDirectories()
+        if self.verbose:
+            self.reportDirectories()
         self.adjustSysPath()
         # Kill all event handling if plugins not loaded.
         if not self.loadPlugins:
@@ -225,9 +232,8 @@ class BridgeController:
             print("isValidPython: can not import leoGlobals")
             return 0
         except Exception:
-            print(
-                "isValidPytyhon: unexpected exception importing leoGlobals")
-            import traceback; traceback.print_exc()
+            print("isValidPytyhon: unexpected exception importing leoGlobals")
+            traceback.print_exc()
             return 0
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
@@ -239,7 +245,7 @@ class BridgeController:
             return ok
         except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")
-            import traceback; traceback.print_exc()
+            traceback.print_exc()
             return 0
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self):
@@ -266,14 +272,12 @@ class BridgeController:
                 self.reopen_cachers()
             else:
                 g.app.db = g.NullObject()
-                    # g.TracingNullObject(tag='g.app.db')
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
             # Leo 6.3: support leoInteg.
             g.app.windowList.append(c.frame)
             if not self.useCaches:
                 c.db = g.NullObject()
-                    # g.TracingNullObject(tag='c.db')
             g.app.nodeIndices.compute_last_index(c)
                 # New in Leo 5.1. An alternate fix for bug #130.
                 # When using a bridge Leo might open a file, modify it,
@@ -289,11 +293,12 @@ class BridgeController:
     #@+node:ekr.20070227093629.5: *4* bridge.completeFileName
     def completeFileName(self, fileName):
         g = self.g
-        if not (fileName and fileName.strip()): return ''
-        import os
+        if not (fileName and fileName.strip()):
+            return ''
         fileName = g.os_path_finalize_join(os.getcwd(), fileName)
         head, ext = g.os_path_splitext(fileName)
-        if not ext: fileName = fileName + ".leo"
+        if not ext:
+            fileName = fileName + ".leo"
         return fileName
     #@+node:ekr.20070227093629.6: *4* bridge.createFrame
     def createFrame(self, fileName):

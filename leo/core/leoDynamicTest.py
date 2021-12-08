@@ -30,7 +30,8 @@ trace_time = False
 def main():
     """Run a dynamic test using the Leo bridge."""
     tag = 'leoDynamicTests.leo'
-    if g_trace: t1 = time.time()
+    if g_trace:
+        t1 = time.time()
     options = scanOptions()
     if g_trace and trace_main:
         print('leoDynamicTest.py:main: options...')
@@ -56,7 +57,6 @@ def main():
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = options.silent
-        g.app.isExternalUnitTest = True
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', options.path)
         c = bridge.openLeoFile(path)
         if g_trace:
@@ -92,7 +92,8 @@ def scanOptions():
         options.path = 'dynamicUnitTest.leo'
     # -- gui
     gui = options.gui
-    if gui: gui = gui.lower()
+    if gui:
+        gui = gui.lower()
     if gui not in ('qttabs', 'qt'):
         options.gui = 'nullGui'
     return options

@@ -14,6 +14,10 @@ wsHost = "localhost"
 wsPort = 32125
 
 tag = 'client'
+
+# Tracing.
+trace = True
+verbose = False
 timeout = 0.1
 times_d = {}  # Keys are n, values are time sent.
 tot_response_time = 0.0
@@ -44,42 +48,58 @@ def _get_action_list():
     assert os.path.exists(file_name), repr(file_name)
     log = False
     exclude_names = [
-        # Dangerous at present.
-        'delete_node', 'cut_node', 'save_file',
-        # Require plugins.
-        'click_button', 'get_buttons', 'remove_button',
-        # Not ready yet.
+        # Find methods...
+        'replace_all', 'replace_then_find',
+        'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+        'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+        'tag_children',
+        # Other methods
+        'set_body',
+        'error',
+        'replace',
+        'delete_node', 'cut_node',  # dangerous.
+        'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+        'save_file',  # way too dangerous!
+        # 'set_selection',  # Not ready yet.
+        'open_file', 'close_file',  # Done by hand.
+        'import_any_file',
+        'insert_child_named_node',
+        'insert_named_node',
+        'set_ask_result',
+        'set_opened_file',
+        'set_search_settings',
         'set_selection',
+        'shut_down',  # Don't shut down the server.
     ]
     head = [
-        ("get_sign_on", {}),
         # ("apply_config", {"config": {"whatever": True}}),
-        ("error", {}),
+        ("!error", {}),
         # ("bad_server_command", {}),
-        ("open_file", {"filename": file_name, "log": log}),
+        ("!open_file", {"filename": file_name, "log": log}),
     ]
     head_names = [name for (name, package) in head]
     tail = [
         # ("get_body_length", {}),  # All responses now contain len(p.b).
-        ("find_all", {"find_text": "def"}),
-        ("get_ua", {"log": log}),
-        ("get_parent",  {"log": log}),
-        ("get_children",  {"log": log}),
-        ("set_body", {"body": "new body"}),
-        ("set_headline", {"headline": "new headline"}),
-        ("execute-leo-command", {"leo-command-name": "contract-all"}),
-        ("insert_node", {"headline": "inserted headline"}),
-        ("contract_node", {}),
-        ("close_file", {"filename": file_name}),
-        ("get_all_leo_commands", {}),
-        ("get_all_server_commands", {}),
-        ("shut_down", {}),
+        ("!find_all", {"find_text": "def"}),
+        ("!get_ua", {"log": log}),
+        ("!get_parent",  {"log": log}),
+        ("!get_children",  {"log": log}),
+        ("!set_body", {"body": "new body"}),
+        ("!set_headline", {"name": "new headline", 'gnx': "ekr.20061008140603"}),
+        ("contractAllHeadlines", {}), # normal leo command
+        ("!insert_node", {}),
+        ("!contract_node", {}),
+        ("!close_file", {"forced": True}), # forced flag set to true because it was modified
+        ("!get_all_leo_commands", {}),
+        ("!get_all_server_commands", {}),
+        ("!shut_down", {}),
     ]
     tail_names = [name for (name, package) in tail]
+
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
-    middle = [(z, {}) for z in test_names
+    middle = [("!"+z, {}) for z in test_names
         if z not in head_names + tail_names + exclude_names]
     middle_names = [name for (name, package) in middle]
     all_tests = head + middle + tail
@@ -88,13 +108,15 @@ def _get_action_list():
         all_names = sorted([name for (name, package) in all_tests])
         g.printObj(all_names, tag='all_names')
     return all_tests
-    
+
 #@+node:ekr.20210206093130.1: ** function: _show_response
-def _show_response(n, d, trace, verbose):
+def _show_response(n, d):
     global n_known_response_times
     global n_unknown_response_times
     global times_d
-    global tot_response_time 
+    global tot_response_time
+    global trace
+    global verbose
     # Calculate response time.
     t1 = times_d.get(n)
     t2 = time.perf_counter()
@@ -110,10 +132,7 @@ def _show_response(n, d, trace, verbose):
         return
     action = d.get('action')
     if not verbose:
-        if "async" in d:
-            print(f"{tag}: async: {d.get('s')}")
-        else:
-            print(f"{tag}:   got: {n} {action}")
+        print(f"id: {d.get('id', '---'):3} d: {sorted(d)}")
         return
     if action == 'open_file':
         g.printObj(d,
@@ -130,11 +149,9 @@ n_unknown_response_times = 0
 
 async def client_main_loop(timeout):
     global n_async_responses
-    trace = True
-    verbose = False
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
-    async with websockets.connect(uri) as websocket:
+    async with websockets.connect(uri) as websocket:  # pylint: disable=no-member
         if trace and verbose:
             print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
@@ -150,13 +167,13 @@ async def client_main_loop(timeout):
                 await asyncio.sleep(timeout)
                 # Get the next package. The last action is shut_down.
                 try:
-                    action, package  = action_list[n-1]
+                    action, param = action_list[n-1]
                 except IndexError:
                     break
                 request_package = {
                     "id": n,
                     "action": action,
-                    "package": package,
+                    "param": param,
                 }
                 if trace and verbose:
                     print(f"{tag}: send: id: {n} package: {request_package}")
@@ -177,11 +194,11 @@ async def client_main_loop(timeout):
                             g.trace('json_s', json_s)
                             g.print_exception()
                         break
-                    _show_response(n, d, trace, verbose)
-                    # This loop invariant guarantees we receive messages in order. 
+                    _show_response(n, d)
+                    # This loop invariant guarantees we receive messages in order.
                     is_async = "async" in d
-                    action2, n2 = d.get("action"), d.get("id")
-                    assert is_async or (action, n) == (action2, n2), (action, n, d)
+                    n2 = d.get("id")
+                    assert is_async or n == n2, (action, n, d)
                     if is_async:
                         n_async_responses += 1
                     else:

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
-'''The @auto importer for the java language.'''
+"""The @auto importer for the java language."""
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -10,15 +10,15 @@ Target = linescanner.Target
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
 class Java_Importer(Importer):
-    '''The importer for the java lanuage.'''
+    """The importer for the java lanuage."""
 
     def __init__(self, importCommands, **kwargs):
-        '''Java_Importer.__init__'''
+        """Java_Importer.__init__"""
         super().__init__(
             importCommands,
-            language = 'java',
-            state_class = Java_ScanState,
-            strict = False,
+            language='java',
+            state_class=Java_ScanState,
+            strict=False,
         )
 
     # Used in multiple methods.
@@ -39,13 +39,13 @@ class Java_Importer(Importer):
     #@+others
     #@+node:ekr.20161126163014.1: *3* java_i.clean_headline
     def clean_headline(self, s, p=None):
-        '''Return the cleaned headline.'''
+        """Return the cleaned headline."""
         return s.strip('{').strip() if s.strip().endswith('{') else s.strip()
     #@+node:ekr.20161205042019.2: *3* java_i.match_name_patterns
     java_name_pattern = re.compile(r'\s*([\w:]+)')
 
     def match_name_patterns(self, line):
-        '''Set self.headline if the line defines a typedef name.'''
+        """Set self.headline if the line defines a typedef name."""
         m = self.java_name_pattern.match(line)
         if m:
             word = m.group(1)
@@ -54,13 +54,13 @@ class Java_Importer(Importer):
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
     # Define patterns that can start a block
     java_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (java_types_list))
-    java_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
+    java_func_pattern = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
 
     def match_start_patterns(self, line):
-        '''
+        """
         True if line matches any block-starting pattern.
         If true, set self.headline.
-        '''
+        """
         m = self.java_class_pattern.match(line)
         if m:
             self.headline = line
@@ -73,13 +73,14 @@ class Java_Importer(Importer):
         return False
     #@+node:ekr.20161205042019.4: *3* java_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
+        """Create a child node and update the stack."""
         line = lines[i]
         target = stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        if self.headline: h = self.headline
+        if self.headline:
+            h = self.headline
         if new_state.level() > prev_state.level():
             child = self.create_child_node(target.p, line, h)
         else:
@@ -90,7 +91,7 @@ class Java_Importer(Importer):
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         # Add all additional lines of the signature.
-        skip = self.skip # Don't change the ivar!
+        skip = self.skip  # Don't change the ivar!
         while skip > 0:
             skip -= 1
             i += 1
@@ -103,7 +104,7 @@ class Java_Importer(Importer):
             self.add_line(child, lines[i])
     #@+node:ekr.20161205042019.5: *3* java_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         self.headline = None
         line = lines[i]
         if prev_state.context:
@@ -132,10 +133,10 @@ class Java_Importer(Importer):
     #@-others
 #@+node:ekr.20161126161824.6: ** class class Java_ScanState
 class Java_ScanState:
-    '''A class representing the state of the java line-oriented scan.'''
+    """A class representing the state of the java line-oriented scan."""
 
     def __init__(self, d=None):
-        '''Java_ScanState.__init__'''
+        """Java_ScanState.__init__"""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -145,7 +146,7 @@ class Java_ScanState:
             self.curlies = 0
 
     def __repr__(self):
-        '''Java_ScanState.__repr__'''
+        """Java_ScanState.__repr__"""
         return "Java_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
 
@@ -154,17 +155,17 @@ class Java_ScanState:
     #@+others
     #@+node:ekr.20161126161824.7: *3* java_state.level
     def level(self):
-        '''Java_ScanState.level.'''
+        """Java_ScanState.level."""
         return self.curlies
 
     #@+node:ekr.20161126161824.8: *3* java_state.update
     def update(self, data):
-        '''
+        """
         Java_ScanState.update
 
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context

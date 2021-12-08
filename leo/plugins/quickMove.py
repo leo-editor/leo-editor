@@ -137,8 +137,9 @@ from copy import deepcopy
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
-from leo.core.leoQt import isQt6, QtGui, QtWidgets # QtCore
-from leo.plugins.attrib_edit import ListDialog
+from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QAction
+from leo.plugins.attrib_edit import DialogCode, ListDialog
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -147,7 +148,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', onCreate)
     g.plugin_signon(__name__)
     if '_quickmove' not in g.app.db:
@@ -218,7 +219,7 @@ class quickMove:
     def add_target(self, p):
         """add the current node as a target for global operations"""
 
-        name, ok = QtWidgets.QInputDialog.getText(None,"Target name","Target name",text=p.h)
+        name, ok = QtWidgets.QInputDialog.getText(None, "Target name", "Target name", text=p.h)
         if not ok:
             return
 
@@ -245,8 +246,8 @@ class quickMove:
     def __init__(self, c):
 
         self.table = (
-            ("Make ALL Buttons Here Permanent",None,self.permanentButton),
-            ("Clear ALL Permanent Buttons Here",None,self.clearButton),
+            ("Make ALL Buttons Here Permanent", None, self.permanentButton),
+            ("Clear ALL Permanent Buttons Here", None, self.clearButton),
         )
 
         self.recent_moves = []  # recent move/copy/bookmark to commands for
@@ -271,16 +272,16 @@ class quickMove:
 
                 def func(self=self, which=which, name=name, event=None):
                     self.addButton(which=which, type_=name)
-                fname = 'func_'+name+'_'+short+'_' +which
+                fname = 'func_' + name + '_' + short + '_' + which
                 if which:
-                    which = " "+which.title()
-                self.imps.append((func, fname, long+" "+short+which+" Button"))
-                cmdname = 'quickmove_'+long+" "+short+which
+                    which = " " + which.title()
+                self.imps.append((func, fname, long + " " + short + which + " Button"))
+                cmdname = 'quickmove_' + long + " " + short + which
                 cmdname = cmdname.strip().lower().replace(' ', '_')
                 # tried to use g.command() but global commands all use the same c
                 # so register only at the c level, not g level
                 # g.command(cmdname)(func)
-                c.k.registerCommand(cmdname, lambda e:func())
+                c.k.registerCommand(cmdname, lambda e: func())
 
         # c.k.registerCommand('quickmove_keyboard_popup', lambda e:self.keyboard_popup())
         # c.k.registerCommand('quickmove_keyboard_action', lambda e:self.keyboard_action())
@@ -300,16 +301,16 @@ class quickMove:
                 if 'buttons' in nd.u['quickMove']:  # new dict based storage
                     for rec in nd.u['quickMove']['buttons']:
                         buttons_todo.append(rec.copy())
-                        buttons_todo[-1].update({'v':nd})
+                        buttons_todo[-1].update({'v': nd})
                 else:  # read old list format and convert
                     new_dicts = []
                     for rec in nd.u['quickMove']:
                         if len(rec) != 2:
                             continue  # silently drop even older style permanent button
-                        first,type_ = rec
+                        first, type_ = rec
                         buttons_todo.append({'type': type_, 'first': first})
                         new_dicts.append(buttons_todo[-1].copy())
-                        buttons_todo[-1].update({'v':nd})
+                        buttons_todo[-1].update({'v': nd})
                     nd.u['quickMove'] = {'buttons': new_dicts}
 
         # legacy stuff
@@ -342,16 +343,15 @@ class quickMove:
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove.py)
-    def addButton (self, which, type_="move", v=None, parent=None):
-        '''Add a button that creates a target for future moves.'''
+    def addButton(self, which, type_="move", v=None, parent=None):
+        """Add a button that creates a target for future moves."""
         c = self.c
         p = c.p
         if v is None:
             v = p.v
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         sc = scriptingController(c)
-        mb = quickMoveButton(self,v,which,type_=type_)
-        txt=self.txts[type_]
+        mb = quickMoveButton(self, v, which, type_=type_)
+        txt = self.txts[type_]
 
         if parent:  # find parent button
             for i in self.buttons:
@@ -372,22 +372,22 @@ class quickMove:
             pb = parent.button
             rc = QAction(text, pb)
             rc.triggered.connect(mb.moveCurrentNodeToTarget)
-            pb.insertAction(pb.actions()[0], rc) # insert at top
+            pb.insertAction(pb.actions()[0], rc)  # insert at top
             b = None
             mb.has_parent = True
             # New code.
             t = c.config.getString('mod-scripting-subtext') or ''
             t2 = pb.text()
             if not t.endswith(t):
-                pb.setText(t2+t)
+                pb.setText(t2 + t)
         else:
             b = sc.createIconButton(
                 args=None,
                 text=text,
-                command = mb.moveCurrentNodeToTarget,
-                statusLine = '%s current node to %s child of %s' % (
+                command=mb.moveCurrentNodeToTarget,
+                statusLine='%s current node to %s child of %s' % (
                     type_.title(), which, v.h),
-                kind = "quick-move"
+                kind="quick-move"
             )
             if g.app.gui.guiName() == "qt":
 
@@ -417,9 +417,9 @@ class quickMove:
                     but.insertAction(but.actions()[-1], rc)
                         # insert rc before Remove Button
 
-        self.buttons.append((mb,b))
+        self.buttons.append((mb, b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton
-    def permanentButton (self, event=None, v=None, type_=None, first=None):
+    def permanentButton(self, event=None, v=None, type_=None, first=None):
         """make buttons on this node permanent
 
         NOTE: includes buttons deleted"""
@@ -433,7 +433,7 @@ class quickMove:
 
         if 'quickMove' not in v.u or 'buttons' not in v.u['quickMove']:
             # possibly deleting old style list
-            v.u['quickMove'] = {'buttons':[]}
+            v.u['quickMove'] = {'buttons': []}
 
         cnt = 0
         for mover, button in qm.buttons:
@@ -443,7 +443,7 @@ class quickMove:
             ):  # TNB untested .first -> .which
                 cnt += 1
                 v.u['quickMove']['buttons'].append(
-                    {'first':mover.which, 'type': mover.type_})
+                    {'first': mover.which, 'type': mover.type_})
 
         if cnt:
             g.es('Made buttons permanent')
@@ -451,7 +451,7 @@ class quickMove:
         else:
             g.es("Didn't find button")
     #@+node:tbrown.20091217114654.5374: *3* clearButton
-    def clearButton (self, event=None, v=None):
+    def clearButton(self, event=None, v=None):
         """clear permanent buttons specs from uA"""
         c = self.c
         if not v:
@@ -469,7 +469,6 @@ class quickMove:
         """make popup menu entry for tree context menu"""
         # pylint: disable=function-redefined
         # several callbacks have the same name.
-        QAction = QtGui.QAction if isQt6 else QtWidgets.QAction
         if c != self.c:
             return  # wrong commander
         for cb, name in reversed(self.recent_moves):
@@ -486,7 +485,7 @@ class quickMove:
                 a = sub.addAction(target['name'])
                 def cb(c2=target['unl'], cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(checked, cb=cb, name=txt.strip('.')+' '+target['name']):
+                def wrap(checked, cb=cb, name=txt.strip('.') + ' ' + target['name']):
                     self.do_wrap(cb, name)
                 a.triggered.connect(wrap)
             # top of open outlines
@@ -495,7 +494,7 @@ class quickMove:
                     g.os_path_basename(c2.fileName()))
                 def cb(c2=c2, cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(checked, cb=cb, name=txt.strip('.')+' top of '+g.os_path_basename(c2.fileName())):
+                def wrap(checked, cb=cb, name=txt.strip('.') + ' top of ' + g.os_path_basename(c2.fileName())):
                     self.do_wrap(cb, name)
                 a.triggered.connect(wrap)
         # bookmark to other outline
@@ -505,7 +504,7 @@ class quickMove:
             a = sub.addAction(target['name'])
             def cb(c2=target['unl'], cut=cut):
                 self.bookmark_other(c2)
-            def wrap(checked, cb=cb, name="Bookmark to "+target['name']):
+            def wrap(checked, cb=cb, name="Bookmark to " + target['name']):
                 self.do_wrap(cb, name)
             a.triggered.connect(wrap)
         # top of open outlines
@@ -513,14 +512,14 @@ class quickMove:
             a = sub.addAction(g.os_path_basename(c2.fileName()))
             def cb(c2=c2):
                 self.bookmark_other(c2)
-            def wrap(checked, cb=cb, name="Bookmark to top of "+g.os_path_basename(c2.fileName())):
+            def wrap(checked, cb=cb, name="Bookmark to top of " + g.os_path_basename(c2.fileName())):
                 self.do_wrap(cb, name)
             a.triggered.connect(wrap)
         # actions within this outline
         need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
         current_kind = None
         current_submenu = None
-        for name,dummy,command in self.local_imps:
+        for name, dummy, command in self.local_imps:
             kind = name.split()[0]
             if kind in need_submenu:
                 if current_kind != kind:
@@ -557,8 +556,8 @@ class quickMove:
                 todo = ['']
             for which in todo:
                 if which:
-                    which = " "+which.title()
-                k = "Set as "+long+" "+short+which+' target'
+                    which = " " + which.title()
+                k = "Set as " + long + " " + short + which + ' target'
                 cmds[k] = {'first': which, 'type': name}
                 kind = long.split()[0]
                 if kind in need_submenu:
@@ -608,7 +607,7 @@ class quickMove:
             g.es("Didn't find button")
             return
         if len(ans) != 1:
-            g.es("Note: found multiple %s/first=%s buttons, using first"%(type_,first))
+            g.es("Note: found multiple %s/first=%s buttons, using first" % (type_, first))
 
         qmb, b = ans[0]
 
@@ -623,7 +622,6 @@ class quickMove:
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
         ld.exec_()
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if ld.result() == DialogCode.Rejected:
             return
 
@@ -639,12 +637,12 @@ class quickMove:
             self.permanentButton(v=v, type_=type_, first=first)
 
         for i in v.u['quickMove']['buttons']:
-            if i['type'] == qmb.type_ and i['first'] == qmb.which:   # TNB untested .first -> .which
+            if i['type'] == qmb.type_ and i['first'] == qmb.which:  # TNB untested .first -> .which
                 i['parent'] = parent.gnx
                 break
         else:
-            v.u['quickMove']['buttons'].append({'type':qmb.type_,
-                'first':qmb.which, 'parent':parent.gnx})  # TNB untested .first -> .which
+            v.u['quickMove']['buttons'].append({'type': qmb.type_,
+                'first': qmb.which, 'parent': parent.gnx})  # TNB untested .first -> .which
 
         self.addButton(qmb.which, qmb.type_, v=qmb.target, parent=parent.gnx)  # TNB untested .first -> .which
         self.buttons = [i for i in self.buttons if i[0] is not qmb]
@@ -720,7 +718,7 @@ class quickMove:
         if in_bookmarks:
             nd.h = p.h
         else:
-            nd.h = "@url %s"%p.h
+            nd.h = "@url %s" % p.h
 
         nd.b = p.get_UNL()
         nd.v.u = dict(p.v.u)
@@ -759,7 +757,7 @@ class quickMove:
 
                 nd = maxp.insertAsNthChild(0)
             else:
-                g.es("Could not find '%s'"%full_path)
+                g.es("Could not find '%s'" % full_path)
                 self.c.bringToFront(c2=self.c)
                 return None, None
         else:
@@ -848,7 +846,7 @@ class quickMoveButton:
     #@+node:ekr.20070117121326.1: *3* moveCurrentNodeToTarget
     def moveCurrentNodeToTarget(self, checked=False):
 
-        '''Move the current position to the last child of self.target.'''
+        """Move the current position to the last child of self.target."""
 
         c = self.c
         p = c.p
@@ -870,7 +868,7 @@ class quickMoveButton:
                 return
 
             if self.type_ in ('clone', 'move'):  # all others are always valid?
-                if p.v == p2.v or not self.checkMove(p,p2):
+                if p.v == p2.v or not self.checkMove(p, p2):
                     g.error('Invalid move: %s' % (self.targetHeadString))
                     return
             if p2.isAncestorOf(p):  # not for sibling moves
@@ -894,13 +892,13 @@ class quickMoveButton:
                     p.moveToLastChildOf(p2)
                 elif self.which in ('next sibling', 'prev sibling'):
                     if not p2.parent():
-                        raise Exception("Not implemented for top-level nodes") #FIXME
+                        raise Exception("Not implemented for top-level nodes")  #FIXME
                     if self.which == 'next sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
                     elif self.which == 'prev sibling':
-                        p.moveToNthChildOf(p2.parent(), p2._childIndex-1)
+                        p.moveToNthChildOf(p2.parent(), p2._childIndex - 1)
                 else:
-                    raise Exception("Unknown move type "+self.which)
+                    raise Exception("Unknown move type " + self.which)
 
             elif self.type_ == 'bkmk':
                 unl = self.computeUNL(p)  # before tree changes
@@ -913,7 +911,7 @@ class quickMoveButton:
                 elif self.which == 'prev sibling':
                     nd = p2.insertBefore()
                 else:
-                    raise Exception("Unknown move type "+self.which)
+                    raise Exception("Unknown move type " + self.which)
                 h = p.anyAtFileNodeName() or p.h
                 while h and h[0] == '@':
                     h = h[1:]
@@ -936,7 +934,7 @@ class quickMoveButton:
                     nd = p2.insertBefore()
                     quickMove.copy_recursively(p, nd)
                 else:
-                    raise Exception("Unknown move type "+self.which)
+                    raise Exception("Unknown move type " + self.which)
 
             elif self.type_ in ('linkTo', 'linkFrom'):
                 blc = getattr(c, 'backlinkController', None)
@@ -959,22 +957,19 @@ class quickMoveButton:
                 c.selectPosition(nxt)
 
         if needs_undo:
-            c.undoer.afterMoveNode(p,'Quick Move', bunch)
+            c.undoer.afterMoveNode(p, 'Quick Move', bunch)
             c.setChanged()
 
         c.redraw()
     #@+node:ekr.20070123061606: *3* checkMove
-    def checkMove (self,p,p2):
-
+    def checkMove(self, p, p2):
         c = self.c
-
         for z in p2.parents():
             if z == p:
                 return False
-
         return (
-            c.checkMoveWithParentWithWarning (p,p2,warningFlag=False) and
-            c.checkMoveWithParentWithWarning (p2,p,warningFlag=False)
+            c.checkMoveWithParentWithWarning(p, p2, warningFlag=False) and
+            c.checkMoveWithParentWithWarning(p2, p, warningFlag=False)
         )
     #@+node:tbrown.20100114111020.15726: *3* computeUNL
     def computeUNL(self, p):
@@ -984,7 +979,7 @@ class quickMoveButton:
         while p:
             heads.insert(0, p.h)
             p = p.parent()
-        return "#"+"-->".join(heads)
+        return "#" + "-->".join(heads)
     #@-others
 #@-others
 #@@language python

@@ -80,7 +80,7 @@ class ChapterController:
                     c.redraw(chapter.p)  # 2016/04/20.
                 finally:
                     cc.selectChapterLockout = False
-            else:
+            elif not g.unitTesting:
                 # Possible, but not likely.
                 cc.note(f"no such chapter: {name}")
 
@@ -135,7 +135,8 @@ class ChapterController:
             return
         chapter = cc.getChapter(name)
         if not chapter:
-            g.es_print(f"no such @chapter node: {name}")
+            if not g.unitTesting:
+                g.es_print(f"no such @chapter node: {name}")
             return
         try:
             cc.selectChapterLockout = True
@@ -255,7 +256,8 @@ class ChapterController:
             chapterName, binding = m.group(1), m.group(3)
             if chapterName:
                 chapterName = self.sanitize(chapterName)
-            if binding: binding = binding.strip()
+            if binding:
+                binding = binding.strip()
         else:
             chapterName = binding = None
         return chapterName, binding
@@ -265,6 +267,7 @@ class ChapterController:
         # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
+            # pylint: disable=superfluous-parens
             if ch in (string.ascii_letters + string.digits):
                 result.append(ch)
             elif ch in ' \t':

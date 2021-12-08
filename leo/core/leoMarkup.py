@@ -36,26 +36,26 @@ def adoc_command(event=None, verbose=True):
 
     By default, the adoc command creates AsciiDoctor headings from Leo
     headlines. However, the following kinds of nodes are treated differently:
-        
+
     - @ignore-tree: Ignore the node and its descendants.
     - @ignore-node: Ignore the node.
     - @no-head:     Ignore the headline. Do not generate a heading.
 
     After running the adoc command, use the asciidoctor tool to convert the
     x.adoc files to x.html.
-        
+
     Settings
     --------
 
     AciiDoctor markup provides many settings, including::
-        
+
         = Title
         :stylesdir: mystylesheets/
         :stylesheet: mystyles.css
-        
+
     These can also be specified on the command line::
 
-        asciidoctor -a stylesdir=mystylesheets/ -a stylesheet=mystyles.css 
+        asciidoctor -a stylesdir=mystylesheets/ -a stylesheet=mystyles.css
 
     @string adoc-base-directory specifies the base for relative file names.
     The default is c.frame.openDirectory
@@ -64,12 +64,12 @@ def adoc_command(event=None, verbose=True):
     -------------------
 
     Scripts may invoke the adoc command as follows::
-        
+
         event = g.Bunch(base_dicrectory=my_directory, p=some_node)
         c.markupCommands.adoc_command(event=event)
-        
+
     This @button node runs the adoc command and coverts all results to .html::
-        
+
         import os
         paths = c.markupCommands.adoc_command(event=g.Bunch(p=p))
         paths = [z.replace('/', os.path.sep) for z in paths]
@@ -105,14 +105,14 @@ def pandoc_command(event, verbose=True):
 
     By default, the pandoc command creates AsciiDoctor headings from Leo
     headlines. However, the following kinds of nodes are treated differently:
-        
+
     - @ignore-tree: Ignore the node and its descendants.
     - @ignore-node: Ignore the node.
     - @no-head:     Ignore the headline. Do not generate a heading.
 
     After running the pandoc command, use the pandoc tool to convert the x.adoc
     files to x.html.
-        
+
     Settings
     --------
 
@@ -123,12 +123,12 @@ def pandoc_command(event, verbose=True):
     -------------------
 
     Scripts may invoke the adoc command as follows::
-        
+
         event = g.Bunch(base_dicrectory=my_directory, p=some_node)
         c.markupCommands.pandoc_command(event=event)
-        
+
     This @button node runs the adoc command and coverts all results to .html::
-        
+
         import os
         paths = c.markupCommands.pandoc_command(event=g.Bunch(p=p))
         paths = [z.replace('/', os.path.sep) for z in paths]
@@ -164,14 +164,14 @@ def sphinx_command(event, verbose=True):
 
     By default, the sphinx command creates Sphinx headings from Leo headlines.
     However, the following kinds of nodes are treated differently:
-        
+
     - @ignore-tree: Ignore the node and its descendants.
     - @ignore-node: Ignore the node.
     - @no-head:     Ignore the headline. Do not generate a heading.
 
     After running the sphinx command, use the sphinx tool to convert the
     output files to x.html.
-        
+
     Settings
     --------
 
@@ -182,12 +182,12 @@ def sphinx_command(event, verbose=True):
     -------------------
 
     Scripts may invoke the sphinx command as follows::
-        
+
         event = g.Bunch(base_dicrectory=my_directory, p=some_node)
         c.markupCommands.sphinx_command(event=event)
-        
+
     This @button node runs the sphinx command and coverts all results to .html::
-        
+
         import os
         paths = c.markupCommands.sphinx_command(event=g.Bunch(p=p))
         paths = [z.replace('/', os.path.sep) for z in paths]
@@ -353,7 +353,8 @@ class MarkupCommands:
         command_dir = g.os_path_finalize(
             self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
-            if trace: g.trace(f"\nos.chdir: {command_dir!r}")
+            if trace:
+                g.trace(f"\nos.chdir: {command_dir!r}")
             os.chdir(command_dir)
         else:
             g.error(f"command directory not found: {command_dir!r}")
@@ -362,7 +363,8 @@ class MarkupCommands:
         # If a default command exists, just call it.
         # The user is responsible for making everything work.
         if self.sphinx_default_command:
-            if trace: g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
+            if trace:
+                g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
             g.execute_shell_commands(self.sphinx_default_command)
             return
         # Compute the input directory.
@@ -381,7 +383,8 @@ class MarkupCommands:
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         command = f"sphinx-build {input_dir} {output_dir} {i_path}"
-        if trace: g.trace(f"\ncommand: {command!r}\n")
+        if trace:
+            g.trace(f"\ncommand: {command!r}\n")
         g.execute_shell_commands(command)
     #@+node:ekr.20190515070742.24: *3* markup.write_root & helpers
     def write_root(self, root):

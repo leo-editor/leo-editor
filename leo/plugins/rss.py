@@ -2,7 +2,7 @@
 #@+node:ekr.20131004162848.11444: * @file ../plugins/rss.py
 #@+<< docstring >>
 #@+node:peckj.20131002201824.5539: ** << docstring >>
-'''Adds primitive RSS reader functionality to Leo.
+"""Adds primitive RSS reader functionality to Leo.
 
 By Jacob M. Peck.
 
@@ -124,7 +124,7 @@ rss-clear-all-feed-histories
 
 Clears the viewed stories history of every `@feed` node in the current outline.
 
-'''
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20131002201824.5541: ** << imports >>
@@ -139,22 +139,23 @@ from leo.core import leoGlobals as g
 
 #@+others
 #@+node:peckj.20131002201824.5542: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
+def init():
+    """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     ok = g.app.gui.guiName().startswith('qt') and feedparser is not None
     if ok:
-        g.registerHandler(('new','open2'),onCreate)
+        g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     else:
         g.es('Module \'feedparser\' not installed.  Plugin rss.py not loaded.', color='red')
     return ok
 #@+node:peckj.20131002201824.5543: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
-    if not c: return
+    if not c:
+        return
 
     theRSSController = RSSController(c)
     c.theRSSController = theRSSController
@@ -205,9 +206,12 @@ class RSSController:
             return
         # grab config settings
         sort_newest_first = c.config.getBool('rss-sort-newest-first', default=True)
-        body_format = c.config.getData('rss-body-format') or ['@url <link>','\\n','<title>','<date>','\\n','<summary>']
+        body_format = (
+            c.config.getData('rss-body-format')
+            or ['@url <link>', '\\n', '<title>', '<date>', '\\n', '<summary>']
+        )
         body_format = "\n".join(body_format)
-        body_format = body_format.replace('\\n','')
+        body_format = body_format.replace('\\n', '')
         headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
         # process entries
@@ -218,21 +222,21 @@ class RSSController:
         pos = feed
         for entry in stories:
             if not self.entry_in_history(feed, entry):
-                date = time.strftime(date_format,self.grab_date_parsed(entry))
-                name = entry.get('title',default=self._NO_NAME)
-                link = entry.get('link',default=self._NO_LINK)
-                desc = entry.get('summary',default=self._NO_SUMMARY)
+                date = time.strftime(date_format, self.grab_date_parsed(entry))
+                name = entry.get('title', default=self._NO_NAME)
+                link = entry.get('link', default=self._NO_LINK)
+                desc = entry.get('summary', default=self._NO_SUMMARY)
                 headline = (
-                    headline_format.replace('<date>',date).
-                    replace('<title>',name).
-                    replace('<summary>',desc).
-                    replace('<link>',link)
+                    headline_format.replace('<date>', date).
+                    replace('<title>', name).
+                    replace('<summary>', desc).
+                    replace('<link>', link)
                 )
                 body = (
-                    body_format.replace('<date>',date).
-                    replace('<title>',name).
-                    replace('<summary>',desc).
-                    replace('<link>',link))
+                    body_format.replace('<date>', date).
+                    replace('<title>', name).
+                    replace('<summary>', desc).
+                    replace('<link>', link))
                 newp = pos.insertAsLastChild()
                 newp.h = headline
                 newp.b = body
@@ -292,10 +296,10 @@ class RSSController:
         self.set_history(feed, [])
     #@+node:peckj.20131002201824.11902: *3* commands
     #@+node:peckj.20131002201824.11903: *4* parse_selected_feed
-    def parse_selected_feed(self,event=None):
-        '''Parses the selected `@feed` node, creating entries for each story as
+    def parse_selected_feed(self, event=None):
+        """Parses the selected `@feed` node, creating entries for each story as
            children of the `@feed` node.  Can be SLOW for large feeds.
-        '''
+        """
         feed = self.c.p
         if self.is_feed(feed):
             self.parse_feed(feed)
@@ -303,18 +307,18 @@ class RSSController:
         else:
             g.es('Not a valid @feed node.', color='red')
     #@+node:peckj.20131003081633.7944: *4* parse_all_feeds
-    def parse_all_feeds(self,event=None):
-        '''Parses all `@feed` nodes in the current outline, creating entries for
+    def parse_all_feeds(self, event=None):
+        """Parses all `@feed` nodes in the current outline, creating entries for
            each story as children of the appropriate `@feed` nodes.  Not recommended,
            as it can make Leo appear to be locked up while running.
-        '''
+        """
         for feed in self.get_all_feeds():
             self.parse_feed(self.c.vnode2position(feed))
         g.es('Done parsing all feeds.', color='blue')
     #@+node:peckj.20131003085421.6060: *4* delete_selected_feed_stories
     def delete_selected_feed_stories(self, event=None):
-        '''Deletes all the children of the selected `@feed` node.
-        '''
+        """Deletes all the children of the selected `@feed` node.
+        """
         pos = self.c.p
         if self.is_feed(pos):
             self.c.deletePositionsInList(pos.children())
@@ -323,21 +327,21 @@ class RSSController:
             g.es('Not a valid @feed node.', color='red')
     #@+node:peckj.20131003090809.6563: *4* delete_all_feed_stories
     def delete_all_feed_stories(self, event=None):
-        '''Deletes all children of all `@feed` nodes in the current outline.
-        '''
+        """Deletes all children of all `@feed` nodes in the current outline.
+        """
         for feed in self.get_all_feeds():
             self.c.deletePositionsInList(self.c.vnode2position(feed).children())
         self.c.redraw()
     #@+node:peckj.20131003101848.5579: *4* clear_selected_feed_history
-    def clear_selected_feed_history(self,event=None):
-        '''Clears the selected `@feed` node's viewed stories history.
-        '''
+    def clear_selected_feed_history(self, event=None):
+        """Clears the selected `@feed` node's viewed stories history.
+        """
         if self.is_feed(self.c.p):
             self.clear_history(self.c.p)
     #@+node:peckj.20131003101848.5580: *4* clear_all_feed_histories
-    def clear_all_feed_histories(self,event=None):
-        '''Clears the viewed stories history of every `@feed` node in the current outline.
-        '''
+    def clear_all_feed_histories(self, event=None):
+        """Clears the viewed stories history of every `@feed` node in the current outline.
+        """
         for feed in self.get_all_feeds():
             self.clear_history(self.c.vnode2position(feed))
     #@-others

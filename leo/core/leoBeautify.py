@@ -1,13 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 """Leo's beautification classes."""
+
+import sys
 import os
 import time
 # Third-party tools.
 try:
     import black
 except Exception:
-    black = None  # type: ignore
+    black = None  # type:ignore
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst
@@ -97,11 +99,12 @@ def blacken_files(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&black --skip-string-normalization {path}")
+            g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization "{path}"')
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
@@ -119,11 +122,12 @@ def blacken_files_diff(event):
     c = event.get('c')
     if not c or not c.p:
         return
+    python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&black --skip-string-normalization --diff {path}")
+            g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization --diff "{path}"')
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
@@ -146,7 +150,8 @@ def fstringify_files(event):
             print(g.shortFileName(filename))
             changed = leoAst.Fstringify().fstringify_file(filename)
             changed_s = 'changed' if changed else 'unchanged'
-            if changed: n_changed += 1
+            if changed:
+                n_changed += 1
             g.es_print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
@@ -228,6 +233,7 @@ def orange_settings(c):
     n_max_split = c.config.getInt('beautify-max-split-line-length')
     max_split_line_length = 88 if n_max_split is None else n_max_split
     # Join <= Split.
+    # pylint: disable=consider-using-min-builtin
     if max_join_line_length > max_split_line_length:
         max_join_line_length = max_split_line_length
     return {
@@ -321,9 +327,9 @@ class CPrettyPrinter:
     def indent(self, p, toList=False, giveWarnings=True):
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
-            return None
+            return [] if toList else ''  # #2271
         if not p.b:
-            return None
+            return [] if toList else ''  # #2271
         self.p = p.copy()
         aList = self.tokenize(p.b)
         assert ''.join(aList) == p.b
@@ -333,9 +339,7 @@ class CPrettyPrinter:
         self.result = []
         for s in aList:
             self.put_token(s)
-        if toList:
-            return self.result
-        return ''.join(self.result)
+        return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p

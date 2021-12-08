@@ -3,8 +3,9 @@
 from leo.core import leoGlobals as g
 
 def init():
-    '''Return True if the plugin has loaded successfully.'''
-    if g.app.unitTesting: return False
+    """Return True if the plugin has loaded successfully."""
+    if g.unitTesting:
+        return False
     g.registerHandler('before-create-leo-frame', onCreate)
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('menu2', onmenu2)
@@ -18,7 +19,8 @@ def ekrCommand2(self, event=None):
 
 def onCreate(tag, keys):
     c = keys.get('c')
-    if c: g.trace(c.k)
+    if c:
+        g.trace(c.k)
 
 def onmenu2(tag, keys):
     c = keys.get('c')

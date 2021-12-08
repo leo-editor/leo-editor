@@ -17,7 +17,7 @@ def cmd(name):
 
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.104: ** debug.debug
+    #@+node:ekr.20150514063305.104: ** debug.debug & helper
     @cmd('debug')
     def invoke_debugger(self, event=None):
         """
@@ -28,7 +28,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
         python = sys.executable
         script = g.getScript(c, p)
         winpdb = self.findDebugger()
-        if not winpdb: return
+        if not winpdb:
+            return
         #check for doctest examples
         try:
             import doctest
@@ -53,24 +54,25 @@ class DebugCommandsClass(BaseEditCommandsClass):
         os.spawnv(os.P_NOWAIT, python, args)
     #@+node:ekr.20150514063305.105: *3* debug.findDebugger
     def findDebugger(self):
-        """Find the debugger using settings."""
+        """Find the winpdb debugger."""
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
+        debugger_path = c.expand_path_expression(c.config.getString('debugger-path'))
         debuggers = (
             # #1431: only expand path expression in @string debugger-path.
-            c.expand_path_expression(c.config.getString('debugger-path')),
-            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),
-                # winpdb 1.1.2 or newer.
-            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),
-                # Older version.
+            debugger_path or '@string debugger-path',
+            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),  # winpdb 1.1.2 or newer.
+            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),  # Older version.
         )
         for debugger in debuggers:
             if debugger:
-                debugger = c.os_path_finalize(debugger)
+                debugger = g.os_path_finalize(debugger)
                 if g.os_path_exists(debugger):
                     return debugger
-                g.warning('debugger does not exist:', debugger)
-        g.es('no debugger found.')
+                # g.es_print('debugger does not exist:', debugger)
+        g.es_print('winpdb not found in...')
+        for z in debuggers:
+            print(z)
         return None
     #@+node:ekr.20170713112849.1: ** debug.dump-node
     @cmd('dump-node')
@@ -119,55 +121,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def pdb(self, event=None):
         """Fall into pdb."""
         g.pdb()
-    #@+node:ekr.20150514063305.113: ** debug.run-tests
-    @cmd('run-all-unit-tests-locally')
-    def runAllUnitTestsLocally(self, event=None):
-        """Run all unit tests contained in the presently selected outline.
-        Tests are run in the outline's process, so tests *can* change the outline."""
-        self.c.testManager.doTests(all=True)
-
-    @cmd('run-marked-unit-tests-locally')
-    def runMarkedUnitTestsLocally(self, event=None):
-        """
-        Run marked unit tests in the outline.
-        Tests are run in the outline's process, so tests *can* change the outline.
-        """
-        self.c.testManager.doTests(all=True, marked=True)
-
-    @cmd('run-tests')
-    @cmd('run-selected-unit-tests-locally')
-    def runSelectedUnitTestsLocally(self, event=None):
-        """
-        Run all unit tests contained in the presently selected outline.
-        Tests are run in the outline's process, so tests *can* change the outline.
-        """
-        self.c.testManager.doTests(all=False, marked=False)
-
-    # Externally run tests...
-
-    @cmd('run-all-unit-tests-externally')
-    def runAllUnitTestsExternally(self, event=None):
-        """
-        Run all unit tests contained in the entire outline.
-        Tests are run in an external process, so tests *cannot* change the outline.
-        """
-        self.c.testManager.runTestsExternally(all=True, marked=False)
-
-    @cmd('run-marked-unit-tests-externally')
-    def runMarkedUnitTestsExternally(self, event=None):
-        """
-        Run all marked unit tests in the outline.
-        Tests are run in an external process, so tests *cannot* change the outline.
-        """
-        self.c.testManager.runTestsExternally(all=True, marked=True)
-
-    @cmd('run-selected-unit-tests-externally')
-    def runSelectedUnitTestsExternally(self, event=None):
-        """
-        Run all unit tests contained in the presently selected outline
-        Tests are run in an external process, so tests *cannot* change the outline.
-        """
-        self.c.testManager.runTestsExternally(all=False, marked=False)
     #@+node:ekr.20150514063305.110: ** debug.show-focus
     @cmd('show-focus')
     def printFocus(self, event=None):

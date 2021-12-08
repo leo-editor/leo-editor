@@ -6,7 +6,7 @@ This plugin makes line numbers in gutter (if used), to represent
    first of ancestor nodes with heading at-(file,clean,...), or first
    of ancestor nodes which was marked as root for line numbering  using
    command 'toggle-line-numbering-root'.
-   
+
    Author: vitalije(at)kviziracija.net
 """
 
@@ -28,7 +28,7 @@ LNOFF = 'line_numbering_off'
 #@+others
 #@+node:vitalije.20170727203452.1: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('select1', onSelect)
@@ -38,8 +38,8 @@ def init():
 #@+node:vitalije.20170727222624.1: ** Commands
 @g.command('toggle-line-numbering-root')
 def toggleLineNumberingRoot(event):
-    '''Toggle state of current selected node to be treated as a
-       root of file for line numbering purposes.'''
+    """Toggle state of current selected node to be treated as a
+       root of file for line numbering purposes."""
     c = event.get('c')
     if c and c.p and c.p.v:
         v = c.p.v
@@ -54,14 +54,15 @@ def toggleLineNumberingRoot(event):
 
 @g.command('line-numbering-toggle')
 def toggleLineNumberingOff(event):
-    '''Toggle line numbering plugin off or on.'''
+    """Toggle line numbering plugin off or on."""
     c = event.get('c')
     c.user_dict[LNOFF] = not c.user_dict.get(LNOFF, False)
     renumber(c)
 #@+node:vitalije.20170727204246.1: ** onSelect
 def onSelect (tag, keys):
     c = keys.get('c')
-    if not c.hash(): return
+    if not c.hash():
+        return
     ok = c.config.getBool('use-gutter', default=False)
     ok = ok and not c.user_dict.get(LNOFF, False)
     if ok:
@@ -118,7 +119,8 @@ def renumber(c):
 REQUESTS = {}
 def request_update(c):
     h = c.hash()
-    if REQUESTS.get(h):return
+    if REQUESTS.get(h):
+        return
     REQUESTS[h] = True
     QtCore.QTimer.singleShot(200, lambda:renumber(c))
 
@@ -126,8 +128,8 @@ def finish_update(c):
     REQUESTS[c.hash()] = False
 #@+node:vitalije.20170726090940.1: ** universal_line_numbers
 def universal_line_numbers(root, target_p, delim_st, delim_en):
-    '''Returns tuple of line numbers corresponding to lines of
-    target_p body, in a file generated from root.'''
+    """Returns tuple of line numbers corresponding to lines of
+    target_p body, in a file generated from root."""
     c = root.v.context
     roots = c.user_dict.get('line_numbering_roots', set())
     roots.add(root.gnx)
@@ -221,7 +223,8 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
                     flines = []
                     for x in vlines(p1):
                         n += 1
-                        if is_verbatim(x): n+=1
+                        if is_verbatim(x):
+                            n+=1
                         flines.append(n)
                     flines.append(n+1)
                 else:
@@ -243,11 +246,13 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             return (0, n-st) if delim_st else (0, n-st)
         #@+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
-            if delim_st: return 0, 1
+            if delim_st:
+                return 0, 1
             return 0, 0
         #@+node:vitalije.20170726193941.1: *4* code part
         if code_pattern.match(line):
-            if delim_st: return 0, 1
+            if delim_st:
+                return 0, 1
             return 0, 0
         #@-others
         # if we get here it is an ordinary line

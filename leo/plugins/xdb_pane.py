@@ -1,11 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20181004143535.1: * @file ../plugins/xdb_pane.py
-'''
+"""
 Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
-'''
+"""
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import ScrollBarPolicy, WrapMode
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -16,7 +17,7 @@ controllers = {}
 #@+node:ekr.20181005051820.1: ** Top-level functions
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     name = g.app.gui.guiName()
     if name != "qt":
         if name not in ('curses', 'nullGui'):
@@ -35,8 +36,8 @@ def onCreate (tag,key):
 if g.app.gui.guiName() == "qt":
 
     class XdbPane(QtWidgets.QWidget):
-        '''Create the contents of the Debug pane.'''
-        
+        """Create the contents of the Debug pane."""
+
         def __init__(self, c):
             self.c = c
             super().__init__()
@@ -45,7 +46,7 @@ if g.app.gui.guiName() == "qt":
         #@+others
         #@+node:ekr.20181005043209.1: *3* create & helpers
         def create(self):
-            '''Create the Debug tab in the Log pane.'''
+            """Create the Debug tab in the Log pane."""
             c = self.c
             layout = QtWidgets.QVBoxLayout(self)
             self.create_buttons(layout)
@@ -58,7 +59,7 @@ if g.app.gui.guiName() == "qt":
             self.setLayout(layout)
         #@+node:ekr.20181004182608.1: *4* create_buttons
         def create_buttons(self, layout):
-            '''Create two rows of buttons.'''
+            """Create two rows of buttons."""
             vlayout = QtWidgets.QVBoxLayout()
             table1 = (
                 ('start', self.debug_xdb),
@@ -85,7 +86,7 @@ if g.app.gui.guiName() == "qt":
             layout.addLayout(vlayout)
         #@+node:ekr.20181005054101.1: *4* create_input_area
         def create_input_area(self, layout):
-            
+
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger command:')
@@ -100,16 +101,15 @@ if g.app.gui.guiName() == "qt":
             layout.addLayout(layout2)
         #@+node:ekr.20181006154605.1: *4* create_output_area
         def create_output_area(self, layout):
-            
+
             # Create the Label
             label = QtWidgets.QLabel()
             label.setText('Debugger outpuit:')
             # Create the output area.
             self.output_area = w = QtWidgets.QTextEdit()
             w.setStyleSheet('background: white; color: black;')
-            ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy if isQt6 else QtCore.Qt
             w.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
-            w.setWordWrapMode(QtGui.QTextOption.NoWrap)
+            w.setWordWrapMode(WrapMode.NoWrap)
             # Add the widgets to a new layout.
             vlayout = QtWidgets.QVBoxLayout()
             vlayout.addWidget(label)
@@ -124,13 +124,13 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_break(self, checked):
             self.c.k.simulateCommand('db-b')
-            
+
         def debug_continue(self, checked):
             self.c.k.simulateCommand('db-c')
-            
+
         def debug_help(self, checked):
             self.c.k.simulateCommand('db-h')
-            
+
         def debug_input(self):
             xdb = getattr(g.app, 'xdb', None)
             if xdb:
@@ -138,36 +138,36 @@ if g.app.gui.guiName() == "qt":
                 xdb.qc.put(command)
             else:
                 print('xdb not active')
-                
+
         def debug_list(self, checked):
             self.c.k.simulateCommand('db-l')
 
         def debug_next(self, checked):
             self.c.k.simulateCommand('db-n')
-            
+
         def debug_quit(self, *args):
             self.c.k.simulateCommand('db-q')
-            
+
         def debug_return(self, *args):
             self.c.k.simulateCommand('db-r')
-            
+
         def debug_step(self, *args):
             self.c.k.simulateCommand('db-s')
-            
+
         def debug_where(self, *args):
             self.c.k.simulateCommand('db-w')
-            
+
         def debug_xdb(self, *args):
             self.c.k.simulateCommand('xdb')
         #@+node:ekr.20181006161938.1: *3* write & clear
         def clear(self):
-            '''Clear the output area.'''
+            """Clear the output area."""
             w = self.output_area
             if w:
                 w.setPlainText('')
-            
+
         def write(self, s):
-            '''Write the line s to the output area, or print it.'''
+            """Write the line s to the output area, or print it."""
             w = self.output_area
             if w:
                 w.insertPlainText(s)

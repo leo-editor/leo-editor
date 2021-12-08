@@ -2,7 +2,7 @@
 #@+node:ekr.20040910070811.1: * @file ../plugins/run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >> (run_nodes.py)
-r''' Runs a program and interface Leo through its input/output/error streams.
+r""" Runs a program and interface Leo through its input/output/error streams.
 
 The double-click-icon-box command on a node whose headlines is @run 'cmd args' will execute
 the command. There are several other features, including @arg and @input nodes.
@@ -33,7 +33,7 @@ they will be launched successively. (Unless one returned an exit code other
 than 0, then it will stop there)
 
 By Alexis Gendron Paquette. Please send comments to the Leo forums.
-'''
+"""
 #@-<< docstring >>
 
 # At present, this plugin is *broken*.
@@ -72,46 +72,48 @@ OwnIdleHook = False
 
 #@+others
 #@+node:ekr.20060108160737: ** init (run_nodes.py)
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    g.registerHandler("bodykey2",OnBodyKey)
-    g.registerHandler("icondclick2",OnIconDoubleClick)
-    g.registerHandler("end1",OnQuit)
-    g.registerHandler("idle",OnIdle)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    g.registerHandler("bodykey2", OnBodyKey)
+    g.registerHandler("icondclick2", OnIconDoubleClick)
+    g.registerHandler("end1", OnQuit)
+    g.registerHandler("idle", OnIdle)
     g.plugin_signon(__name__)
     return True  # Ok for unit testing.
 #@+node:ekr.20060108160737.1: ** Hooks
 #@+node:ekr.20040910070811.12: *3* OnBodyKey
-def OnBodyKey(tag,keywords):
+def OnBodyKey(tag, keywords):
 
-    global RunNode,In
+    global RunNode, In
 
-    c=keywords.get('c')
-    if not c or not c.exists: return
-    p=c.p
-    h=p.h
-    ch=keywords.get("ch")
+    c = keywords.get('c')
+    if not c or not c.exists:
+        return
+    p = c.p
+    h = p.h
+    ch = keywords.get("ch")
 
     # handle the @run "\r" body key
-    if ch == "\r" and g.match_word(h,0,"@run") and RunNode and RunNode==p:
+    if ch == "\r" and g.match_word(h, 0, "@run") and RunNode and RunNode == p:
         try:
             In.write(p.b.encode(Encoding))
             In.flush()
             g.es(p.b)
         except IOError as ioerr:
-            g.error("[@run] IOError: "+str(ioerr))
+            g.error("[@run] IOError: " + str(ioerr))
             return
-        c.setBodyText(p,"")
+        c.setBodyText(p, "")
 #@+node:ekr.20040910070811.13: *3* OnIconDoubleClick
-def OnIconDoubleClick(tag,keywords):
+def OnIconDoubleClick(tag, keywords):
 
-    global RunNode,RunList,OwnIdleHook,ExitCode
+    global RunNode, RunList, OwnIdleHook, ExitCode
 
-    c=keywords.get('c')
-    if not c or not c.exists: return
+    c = keywords.get('c')
+    if not c or not c.exists:
+        return
     p = c.p
     h = p.h
-    if g.match_word(h,0,"@run"):
+    if g.match_word(h, 0, "@run"):
         if RunNode or RunList:
             g.error("@run already running!")
         else:
@@ -120,41 +122,41 @@ def OnIconDoubleClick(tag,keywords):
             RunList = []
 
             for p2 in p.self_and_subtree():
-                if g.match_word(p2.h,0,"@run"):
+                if g.match_word(p2.h, 0, "@run"):
                     # Don't use iter copy arg.
                     RunList.append(p2.copy())
 
             ExitCode = None
             OwnIdleHook = True
             #@-<< handle double click in @run icon >>
-    elif g.match_word(h,0,"@in"):
+    elif g.match_word(h, 0, "@in"):
         if RunNode:
             #@+<< handle double click in @in icon >>
             #@+node:ekr.20040910102554.1: *4* << handle double click in @in icon >>
             b = p.b
 
             try:
-                In.write(b.encode(Encoding)+"\n")
+                In.write(b.encode(Encoding) + "\n")
                 In.flush()
                 g.es(b)
             except IOError as ioerr:
-                g.error("@run IOError: "+str(ioerr))
+                g.error("@run IOError: " + str(ioerr))
             #@-<< handle double click in @in icon >>
 #@+node:ekr.20040910070811.14: *3* OnIdle
-def OnIdle(tag,keywords):
+def OnIdle(tag, keywords):
 
-    global RunNode,RunList
-    global ErrThread,OutThread
-    global ExitCode,OwnIdleHook
+    global RunNode, RunList
+    global ErrThread, OutThread
+    global ExitCode, OwnIdleHook
 
-    c=keywords.get('c')
+    c = keywords.get('c')
     if not c or not c.exists:
         return
     if not OwnIdleHook:
         return
     if RunNode:
         o = UpdateText(OutThread)
-        e = UpdateText(ErrThread,"red")
+        e = UpdateText(ErrThread, "red")
         if not o and not e:
             CloseProcess(c)
     elif RunList:
@@ -166,9 +168,9 @@ def OnIdle(tag,keywords):
         OwnIdleHook = False
         g.disableIdleTimeHook()
 #@+node:ekr.20040910070811.15: *3* OnQuit
-def OnQuit(tag,keywords=None):
+def OnQuit(tag, keywords=None):
 
-    global RunNode,RunList
+    global RunNode, RunList
     c = keywords.get('c')
     if c and RunList:
         RunList = None
@@ -188,30 +190,30 @@ class readingThread(threading.Thread):
     #@+node:ekr.20040910070811.7: *3* run
     def run(self):
 
-        '''Called automatically when the thread is created.'''
+        """Called automatically when the thread is created."""
 
         global Encoding
 
         if not self.File:
             return
 
-        s=self.File.readline()
+        s = self.File.readline()
         while s:
             if s != "\n":
                 self.TextLock.acquire()
                 try:
-                    self.Text = self.Text + g.toUnicode(s,Encoding)
+                    self.Text = self.Text + g.toUnicode(s, Encoding)
                 except IOError as ioerr:
-                    self.Text = self.Text +"\n"+ "[@run] ioerror :"+str(ioerr)
+                    self.Text = self.Text + "\n" + "[@run] ioerror :" + str(ioerr)
                 self.TextLock.release()
-            s=self.File.readline()
+            s = self.File.readline()
             time.sleep(0.01)
     #@-others
 #@+node:ekr.20040910070811.8: ** CloseProcess
 def CloseProcess(c):
 
-    global RunNode,ExitCode,WorkDir
-    global In,OutThread,ErrThread
+    global RunNode, ExitCode, WorkDir
+    global In, OutThread, ErrThread
 
     # Close file and get error code.
     In.close()
@@ -241,29 +243,30 @@ def FindRunChildren(p):
     global RunList
 
     for child in p.children():
-        if g.match_word(child.h,0,"@run"):
+        if g.match_word(child.h, 0, "@run"):
             RunList.append(child)
         FindRunChildren(child)
 #@+node:ekr.20040910070811.10: ** OpenProcess
 def OpenProcess(p):
 
-    global RunNode,WorkDir
-    global In,OutThread,ErrThread,ExitCode
+    global RunNode, WorkDir
+    global In, OutThread, ErrThread, ExitCode
 
-    command = p.h[4:].strip() # Remove @run
-    if not command: return
+    command = p.h[4:].strip()  # Remove @run
+    if not command:
+        return
     #@+<< set the working directory or return >>
     #@+node:ekr.20040910094754: *3* << set the working directory or return >>
     args = command.split(' ')
 
-    path,fname = os.path.split(args[0])
+    path, fname = os.path.split(args[0])
 
-    if g.match(fname,0,'#'):
+    if g.match(fname, 0, '#'):
         return
 
     if path:
-        if os.access(path,os.F_OK) == 1:
-            WorkDir=os.getcwd()
+        if os.access(path, os.F_OK) == 1:
+            WorkDir = os.getcwd()
             os.chdir(path)
         else:
             g.error("@run: invalid path: %s" % (path))
@@ -274,32 +277,32 @@ def OpenProcess(p):
     command = fname
 
     for arg in args[1:]:
-        if g.match(arg,0,'#'):
+        if g.match(arg, 0, '#'):
             break
         else:
             command += ' ' + arg.strip()
     #@-<< set the command, removing all args following '#' >>
     if not command.strip():
         return
-    RunNode=p
+    RunNode = p
     args = []
     #@+<< append arguments from child nodes to command >>
     #@+node:ekr.20040910095147: *3* << append arguments from child nodes to command >>
     for child in p.children():
         h = child.h
-        if g.match_word(h,0,"@arg"):
+        if g.match_word(h, 0, "@arg"):
             arg = h[4:].strip()
             args.append(arg)
         else:
             if (
-                not g.match_word(h,0,"@run") and
-                not g.match_word(h,0,"@in") and
-                not g.match_word(h,0,"@input")
+                not g.match_word(h, 0, "@run") and
+                not g.match_word(h, 0, "@in") and
+                not g.match_word(h, 0, "@input")
             ):
                 args.append(child.b.strip())
     #@-<< append arguments from child nodes to command >>
 
-    g.blue("@run %s>%s" % (os.getcwd(),command))
+    g.blue("@run %s>%s" % (os.getcwd(), command))
     for arg in args:
         g.blue("@arg %s" % arg)
     command += ' ' + ' '.join(args)
@@ -316,7 +319,7 @@ def OpenProcess(p):
         # stdin=PIPE,
         # stdout=PIPE,
         # stderr=PIPE) ,close_fds=True)
-    In             = proc.stdin
+    In = proc.stdin
     OutThread.File = proc.stdout
     ErrThread.File = proc.stderr
     OutThread.start()
@@ -325,18 +328,18 @@ def OpenProcess(p):
     RunNode.setMarked()
     c = RunNode.v.context
     c.selectPosition(RunNode)
-    if os.name in ("nt","dos"):
+    if os.name in ("nt", "dos"):
         c.redraw()
 #@+node:ekr.20040910070811.11: ** UpdateText
-def UpdateText(t,wcolor="black"):
+def UpdateText(t, wcolor="black"):
 
-    global RunNode,Encoding
+    global RunNode, Encoding
 
     if t.TextLock.acquire(0) == 1:
         if t.Text:
             if t.Text != "\n":
-                g.es(t.Text,color=wcolor)
-            t.Text=""
+                g.es(t.Text, color=wcolor)
+            t.Text = ""
         elif not t.isAlive():
             t.TextLock.release()
             return False

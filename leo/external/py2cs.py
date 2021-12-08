@@ -1215,9 +1215,6 @@ class LeoGlobals:
                 g.trace(g.callers())
                 print("toUnicode: Error converting %s... from %s encoding to unicode" % (
                     s[:200], encoding))
-        ### except AttributeError:
-            # May be a QString.
-            ### s = g.u(s)
         return s
     #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py) 
     def trace(self, *args, **keys):

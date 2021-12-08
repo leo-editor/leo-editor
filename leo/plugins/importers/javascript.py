@@ -1,7 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
-'''The @auto importer for JavaScript.'''
+"""The @auto importer for JavaScript."""
 import re
+import textwrap
 import unittest
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
@@ -12,86 +13,67 @@ Target = linescanner.Target
 class JS_Importer(Importer):
 
     def __init__(self, importCommands, force_at_others=False, **kwargs):
-        '''The ctor for the JS_ImportController class.'''
+        """The ctor for the JS_ImportController class."""
         # Init the base class.
         super().__init__(
             importCommands,
-            gen_refs = False, # Fix #639.
-            language = 'javascript',
-            state_class = JS_ScanState,
+            gen_refs=False,  # Fix #639.
+            language='javascript',
+            state_class=JS_ScanState,
         )
 
     #@+others
     #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
     def post_pass(self, parent):
-        '''
+        """
         Optional Stage 2 of the javascript pipeline.
 
         All substages **must** use the API for setting body text. Changing
         p.b directly will cause asserts to fail later in i.finish().
-        '''
+        """
         self.clean_all_headlines(parent)
         self.remove_singleton_at_others(parent)
         self.clean_all_nodes(parent)
         self.move_trailing_comments(parent)
-        if 0:
-            self.unindent_all_nodes(parent)
-            #
-            # This sub-pass must follow unindent_all_nodes.
-            self.promote_trailing_underindented_lines(parent)
-            self.promote_last_lines(parent)
-            #
-            # Usually the last sub-pass, but not in javascript.
-            self.delete_all_empty_nodes(parent)
-            #
-            # Must follow delete_all_empty_nodes.
-            self.remove_organizer_nodes(parent)
-            # 
-            # Remove up to 5 more levels of @others.
-            for i in range(5):
-                if self.remove_singleton_at_others(parent):
-                    self.remove_organizer_nodes(parent)
-                else:
-                    break
     #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
     at_others = re.compile(r'^\s*@others\b')
 
     def remove_singleton_at_others(self, parent):
-        '''Replace @others by the body of a singleton child node.'''
+        """Replace @others by the body of a singleton child node."""
         found = False
         for p in parent.subtree():
             if p.numberOfChildren() == 1:
                 child = p.firstChild()
                 lines = self.get_lines(p)
-                matches = [i for i,s in enumerate(lines) if self.at_others.match(s)]
+                matches = [i for i, s in enumerate(lines) if self.at_others.match(s)]
                 if len(matches) == 1:
                     found = True
                     i = matches[0]
-                    lines = lines[:i] + self.get_lines(child) + lines[i+1:]
+                    child_lines = self.get_lines(child)
+                    lines = lines[:i] + child_lines + lines[i + 1 :]
                     self.set_lines(p, lines)
-                    self.clear_lines(child) # Delete child later. Is this enough???
-                    # g.trace('Clear', child.h)
+                    # Delete child later. Is this enough???
+                    self.set_lines(child, [])
         return found
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
     def remove_organizer_nodes(self, parent):
-        '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
+        """Removed all organizer nodes created by i.delete_all_empty_nodes."""
         # Careful: Restart this loop whenever we find an organizer.
         found = True
         while found:
             found = False
             for p in parent.subtree():
-                if p.h.lower() == 'organizer' and not self.get_lines(p):
+                lines = self.get_lines(p)
+                if p.h.lower() == 'organizer' and not lines:
                     p.promote()
                     p.doDelete()
-                    found = True # Restart the loop.
+                    found = True  # Restart the loop.
     #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
     def clean_all_nodes(self, parent):
         """Remove common leading whitespace from all nodes."""
-        c = self.c
         for p in parent.subtree():
             lines = self.get_lines(p)
-            s = ''.join(lines)
-            s = g.adjustTripleString(s, tab_width=c.tab_width)
+            s = textwrap.dedent(''.join(lines))
             self.set_lines(p, g.splitLines(s))
     #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper (new)
     def move_trailing_comments(self, parent):
@@ -130,21 +112,21 @@ class JS_Importer(Importer):
             elif s.startswith('//'):
                 head = lines[:i]
                 tail = [line]
-            elif s: # Clear any previous comments.
+            elif s:  # Clear any previous comments.
                 head = lines
                 tail = []
         return head, tail
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line (rewritten)
     def scan_line(self, s, prev_state):
-        '''
+        """
         Update the scan state at the *end* of the line.
         Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
-        
+
         This code uses JsLex to scan the tokens, which scans strings and regexs properly.
 
         This code also handles *partial* tokens: tokens continued from the
         previous line or continued to the next line.
-        '''
+        """
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
         # Scan tokens, updating context and counts.
@@ -189,7 +171,7 @@ class JS_Importer(Importer):
     ]
 
     def starts_block(self, i, lines, new_state, prev_state):
-        '''True if the new state starts a block.'''
+        """True if the new state starts a block."""
         if new_state.level() <= prev_state.level():
             return False
         # Remove strings and regexs from the line before applying the patterns.
@@ -205,7 +187,7 @@ class JS_Importer(Importer):
         return False
     #@+node:ekr.20200131193217.1: *3* js_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
+        """True if line ends the block."""
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
         return new_state.level() < top.state.level()
@@ -240,7 +222,7 @@ class JS_Importer(Importer):
     ]
 
     def clean_headline(self, s, p=None, trace=False):
-        '''Return a cleaned up headline s.'''
+        """Return a cleaned up headline s."""
         # pylint: disable=arguments-differ
         s = s.strip()
         # Don't clean a headline twice.
@@ -280,10 +262,10 @@ class JS_Importer(Importer):
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
-    '''A class representing the state of the javascript line-oriented scan.'''
+    """A class representing the state of the javascript line-oriented scan."""
 
     def __init__(self, d=None):
-        '''JS_ScanState ctor'''
+        """JS_ScanState ctor"""
         if d:
             # d is *different* from the dict created by i.scan_line.
             self.context = d.get('context')
@@ -294,7 +276,7 @@ class JS_ScanState:
             self.curlies = self.parens = 0
 
     def __repr__(self):
-        '''JS_ScanState.__repr__'''
+        """JS_ScanState.__repr__"""
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
 
@@ -303,14 +285,14 @@ class JS_ScanState:
     #@+others
     #@+node:ekr.20161119115505.1: *3* js_state.level
     def level(self):
-        '''JS_ScanState.level.'''
+        """JS_ScanState.level."""
         return (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
     def update(self, data):
-        '''
+        """
         Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
-        '''
+        """
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
@@ -332,7 +314,7 @@ class Tok:
     """A specification for a token class."""
 
     num = 0
-    
+
     def __init__(self, name, regex, next=None):
         self.id = Tok.num
         Tok.num += 1
@@ -354,7 +336,7 @@ class Lexer:
                 groupid = "t%d" % tok.id
                 self.toks[groupid] = tok
                 parts.append("(?P<%s>%s)" % (groupid, tok.regex))
-            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE|re.VERBOSE) # |re.UNICODE)
+            self.regexes[state] = re.compile("|".join(parts), re.MULTILINE | re.VERBOSE)  # |re.UNICODE)
         self.state = first
 
     #@+node:ekr.20200131110322.9: *4* Lexer.lex
@@ -376,7 +358,7 @@ class Lexer:
                 tok = toks[name]
                 toktext = match.group(name)
                 start += len(toktext)
-                yield (tok.name, toktext)
+                yield(tok.name, toktext)
                 if tok.next:
                     state = tok.next
                     break
@@ -391,7 +373,7 @@ def literals(choices, prefix="", suffix=""):
     individually.
 
     """
-    return "|".join(prefix+re.escape(c)+suffix for c in choices.split())
+    return "|".join(prefix + re.escape(c) + suffix for c in choices.split())
 
 #@+node:ekr.20200131110322.10: *3* class JsLexer(Lexer)
 class JsLexer(Lexer):
@@ -404,7 +386,7 @@ class JsLexer(Lexer):
     This doesn't properly handle non-Ascii characters in the Javascript source.
 
     """
-    
+
     #@+<< constants >>
     #@+node:ekr.20200131190707.1: *4* << constants >> (JsLexer)
 
@@ -423,10 +405,10 @@ class JsLexer(Lexer):
     # See https://stackoverflow.com/questions/6314614/match-any-unicode-letter
 
     both_before = [
-        Tok("comment",      r"/\*(.|\n)*?\*/"),
-        Tok("linecomment",  r"//.*?$"),
-        Tok("ws",           r"\s+"),
-        Tok("keyword",      literals("""
+        Tok("comment", r"/\*(.|\n)*?\*/"),
+        Tok("linecomment", r"//.*?$"),
+        Tok("ws", r"\s+"),
+        Tok("keyword", literals("""
                                 async await
                                 break case catch class const continue debugger
                                 default delete do else enum export extends
@@ -434,7 +416,7 @@ class JsLexer(Lexer):
                                 return super switch this throw try typeof var
                                 void while with
                                 """, suffix=r"\b"), next='reg'),
-        Tok("reserved",     literals("null true false", suffix=r"\b"), next='div'),
+        Tok("reserved", literals("null true false", suffix=r"\b"), next='div'),
         #
         # EKR: This would work if patterns were compiled with the re.UNICODE flag.
         #      However, \w is not the same as valid JS characters.
@@ -442,13 +424,13 @@ class JsLexer(Lexer):
         #
         # Tok("id",           r"""([\w$])([\w\d]*)""", next='div'),
         #
-        Tok("id",           r"""
+        Tok("id", r"""
                             ([a-zA-Z_$   ]|\\u[0-9a-fA-Z]{4})       # first char
                             ([a-zA-Z_$0-9]|\\u[0-9a-fA-F]{4})*      # rest chars
                             """, next='div'),
-        Tok("hnum",         r"0[xX][0-9a-fA-F]+", next='div'),
-        Tok("onum",         r"0[0-7]+"),
-        Tok("dnum",         r"""
+        Tok("hnum", r"0[xX][0-9a-fA-F]+", next='div'),
+        Tok("onum", r"0[0-7]+"),
+        Tok("dnum", r"""
                             (   (0|[1-9][0-9]*)         # DecimalIntegerLiteral
                                 \.                      # dot
                                 [0-9]*                  # DecimalDigits-opt
@@ -462,22 +444,22 @@ class JsLexer(Lexer):
                                 ([eE][-+]?[0-9]+)?      # ExponentPart-opt
                             )
                             """, next='div'),
-        Tok("punct",        literals("""
-                                >>>= === !== >>> <<= >>= <= >= == != << >> && 
+        Tok("punct", literals("""
+                                >>>= === !== >>> <<= >>= <= >= == != << >> &&
                                 || += -= *= %= &= |= ^=
                                 """), next="reg"),
-        Tok("punct",        literals("++ -- ) ]"), next='div'),
-        Tok("punct",        literals("{ } ( [ . ; , < > + - * % & | ^ ! ~ ? : ="), next='reg'),
-        Tok("string",       r'"([^"\\]|(\\(.|\n)))*?"', next='div'),
-        Tok("string",       r"'([^'\\]|(\\(.|\n)))*?'", next='div'),
+        Tok("punct", literals("++ -- ) ]"), next='div'),
+        Tok("punct", literals("{ } ( [ . ; , < > + - * % & | ^ ! ~ ? : ="), next='reg'),
+        Tok("string", r'"([^"\\]|(\\(.|\n)))*?"', next='div'),
+        Tok("string", r"'([^'\\]|(\\(.|\n)))*?'", next='div'),
         ]
 
     both_after = [
-        Tok("other",        r"."),
+        Tok("other", r"."),
         ]
 
     states = {
-        'div': # slash will mean division
+        'div':  # slash will mean division
             both_before + [
             Tok("punct", literals("/= /"), next='reg'),
             ] + both_after,
@@ -522,10 +504,10 @@ class TestJSImporter(unittest.TestCase):
     #@+others
     #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
     def test_get_trailing_comments(self):
-        
+
         table = (
             # Test 1
-            ( """\
+            ("""\
     head
     // tail""", 1),
 
@@ -535,32 +517,32 @@ class TestJSImporter(unittest.TestCase):
     /* comment 1
      * comment 2
      */""", 3),
-     
+
             # Test 3
             ("""\
     head
     /* comment 1
      * comment 2
      */
-    tail""", 0), # no tail
+    tail""", 0),  # no tail
 
             # Test 4
             ("""\
     head
     // comment
-    tail""", 0), # no tail
+    tail""", 0),  # no tail
 
-    ) # End table.
+    )  # End table.
         for s, expected_length in table:
             x = JS_Importer(None)
-            s = g.adjustTripleString(s, -4)
+            s = textwrap.dedent(s)
             lines = g.splitLines(s)
             head, tail = x.get_trailing_comments(lines)
-            expected_lines = lines[-expected_length:] if expected_length else []
-            assert tail == expected_lines , (repr(tail), repr(expected_lines))
+            expected_lines = lines[-expected_length :] if expected_length else []
+            assert tail == expected_lines, (repr(tail), repr(expected_lines))
     #@+node:ekr.20200202104932.1: *3* test_JsLex
     def test_JsLex(self):
-        
+
         table = (
             ('id', ('f_', '$', 'A1', 'abc')),
             ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
@@ -573,7 +555,7 @@ class TestJSImporter(unittest.TestCase):
                 for name, tok in JsLexer().lex(contents):
                     assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
                     # print(f"{kind!s:10} {tok!r:10}")
-                        
+
     #@+node:ekr.20200203051839.1: *3* test_starts_block
     def test_starts_block(self):
 
@@ -601,21 +583,21 @@ class TestJSImporter(unittest.TestCase):
 
         table = (
             # result        prev_context    s
-            ( (0, 0, '"'),  "",             r'"string'),
-            ( (0, 0, '/*'), "",             r'/* line 1'),
-            ( (0, 0, '/*'), "/*",           r'line 2'), # New.
-            ( (0, 0, ''),   "/*",           r'line 3 */'), # New.
-            ( (0, 0, ''),   "",             r'a + b // /*'),
-            ( (0, 1, ''),   "",             r'(function'),
-            ( (1, 1, ''),   "",             r'(function(a) {'),
-            ( (0, 0, ''),   "",             r'var x = /abc/'),
-            ( (0, 0, ''),   "",             r'var x = /a"c/'),
-            ( (0, 0, ''),   "",             r'var x = /a\//'),
-            ( (0, 0, ''),   "",             r'var x = /a\//'),
-            ( (0, 1, ''),   "",             r'var x = (0,'),
+            ((0, 0, '"'), "", r'"string'),
+            ((0, 0, '/*'), "", r'/* line 1'),
+            ((0, 0, '/*'), "/*", r'line 2'),  # New.
+            ((0, 0, ''), "/*", r'line 3 */'),  # New.
+            ((0, 0, ''), "", r'a + b // /*'),
+            ((0, 1, ''), "", r'(function'),
+            ((1, 1, ''), "", r'(function(a) {'),
+            ((0, 0, ''), "", r'var x = /abc/'),
+            ((0, 0, ''), "", r'var x = /a"c/'),
+            ((0, 0, ''), "", r'var x = /a\//'),
+            ((0, 0, ''), "", r'var x = /a\//'),
+            ((0, 1, ''), "", r'var x = (0,'),
         )
         for result, prev_context, s in table:
-            importer = JS_Importer(None) ### c.importCommands)
+            importer = JS_Importer(None)
             prev_state = JS_ScanState()
             prev_state.context = prev_context
             new_state = importer.scan_line(s, prev_state)

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160504080826.1: * @file ../plugins/importers/leo_json.py
-'''The @auto importer for .json files.'''
+"""The @auto importer for .json files."""
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.
 import json
@@ -9,7 +9,7 @@ from leo.core import leoNodes
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
-    '''A class to read .json files.'''
+    """A class to read .json files."""
     # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
@@ -17,9 +17,9 @@ class JSON_Scanner:
         importCommands,
         language='json',
         alternate_language=None,
-        **kwargs
+        ** kwargs
     ):
-        '''The ctor for the JSON_Scanner class.'''
+        """The ctor for the JSON_Scanner class."""
         self.c = c = importCommands.c
         self.gnx_dict = {}
             # Keys are gnx's. Values are vnode_dicts.
@@ -28,7 +28,7 @@ class JSON_Scanner:
             # Keys are gnx's. Values are already-created vnodes.
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent, parent_d):
-        '''Create the tree of nodes rooted in parent.'''
+        """Create the tree of nodes rooted in parent."""
         d = self.gnx_dict
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
@@ -51,14 +51,13 @@ class JSON_Scanner:
                 self.create_nodes(child, d2)
     #@+node:ekr.20161015213011.1: *3* json.report
     def report(self, s):
-        '''Issue a message.'''
+        """Issue a message."""
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.run
     def run(self, s, parent, parse_body=False):
-        '''The common top-level code for all scanners.'''
+        """The common top-level code for all scanners."""
         c = self.c
         ok = self.scan(s, parent)
-        # g.app.unitTestDict['result'] = ok
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
@@ -68,16 +67,16 @@ class JSON_Scanner:
                 # else:
                     # c.clearChanged()
         else:
-            parent.setDirty() # setDescendentsDirty=False)
+            parent.setDirty()  # setDescendentsDirty=False)
             c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):
-        '''
+        """
         Probably a bad idea.  Keep the apparent section references.
         The perfect-import write code no longer attempts to expand references
         when the perfectImportFlag is set.
-        '''
+        """
         return s
         # result = []
         # for line in g.splitLines(s):
@@ -91,11 +90,11 @@ class JSON_Scanner:
         # return ''.join(result)
     #@+node:ekr.20160504092347.3: *4* json.checkBlanksAndTabs
     def checkBlanksAndTabs(self, s):
-        '''Check for intermixed blank & tabs.'''
+        """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         blanks = tabs = 0
         for line in g.splitLines(s):
-            lws = line[0: g.skip_ws(line, 0)]
+            lws = line[0 : g.skip_ws(line, 0)]
             blanks += lws.count(' ')
             tabs += lws.count('\t')
         ok = blanks == 0 or tabs == 0
@@ -104,20 +103,25 @@ class JSON_Scanner:
         return ok
     #@+node:ekr.20160504092347.4: *4* json.regularizeWhitespace
     def regularizeWhitespace(self, s):
-        '''Regularize leading whitespace in s:
+        """Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        This is only called for strict languages.'''
-        changed = False; lines = g.splitLines(s); result = []; tab_width = self.tab_width
-        if tab_width < 0: # Convert tabs to blanks.
+        This is only called for strict languages."""
+        changed = False
+        lines = g.splitLines(s)
+        result = []
+        tab_width = self.tab_width
+        if tab_width < 0:  # Convert tabs to blanks.
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:] # Use negative width.
-                if s != line: changed = True
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]  # Use negative width.
+                if s != line:
+                    changed = True
                 result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
+        elif tab_width > 0:  # Convert blanks to tabs.
             for line in lines:
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width)) # Use positive width.
-                if s != line: changed = True
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width))  # Use positive width.
+                if s != line:
+                    changed = True
                 result.append(s)
         if changed:
             action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
@@ -126,7 +130,7 @@ class JSON_Scanner:
         return ''.join(result)
     #@+node:ekr.20160504082809.1: *3* json.scan
     def scan(self, s, parent):
-        '''Create an outline from a MindMap (.csv) file.'''
+        """Create an outline from a MindMap (.csv) file."""
         # pylint: disable=no-member
         # pylint confuses this module with the stdlib json module
         c = self.c

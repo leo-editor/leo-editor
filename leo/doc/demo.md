@@ -361,8 +361,6 @@ for pane, h in table:
 demo.set_top_size(height=500, width=800)
 table = (
     (False, 0, '<-- @file node', '@file leoApp.py'),
-    (False, 0, '<-- @test node', '@test init method'),
-    (False, 2, '<-- icon box', '@suite plugins syntax'),
 )
 for arrow, offset, label, headline in table:
     Head(arrow, label, headline, offset=offset)

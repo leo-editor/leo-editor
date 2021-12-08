@@ -5,7 +5,14 @@ Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, printsupport, QtGui, QtWidgets
+#
+# Qt imports. May fail from the bridge.
+try:  # #1973
+    from leo.core.leoQt import printsupport, QtGui
+    from leo.core.leoQt import DialogCode
+except Exception:
+    printsupport = QtGui = None
+    DialogCode = None
 #@+others
 #@+node:ekr.20150509035503.1: ** cmd (decorator)
 def cmd(name):
@@ -24,8 +31,7 @@ class PrintingController:
     def reload_settings(self):
         c = self.c
         self.font_size = c.config.getString('printing-font-size') or '12'
-        self.font_family = c.config.getString(
-            'printing-font-family') or 'DejaVu Sans Mono'
+        self.font_family = c.config.getString('printing-font-family') or 'DejaVu Sans Mono'
         self.stylesheet = self.construct_stylesheet()
 
     reloadSettings = reload_settings
@@ -268,17 +274,18 @@ class PrintingController:
         if not printsupport:
             g.trace('Qt.printsupport not found.')
             return
+        # pylint: disable=no-member
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
-        DialogCode = QtWidgets.QDialog.DialogCode if isQt6 else QtWidgets.QDialog
         if result == DialogCode.Accepted:
             doc.print_(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc):
         """Preview the document."""
+        # pylint: disable=no-member
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
-        dialog.paintRequested.connect(doc.print_)
+        dialog.paintRequested.connect(doc.print)
         dialog.exec_()
     #@-others
 #@-others

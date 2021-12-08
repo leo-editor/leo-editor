@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
+from typing import Any, List
 from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
@@ -178,7 +179,8 @@ class LeoMenu:
         parentMenu = self.getMenu(parentName)
         if not parentMenu:
             g.trace('NO PARENT', parentName, g.callers())
-        table = []
+            return  # #2030
+        table: List[Any] = []
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
@@ -214,7 +216,8 @@ class LeoMenu:
         return True if this method handles the menu.
         """
         c = self.c
-        if table is None: table = []
+        if table is None:
+            table = []
         name2 = name.replace('&', '').replace(' ', '').lower()
         if name2 == 'plugins':
             # Create the plugins menu using a hook.
@@ -235,7 +238,8 @@ class LeoMenu:
     # Returns True if text in the outline or body text is selected.
 
     def hasSelection(self):
-        c = self.c; w = c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         if c.frame.body:
             first, last = w.getSelectionRange()
             return first != last
@@ -259,12 +263,14 @@ class LeoMenu:
     def createMenuEntries(self, menu, table):
         """
         Create a menu entry from the table.
-        
+
         This method shows the shortcut in the menu, but **never** binds any shortcuts.
         """
         c = self.c
-        if g.app.unitTesting: return
-        if not menu: return
+        if g.unitTesting:
+            return
+        if not menu:
+            return
         self.traceMenuTable(table)
         for data in table:
             label, command, done = self.getMenuEntryInfo(data, menu)
@@ -287,7 +293,7 @@ class LeoMenu:
     def createMasterMenuCallback(self, command, commandName):
         """
         Create a callback for the given args.
-        
+
         - If command is a string, it is treated as a command name.
         - Otherwise, it should be a callable representing the actual command.
         """
@@ -347,13 +353,13 @@ class LeoMenu:
     def getMenuEntryInfo(self, data, menu):
         """
         Parse a single entry in the table passed to createMenuEntries.
-        
+
         Table entries have the following formats:
-            
+
         1. A string, used as the command name.
         2. A 2-tuple: (command_name, command_func)
         3. A 3-tuple: (command_name, menu_shortcut, command_func)
-        
+
         Special case: If command_name is None or "-" it represents a menu separator.
         """
         done = False
@@ -361,7 +367,8 @@ class LeoMenu:
             # A single string is both the label and the command.
             s = data
             removeHyphens = s and s[0] == '*'
-            if removeHyphens: s = s[1:]
+            if removeHyphens:
+                s = s[1:]
             label = self.capitalizeMinibufferMenuName(s, removeHyphens)
             command = s.replace('&', '').lower()
             if label == '-':
@@ -387,7 +394,8 @@ class LeoMenu:
     def traceMenuTable(self, table):
 
         trace = False and not g.unitTesting
-        if not trace: return
+        if not trace:
+            return
         format = '%40s %s'
         g.trace('*' * 40)
         for data in table:
@@ -459,7 +467,8 @@ class LeoMenu:
             'kind':     the method used to open the file, such as subprocess.Popen.
         """
         k = self.c.k
-        if not table: return
+        if not table:
+            return
         g.app.openWithTable = table  # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
@@ -505,7 +514,8 @@ class LeoMenu:
         'shortcut': optional menu shortcut.
         """
         c = self.c
-        if g.app.unitTesting: return
+        if g.unitTesting:
+            return
         for d in table:
             label = d.get('name')
             args = d.get('args', [])
@@ -521,11 +531,12 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d):
+    def defineOpenWithMenuCallback(self, d=None):
         # The first parameter must be event, and it must default to None.
 
         def openWithMenuCallback(event=None, self=self, d=d):
-            return self.c.openWith(d=d)
+            d1 = d.copy() if d else {}
+            return self.c.openWith(d=d1)
 
         return openWithMenuCallback
     #@+node:tbrown.20080509212202.7: *4* LeoMenu.deleteRecentFilesMenuItems

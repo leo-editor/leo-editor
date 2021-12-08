@@ -38,12 +38,12 @@ class CText_Importer(Importer):
     #@+others
     #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
     def __init__(self, importCommands, **kwargs):
-        '''Ctor for CoffeeScriptScanner class.'''
+        """Ctor for CoffeeScriptScanner class."""
         super().__init__(
             importCommands,
-            language = 'ctext',
-            state_class = None,
-            strict = False
+            language='ctext',
+            state_class=None,
+            strict=False
         )
         self.fileType = importCommands.fileType
     #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines
@@ -53,7 +53,7 @@ class CText_Importer(Importer):
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
     def run(self, s, parent, parse_body=False):
-        '''Override Importer.run()'''
+        """Override Importer.run()"""
         # c = self.c
         root = parent.copy()
         cchar = '#'

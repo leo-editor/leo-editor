@@ -32,7 +32,7 @@ Settings:
 import difflib
 import os
 import pprint
-import unittest
+from typing import List
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
@@ -80,6 +80,7 @@ class ShadowController:
         filename = c.fileName()
         if filename:
             return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
+        print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
     #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
@@ -107,7 +108,8 @@ class ShadowController:
     #@+node:ekr.20080710082231.19: *4* x.makeShadowDirectory
     def makeShadowDirectory(self, fn):
         """Make a shadow directory for the **public** fn."""
-        x = self; path = x.shadowDirName(fn)
+        x = self
+        path = x.shadowDirName(fn)
         if not g.os_path_exists(path):
             # Force the creation of the directories.
             g.makeAllNonExistentDirectories(path)
@@ -160,7 +162,8 @@ class ShadowController:
 
     def shadowPathName(self, filename):
         """Return the full path name of filename, resolved using c.fileName()"""
-        x = self; c = x.c
+        x = self
+        c = x.c
         baseDir = x.baseDirName()
         fileDir = g.os_path_dirname(filename)
         # 2011/01/26: bogomil: redirect shadow dir
@@ -258,7 +261,7 @@ class ShadowController:
         """
         x = self
         lines = x.old_sent_lines
-        sentinels = []
+        sentinels: List[str] = []
             # The sentinels preceding each non-sentinel line,
             # not including @verbatim sentinels.
         new_lines = []
@@ -365,16 +368,19 @@ class ShadowController:
         x = self
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
-            if x.trace: print(f"put {repr(x.verbatim_line)}")
+            if x.trace:
+                print(f"put {repr(x.verbatim_line)}")
         x.results.append(line)
-        if x.trace: print(f"put {line!r}")
+        if x.trace:
+            print(f"put {line!r}")
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self, i):
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
-            if x.trace: g.trace(f"{i:3} {sentinels}")
+            if x.trace:
+                g.trace(f"{i:3} {sentinels}")
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
@@ -396,10 +402,10 @@ class ShadowController:
         if 0:
             g.trace(f"\nprivate lines...{old_private_file}")
             for s in old_private_lines:
-                g.trace(type(s), g.isUnicode(s), repr(s))
+                g.trace(type(s), isinstance(s, str), repr(s))
             g.trace(f"\npublic lines...{old_public_file}")
             for s in old_public_lines:
-                g.trace(type(s), g.isUnicode(s), repr(s))
+                g.trace(type(s), isinstance(s, str), repr(s))
         marker = x.markerFromFileLines(old_private_lines, old_private_file)
         new_private_lines = x.propagate_changed_lines(
             old_public_lines, old_private_lines, marker)
@@ -471,7 +477,8 @@ class ShadowController:
     def markerFromFileName(self, filename):
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
-        if not filename: return None
+        if not filename:
+            return None
         root, ext = g.os_path_splitext(filename)
         if ext == '.tmp':
             root, ext = os.path.splitext(root)
@@ -533,135 +540,6 @@ class ShadowController:
             except IOError:
                 g.es_exception()
                 g.es_print('can not open', fileName)
-    #@+node:ekr.20080709062932.2: *3* class x.AtShadowTestCase (leoShadow.py)
-    class AtShadowTestCase(unittest.TestCase):
-        """
-        Support @shadow-test nodes.
-
-        These nodes should have two descendant nodes: 'before' and 'after'.
-        """
-        #@+others
-        #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
-        def __init__(self, c, p, shadowController, delims=None, trace=False):
-            """Ctor for AtShadowTestCase class."""
-            super().__init__()
-            self.c = c
-            self.p = p.copy()
-            self.shadowController = x = shadowController
-            self.trace = trace
-            # Hard value for now.
-            if delims is None:
-                delims = '#', '', ''
-            self.marker = x.marker = shadowController.Marker(delims)
-                # 2015/04/03: tricky: set *both* ivars.
-                # This bug became apparent because unitTest.leo no longer
-                # pre-loads any @shadow files.
-            # For teardown...
-            self.ok = True
-        #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
-        def fail(self, msg=None):
-            """Mark an AtShadowTestCase as having failed."""
-            g.app.unitTestDict["fail"] = g.callers()
-        #@+node:ekr.20080709062932.8: *4* setUp & helpers (AtShadowTestCase)
-        def setUp(self):
-            """AtShadowTestCase.setup."""
-            c, p = self.c, self.p
-            old = self.findNode(c, p, 'old')
-            new = self.findNode(c, p, 'new')
-            self.old_private_lines = self.makePrivateLines(old)
-            self.new_private_lines = self.makePrivateLines(new)
-            self.old_public_lines = self.makePublicLines(self.old_private_lines)
-            self.new_public_lines = self.makePublicLines(self.new_private_lines)
-            # Change node:new to node:old in all sentinel lines.
-            self.expected_private_lines = self.mungePrivateLines(
-                self.new_private_lines, 'node:new', 'node:old')
-        #@+node:ekr.20080709062932.19: *5* findNode (AtShadowTestCase)
-        def findNode(self, c, p, headline):
-            """Return the node in p's subtree with given headline."""
-            p = g.findNodeInTree(c, p, headline)
-            if not p:
-                g.es_print('can not find', headline)
-                assert False
-            return p
-        #@+node:ekr.20080709062932.20: *5* createSentinelNode (AtShadowTestCase)
-        def createSentinelNode(self, root, p):
-            """Write p's tree to a string, as if to a file."""
-            h = p.h
-            p2 = root.insertAsLastChild()
-            p2.setHeadString(h + '-sentinels')
-            return p2
-        #@+node:ekr.20080709062932.21: *5* makePrivateLines (AtShadowTestCase)
-        def makePrivateLines(self, p):
-            """Return a list of the lines of p containing sentinels."""
-            at = self.c.atFileCommands
-            # A hack: we want to suppress gnx's *only* in @+node sentinels,
-            # but we *do* want sentinels elsewhere.
-            at.at_shadow_test_hack = True
-            try:
-                s = at.atFileToString(p, sentinels=True)
-            finally:
-                at.at_shadow_test_hack = False
-            return g.splitLines(s)
-        #@+node:ekr.20080709062932.22: *5* makePublicLines (AtShadowTestCase)
-        def makePublicLines(self, lines):
-            """Return the public lines in lines."""
-            x = self.shadowController
-            lines, junk = x.separate_sentinels(lines, x.marker)
-            return lines
-        #@+node:ekr.20080709062932.23: *5* mungePrivateLines (AtShadowTestCase)
-        def mungePrivateLines(self, lines, find, replace):
-            """Change the 'find' the 'replace' pattern in sentinel lines."""
-            x = self.shadowController
-            marker = self.marker
-            i, results = 0, []
-            while i < len(lines):
-                line = lines[i]
-                if marker.isSentinel(line):
-                    new_line = line.replace(find, replace)
-                    results.append(new_line)
-                    if marker.isVerbatimSentinel(line):
-                        i += 1
-                        if i < len(lines):
-                            line = lines[i]
-                            results.append(line)
-                        else:
-                            x.verbatim_error()
-                else:
-                    results.append(line)
-                i += 1
-            return results
-        #@+node:ekr.20080709062932.9: *4* tearDown (AtShadowTestCase)
-        def tearDown(self):
-            """AtShadowTestCase.tearDown."""
-            pass
-                # No change is made to the outline.
-                # self.c.redraw()
-        #@+node:ekr.20080709062932.10: *4* runTest (AtShadowTestCase)
-        def runTest(self, define_g=True):
-            """AtShadowTestCase.runTest."""
-            x = self.shadowController
-            x.trace = self.trace
-            p = self.p.copy()
-            results = x.propagate_changed_lines(
-                self.new_public_lines, self.old_private_lines, self.marker, p=p)
-            if results != self.expected_private_lines:
-                g.pr(p.h)
-                for aList, tag in (
-                    (results, 'results'),
-                    (self.expected_private_lines, 'expected_private_lines')
-                ):
-                    g.pr(f"{tag}...")
-                    for i, line in enumerate(aList):
-                        g.pr(f"{i:3} {line!r}")
-                    g.pr('-' * 40)
-                assert results == self.expected_private_lines
-            assert self.ok
-            return self.ok
-        #@+node:ekr.20080709062932.11: *4* shortDescription (AtShadowTestCase)
-        def shortDescription(self):
-            """AtShadowTestCase.shortDescription."""
-            return self.p.h if self.p else '@test-shadow: no self.p'
-        #@-others
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
     class Marker:
         """A class representing comment delims in @shadow files."""

@@ -2,6 +2,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130302121602.10208: * @file leoDebugger.py
 #@@first
+
+# Disable all mypy errors.
+# type:ignore
+
 #@+<< leoDebugger.py docstring >>
 #@+node:ekr.20181006100710.1: ** << leoDebugger.py docstring >>
 """
@@ -86,25 +90,25 @@ class Xdb(pdb.Pdb, threading.Thread):
     """
     An debugger, a subclass of Pdb, that runs in a separate thread without
     hanging Leo. Only one debugger, g.app.xdb, can be active at any time.
-    
+
     A singleton listener method, g.app,xdb_timer, runs in the main Leo
     thread. The listener runs until Leo exists.
-    
+
     Two Queues communicate between the threads:
-        
+
     - xdb.qc contains commands from the main thread to this thread.
       All xdb/pdb input comes from this queue.
-    
+
     - xdb.qr contains requests from the xdb thread to the main thread.
       All xdb/pdb output goes to this queue.
-    
+
     Settings
     --------
-    
+
    - @bool use_xdb_pane_output_area: when True, all debugger output is sent
     to an output area in the Debug pane.
-    
-    @bool bool use_gutter: when True, line numbers appear to the left of
+
+    @bool use_gutter: when True, line numbers appear to the left of
     the body pane. Clicking to the left of the gutter toggles breakpoints
     when xdb is active.
     """
@@ -374,7 +378,7 @@ def get_gnx_from_file(file_s, p, path):
 def listener(timer):
     """
     Listen, at idle-time, in Leo's main thread, for data on the qr channel.
-    
+
     This is a singleton timer, created by the xdb command.
     """
     if g.app.killed:

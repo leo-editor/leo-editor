@@ -160,49 +160,49 @@ keywordsDictDict = {
 def pandoc_heading(colorer,s,i):
     # issue 386.
     # print('pandoc_heading',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^[#]+",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_link(colorer,s,i):
     # issue 386.
     # print('pandoc_link',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\[[^]]+\]\([^)]+\)",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_star_emphasis1(colorer,s,i):
     # issue 386.
     # print('pandoc_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*[^\\s*][^*]*\\*",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_star_emphasis2(colorer,s,i):
     # issue 386.
     # print('pandoc_star_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_underscore_emphasis1(colorer,s,i):
     # issue 386.
     # print('pandoc_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="_[^_]+_",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_underline_equals(colorer,s,i):
     # issue 386.
     # print('pandoc_underline_equals',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^===[=]+$",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
         
 def pandoc_underline_minus(colorer,s,i):
     # issue 386.
     # print('pandoc_underline_minus',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="---[-]+$",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_underscore_emphasis2(colorer,s,i):
     # issue 386.
     # print('pandoc_underscore_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="__[^_]+__",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def pandoc_rule0(colorer, s, i):

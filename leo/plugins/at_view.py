@@ -2,7 +2,7 @@
 #@+node:ktenney.20041211072654.1: * @file ../plugins/at_view.py
 #@+<< docstring >>
 #@+node:ekr.20150411161126.1: ** << docstring >> (at_view.py)
-r''' Adds support for \@clip, \@view and \@strip nodes.
+r""" Adds support for \@clip, \@view and \@strip nodes.
 
 - Selecting a headline containing \@clip appends the contents of the clipboard to
   the end of the body pane.
@@ -15,22 +15,22 @@ r''' Adds support for \@clip, \@view and \@strip nodes.
   sentinels removed.
 
 This plugin also accumulates the effect of all \@path nodes.
-'''
+"""
 #@-<< docstring >>
 
 from leo.core import leoGlobals as g
-path           = g.import_module('path')
+path = g.import_module('path')
 win32clipboard = g.import_module('win32clipboard')
 
 #@+others
 #@+node:ekr.20111104210837.9693: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     ok = path and win32clipboard
         # Ok for unit testing.
     if ok:
-        g.registerHandler("after-create-leo-frame",onCreate)
-    elif not g.app.unitTesting:
+        g.registerHandler("after-create-leo-frame", onCreate)
+    elif not g.unitTesting:
         s = 'at_view plugin not loaded: win32Clipboard not present.'
         g.es_print(s)
     return ok
@@ -38,7 +38,8 @@ def init():
 def onCreate(tag, keywords):
 
     c = keywords.get("c")
-    if not c: return
+    if not c:
+        return
     myView = View(c)
 
     # Register the handlers...
@@ -48,16 +49,16 @@ def onCreate(tag, keywords):
 #@+node:ktenney.20041211072654.7: ** class View
 class View:
 
-    '''A class to support @view, @strip and @clip nodes.'''
+    """A class to support @view, @strip and @clip nodes."""
 
     #@+others
     #@+node:ktenney.20041211072654.8: *3* __init__
-    def __init__ (self,c):
+    def __init__(self, c):
 
         self.c = c
 
     #@+node:ktenney.20041211072654.9: *3* icondclick2 (at_view.py)
-    def icondclick2 (self, tag, keywords):
+    def icondclick2(self, tag, keywords):
 
         self.current = self.c.p
         hs = self.current.h
@@ -81,12 +82,12 @@ class View:
             self.clip()
     #@+node:ktenney.20041211072654.10: *3* view
     def view(self):
-        '''
+        """
         Place the contents of a file in the body pane
 
         the file is either in the current headstring,
         or found by ascending the tree
-        '''
+        """
         # get a path object for this position
         currentPath = self.getCurrentPath()
         if currentPath.exists():
@@ -101,7 +102,7 @@ class View:
     #@+node:ktenney.20041212102137: *3* clip
     def clip(self):
 
-        '''Watch the clipboard, and copy new items to the body.'''
+        """Watch the clipboard, and copy new items to the body."""
 
         if not win32clipboard:
             return
@@ -122,11 +123,11 @@ class View:
         if not body[0] == clipboard:
             g.es('clipboard now holds %s' % clipboard)
             body.insert(0, clipboard)
-            c.setBodyText(self.current,divider.join(body))
+            c.setBodyText(self.current, divider.join(body))
     #@+node:ktenney.20041211072654.15: *3* strip
     def strip(self):
 
-        '''Display a file with all sentinel lines removed'''
+        """Display a file with all sentinel lines removed"""
 
         # get a path object for this position
         c = self.c
@@ -147,7 +148,7 @@ class View:
                     verbatim = True
                 elif not line.strip().startswith('#@'):
                     lines.append(line)
-            c.setBodyText(self.current,''.join(lines))
+            c.setBodyText(self.current, ''.join(lines))
         else:
             g.warning('path does not exist: %s' % (str(currentPath)))
     #@+node:ktenney.20041211072654.11: *3* getCurrentPath
@@ -173,15 +174,15 @@ class View:
 
         return currentPath.normpath()
     #@+node:ktenney.20041211072654.12: *3* getPathFragment
-    def getPathFragment (self,p):
+    def getPathFragment(self, p):
 
         """
         Return the path fragment if this node is a @path or @view or any @file node.
         """
         head = p.h
-        for s in ('@path','@view','@strip','@file','@thin','@nosent','@asis'):
+        for s in ('@path', '@view', '@strip', '@file', '@thin', '@nosent', '@asis'):
             if head.startswith(s):
-                fragment = head [head.find(' '):].strip()
+                fragment = head[head.find(' ') :].strip()
                 return fragment
         return ''
     #@+node:ktenney.20041211072654.13: *3* processFile
@@ -193,7 +194,7 @@ class View:
 
         g.trace(node)
 
-        self.c.setBodyText(node,''.join(path.lines()))
+        self.c.setBodyText(node, ''.join(path.lines()))
     #@+node:ktenney.20041211072654.14: *3* processDirectory
     def processDirectory(self, path, node):
 

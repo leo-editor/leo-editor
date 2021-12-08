@@ -38,7 +38,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
                 shell=sys.platform.startswith('win'),
             )
             out, err = p.communicate()
-            for line in g.splitLines(out):
+            for line in g.splitLines(out):  # type:ignore
                 g.es_print(g.toUnicode(line.rstrip()))
         except Exception:
             g.es_exception()
@@ -136,7 +136,8 @@ class ControlCommandsClass(BaseEditCommandsClass):
     def suspend(self, event):
         """Minimize the present Leo window."""
         w = self.editWidget(event)
-        if not w: return
+        if not w:
+            return
         self.c.frame.top.iconify()
 
     @cmd('iconify-frame')

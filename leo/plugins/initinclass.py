@@ -25,7 +25,7 @@ from leo.core import leoPlugins
 #@+others
 #@+node:ekr.20101110093301.5816: ** InitInClass
 def InitInClass(tag, keywords):
-    '''Move __init__ into the class node body in python @auto imports'''
+    """Move __init__ into the class node body in python @auto imports"""
 
     cull = []  # __init__ nodes to remove
 
@@ -36,7 +36,7 @@ def InitInClass(tag, keywords):
             if '__init__' in p.headString():
                 cull.append(p.copy())
                 old = parent.bodyString().strip().split('\n')
-                new = '\n'.join(['    '+i if i.strip() else ''
+                new = '\n'.join(['    ' + i if i.strip() else ''
                     for i in p.bodyString().strip().split('\n')])
                 new = '\n%s\n' % new
 
@@ -45,7 +45,7 @@ def InitInClass(tag, keywords):
                     if i.strip() == '@others':
                         if parent.numberOfChildren() == 1:
                             del old[n]
-                        old.insert(n,new)
+                        old.insert(n, new)
                         old.append('')
                         break
                 else:
@@ -61,7 +61,7 @@ def InitInClass(tag, keywords):
         i._unlink()
 #@+node:ekr.20101110093301.5817: ** init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     leoPlugins.registerHandler("after-auto", InitInClass)
     g.plugin_signon(__name__)
     return True

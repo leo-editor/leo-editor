@@ -21,48 +21,48 @@ from leo.core.leoQt import QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #
 # The global settings dict.
-gDict = {} # Keys are commanders, values are settings dicts.
+gDict = {}  # Keys are commanders, values are settings dicts.
 
 #@+others
 #@+node:ekr.20060108123141.2: ** init
-def init ():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = not g.app.unitTesting
+def init():
+    """Return True if the plugin has loaded successfully."""
+    ok = not g.unitTesting
         # Don't want autosave after unit testing.
     if ok:
         # Register the handlers...
-        g.registerHandler('after-create-leo-frame',onCreate)
-        g.plugin_signon( __name__ )
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
     return ok
 #@+node:edream.110203113231.726: ** onCreate (mod_autosave.py)
 def onCreate(tag, keywords):
     """Handle the per-Leo-file settings."""
     global gDict
     c = keywords.get('c')
-    if g.app.unitTesting or g.app.killed or not c or not c.exists:
+    if g.unitTesting or g.app.killed or not c or not c.exists:
         return
     # Do nothing here if we already have registered the idle-time hook.
     d = gDict.get(c.hash())
     if not d:
-        active = c.config.getBool('mod-autosave-active',default=False)
+        active = c.config.getBool('mod-autosave-active', default=False)
         interval = c.config.getInt('mod-autosave-interval')
         if active:
             # Create an entry in the global settings dict.
             gDict[c.hash()] = {
-                'last':time.time(),
-                'interval':interval,
+                'last': time.time(),
+                'interval': interval,
             }
             message = "auto save %s sec. after changes" % (interval)
-            g.registerHandler('idle',onIdle)
+            g.registerHandler('idle', onIdle)
         else:
             message = "@bool mod_autosave_active=False"
         g.es(message, color='orange')
 #@+node:ekr.20100904062957.10654: ** onIdle
-def onIdle (tag,keywords):
+def onIdle(tag, keywords):
     """Save the current document if it has a name"""
     global gDict
     guiName = g.app.gui.guiName()
-    if guiName not in ('qt','qttabs'):
+    if guiName not in ('qt', 'qttabs'):
         return
     c = keywords.get('c')
     d = gDict.get(c.hash())
@@ -79,10 +79,10 @@ def onIdle (tag,keywords):
             else:
                 last = d.get('last')
                 interval = d.get('interval')
-                if time.time()-last >= interval:
-                    g.es_print("Autosave: %s" % time.ctime(),color="orange")
+                if time.time() - last >= interval:
+                    g.es_print("Autosave: %s" % time.ctime(), color="orange")
                     c.fileCommands.save(c.mFileName)
-                    c.set_focus(w,force=True)
+                    c.set_focus(w, force=True)
                     d['last'] = time.time()
                     gDict[c.hash()] = d
         else:
