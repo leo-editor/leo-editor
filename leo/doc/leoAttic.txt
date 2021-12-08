@@ -6921,6 +6921,85 @@ def compute_unit_test_kind(self, ext):
             if d2.get(z) == aClass:
                 return z
     return '@file'
+#@+node:ekr.20211125060945.1: *3* @@command table2test
+g.cls()
+
+last = c.lastTopLevel()
+if last.h == 'Generated Tests':
+    last.doDelete()
+result_root = last.insertAfter()
+result_root.h = 'Generated Tests'
+
+@others
+
+root1 = g.findNodeAnywhere(c, '--- Patterns')
+for p in root1.subtree():
+    if not p.h.startswith('---'):
+        convert(p)
+
+result_root.expand()
+c.redraw()
+#@+node:ekr.20211127024946.1: *4* clean
+def clean(s):
+    return ''.join(z for z in s.replace(' ','_') if z.isalnum() or z == '_') 
+#@+node:ekr.20211125061220.1: *4* convert
+def convert(p):
+    
+    test_p = result_root.insertAsLastChild()
+    test_p.h = f"test_{clean(p.h)}"
+    s = p.b.replace('@', 'AT')
+    s1, s2 = s.split('# Expect:\n')
+    input_lines = g.splitLines(s1.strip() + '\n')
+    expected_lines = g.splitLines(s2.strip() + '\n')
+    create_test(test_p, input_lines, expected_lines)
+#@+node:ekr.20211125062917.1: *4* create_test_outline (no longer used)
+def create_test(test_p, expected_lines):
+    """Create one unit test from the expected lines."""
+    stack = [(-1, test_p)]  # (level, p)
+    for s in expected_lines:
+        if s.strip().startswith('- '):
+            n = len(s) - len(s.lstrip())
+            lws = s[:n]
+            assert n == 0 or lws.isspace(), repr(lws)
+            while stack:
+                level, p = stack.pop()
+                if n > level:
+                    child = p.insertAsLastChild()
+                    child.h = s.strip()[2:]  # Remove '- '
+                    p = child
+                    stack.append((n, p))
+                    break
+                elif n == level:
+                    child = p.insertAfter()
+                    child.h = s.strip()[2:]  # Remove '- '
+                    p = child
+                    stack.append((n, p))
+                    break
+                else:
+                    pass  # Look for next entry.
+            else:
+                g.printObj(expected_lines, tag='expected_lines')
+                assert False, f"No node at level {n}"
+#@+node:ekr.20211127022936.1: *4* create_test
+def create_test(p, input_lines, expected_lines):
+    """Create a unit test from the input and expected lines."""
+    lws = ' ' * 8
+    # Assumes ''' not in either set of lines.
+    p.b = (
+        f"def {p.h}(self):\n\n"
+        f"    input_s = '''\n"
+        f"{lws}{lws.join(input_lines)}"
+        f"    '''\n"
+        f"    expected_s = '''\n"
+        f"{lws}{lws.join(expected_lines)}"
+        f"    '''\n"
+        f"    self.run_python_test(input_s, expected_s)\n\n"
+    )
+#@+node:ekr.20211201042033.1: *3* @@command test-python
+@nosearch
+
+g.cls()
+g.run_unit_tests('leo.unittests.core.test_leoImport.TestPython')
 #@-all
 #@@nosearch
 #@-leo

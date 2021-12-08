@@ -86,6 +86,8 @@ def split_root(root, lines):
                 yield j, t
     #@+node:vitalije.20211208092910.1: *3* getdefn
     def getdefn(start):
+        
+        # pylint: disable=undefined-loop-variable
         tok = rawtokens[start]
         if tok[0] != token.NAME or tok[1] not in ('def', 'class'):
             return None
@@ -141,7 +143,8 @@ def split_root(root, lines):
             # now we are searching to find the end of this function/method/body
             for i, t in itoks(i+1):
                 col2 = t[2][1]
-                if col2 > col: continue
+                if col2 > col:
+                    continue
                 if t[0] in (token.DEDENT, token.COMMENT):
                     end_b = t[2][0]
                     break
