@@ -5,6 +5,15 @@ import tokenize
 import token
 from collections import defaultdict
 #@+others
+#@+node:ekr.20211209052710.1: ** do_import
+def do_import(c, s, parent):
+    split_root(parent, s.splitlines(True))
+    parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
+    if c.config.getBool('put-class-in-imported-headlines'):
+        for p in parent.self_and_subtree():
+            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                p.h = f'class {p.h}'
+    return True
 #@+node:vitalije.20211201230203.1: ** split_root
 SPLIT_THRESHOLD = 10
 def split_root(root, lines):
@@ -157,9 +166,6 @@ def split_root(root, lines):
             else:
                 break
 
-
-        #@+others
-        #@-others
         # body indentation
         b_ind = longest_common_ws(lines[start_b-1:end_b-1])
 
@@ -269,9 +275,9 @@ def split_root(root, lines):
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
 
     # lntokens - line tokens are tokens groupped by the line number
-    #            where they originate froms
+    #            from which they originate.
     lntokens = defaultdict(list)
-    for i, t in enumerate(rawtokens):
+    for t in rawtokens:
         row = t[2][0]
         lntokens[row].append(t)
 
@@ -328,14 +334,6 @@ def split_root(root, lines):
           )
     return definitions
 #@-others
-def do_import(c, s, parent):
-    split_root(parent, s.splitlines(True))
-    parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
-    if c.config.getBool('put-class-in-imported-headlines'):
-        for p in parent.self_and_subtree():
-            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                p.h = f'class {p.h}'
-    return True
 importer_dict = {
     'func': do_import,
     'extensions': ['.py', '.pyw', '.pyi'],
