@@ -2,7 +2,6 @@
 #@+node:ekr.20140723122936.18150: * @file ../plugins/importers/otl.py
 """The @auto importer for vim-outline files."""
 import re
-from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others

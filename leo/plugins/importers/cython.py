@@ -4,7 +4,6 @@
 import re
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
-import leo.plugins.importers.python as py_importer
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others
@@ -178,7 +177,8 @@ class Cython_Importer(Importer):
                 # The leading whitespace of all other lines are significant.
                 m = self.class_or_def_pattern.match(line)
                 kind = m.group(1) if m else 'normal'
-                if kind in ('cdef', 'cpdef'): kind = 'def'
+                if kind in ('cdef', 'cpdef'):
+                    kind = 'def'
                 p = self.end_previous_blocks(kind, line, p)
                 if m:
                     assert kind in ('class', 'def'), repr(kind)

@@ -475,8 +475,7 @@ class Importer:
         """
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
-        if type(lines) is str:
-            g.trace(g.callers(10))
+        if isinstance(lines, str):
             raise ValueError
         self.gen_lines(lines, parent)
         #
