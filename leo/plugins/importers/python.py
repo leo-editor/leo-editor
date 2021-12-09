@@ -4,6 +4,8 @@
 import tokenize
 import token
 from collections import defaultdict
+from leo.core import leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20211209052710.1: ** do_import
 def do_import(c, s, parent):
@@ -201,6 +203,9 @@ def split_root(root, lines):
         # first let's find all defs that start at the same column
         # as our indented function/method/class body
         tdefs = [x for x in xdefs if x[0] == col]
+        
+        g.trace(bool(tdefs), l_ind, ind, p.h)  ###
+        ### g.printObj(tdefs, tag=f"tdefs: {p.h}")
 
         if not tdefs or end-start < SPLIT_THRESHOLD:
             # if there are no inner definitions or the total number of
@@ -223,6 +228,8 @@ def split_root(root, lines):
             # so at-others will be the first line in our body
             b1 = ''
         o = indent('@others\n', ind-l_ind)
+        
+        g.trace(repr(o), p.h)
 
         # now for the part after at-others we need to check the
         # last of inner definitions
@@ -254,6 +261,7 @@ def split_root(root, lines):
             if subdefs:
                 # there are some next level inner definitions
                 # so let's split this node
+                g.trace('Recursive:', l_ind, ind, p1.h)
                 mknode( p = p1
                       , start = h1
                       , start_b = start_b
@@ -303,7 +311,10 @@ def split_root(root, lines):
     # function getdefn returns None if the token at this index isn't start
     # of a definition, or if it isn't possible to calculate all the values
     # mentioned earlier. Therefore, we filter the list.
+    
     definitions = list(filter(None, map(getdefn, range(len(rawtokens)-1))))
+    # An equivalent definition, using comprehensions instead of map.
+    # definitions = [z for z in (getdefn(i) for i, z2  in enumerate(rawtokens)) if z is not None]
 
     # a preparation step
     root.deleteAllChildren()

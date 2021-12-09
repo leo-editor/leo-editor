@@ -173,7 +173,8 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):
         """Dump root's tree just as as Importer.dump_tree."""
-        d = g.vnode_info  # Same as Importer.vnode_info!
+        # Same as Importer.vnode_info, if it exists.
+        d = g.vnode_info if hasattr(g, 'vnode_info') else {}
         if tag:
             print(tag)
         for p in root.self_and_subtree():
@@ -2770,6 +2771,24 @@ class TestPython (BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
+    #@+node:ekr.20211209120159.1: *3* TestPython.test_mypy_fail
+    def test_mypy_fail(self):
+        
+        with open(r'C:\leo.repo\mypy\test-data\stdlib-samples\3.2\test\test_textwrap.py', 'r') as f:
+            s = f.read()
+        ### g.printObj(s)
+        p = self.run_test(s)
+        ### self.dump_tree(p)
+        if 0:
+            # self.maxDiff = None
+            for p in p.self_and_subtree():
+                lines = g.splitLines(p.b)
+                if lines and lines[0].startswith(' '):
+                    g.trace('FAIL', p.h)
+                # if textwrap.dedent(p.b) != p.b:
+                    # g.printObj(p.b, tag=p.h)
+                    # g.printObj(s, tag=p.h)
+                # self.assertEqual(textwrap.dedent(p.b), p.b, msg=p.h)
     #@+node:vitalije.20211206180043.1: *3* check_outline
     def check_outline(self, p, nodes):
         it = iter(nodes)
