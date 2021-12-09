@@ -726,6 +726,7 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
+<v t="ekr.20211209060458.1"><vh>@bool put-class-in-imported-headlines = True</vh></v>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
@@ -11630,6 +11631,7 @@ n, number
 p, Position
 s, string
 v, VNode</t>
+<t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
