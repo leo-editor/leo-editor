@@ -336,8 +336,7 @@ def split_root(root, lines):
 #@-others
 importer_dict = {
     'func': do_import,
-    'extensions': ['.py', '.pyw', '.pyi'],
-        # mypy uses .pyi extension.
+    'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
 }
 #@@language python
 #@@tabwidth -4
