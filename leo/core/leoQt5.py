@@ -108,5 +108,6 @@ UnderlineStyle = QtGui.QTextCharFormat
 Weight = QtGui.QFont
 WindowType = QtCore.Qt
 WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
 WrapMode = QtGui.QTextOption
 #@-leo

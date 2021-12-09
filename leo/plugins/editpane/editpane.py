@@ -14,8 +14,9 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets, QtConst
+from leo.core.leoQt import isQt6, QtCore, QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
+from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if QtCore is not None:
@@ -91,7 +92,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         DBG("__init__ LEP")
         super().__init__(*args, **kwargs)
-        self.setAttribute(QtConst.WA_DeleteOnClose)
+        self.setAttribute(WidgetAttribute.WA_DeleteOnClose)  # #2347.
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
         if isinstance(lep_type, str):

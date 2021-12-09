@@ -91,6 +91,7 @@ except AttributeError:
     TextInteractionFlag = QtCore.Qt.TextInteractionFlags
     ToolBarArea = QtCore.Qt.ToolBarAreas
     WindowType = QtCore.Qt.WindowFlags
+    WidgetAttribute = QtCore.Qt.WidgetAttribute # #2347
     WindowState = QtCore.Qt.WindowStates
 #
 # Other enums.
