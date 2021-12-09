@@ -506,7 +506,7 @@ class PylintCommand:
             for parent in p.self_and_parents():
                 if g.match_word(parent.h, 0, '@nopylint'):
                     return False
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+            return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         data = [(self.get_fn(p), p.copy()) for p in roots]
