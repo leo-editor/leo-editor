@@ -419,7 +419,7 @@ if QtWidgets:
             w.make_widgets()
             # Center the widget
             qtRectangle = w.frameGeometry()
-            centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+            centerPoint = QtGui.QGuiApplication.primaryScreen().availableGeometry().center()
             qtRectangle.moveCenter(centerPoint)
             w.move(qtRectangle.topLeft())
             # Show the widget.
