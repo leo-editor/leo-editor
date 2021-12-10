@@ -75,6 +75,7 @@ try:
     StandardButton = QtWidgets.QDialogButtonBox.StandardButton
     TextInteractionFlag = QtCore.Qt.TextInteractionFlag
     ToolBarArea = QtCore.Qt.ToolBarArea
+    WidgetAttribute = QtCore.Qt.WidgetAttribute  # #2347
     WindowType = QtCore.Qt.WindowType
     WindowState = QtCore.Qt.WindowState
 except AttributeError:
@@ -104,11 +105,12 @@ Format = QtGui.QImage.Format
 GlobalColor = QtCore.Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
 Information = QtWidgets.QMessageBox.Icon.Information
+ItemDataRole = QtCore.Qt.ItemDataRole  # 2347
+ItemFlag = QtCore.Qt.ItemFlag
 Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-QStyle = QtWidgets.QStyle.StandardPixmap
 ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
 SelectionMode = QtWidgets.QAbstractItemView.SelectionMode

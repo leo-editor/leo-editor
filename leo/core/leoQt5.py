@@ -78,6 +78,8 @@ Format = QtGui.QImage
 GlobalColor = QtCore.Qt
 Icon = QtWidgets.QMessageBox
 Information = QtWidgets.QMessageBox
+ItemFlag = QtCore.Qt  # 2347
+ItemDataRole = QtCore.Qt  # 2347
 ItemFlag = QtCore.Qt
 Key = QtCore.Qt
 KeyboardModifier = QtCore.Qt
@@ -108,5 +110,6 @@ UnderlineStyle = QtGui.QTextCharFormat
 Weight = QtGui.QFont
 WindowType = QtCore.Qt
 WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
 WrapMode = QtGui.QTextOption
 #@-leo
