@@ -1151,7 +1151,7 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
     def parse_body(self, p):
         """
         Parse p.b as source code, creating a tree of descendant nodes.
@@ -1159,47 +1159,36 @@ class LeoImportCommands:
         """
         if not p:
             return
-        c, ic = self.c, self
+        c, d, ic = self.c, g.app.language_extension_dict, self
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = g.scanForAtLanguage(c, p)
         self.treeType = '@file'
-        ext = '.' + g.app.language_extension_dict.get(language)
-        parser = self.body_parser_for_ext(ext)
+        ext = '.' + d.get(language)
+        parser = g.app.classDispatchDict.get(ext)
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
             ic.methodName, ic.fileType = g.os_path_splitext(fn)
-        else:
-            d = g.app.language_extension_dict
+        else: 
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        if parser:
-            bunch = c.undoer.beforeChangeTree(p)
-            s = p.b
-            p.b = ''
-            try:
-                parser(p, s)
-                c.undoer.afterChangeTree(p, 'parse-body', bunch)
-                p.expand()
-                c.selectPosition(p)
-                c.redraw()
-            except Exception:
-                g.es_exception()
-                p.b = s
-        else:
+        if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
-    #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
-    def body_parser_for_ext(self, ext):
-        """A factory returning a body parser function for the given file extension."""
-        aClass = ext and g.app.classDispatchDict.get(ext)
-
-        def body_parser_for_class(parent, s):
-            obj = aClass(importCommands=self)
-            return obj.run(s, parent, parse_body=True)
-
-        return body_parser_for_class if aClass else None
+            return
+        bunch = c.undoer.beforeChangeTree(p)
+        s = p.b
+        p.b = ''
+        try:
+            parser(c, s, p)  # 2357.
+            c.undoer.afterChangeTree(p, 'parse-body', bunch)
+            p.expand()
+            c.selectPosition(p)
+            c.redraw()
+        except Exception:
+            g.es_exception()
+            p.b = s
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
