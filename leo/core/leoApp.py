@@ -1001,7 +1001,7 @@ class LeoApp:
             g.command('edit-pane-test-open')(edit_pane_test_open)
             g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
-            g.es_exception() ###
+            # g.es_exception()
             print('Failed to import editpane')
         #
         # Complete the initialization.

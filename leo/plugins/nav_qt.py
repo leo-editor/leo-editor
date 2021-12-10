@@ -19,7 +19,7 @@ the left side of toolbar.
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >> (nav_qt.py)
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QAction, StandardPixmap ###QStyle
+from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
