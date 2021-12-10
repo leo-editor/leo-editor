@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TL.20090225102340.32: * @file nodeActions.py
+#@+node:TL.20090225102340.32: * @file ../plugins/nodeActions.py
 #@+<< docstring >>
 #@+node:TL.20080507213950.3: ** << docstring >> (nodeActions.py)
 r""" Allows the definition of double-click actions.
