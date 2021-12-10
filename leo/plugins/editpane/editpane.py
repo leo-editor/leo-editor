@@ -77,7 +77,7 @@ class LeoEditPane(QtWidgets.QWidget):
     #@+node:tbrown.20171028115438.5: *3* __init__
     def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
         update=True, recurse=False, lep_type=None, *args, **kwargs):
-        """__init__ - bind to outline
+        """LeoEditPane.__init__ - bind to outline
 
         :param outline c: outline to bind to
         :param position p: initial position

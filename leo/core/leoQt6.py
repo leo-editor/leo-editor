@@ -75,6 +75,7 @@ try:
     StandardButton = QtWidgets.QDialogButtonBox.StandardButton
     TextInteractionFlag = QtCore.Qt.TextInteractionFlag
     ToolBarArea = QtCore.Qt.ToolBarArea
+    WidgetAttribute = QtCore.Qt.WidgetAttribute  # #2347
     WindowType = QtCore.Qt.WindowType
     WindowState = QtCore.Qt.WindowState
 except AttributeError:
@@ -91,7 +92,6 @@ except AttributeError:
     TextInteractionFlag = QtCore.Qt.TextInteractionFlags
     ToolBarArea = QtCore.Qt.ToolBarAreas
     WindowType = QtCore.Qt.WindowFlags
-    WidgetAttribute = QtCore.Qt.WidgetAttribute # #2347
     WindowState = QtCore.Qt.WindowStates
 #
 # Other enums.
@@ -109,7 +109,8 @@ Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-QStyle = QtWidgets.QStyle.StandardPixmap
+### QStyle = QtWidgets.QStyle.StandardPixmap
+QStyle = QtWidgets.QStyle  ### Experimental.
 ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
 SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
