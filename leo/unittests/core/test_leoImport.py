@@ -2789,7 +2789,7 @@ class TestPython (BaseTestImporter):
                     # g.printObj(p.b, tag=p.h)
                     # g.printObj(s, tag=p.h)
                 # self.assertEqual(textwrap.dedent(p.b), p.b, msg=p.h)
-    #@+node:vitalije.20211206180043.1: *3* check_outline
+    #@+node:vitalije.20211206180043.1: *3* check_outline (disabled)
     def check_outline(self, p, nodes):
         
         return True, 'ok' ###
