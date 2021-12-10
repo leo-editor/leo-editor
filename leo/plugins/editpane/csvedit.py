@@ -1,8 +1,11 @@
+
+# pylint: disable=no-member
 import csv
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst, QtGui
+from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  #2347
 
 try:
     from cStringIO import StringIO
@@ -83,6 +86,7 @@ class ListTable(QtCore.QAbstractTableModel):
                 tables.append([])
             tables[-1].append(row)
         return tables
+
     def __init__(self, text, tbl, delim=None, *args, **kwargs):
         self.tbl = tbl
         self.delim = delim or DEFAULTDELIM
@@ -97,25 +101,29 @@ class ListTable(QtCore.QAbstractTableModel):
         if tables and tables[self.tbl]:
             self.pretext = lines[:tables[self.tbl][0].line]
             self.posttext = lines[tables[self.tbl][-1].line+1:]
-            self.data = [row.row for row in tables[self.tbl]]
+            self._data = [row.row for row in tables[self.tbl]]
         else:
             self.pretext = []
             self.posttext = []
-            self.data = []
+            self._data = []
 
     def rowCount(self, parent=None):
-        return len(self.data) if self.data else 0
+        return len(self._data) if self._data else 0
+
     def columnCount(self, parent=None):
-        return len(self.data[0]) if self.data and self.data[0] else 0
+        return len(self._data[0]) if self._data and self._data[0] else 0
+        
+    # This function must exist, but it appears to hide the self._data array!
     def data(self, index, role):
-        if role in (QtConst.DisplayRole, QtConst.EditRole):
-            return self.data[index.row()][index.column()]
+        if role in (ItemDataRole.DisplayRole, ItemDataRole.EditRole):  # #2347
+            return self._data[index.row()][index.column()]
         return None
+
     def get_text(self):
 
         # look for seperator not in text
         sep_i = 0
-        tmp = ''.join([''.join(i) for i in self.data])
+        tmp = ''.join([''.join(i) for i in self._data])
         while SEPS[sep_i] in tmp and sep_i < len(SEPS)-1:
             sep_i += 1
         if sep_i == len(SEPS)-1:
@@ -124,7 +132,7 @@ class ListTable(QtCore.QAbstractTableModel):
 
         out = StringIO()
         writer = csv.writer(out, delimiter=rep)
-        writer.writerows(self.data)
+        writer.writerows(self._data)
         text = out.getvalue().replace(rep, self.delim.sep)
         if text.endswith('\n'):
             text = text[:-1]
@@ -138,11 +146,11 @@ class ListTable(QtCore.QAbstractTableModel):
 
         return text
     def setData(self, index, value, role):
-        self.data[index.row()][index.column()] = value
+        self._data[index.row()][index.column()] = value
         self.dataChanged.emit(index, index)
         return True
     def flags(self, index):
-        return QtConst.ItemIsSelectable | QtConst.ItemIsEditable | QtConst.ItemIsEnabled
+        return ItemFlag.ItemIsSelectable | ItemFlag.ItemIsEditable | ItemFlag.ItemIsEnabled
 
 class LEP_CSVEdit(QtWidgets.QWidget):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
@@ -151,7 +159,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     lep_name = "CSV Editor"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super(LEP_CSVEdit, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)  # #2347.
         self.c = c
         self.lep = lep
         self.tbl = 0
@@ -197,10 +205,10 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         def mkbuttons(what, function):
 
             list_ = [
-                ('go-first', "%s column left", QtWidgets.QStyle.SP_ArrowLeft),
-                ('go-last', "%s column right", QtWidgets.QStyle.SP_ArrowRight),
-                ('go-top', "%s row above", QtWidgets.QStyle.SP_ArrowUp),
-                ('go-bottom', "%s row below", QtWidgets.QStyle.SP_ArrowDown),
+                ('go-first', "%s column left", StandardPixmap.SP_ArrowLeft),
+                ('go-last', "%s column right", StandardPixmap.SP_ArrowRight),
+                ('go-top', "%s row above", StandardPixmap.SP_ArrowUp),
+                ('go-bottom', "%s row below", StandardPixmap.SP_ArrowDown),
             ]
 
             buttons.addWidget(QtWidgets.QLabel(what+": "))
