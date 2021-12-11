@@ -1370,7 +1370,7 @@ class LeoServer:
         except Exception:  # pragma: no cover
             response = {"bead": 0, "undos": []}
         # _make_response adds all the cheap redraw data.
-        return self._make_response(response)
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server:node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
