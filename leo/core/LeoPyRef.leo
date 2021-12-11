@@ -399,7 +399,7 @@
 <v t="ekr.20140723122936.18147"><vh>@file ../plugins/importers/pascal.py</vh></v>
 <v t="ekr.20161027100313.1"><vh>@file ../plugins/importers/perl.py</vh></v>
 <v t="ekr.20140723122936.18148"><vh>@file ../plugins/importers/php.py</vh></v>
-<v t="ekr.20140723122936.18149"><vh>@file ../plugins/importers/python.py</vh></v>
+<v t="ekr.20211209153303.1"><vh>@file ../plugins/importers/python.py</vh></v>
 <v t="ekr.20200316100818.1"><vh>@file ../plugins/importers/rust.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file ../plugins/importers/tcl.py</vh></v>
 <v t="ekr.20180201203240.2"><vh>@file ../plugins/importers/treepad.py</vh></v>
@@ -537,6 +537,7 @@
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
 <v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
 <v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
+<v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
 <v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
 <v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
 <v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>

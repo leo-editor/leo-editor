@@ -54,6 +54,7 @@ class TestQtGui(LeoUnitTest):
             with self.assertRaises(AttributeError):
                 flag = option.ShowTabsAndSpaces  # As in the old code.
                 assert flag is not None
+            return
         # Test the new code.
         flag = option.ShowTabsAndSpaces
         assert flag is not None
