@@ -38,6 +38,8 @@ class AtFile:
     othersDirective =  7 # at-others
     miscDirective   =  8 # All other directives
     startVerbatim   =  9 # @verbatim  Not a real directive. Used to issue warnings.
+    indentDirective = 10 # @indent number
+
     #@-<< define class constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
@@ -1651,7 +1653,7 @@ class AtFile:
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
-        
+
 
         class Status:
             at_comment_seen=False
@@ -1659,8 +1661,8 @@ class AtFile:
             at_warning_given=False
             has_at_others=False
             in_code=True
-        
-        
+
+
         i = 0
         status = Status()
         while i < len(s):
@@ -1722,6 +1724,14 @@ class AtFile:
                 pass
             else:
                 at.error(f"@verbatim is not a Leo directive: {p.h}")
+        elif kind == at.indentDirective:
+            try:
+                at.indent = int(s[i:].partition('\n')[0]
+                                 .partition('@indent ')[2]
+                                 .strip())
+            except ValueError:
+                at.error(f"Argument for @indent directive "
+                          "must be an int '{s[i:].partition('\n')[0]}'")
         elif kind == at.miscDirective:
             # Fix bug 583878: Leo should warn about @comment/@delims clashes.
             if g.match_word(s, i, '@comment'):
@@ -2217,6 +2227,7 @@ class AtFile:
             ("@c", at.cDirective),
             ("@code", at.codeDirective),
             ("@doc", at.docDirective),
+            ("@indent", at.indentDirective),
             ("@others", at.othersDirective),
             ("@verbatim", at.startVerbatim))
             # ("@end_raw", at.endRawDirective),  # #2276.
@@ -2955,16 +2966,16 @@ class FastAtRead:
         self.root = None
         # compiled patterns...
         self.after_pat = None
-        self.all_pat = None   
+        self.all_pat = None
         self.code_pat = None
-        self.comment_pat = None   
-        self.delims_pat = None   
+        self.comment_pat = None
+        self.delims_pat = None
         self.doc_pat = None
-        self.first_pat = None   
+        self.first_pat = None
         self.last_pat = None 
-        self.node_start_pat = None  
+        self.node_start_pat = None
         self.others_pat = None
-        self.ref_pat = None   
+        self.ref_pat = None
         self.section_delims_pat = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
@@ -3038,6 +3049,7 @@ class FastAtRead:
         in_doc = False  # True: in @doc parts.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
+        at_indent = None # @indent has been added or not
         level_stack = []  # Entries are (vnode, in_clone_tree)
         n_last_lines = 0  # The number of @@last directives seen.
         root_gnx_adjusted = False  # True: suppress final checks.
@@ -3104,8 +3116,20 @@ class FastAtRead:
             if is_cweb and line.startswith(sentinel):
                 line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
             # Adjust indentation.
-            if indent and line[:indent].isspace() and len(line) > indent:
+            if at_indent is not None:
+                if line[:indent].isspace():
+                    at_indent = None
+                    body.append(f'@indent {indent}\n')
+                    line = line[indent:] or '\n'
+                else:
+                    line = line[at_indent:] or '\n'
+            elif indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
+            elif indent:
+                ws = len(line) - len(line.lstrip())
+                body.append(f'@indent {ws}\n')
+                line = line[ws:] or '\n'
+                at_indent = ws
             #@-<< finalize line >>
             if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
                 body.append(line)
@@ -3115,6 +3139,7 @@ class FastAtRead:
             #@+node:ekr.20180602103135.14: *4* << handle @others >>
             m = self.others_pat.match(line)
             if m:
+                at_indent = None
                 in_doc = False
                 if m.group(2) == '+':  # opening sentinel
                     body.append(f"{m.group(1)}@others{m.group(3) or ''}\n")
@@ -3131,6 +3156,7 @@ class FastAtRead:
             # This section coordinates with the section that handles @section-delims.
             m = self.ref_pat.match(line)
             if m:
+                at_indent = None
                 in_doc = False
                 if m.group(2) == '+':
                     # Any later @section-delims directive is a serious error.
@@ -3149,6 +3175,7 @@ class FastAtRead:
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
             m = self.node_start_pat.match(line)
             if m:
+                at_indent = None
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
@@ -3260,6 +3287,7 @@ class FastAtRead:
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
             m = self.all_pat.match(line)
             if m:
+                at_indent = None
                 # @all tells Leo's *write* code not to check for undefined sections.
                 # Here, in the read code, we merely need to add it to the body.
                 # Pushing and popping the stack may not be necessary, but it can't hurt.
@@ -3276,6 +3304,7 @@ class FastAtRead:
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
             m = self.after_pat.match(line)
             if m:
+                at_indent = None
                 afterref = True
                 continue
             #@-<< handle afterref >>

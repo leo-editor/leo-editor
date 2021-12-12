@@ -128,6 +128,7 @@ class TestAtFile(LeoUnitTest):
             ("@c", 0, at.cDirective),
             ("@code", 0, at.codeDirective),
             ("@doc", 0, at.docDirective),
+            ("@indent", 0, at.indentDirective),
             ('@others', 0, at.othersDirective),
             ('    @others', 4, at.othersDirective),
             # ("@end_raw", 0, at.endRawDirective), # #2276.
@@ -155,6 +156,8 @@ class TestAtFile(LeoUnitTest):
             (at.noDirective, '@encoding.setter'),
             (at.noDirective, '@encoding("abc")'),
             (at.noDirective, 'encoding = "abc"'),
+            (at.indentDirective, '@indent 5'),
+            (at.indentDirective, '@indent 5\n'),
             (at.noDirective, '@directive'),  # A crucial new test.
             (at.noDirective, '@raw'),  # 2021/11/04.
         )
@@ -329,6 +332,49 @@ class TestAtFile(LeoUnitTest):
         at.putBody(root)
         result = ''.join(at.outputList)
         self.assertEqual(result, expected)
+    #@+node:vitalije.20211212184818.1: *3* TestAtFile.test_at_indent
+    def test_at_indent(self):
+        at, c = self.at, self.c
+        root = c.rootPosition()
+        root.h = '@file test.py'
+        root.b = ( 'class A:\n'
+                   '    @others\n'
+                   'class B:\n'
+                   '    def __init__(self):\n'
+                   '        self.b = False\n'
+                   '\n'
+                 )
+        child = root.insertAsLastChild()
+        child.h = '__init__'
+        child.b = ( 'def __init__(self):\n'
+                    '    self.a = """\n'
+                    '@indent 0\n'
+                    'dummy1\n'
+                    'dummy2\n'
+                    '"""\n'
+                    '@indent 4\n'
+                    '    self.b = True\n'
+                  )
+        expected = [ 'class A:\n',
+                     '    #@+others\n',
+                     f'    #@+node:{child.gnx}: ** {child.h}\n',
+                     '    def __init__(self):\n',
+                     '        self.a = """\n',
+                     'dummy1\n',
+                     'dummy2\n',
+                     '"""\n',
+                     '        self.b = True\n',
+                     '    #@-others\n',
+                     'class B:\n',
+                     '    def __init__(self):\n',
+                     '        self.b = False\n',
+                     '\n',
+                   ]
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList).splitlines(True)
+        assert expected == result
+
     #@+node:ekr.20211104154501.1: *3* TestAtFile.test_putCodeLine
     def test_putCodeLine(self):
         
@@ -728,6 +774,55 @@ class TestFastAtRead(LeoUnitTest):
         )
         for child, h in table:
             self.assertEqual(child.h, h)
+    #@+node:vitalije.20211212191904.1: *3* TestFast.test_at_indent
+    def test_at_indent(self):
+        c, x = self.c, self.x
+        root = c.rootPosition()
+        root.h = '@file test.py'
+        contents = ''.join((
+            '#@+leo-ver=5-thin\n',
+            f'#@+node:{root.gnx}: * @file test.py\n',
+            'class A:\n',
+            '    #@+others\n',
+            '    #@+node:_init_gnx: ** __init__\n',
+            '    def __init__(self):\n',
+            '        self.a = """\n',
+            'dummy1\n',
+            'dummy2\n',
+            '"""\n',
+            '        self.b = True\n',
+            '    #@-others\n',
+            'class B:\n',
+            '    def __init__(self):\n',
+            '        self.b = False\n',
+            '\n',
+            '#@-leo\n',
+        ))
+        x.read_into_root(contents, path='test', root=root)
+        assert len(root.v.children) == 1
+        child = root.firstChild()
+        assert child.h == '__init__'
+        assert child.gnx == '_init_gnx'
+        exp = child.b.splitlines(True)
+        assert exp == [
+            'def __init__(self):\n',
+            '    self.a = """\n',
+            '@indent 0\n',
+            'dummy1\n',
+            'dummy2\n',
+            '"""\n',
+            '@indent 4\n',
+            '    self.b = True\n'
+        ]
+        exp = root.b.splitlines(True)
+        assert exp == [ 'class A:\n',
+                        '    @others\n',
+                        'class B:\n',
+                        '    def __init__(self):\n',
+                        '        self.b = False\n',
+                        '\n',
+                      ]
+
     #@+node:ekr.20211103095616.1: *3* TestFast.test_at_last
     def test_at_last(self):
         
