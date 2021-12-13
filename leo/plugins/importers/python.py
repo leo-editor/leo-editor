@@ -95,15 +95,21 @@ def split_root(root, lines):
                 yield j, t
     #@+node:vitalije.20211208092910.1: *3* getdefn
     def getdefn(start):
-        
+
         # pylint: disable=undefined-loop-variable
         tok = rawtokens[start]
-        if tok[0] != token.NAME or tok[1] not in ('def', 'class'):
+        if tok[0] != token.NAME or tok[1] not in ('async', 'def', 'class'):
             return None
 
         # the following few values are easy to get
-        kind = tok[1]
-        name = rawtokens[start+1][1]
+        if tok[1] == 'async':
+            kind = rawtokens[start+1][1]
+            name = rawtokens[start+2][1]
+        else:
+            kind = tok[1]
+            name = rawtokens[start+1][1]
+        if kind == 'def' and rawtokens[start-1][1] == 'async':
+            return
         a, col = tok[2]
 
         # now we are searching for the end of the definition line
@@ -166,35 +172,29 @@ def split_root(root, lines):
             else:
                 break
 
-        # body indentation
-        b_ind = longest_common_ws(lines[start_b-1:end_b-1])
-
         # number of `intro` lines
         intro = get_intro(a, col)
 
-        return col, a-intro, end_h, start_b, kind, name, c_ind, b_ind, end_b
-    #@+node:vitalije.20211208185735.1: *3* longest_common_ws
-    def longest_common_ws(blines):
-        # when we exclude blank lines, the resulting list might be empty
-        # min(empty) will raise ValueError
-        try:
-            return min(len(x) - len(x.lstrip()) for x in blines if x.strip())
-        except ValueError:
-            return 0
+        return col, a-intro, end_h, start_b, kind, name, c_ind, end_b
     #@+node:vitalije.20211208101750.1: *3* body
+    def bodyLine(x, ind):
+        if ind == 0 or x[:ind].isspace():
+            return x[ind:] or '\n'
+        n = len(x) - len(x.lstrip())
+        return f'\\\\-{ind-n}.{x[n:]}'
+
     def body(a, b, ind):
-        xlines = (x[ind:] or '\n' for x in lines[ a-1 : b and (b-1)])
+        xlines = (bodyLine(x, ind) for x in lines[ a-1 : b and (b-1)])
         return ''.join(xlines)
     #@+node:vitalije.20211208110301.1: *3* indent
     def indent(x, n):
         return x.rjust(len(x) + n)
     #@+node:vitalije.20211208104408.1: *3* mknode
-    def mknode(p, start, start_b, end, l_ind, ind, col, xdefs):
+    def mknode(p, start, start_b, end, l_ind, col, xdefs):
         # start   - first line of this node
         # start_b - first line of this node's function/class body
         # end     - first line after this node
         # l_ind   - amount of white space to strip from left
-        # ind   - indentation of at-others
         # col     - column start of child nodes
         # xdefs   - all definitions inside this node
 
@@ -213,7 +213,7 @@ def split_root(root, lines):
         last = start
 
         # lets check the first inner definition
-        col, h1, h2, start_b, kind, name, c_ind, b_ind, end_b = tdefs[0]
+        col, h1, h2, start_b, kind, name, c_ind, end_b = tdefs[0]
         if h1 > start:
             # first inner definition starts later
             # so we have some content before at-others
@@ -222,7 +222,7 @@ def split_root(root, lines):
             # inner definitions start at the beginning of our body
             # so at-others will be the first line in our body
             b1 = ''
-        o = indent('@others\n', ind-l_ind)
+        o = indent('@others\n', col-l_ind)
 
         # now for the part after at-others we need to check the
         # last of inner definitions
@@ -237,12 +237,12 @@ def split_root(root, lines):
 
         # now we can continue to add children for each of the inner definitions
         last = h1
-        for col, h1, h2, start_b, kind, name, c_ind, b_ind, end_b in tdefs:
+        for col, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
             if h1 > last:
                 # there are some declaration lines in between two inner definitions
                 p1 = p.insertAsLastChild()
                 p1.h = '...some declarations'
-                p1.b = body(last, h1, ind)
+                p1.b = body(last, h1, col)
                 last = h1
             p1 = p.insertAsLastChild()
             p1.h = name
@@ -258,8 +258,7 @@ def split_root(root, lines):
                       , start = h1
                       , start_b = start_b
                       , end = end_b
-                      , l_ind = l_ind + ind # increase indentation for at-others
-                      , ind = b_ind - l_ind # common leading white space
+                      , l_ind = l_ind + col # increase indentation for at-others
                       , col = c_ind
                       , xdefs = subdefs
                       )
@@ -267,7 +266,7 @@ def split_root(root, lines):
                 # there are no next level inner definitions
                 # so we can just set the body and continue
                 # to the next definition
-                p1.b = body(h1, end_b, ind)
+                p1.b = body(h1, end_b, col)
 
             last = end_b
     #@-others
@@ -328,7 +327,6 @@ def split_root(root, lines):
           , start_b = 1
           , end = len(lines)+1
           , l_ind = 0
-          , ind = 0
           , col = 0
           , xdefs = definitions
           )
