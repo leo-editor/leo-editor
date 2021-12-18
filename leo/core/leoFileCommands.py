@@ -1415,9 +1415,38 @@ class FileCommands:
             fc.putPrefs()
             fc.putFindSettings()
             fname = putVnodes2()
-            fc.putTnodes()
+            put_tnodes()
             fc.putPostlog()
             return fname, fc.outputFile.getvalue()
+
+        #@+node:vitalije.20211218225014.1: *6* function: put_tnodes
+        def put_tnodes():
+            """
+            Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
+            """
+
+            def should_suppress(p):
+                return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
+                    for z in p.self_and_parents())
+
+            fc = c.fileCommands
+            fc.put("<tnodes>\n")
+            suppress = {}
+            for p in c.all_positions(copy=False):
+                if should_suppress(p):
+                    suppress[p.v] = True
+
+            toBeWritten = {}
+            for root in c.rootPosition().self_and_siblings():
+                if root.h == PRIVAREA:
+                    break
+                for p in root.self_and_subtree():
+                    if p.v not in suppress and p.v not in toBeWritten:
+                        toBeWritten[p.v.fileIndex] = p.v
+            for gnx in sorted(toBeWritten):
+                v = toBeWritten[gnx]
+                fc.putTnode(v)
+            fc.put("</tnodes>\n")
         #@-others
         c.endEditing()
         for v in c.hiddenRootNode.children:
