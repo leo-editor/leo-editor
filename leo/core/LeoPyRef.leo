@@ -2506,13 +2506,7 @@ main(node_list = ['Startup', 'Notes', 'Code'])
         # An optimization: Write the next top-level node.
         fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
     fc.put("&lt;/vnodes&gt;\n")
-    # *required* tnodes can be found in fc.vnodesDict
-    fc.put("&lt;tnodes&gt;\n")
-    for gnx in sorted(fc.vnodesDict):
-        v = fc.gnxDict[gnx]
-        fc.putTnode(v)
-    fc.put('&lt;/tnodes&gt;\n')
-    #put_tnodes(positions_list)  # Put only *required* tnodes.
+    put_tnodes(positions_list)  # Put only *required* tnodes.
     fc.putPostlog()
     s = fc.outputFile.getvalue()
     fc.outputFile = None
@@ -2521,10 +2515,11 @@ main(node_list = ['Startup', 'Notes', 'Code'])
 </t>
 <t tx="ekr.20201018065757.1">def check_file_names():
     """Return True if leoPyRef exists and we are running from leoPy.leo."""
-    if not 'leoPy.leo' in c.shortFileName():
+    if not 'leopy.leo' in c.shortFileName().lower():
         oops('Run this script only from leoPy.leo')
         return None
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoPyRef.leo')
+    folder = g.os_path_dirname(c.mFileName)
+    fileName = g.os_path_finalize_join(folder, 'LeoPyRef.leo')
     if not os.path.exists(fileName):
         oops(f"Not found: {fileName}")
         return None
@@ -2843,7 +2838,7 @@ unl: Declarations (leo_cloud_server.py)
     """
     Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
     """
-        
+
     def should_suppress(p):
         return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
             for z in p.self_and_parents())
@@ -2855,12 +2850,14 @@ unl: Declarations (leo_cloud_server.py)
         if should_suppress(p):
             suppress[p.v] = True
     # Write tnodes in *outline* order.
-    written = {}
+    toBeWritten = {}
     for root in positions_list:
         for p in root.self_and_subtree():
-            if p.v not in suppress and p.v not in written:
-                written[p.v] = True
-                fc.putTnode(p.v)
+            if p.v not in suppress and p.v not in toBeWritten:
+                toBeWritten[p.v.fileIndex] = p.v
+    for gnx in sorted(toBeWritten):
+        v = toBeWritten[gnx]
+        fc.putTnode(v)
     fc.put("&lt;/tnodes&gt;\n")
 </t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
