@@ -27,7 +27,7 @@
 <v t="ekr.20201018072911.1"><vh>oops</vh></v>
 <v t="ekr.20201018063747.1"><vh>put_content</vh></v>
 <v t="ekr.20210510071427.1"><vh>put_prolog</vh></v>
-<v t="ekr.20210510071812.1"><vh>put_tnodes (new)</vh></v>
+<v t="ekr.20210510071812.1"><vh>put_tnodes</vh></v>
 </v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
@@ -2837,6 +2837,8 @@ unl: Declarations (leo_cloud_server.py)
 <t tx="ekr.20210510071812.1">def put_tnodes(positions_list):
     """
     Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
+    
+    This is *not* the same as fc.putTnodes.
     """
 
     def should_suppress(p):
