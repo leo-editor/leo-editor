@@ -1357,6 +1357,20 @@ class LeoServer:
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_minimal_response({"states": states})
+    #@+node:felix.20211210213603.1: *5* server.get_undos
+    def get_undos(self, param):
+        """Return list of undo operations"""
+        c = self._check_c()
+        undoer = c.undoer
+        undos = []
+        try:
+            for bead in undoer.beads:
+                undos.append(bead.undoType)
+            response = {"bead": undoer.bead, "undos": undos}
+        except Exception:  # pragma: no cover
+            response = {"bead": 0, "undos": []}
+        # _make_response adds all the cheap redraw data.
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server:node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
