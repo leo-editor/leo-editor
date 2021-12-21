@@ -1241,8 +1241,7 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 test-import
 pylint
 backup</t>
-<t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
-</t>
+<t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')</t>
 <t tx="ekr.20150507170849.1">g.cls()
 
 print('===== Start =====')
