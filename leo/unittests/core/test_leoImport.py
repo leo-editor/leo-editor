@@ -2383,6 +2383,89 @@ class TestPython (BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
+    #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes
+    def test_nested_classes_with_async(self):
+        txt = ( 'class TestCopyFile(unittest.TestCase):\n'
+                '\n'
+                '    _delete = False\n'
+                '    a00 = 1\n'
+                '    a01 = 1\n'
+                '    a02 = 1\n'
+                '    a03 = 1\n'
+                '    a04 = 1\n'
+                '    a05 = 1\n'
+                '    a06 = 1\n'
+                '    a07 = 1\n'
+                '    a08 = 1\n'
+                '    a09 = 1\n'
+                '    a10 = 1\n'
+                '    a11 = 1\n'
+                '    a12 = 1\n'
+                '    a13 = 1\n'
+                '    a14 = 1\n'
+                '    a15 = 1\n'
+                '    a16 = 1\n'
+                '    a17 = 1\n'
+                '    a18 = 1\n'
+                '    a19 = 1\n'
+                '    a20 = 1\n'
+                '    a21 = 1\n'
+                '    async def a(self):\n'
+                '        return await f(self)\n'
+                '    class Faux(object):\n'
+                '        _entered = False\n'
+                '        _exited_with = None # type: tuple\n'
+                '        _raised = False\n'
+              )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'TestCopyFile',
+                       'class TestCopyFile(unittest.TestCase):\n'
+                       '\n'
+                       '    _delete = False\n'
+                       '    a00 = 1\n'
+                       '    a01 = 1\n'
+                       '    a02 = 1\n'
+                       '    a03 = 1\n'
+                       '    a04 = 1\n'
+                       '    a05 = 1\n'
+                       '    a06 = 1\n'
+                       '    a07 = 1\n'
+                       '    a08 = 1\n'
+                       '    a09 = 1\n'
+                       '    a10 = 1\n'
+                       '    a11 = 1\n'
+                       '    a12 = 1\n'
+                       '    a13 = 1\n'
+                       '    a14 = 1\n'
+                       '    a15 = 1\n'
+                       '    a16 = 1\n'
+                       '    a17 = 1\n'
+                       '    a18 = 1\n'
+                       '    a19 = 1\n'
+                       '    a20 = 1\n'
+                       '    a21 = 1\n'
+                       '    @others\n'
+            ),
+            (2, 'a',
+                       'async def a(self):\n'
+                       '    return await f(self)\n'
+            ),
+            (2, 'Faux',
+                       'class Faux(object):\n'
+                       '    _entered = False\n'
+                       '    _exited_with = None # type: tuple\n'
+                       '    _raised = False\n\n'
+            )
+        ]
+        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
     #@+node:ekr.20211202094115.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
         txt = ( 'if 1:\n'
@@ -2765,6 +2848,86 @@ class TestPython (BaseTestImporter):
                        '    y=1\n'
                        '    x=1\n'
                        '\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_no_methods
+    def test_large_class_under_indented(self):
+        txt = ( 'class A:\n'
+                '    a=1\n'
+                '    b=1\n'
+                '    c=1\n'
+                '    d=1\n'
+                '    e=1\n'
+                '    def f(self):\n'
+                '        self._f = """dummy\n'
+                'dummy2\n'
+                'dummy3"""\n'
+                '    g=1\n'
+                '    h=1\n'
+                '    i=1\n'
+                '    j=1\n'
+                '    k=1\n'
+                '    l=1\n'
+                '    m=1\n'
+                '    n=1\n'
+                '    o=1\n'
+                '    p=1\n'
+                '    q=1\n'
+                '    r=1\n'
+                '    s=1\n'
+                '    t=1\n'
+                '    u=1\n'
+                '    v=1\n'
+                '    w=1\n'
+                '    x=1\n'
+                '    y=1\n'
+                '    x=1\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    a=1\n'
+                       '    b=1\n'
+                       '    c=1\n'
+                       '    d=1\n'
+                       '    e=1\n'
+                       '    @others\n'
+                       '    g=1\n'
+                       '    h=1\n'
+                       '    i=1\n'
+                       '    j=1\n'
+                       '    k=1\n'
+                       '    l=1\n'
+                       '    m=1\n'
+                       '    n=1\n'
+                       '    o=1\n'
+                       '    p=1\n'
+                       '    q=1\n'
+                       '    r=1\n'
+                       '    s=1\n'
+                       '    t=1\n'
+                       '    u=1\n'
+                       '    v=1\n'
+                       '    w=1\n'
+                       '    x=1\n'
+                       '    y=1\n'
+                       '    x=1\n'
+                       '\n'
+            ),
+            (2, 'f',
+                       'def f(self):\n'
+                       '    self._f = """dummy\n'
+                       '\\\\-4.dummy2\n'
+                       '\\\\-4.dummy3"""\n'
             )
         ]
         p = self.run_test(txt)

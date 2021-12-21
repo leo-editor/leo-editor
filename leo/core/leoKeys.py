@@ -546,8 +546,9 @@ class AutoCompleterClass:
             try:
                 import jedi
             except ImportError:
+                jedi = None
                 if not self.jedi_warning:
-                    self.jedi_warning = False
+                    self.jedi_warning = True
                     g.es_print('can not import jedi')
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
