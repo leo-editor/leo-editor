@@ -6,11 +6,11 @@
 import json
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
-class JSON_Scanner:
+class JSON_Scanner(Importer):  # *Is* a subclass of the Importer class.
     """A class to read .json files."""
-    # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
     def __init__(self,
@@ -20,6 +20,7 @@ class JSON_Scanner:
         ** kwargs
     ):
         """The ctor for the JSON_Scanner class."""
+        super().__init__(importCommands)
         self.c = c = importCommands.c
         self.gnx_dict = {}
             # Keys are gnx's. Values are vnode_dicts.
@@ -160,11 +161,12 @@ class JSON_Scanner:
             return True
     #@-others
 #@-others
-def do_import(c, s, parent):
-    return JSON_Scanner(c.importCommands).run(s, parent)
+###
+    # def do_import(c, s, parent):
+        # return JSON_Scanner(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-json',],
-    'func': do_import,
+    'func': JSON_Scanner.do_import,
     'extensions': ['.json',],
 }
 #@@language python

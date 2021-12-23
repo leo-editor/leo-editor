@@ -4,8 +4,10 @@
 import tokenize
 import token
 from collections import defaultdict
+from leo.plugins.importers import linescanner
+Importer = linescanner.Importer
 #@+others
-#@+node:ekr.20211209052710.1: ** do_import
+#@+node:ekr.20211209052710.1: ** python: do_import
 def do_import(c, s, parent):
     split_root(parent, s.splitlines(True))
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'

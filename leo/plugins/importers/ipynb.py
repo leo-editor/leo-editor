@@ -10,7 +10,7 @@ try:
 except ImportError:
     nbformat = None
 #@+others
-#@+node:ekr.20211209081012.1: ** function: do_import
+#@+node:ekr.20211209081012.1: ** ipynb: do_import
 def do_import(c, s, parent):
     return Import_IPYNB(c.importCommands).run(s, parent)
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB

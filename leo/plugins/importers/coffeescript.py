@@ -226,11 +226,11 @@ class CS_Importer(Importer):
         result = ''.join(leading_lines) + tail
         return result
     #@-others
-    @classmethod
-    def do_import(cls):
-        def f(c, s, parent):
-            return cls(c.importCommands).run(s, parent)
-        return f
+    # @classmethod
+    # def do_import(cls):
+        # def f(c, s, parent):
+            # return cls(c.importCommands).run(s, parent)
+        # return f
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
     """A class representing the state of the coffeescript line-oriented scan."""

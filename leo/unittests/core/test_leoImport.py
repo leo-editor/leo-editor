@@ -1326,6 +1326,18 @@ class TestJavascript (BaseTestImporter):
         """
         self.run_test(s)
     #@-others
+#@+node:ekr.20211223052501.1: ** class TestJSON (BaseTestImporter)
+class TestJavascript (BaseTestImporter):
+    
+    ext = '.json'
+    
+    #@+others
+    #@+node:ekr.20211223052547.1: *3* TestJSON.test_1
+    def test_1(self):
+        self.fail('JSON test not ready yet')
+        
+        
+    #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
     

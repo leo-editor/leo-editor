@@ -33,6 +33,7 @@ def create_app(gui_name='null'):
     # Set g.unitTesting *early*, for guards, to suppress the splash screen, etc.
     g.unitTesting = True
     # Create g.app now, to avoid circular dependencies.
+    warnings.simplefilter("ignore")
     g.app = leoApp.LeoApp()
     # Late imports.
     warnings.simplefilter("ignore")
