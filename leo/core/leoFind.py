@@ -2015,6 +2015,8 @@ class LeoFind:
             assert c.positionExists(found, trace=True), found
             c.setChanged()
             c.selectPosition(found)
+            # Put the count in found.h.
+            found.h = found.h.replace('Found:', f"Found {count}:")
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
