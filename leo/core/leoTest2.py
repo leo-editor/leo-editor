@@ -13,6 +13,7 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
 import time
 import unittest
+import warnings
 from leo.core import leoGlobals as g
 from leo.core import leoApp
 
@@ -34,6 +35,7 @@ def create_app(gui_name='null'):
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
     # Late imports.
+    warnings.simplefilter("ignore")
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
