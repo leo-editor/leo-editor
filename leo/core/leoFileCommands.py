@@ -738,7 +738,7 @@ class FileCommands:
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
         if c.changed:
-            fc.propegateDirtyNodes()
+            fc.propagateDirtyNodes()
         fc.initReadIvars()
         t2 = time.time()
         g.es(f"read outline in {t2 - t1:2.2f} seconds")
@@ -1241,8 +1241,8 @@ class FileCommands:
             # self.gnxDict = {}
         self.c.nodeConflictList = []  # 2010/01/05
         self.c.nodeConflictFileName = None  # 2010/01/05
-    #@+node:ekr.20100124110832.6212: *5* fc.propegateDirtyNodes
-    def propegateDirtyNodes(self):
+    #@+node:ekr.20100124110832.6212: *5* fc.propagateDirtyNodes
+    def propagateDirtyNodes(self):
         c = self.c
         aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
