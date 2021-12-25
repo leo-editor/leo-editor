@@ -3896,6 +3896,7 @@ def main():  # pragma: no cover (tested in client)
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
+                    # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
