@@ -336,10 +336,7 @@ class FastRead:
                     #@-<< Make a new vnode, linked to the parent >>
                     #@+<< handle all other v attributes >>
                     #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
-                    # Like fc.handleVnodeSaxAttrutes.
-                    #
-                    # The native attributes of <v> elements are:
-                    # a, t, vtag, marks, expanded, VnodeUnknownAttributes.
+                    # FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
                     d = e.attrib
                     s = d.get('descendentTnodeUnknownAttributes')
                     if s:

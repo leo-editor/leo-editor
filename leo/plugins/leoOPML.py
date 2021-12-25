@@ -44,8 +44,7 @@ Leo writes body text to the OPML file only if this is True.
 If True, Leo writes the native attributes of Leo's <v> elements as attributes of
 the opml <outline> elements.
 
-The native attributes of <v> elements are a, t, vtag (new), tnodeList,
-marks, expanded and descendentTnodeUnknownAttributes.
+FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
 
 - @bool opml_write_leo_globals_attributes = True
 
