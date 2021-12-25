@@ -420,11 +420,9 @@ class FileCommands:
         self.currentPosition = None
         # New in 3.12...
         self.copiedTree = None
-        # Keys are gnx strings. Values are vnodes.
-        # 2011/12/10: This dict is never re-inited.
-        self.gnxDict = {}
-        self.vnodesDict = {}
-            # keys are gnx strings; values are ignored
+        # fc.gnxDict is never re-inited.
+        self.gnxDict = {}  # Keys are gnx strings. Values are vnodes.
+        self.vnodesDict = {}  # keys are gnx strings; values are ignored
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
