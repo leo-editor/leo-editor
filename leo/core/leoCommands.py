@@ -1461,10 +1461,6 @@ class Commands:
         for p in c.safe_all_positions(copy=False):
             count += 1
             v = p.v
-            ###
-                # if hasattr(v, "tnodeList"):
-                    # delattr(v, "tnodeList")
-                    # v._p_changed = True
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
                 aSet: Set["leoNodes.VNode"] = d.get(gnx, set())

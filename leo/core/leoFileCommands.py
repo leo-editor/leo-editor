@@ -708,14 +708,8 @@ class FileCommands:
                 if v:
                     c.hiddenRootNode = v
             if v:
-                ###
-                    # fc.resolveTnodeLists()  # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
                 if readAtFileNodesFlag:
-                    # c.redraw()
-                        # Does not work.
-                        # Redraw before reading the @file nodes so the screen isn't blank.
-                        # This is important for big files like LeoPy.leo.
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
             p = recoveryNode or c.p or c.lastTopLevel()
