@@ -1271,11 +1271,9 @@ class FileCommands:
         expanded, marks = {}, {}
         for gnx in self.descendentExpandedList:
             v = self.gnxDict.get(gnx)
-            # g.trace('expanded', gnx)
             if v:
                 expanded[v] = v
         for gnx in self.descendentMarksList:
-            # g.trace('   marks', gnx)
             v = self.gnxDict.get(gnx)
             if v:
                 marks[v] = v
