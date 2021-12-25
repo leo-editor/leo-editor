@@ -109,7 +109,7 @@ def split_root(root, lines):
             kind = tok[1]
             name = rawtokens[start+1][1]
         if kind == 'def' and rawtokens[start-1][1] == 'async':
-            return
+            return None
         a, col = tok[2]
 
         # now we are searching for the end of the definition line
