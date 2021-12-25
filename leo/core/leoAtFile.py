@@ -122,7 +122,7 @@ class AtFile:
         at.root = root
         at.rootSeen = False
         at.targetFileName = fileName  # For at.writeError only.
-        at.tnodeList = []  # Needed until old-style @file nodes are no longer supported.
+        ### at.tnodeList = []  # Needed until old-style @file nodes are no longer supported.
         at.tnodeListIndex = 0
         at.v = None
         at.vStack = []  # Stack of at.v values.
@@ -176,8 +176,9 @@ class AtFile:
         #
         # Clean root.v.
         if not at.errors and at.root:
-            if hasattr(at.root.v, 'tnodeList'):
-                delattr(at.root.v, 'tnodeList')  # pragma: no cover
+            ###
+                # if hasattr(at.root.v, 'tnodeList'):
+                    # delattr(at.root.v, 'tnodeList')  # pragma: no cover
             at.root.v._p_changed = True
         #
         # #1907: Compute the file name and create directories as needed.
@@ -324,15 +325,6 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         root.clearDirty()
         return True
-    #@+node:ekr.20100122130101.6174: *6* at.deleteTnodeList
-    def deleteTnodeList(self, p):  # pragma: no cover
-        """Remove p's tnodeList."""
-        v = p.v
-        if hasattr(v, "tnodeList"):
-            # Not an error, but a useful trace.
-                # g.blue("deleting tnodeList for " + repr(v))
-            delattr(v, "tnodeList")
-            v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
     def deleteUnvisitedNodes(self, root, redraw=True):  # pragma: no cover
         """
@@ -1356,8 +1348,9 @@ class AtFile:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
+            ###
+                # if hasattr(self.root.v, 'tnodeList'):
+                    # delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p):  # pragma: no cover
@@ -1409,8 +1402,9 @@ class AtFile:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
+            ###
+                # if hasattr(self.root.v, 'tnodeList'):
+                    # delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root):  # pragma: no cover
@@ -1435,8 +1429,9 @@ class AtFile:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
+            ###
+                # if hasattr(self.root.v, 'tnodeList'):
+                    # delattr(self.root.v, 'tnodeList')
             at.writeException(fileName, root)
     #@+node:ekr.20080711093251.5: *6* at.writeOneAtShadowNode & helper
     def writeOneAtShadowNode(self, p, testing=False):  # pragma: no cover
@@ -1591,15 +1586,17 @@ class AtFile:
             at.putFile(root, sentinels=sentinels)
             assert root == at.root, 'write'
             contents = '' if at.errors else ''.join(at.outputList)
-            # Major bug: failure to clear this wipes out headlines!
-            #            Sometimes this causes slight problems...
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
-                root.v._p_changed = True
+            ###
+                # # Major bug: failure to clear this wipes out headlines!
+                # #            Sometimes this causes slight problems...
+                # if hasattr(self.root.v, 'tnodeList'):
+                    # delattr(self.root.v, 'tnodeList')
+                    # root.v._p_changed = True
             return contents
         except Exception:
-            if hasattr(self.root.v, 'tnodeList'):
-                delattr(self.root.v, 'tnodeList')
+            ###
+                # if hasattr(self.root.v, 'tnodeList'):
+                    # delattr(self.root.v, 'tnodeList')
             at.exception("exception preprocessing script")
             root.v._p_changed = True
             return ''
@@ -1625,8 +1622,9 @@ class AtFile:
             # Major bug: failure to clear this wipes out headlines!
             #            Sometimes this causes slight problems...
             if root:
-                if hasattr(self.root.v, 'tnodeList'):
-                    delattr(self.root.v, 'tnodeList')
+                ###
+                    # if hasattr(self.root.v, 'tnodeList'):
+                        # delattr(self.root.v, 'tnodeList')
                 root.v._p_changed = True
             return contents
         except Exception:

@@ -316,19 +316,6 @@ class OpmlController:
             if p.v == v:
                 c.selectPosition(p)
                 break
-    #@+node:ekr.20060918132045: *4* oc.resolveTnodeLists
-    def resolveTnodeLists(self, c):
-        for p in c.allNodes_iter():
-            if hasattr(p.v, 'tempTnodeList'):
-                result = []
-                for gnx in p.v.tempTnodeList:
-                    v = self.generated_gnxs.get(gnx)
-                    if v:
-                        result.append(v)
-                    else:
-                        g.trace('No tnode for %s' % gnx)
-                p.v.tnodeList = result
-                delattr(p.v, 'tempTnodeList')
     #@+node:ekr.20060919201810: *3* oc.readOpmlCommand
     def readOpmlCommand(self, event=None):
         """Open a Leo window containing the contents of an .opml file."""

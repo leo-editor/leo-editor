@@ -70,7 +70,8 @@ class FastRead:
         'a',
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
-        'expanded', 'marks', 't', 'tnodeList',
+        'expanded', 'marks', 't',
+        # 'tnodeList',  # Removed in Leo 6.6.
     )
 
     def __init__(self, c, gnx2vnode):
@@ -337,14 +338,9 @@ class FastRead:
                     #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
                     # Like fc.handleVnodeSaxAttrutes.
                     #
-                    # The native attributes of <v> elements are a, t, vtag, tnodeList,
-                    # marks, expanded, and descendentTnode/VnodeUnknownAttributes.
+                    # The native attributes of <v> elements are:
+                    # a, t, vtag, marks, expanded, VnodeUnknownAttributes.
                     d = e.attrib
-                    s = d.get('tnodeList', '')
-                    tnodeList = s and s.split(',')
-                    if tnodeList:
-                        # This tnodeList will be resolved later.
-                        v.tempTnodeList = tnodeList
                     s = d.get('descendentTnodeUnknownAttributes')
                     if s:
                         aDict = fc.getDescendentUnknownAttributes(s, v=v)
@@ -397,8 +393,8 @@ class FileCommands:
             'a',
             'descendentTnodeUnknownAttributes',
             'descendentVnodeUnknownAttributes',  # New in Leo 4.5.
-            'expanded', 'marks', 't', 'tnodeList',
-            # 'vtag',
+            'expanded', 'marks', 't',
+            # 'tnodeList',  # Removed in Leo 6.6.
         )
         self.initIvars()
     #@+node:ekr.20090218115025.5: *4* fc.initIvars
@@ -427,10 +423,9 @@ class FileCommands:
         self.currentPosition = None
         # New in 3.12...
         self.copiedTree = None
+        # Keys are gnx strings. Values are vnodes.
+        # 2011/12/10: This dict is never re-inited.
         self.gnxDict = {}
-            # keys are gnx strings as returned by canonicalTnodeIndex.
-            # Values are vnodes.
-            # 2011/12/10: This dict is never re-inited.
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
     #@+node:ekr.20210316042224.1: *3* fc: Commands
@@ -713,8 +708,8 @@ class FileCommands:
                 if v:
                     c.hiddenRootNode = v
             if v:
-                fc.resolveTnodeLists()
-                    # Do this before reading external files.
+                ###
+                    # fc.resolveTnodeLists()  # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
                 if readAtFileNodesFlag:
                     # c.redraw()
@@ -1171,18 +1166,6 @@ class FileCommands:
     def archivedPositionToPosition(self, s):
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
-    #@+node:ekr.20031218072017.2004: *5* fc.canonicalTnodeIndex
-    def canonicalTnodeIndex(self, index):
-        """Convert Tnnn to nnn, leaving gnx's unchanged."""
-        # index might be Tnnn, nnn, or gnx.
-        if index is None:
-            g.trace('Can not happen: index is None')
-            return None
-        junk, theTime, junk = g.app.nodeIndices.scanGnx(index, 0)
-        if theTime is None:  # A pre-4.1 file index.
-            if index[0] == "T":
-                index = index[1:]
-        return index
     #@+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
     def getDescendentAttributes(self, s, tag=""):
         """s is a list of gnx's, separated by commas from a <v> or <t> element.
@@ -1277,35 +1260,13 @@ class FileCommands:
             else:
                 return oops(f'bad index="{n}", len(children)="{len(children)}"')
         return last_v
-    #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
-    def resolveTnodeLists(self):
-        """
-        Called *before* reading external files.
-        """
-        c = self.c
-        for p in c.all_unique_positions(copy=False):
-            if hasattr(p.v, 'tempTnodeList'):
-                result = []
-                for tnx in p.v.tempTnodeList:
-                    index = self.canonicalTnodeIndex(tnx)
-                    # new gnxs:
-                    index = g.toUnicode(index)
-                    v = self.gnxDict.get(index)
-                    if v:
-                        result.append(v)
-                    else:
-                        g.trace(f"*** No VNode for {tnx}")
-                if result:
-                    p.v.tnodeList = result
-                delattr(p.v, 'tempTnodeList')
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
         """Called from fc.readExternalFiles."""
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
             for gnx in resultDict:
-                tref = self.canonicalTnodeIndex(gnx)
-                v = self.gnxDict.get(tref)
+                v = self.gnxDict.get(gnx)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = True
@@ -1318,12 +1279,12 @@ class FileCommands:
                     v._p_changed = True
         expanded, marks = {}, {}
         for gnx in self.descendentExpandedList:
-            tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
+            g.trace('expanded', gnx)
             if v:
                 expanded[v] = v
         for gnx in self.descendentMarksList:
-            tref = self.canonicalTnodeIndex(gnx)
+            g.trace('   marks', gnx)
             v = self.gnxDict.get(gnx)
             if v:
                 marks[v] = v
@@ -2118,8 +2079,6 @@ class FileCommands:
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
-            # Fix #1023: never put marked/expanded bits.
-                # attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes & helper
     new = True

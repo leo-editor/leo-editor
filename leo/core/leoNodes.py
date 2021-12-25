@@ -111,14 +111,14 @@ class NodeIndices:
         else:
             v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s, i=0):
+    def scanGnx(self, s):
         """Create a gnx from its string representation."""
         if not isinstance(s, str):
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()
         theId, t, n = None, None, None
-        i, theId = g.skip_to_char(s, i, '.')
+        i, theId = g.skip_to_char(s, 0, '.')
         if g.match(s, i, '.'):
             i, t = g.skip_to_char(s, i + 1, '.')
             if g.match(s, i, '.'):
