@@ -354,7 +354,7 @@ class Undoer:
         if topLevel:
             treeInfo = []
         # Add info for p.v.  Duplicate info is harmless.
-        data = (p.v, u.createVnodeUndoInfo(p.v)) ###, u.createTnodeUndoInfo(p.v))
+        data = (p.v, u.createVnodeUndoInfo(p.v))
         treeInfo.append(data)
         # Recursively add info for the subtree.
         child = p.firstChild()
