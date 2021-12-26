@@ -510,7 +510,6 @@ class Position:
 
     # Compatibility with old code.
 
-    tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
     def parents(self, copy=True):
@@ -589,7 +588,6 @@ class Position:
 
     # Compatibility with old code.
 
-    unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
     def unique_subtree(self):
@@ -604,7 +602,6 @@ class Position:
 
     # Compatibility with old code...
 
-    subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
     #@+node:ekr.20040306210951: *4* p.VNode proxies

@@ -261,7 +261,7 @@ class OpmlController:
         """
         Write the c.p as OPML, using the owner's put method."""
         PutToOPML(owner)
-    #@+node:ekr.20060904103721: *3* oc.readFile & helpers
+    #@+node:ekr.20060904103721: *3* oc.readFile & helper
     def readFile(self, fileName):
         """Read the opml file."""
         dumpTree = False
@@ -286,26 +286,9 @@ class OpmlController:
             c.dumpOutline()
             g.trace('%s errors!' % errors)
             return None
-        # if self.opml_read_derived_files:
-            # at = c.atFileCommands
-            # c.fileCommands.tnodesDict = self.createTnodesDict()
-            # self.resolveTnodeLists(c)
-            # if self.opml_read_derived_files:
-                # c.atFileCommands.readAll(c.rootPosition())
         c.selectPosition(p)
         c.redraw()
         return c  # for testing.
-    #@+node:ekr.20060921153603: *4* oc.createTnodesDict
-    def createTnodesDict(self):
-        """
-        Create c.tnodesDict by from self.generated_gnxs
-        by converting VNode entries to tnodes.
-        """
-        d = {}
-        for key in list(self.generated_gnxs.keys()):
-            v = self.generated_gnxs.get(key)
-            d[key] = v
-        return d
     #@+node:ekr.20060917214140: *4* oc.setCurrentPosition
     def setCurrentPosition(self, c):
         v = self.currentVnode
@@ -537,24 +520,6 @@ class PutToOPML:
         if c.isCurrentPosition(p):
             attr.append('V')
         return ''.join(attr)
-    #@+node:ekr.20060919172012.9: *4* tnodeListAttributes (Not used)
-    # Based on fileCommands.putTnodeList.
-
-    def tnodeListAttributes(self, p):
-        """Put the tnodeList attribute of p.v"""
-        # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
-        if not hasattr(p.v, 'tnodeList') or not p.v.tnodeList:
-            return None
-        # Assign fileIndices.
-        for v in p.v.tnodeList:
-            try:  # Will fail for None or any pre 4.1 file index.
-                theId, time, n = p.v.fileIndex
-            except Exception:
-                g.trace("assigning gnx for ", p.v)
-                gnx = g.app.nodeIndices.getNewIndex(p.v)
-                p.v.setFileIndex(gnx)  # Don't convert to string until the actual write.
-        s = ','.join([g.app.nodeIndices.tupleToString(v.fileIndex) for v in p.v.tnodeList])
-        return s
     #@+node:tbrown.20061004094757: *4* uAAttributes
     def uAAttributes(self, p):
         """write unknownAttributes with various levels of expansion"""

@@ -303,9 +303,8 @@ class Undoer:
         including all links."""
         u = self
         # This effectively relinks all vnodes.
-        for v, vInfo, tInfo in treeInfo:
+        for v, vInfo in treeInfo:
             u.restoreVnodeUndoInfo(vInfo)
-            u.restoreTnodeUndoInfo(tInfo)
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
     def restoreVnodeUndoInfo(self, bunch):
         """Restore all ivars saved in the bunch."""
@@ -341,15 +340,11 @@ class Undoer:
         # "undo" tree and some were not. Moreover, it required complex
         # adjustments to t.vnodeLists.
         #
-        # Instead of creating new nodes, the new code creates all information
-        # needed to properly restore the vnodes and tnodes. It creates a list of
-        # tuples, on tuple for each VNode in the tree. Each tuple has the form,
-        #
-        # (vnodeInfo, tnodeInfo)
-        #
-        # where vnodeInfo and tnodeInfo are dicts contain all info needed to
-        # recreate the nodes. The v.createUndoInfoDict and t.createUndoInfoDict
-        # methods correspond to the old v.copy and t.copy methods.
+        # Instead of creating new nodes, the new code creates all information needed
+        # to properly restore the vnodes. It creates a list of tuples, on tuple for
+        # each VNode in the tree. Each tuple has the form (v, vnodeInfo), where
+        # vnodeInfo is a dict containing all info needed to recreate the nodes. The
+        # v.createUndoInfoDict method corresponds to the old v.copy method.
         #
         # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
@@ -358,8 +353,8 @@ class Undoer:
         topLevel = (treeInfo is None)
         if topLevel:
             treeInfo = []
-        # Add info for p.v.  Duplicate tnode info is harmless.
-        data = (p.v, u.createVnodeUndoInfo(p.v), u.createTnodeUndoInfo(p.v))
+        # Add info for p.v.  Duplicate info is harmless.
+        data = (p.v, u.createVnodeUndoInfo(p.v)) ###, u.createTnodeUndoInfo(p.v))
         treeInfo.append(data)
         # Recursively add info for the subtree.
         child = p.firstChild()
@@ -376,13 +371,6 @@ class Undoer:
             parents=v.parents[:],
             children=v.children[:],
         )
-        if hasattr(v, 'unknownAttributes'):
-            bunch.unknownAttributes = v.unknownAttributes
-        return bunch
-    #@+node:ekr.20050415170812.1: *5* u.createTnodeUndoInfo
-    def createTnodeUndoInfo(self, v):
-        """Create a bunch containing all info needed to recreate a VNode."""
-        bunch = g.Bunch(v=v, headString=v.h, bodyString=v.b, statusBits=v.statusBits,)
         if hasattr(v, 'unknownAttributes'):
             bunch.unknownAttributes = v.unknownAttributes
         return bunch

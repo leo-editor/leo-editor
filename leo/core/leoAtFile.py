@@ -122,7 +122,6 @@ class AtFile:
         at.root = root
         at.rootSeen = False
         at.targetFileName = fileName  # For at.writeError only.
-        at.tnodeListIndex = 0
         at.v = None
         at.vStack = []  # Stack of at.v values.
         at.thinChildIndexStack = []  # number of siblings at this level.
@@ -363,16 +362,16 @@ class AtFile:
 
         c = self.c
         p = root.copy()
-        scanned_tnodes = set()
+        scanned_nodes = set()
         files = []
         after = p.nodeAfterTree() if force else None
         while p and p != after:
             data = (p.gnx, g.fullPath(c, p))
             # skip clones referring to exactly the same paths.
-            if data in scanned_tnodes:
+            if data in scanned_nodes:
                 p.moveToNodeAfterTree()
                 continue
-            scanned_tnodes.add(data)
+            scanned_nodes.add(data)
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
@@ -2024,7 +2023,7 @@ class AtFile:
             return
         s = at.nodeSentinelText(p)
         at.putSentinel("@+node:" + s)
-        # Leo 4.7 b2: we never write tnodeLists.
+        # Leo 4.7: we never write tnodeLists.
     #@+node:ekr.20041005105605.194: *5* at.putSentinel (applies cweb hack) 4.x
     def putSentinel(self, s):
         """

@@ -71,7 +71,7 @@ class FastRead:
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
         'expanded', 'marks', 't',
-        # 'tnodeList',  # Removed in Leo 6.6.
+        # 'tnodeList',  # Removed in Leo 4.7.
     )
 
     def __init__(self, c, gnx2vnode):
@@ -350,9 +350,7 @@ class FastRead:
                             fc.descendentVnodeUaDictList.append((v, aDict),)
                     #
                     # Handle vnode uA's
-                    uaDict = gnx2ua[gnx]
-                        # gnx2ua is a defaultdict(dict)
-                        # It might already exists because of tnode uA's.
+                    uaDict = gnx2ua[gnx]  # A defaultdict(dict)
                     for key, val in d.items():
                         if key not in self.nativeVnodeAttributes:
                             uaDict[key] = self.resolveUa(key, val)
@@ -391,7 +389,7 @@ class FileCommands:
             'descendentTnodeUnknownAttributes',
             'descendentVnodeUnknownAttributes',  # New in Leo 4.5.
             'expanded', 'marks', 't',
-            # 'tnodeList',  # Removed in Leo 6.6.
+            # 'tnodeList',  # Removed in Leo 4.7.
         )
         self.initIvars()
     #@+node:ekr.20090218115025.5: *4* fc.initIvars
@@ -1336,9 +1334,13 @@ class FileCommands:
         p = c.p
         fc = self
         #@+others
-        #@+node:vitalije.20170831135535.1: *6* function: putVnodes2
-        def putVnodes2():
-            """Puts all <v> elements in the order in which they appear in the outline."""
+        #@+node:vitalije.20170831135535.1: *6* function: put_v_elements
+        def put_v_elements():
+            """
+            Puts all <v> elements in the order in which they appear in the outline.
+            
+            This is not the same as fc.put_v_elements!
+            """
             c.clearAllVisited()
             fc.put("<vnodes>\n")
             # Make only one copy for all calls.
@@ -1351,7 +1353,7 @@ class FileCommands:
                     ref_fname = p.b.split('\n', 1)[0].strip()
                     break
                 # An optimization: Write the next top-level node.
-                fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
+                fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
             fc.put("</vnodes>\n")
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* function: getPublicLeoFile
@@ -1362,15 +1364,15 @@ class FileCommands:
             fc.putGlobals()
             fc.putPrefs()
             fc.putFindSettings()
-            fname = putVnodes2()
-            put_tnodes()
+            fname = put_v_elements()
+            put_t_elements()
             fc.putPostlog()
             return fname, fc.outputFile.getvalue()
 
-        #@+node:vitalije.20211218225014.1: *6* function: put_tnodes
-        def put_tnodes():
+        #@+node:vitalije.20211218225014.1: *6* function: put_t_elements
+        def put_t_elements():
             """
-            Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
+            Write all <t> elements except those for vnodes appearing in @file, @edit or @auto nodes.
             """
 
             def should_suppress(p):
@@ -1393,7 +1395,7 @@ class FileCommands:
                         toBeWritten[p.v.fileIndex] = p.v
             for gnx in sorted(toBeWritten):
                 v = toBeWritten[gnx]
-                fc.putTnode(v)
+                fc.put_t_element(v)
             fc.put("</tnodes>\n")
         #@-others
         c.endEditing()
@@ -1607,8 +1609,8 @@ class FileCommands:
             self.usingClipboard = True
             self.putProlog()
             self.putHeader()
-            self.putVnodes(p or self.c.p)
-            self.putTnodes()
+            self.put_v_elements(p or self.c.p)
+            self.put_t_elements()
             self.putPostlog()
             s = self.outputFile.getvalue()
             self.outputFile = None
@@ -1629,8 +1631,8 @@ class FileCommands:
         self.putGlobals()
         self.putPrefs()
         self.putFindSettings()
-        self.putVnodes()
-        self.putTnodes()
+        self.put_v_elements()
+        self.put_t_elements()
         self.putPostlog()
         s = self.outputFile.getvalue()
         self.outputFile = None
@@ -1941,8 +1943,8 @@ class FileCommands:
         if sheet:
             self.put(f"<?xml-stylesheet {sheet} ?>\n")
 
-    #@+node:ekr.20031218072017.1577: *5* fc.putTnode
-    def putTnode(self, v):
+    #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
+    def put_t_element(self, v):
         # Call put just once.
         gnx = v.fileIndex
         # pylint: disable=consider-using-ternary
@@ -1950,35 +1952,36 @@ class FileCommands:
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
-    #@+node:ekr.20031218072017.1575: *5* fc.putTnodes
-    def putTnodes(self):
-        """Puts all tnodes as required for copy or save commands"""
+    #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
+    def put_t_elements(self):
+        """Put all <t> elements as required for copy or save commands"""
         self.put("<tnodes>\n")
-        self.putReferencedTnodes()
+        self.putReferencedTElements()
         self.put("</tnodes>\n")
-    #@+node:ekr.20031218072017.1576: *6* fc.putReferencedTnodes
-    def putReferencedTnodes(self):
-        """Put all referenced tnodes."""
+    #@+node:ekr.20031218072017.1576: *6* fc.putReferencedTElements
+    def putReferencedTElements(self):
+        """Put <t> elements for all referenced vnodes."""
         c = self.c
         if self.usingClipboard:  # write the current tree.
             theIter = self.currentPosition.self_and_subtree(copy=False)
         else:  # write everything
             theIter = c.all_unique_positions(copy=False)
-        # Populate tnodes
-        tnodes = {}
+        # Populate the vnodes dict.
+        vnodes = {}
         for p in theIter:
             # Make *sure* the file index has the proper form.
             # pylint: disable=unbalanced-tuple-unpacking
             index = p.v.fileIndex
-            tnodes[index] = p.v
-        # Put all tnodes in index order.
-        for index in sorted(tnodes):
-            v = tnodes.get(index)
+            vnodes[index] = p.v
+        # Put all vnodes in index order.
+        for index in sorted(vnodes):
+            v = vnodes.get(index)
             if v:
-                # Write only those tnodes whose vnodes were written.
-                # **Note**: @<file> trees are not written unless they contain clones.
+                # Write <t> elements only for vnodes that will be written.
+                # For example, vnodes in external files will be written
+                #              only if the vnodes are cloned outside the file.
                 if v.isWriteBit():
-                    self.putTnode(v)
+                    self.put_t_element(v)
             else:
                 g.trace('can not happen: no VNode for', repr(index))
                 # This prevents the file from being written.
@@ -2007,8 +2010,8 @@ class FileCommands:
             return val
         g.warning("ignoring non-dictionary unknownAttributes for", torv)
         return ''
-    #@+node:ekr.20031218072017.1863: *5* fc.putVnode & helper
-    def putVnode(self, p, isIgnore=False):
+    #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
+    def put_v_element(self, p, isIgnore=False):
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
@@ -2050,7 +2053,7 @@ class FileCommands:
                 # This optimization eliminates all "recursive" copies.
                 p.moveToFirstChild()
                 while 1:
-                    fc.putVnode(p, isIgnore)
+                    fc.put_v_element(p, isIgnore)
                     if p.hasNext():
                         p.moveToNext()
                     else:
@@ -2067,10 +2070,10 @@ class FileCommands:
             # Fix #526: do this for @auto nodes as well.
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
-    #@+node:ekr.20031218072017.1579: *5* fc.putVnodes & helper
+    #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
     new = True
 
-    def putVnodes(self, p=None):
+    def put_v_elements(self, p=None):
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
         c.clearAllVisited()
@@ -2082,11 +2085,11 @@ class FileCommands:
         if self.usingClipboard:
             self.expanded_gnxs, self.marked_gnxs = set(), set()
                 # These will be ignored.
-            self.putVnode(self.currentPosition)
+            self.put_v_element(self.currentPosition)
                 # Write only current tree.
         else:
             for p in c.rootPosition().self_and_siblings():
-                self.putVnode(p, isIgnore=p.isAtIgnoreNode())
+                self.put_v_element(p, isIgnore=p.isAtIgnoreNode())
             # Fix #1018: scan *all* nodes.
             self.setCachedBits()
         self.put("</vnodes>\n")
