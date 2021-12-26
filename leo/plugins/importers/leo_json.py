@@ -67,7 +67,7 @@ class JSON_Scanner:
                 # else:
                     # c.clearChanged()
         else:
-            parent.setDirty()  # setDescendentsDirty=False)
+            parent.setDirty()
             c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
