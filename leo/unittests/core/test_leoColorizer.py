@@ -1102,7 +1102,7 @@ class TestColorizer(LeoUnitTest):
 
         text = textwrap.dedent('''\
             """This creates a free-floating copy of v's tree for undo.
-            The copied trees must use different tnodes than the original."""
+            The copied trees must use different vnodes than the original."""
 
             def copyTree(self,root):
                 c = self
@@ -1111,7 +1111,7 @@ class TestColorizer(LeoUnitTest):
                 # Copy the headline and icon values v.copyNode(root,v)
                 # Copy the rest of tree.
                 v.copyTree(root,v)
-                # Replace all tnodes in v by copies.
+                # Replace all vnodes in v by copies.
                 assert(v.nodeAfterTree() == None)
                 while v:
                     v = leoNodes.VNode(c)

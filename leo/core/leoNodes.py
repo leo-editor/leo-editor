@@ -111,14 +111,14 @@ class NodeIndices:
         else:
             v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s, i=0):
+    def scanGnx(self, s):
         """Create a gnx from its string representation."""
         if not isinstance(s, str):
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()
         theId, t, n = None, None, None
-        i, theId = g.skip_to_char(s, i, '.')
+        i, theId = g.skip_to_char(s, 0, '.')
         if g.match(s, i, '.'):
             i, t = g.skip_to_char(s, i + 1, '.')
             if g.match(s, i, '.'):
@@ -510,7 +510,6 @@ class Position:
 
     # Compatibility with old code.
 
-    tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
     def parents(self, copy=True):
@@ -589,7 +588,6 @@ class Position:
 
     # Compatibility with old code.
 
-    unique_tnodes_iter = unique_nodes
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
     def unique_subtree(self):
@@ -604,7 +602,6 @@ class Position:
 
     # Compatibility with old code...
 
-    subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
     #@+node:ekr.20040306210951: *4* p.VNode proxies

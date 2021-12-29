@@ -827,9 +827,7 @@ class Commands:
 
     # Compatibility with old code...
 
-    all_tnodes_iter = all_nodes
     all_vnodes_iter = all_nodes
-    all_unique_tnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
     def all_positions(self, copy=True):
@@ -924,7 +922,6 @@ class Commands:
 
     # Compatibility with old code...
 
-    all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
     def all_unique_roots(self, copy=True, predicate=None):
@@ -1444,12 +1441,13 @@ class Commands:
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
         """
-        Check the consistency of all gnx's and remove any tnodeLists.
+        Check the consistency of all gnx's.
         Reallocate gnx's for duplicates or empty gnx's.
         Return the number of structure_errors found.
         """
         c = self
-        d: Dict[str, Set["leoNodes.VNode"]] = {}  # Keys are gnx's; values are sets of vnodes with that gnx.
+        # Keys are gnx's; values are sets of vnodes with that gnx.
+        d: Dict[str, Set["leoNodes.VNode"]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1461,9 +1459,6 @@ class Commands:
         for p in c.safe_all_positions(copy=False):
             count += 1
             v = p.v
-            if hasattr(v, "tnodeList"):
-                delattr(v, "tnodeList")
-                v._p_changed = True
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
                 aSet: Set["leoNodes.VNode"] = d.get(gnx, set())

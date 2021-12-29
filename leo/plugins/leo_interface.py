@@ -186,7 +186,7 @@ class leo_node(LeoNode, node_with_parent):
     """
     Leo specific class representing a node.
 
-    These nodes correspond to tnodes in LEO.
+    These nodes correspond to vnodes in Leo.
     They have a headline and a body.
 
     They also represent the (only) vnode in an outline without clones.
@@ -205,18 +205,18 @@ class leo_node(LeoNode, node_with_parent):
     #@+node:ekr.20101110092416.5753: *3* bodyString
     def bodyString(self, body):
         return self.body
-    #@+node:ekr.20101110092416.5755: *3* gen_tnodes
-    def gen_tnodes(self, file):
+    #@+node:ekr.20101110092416.5755: *3* gen_t_elements
+    def gen_t_elements(self, file):
         self.mark_with_attributes(file, "t", (
             ("tx", "T" + repr(self.nr)),
-            ), self.gen_tnodes1, newline=False)
+            ), self.gen_t_elements1, newline=False)
         for child in self.children:
-            child.gen_tnodes(file)
-    #@+node:ekr.20101110092416.5757: *3* gen_tnodes1
-    def gen_tnodes1(self, file):
+            child.gen_t_elements(file)
+    #@+node:ekr.20101110092416.5757: *3* gen_t_elements1
+    def gen_t_elements1(self, file):
         self.write_body_escaped(file)
-    #@+node:ekr.20101110092416.5759: *3* gen_vnodes
-    def gen_vnodes(self, file):
+    #@+node:ekr.20101110092416.5759: *3* gen_v_elements
+    def gen_v_elements(self, file):
         attributes = [("t", "T" + repr(self.nr))]
         if debug:
             # For debugging, make sure that we are not getting
@@ -224,7 +224,7 @@ class leo_node(LeoNode, node_with_parent):
             # Also number all nodes for easier error hunting.
             vnode_stack.append(self)
             if self in allvnodes:
-                print("Fix this; This is an endless recursive call in leo_interface.leo_node.gen_vnodes")
+                print("Fix this; This is an endless recursive call in leo_interface.leo_node.gen_v_elements")
                 x = vnode_stack[:]
                 x.reverse()
                 for i in x:
@@ -235,15 +235,15 @@ class leo_node(LeoNode, node_with_parent):
             attributes.append(('model_node_number', repr(vnode_count)))
             vnode_count += 1
             allvnodes[self] = None
-        self.mark_with_attributes(file, "v", attributes, self.gen_vnodes1)
+        self.mark_with_attributes(file, "v", attributes, self.gen_v_elements1)
         if debug:
             del allvnodes[self]
             vnode_stack.pop()
-    #@+node:ekr.20101110092416.5761: *3* gen_vnodes1
-    def gen_vnodes1(self, file):
+    #@+node:ekr.20101110092416.5761: *3* gen_v_elements1
+    def gen_v_elements1(self, file):
         self.mark(file, "vh", self.write_headline_escaped, newline=False)
         for child in self.children:
-            child.gen_vnodes(file)
+            child.gen_v_elements(file)
     #@+node:ekr.20101110092416.5763: *3* headString
     def headString(self):
         return self.headline

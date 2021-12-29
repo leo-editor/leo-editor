@@ -27,13 +27,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
         """Ctor for the BufferCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.fromName = ''
-            # Saved name from getBufferName.
-        self.nameList = []
-            # [n: <headline>]
+        self.fromName = ''  # Saved name from getBufferName.
+        self.nameList = []  # [n: <headline>]
         self.names = {}
-        self.tnodes = {}
-            # Keys are n: <headline>, values are tnodes.
+        self.vnodes = {}  # Keys are n: <headline>, values are vnodes.
     #@+node:ekr.20150514045829.5: *3* buffer.Entry points
     #@+node:ekr.20150514045829.6: *4* appendToBuffer
     @cmd('buffer-append-to')
@@ -205,7 +202,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
     def computeData(self):
         self.nameList = []
         self.names = {}
-        self.tnodes = {}
+        self.vnodes = {}
         for p in self.c.all_unique_positions():
             h = p.h.strip()
             v = p.v
@@ -218,12 +215,12 @@ class BufferCommandsClass(BaseEditCommandsClass):
             else:
                 key = h
             self.nameList.append(key)
-            self.tnodes[key] = v
+            self.vnodes[key] = v
             nameList.append(key)
             self.names[h] = nameList
     #@+node:ekr.20150514045829.16: *4* findBuffer
     def findBuffer(self, name):
-        v = self.tnodes.get(name)
+        v = self.vnodes.get(name)
         for p in self.c.all_unique_positions():
             if p.v == v:
                 return p
