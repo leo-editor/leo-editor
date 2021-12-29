@@ -1260,6 +1260,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 parent.promote()
                 parent.doDelete()
                 p = c.lastTopLevel()
+                p.h = p.h.replace('.py', '.ts').replace('@','@@')
                 c.redraw(p)
                 c.expandAllSubheads(p)
                 c.treeWantsFocusNow()
