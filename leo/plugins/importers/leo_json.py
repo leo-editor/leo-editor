@@ -68,7 +68,7 @@ class JSON_Scanner(Importer):  # *Is* a subclass of the Importer class.
                 # else:
                     # c.clearChanged()
         else:
-            parent.setDirty()  # setDescendentsDirty=False)
+            parent.setDirty()
             c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences

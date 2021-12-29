@@ -226,7 +226,7 @@ def pasteAsTemplate(self, event=None):
         # the first node is inserted at the given index
         # and the rest are just appended at parents children
         # to achieve this we first create a generator object
-        rows = viter(vpargnx, xvnodes[0])
+        rows = viter(vpargnx, xvelements[0])
 
         # then we just take first tuple
         pgnx, gnx, h, b = next(rows)
@@ -273,12 +273,12 @@ def pasteAsTemplate(self, event=None):
         c.redraw(newp)
     #@-others
     xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
-    xvnodes = xroot.find('vnodes')
-    xtnodes = xroot.find('tnodes')
+    xvelements = xroot.find('vnodes')  # <v> elements.
+    xtelements = xroot.find('tnodes')  # <t> elements.
 
-    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtnodes)
+    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
 
-    root_gnx = xvnodes[0].attrib.get('t')  # the gnx of copied node
+    root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
         # outside will contain gnxes of nodes that are outside the copied tree
 

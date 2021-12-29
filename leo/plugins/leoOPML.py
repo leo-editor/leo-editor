@@ -44,8 +44,7 @@ Leo writes body text to the OPML file only if this is True.
 If True, Leo writes the native attributes of Leo's <v> elements as attributes of
 the opml <outline> elements.
 
-The native attributes of <v> elements are a, t, vtag (new), tnodeList,
-marks, expanded and descendentTnodeUnknownAttributes.
+FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
 
 - @bool opml_write_leo_globals_attributes = True
 
@@ -262,7 +261,7 @@ class OpmlController:
         """
         Write the c.p as OPML, using the owner's put method."""
         PutToOPML(owner)
-    #@+node:ekr.20060904103721: *3* oc.readFile & helpers
+    #@+node:ekr.20060904103721: *3* oc.readFile & helper
     def readFile(self, fileName):
         """Read the opml file."""
         dumpTree = False
@@ -287,26 +286,9 @@ class OpmlController:
             c.dumpOutline()
             g.trace('%s errors!' % errors)
             return None
-        # if self.opml_read_derived_files:
-            # at = c.atFileCommands
-            # c.fileCommands.tnodesDict = self.createTnodesDict()
-            # self.resolveTnodeLists(c)
-            # if self.opml_read_derived_files:
-                # c.atFileCommands.readAll(c.rootPosition())
         c.selectPosition(p)
         c.redraw()
         return c  # for testing.
-    #@+node:ekr.20060921153603: *4* oc.createTnodesDict
-    def createTnodesDict(self):
-        """
-        Create c.tnodesDict by from self.generated_gnxs
-        by converting VNode entries to tnodes.
-        """
-        d = {}
-        for key in list(self.generated_gnxs.keys()):
-            v = self.generated_gnxs.get(key)
-            d[key] = v
-        return d
     #@+node:ekr.20060917214140: *4* oc.setCurrentPosition
     def setCurrentPosition(self, c):
         v = self.currentVnode
@@ -316,19 +298,6 @@ class OpmlController:
             if p.v == v:
                 c.selectPosition(p)
                 break
-    #@+node:ekr.20060918132045: *4* oc.resolveTnodeLists
-    def resolveTnodeLists(self, c):
-        for p in c.allNodes_iter():
-            if hasattr(p.v, 'tempTnodeList'):
-                result = []
-                for gnx in p.v.tempTnodeList:
-                    v = self.generated_gnxs.get(gnx)
-                    if v:
-                        result.append(v)
-                    else:
-                        g.trace('No tnode for %s' % gnx)
-                p.v.tnodeList = result
-                delattr(p.v, 'tempTnodeList')
     #@+node:ekr.20060919201810: *3* oc.readOpmlCommand
     def readOpmlCommand(self, event=None):
         """Open a Leo window containing the contents of an .opml file."""
@@ -551,24 +520,6 @@ class PutToOPML:
         if c.isCurrentPosition(p):
             attr.append('V')
         return ''.join(attr)
-    #@+node:ekr.20060919172012.9: *4* tnodeListAttributes (Not used)
-    # Based on fileCommands.putTnodeList.
-
-    def tnodeListAttributes(self, p):
-        """Put the tnodeList attribute of p.v"""
-        # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
-        if not hasattr(p.v, 'tnodeList') or not p.v.tnodeList:
-            return None
-        # Assign fileIndices.
-        for v in p.v.tnodeList:
-            try:  # Will fail for None or any pre 4.1 file index.
-                theId, time, n = p.v.fileIndex
-            except Exception:
-                g.trace("assigning gnx for ", p.v)
-                gnx = g.app.nodeIndices.getNewIndex(p.v)
-                p.v.setFileIndex(gnx)  # Don't convert to string until the actual write.
-        s = ','.join([g.app.nodeIndices.tupleToString(v.fileIndex) for v in p.v.tnodeList])
-        return s
     #@+node:tbrown.20061004094757: *4* uAAttributes
     def uAAttributes(self, p):
         """write unknownAttributes with various levels of expansion"""

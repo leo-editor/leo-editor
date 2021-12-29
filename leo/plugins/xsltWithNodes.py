@@ -141,7 +141,7 @@ def processDocumentNode(c):
         xmlsource = InputSource.DefaultFactory.fromString(xIO, uri=xhead)
         result = proc.run(xmlsource)
         nhline = "xsl:transform of " + str(xmlnode.headString)
-        p2 = pos.insertAfter()  # tnode )
+        p2 = pos.insertAfter()
         p2.setBodyString(result)
         p2.setHeadString(nhline)
         c.redraw()
@@ -154,15 +154,11 @@ def addXSLTNode(c):
     """creates a node and inserts some xslt boilerplate"""
     pos = c.p
 
-    #body = '''<?xml version="1.0"?>'''
-    # body = '''<?xml version="1.0"?>
-    #<xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">'''
-
     body = '''<?xml version="1.0"?>
 <xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">
 </xsl:transform>'''
 
-    p2 = pos.insertAfter()  # tnode)
+    p2 = pos.insertAfter()
     p2.setBodyString(body)
     p2.setHeadString("xslt stylesheet")
     c.redraw()

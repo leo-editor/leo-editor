@@ -2080,8 +2080,7 @@ class NullTree(LeoTree):
         super().__init__(frame)
         assert self.frame
         self.c = frame.c
-        self.editWidgetsDict = {}
-            # Keys are tnodes, values are StringTextWidgets.
+        self.editWidgetsDict = {}  # Keys are vnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None
