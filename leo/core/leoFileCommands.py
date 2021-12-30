@@ -1379,7 +1379,6 @@ class FileCommands:
                 return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
                     for z in p.self_and_parents())
 
-            fc = c.fileCommands
             fc.put("<tnodes>\n")
             suppress = {}
             for p in c.all_positions(copy=False):

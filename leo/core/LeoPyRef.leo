@@ -27,7 +27,7 @@
 <v t="ekr.20201018072911.1"><vh>oops</vh></v>
 <v t="ekr.20201018063747.1"><vh>put_content</vh></v>
 <v t="ekr.20210510071427.1"><vh>put_prolog</vh></v>
-<v t="ekr.20210510071812.1"><vh>put_tnodes</vh></v>
+<v t="ekr.20210510071812.1"><vh>put_t_elements</vh></v>
 </v>
 <v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
@@ -191,7 +191,6 @@
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
-<v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
@@ -999,7 +998,15 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e"></t>
+<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">def traverse(self, filename):
+    
+    with open(filename) as f:
+        contents = f.read()
+    self.node_list = [ast.parse(contents)]
+    while self.node_list:
+        node = self.node_list.pop(0)
+        self.dispatch(node)
+</t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20080412053100.5">@language rest
@@ -2503,9 +2510,9 @@ main(node_list = ['Startup', 'Notes', 'Code'])
     fc.put("&lt;vnodes&gt;\n")
     for p in positions_list:
         # An optimization: Write the next top-level node.
-        fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
+        fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
     fc.put("&lt;/vnodes&gt;\n")
-    put_tnodes(positions_list)  # Put only *required* tnodes.
+    put_t_elements(positions_list)  # Put only *required* &lt;t&gt; elements.
     fc.putPostlog()
     s = fc.outputFile.getvalue()
     fc.outputFile = None
@@ -2833,11 +2840,11 @@ unl: Declarations (leo_cloud_server.py)
     # Put the namespace
     fc.put(f'&lt;leo_file xmlns:leo="{tag}" &gt;\n')
 </t>
-<t tx="ekr.20210510071812.1">def put_tnodes(positions_list):
+<t tx="ekr.20210510071812.1">def put_t_elements(positions_list):
     """
-    Write all tnodes except those for vnodes appearing in @file, @edit or @auto nodes.
+    Write all &lt;t&gt; elements except those for vnodes appearing in @file, @edit or @auto nodes.
     
-    This is *not* the same as fc.putTnodes.
+    This is *not* the same as fc.put_t_elements.
     """
 
     def should_suppress(p):
@@ -2858,7 +2865,7 @@ unl: Declarations (leo_cloud_server.py)
                 toBeWritten[p.v.fileIndex] = p.v
     for gnx in sorted(toBeWritten):
         v = toBeWritten[gnx]
-        fc.putTnode(v)
+        fc.put_t_element(v)
     fc.put("&lt;/tnodes&gt;\n")
 </t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
