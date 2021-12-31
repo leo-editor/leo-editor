@@ -215,7 +215,6 @@ def mypy_command(event):
     if c.isChanged():
         c.save()
     if mypy_api:
-        g.cls()
         MypyCommand(c).run(c.p)
     else:
         g.es_print('can not import mypy')
@@ -276,6 +275,7 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
+        print('mypy done')
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
