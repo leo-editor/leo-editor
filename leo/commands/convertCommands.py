@@ -5,7 +5,7 @@
 """Leo's file-conversion commands."""
 
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -1228,7 +1228,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
-        types_d = {}
+        types_d: Dict[str, str] = {}
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
@@ -1277,7 +1277,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        patterns = []
+        patterns: Optional[Tuple[Any, Any]] = None
 
         def convert_body(self, p, target):
             """

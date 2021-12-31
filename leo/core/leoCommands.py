@@ -2862,7 +2862,7 @@ class Commands:
         c = self
         g.app.gui.put_help(c, s, short_title)
     #@+node:ekr.20111217154130.10285: *5* c.raise_error_dialogs
-    warnings_dict = {}
+    warnings_dict: Dict[str, bool] = {}
 
     def raise_error_dialogs(self, kind='read'):
         """Warn about read/write failures."""
