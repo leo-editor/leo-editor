@@ -215,6 +215,7 @@ def mypy_command(event):
     if c.isChanged():
         c.save()
     if mypy_api:
+        g.cls()
         MypyCommand(c).run(c.p)
     else:
         g.es_print('can not import mypy')
@@ -257,7 +258,7 @@ class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
 
     def __init__(self, c):
-        """ctor for PyflakesCommand class."""
+        """ctor for MypyCommand class."""
         self.c = c
         self.link_limit = None  # Set in check_file.
         self.unknown_path_names = []
@@ -284,15 +285,22 @@ class MypyCommand:
         c.frame.log.clearLog()
         link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
         # Change working directory.
-        directory = os.path.dirname(fn)
+        if 1: ###
+            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+            config_file = os.path.abspath(os.path.join(directory, '.mypy.ini'))
+            args = [f"--config-file={config_file}"] + self.args
+        else:
+            directory = os.path.dirname(fn)
+        g.trace('directory', directory)
         os.chdir(directory)
         # Check the config file.
-        if self.config_file:
-            config_file = g.os_path_finalize_join(directory, self.config_file)
-            if not os.path.exists(config_file):
-                print(f"config file not found: {config_file!r}")
-                return
-            args = [f"--config-file={config_file}"] + self.args
+        ###
+            # if self.config_file:
+                # config_file = g.os_path_finalize_join(directory, self.config_file)
+                # if not os.path.exists(config_file):
+                    # print(f"config file not found: {config_file}")
+                    # return
+            # args = [f"--config-file={config_file}"] + self.args
         args_s = ' '.join(args + [g.shortFileName(fn)])
         args = self.args + [fn]
         # Run mypy.
