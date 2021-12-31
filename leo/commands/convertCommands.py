@@ -1277,7 +1277,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        patterns: Optional[Tuple[Any, Any]] = None
+        patterns: Optional[Tuple] = None
 
         def convert_body(self, p, target):
             """
