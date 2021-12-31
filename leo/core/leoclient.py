@@ -6,8 +6,9 @@ An example client for leoserver.py, based on work by Félix Malboeuf. Used by pe
 import asyncio
 import json
 import time
-import websockets
 from typing import Dict, List
+# Third party.
+import websockets
 from leo.core import leoGlobals as g
 from leo.core import leoserver
 
