@@ -7,8 +7,9 @@ import asyncio
 import json
 import time
 import websockets
-from typing import Dict
-from typing import List
+"""An example client for leoserver.py"""
+
+from typing import Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoserver
 
