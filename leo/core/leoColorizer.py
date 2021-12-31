@@ -2902,7 +2902,7 @@ class QScintillaColorizer(BaseColorizer):
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)
         else:
-            self.lexersDict = {}
+            self.lexersDict = {}  # type:ignore
             self.nullLexer = g.NullObject()  # type:ignore
 
     def reloadSettings(self):
@@ -2929,7 +2929,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         wrapper = c.frame.body.wrapper
         w = wrapper.widget  # A Qsci.QsciSintilla object.
-        self.lexer = self.lexersDict.get(language, self.nullLexer)
+        self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):

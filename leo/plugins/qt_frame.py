@@ -1364,7 +1364,7 @@ class FindTabManager:
             find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
-class LeoBaseTabWidget(QtWidgets.QTabWidget):
+class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
     """Base class for all QTabWidgets in Leo."""
     #@+others
     #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
@@ -2495,7 +2495,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # image = keys.get('image')
 
 
-            class leoIconBarButton(QtWidgets.QWidgetAction):
+            class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
                 def __init__(self, parent, text, toolbar):
                     super().__init__(parent)
@@ -3742,7 +3742,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
-class LeoQTreeWidget(QtWidgets.QTreeWidget):
+class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
 
     # To do: Generate @auto or @file nodes when appropriate.
 
