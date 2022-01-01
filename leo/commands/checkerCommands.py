@@ -264,6 +264,7 @@ class MypyCommand:
         # Settings.
         self.args = c.config.getData('mypy-arguments') or []
         self.config_file = c.config.getString('mypy-config-file') or None
+        self.directory = c.config.getString('mypy-directory') or None
         self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
@@ -284,30 +285,28 @@ class MypyCommand:
         # Init.
         c.frame.log.clearLog()
         link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
-        # Change working directory.
-        if 1: ###
-            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
-            config_file = os.path.abspath(os.path.join(directory, '.mypy.ini'))
-            args = [f"--config-file={config_file}"] + self.args
+        # Set the working directory.
+        if self.directory:
+            directory = self.directory
         else:
-            directory = os.path.dirname(fn)
-        g.trace('directory', directory)
+            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+        print('  mypy directory:', directory)
         os.chdir(directory)
-        # Check the config file.
-        ###
-            # if self.config_file:
-                # config_file = g.os_path_finalize_join(directory, self.config_file)
-                # if not os.path.exists(config_file):
-                    # print(f"config file not found: {config_file}")
-                    # return
-            # args = [f"--config-file={config_file}"] + self.args
-        args_s = ' '.join(args + [g.shortFileName(fn)])
-        args = self.args + [fn]
+        # Set the args. Set the config file only if explicitly given.
+        if self.config_file:
+            config_file = g.os_path_finalize_join(directory, self.config_file)
+            args = [f"--config-file={config_file}"] + self.args
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file}")
+                return
+        else:
+            args = self.args
+        final_args = args + [fn]
+        g.es_print(f"  mypy arguments: {' '.join(final_args)}")
         # Run mypy.
-        g.es_print(f"mypy {args_s}")
-        result = mypy.api.run(args)
+        result = mypy.api.run(final_args)
         # Print result, making clickable links.
-        print('Exit status:', result[2])
+        print('mypy exit status:', result[2])
         lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep
         for i, s in enumerate(lines):
