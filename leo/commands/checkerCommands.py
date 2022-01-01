@@ -290,7 +290,7 @@ class MypyCommand:
             directory = self.directory
         else:
             directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
-        print('  mypy directory:', directory)
+        print(' mypy cwd:', directory)
         os.chdir(directory)
         # Set the args. Set the config file only if explicitly given.
         if self.config_file:
@@ -301,12 +301,13 @@ class MypyCommand:
                 return
         else:
             args = self.args
-        final_args = args + [fn]
-        g.es_print(f"  mypy arguments: {' '.join(final_args)}")
+        if args:
+            print('mypy args:', args)
         # Run mypy.
+        final_args = args + [fn]
         result = mypy.api.run(final_args)
+        g.es('mypy: done')
         # Print result, making clickable links.
-        print('mypy exit status:', result[2])
         lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep
         for i, s in enumerate(lines):
