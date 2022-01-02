@@ -2409,14 +2409,14 @@ class TypedDict:
     update:       Updates self.d from either a dict or a TypedDict.
     """
 
-    def __init__(self, name, keyType, valType):
-        self.d = {}
+    def __init__(self, name: str, keyType: Any, valType: Any) -> None:
+        self.d: Dict[str, Any] = {}
         self._name = name  # For __repr__ only.
         self.keyType = keyType
         self.valType = valType
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
-    def __str__(self):
+    def __str__(self) -> str:
         """Concise: used by repr."""
         return (
             f"<TypedDict name:{self._name} "
@@ -2425,11 +2425,11 @@ class TypedDict:
             f"len(keys): {len(list(self.keys()))}>"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Suitable for g.printObj"""
         return f"{g.dictToString(self.d)}\n{str(self)}\n"
     #@+node:ekr.20120205022040.17774: *4* td.__setitem__
-    def __setitem__(self, key, val):
+    def __setitem__(self, key: Any, val: Any) -> None:
         """Allow d[key] = val"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2443,7 +2443,7 @@ class TypedDict:
             self._checkValType(val)  # val is not iterable.
         self.d[key] = val
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
-    def add_to_list(self, key, val):
+    def add_to_list(self, key: Any, val: Any) -> None:
         """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -2455,55 +2455,55 @@ class TypedDict:
             aList.append(val)
             self.d[key] = aList
     #@+node:ekr.20120206134955.10150: *4* td.checking
-    def _checkKeyType(self, key):
+    def _checkKeyType(self, key: str) -> None:
         if key and key.__class__ != self.keyType:
             self._reportTypeError(key, self.keyType)
 
-    def _checkValType(self, val):
+    def _checkValType(self, val: Any) -> None:
         if val.__class__ != self.valType:
             self._reportTypeError(val, self.valType)
 
-    def _reportTypeError(self, obj: Any, objType):
+    def _reportTypeError(self, obj: Any, objType: Any) -> str:
         # print(f"Type mismatch: obj: {obj.__class__}, objType: {objType}")
         return (
             f"{self._name}\n"
             f"expected: {obj.__class__.__name__}\n"
             f"     got: {objType.__name__}")
     #@+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name=None):
+    def copy(self, name: str=None) -> Any:
         """Return a new dict with the same contents."""
         import copy
         return copy.deepcopy(self)
     #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
-    def get(self, key, default=None):
+    def get(self, key: Any, default: Any=None) -> Any:
         return self.d.get(key, default)
 
-    def items(self):
+    def items(self) -> Any:
         return self.d.items()
 
-    def keys(self):
+    def keys(self) -> Any:
         return self.d.keys()
 
-    def values(self):
+    def values(self) -> Any:
         return self.d.values()
     #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
-    def get_setting(self, key):
+    def get_setting(self, key: str) -> Any:
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
         val = gs and gs.val
         return val
 
-    def get_string_setting(self, key):
+    def get_string_setting(self, key: str) -> Optional[str]:
         val = self.get_setting(key)
         return val if val and isinstance(val, str) else None
     #@+node:ekr.20190904103552.1: *4* td.name & setName
-    def name(self):
+    def name(self) -> str:
         return self._name
 
-    def setName(self, name):
+    def setName(self, name: str) -> None:
         self._name = name
     #@+node:ekr.20120205022040.17807: *4* td.update
-    def update(self, d):
+    def update(self, d: Dict[Any, Any]) -> None:
         """Update self.d from a the appropriate dict."""
         if isinstance(d, TypedDict):
             self.d.update(d.d)
