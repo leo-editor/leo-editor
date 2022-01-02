@@ -1547,7 +1547,7 @@ class RedirectClass:
             else:
                 sys.stderr, self.old = self.old, None
     #@+node:ekr.20041012082437.5: *5* write
-    def write(self, s: str):
+    def write(self, s: str) -> None:
 
         if self.old:
             if app.log:
@@ -1570,35 +1570,35 @@ redirectStdOutObj = RedirectClass()
 #@+node:ekr.20041012090942: *5* redirectStderr & redirectStdout
 # Redirect streams to the current log window.
 
-def redirectStderr():
+def redirectStderr() -> None:
     global redirectStdErrObj
     redirectStdErrObj.redirect(stdout=False)
 
-def redirectStdout():
+def redirectStdout() -> None:
     global redirectStdOutObj
     redirectStdOutObj.redirect()
 #@+node:ekr.20041012090942.1: *5* restoreStderr & restoreStdout
 # Restore standard streams.
 
-def restoreStderr():
+def restoreStderr() -> None:
     global redirectStdErrObj
     redirectStdErrObj.undirect(stdout=False)
 
-def restoreStdout():
+def restoreStdout() -> None:
     global redirectStdOutObj
     redirectStdOutObj.undirect()
 #@+node:ekr.20041012090942.2: *5* stdErrIsRedirected & stdOutIsRedirected
-def stdErrIsRedirected():
+def stdErrIsRedirected() -> bool:
     global redirectStdErrObj
     return redirectStdErrObj.isRedirected()
 
-def stdOutIsRedirected():
+def stdOutIsRedirected() -> bool:
     global redirectStdOutObj
     return redirectStdOutObj.isRedirected()
 #@+node:ekr.20041012090942.3: *5* rawPrint
 # Send output to original stdout.
 
-def rawPrint(s: str):
+def rawPrint(s: str) -> None:
     global redirectStdOutObj
     redirectStdOutObj.rawPrint(s)
 #@-others
@@ -1644,12 +1644,12 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(
         self,
-        patterns,
-        dots=True,
-        show_args=True,
-        show_return=True,
-        verbose=True,
-    ):
+        patterns: List[Any],
+        dots: bool=True,
+        show_args: bool=True,
+        show_return: bool=True,
+        verbose: bool=True,
+    ) -> None:
         """SherlockTracer ctor."""
         self.bad_patterns = []  # List of bad patterns.
         self.dots = dots  # True: print level dots.
@@ -1668,17 +1668,17 @@ class SherlockTracer:
             # pylint: disable=no-member
             QtCore.pyqtRemoveInputHook()
     #@+node:ekr.20140326100337.16844: *4* __call__
-    def __call__(self, frame, event, arg):
+    def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
         """Exists so that self.dispatch can return self."""
         return self.dispatch(frame, event, arg)
     #@+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
-    def bad_pattern(self, pattern):
+    def bad_pattern(self, pattern: Any) -> None:
         """Report a bad Sherlock pattern."""
         if pattern not in self.bad_patterns:
             self.bad_patterns.append(pattern)
             print(f"\nignoring bad pattern: {pattern}\n")
     #@+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
-    def check_pattern(self, pattern):
+    def check_pattern(self, pattern: str) -> bool:
         """Give an error and return False for an invalid pattern."""
         try:
             for prefix in ('+:', '-:', '+', '-'):
@@ -1691,7 +1691,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20121128031949.12609: *4* sherlock.dispatch
-    def dispatch(self, frame, event, arg):
+    def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
         """The dispatch method."""
         if event == 'call':
             self.do_call(frame, arg)
@@ -1702,7 +1702,7 @@ class SherlockTracer:
         # Queue the SherlockTracer instance again.
         return self
     #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
-    def do_call(self, frame, unused_arg):
+    def do_call(self, frame: Any, unused_arg: Any) -> None:
         """Trace through a function call."""
         frame1 = frame
         code = frame.f_code
@@ -1730,7 +1730,7 @@ class SherlockTracer:
         d[full_name] = 1 + d.get(full_name, 0)
         self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
-    def get_args(self, frame):
+    def get_args(self, frame: Any) -> str:
         """Return name=val for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
@@ -1758,7 +1758,7 @@ class SherlockTracer:
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
     bad_fns: List[str] = []
 
-    def do_line(self, frame, arg):
+    def do_line(self, frame: Any, arg: Any) -> None:
         """print each line of enabled functions."""
         if 1:
             return
@@ -1790,7 +1790,7 @@ class SherlockTracer:
         else:
             print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
-    def do_return(self, frame, arg):  # Arg *is* used below.
+    def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
         """Trace a return statement."""
         code = frame.f_code
         fn = code.co_filename
