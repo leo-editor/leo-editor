@@ -607,51 +607,51 @@ class KeyStroke:
         if binding:
             self.s = self.finalize_binding(binding)
         else:
-            self.s = None
+            self.s = None  # type:ignore
     #@+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)
     # where the keys of d are KeyStroke objects.
     #@@c
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s == other.s
         return self.s == other
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Any) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s < other.s
         return self.s < other
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: Any) -> bool:
         return self.__lt__(other) or self.__eq__(other)
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: Any) -> bool:
         return not self.__lt__(other) and not self.__eq__(other)
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: Any) -> bool:
         return not self.__lt__(other)
     #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
-    def __hash__(self):
+    def __hash__(self) -> Any:
         return self.s.__hash__() if self.s else 0
     #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<KeyStroke: {repr(self.s)}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self.s)
     #@+node:ekr.20180417160703.1: *4* ks.dump
-    def dump(self):
+    def dump(self) -> None:
         """Show results of printable chars."""
         for i in range(128):
             s = chr(i)
@@ -662,7 +662,7 @@ class KeyStroke:
             stroke = g.KeyStroke(ch)
             print(f'{"":2} {ch!r:10} {stroke.s!r}')
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
-    def finalize_binding(self, binding):
+    def finalize_binding(self, binding: str) -> str:
 
         trace = False and 'keys' in g.app.debug
             # This trace is good for devs only.
@@ -675,7 +675,7 @@ class KeyStroke:
             g.trace(f"{binding:20}:{self.mods:>20} ==> {mods+s}")
         return mods + s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
-    def finalize_char(self, s):
+    def finalize_char(self, s: str) -> str:
         """Perform very-last-minute translations on bindings."""
         #
         # Retain "bigger" spelling for gang-of-four bindings with modifiers.
@@ -689,8 +689,8 @@ class KeyStroke:
             'tab': 'Tab',
         }
         if self.mods and s.lower() in shift_d:
-            return shift_d.get(s.lower())
-                # Returning '' breaks existing code.
+            # Returning '' breaks existing code.
+            return shift_d.get(s.lower())  # type:ignore
         #
         # Make all other translations...
         #
@@ -776,7 +776,7 @@ class KeyStroke:
             return 'None'
         if s.lower() in translate_d:
             s = translate_d.get(s.lower())
-            return self.strip_shift(s)
+            return self.strip_shift(s)  # type:ignore
         if len(s) > 1 and s.find(' ') > -1:
             # #917: not a pure, but should be ignored.
             return ''
@@ -986,10 +986,10 @@ class KeyStroke:
         return s if len(s) == 1 else ''
     #@-others
 
-def isStroke(obj: Any):
+def isStroke(obj: Any) -> bool:
     return isinstance(obj, KeyStroke)
 
-def isStrokeOrNone(obj: Any):
+def isStrokeOrNone(obj: Any) -> bool:
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
 class MatchBrackets:
