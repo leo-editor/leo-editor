@@ -41,7 +41,6 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
-assert Iterable, Sequence  ###
 #
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
@@ -803,7 +802,7 @@ class KeyStroke:
         # Translate shifted keys to their appropriate alternatives.
         return self.strip_shift(s)
     #@+node:ekr.20180502104829.1: *5* ks.strip_shift
-    def strip_shift(self, s):
+    def strip_shift(self, s: str) -> str:
         """
         Handle supposedly shifted keys.
 
@@ -844,21 +843,21 @@ class KeyStroke:
         }
         if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
-            s = shift_d.get(s)
+            s = shift_d.get(s)  # type:ignore
         return s
     #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
 
-    def find(self, pattern):
+    def find(self, pattern: str) -> int:
         return self.s.find(pattern)
 
-    def lower(self):
+    def lower(self) -> str:
         return self.s.lower()
 
-    def startswith(self, s: str):
+    def startswith(self, s: str) -> bool:
         return self.s.startswith(s)
     #@+node:ekr.20180415081209.2: *4* ks.find_mods
-    def find_mods(self, s: str):
+    def find_mods(self, s: str) -> List[str]:
         """Return the list of all modifiers seen in s."""
         s = s.lower()
         table = (
@@ -881,15 +880,15 @@ class KeyStroke:
                         break
         return result
     #@+node:ekr.20180417101435.1: *4* ks.isAltCtl
-    def isAltCtrl(self):
+    def isAltCtrl(self) -> bool:
         """Return True if this is an Alt-Ctrl character."""
         mods = self.find_mods(self.s)
         return 'alt' in mods and 'ctrl' in mods
     #@+node:ekr.20120203053243.10121: *4* ks.isFKey
-    def isFKey(self):
+    def isFKey(self) -> bool:
         return self.s in g.app.gui.FKeys
     #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
-    def isPlainKey(self):
+    def isPlainKey(self) -> bool:
         """
         Return True if self.s represents a plain key.
 
@@ -913,20 +912,20 @@ class KeyStroke:
             return False
         return True
     #@+node:ekr.20180511092713.1: *4* ks.isNumPadKey, ks.isPlainNumPad & ks.removeNumPadModifier
-    def isNumPadKey(self):
+    def isNumPadKey(self) -> bool:
         return self.s.find('Keypad+') > -1
 
-    def isPlainNumPad(self):
+    def isPlainNumPad(self) -> bool:
         return (
             self.isNumPadKey() and
             len(self.s.replace('Keypad+', '')) == 1
         )
 
-    def removeNumPadModifier(self):
+    def removeNumPadModifier(self) -> None:
 
         self.s = self.s.replace('Keypad+', '')
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
-    def prettyPrint(self):
+    def prettyPrint(self) -> str:
 
         s = self.s
         if not s:
@@ -935,7 +934,7 @@ class KeyStroke:
         ch = s[-1]
         return s[:-1] + d.get(ch, ch)
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
-    def strip_mods(self, s: str):
+    def strip_mods(self, s: str) -> str:
         """Remove all modifiers from s, without changing the case of s."""
         table = (
             'alt',
@@ -954,7 +953,7 @@ class KeyStroke:
                     break
         return s
     #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
-    def toGuiChar(self):
+    def toGuiChar(self) -> str:
         """Replace special chars by the actual gui char."""
         s = self.s.lower()
         if s in ('\n', 'return'):
@@ -967,7 +966,7 @@ class KeyStroke:
             s = '.'
         return s
     #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
-    def toInsertableChar(self):
+    def toInsertableChar(self) -> str:
         """Convert self to an (insertable) char."""
         # pylint: disable=len-as-condition
         s = self.s
@@ -982,7 +981,7 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s)
+            return d.get(s)  # type:ignore
         return s if len(s) == 1 else ''
     #@-others
 
@@ -1002,7 +1001,7 @@ class MatchBrackets:
     """
     #@+others
     #@+node:ekr.20160119104510.1: *4* mb.ctor
-    def __init__(self, c: Cmdr, p: Pos, language):
+    def __init__(self, c: Cmdr, p: Pos, language: str) -> None:
         """Ctor for MatchBrackets class."""
         self.c = c
         self.p = p.copy()
@@ -1019,7 +1018,7 @@ class MatchBrackets:
         c.user_dict.setdefault('_match_brackets', {'count': 0, 'range': (0, 0)})
     #@+node:ekr.20160121164723.1: *4* mb.bi-directional helpers
     #@+node:ekr.20160121112812.1: *5* mb.is_regex
-    def is_regex(self, s: str, i: int):
+    def is_regex(self, s: str, i: int) -> bool:
         """Return true if there is another slash on the line."""
         if self.language in ('javascript', 'perl',):
             assert s[i] == '/'
@@ -1060,7 +1059,7 @@ class MatchBrackets:
             return i1 + offset
         return found
     #@+node:ekr.20160121112303.1: *5* mb.scan_string
-    def scan_string(self, s: str, i: int):
+    def scan_string(self, s: str, i: int) -> int:
         """
         Scan the string starting at s[i] (forward or backward).
         Return the index of the next character.
@@ -1086,7 +1085,13 @@ class MatchBrackets:
             # self.oops('unmatched string')
         return i + offset
     #@+node:tbrown.20180226113621.1: *4* mb.expand_range
-    def expand_range(self, s: str, left, right, max_right, expand=False):
+    def expand_range(self,
+        s: str,
+        left: int,
+        right: int,
+        max_right: int,
+        expand: bool=False,
+    ) -> Tuple[Any, Any, Any, Any]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -1132,7 +1137,7 @@ class MatchBrackets:
             return left, right, s[right], right
         return None, None, None, None
     #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
-    def find_matching_bracket(self, ch1, s: str, i: int):
+    def find_matching_bracket(self, ch1: str, s: str, i: int) -> Any:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
@@ -1145,7 +1150,7 @@ class MatchBrackets:
         f = self.scan if self.forward else self.scan_back
         return f(ch1, target, s, i)
     #@+node:ekr.20160121164556.1: *4* mb.scan & helpers
-    def scan(self, ch1, target, s: str, i: int):
+    def scan(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
         """Scan forward for target."""
         level = 0
         while 0 <= i < len(s):
@@ -1155,7 +1160,7 @@ class MatchBrackets:
                 # Scan to the end/beginning of the string.
                 i = self.scan_string(s, i)
             elif self.starts_comment(s, i):
-                i = self.scan_comment(s, i)
+                i = self.scan_comment(s, i)  # type:ignore
             elif ch == '/' and self.is_regex(s, i):
                 i = self.scan_regex(s, i)
             elif ch == ch1:
@@ -1172,7 +1177,7 @@ class MatchBrackets:
         # Not found
         return None
     #@+node:ekr.20160119090634.1: *5* mb.scan_comment
-    def scan_comment(self, s: str, i: int):
+    def scan_comment(self, s: str, i: int) -> Optional[int]:
         """Return the index of the character after a comment."""
         i1 = i
         start = self.start_comment if self.forward else self.end_comment
@@ -1211,7 +1216,7 @@ class MatchBrackets:
             return found
         return i
     #@+node:ekr.20160119101851.1: *5* mb.starts_comment
-    def starts_comment(self, s: str, i: int):
+    def starts_comment(self, s: str, i: int) -> bool:
         """Return True if s[i] starts a comment."""
         assert 0 <= i < len(s)
         if self.forward:
@@ -1235,7 +1240,7 @@ class MatchBrackets:
             g.match(s, i, self.end_comment)
         )
     #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
-    def scan_back(self, ch1, target, s: str, i: int):
+    def scan_back(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
         """Scan backwards for delim."""
         level = 0
         while i >= 0:
@@ -1262,7 +1267,7 @@ class MatchBrackets:
         # Not found
         return None
     #@+node:ekr.20160119230141.2: *5* mb.back_scan_comment
-    def back_scan_comment(self, s: str, i: int):
+    def back_scan_comment(self, s: str, i: int) -> int:
         """Return the index of the character after a comment."""
         i1 = i
         if g.match(s, i, self.end_comment):
@@ -1287,7 +1292,7 @@ class MatchBrackets:
             found = 0
         return found
     #@+node:ekr.20160119230141.4: *5* mb.ends_comment
-    def ends_comment(self, s: str, i: int):
+    def ends_comment(self, s: str, i: int) -> bool:
         """
         Return True if s[i] ends a comment. This is called while scanning
         backward, so this is a bit of a guess.
@@ -1332,13 +1337,13 @@ class MatchBrackets:
             self.end_comment and
             g.match(s, i, self.end_comment))
     #@+node:ekr.20160119104148.1: *4* mb.oops
-    def oops(self, s: str):
+    def oops(self, s: str) -> None:
         """Report an error in the match-brackets command."""
         g.es(s, color='red')
     #@+node:ekr.20160119094053.1: *4* mb.run
     #@@nobeautify
 
-    def run(self):
+    def run(self) -> None:
         """The driver for the MatchBrackets class.
 
         With no selected range: find the nearest bracket and select from
@@ -1439,7 +1444,7 @@ class PosList(list):
     #@-<< docstring for PosList >>
     #@+others
     #@+node:ekr.20140531104908.17611: *4* PosList.ctor
-    def __init__(self, c: Cmdr, aList=None):
+    def __init__(self, c: Cmdr, aList: List[Cmdr]=None) -> None:
         self.c = c
         super().__init__()
         if aList is None:
@@ -1449,12 +1454,12 @@ class PosList(list):
             for p in aList:
                 self.append(p.copy())
     #@+node:ekr.20140531104908.17612: *4* PosList.dump
-    def dump(self, sort=False, verbose=False):
+    def dump(self, sort: bool=False, verbose: bool=False) -> str:
         if verbose:
             return g.listToString(self, sort=sort)
         return g.listToString([p.h for p in self], sort=sort)
     #@+node:ekr.20140531104908.17613: *4* PosList.select
-    def select(self, pat, regex=False, removeClones=True):
+    def select(self, pat: str, regex: bool=False, removeClones: bool=True) -> "PosList":
         """
         Return a new PosList containing all positions
         in self that match the given pattern.
@@ -1474,7 +1479,7 @@ class PosList(list):
             aList = self.removeClones(aList)
         return PosList(c, aList)
     #@+node:ekr.20140531104908.17614: *4* PosList.removeClones
-    def removeClones(self, aList):
+    def removeClones(self, aList: List[Pos]) -> List[Pos]:
         seen = {}
         aList2: List[Pos] = []
         for p in aList:
@@ -1487,11 +1492,11 @@ class PosList(list):
 class ReadLinesClass:
     """A class whose next method provides a readline method for Python's tokenize module."""
 
-    def __init__(self, s):
+    def __init__(self, s: str) -> None:
         self.lines = g.splitLines(s)
         self.i = 0
 
-    def next(self):
+    def next(self) -> str:
         if self.i < len(self.lines):
             line = self.lines[self.i]
             self.i += 1
@@ -1507,25 +1512,25 @@ class RedirectClass:
     #@+node:ekr.20031218072017.1656: *4* << RedirectClass methods >>
     #@+others
     #@+node:ekr.20041012082437: *5* RedirectClass.__init__
-    def __init__(self):
+    def __init__(self) -> None:
         self.old = None
         self.encoding = 'utf-8'  # 2019/03/29 For pdb.
     #@+node:ekr.20041012082437.1: *5* isRedirected
-    def isRedirected(self):
+    def isRedirected(self) -> bool:
         return self.old is not None
     #@+node:ekr.20041012082437.2: *5* flush
     # For LeoN: just for compatibility.
 
-    def flush(self, *args):
+    def flush(self, *args: Any) -> None:
         return
     #@+node:ekr.20041012091252: *5* rawPrint
-    def rawPrint(self, s: str):
+    def rawPrint(self, s: str) -> None:
         if self.old:
             self.old.write(s + '\n')
         else:
             g.pr(s)
     #@+node:ekr.20041012082437.3: *5* redirect
-    def redirect(self, stdout=1):
+    def redirect(self, stdout: bool=True) -> None:
         if g.app.batchMode:
             # Redirection is futile in batch mode.
             return
@@ -1535,7 +1540,7 @@ class RedirectClass:
             else:
                 self.old, sys.stderr = sys.stderr, self  # type:ignore
     #@+node:ekr.20041012082437.4: *5* undirect
-    def undirect(self, stdout=1):
+    def undirect(self, stdout: bool=True) -> None:
         if self.old:
             if stdout:
                 sys.stdout, self.old = self.old, None
@@ -2876,14 +2881,18 @@ def get_line_after(s: str, i: int):
 
 getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj: Any):
+def getIvarsDict(obj: Any) -> Dict[str, Any]:
     """Return a dictionary of ivars:values for non-methods of obj."""
     d: Dict[str, Any] = dict(
         [[key, getattr(obj, key)] for key in dir(obj)  # type:ignore
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
-def checkUnchangedIvars(obj: Any, d, exceptions=None):
+def checkUnchangedIvars(
+    obj: Any,
+    d: Dict[str, Any],
+    exceptions: Sequence[str]=None,
+) -> bool:
     if not exceptions:
         exceptions = []
     ok = True
@@ -6608,7 +6617,7 @@ def trace(*args, **keys):
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
 
-def translateArgs(args, d):
+def translateArgs(args: Iterable[Any], d: Dict[str, Any]) -> str:
     """
     Return the concatenation of s and all args, with odd args translated.
     """
