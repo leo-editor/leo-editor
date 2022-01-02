@@ -2058,18 +2058,18 @@ class TkIDDialog(EmergencyDialog):
 
     title = 'Enter Leo id'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(self.title, self.message)
         self.val = ''
 
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event):
+    def onKey(self, event: Any) -> None:
         """Handle Key events in askOk dialogs."""
         if event.char in '\n\r':
             self.okButton()
     #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
-    def createTopFrame(self):
+    def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
         import tkinter as Tk
         self.root = Tk.Tk()  # type:ignore
@@ -2084,7 +2084,7 @@ class TkIDDialog(EmergencyDialog):
         self.entry.pack()
         self.entry.focus_set()
     #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
-    def okButton(self):
+    def okButton(self) -> None:
         """Do default click action in ok button."""
         self.val = self.entry.get()
             # Return is not possible.
