@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = None
