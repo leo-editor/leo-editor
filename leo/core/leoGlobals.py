@@ -36,7 +36,7 @@ import time
 import traceback
 import types
 from typing import TYPE_CHECKING
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -141,7 +141,7 @@ cmd_instance_dict = {
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c: Cmdr, g) -> None:
+def check_cmd_instance_dict(c: Cmdr, g: Any) -> None:
     """
     Check g.check_cmd_instance_dict.
     This is a permanent unit test, called from c.finishCreate.
@@ -149,7 +149,7 @@ def check_cmd_instance_dict(c: Cmdr, g) -> None:
     d = cmd_instance_dict
     for key in d:
         ivars = d.get(key)
-        obj = ivars2instance(c, g, ivars)
+        obj = ivars2instance(c, g, ivars)  # type:ignore
             # Produces warnings.
         if obj:
             name = obj.__class__.__name__
