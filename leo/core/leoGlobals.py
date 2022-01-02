@@ -2101,17 +2101,17 @@ class Tracer:
     """
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
-    def __init__(self, limit=0, trace=False, verbose=False):
-        self.callDict = {}
+    def __init__(self, limit: int=0, trace: bool=False, verbose: bool=False) -> None:
+        self.callDict: Dict[str, Any] = {}
             # Keys are function names.
             # Values are the number of times the function was called by the caller.
-        self.calledDict = {}
+        self.calledDict: Dict[str, int] = {}
             # Keys are function names.
             # Values are the total number of times the function was called.
         self.count = 0
         self.inited = False
         self.limit = limit  # 0: no limit, otherwise, limit trace to n entries deep.
-        self.stack = []
+        self.stack: List[str] = []
         self.trace = trace
         self.verbose = verbose  # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
@@ -2209,7 +2209,7 @@ class Tracer:
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
 
-def startTracer(limit=0, trace=False, verbose=False):
+def startTracer(limit: int=0, trace: bool=False, verbose: bool=False) -> Callable:
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
