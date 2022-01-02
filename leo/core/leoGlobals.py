@@ -2216,45 +2216,43 @@ def startTracer(limit: int=0, trace: bool=False, verbose: bool=False) -> Callabl
 #@+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
 #@@nobeautify
 
-tracing_tags = {}
-    # Keys are id's, values are tags.
-tracing_vars = {}
-    # Keys are id's, values are names of ivars.
-tracing_signatures = {}
-    # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
+tracing_tags: Dict[int, str] = {}  # Keys are id's, values are tags.
+tracing_vars: Dict[int, str] = {}  # Keys are id's, values are names of ivars.
+# Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
+tracing_signatures: Dict[str, Any] = {}
 
 class NullObject:
     """An object that does nothing, and does it very well."""
-    def __init__(self, ivars=None, *args, **kwargs):
+    def __init__(self, ivars: List[str]=None, *args: Any, **kwargs: Any) -> None:
         if isinstance(ivars, str):
             ivars = [ivars]
         tracing_vars [id(self)] = ivars or []
-    def __call__(self, *args, **keys):
+    def __call__(self, *args: Any, **keys: Any) -> "NullObject":
         return self
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "NullObject"
-    def __str__(self):
+    def __str__(self) -> str:
         return "NullObject"
     # Attribute access...
-    def __delattr__(self, attr):
+    def __delattr__(self, attr: str) -> None:
         return None
-    def __getattr__(self, attr):
+    def __getattr__(self, attr: str) -> Any:
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
         return self # Required.
-    def __setattr__(self, attr, val):
+    def __setattr__(self, attr: str, val: Any) -> None:
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
     # Container methods..
     def __bool__(self) -> bool:
         return False
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item: Any) -> bool:
         return False
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> None:
         raise KeyError
-    def __setitem__(self, key, val) -> None:
+    def __setitem__(self, key: str, val: Any) -> None:
         pass
-    def __iter__(self):
+    def __iter__(self) -> "NullObject":
         return self
     def __len__(self) -> int:
         return 0
@@ -2265,7 +2263,7 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag, ivars=None, *args, **kwargs):
+    def __init__(self, tag: str, ivars: List[Any]=None, *args: Any, **kwargs: Any) -> None:
         tracing_tags [id(self)] = tag
         if isinstance(ivars, str):
             ivars = [ivars]
@@ -2274,7 +2272,7 @@ class TracingNullObject:
             suppress = ('tree item',)
             if tag not in suppress:
                 print('='*10, 'NullObject.__init__:', id(self), tag)
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -2282,14 +2280,14 @@ class TracingNullObject:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
     #
     # Attribute access...
-    def __delattr__(self, attr):
-        return self
-    def __getattr__(self, attr):
+    def __delattr__(self, attr: str) -> None:
+        return None
+    def __getattr__(self, attr: str) -> "TracingNullObject":
         null_object_print_attr(id(self), attr)
         if attr in tracing_vars.get(id(self), []):
             return getattr(self, attr, None)
         return self # Required.
-    def __setattr__(self, attr, val):
+    def __setattr__(self, attr: str, val: Any) -> None:
         g.null_object_print(id(self), '__setattr__', attr, val)
         if attr in tracing_vars.get(id(self), []):
             object.__setattr__(self, attr, val)
@@ -2302,26 +2300,24 @@ class TracingNullObject:
             if not callers.endswith(suppress):
                 g.null_object_print(id(self), '__bool__')
         return False
-    def __contains__(self, item):
+    def __contains__(self, item: Any) -> bool:
         g.null_object_print(id(self), '__contains__')
         return False
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> None:
         g.null_object_print(id(self), '__getitem__')
         # pylint doesn't like trailing return None.
-        # return None
-    def __iter__(self):
+    def __iter__(self) -> "TracingNullObject":
         g.null_object_print(id(self), '__iter__')
         return self
-    def __len__(self):
+    def __len__(self) -> int:
         # g.null_object_print(id(self), '__len__')
         return 0
-    def __next__(self):
+    def __next__(self) -> None:
         g.null_object_print(id(self), '__next__')
         raise StopIteration
-    def __setitem__(self, key, val):
+    def __setitem__(self, key: str, val: Any) -> None:
         g.null_object_print(id(self), '__setitem__')
         # pylint doesn't like trailing return None.
-        # return None
 #@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
 def null_object_print_attr(id_, attr):
     suppress = True
