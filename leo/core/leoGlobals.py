@@ -2115,7 +2115,7 @@ class Tracer:
         self.trace = trace
         self.verbose = verbose  # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
-    def computeName(self, frame):
+    def computeName(self, frame: Any) -> str:
         if not frame:
             return ''
         code = frame.f_code
@@ -2140,7 +2140,7 @@ class Tracer:
         result.append(code.co_name)
         return '.'.join(result)
     #@+node:ekr.20080531075119.4: *4* report
-    def report(self):
+    def report(self) -> None:
         if 0:
             g.pr('\nstack')
             for z in self.stack:
@@ -2151,14 +2151,14 @@ class Tracer:
             g.pr(f"{self.calledDict.get(key,0):d}", key)
             # Print the called functions.
             d = self.callDict.get(key)
-            for key2 in sorted(d):
-                g.pr(f"{d.get(key2):8d}", key2)
+            for key2 in sorted(d):  # type:ignore
+                g.pr(f"{d.get(key2):8d}", key2)  # type:ignore
     #@+node:ekr.20080531075119.5: *4* stop
-    def stop(self):
+    def stop(self) -> None:
         sys.settrace(None)
         self.report()
     #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame, event, arg):
+    def tracer(self, frame: Any, event: Any, arg: Any) -> Optional[Callable]:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -2196,13 +2196,13 @@ class Tracer:
             return None
         return self.tracer
     #@+node:ekr.20080531075119.7: *4* updateStats
-    def updateStats(self, name):
+    def updateStats(self, name: str) -> None:
         if not self.stack:
             return
         caller = self.stack[-1]
-        d = self.callDict.get(caller, {})
-            # d is a dict reprenting the called functions.
-            # Keys are called functions, values are counts.
+        # d is a dict reprenting the called functions.
+        # Keys are called functions, values are counts.
+        d: Dict[str, int] = self.callDict.get(caller, {})
         d[name] = 1 + d.get(name, 0)
         self.callDict[caller] = d
         # Update the total counts.
