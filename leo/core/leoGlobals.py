@@ -328,7 +328,7 @@ def standard_timestamp() -> str:
     """Return a reasonable timestamp."""
     return time.strftime("%Y%m%d-%H%M%S")
 #@+node:ekr.20201211183100.1: *3* g.get_backup_directory
-def get_backup_path(sub_directory) -> Optional[str]:
+def get_backup_path(sub_directory: str) -> Optional[str]:
     """
     Return the full path to the subdirectory of the main backup directory.
 
@@ -372,12 +372,12 @@ class BindingInfo:
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(
         self,
-        kind,
-        commandName='',
-        func=None,
-        nextMode=None,
-        pane=None,
-        stroke=None,
+        kind: str,
+        commandName: str='',
+        func: Any=None,
+        nextMode: Any=None,
+        pane: Any=None,
+        stroke: Any=None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
@@ -434,7 +434,7 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **keywords) -> None:
+    def __init__(self, **keywords: Any) -> None:
         self.__dict__.update(keywords)
 
     def __repr__(self) -> str:
@@ -481,7 +481,7 @@ class EmergencyDialog:
     """A class that creates an tkinter dialog with a single OK button."""
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
-    def __init__(self, title: str, message: str):
+    def __init__(self, title: str, message: str) -> Any:
         """Constructor for the leoTkinterDialog class."""
         self.answer = None  # Value returned from run()
         self.title = title
@@ -567,13 +567,13 @@ class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
 
     def __init__(self, kind,
-        encoding=None,
-        ivar=None,
-        setting=None,
-        val=None,
-        path=None,
-        tag='setting',
-        unl=None,
+        encoding: str=None,
+        ivar: str=None,
+        setting: str=None,
+        val: Any=None,
+        path: str=None,
+        tag: str='setting',
+        unl: str=None,
     ) -> None:
         self.encoding = encoding
         self.ivar = ivar
