@@ -41,6 +41,7 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
+assert Iterable, Sequence  ###
 #
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
@@ -171,11 +172,11 @@ class Command:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs: Any) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
-    def __call__(self, func):
+    def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
         global_commands_dict[self.name] = func
         if app:
@@ -189,7 +190,7 @@ class Command:
 
 command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
-def command_alias(alias, func) -> None:
+def command_alias(alias: str, func: Callable) -> None:
     """Create an alias for the *already defined* method in the Commands class."""
     from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
@@ -212,14 +213,14 @@ class CommanderCommand:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs) -> None:
+    def __init__(self, name: str, **kwargs: Any) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
 
-        def commander_command_wrapper(event):
+        def commander_command_wrapper(event: Any) -> None:
             c = event.get('c')
             method = getattr(c, func.__name__, None)
             method(event=event)
@@ -241,7 +242,7 @@ class CommanderCommand:
 
 commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g, ivars) -> Any:
+def ivars2instance(c: Cmdr, g: Any, ivars: List[str]) -> Any:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -262,7 +263,7 @@ def ivars2instance(c: Cmdr, g, ivars) -> Any:
             break
     return obj
 #@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
-def new_cmd_decorator(name, ivars):
+def new_cmd_decorator(name: str, ivars: List[str]) -> Callable:
     """
     Return a new decorator for a command with the given name.
     Compute the class *instance* using the ivar string or list.
@@ -271,9 +272,9 @@ def new_cmd_decorator(name, ivars):
     See https://github.com/leo-editor/leo-editor/issues/325
     """
 
-    def _decorator(func):
+    def _decorator(func: Callable) -> Callable:
 
-        def new_cmd_wrapper(event):
+        def new_cmd_wrapper(event: Any) -> None:
             if isinstance(event, dict):
                 c = event.get('c')
             else:
