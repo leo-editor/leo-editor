@@ -1814,7 +1814,7 @@ class SherlockTracer:
                 ret = self.format_ret(arg)
             print(f"{path}{dots}-{full_name}{ret}")
     #@+node:ekr.20130111120935.10192: *5* sherlock.format_ret
-    def format_ret(self, arg):
+    def format_ret(self, arg: Any) -> str:
         """Format arg, the value returned by a "return" statement."""
         try:
             if isinstance(arg, types.GeneratorType):
@@ -1837,12 +1837,12 @@ class SherlockTracer:
             ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
-    def fn_is_enabled(self, func, patterns):
+    def fn_is_enabled(self, func: Any, patterns: List[str]) -> bool:
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
             return False
 
-        def ignore_function():
+        def ignore_function() -> None:
             if func not in self.ignored_functions:
                 self.ignored_functions.append(func)
                 print(f"Ignore function: {func}")
@@ -1884,7 +1884,7 @@ class SherlockTracer:
             self.bad_pattern(pattern)
             return False
     #@+node:ekr.20130112093655.10195: *4* get_full_name
-    def get_full_name(self, locals_, name):
+    def get_full_name(self, locals_: Any, name: str) -> str:
         """Return class_name::name if possible."""
         full_name = name
         try:
@@ -1898,7 +1898,11 @@ class SherlockTracer:
     ignored_files: List[str] = []  # List of files.
     ignored_functions: List[str] = []  # List of files.
 
-    def is_enabled(self, file_name, function_name, patterns=None):
+    def is_enabled(self,
+        file_name: str,
+        function_name: str,
+        patterns: List[str]=None,
+    ) -> bool:
         """Return True if tracing for function_name in the given file is enabled."""
         #
         # New in Leo 6.3. Never trace through some files.
@@ -1970,7 +1974,7 @@ class SherlockTracer:
                 self.bad_pattern(pattern)
         return enabled
     #@+node:ekr.20121128111829.12182: *4* print_stats
-    def print_stats(self, patterns=None):
+    def print_stats(self, patterns: List[str]=None) -> None:
         """Print all accumulated statisitics."""
         print('\nSherlock statistics...')
         if not patterns:
@@ -1978,9 +1982,9 @@ class SherlockTracer:
         for fn in sorted(self.stats.keys()):
             d = self.stats.get(fn)
             if self.fn_is_enabled(fn, patterns):
-                result = sorted(d.keys())
+                result = sorted(d.keys())  # type:ignore
             else:
-                result = [key for key in sorted(d.keys())
+                result = [key for key in sorted(d.keys())  # type:ignore
                     if self.is_enabled(fn, key, patterns)]
             if result:
                 print('')
@@ -1992,7 +1996,7 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12614: *4* run
     # Modified from pdb.Pdb.set_trace.
 
-    def run(self, frame=None):
+    def run(self, frame: Any=None) -> None:
         """Trace from the given frame or the caller's frame."""
         print("SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
@@ -2005,25 +2009,25 @@ class SherlockTracer:
         # Pass self to sys.settrace to give easy access to all methods.
         sys.settrace(self)
     #@+node:ekr.20140322090829.16834: *4* push & pop
-    def push(self, patterns):
+    def push(self, patterns: List[str]) -> None:
         """Push the old patterns and set the new."""
-        self.pattern_stack.append(self.patterns)
+        self.pattern_stack.append(self.patterns)  # type:ignore
         self.set_patterns(patterns)
         print(f"SherlockTracer.push: {self.patterns}")
 
-    def pop(self):
+    def pop(self) -> None:
         """Restore the pushed patterns."""
         if self.pattern_stack:
-            self.patterns = self.pattern_stack.pop()
+            self.patterns = self.pattern_stack.pop()  # type:ignore
             print(f"SherlockTracer.pop: {self.patterns}")
         else:
             print('SherlockTracer.pop: pattern stack underflow')
     #@+node:ekr.20140326100337.16845: *4* set_patterns
-    def set_patterns(self, patterns):
+    def set_patterns(self, patterns: List[str]) -> None:
         """Set the patterns in effect."""
         self.patterns = [z for z in patterns if self.check_pattern(z)]
     #@+node:ekr.20140322090829.16831: *4* show
-    def show(self, item):
+    def show(self, item: Any) -> str:
         """return the best representation of item."""
         if not item:
             return repr(item)
@@ -2036,7 +2040,7 @@ class SherlockTracer:
             return s[:17] + '...'
         return repr(item)
     #@+node:ekr.20121128093229.12616: *4* stop
-    def stop(self):
+    def stop(self) -> None:
         """Stop all tracing."""
         sys.settrace(None)
     #@-others
