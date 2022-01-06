@@ -8790,13 +8790,7 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
-<t tx="ekr.20100821182153.4343">@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-######
+<t tx="ekr.20100821182153.4343">######
 Slides
 ######
 
@@ -11812,15 +11806,7 @@ run-all-unit-tests-externally = Alt-5
 creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
     
 </t>
-<t tx="ekr.20111127144911.5544">@pagewidth 75
-
-@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+<t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
 .. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
 .. _`Nightly snapshot`:         download.html#snapshots       
 .. _`Python wheel`:             https://pythonwheels.com/
