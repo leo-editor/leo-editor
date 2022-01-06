@@ -585,7 +585,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 tail = ''
             lines[i] = f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
-        # arg_pat = re.compile(r'\s*([\w_]+)\s*(:.*?)?(,)?')
         arg_pat = re.compile(r'\s*([\w_]+\s*)([:,=])?')
 
         def do_args(self, args):
@@ -602,8 +601,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i += len(m.group(1))
                     j = self.find_arg(args, i)
                     assert j > i, (i, j)
-                    val = args[i : j]
-                    result.append(f"{name}{val}")
+                    val = args[i+1 : j].lstrip()
+                    result.append(f"{name}: {val}")
                     i = j
                 elif tail == '=':
                     i += len(m.group(1))
@@ -616,10 +615,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     else:
                         result.append(f"{name_s}={val}")
                     i = j
+                elif tail == ',':
+                    val = self.types_d.get(name.strip(), 'Any')
+                    result.append(f"{name}: {val}, ")
+                    i += len(m.group(0)) + 1
                 else:
                     val = self.types_d.get(name.strip(), 'Any')
                     tail_s = ', ' if tail == ',' else ''
-                    result.append(f"{name}: {val}{tail_s}")
+                    result.append(f"{name}: {val}")
                     i += len(m.group(0))
             return ''.join(result)
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
@@ -629,7 +632,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Scan over type annotations or initializers.
             """
-            assert s[i] in ':=', repr(s[i:])
+            assert s[i] in ':=', (i, s)
             i += 1
             level = 0  # Assume balanced parens or brackets.
             while i < len(s):
@@ -637,12 +640,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
                 if ch in '[{(':
                     level += 1
-                elif ch == ']})':
+                elif ch in ']})':
                     level -= 1
                 elif ch == ',' and level == 0:
                     i += 1  # Add the comma
                     break
-            assert level == 0, level
+            assert level == 0, (level, i == len(s), s)
             return i
         #@+node:ekr.20220105222028.1: *5* ama.kind
         bool_pat = re.compile(r'(True|False)')
