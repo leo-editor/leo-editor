@@ -585,7 +585,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 tail = ''
             lines[i] = f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
-        arg_pat = re.compile(r'\s*([\w_]+\s*)([:,=])?')
+        arg_pat = re.compile(r'(\s*[\w_]+\s*)([:,=])?')
 
         def do_args(self, args):
             """Add type annotations."""
@@ -597,7 +597,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return args
                 name, tail = m.group(1), m.group(2)
                 name_s = name.strip()
-                if tail == ':':
+                if name_s == 'self':
+                    # Don't annotate self.
+                    i += len(m.group(0))
+                    result.append(m.group(0))
+                elif tail == ':':
                     i += len(m.group(1))
                     j = self.find_arg(args, i)
                     assert j > i, (i, j)
@@ -632,7 +636,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             
             Scan over type annotations or initializers.
             """
-            assert s[i] in ':=', (i, s)
+            assert s[i] in ':=', (i, s[i], s)
             i += 1
             level = 0  # Assume balanced parens or brackets.
             while i < len(s):
