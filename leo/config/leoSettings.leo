@@ -543,9 +543,10 @@
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
-<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations settings</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
@@ -11639,6 +11640,18 @@ v, VNode</t>
 <t tx="ekr.20220101093956.1">The working directory for the mypy command.
 
 Defaults to os.path.join(g.app.loadDir, '..', '..')</t>
+<t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Cmdr
+ch, str
+gnx, str
+d, Dict[str, str]
+i, int
+j, int
+k, int
+n, int
+p, Pos
+s, str
+v, VNode</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

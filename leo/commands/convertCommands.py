@@ -474,6 +474,197 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
     #@+others
+    #@+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
+    @cmd('add-mypy-annotations')
+    def addMypyAnnotations(self, event):
+        """
+        The add-mypy-annotations command adds mypy annotations to function and
+        method definitions based on naming conventions.
+        
+        To use, select an @<file> node for a python external file and execute
+        add-mypy-annotations. The command rewrites the @<file> tree, adding
+        mypy annotations for untyped function/method arguments.
+
+        The command attempts no type analysis. It uses "None" as the type of
+        functions and methods that do not specify a return type.
+
+        @data add-mypy-annotations in leoSettings.leo contains a list of
+        key/value pairs. Keys are argument names (as used in Leo); values are
+        mypy type names.
+        
+        This command adds annotations for kwargs that have a constant initial
+        value.
+        """
+        self.Add_Mypy_Annotations(self.c).add_annotations()
+        self.c.bodyWantsFocus()
+    #@+node:ekr.20220105152521.1: *4* class Add_Mypy_Annotations
+    class Add_Mypy_Annotations:
+
+        changed_lines = 0
+        tag = 'add-mypy-annotations'
+        types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
+
+        def __init__(self, c):
+            self.c = c
+
+        #@+others
+        #@+node:ekr.20220105154019.1: *5* ama.init_types_d
+        def init_types_d(self):
+            """Init the annotations dict."""
+            c, d, tag = self.c, self.types_d, self.tag
+            data = c.config.getData(tag)
+            if not data:
+                print(f"@data {tag} not found")
+                return
+            for s in data:
+                try:
+                    key, val = s.split(',', 1)
+                    if key in d:
+                        print(f"{tag}: ignoring duplicate key: {s!r}")
+                    else:
+                        d [key] = val.strip()
+                except ValueError:
+                    print(f"{tag}: ignoring invalid key/value pair: {s!r}")
+        #@+node:ekr.20220105154158.1: *5* ama.add_annotations
+        def add_annotations(self):
+
+            c, p, tag = self.c, self.c.p, self.tag
+            # Checks.
+            if not p.isAnyAtFileNode():
+                g.es_print(f"{tag}: not an @file node: {p.h}")
+                return
+            if not p.h.endswith('.py'):
+                g.es_print(f"{tag}: not a python file: {p.h}")
+                return
+            # Init.
+            self.init_types_d()
+            if not self.types_d:
+                print(f"{self.tag}: no types given")
+                return
+            try:
+                # Convert p and (recursively) all its descendants.
+                self.convert_node(p)
+                # Redraw.
+                c.expandAllSubheads(p)
+                c.treeWantsFocusNow()
+            except Exception:
+                g.es_exception()
+        #@+node:ekr.20220105155837.4: *5* ama.convert_node
+        def convert_node(self, p):
+            # Convert p.b into child.b
+            self.convert_body(p)
+            # Recursively create all descendants.
+            for child in p.children():
+                self.convert_node(child)
+        #@+node:ekr.20220105173331.1: *5* ama.convert_body 
+        def convert_body(self, p):
+            """Convert p.b in place."""
+            c = self.c
+            i, lines = 0, g.splitLines(p.b)
+            old_lines = lines[:]
+            for i, line in enumerate(lines):
+                m = self.def_pat.match(line)
+                if m:
+                    self.do_def(i, lines, m, p)
+            if lines != old_lines:
+                self.changed_lines += 1
+                print(f"changed {p.h}")
+                p.setDirty()
+                c.setChanged()
+                p.b = ''.join(lines)
+        #@+node:ekr.20220105174453.1: *5* ama.do_def
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\)(.*?):(.*)\n')
+
+        def do_def(self, i, lines, m, p):
+
+            lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+            args = self.do_args(args)
+            if not return_val.strip():
+                return_val = ' -> None'
+            if not tail.strip():
+                tail = ''
+            lines[i] = f"{lws}def {name}({args}){return_val}:{tail}\n"
+        #@+node:ekr.20220105174453.2: *5* ama.do_args
+        # arg_pat = re.compile(r'\s*([\w_]+)\s*(:.*?)?(,)?')
+        arg_pat = re.compile(r'\s*([\w_]+\s*)([:,=])?')
+
+        def do_args(self, args):
+            """Add type annotations."""
+            i, result = 0, []
+            while i < len(args):
+                m = self.arg_pat.match(args[i:])
+                if not m:
+                    g.trace('bad args', args)
+                    return args
+                name, tail = m.group(1), m.group(2)
+                name_s = name.strip()
+                if tail == ':':
+                    i += len(m.group(1))
+                    j = self.find_arg(args, i)
+                    assert j > i, (i, j)
+                    val = args[i : j]
+                    result.append(f"{name}{val}")
+                    i = j
+                elif tail == '=':
+                    i += len(m.group(1))
+                    j = self.find_arg(args, i)
+                    assert j > i, (i, j)
+                    val = args[i+1 : j].lstrip()
+                    kind = self.kind(val)
+                    if kind:
+                        result.append(f"{name_s}: {kind}={val}")
+                    else:
+                        result.append(f"{name_s}={val}")
+                    i = j
+                else:
+                    val = self.types_d.get(name.strip(), 'Any')
+                    tail_s = ', ' if tail == ',' else ''
+                    result.append(f"{name}: {val}{tail_s}")
+                    i += len(m.group(0))
+            return ''.join(result)
+        #@+node:ekr.20220105190332.1: *5* ama.find_arg
+        def find_arg(self, s, i):
+            """
+            Return j, the index of the character following the argument starting at s[i].
+            
+            Scan over type annotations or initializers.
+            """
+            assert s[i] in ':=', repr(s[i:])
+            i += 1
+            level = 0  # Assume balanced parens or brackets.
+            while i < len(s):
+                ch = s[i]
+                i += 1
+                if ch in '[{(':
+                    level += 1
+                elif ch == ']})':
+                    level -= 1
+                elif ch == ',' and level == 0:
+                    i += 1  # Add the comma
+                    break
+            assert level == 0, level
+            return i
+        #@+node:ekr.20220105222028.1: *5* ama.kind
+        bool_pat = re.compile(r'(True|False)')
+        float_pat = re.compile(r'[0-9]*\.[0-9]*')
+        int_pat = re.compile(r'[0-9]+')
+        none_pat = re.compile(r'None')
+        string_pat = re.compile(r'[\'"].*[\'"]')
+
+        def kind(self, s):
+            """Return the kind of the initial value s."""
+            if self.bool_pat.match(s):
+                return 'bool'
+            if self.float_pat.match(s):
+                return 'float'
+            if self.int_pat.match(s):
+                return 'int'
+            if self.none_pat.match(s):
+                return 'Any'
+            if self.string_pat.match(s):
+                return 'str'
+            return None
+        #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
     def cToPy(self, event):
