@@ -580,7 +580,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
             args = self.do_args(args)
             if not return_val.strip():
-                return_val = ' -> None'
+                return_val = ' -> Any'
             if not tail.strip():
                 tail = ''
             lines[i] = f"{lws}def {name}({args}){return_val}:{tail}\n"
