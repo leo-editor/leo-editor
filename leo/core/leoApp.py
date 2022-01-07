@@ -15,7 +15,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -2936,7 +2936,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color = d.get('color')
+                color: Any = d.get('color')
                 if color == 'suppress':
                     return
                 if log and color is None:

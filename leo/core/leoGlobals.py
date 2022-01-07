@@ -480,7 +480,7 @@ class EmergencyDialog:
     """A class that creates an tkinter dialog with a single OK button."""
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
-    def __init__(self, title: str, message: str) -> Any:
+    def __init__(self, title: str, message: str) -> None:
         """Constructor for the leoTkinterDialog class."""
         self.answer = None  # Value returned from run()
         self.title = title
@@ -565,7 +565,8 @@ class EmergencyDialog:
 class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
 
-    def __init__(self, kind,
+    def __init__(self,
+        kind: str,
         encoding: str=None,
         ivar: str=None,
         setting: str=None,
@@ -1650,13 +1651,13 @@ class SherlockTracer:
         verbose: bool=True,
     ) -> None:
         """SherlockTracer ctor."""
-        self.bad_patterns = []  # List of bad patterns.
+        self.bad_patterns: List[str] = []  # List of bad patterns.
         self.dots = dots  # True: print level dots.
-        self.contents_d = {}  # Keys are file names, values are file lines.
+        self.contents_d: Dict[str, List] = {}  # Keys are file names, values are file lines.
         self.n = 0  # The frame level on entry to run.
-        self.stats = {}  # Keys are full file names, values are dicts.
-        self.patterns = None  # A list of regex patterns to match.
-        self.pattern_stack = []
+        self.stats: Dict[str, Dict] = {}  # Keys are full file names, values are dicts.
+        self.patterns: List[Any] = None  # A list of regex patterns to match.
+        self.pattern_stack: List[str] = []
         self.show_args = show_args  # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
         self.trace_lines = True  # True: trace lines in enabled functions.
@@ -2214,7 +2215,7 @@ def startTracer(limit: int=0, trace: bool=False, verbose: bool=False) -> Callabl
 #@@nobeautify
 
 tracing_tags: Dict[int, str] = {}  # Keys are id's, values are tags.
-tracing_vars: Dict[int, str] = {}  # Keys are id's, values are names of ivars.
+tracing_vars: Dict[int, List] = {}  # Keys are id's, values are names of ivars.
 # Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
 tracing_signatures: Dict[str, Any] = {}
 
@@ -2265,10 +2266,6 @@ class TracingNullObject:
         if isinstance(ivars, str):
             ivars = [ivars]
         tracing_vars [id(self)] = ivars or []
-        if 0:
-            suppress = ('tree item',)
-            if tag not in suppress:
-                print('='*10, 'NullObject.__init__:', id(self), tag)
     def __call__(self, *args: Any, **kwargs: Any) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
@@ -2838,7 +2835,7 @@ def module_date(mod: Any, format: Any=None) -> str:
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def plugin_date(plugin_mod: Any, format: Any=None) -> None:
+def plugin_date(plugin_mod: Any, format: Any=None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=str)
@@ -2997,14 +2994,16 @@ def objToString(obj: Any, indent: str='', printCaller: bool=False, tag: Any=None
 
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
-def run_pylint(fn, rc,
-    dots=True,  # Show level dots in Sherlock traces.
-    patterns=None,  # List of Sherlock trace patterns.
-    sherlock=False,  # Enable Sherlock tracing.
-    show_return=True,  # Show returns in Sherlock traces.
-    stats_patterns=None,  # Patterns for Sherlock statistics.
-    verbose=True,  # Show filenames in Sherlock traces.
-):
+def run_pylint(
+    fn: str,  # Path to file under test.
+    rc: str,  # Path to settings file.
+    dots: bool=True,  # Show level dots in Sherlock traces.
+    patterns: List[str]=None,  # List of Sherlock trace patterns.
+    sherlock: bool=False,  # Enable Sherlock tracing.
+    show_return: bool=True,  # Show returns in Sherlock traces.
+    stats_patterns: bool=None,  # Patterns for Sherlock statistics.
+    verbose: bool=True,  # Show filenames in Sherlock traces.
+) -> None:
     """
     Run pylint with the given args, with Sherlock tracing if requested.
 
@@ -3049,10 +3048,10 @@ def run_pylint(fn, rc,
             # When not waiting, printing from severl process can be interspersed.
             pass
 #@+node:ekr.20120912153732.10597: *4* g.wait
-def sleep(n: int) -> None:
+def sleep(n: float) -> None:
     """Wait about n milliseconds."""
-    from time import sleep
-    sleep(n)  #sleeps for 5 seconds
+    from time import sleep  # type:ignore
+    sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
 def printObj(obj: Any, indent: str='', printCaller: bool=False, tag: Any=None) -> None:
     """Pretty print any Python object using g.pr."""
@@ -3218,7 +3217,7 @@ def printDiffTime(message: Any, start: Any) -> float:
     g.pr(f"{message} {delta:5.2f} sec.")
     return time.time()
 
-def timeSince(start: Any) -> float:
+def timeSince(start: Any) -> str:
     return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # Weird pylint bug, activated by TestLeoGlobals class.
@@ -3327,7 +3326,7 @@ def findLanguageDirectives(c: Cmdr, p: Pos) -> Optional[str]:
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
 
-def findReference(name: Any, root: Any) -> Optional["Pos"]:
+def findReference(name: Any, root: Any) -> Optional[Pos]:
     """Return the position containing the section definition for name."""
     for p in root.subtree(copy=False):
         assert p != root
@@ -3631,7 +3630,7 @@ def scanAtWrapDirectives(aList: Any, issue_error_flag: bool=False) -> Optional[b
 def scanAllAtWrapDirectives(c: Cmdr, p: Pos) -> Optional[bool]:
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
     if c and p:
-        default = c and c.config.getBool("body-pane-wraps")
+        default = bool(c and c.config.getBool("body-pane-wraps"))
         aList = g.get_directives_dict_list(p)
         val = g.scanAtWrapDirectives(aList)
         ret = default if val is None else val
@@ -3846,7 +3845,7 @@ def create_temp_file(textMode: bool=False) -> Tuple[Any, str]:
         theFile, theFileName = None, ''
     return theFile, theFileName
 #@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
-def createHiddenCommander(fn: Any) -> Optional["Cmdr"]:
+def createHiddenCommander(fn: Any) -> Optional[Cmdr]:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
@@ -4055,7 +4054,7 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
         return s
     return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName: Any, old_c: Any=None, gui: Any=None) -> "Cmdr":
+def openWithFileName(fileName: Any, old_c: Any=None, gui: Any=None) -> Cmdr:
     """
     Create a Leo Frame for the indicated fileName if the file exists.
 
@@ -4063,7 +4062,7 @@ def openWithFileName(fileName: Any, old_c: Any=None, gui: Any=None) -> "Cmdr":
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
-def readFileIntoEncodedString(fn: Any, silent: bool=False) -> Optional[str]:
+def readFileIntoEncodedString(fn: Any, silent: bool=False) -> Optional[bytes]:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -4077,11 +4076,12 @@ def readFileIntoEncodedString(fn: Any, silent: bool=False) -> Optional[str]:
             g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
-def readFileIntoString(fileName,
-    encoding='utf-8',  # BOM may override this.
-    kind=None,  # @file, @edit, ...
-    verbose=True,
-):
+def readFileIntoString(
+    fileName: str,
+    encoding: str='utf-8',  # BOM may override this.
+    kind: str=None,  # @file, @edit, ...
+    verbose: bool=True,
+) -> Tuple[Any, Any]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -4218,14 +4218,14 @@ def splitLongFileName(fn: str, limit: int=40) -> str:
             n = 0
     return ''.join(result)
 #@+node:ekr.20190114061452.26: *3* g.writeFile
-def writeFile(contents: str, encoding: str, fileName: str) -> bool:
+def writeFile(contents: Union[bytes, str], encoding: str, fileName: str) -> bool:
     """Create a file with the given contents."""
     try:
         if isinstance(contents, str):
             contents = g.toEncodedString(contents, encoding=encoding)
         # 'wb' preserves line endings.
         with open(fileName, 'wb') as f:
-            f.write(contents)
+            f.write(contents)  # type:ignore
         return True
     except Exception as e:
         print(f"exception writing: {fileName}:\n{e}")
@@ -4287,7 +4287,7 @@ def findAncestorVnodeByPredicate(p: Pos, v_predicate: Any) -> Optional["VNode"]:
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
-def findRootsWithPredicate(c: Cmdr, root: Any, predicate: Any=None) -> List["Pos"]:
+def findRootsWithPredicate(c: Cmdr, root: Any, predicate: Any=None) -> List[Pos]:
     """
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
@@ -4331,8 +4331,16 @@ def findRootsWithPredicate(c: Cmdr, root: Any, predicate: Any=None) -> List["Pos
                         return [p.copy()]
     return []
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helpers
-def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=None,
-                       soft_idx=False, hard_idx=False):
+def recursiveUNLSearch(
+    unlList: List[str],
+    c: Cmdr,
+    depth: int=0,
+    p: Pos=None,
+    maxdepth: int=0,
+    maxp: Pos=None,
+    soft_idx: bool=False,
+    hard_idx: bool=False,
+) -> Tuple[bool, int, Pos]:
     """try and move to unl in the commander c
 
     All parameters passed on to recursiveUNLFind(), see that for docs.
@@ -4372,8 +4380,16 @@ def recursiveUNLSearch(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=
         moveToP(c, maxp, unlList)
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
-def recursiveUNLFind(unlList, c: Cmdr, depth=0, p: Pos=None, maxdepth=0, maxp=None,
-                     soft_idx=False, hard_idx=False):
+def recursiveUNLFind(
+    unlList: list[str],
+    c: Cmdr,
+    depth: int=0,
+    p: Pos=None,
+    maxdepth: int=0,
+    maxp: Any=None,
+    soft_idx: bool=False,
+    hard_idx: bool=False,
+) -> Tuple[bool, int, Pos]:
     """
     Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()
@@ -4881,7 +4897,7 @@ def is_ws_or_nl(s: str, i: int) -> bool:
 # Warning: this code makes no assumptions about what follows pattern.
 
 def match(s: str, i: int, pattern: Any) -> bool:
-    return s and pattern and s.find(pattern, i, i + len(pattern)) == i
+    return bool(s and pattern and s.find(pattern, i, i + len(pattern)) == i)
 #@+node:ekr.20031218072017.3182: *4* g.match_c_word
 def match_c_word(s: str, i: int, name: Any) -> bool:
     n = len(name)
@@ -5112,11 +5128,11 @@ def execGitCommand(command: Any, directory: Any) -> List[str]:
     return lines
 #@+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(c: Cmdr,
-    base_url=None,
-    label_list=None,
-    milestone=None,
-    state=None,  # in (None, 'closed', 'open')
-):
+    base_url: str=None,
+    label_list: List=None,
+    milestone: str=None,
+    state: Optional[str]=None,  # in (None, 'closed', 'open')
+) -> None:
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
@@ -5429,7 +5445,7 @@ act_on_node = dummy_act_on_node
 childrenModifiedSet: Set["VNode"] = set()
 contentModifiedSet: Set["VNode"] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args, **keywords) -> Any:
+def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -5517,7 +5533,7 @@ def disableIdleTimeHook() -> None:
     """Disable the global idle-time hook."""
     g.app.idle_time_hooks_enabled = False
 #@+node:EKR.20040602125018: *3* g.enableIdleTimeHook
-def enableIdleTimeHook(*args, **keys) -> None:
+def enableIdleTimeHook(*args: Any, **keys: Any) -> None:
     """Enable idle-time processing."""
     g.app.idle_time_hooks_enabled = True
 #@+node:ekr.20140825042850.18410: *3* g.IdleTime
@@ -5770,7 +5786,7 @@ def stripBrackets(s: str) -> str:
         s = s[:-1]
     return s
 #@+node:ekr.20170317101100.1: *4* g.unCamel
-def unCamel(s: str) -> str:
+def unCamel(s: str) -> List[str]:
     """Return a list of sub-words in camelCased string s."""
     result: List[str] = []
     word: List[str] = []
@@ -5878,10 +5894,10 @@ def isValidEncoding(encoding: str) -> bool:
 #@+node:ekr.20061006152327: *4* g.isWordChar & g.isWordChar1
 def isWordChar(ch: str) -> bool:
     """Return True if ch should be considered a letter."""
-    return ch and (ch.isalnum() or ch == '_')
+    return bool(ch and (ch.isalnum() or ch == '_'))
 
 def isWordChar1(ch: str) -> bool:
-    return ch and (ch.isalpha() or ch == '_')
+    return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
 def stripBOM(s: str) -> Tuple[Optional[str], str]:
     """
@@ -5907,7 +5923,7 @@ def stripBOM(s: str) -> Tuple[Optional[str], str]:
                 return e, s[len(bom) :]
     return None, s
 #@+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s: str, encoding: str='utf-8', reportErrors: bool=False) -> str:
+def toEncodedString(s: str, encoding: str='utf-8', reportErrors: bool=False) -> bytes:
     """Convert unicode string to an encoded string."""
     if not isinstance(s, str):
         return s
@@ -5921,9 +5937,7 @@ def toEncodedString(s: str, encoding: str='utf-8', reportErrors: bool=False) -> 
         if reportErrors:
             g.error(f"Error converting {s} from unicode to {encoding} encoding")
     # Tracing these calls directly yields thousands of calls.
-    # Never call g.trace here!
-        # g.dump_encoded_string(encoding,s)
-    return s
+    return s  # type:ignore
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
@@ -6119,7 +6133,7 @@ def removeLeadingBlankLines(s: str) -> str:
 #@+node:ekr.20031218072017.3202: *4* g.removeLeadingWhitespace
 # Remove whitespace up to first_ws wide in s, given tab_width, the width of a tab.
 
-def removeLeadingWhitespace(s: str, first_ws: str, tab_width: int) -> str:
+def removeLeadingWhitespace(s: str, first_ws: int, tab_width: int) -> str:
     j = 0
     ws = 0
     first_ws = abs(first_ws)
@@ -6229,22 +6243,22 @@ def enl(tabName: str='Log') -> None:
         log.newlines += 1
         log.putnl(tabName)
 #@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
-def blue(*args, **keys) -> None:
+def blue(*args: Any, **keys: Any) -> None:
     g.es_print(color='blue', *args, **keys)
 
-def error(*args, **keys) -> None:
+def error(*args: Any, **keys: Any) -> None:
     g.es_print(color='error', *args, **keys)
 
-def note(*args, **keys) -> None:
+def note(*args: Any, **keys: Any) -> None:
     g.es_print(color='note', *args, **keys)
 
-def red(*args, **keys) -> None:
+def red(*args: Any, **keys: Any) -> None:
     g.es_print(color='red', *args, **keys)
 
-def warning(*args, **keys) -> None:
+def warning(*args: Any, **keys: Any) -> None:
     g.es_print(color='warning', *args, **keys)
 #@+node:ekr.20070626132332: *3* g.es
-def es(*args, **keys) -> None:
+def es(*args: Any, **keys: Any) -> None:
     """Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
@@ -6295,7 +6309,7 @@ def es(*args, **keys) -> None:
 
 log = es
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p: Pos, line_number: Any, message: Any) -> None:
+def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     """
     Write a clickable message to the given line number of p.b.
 
@@ -6319,13 +6333,13 @@ def es_dump(s: str, n: int=30, title: str=None) -> None:
         g.es_print('', aList)
         i += n
 #@+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
-def es_error(*args, **keys) -> None:
+def es_error(*args: Any, **keys: Any) -> None:
     color = keys.get('color')
     if color is None and g.app.config:
         keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **keys)
 
-def es_print_error(*args, **keys) -> None:
+def es_print_error(*args: Any, **keys: Any) -> None:
     color = keys.get('color')
     if color is None and g.app.config:
         keys['color'] = g.app.config.getColor("log-error-color") or 'red'
@@ -6343,7 +6357,7 @@ def es_event_exception(eventName: str, full: bool=False) -> None:
     if not g.stdErrIsRedirected():  # 2/16/04
         traceback.print_exc()
 #@+node:ekr.20031218072017.3112: *3* g.es_exception
-def es_exception(full: bool=True, c: Cmdr=None, color: str="red") -> None:
+def es_exception(full: bool=True, c: Cmdr=None, color: str="red") -> Tuple[str, int]:
     typ, val, tb = sys.exc_info()
     # val is the second argument to the raise statement.
     if full:
@@ -6362,7 +6376,7 @@ def es_exception_type(c: Cmdr=None, color: str="red") -> None:
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def es_print(*args, **keys) -> None:
+def es_print(*args: Any, **keys: Any) -> None:
     """
     Print all non-keyword args, and put them to the log pane.
 
@@ -6373,7 +6387,7 @@ def es_print(*args, **keys) -> None:
     if g.app and not g.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20111107181638.9741: *3* g.print_exception
-def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> None:
+def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
     """Print exception info about the last exception."""
     typ, val, tb = sys.exc_info()
         # val is the second argument to the raise statement.
@@ -6388,7 +6402,7 @@ def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str
     except Exception:
         return "<no file>", 0
 #@+node:ekr.20050707065530: *3* g.es_trace
-def es_trace(*args, **keys) -> None:
+def es_trace(*args: Any, **keys: Any) -> None:
     if args:
         try:
             s = args[0]
@@ -6431,7 +6445,7 @@ def goto_last_exception(c: Cmdr) -> None:
     else:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
-def internalError(*args) -> None:
+def internalError(*args: Any) -> None:
     """Report a serious interal error in Leo."""
     callers = g.callers(20).split(',')
     caller = callers[-1]
@@ -6454,7 +6468,7 @@ def log_to_file(s: str, fn: Any=None) -> None:
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def pr(*args, **keys) -> None:
+def pr(*args: Any, **keys: Any) -> None:
     """
     Print all non-keyword args. This is a wrapper for the print statement.
 
@@ -6492,9 +6506,9 @@ def pr(*args, **keys) -> None:
         pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj: Any) -> str:
-    if isinstance(obj, str):
+    if isinstance(obj, str):  # type:ignore
         return 'string'
-    t = type(obj)
+    t: Any = type(obj)
     if t in (types.BuiltinFunctionType, types.FunctionType):
         return 'function'
     if t == types.ModuleType:
@@ -6550,7 +6564,7 @@ def printLeoModules(message: Any=None) -> None:
 def printStack() -> None:
     traceback.print_stack()
 #@+node:ekr.20031218072017.2317: *3* g.trace
-def trace(*args, **keys) -> None:
+def trace(*args: Any, **keys: Any) -> None:
     """Print a tracing message."""
     # Don't use g here: in standalone mode g is a NullObject!
     # Compute the effective args.
@@ -6830,11 +6844,11 @@ def issueSecurityWarning(setting: Any) -> None:
 #@+node:ekr.20031218072017.3144: *3* g.makeDict (Python Cookbook)
 # From the Python cookbook.
 
-def makeDict(**keys) -> Dict:
+def makeDict(**keys: Any) -> Dict:
     """Returns a Python dictionary from using the optional keyword arguments."""
     return keys
 #@+node:ekr.20140528065727.17963: *3* g.pep8_class_name
-def pep8_class_name(s: str) -> None:
+def pep8_class_name(s: str) -> str:
     """Return the proper class name for s."""
     # Warning: s.capitalize() does not work.
     # It lower cases all but the first letter!
@@ -6955,7 +6969,7 @@ def os_path_finalize(path: str) -> str:
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
-def os_path_finalize_join(*args, **keys) -> str:
+def os_path_finalize_join(*args: Any, **keys: Any) -> str:
     """
     Join and finalize.
 
@@ -6965,7 +6979,7 @@ def os_path_finalize_join(*args, **keys) -> str:
     path = g.os_path_finalize(path)
     return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
-def os_path_getmtime(path: str) -> int:
+def os_path_getmtime(path: str) -> float:
     """Return the modification time of path."""
     if not path:
         return 0
@@ -6990,7 +7004,7 @@ def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args, **keys) -> str:
+def os_path_join(*args: Any, **keys: Any) -> str:
     """
     Join paths, like os.path.join, with enhancements:
 
@@ -7172,12 +7186,12 @@ def createTopologyList(c: Cmdr, root: Pos=None, useHeadlines: bool=False) -> Lis
         root = c.rootPosition()
     v = root
     if useHeadlines:
-        aList = [(v.numberOfChildren(), v.headString()),]
+        aList = [(v.numberOfChildren(), v.headString()),]  # type: ignore
     else:
-        aList = [v.numberOfChildren()]
+        aList = [v.numberOfChildren()]  # type: ignore
     child = v.firstChild()
     while child:
-        aList.append(g.createTopologyList(c, child, useHeadlines))
+        aList.append(g.createTopologyList(c, child, useHeadlines))  # type: ignore
         child = child.next()
     return aList
 #@+node:ekr.20111017204736.15898: *3* g.getDocString
@@ -7290,7 +7304,7 @@ def execute_shell_commands(commands: Any, trace: bool=False) -> None:
                 print('Start:', proc)
             # #1489: call proc.poll at idle time.
 
-            def proc_poller(timer: Any, proc=proc) -> None:
+            def proc_poller(timer: Any, proc: Any=proc) -> None:
                 val = proc.poll()
                 if val is not None:
                     # This trace can be disruptive.
@@ -7301,14 +7315,14 @@ def execute_shell_commands(commands: Any, trace: bool=False) -> None:
             g.IdleTime(proc_poller, delay=0).start()
 #@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
-    base_dir=None,
-    c=None,
-    command_setting=None,
-    commands=None,
-    path_setting=None,
-    trace=False,
-    warning=None,
-):
+    base_dir: str=None,
+    c: Cmdr=None,
+    command_setting: str=None,
+    commands: List=None,
+    path_setting: str=None,
+    trace: bool=False,
+    warning: str=None,
+) -> None:
     """
     A helper for prototype commands or any other code that
     runs programs in a separate process.
@@ -7383,7 +7397,7 @@ def executeFile(filename: str, options: str='') -> None:
     fdir, fname = g.os_path_split(filename)
     # New in Leo 4.10: alway use subprocess.
 
-    def subprocess_wrapper(cmdlst: List) -> Tuple:
+    def subprocess_wrapper(cmdlst: str) -> Tuple:
 
         p = subprocess.Popen(cmdlst, cwd=fdir,
             universal_newlines=True,
@@ -7460,10 +7474,10 @@ def findTopLevelNode(c: Cmdr, headline: str, exact: bool=True) -> Optional[Pos]:
 #@-others
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c: Cmdr, p: Pos,
-    useSelectedText=True,
-    forcePythonSentinels=True,
-    useSentinels=True,
-):
+    useSelectedText: bool=True,
+    forcePythonSentinels: bool=True,
+    useSentinels: bool=True,
+) -> str:
     """
     Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
@@ -7663,7 +7677,7 @@ unl_regex = re.compile(r'\bunl:.*$')
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
-def unquoteUrl(url: str) -> None:
+def unquoteUrl(url: str) -> str:
     """Replace special characters (especially %20, by their equivalent)."""
     return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
