@@ -99,7 +99,7 @@ directives_pat = None  # Set below.
 # The cmd_instance_dict supports per-class @cmd decorators. For example, the
 # following appears in leo.commands.
 #
-#     def cmd(name: Any) -> None:
+#     def cmd(name: Any) -> Any:
 #         """Command decorator for the abbrevCommands class."""
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 #
@@ -164,7 +164,7 @@ class Command:
     commands that could befined inside a class. The typical usage is:
 
         @g.command('command-name')
-        def A_Command(event: Any) -> None:
+        def A_Command(event):
             c = event.get('c')
             ...
 
@@ -203,7 +203,7 @@ class CommanderCommand:
     Usage:
 
         @g.command('command-name')
-        def command_name(self, *args, **kwargs) -> None:
+        def command_name(self, *args, **kwargs):
             ...
 
     The decorator injects command_name into the Commander class and calls
@@ -6882,7 +6882,7 @@ def windows() -> None:
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
 #@+node:ekr.20180314120442.1: *3* g.glob_glob
-def glob_glob(pattern: Any) -> None:
+def glob_glob(pattern: Any) -> List:
     """Return the regularized glob.glob(pattern)"""
     aList = glob.glob(pattern)
     # os.path.normpath does the *reverse* of what we want.
@@ -6890,7 +6890,7 @@ def glob_glob(pattern: Any) -> None:
         aList = [z.replace('\\', '/') for z in aList]
     return aList
 #@+node:ekr.20031218072017.2146: *3* g.os_path_abspath
-def os_path_abspath(path: str) -> None:
+def os_path_abspath(path: str) -> str:
     """Convert a path to an absolute path."""
     if not path:
         return ''
@@ -6903,7 +6903,7 @@ def os_path_abspath(path: str) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
-def os_path_basename(path: str) -> None:
+def os_path_basename(path: str) -> str:
     """Return the second half of the pair returned by split(path)."""
     if not path:
         return ''
@@ -6913,7 +6913,7 @@ def os_path_basename(path: str) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
-def os_path_dirname(path: str) -> None:
+def os_path_dirname(path: str) -> str:
     """Return the first half of the pair returned by split(path)."""
     if not path:
         return ''
@@ -6923,7 +6923,7 @@ def os_path_dirname(path: str) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
-def os_path_exists(path: str) -> None:
+def os_path_exists(path: str) -> bool:
     """Return True if path exists."""
     if not path:
         return False
@@ -6932,7 +6932,7 @@ def os_path_exists(path: str) -> None:
         path = path.replace('\x00', '')  # Fix Python 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
-def os_path_expanduser(path: str) -> None:
+def os_path_expanduser(path: str) -> str:
     """wrap os.path.expanduser"""
     if not path:
         return ''
@@ -6942,7 +6942,7 @@ def os_path_expanduser(path: str) -> None:
         path = path.replace('\\', '/')
     return result
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
-def os_path_finalize(path: str) -> None:
+def os_path_finalize(path: str) -> str:
     """
     Expand '~', then return os.path.normpath, os.path.abspath of the path.
     There is no corresponding os.path method
@@ -6959,7 +6959,7 @@ def os_path_finalize(path: str) -> None:
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
-def os_path_finalize_join(*args, **keys) -> None:
+def os_path_finalize_join(*args, **keys) -> str:
     """
     Join and finalize.
 
@@ -6969,7 +6969,7 @@ def os_path_finalize_join(*args, **keys) -> None:
     path = g.os_path_finalize(path)
     return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
-def os_path_getmtime(path: str) -> None:
+def os_path_getmtime(path: str) -> int:
     """Return the modification time of path."""
     if not path:
         return 0
@@ -6978,11 +6978,11 @@ def os_path_getmtime(path: str) -> None:
     except Exception:
         return 0
 #@+node:ekr.20080729142651.2: *3* g.os_path_getsize
-def os_path_getsize(path: str) -> None:
+def os_path_getsize(path: str) -> int:
     """Return the size of path."""
     return os.path.getsize(path) if path else 0
 #@+node:ekr.20031218072017.2151: *3* g.os_path_isabs
-def os_path_isabs(path: str) -> None:
+def os_path_isabs(path: str) -> bool:
     """Return True if path is an absolute path."""
     return os.path.isabs(path) if path else False
 #@+node:ekr.20031218072017.2152: *3* g.os_path_isdir
@@ -6990,11 +6990,11 @@ def os_path_isdir(path: str) -> None:
     """Return True if the path is a directory."""
     return os.path.isdir(path) if path else False
 #@+node:ekr.20031218072017.2153: *3* g.os_path_isfile
-def os_path_isfile(path: str) -> None:
+def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args, **keys) -> None:
+def os_path_join(*args, **keys) -> str:
     """
     Join paths, like os.path.join, with enhancements:
 
@@ -7027,7 +7027,7 @@ def os_path_join(*args, **keys) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
-def os_path_normcase(path: str) -> None:
+def os_path_normcase(path: str) -> str:
     """Normalize the path's case."""
     if not path:
         return ''
@@ -7036,7 +7036,7 @@ def os_path_normcase(path: str) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
-def os_path_normpath(path: str) -> None:
+def os_path_normpath(path: str) -> str:
     """Normalize the path."""
     if not path:
         return ''
@@ -7046,14 +7046,14 @@ def os_path_normpath(path: str) -> None:
         path = path.replace('\\', '/').lower()  # #2049: ignore case!
     return path
 #@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
-def os_path_normslashes(path: str) -> None:
+def os_path_normslashes(path: str) -> str:
 
     # os.path.normpath does the *reverse* of what we want.
     if g.isWindows and path:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
-def os_path_realpath(path: str) -> None:
+def os_path_realpath(path: str) -> str:
     """Return the canonical path of the specified filename, eliminating any
     symbolic links encountered in the path (if they are supported by the
     operating system).
@@ -7066,16 +7066,16 @@ def os_path_realpath(path: str) -> None:
         path = path.replace('\\', '/')
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
-def os_path_split(path: str) -> None:
+def os_path_split(path: str) -> Tuple[str, str]:
     if not path:
         return '', ''
     head, tail = os.path.split(path)
     return head, tail
 #@+node:ekr.20031218072017.2159: *3* g.os_path_splitext
-def os_path_splitext(path: str) -> None:
+def os_path_splitext(path: str) -> Tuple[str, str]:
 
     if not path:
-        return ''
+        return '', ''
     head, tail = os.path.splitext(path)
     return head, tail
 #@+node:ekr.20090829140232.6036: *3* g.os_startfile
@@ -7803,7 +7803,7 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: Any) -> None:
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl: Any, c: Cmdr) -> None:
+def handleUnl(unl: Any, c: Cmdr) -> Any:
     """
     Handle a Leo UNL. This must *never* open a browser.
 
