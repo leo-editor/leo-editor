@@ -130,6 +130,20 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, contents)
+    #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
+    def test_initializers(self):
+        # Convert a copy of the Position class
+        p = self.p
+        p.b = contents = textwrap.dedent('''\
+            def f3(i = 2, f = 1.1, b = True, x = None):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f3(i: int=2, f: float=1.1, b: bool=True, x: Any=None) -> Any:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
     #@-others
 #@-others
 

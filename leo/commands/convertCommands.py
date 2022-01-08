@@ -565,7 +565,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             s = self.def_pat.sub(self.do_def, p.b)
             if p.b != s:
                 self.changed_lines += 1
-                print(f"changed {p.h}")
+                if not g.unitTesting:
+                    print(f"changed {p.h}")
                 p.setDirty()
                 c.setChanged()
                 p.b = s
