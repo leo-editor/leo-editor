@@ -606,11 +606,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     result.append(f"{lws}{name}{comma}")
                 elif tail == ':':
                     arg, i = self.find_arg(args, i)
-                    result.append(f"{lws}{name}: {arg}")
+                    result.append(f"{lws}{name}: {arg}{comma}")
                 elif tail == '=':
                     arg, i = self.find_arg(args, i)
                     kind = self.kind(arg)
-                    result.append(f"{lws}{name}: {kind}={arg}")
+                    result.append(f"{lws}{name}: {kind}={arg}{comma}")
                 elif tail == ',':
                     kind = self.types_d.get(name.strip(), 'Any')
                     result.append(f"{lws}{name}: {kind}{comma}")
@@ -651,11 +651,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch in ']})"\'':
                     level -= 1
                 elif ch == ',' and level == 0:
-                    # Add the comma.
+                    # Skip the comma, but don't include it in the result.
                     break
             assert level == 0, (level, i == len(s), s)
-            g.trace(s[i1 : i].strip())
-            return s[i1 : i].strip(), i
+            result = s[i1 : i].strip()
+            if result.endswith(','):
+                result = result[:-1].strip()
+            g.trace(repr(result))
+            return result, i
         #@+node:ekr.20220105222028.1: *5* ama.kind
         bool_pat = re.compile(r'(True|False)')
         float_pat = re.compile(r'[0-9]*\.[0-9]*')

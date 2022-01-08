@@ -120,6 +120,16 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
+    #@+node:ekr.20220108091352.1: *3* test_ama.test_already_annotated
+    def test_already_annotated(self):
+        # Convert a copy of the Position class
+        p = self.p
+        p.b = contents = textwrap.dedent('''\
+            def f2(i: int, s: str) -> str:
+                return s
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, contents)
     #@-others
 #@-others
 
