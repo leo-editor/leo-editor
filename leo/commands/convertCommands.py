@@ -654,10 +654,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             while i < len(s):
                 ch = s[i]
                 i += 1
-                if ch in '[{("\'':
+                if ch in '[{(':
                     level += 1
-                elif ch in ']})"\'':
+                elif ch in ']}':
                     level -= 1
+                elif ch in '\'"':
+                    i = g.skip_python_string(s, i - 1)
                 elif ch == ',' and level == 0:
                     # Skip the comma, but don't include it in the result.
                     break
