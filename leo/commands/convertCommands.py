@@ -591,11 +591,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
             lws = ' '*4 if multiline else ''
-            i, result = 0, []
+            result: List[str] = []
+            i = 0
             while i < len(args):
                 rest = args[i:]
                 if not rest.strip():
                     break
+                # Handle comments following arguments.
                 if multiline and result:
                     m = self.comment_pat.match(rest)
                     if m:
