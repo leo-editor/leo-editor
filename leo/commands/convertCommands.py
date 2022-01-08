@@ -587,7 +587,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_args(self, args):
             """Add type annotations."""
             multiline = '\n' in args.strip()
-            sep = ',\n' if multiline else ', '
+            comma = ',\n' if multiline else ', '
             lws = ' '*4 if multiline else ''
             i, result = 0, []
             while i < len(args):
@@ -603,7 +603,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += len(name1)
                 if name == 'self':
                     # Don't annotate self.
-                    result.append(f"{lws}{name}")
+                    result.append(f"{lws}{name}{comma}")
                 elif tail == ':':
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}")
@@ -613,15 +613,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     result.append(f"{lws}{name}: {kind}={arg}")
                 elif tail == ',':
                     kind = self.types_d.get(name.strip(), 'Any')
-                    result.append(f"{lws}{name}: {kind}")
+                    result.append(f"{lws}{name}: {kind}{comma}")
+                    i += 1
                 else:
                     kind = self.types_d.get(name.strip(), 'Any')
-                    result.append(f"{lws}{name}: {kind}")
-                while i < len(args) and args[i] in ' \n,':
-                    i += 1
-            if multiline:
-                return '\n' + ',\n'.join(result) + ',\n'
-            return ', '.join(result)
+                    result.append(f"{lws}{name}: {kind}{comma}")
+                # Allow trailing whitespace and comments.
+                if 0:
+                    while i < len(args) and args[i] in ' \n#':
+                        if args[i] == '#':
+                            while i < len(args) and args[i] != '\n':
+                                i += 1
+                        else:
+                            i += 1
+            s = ''.join(result)
+            if not multiline and s.endswith(', '):
+                s = s[:-2]
+            return s
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
         def find_arg(self, s, i):
             """
@@ -634,18 +642,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             while i < len(s) and s[i] == ' ':
                 i += 1
             i1 = i
-            level = 0  # Assume balanced parens or brackets.
+            level = 0  # Assume balanced parens, brackets and strings.
             while i < len(s):
                 ch = s[i]
                 i += 1
-                if ch in '[{(':
+                if ch in '[{("\'':
                     level += 1
-                elif ch in ']})':
+                elif ch in ']})"\'':
                     level -= 1
                 elif ch == ',' and level == 0:
-                    i -= 1  # Skip the comma
+                    # Add the comma.
                     break
             assert level == 0, (level, i == len(s), s)
+            g.trace(s[i1 : i].strip())
             return s[i1 : i].strip(), i
         #@+node:ekr.20220105222028.1: *5* ama.kind
         bool_pat = re.compile(r'(True|False)')
