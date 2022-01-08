@@ -88,6 +88,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     
     def setUp(self):
         super().setUp()
+        # print(self.id())
         c = self.c
         self.p = self.root_p
         self.x = c.convertCommands.Add_Mypy_Annotations(c)
@@ -125,8 +126,11 @@ class TestAddMypyAnnotations(LeoUnitTest):
         # Convert a copy of the Position class
         p = self.p
         p.b = contents = textwrap.dedent('''\
-            def f2(i: int, s: str) -> str:
+            def f1(i: int, s: str) -> str:
                 return s
+                
+            def f2(self, c: Cmdr, g: Any, ivars: List[str]) -> Any:
+                pass
     ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, contents)
@@ -140,6 +144,34 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         expected = textwrap.dedent('''\
             def f3(i: int=2, f: float=1.1, b: bool=True, x: Any=None) -> Any:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
+    #@+node:ekr.20220108093621.1: *3* test_ama.test_multiline_def
+    def test_multiline_def(self):
+        # Convert a copy of the Position class
+        p = self.p
+        p.b = contents = textwrap.dedent('''\
+            def f (
+                self,
+                a,
+                b=1,
+                c = 2 ,
+                *args,
+                **kwargs,
+            ):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f(
+                self,
+                a: Any,
+                b: int=1,
+                c: int=2,
+                *args: Any,
+                **kwargs: Any,
+            ) -> Any:
                 pass
     ''')
         self.x.convert_body(p)

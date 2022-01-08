@@ -593,6 +593,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i, result = 0, []
             while i < len(args):
                 rest = args[i:]
+                ### g.trace(i, repr(rest))
                 if not rest.strip():
                     break
                 m = self.arg_pat.match(rest)
@@ -605,6 +606,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if name == 'self':
                     # Don't annotate self.
                     result.append(f"{lws}{name}{comma}")
+                    if i < len(args) and args[i] == ',':
+                        i += 1
                 elif tail == ':':
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}{comma}")
@@ -628,6 +631,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         else:
                             i += 1
             s = ''.join(result)
+            if multiline:
+                s = '\n' + s
             if not multiline and s.endswith(', '):
                 s = s[:-2]
             return s
@@ -658,7 +663,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             result = s[i1 : i].strip()
             if result.endswith(','):
                 result = result[:-1].strip()
-            g.trace(repr(result))
             return result, i
         #@+node:ekr.20220105222028.1: *5* ama.kind
         bool_pat = re.compile(r'(True|False)')
