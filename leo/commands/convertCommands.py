@@ -570,7 +570,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c.setChanged()
                 p.b = s
         #@+node:ekr.20220105174453.1: *5* ama.do_def
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\)(.*?):(.*)\n', re.MULTILINE + re.DOTALL)
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
 
         def do_def(self, m):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
