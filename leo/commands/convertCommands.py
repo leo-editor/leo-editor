@@ -560,6 +560,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p):
             """Convert p.b in place."""
             c = self.c
+            if not p.b.strip():
+                return
             s = self.def_pat.sub(self.do_def, p.b)
             if p.b != s:
                 self.changed_lines += 1
@@ -590,7 +592,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i, result = 0, []
             while i < len(args):
                 rest = args[i:]
-                ### g.trace(i, repr(rest))
                 if not rest.strip():
                     break
                 m = self.arg_pat.match(rest)
@@ -598,31 +599,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace('==== bad args', i, repr(rest))
                     return args
                 name1, tail = m.group(1), m.group(2)
-                n = len(name1)
                 name = name1.strip()
+                i += len(name1)
                 if name == 'self':
                     # Don't annotate self.
                     result.append(f"{lws}{name}")
-                    i += n
                 elif tail == ':':
-                    arg, i = self.find_arg(args, i + n)
+                    arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}")
                 elif tail == '=':
-                    arg, i = self.find_arg(args, i + n)
+                    arg, i = self.find_arg(args, i)
                     kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}")
                 elif tail == ',':
                     kind = self.types_d.get(name.strip(), 'Any')
                     result.append(f"{lws}{name}: {kind}")
-                    i += n
                 else:
                     kind = self.types_d.get(name.strip(), 'Any')
                     result.append(f"{lws}{name}: {kind}")
-                    i += n
                 while i < len(args) and args[i] in ' \n,':
                     i += 1
             if multiline:
-                return '\n' + ',\n'.join(result) + '\n'
+                return '\n' + ',\n'.join(result) + ',\n'
             return ', '.join(result)
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
         def find_arg(self, s, i):
