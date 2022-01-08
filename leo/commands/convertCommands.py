@@ -584,6 +584,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
         arg_pat = re.compile(r'(\s*[\*\w_]+\s*)([:,=])?')
+        comment_pat = re.compile(r'(\s*#.*?\n)')
 
         def do_args(self, args):
             """Add type annotations."""
@@ -593,9 +594,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i, result = 0, []
             while i < len(args):
                 rest = args[i:]
-                ### g.trace(i, repr(rest))
                 if not rest.strip():
                     break
+                if multiline and result:
+                    m = self.comment_pat.match(rest)
+                    if m:
+                        comment = m.group(0)
+                        i += len(comment)
+                        last = result.pop()
+                        result.append(f"{last.rstrip()}  {comment.strip()}\n")
+                        continue
                 m = self.arg_pat.match(rest)
                 if not m:
                     g.trace('==== bad args', i, repr(rest))
@@ -622,14 +630,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     kind = self.types_d.get(name.strip(), 'Any')
                     result.append(f"{lws}{name}: {kind}{comma}")
-                # Allow trailing whitespace and comments.
-                if 0:
-                    while i < len(args) and args[i] in ' \n#':
-                        if args[i] == '#':
-                            while i < len(args) and args[i] != '\n':
-                                i += 1
-                        else:
-                            i += 1
             s = ''.join(result)
             if multiline:
                 s = '\n' + s
@@ -639,9 +639,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
         def find_arg(self, s, i):
             """
-            Return (arg, j), the index of the character following the argument starting at s[i].
-            
             Scan over type annotations or initializers.
+            
+            Return (arg, j), the index of the character following the argument starting at s[i].
             """
             assert s[i] in ':=', (i, s[i], s)
             i += 1
