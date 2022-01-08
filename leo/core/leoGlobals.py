@@ -565,7 +565,8 @@ class EmergencyDialog:
 class GeneralSetting:
     """A class representing any kind of setting except shortcuts."""
 
-    def __init__(self,
+    def __init__(
+        self,
         kind: str,
         encoding: str=None,
         ivar: str=None,
@@ -1085,7 +1086,8 @@ class MatchBrackets:
             # self.oops('unmatched string')
         return i + offset
     #@+node:tbrown.20180226113621.1: *4* mb.expand_range
-    def expand_range(self,
+    def expand_range(
+        self,
         s: str,
         left: int,
         right: int,
@@ -1898,7 +1900,8 @@ class SherlockTracer:
     ignored_files: List[str] = []  # List of files.
     ignored_functions: List[str] = []  # List of files.
 
-    def is_enabled(self,
+    def is_enabled(
+        self,
         file_name: str,
         function_name: str,
         patterns: List[str]=None,
@@ -5054,7 +5057,7 @@ def skip_string(s: str, i: int) -> int:
     """Scan forward to the end of a string."""
     delim = s[i]
     i += 1
-    assert(delim == '"' or delim == '\'')
+    assert delim in '\'"', (repr(delim), repr(s))
     n = len(s)
     while i < n and s[i] != delim:
         if s[i] == '\\':
@@ -7472,7 +7475,9 @@ def findTopLevelNode(c: Cmdr, headline: str, exact: bool=True) -> Optional[Pos]:
     return None
 #@-others
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
-def getScript(c: Cmdr, p: Pos,
+def getScript(
+    c: Cmdr,
+    p: Pos,
     useSelectedText: bool=True,
     forcePythonSentinels: bool=True,
     useSentinels: bool=True,
