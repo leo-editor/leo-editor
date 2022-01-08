@@ -580,62 +580,62 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 tail = ''
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
-        arg_pat = re.compile(r'(\s*)([\*\w_]+)(\s*)([:,=])?')
+        arg_pat = re.compile(r'(\s*[\*\w_]+\s*)([:,=])?')
 
         def do_args(self, args):
             """Add type annotations."""
+            multiline = '\n' in args.strip()
+            sep = ',\n' if multiline else ', '
+            lws = ' '*4 if multiline else ''
             i, result = 0, []
             while i < len(args):
-                m = self.arg_pat.match(args[i:])
+                rest = args[i:]
+                ### g.trace(i, repr(rest))
+                if not rest.strip():
+                    break
+                m = self.arg_pat.match(rest)
                 if not m:
-                    g.trace('bad args', args)
+                    g.trace('==== bad args', i, repr(rest))
                     return args
-                ws1, name, ws2, tail = m.group(1), m.group(2), m.group(3), m.group(4)
-                ws2 = '\n' if '\n' in ws2 else ''
-                ### g.trace(f"{name!r:<20} {tail!r}")
-                name_s = name.strip()
-                if name_s == 'self':
+                name1, tail = m.group(1), m.group(2)
+                n = len(name1)
+                name = name1.strip()
+                if name == 'self':
                     # Don't annotate self.
-                    i += len(m.group(1) + m.group(2))
-                    result.append(m.group(1) + m.group(2))
+                    result.append(f"{lws}{name}")
+                    i += n
                 elif tail == ':':
-                    i += len(m.group(1) + m.group(2))
-                    j = self.find_arg(args, i)
-                    assert j > i, (i, j)
-                    val = args[i+1 : j].lstrip()
-                    result.append(f"{ws1}{name}: {val}{ws2}")
-                    i = j
+                    arg, i = self.find_arg(args, i + n)
+                    result.append(f"{lws}{name}: {arg}")
                 elif tail == '=':
-                    i += len(m.group(1) + m.group(2))
-                    j = self.find_arg(args, i)
-                    assert j > i, (i, j)
-                    val = args[i+1 : j].lstrip()
-                    kind = self.kind(val)
-                    if kind:
-                        result.append(f"{ws1}{name_s}: {kind}={val}{ws2}")
-                    else:
-                        result.append(f"{ws1}{name_s}={val}{ws2}")
-                    i = j
+                    arg, i = self.find_arg(args, i + n)
+                    kind = self.kind(arg)
+                    result.append(f"{lws}{name}: {kind}={arg}")
                 elif tail == ',':
-                    val = self.types_d.get(name.strip(), 'Any')
-                    result.append(f"{ws1}{name}: {val},{ws2}")
-                    i += len(m.group(1) + m.group(2)) + 1
+                    kind = self.types_d.get(name.strip(), 'Any')
+                    result.append(f"{lws}{name}: {kind}")
+                    i += n
                 else:
-                    val = self.types_d.get(name.strip(), 'Any')
-                    tail_s = ', ' if tail == ',' else ''
-                    result.append(f"{ws1}{name}: {val}{ws2}")
-                    i += len(m.group(0) + m.group(2))
-            ### g.printObj(result)
-            return ''.join(result)
+                    kind = self.types_d.get(name.strip(), 'Any')
+                    result.append(f"{lws}{name}: {kind}")
+                    i += n
+                while i < len(args) and args[i] in ' \n,':
+                    i += 1
+            if multiline:
+                return '\n' + ',\n'.join(result) + '\n'
+            return ', '.join(result)
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
         def find_arg(self, s, i):
             """
-            Return j, the index of the character following the argument starting at s[i].
+            Return (arg, j), the index of the character following the argument starting at s[i].
             
             Scan over type annotations or initializers.
             """
             assert s[i] in ':=', (i, s[i], s)
             i += 1
+            while i < len(s) and s[i] == ' ':
+                i += 1
+            i1 = i
             level = 0  # Assume balanced parens or brackets.
             while i < len(s):
                 ch = s[i]
@@ -645,10 +645,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch in ']})':
                     level -= 1
                 elif ch == ',' and level == 0:
-                    i += 1  # Add the comma
+                    i -= 1  # Skip the comma
                     break
             assert level == 0, (level, i == len(s), s)
-            return i
+            return s[i1 : i].strip(), i
         #@+node:ekr.20220105222028.1: *5* ama.kind
         bool_pat = re.compile(r'(True|False)')
         float_pat = re.compile(r'[0-9]*\.[0-9]*')
@@ -668,7 +668,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'Any'
             if self.string_pat.match(s):
                 return 'str'
-            return None
+            return 'Any'
         #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
