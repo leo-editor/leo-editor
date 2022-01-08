@@ -560,32 +560,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p):
             """Convert p.b in place."""
             c = self.c
-            i, lines = 0, g.splitLines(p.b)
-            old_lines = lines[:]
-            for i, line in enumerate(lines):
-                m = self.def_pat.match(line)
-                if m:
-                    self.do_def(i, lines, m, p)
-            if lines != old_lines:
+            s = self.def_pat.sub(self.do_def, p.b)
+            if p.b != s:
                 self.changed_lines += 1
                 print(f"changed {p.h}")
                 p.setDirty()
                 c.setChanged()
-                p.b = ''.join(lines)
+                p.b = s
         #@+node:ekr.20220105174453.1: *5* ama.do_def
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\)(.*?):(.*)\n')
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\)(.*?):(.*)\n', re.MULTILINE + re.DOTALL)
 
-        def do_def(self, i, lines, m, p):
-
+        def do_def(self, m):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
             args = self.do_args(args)
             if not return_val.strip():
-                return_val = ' -> Any'
+                val_s = 'None' if name == '__init__' else 'Any'
+                return_val = f" -> {val_s}"
             if not tail.strip():
                 tail = ''
-            lines[i] = f"{lws}def {name}({args}){return_val}:{tail}\n"
+            return f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
-        arg_pat = re.compile(r'(\s*[\w_]+\s*)([:,=])?')
+        arg_pat = re.compile(r'(\s*)([\*\w_]+)(\s*)([:,=])?')
 
         def do_args(self, args):
             """Add type annotations."""
@@ -595,39 +590,42 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if not m:
                     g.trace('bad args', args)
                     return args
-                name, tail = m.group(1), m.group(2)
+                ws1, name, ws2, tail = m.group(1), m.group(2), m.group(3), m.group(4)
+                ws2 = '\n' if '\n' in ws2 else ''
+                ### g.trace(f"{name!r:<20} {tail!r}")
                 name_s = name.strip()
                 if name_s == 'self':
                     # Don't annotate self.
-                    i += len(m.group(0))
-                    result.append(m.group(0))
+                    i += len(m.group(1) + m.group(2))
+                    result.append(m.group(1) + m.group(2))
                 elif tail == ':':
-                    i += len(m.group(1))
+                    i += len(m.group(1) + m.group(2))
                     j = self.find_arg(args, i)
                     assert j > i, (i, j)
                     val = args[i+1 : j].lstrip()
-                    result.append(f"{name}: {val}")
+                    result.append(f"{ws1}{name}: {val}{ws2}")
                     i = j
                 elif tail == '=':
-                    i += len(m.group(1))
+                    i += len(m.group(1) + m.group(2))
                     j = self.find_arg(args, i)
                     assert j > i, (i, j)
                     val = args[i+1 : j].lstrip()
                     kind = self.kind(val)
                     if kind:
-                        result.append(f"{name_s}: {kind}={val}")
+                        result.append(f"{ws1}{name_s}: {kind}={val}{ws2}")
                     else:
-                        result.append(f"{name_s}={val}")
+                        result.append(f"{ws1}{name_s}={val}{ws2}")
                     i = j
                 elif tail == ',':
                     val = self.types_d.get(name.strip(), 'Any')
-                    result.append(f"{name}: {val}, ")
-                    i += len(m.group(0)) + 1
+                    result.append(f"{ws1}{name}: {val},{ws2}")
+                    i += len(m.group(1) + m.group(2)) + 1
                 else:
                     val = self.types_d.get(name.strip(), 'Any')
                     tail_s = ', ' if tail == ',' else ''
-                    result.append(f"{name}: {val}")
-                    i += len(m.group(0))
+                    result.append(f"{ws1}{name}: {val}{ws2}")
+                    i += len(m.group(0) + m.group(2))
+            ### g.printObj(result)
             return ''.join(result)
         #@+node:ekr.20220105190332.1: *5* ama.find_arg
         def find_arg(self, s, i):
