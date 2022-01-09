@@ -485,8 +485,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         add-mypy-annotations. The command rewrites the @<file> tree, adding
         mypy annotations for untyped function/method arguments.
 
-        The command attempts no type analysis. It uses "None" as the type of
-        functions and methods that do not specify a return type.
+        The command attempts no type analysis. It uses "Any" as the type of
+        functions and methods that do not specify a return type. As as special
+        case, the type of __init__ methods is "None".
 
         @data add-mypy-annotations in leoSettings.leo contains a list of
         key/value pairs. Keys are argument names (as used in Leo); values are
@@ -499,6 +500,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.c.bodyWantsFocus()
     #@+node:ekr.20220105152521.1: *4* class Add_Mypy_Annotations
     class Add_Mypy_Annotations:
+        
+        """A class that implements the add-mypy-annotations command."""
 
         changed_lines = 0
         tag = 'add-mypy-annotations'

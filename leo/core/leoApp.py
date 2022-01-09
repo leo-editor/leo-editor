@@ -15,7 +15,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 import zipfile
 import platform
 from leo.core import leoGlobals as g
