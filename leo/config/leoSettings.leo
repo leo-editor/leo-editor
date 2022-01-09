@@ -543,9 +543,10 @@
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
-<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
@@ -590,7 +591,8 @@
 <v t="ekr.20210728045642.1"><vh>mypy settings</vh>
 <v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
 <v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
-<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=''</vh></v>
+<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=</vh></v>
+<v t="ekr.20220101093956.1"><vh>@string mypy-directory =</vh></v>
 </v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
@@ -2312,6 +2314,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20210728045642.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11608,9 +11611,11 @@ rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 # --disallow-untyped-defs
 # --follow-imports=skip</t>
 <t tx="ekr.20210728045750.1"># 0 means no limit.</t>
-<t tx="ekr.20210802064734.1">Path to .mypy.ini file.
+<t tx="ekr.20210802064734.1">Path to .mypy.ini file, for the --config-file option.
 
-Relative paths are resolved starting from the location of the file being checked.</t>
+If not given, no --config-file option is added to the mypy argument list.
+
+Relative paths are relative to  @string mypy-directory.</t>
 <t tx="ekr.20210823172721.1"></t>
 <t tx="ekr.20210823172729.1"></t>
 <t tx="ekr.20210823172944.1"></t>
@@ -11632,6 +11637,21 @@ p, Position
 s, string
 v, VNode</t>
 <t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
+<t tx="ekr.20220101093956.1">The working directory for the mypy command.
+
+Defaults to os.path.join(g.app.loadDir, '..', '..')</t>
+<t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Cmdr
+ch, str
+gnx, str
+d, Dict[str, str]
+i, int
+j, int
+k, int
+n, int
+p, Pos
+s, str
+v, VNode</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

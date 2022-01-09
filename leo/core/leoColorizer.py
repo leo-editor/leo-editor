@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Tuple
 #
 # Third-part tools.
 try:
-    import pygments
+    import pygments  # type:ignore
 except ImportError:
     pygments = None  # type:ignore
 #
@@ -2410,7 +2410,7 @@ class JEditColorizer(BaseJEditColorizer):
 if QtGui:
 
 
-    class LeoHighlighter(QtGui.QSyntaxHighlighter):
+    class LeoHighlighter(QtGui.QSyntaxHighlighter):  # type:ignore
         """
         A subclass of QSyntaxHighlighter that overrides
         the highlightBlock and rehighlight methods.
@@ -2539,7 +2539,8 @@ if QtGui:
         def setStyle(self, style):
             """ Sets the style to the specified Pygments style.
             """
-            from pygments.styles import get_style_by_name
+            from pygments.styles import get_style_by_name  # type:ignore
+
             if isinstance(style, str):
                 style = get_style_by_name(style)
             self._style = style
@@ -2575,7 +2576,7 @@ if QtGui:
 if Qsci:
 
 
-    class NullScintillaLexer(Qsci.QsciLexerCustom):
+    class NullScintillaLexer(Qsci.QsciLexerCustom):  # type:ignore
         """A do-nothing colorizer for Scintilla."""
 
         def __init__(self, c, parent=None):
@@ -2765,7 +2766,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
     def at_color_callback(self, lexer, match):
-        from pygments.token import Name, Text
+        from pygments.token import Name, Text  # type: ignore
         kind = match.group(0)
         self.color_enabled = kind == '@color'
         if self.color_enabled:
@@ -2786,7 +2787,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
         """Return the lexer for self.language, creating it if necessary."""
-        import pygments.lexers as lexers
+        import pygments.lexers as lexers  # type: ignore
         tag = 'get_lexer'
         trace = 'coloring' in g.app.debug
         try:
@@ -2805,8 +2806,8 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
 
-        from pygments.token import Comment
-        from pygments.lexer import inherit
+        from pygments.token import Comment  # type:ignore
+        from pygments.lexer import inherit  # type:ignore
 
 
         class PatchedLexer(lexer.__class__):  # type:ignore
@@ -2901,7 +2902,7 @@ class QScintillaColorizer(BaseColorizer):
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)
         else:
-            self.lexersDict = {}
+            self.lexersDict = {}  # type:ignore
             self.nullLexer = g.NullObject()  # type:ignore
 
     def reloadSettings(self):
@@ -2928,7 +2929,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         wrapper = c.frame.body.wrapper
         w = wrapper.widget  # A Qsci.QsciSintilla object.
-        self.lexer = self.lexersDict.get(language, self.nullLexer)
+        self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):
@@ -3119,7 +3120,7 @@ if pygments:
     if QtGui:
 
 
-        class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+        class PygmentsBlockUserData(QtGui.QTextBlockUserData):  # type:ignore
             """ Storage for the user data associated with each line."""
 
             syntax_stack = ('root',)

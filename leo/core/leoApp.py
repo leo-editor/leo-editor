@@ -2936,7 +2936,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color = d.get('color')
+                color: Any = d.get('color')
                 if color == 'suppress':
                     return
                 if log and color is None:
