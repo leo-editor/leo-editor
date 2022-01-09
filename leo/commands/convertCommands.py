@@ -16,7 +16,7 @@ def cmd(name):
 
 #@+<< class To_Python >>
 #@+node:ekr.20150514063305.123: ** << class To_Python >>
-class To_Python:
+class To_Python:  # pragma: no cover
     """The base class for x-to-python commands."""
     #@+others
     #@+node:ekr.20150514063305.125: *3* To_Python.ctor
@@ -444,7 +444,7 @@ class To_Python:
 
 #@+others
 #@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
-def convert_at_test_nodes(c, converter, root, copy_tree=False):
+def convert_at_test_nodes(c, converter, root, copy_tree=False):  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
     root's tree to children a new last top-level node.
@@ -473,10 +473,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
+
     #@+others
     #@+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
     @cmd('add-mypy-annotations')
-    def addMypyAnnotations(self, event):
+    def addMypyAnnotations(self, event):  # pragma: no cover
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
@@ -512,7 +513,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         #@+others
         #@+node:ekr.20220105154019.1: *5* ama.init_types_d
-        def init_types_d(self):
+        def init_types_d(self):  # pragma: no cover
             """Init the annotations dict."""
             c, d, tag = self.c, self.types_d, self.tag
             data = c.config.getData(tag)
@@ -529,7 +530,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except ValueError:
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
         #@+node:ekr.20220105154158.1: *5* ama.add_annotations
-        def add_annotations(self):
+        def add_annotations(self):  # pragma: no cover
 
             c, p, tag = self.c, self.c.p, self.tag
             # Checks.
@@ -553,7 +554,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             except Exception:
                 g.es_exception()
         #@+node:ekr.20220105155837.4: *5* ama.convert_node
-        def convert_node(self, p):
+        def convert_node(self, p):  # pragma: no cover
             # Convert p.b into child.b
             self.convert_body(p)
             # Recursively create all descendants.
@@ -564,12 +565,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """Convert p.b in place."""
             c = self.c
             if not p.b.strip():
-                return
+                return  # pragma: no cover
             s = self.def_pat.sub(self.do_def, p.b)
             if p.b != s:
                 self.changed_lines += 1
                 if not g.unitTesting:
-                    print(f"changed {p.h}")
+                    print(f"changed {p.h}")  # pragma: no cover
                 p.setDirty()
                 c.setChanged()
                 p.b = s
@@ -610,7 +611,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         result.append(f"{last.rstrip()}  {comment.strip()}\n")
                         continue
                 m = self.arg_pat.match(rest)
-                if not m:
+                if not m:  # pragma: no cover
                     g.trace('==== bad args', i, repr(rest))
                     return args
                 name1, tail = m.group(1), m.group(2)
@@ -690,11 +691,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'Any'
             if self.string_pat.match(s):
                 return 'str'
-            return 'Any'
+            return 'Any'  # pragma: no cover
         #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def cToPy(self, event):
+    def cToPy(self, event):  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -703,7 +704,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.160: *4* class C_To_Python (To_Python)
-    class C_To_Python(To_Python):
+    class C_To_Python(To_Python):  # pragma: no cover
         #@+others
         #@+node:ekr.20150514063305.161: *5* ctor & helpers (C_To_Python)
         def __init__(self, c):
@@ -1154,14 +1155,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
     @cmd('make-stub-files')
-    def make_stub_files(self, event):
+    def make_stub_files(self, event):  # pragma: no cover
         """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
         """
         #@+others
         #@+node:ekr.20160213070235.1: *4* class MakeStubFileAdapter
-        class MakeStubFileAdapter:
+        class MakeStubFileAdapter:  # pragma: no cover
             """
             An class that adapts leo/external/make_stub_files.py to Leo.
 
@@ -1311,14 +1312,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         MakeStubFileAdapter(self.c).run(self.c.p)
     #@+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
-    def python2coffeescript(self, event):
+    def python2coffeescript(self, event):  # pragma: no cover
         """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
         """
         #@+others
         #@+node:ekr.20160316092837.1: *4* class Python_To_Coffeescript_Adapter
-        class Python_To_Coffeescript_Adapter:
+        class Python_To_Coffeescript_Adapter:  # pragma: no cover
             """An interface class between Leo and leo/external/py2cs.py."""
             #@+others
             #@+node:ekr.20160316112717.1: *5* py2cs.ctor
@@ -1416,7 +1417,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def pythonToTypescriptCommand(self, event):
+    def pythonToTypescriptCommand(self, event):  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -1439,7 +1440,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.c.bodyWantsFocus()
     #@+node:ekr.20211013080132.2: *4* class PythonToTypescript
     #@@nobeautify
-    class PythonToTypescript:
+    class PythonToTypescript:  # pragma: no cover
 
         # The handlers are clear as they are.
         # pylint: disable=no-else-return
@@ -2156,7 +2157,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def tsToPy(self, event):
+    def tsToPy(self, event):  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
@@ -2164,7 +2165,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """
         #@+others
         #@+node:ekr.20150514063305.176: *4* class TS_To_Python (To_Python)
-        class TS_To_Python(To_Python):
+        class TS_To_Python(To_Python):  # pragma: no cover
             #@+others
             #@+node:ekr.20150514063305.177: *5* ctor (TS_To_Python)
             def __init__(self, c):
@@ -2583,7 +2584,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
     @cmd('import-jupyter-notebook')
-    def importJupyterNotebook(self, event):
+    def importJupyterNotebook(self, event):  # pragma: no cover
         """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
         try:
             import nbformat
@@ -2605,7 +2606,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20160321072007.1: *3* ccc.export-jupyter-notebook
     @cmd('export-jupyter-notebook')
-    def exportJupyterNotebook(self, event):
+    def exportJupyterNotebook(self, event):  # pragma: no cover
         """Convert the present outline to a .ipynb file."""
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c

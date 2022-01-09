@@ -136,11 +136,11 @@ class TestAddMypyAnnotations(LeoUnitTest):
     def test_initializers(self):
         p = self.p
         p.b = contents = textwrap.dedent('''\
-            def f3(i = 2, f = 1.1, b = True, x = None):
+            def f3(i = 2, f = 1.1, b = True, s = 'abc', x = None):
                 pass
     ''')
         expected = textwrap.dedent('''\
-            def f3(i: int=2, f: float=1.1, b: bool=True, x: Any=None) -> Any:
+            def f3(i: int=2, f: float=1.1, b: bool=True, s: str='abc', x: Any=None) -> Any:
                 pass
     ''')
         self.x.convert_body(p)
