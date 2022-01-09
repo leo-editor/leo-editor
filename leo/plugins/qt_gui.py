@@ -322,7 +322,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@+node:ekr.20211005103909.1: *5* << define date/time classes >>
 
 
-        class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
+        class DateTimeEditStepped(QtWidgets.QDateTimeEdit):  # type:ignore
             """QDateTimeEdit which allows you to set minimum steps on fields, e.g.
               DateTimeEditStepped(parent, {QtWidgets.QDateTimeEdit.MinuteSection: 5})
             for a minimum 5 minute increment on the minute field.
@@ -344,7 +344,7 @@ class LeoQtGui(leoGui.LeoGui):
                 QtWidgets.QDateTimeEdit.stepBy(self, step)
 
 
-        class Calendar(QtWidgets.QDialog):
+        class Calendar(QtWidgets.QDialog):  # type:ignore
 
             def __init__(self,
                 parent=None,
@@ -1292,7 +1292,7 @@ class LeoQtGui(leoGui.LeoGui):
         g.app.gui.show_tips(force=True)
 
 
-    class DialogWithCheckBox(QtWidgets.QMessageBox):
+    class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore
 
         def __init__(self, controller, tip):
             super().__init__()

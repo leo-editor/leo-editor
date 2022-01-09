@@ -20,6 +20,7 @@ import socket
 import textwrap
 import time
 import tkinter as Tk
+from typing import List, Union
 # Third-party.
 # #2300
 try:
@@ -44,11 +45,12 @@ g = None  # The bridge's leoGlobals module.
 
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
-connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
+# Websocket connections (to be sent 'notify' messages)
+connectionsPool = set()  # type:ignore
 connectionsTotal = 0 # Current connected client total
 # Customizable server options
 argFile = ""
-traces = []
+traces: List = []
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -89,7 +91,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+        self.yesno_all_time: Union[None, bool, float] = None  # previous yes/no to all answer, time of answer
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
@@ -845,7 +847,7 @@ class LeoServer:
                 w.clear()
                 w.insert(s)
             # Check boxes.
-            table = (
+            table2 = (
                 ('ignore_case', 'check_box_ignore_case'),
                 ('mark_changes', 'check_box_mark_changes'),
                 ('mark_finds', 'check_box_mark_finds'),
@@ -854,19 +856,19 @@ class LeoServer:
                 ('search_headline', 'check_box_search_headline'),
                 ('whole_word', 'check_box_whole_word'),
             )
-            for setting_name, widget_ivar in table:
+            for setting_name, widget_ivar in table2:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name)
                 setattr(find, setting_name, val)
                 if val != w.isChecked():
                     w.toggle()
             # Radio buttons
-            table = (
+            table3 = (
                 ('node_only', 'node_only', 'radio_button_node_only'),
                 ('entire_outline', None, 'radio_button_entire_outline'),
                 ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
             )
-            for setting_name, ivar, widget_ivar in table:
+            for setting_name, ivar, widget_ivar in table3:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name, False)
                 if ivar is not None:
@@ -3718,7 +3720,7 @@ def main():  # pragma: no cover (tested in client)
             # None of these grabs focus from the console window.
             dialog.raise_()
             dialog.setFocus()
-            app.processEvents()
+            app.processEvents()  # type:ignore
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
             val = dialog.exec() if isQt6 else dialog.exec_()

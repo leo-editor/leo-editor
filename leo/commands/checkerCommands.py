@@ -257,13 +257,14 @@ class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
 
     def __init__(self, c):
-        """ctor for PyflakesCommand class."""
+        """ctor for MypyCommand class."""
         self.c = c
         self.link_limit = None  # Set in check_file.
         self.unknown_path_names = []
         # Settings.
         self.args = c.config.getData('mypy-arguments') or []
         self.config_file = c.config.getString('mypy-config-file') or None
+        self.directory = c.config.getString('mypy-directory') or None
         self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
@@ -275,6 +276,7 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
+        print('mypy done')
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
@@ -283,23 +285,29 @@ class MypyCommand:
         # Init.
         c.frame.log.clearLog()
         link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
-        # Change working directory.
-        directory = os.path.dirname(fn)
+        # Set the working directory.
+        if self.directory:
+            directory = self.directory
+        else:
+            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+        print(' mypy cwd:', directory)
         os.chdir(directory)
-        # Check the config file.
+        # Set the args. Set the config file only if explicitly given.
         if self.config_file:
             config_file = g.os_path_finalize_join(directory, self.config_file)
-            if not os.path.exists(config_file):
-                print(f"config file not found: {config_file!r}")
-                return
             args = [f"--config-file={config_file}"] + self.args
-        args_s = ' '.join(args + [g.shortFileName(fn)])
-        args = self.args + [fn]
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file}")
+                return
+        else:
+            args = self.args
+        if args:
+            print('mypy args:', args)
         # Run mypy.
-        g.es_print(f"mypy {args_s}")
-        result = mypy.api.run(args)
+        final_args = args + [fn]
+        result = mypy.api.run(final_args)
+        g.es('mypy: done')
         # Print result, making clickable links.
-        print('Exit status:', result[2])
         lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep
         for i, s in enumerate(lines):
