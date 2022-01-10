@@ -12,9 +12,23 @@ from leo.core import leoImport
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
-    """Reload settings for the selected outline, saving it if necessary."""
-    c = self
-    reloadSettingsHelper(c)
+    """Reload settings in all commanders, or just c."""
+    lm = g.app.loadManager
+    # Save any changes so they can be seen.
+    for c2 in g.app.commanders():
+        if c2.isChanged():
+            c2.save()
+    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+    lm.readGlobalSettingsFiles()
+    for c in g.app.commanders():
+        # Read the local file, using a null gui.
+        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+        # Init the config classes.
+        c.initSettings(previousSettings)
+        # Init the commander config ivars.
+        c.initConfigSettings()
+        # Reload settings in all configurable classes
+        c.reloadConfigurableSettings()
 #@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
 def reloadSettingsHelper(c):
     """
