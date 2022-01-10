@@ -843,7 +843,6 @@ class LeoFrame:
                     c.atFileCommands.writeOneAtEditNode(root)
                 return False  # Don't save and don't veto.
             c.mFileName = g.app.gui.runSaveFileDialog(c,
-                # initialfile='',
                 title="Save",
                 filetypes=[("Leo files", "*.leo")],
                 defaultextension=".leo")

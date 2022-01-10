@@ -447,7 +447,6 @@ def save(self, event=None, fileName=None):
             fileName = ''.join(c.k.givenArgs)
             if not fileName:
                 fileName = g.app.gui.runSaveFileDialog(c,
-                    # initialfile=c.mFileName,
                     title="Save",
                     filetypes=[("Leo files", "*.leo *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
@@ -520,7 +519,6 @@ def saveAs(self, event=None, fileName=None):
         fileName = ''.join(c.k.givenArgs)
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
-            # initialfile=c.mFileName,
             title="Save As",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
@@ -579,7 +577,6 @@ def saveTo(self, event=None, fileName=None, silent=False):
         fileName = ''.join(c.k.givenArgs)
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
-            # initialfile=c.mFileName,
             title="Save To",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
@@ -622,7 +619,6 @@ def save_as_leojs(self, event=None):
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile=c.mFileName,  # .leojs will be added if necessary.
         title="Save As JSON (.leojs)",
         filetypes=[("Leo files", "*.leojs")],
         defaultextension='.leojs')
@@ -642,7 +638,6 @@ def save_as_zipped(self, event=None):
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile=c.mFileName,  # .db will be added if necessary.
         title="Save As Zipped",
         filetypes=[("Leo files", "*.db")],
         defaultextension='.db')
@@ -662,7 +657,6 @@ def save_as_xml(self, event=None):
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile=c.mFileName,  # .leo will be added if necessary.
         title="Save As XML",
         filetypes=[("Leo files", "*.leo")],
         defaultextension=g.defaultLeoFileExtension(c))
@@ -681,7 +675,6 @@ def exportHeadlines(self, event=None):
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile="headlines.txt",
         title="Export Headlines",
         filetypes=filetypes,
         defaultextension=".txt")
@@ -700,7 +693,6 @@ def flattenOutline(self, event=None):
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile="flat.txt",
         title="Flatten Selected Outline",
         filetypes=filetypes,
         defaultextension=".txt")
@@ -749,7 +741,6 @@ def outlineToCWEB(self, event=None):
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile="cweb.w",
         title="Outline To CWEB",
         filetypes=filetypes,
         defaultextension=".w")
@@ -771,7 +762,6 @@ def outlineToNoweb(self, event=None):
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile=self.outlineToNowebDefaultFileName,
         title="Outline To Noweb",
         filetypes=filetypes,
         defaultextension=".nw")
@@ -810,11 +800,9 @@ def removeSentinels(self, event=None):
 def weave(self, event=None):
     """Simulate a literate-programming weave operation by writing the outline to a text file."""
     c = self
-    filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        # initialfile="weave.txt",
         title="Weave",
-        filetypes=filetypes,
+        filetypes=[("Text files", "*.txt"), ("All files", "*")],
         defaultextension=".txt")
     c.bringToFront()
     if fileName:
@@ -924,12 +912,9 @@ def writeFileFromNode(self, event=None):
     else:
         fileName = None
     if not fileName:
-        filetypes = [
-            ("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
         fileName = g.app.gui.runSaveFileDialog(c,
-            # initialfile=None,
             title='Write File From Node',
-            filetypes=filetypes,
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
             defaultextension=None)
     if fileName:
         try:

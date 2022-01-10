@@ -334,10 +334,8 @@ class OpmlController:
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
-        ### initialfile = g.ensure_extension(c.mFileName, ".opml")
         # set local fileName, _not_ c.mFileName
         fileName = g.app.gui.runSaveFileDialog(c,
-            # initialfile=initialfile,
             title="Write OPML",
             filetypes=[("OPML files", "*.opml")],
             defaultextension=".opml")
