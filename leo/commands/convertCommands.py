@@ -575,7 +575,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c.setChanged()
                 p.b = s
         #@+node:ekr.20220105174453.1: *5* ama.do_def
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
 
         def do_def(self, m):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
@@ -587,7 +587,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 tail = ''
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
         #@+node:ekr.20220105174453.2: *5* ama.do_args
-        arg_pat = re.compile(r'(\s*[\*\w_]+\s*)([:,=])?')
+        arg_pat = re.compile(r'(\s*[\*\w]+\s*)([:,=])?')
         comment_pat = re.compile(r'(\s*#.*?\n)')
 
         def do_args(self, args):
