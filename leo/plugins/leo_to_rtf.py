@@ -54,7 +54,7 @@ def export_rtf(c):
     flagJustHeadlines = config.get("Main", "flagJustHeadlines") == "Yes"
     # Prompt for the file name.
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=c.mFileName + '.rtf',
+        # initialfile=c.mFileName + '.rtf',
         title="Export to RTF",
         filetypes=[("RTF files", "*.rtf")],
         defaultextension=".rtf")

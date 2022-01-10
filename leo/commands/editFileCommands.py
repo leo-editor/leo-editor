@@ -594,7 +594,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=None,
+            # initialfile=None,
             title='save-file',
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")

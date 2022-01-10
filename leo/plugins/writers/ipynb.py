@@ -132,7 +132,7 @@ class Export_IPYNB(basewriter.BaseWriter):
                 ("Jupyter files", "*.ipynb"),
                 ("All files", "*"),
             ],
-            initialfile='',
+            # initialfile='',
             title="Export To Jupyter File",
         )
         c.bringToFront()
