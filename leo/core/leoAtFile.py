@@ -2201,6 +2201,12 @@ class AtFile:
             return at.noDirective  # Bug fix: do NOT return miscDirective here!
         if at.language == "cweb" and g.match_word(s, i, '@c'):
             return at.noDirective
+        # When the language is elixir, @doc followed by a space and string delimiter
+        # needs to be treated as plain text; the following does not enforce the
+        # 'string delimiter' part of that.  An @doc followed by something other than
+        # a space will fall through to usual Leo @doc processing.
+        if at.language == "elixir" and g.match_word(s, i, '@doc '):
+            return at.noDirective
         for name, directive in table:
             if g.match_word(s, i, name):
                 return directive
