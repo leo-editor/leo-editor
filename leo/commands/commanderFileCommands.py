@@ -645,6 +645,8 @@ def save_as_zipped(self, event=None):
 def save_as_xml(self, event=None):
     """
     Save a Leo outline as a .leo file with a new file name.
+    
+    Useful for converting a .leo.db file to a .leo file.
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
