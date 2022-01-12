@@ -1946,11 +1946,8 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
     def put_t_element(self, v):
-        # Call put just once.
-        gnx = v.fileIndex
-        # pylint: disable=consider-using-ternary
-        ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
-        b = v.b
+        b, gnx = v.b, v.fileIndex
+        ua = self.putUnknownAttributes(v)
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
@@ -2001,15 +1998,17 @@ class FileCommands:
             return ''
         return self.pickle(torv=torv, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
-    def putUnknownAttributes(self, torv):
-        """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
-        attrDict = torv.unknownAttributes
+    def putUnknownAttributes(self, v):
+        """Put pickleable values for all keys in v.unknownAttributes dictionary."""
+        if not hasattr(v, 'unknownAttributes'):
+            return ''
+        attrDict = v.unknownAttributes
         if isinstance(attrDict, dict):
             val = ''.join(
-                [self.putUaHelper(torv, key, val)
+                [self.putUaHelper(v, key, val)
                     for key, val in attrDict.items()])
             return val
-        g.warning("ignoring non-dictionary unknownAttributes for", torv)
+        g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
     #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
     def put_v_element(self, p, isIgnore=False):
