@@ -48,7 +48,7 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoNodes import Position as Pos
     from leo.core.leoNodes import VNode
 else:
-    Cmdr = Pos = Any
+    Cmdr = Pos = VNode = Any
 #
 # Abbreviations...
 StringIO = io.StringIO
@@ -4383,7 +4383,7 @@ def recursiveUNLSearch(
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
 def recursiveUNLFind(
-    unlList: list[str],
+    unlList: List[str],
     c: Cmdr,
     depth: int=0,
     p: Pos=None,
