@@ -1623,7 +1623,7 @@ class FileCommands:
         return s
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string
     def outline_to_xml_string(self):
-        """Return the file xml format as a string."""
+        """Write the outline in .leo (XML) format to a string."""
         self.outputFile = io.StringIO()
         self.putProlog()
         self.putHeader()
@@ -1651,7 +1651,7 @@ class FileCommands:
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
     def write_leojs(self, fileName):
-        """Write the outine as JSON (.leojs)."""
+        """Write the outline in .leojs (JSON) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
@@ -1730,7 +1730,7 @@ class FileCommands:
         }
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
-        """Write the .leo file as xml."""
+        """Write the outline in .leo (XML) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
