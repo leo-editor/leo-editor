@@ -5487,8 +5487,8 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21833"></t>
 <t tx="ekr.20131213135427.21834">&amp;Save...</t>
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
-<t tx="ekr.20131213135427.21836">Save As &amp;XML...</t>
-<t tx="ekr.20131213135427.21837">Save As leo&amp;js...</t>
+<t tx="ekr.20131213135427.21836">Save As .leo (&amp;XML)...</t>
+<t tx="ekr.20131213135427.21837">Save As .leojs (&amp;JSON)...</t>
 <t tx="ekr.20131213135427.21838">Save &amp;To...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
@@ -11561,7 +11561,7 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
-<t tx="ekr.20210324162150.1">Save As &amp;Zipped...</t>
+<t tx="ekr.20210324162150.1">Save As .db (&amp;SQLLite)...</t>
 <t tx="ekr.20210327192658.1"></t>
 <t tx="ekr.20210327193058.1"></t>
 <t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.

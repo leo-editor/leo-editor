@@ -947,37 +947,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result.extend(body)
             aList[prevSemi:k] = result
             return prevSemi + len(result)
-        #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
-        def massageFunctionArgs(self, args):
-            assert args[0] == '('
-            assert args[-1] == ')'
-            result = ['(']
-            lastWord = []
-            if self.class_name:
-                for item in list("self,"):
-                    result.append(item)  #can put extra comma
-            i = 1
-            while i < len(args):
-                i = self.skip_ws_and_nl(args, i)
-                ch = args[i]
-                if ch.isalpha():
-                    j = self.skip_past_word(args, i)
-                    lastWord = args[i:j]
-                    i = j
-                elif ch == ',' or ch == ')':
-                    for item in lastWord:
-                        result.append(item)
-                    if lastWord != [] and ch == ',':
-                        result.append(',')
-                    lastWord = []
-                    i += 1
-                else: i += 1
-            if result[-1] == ',':
-                del result[-1]
-            result.append(')')
-            result.append(':')
-            # print "new args:", ''.join(result)
-            return result
         #@+node:ekr.20150514063305.170: *7* massageFunctionHead (sets .class_name)
         def massageFunctionHead(self, head):
             result: List[Any] = []
@@ -1014,6 +983,37 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
+        #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
+        def massageFunctionArgs(self, args):
+            assert args[0] == '('
+            assert args[-1] == ')'
+            result = ['(']
+            lastWord = []
+            if self.class_name:
+                for item in list("self,"):
+                    result.append(item)  #can put extra comma
+            i = 1
+            while i < len(args):
+                i = self.skip_ws_and_nl(args, i)
+                ch = args[i]
+                if ch.isalpha():
+                    j = self.skip_past_word(args, i)
+                    lastWord = args[i:j]
+                    i = j
+                elif ch == ',' or ch == ')':
+                    for item in lastWord:
+                        result.append(item)
+                    if lastWord and ch == ',':
+                        result.append(',')
+                    lastWord = []
+                    i += 1
+                else: i += 1
+            if result[-1] == ',':
+                del result[-1]
+            result.append(')')
+            result.append(':')
+            # print "new args:", ''.join(result)
+            return result
         #@+node:ekr.20150514063305.171: *7* massageFunctionBody & helpers
         def massageFunctionBody(self, body):
             body = self.massageIvars(body)
@@ -2466,7 +2466,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     elif ch == ',' or ch == ')':
                         for item in lastWord:
                             result.append(item)
-                        if lastWord != [] and ch == ',':
+                        if lastWord and ch == ',':
                             result.append(',')
                         lastWord = []
                         i += 1
