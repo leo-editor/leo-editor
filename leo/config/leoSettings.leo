@@ -11561,7 +11561,7 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
-<t tx="ekr.20210324162150.1">Save As .db (&amp;SQLLite)...</t>
+<t tx="ekr.20210324162150.1">Save As .db (&amp;SQLite)...</t>
 <t tx="ekr.20210327192658.1"></t>
 <t tx="ekr.20210327193058.1"></t>
 <t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
