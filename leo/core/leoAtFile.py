@@ -3415,12 +3415,12 @@ class FastAtRead:
             assert root_gnx == gnx, (root_gnx, gnx)
         elif root_gnx_adjusted:  # pragma: no cover
             pass  # Don't check!
-        elif stack or root_gnx != gnx:  # pragma: no cover
-            g.error(f"Possibly corrupted file: {root_v.h}")
-            g.es_print('Unbalanced sentinels lines')
+        elif stack:  # pragma: no cover
+            g.error('scan_lines: Stack should be empty')
             g.printObj(stack, tag='stack')
-            g.es_print(f"root_gnx: {root_gnx}, gnx: {gnx}")
-            g.trace(g.callers())
+        elif root_gnx != gnx:  # pragma: no cover
+            g.error('scan_lines: gnx error')
+            g.es_print(f"root_gnx: {root_gnx} != gnx: {gnx}")
         #@-<< final checks >>
         #@+<< insert @last lines >>
         #@+node:ekr.20211103101453.1: *4* << insert @last lines >>

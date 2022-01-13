@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
+#@@first
 """Classes relating to reading and writing .leo files."""
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
@@ -1623,7 +1625,7 @@ class FileCommands:
         return s
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string
     def outline_to_xml_string(self):
-        """Return the file xml format as a string."""
+        """Write the outline in .leo (XML) format to a string."""
         self.outputFile = io.StringIO()
         self.putProlog()
         self.putHeader()
@@ -1651,7 +1653,7 @@ class FileCommands:
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
     def write_leojs(self, fileName):
-        """Write the outine as JSON (.leojs)."""
+        """Write the outline in .leojs (JSON) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
@@ -1730,7 +1732,7 @@ class FileCommands:
         }
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
-        """Write the .leo file as xml."""
+        """Write the outline in .leo (XML) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
@@ -1944,11 +1946,8 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
     def put_t_element(self, v):
-        # Call put just once.
-        gnx = v.fileIndex
-        # pylint: disable=consider-using-ternary
-        ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
-        b = v.b
+        b, gnx = v.b, v.fileIndex
+        ua = self.putUnknownAttributes(v)
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
@@ -1999,15 +1998,17 @@ class FileCommands:
             return ''
         return self.pickle(torv=torv, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
-    def putUnknownAttributes(self, torv):
-        """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
-        attrDict = torv.unknownAttributes
+    def putUnknownAttributes(self, v):
+        """Put pickleable values for all keys in v.unknownAttributes dictionary."""
+        if not hasattr(v, 'unknownAttributes'):
+            return ''
+        attrDict = v.unknownAttributes
         if isinstance(attrDict, dict):
             val = ''.join(
-                [self.putUaHelper(torv, key, val)
+                [self.putUaHelper(v, key, val)
                     for key, val in attrDict.items()])
             return val
-        g.warning("ignoring non-dictionary unknownAttributes for", torv)
+        g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
     #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
     def put_v_element(self, p, isIgnore=False):

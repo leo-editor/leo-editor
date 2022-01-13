@@ -63,7 +63,7 @@ def on_icondclick(tag, keywords):
             for cp in p.subtree():
                 if cp.isDirty() and g.match_word(cp.h, 0, "@text"):
                     kids.append(cp.copy())
-            if kids != []:
+            if kids:
                 result = g.app.gui.runAskYesNoDialog(c, "Reread?", "Save changed @text nodes?")
                 if result == "yes":
                     for kid in kids:
