@@ -797,6 +797,66 @@ class TestFastAtRead(LeoUnitTest):
     #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
     def test_at_section_delim(self):
 
+        import sys
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')
+
+        c, x = self.c, self.x
+        h = '@file /test/at_section_delim.py'
+        root = c.rootPosition()
+        root.h =  h # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20211101050923.1: *4* << define contents >> (test_at_section_delim)
+        # The contents of a personal test file, slightly altered.
+        contents = textwrap.dedent(f'''\
+        # -*- coding: utf-8 -*-
+        #AT+leo-ver=5-thin
+        #AT+node:{root.gnx}: * {h}
+        #AT@first
+
+        """Classes to read and write @file nodes."""
+
+        #AT@section-delims <!< >!>
+
+        #AT+<!< test >!>
+        #AT+node:ekr.20211029054238.1: ** <!< test >!>
+        print('in test section')
+        print('done')
+        #AT-<!< test >!>
+
+        #AT+others
+        #AT+node:ekr.20211030052810.1: ** spam
+        def spam():
+        pass
+        #AT+node:ekr.20211030053502.1: ** eggs
+        def eggs():
+        pass
+        #AT-others
+
+        #AT@language python
+        #AT-leo
+        ''').replace('#AT', '#@')
+        #@-<< define contents >>
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        self.assertEqual(contents, s)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        child3 = child2.next()
+        table = (
+            (child1, '<!< test >!>'),
+            (child2, 'spam'),
+            (child3, 'eggs'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
+    #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
+    def test_at_section_delim(self):
+
+        import sys
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')
+
         c, x = self.c, self.x
         h = '@file /test/at_section_delim.py'
         root = c.rootPosition()
