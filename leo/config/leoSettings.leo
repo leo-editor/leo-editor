@@ -1021,10 +1021,10 @@
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
+<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
 <v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
-<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
@@ -5489,7 +5489,7 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
 <t tx="ekr.20131213135427.21836">Save As .leo (&amp;XML)...</t>
 <t tx="ekr.20131213135427.21837">Save As .leojs (&amp;JSON)...</t>
-<t tx="ekr.20131213135427.21838">Save &amp;To...</t>
+<t tx="ekr.20131213135427.21838">Save A &amp;Copy...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
