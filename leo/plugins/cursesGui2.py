@@ -1724,7 +1724,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+    def runSaveFileDialog(self, c, title, filetypes, defaultextension):
         if g.unitTesting:
             return None
         # Not tested.
