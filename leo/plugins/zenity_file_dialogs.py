@@ -65,7 +65,7 @@ def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=F
     # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, multiple=multiple)
 #@+node:ekr.20101110095557.5896: ** runSaveFileDialog
-def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextension=None):
+def runSaveFileDialog(title=None,filetypes=None,defaultextension=None):
     """Call zenity's save file dialog."""
     # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, save=True)

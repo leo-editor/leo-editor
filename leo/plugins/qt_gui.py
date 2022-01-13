@@ -639,7 +639,7 @@ class LeoQtGui(leoGui.LeoGui):
         return 'Cancel', {}
     #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
     def runSaveFileDialog(
-        self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
+        self, c, title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:
             return ''
