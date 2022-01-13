@@ -1051,14 +1051,19 @@ def insertChild(self, event=None):
 #@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
 @g.commander_command('insert-node')
 def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
-    """Insert a node after the presently selected node."""
+    """
+    If c.p is expanded, insert a new node as the first or last child of c.p,
+    depending on @bool insert-new-nodes-at-end.
+    
+    If c.p is not expanded, insert a new node after c.p.
+    """
     c = self
     # Fix #600.
     return insertHeadlineHelper(c, event=event, as_child=as_child)
 
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self, event=None):
-    """Insert a node as the last child of the previous node."""
+    """Insert a node as the last last of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_first_child=True)
 
