@@ -9,6 +9,7 @@ import re
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
+    # pip install pyenchant
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None

@@ -14722,7 +14722,7 @@ This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 These instructions look complicated because they're long, but really they just boil down to:
 
-- install python (v3.6 or newer).
+- install python. Python 3.9 or later is highly recommended.
 - run `pip install leo` from a python enabled command prompt.
 - run leo from that same python enabled command prompt.
 
@@ -17282,7 +17282,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
 Leo's minimal dependencies are:
 
-* `Python`_ 3.6 or later.
+* `Python`_ 3.6 or later. Python 3.9 or later is highly recommended.
 * `PyQt5`_.
 * `PyQtWebEngine`
 
