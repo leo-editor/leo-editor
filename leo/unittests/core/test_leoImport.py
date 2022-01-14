@@ -2021,6 +2021,7 @@ class TestPython (BaseTestImporter):
     treeType = '@file'
     
     def setUp(self):
+        super().setUp()
         if sys.version_info < (3, 7, 0):
             self.skipTest('The python importer requires python 3.7 or above')
 
