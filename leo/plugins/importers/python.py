@@ -1,12 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
 """The new, tokenize based, @auto importer for Python."""
+import sys
 import tokenize
 import token
 from collections import defaultdict
+import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20211209052710.1: ** do_import
 def do_import(c, s, parent):
+    
+    if sys.version_info < (3, 7, 0):
+        g.es_print('The python importer requires python 3.7 or above')
+        return False
     split_root(parent, s.splitlines(True))
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
     if c.config.getBool('put-class-in-imported-headlines'):

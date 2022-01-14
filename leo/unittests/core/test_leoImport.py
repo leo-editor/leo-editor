@@ -6,6 +6,7 @@
 
 import glob
 import importlib
+import sys
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -2018,6 +2019,10 @@ class TestPython (BaseTestImporter):
     check_tree = False
     ext = '.py'
     treeType = '@file'
+    
+    def setUp(self):
+        if sys.version_info < (3, 7, 0):
+            self.skipTest('The python importer requires python 3.7 or above')
 
     #@+others
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
