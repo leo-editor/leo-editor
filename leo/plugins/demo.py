@@ -54,7 +54,7 @@ def demo_end(self, event=None, chain=False):
 #@+node:ekr.20170128213103.5: *3* init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         # g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)

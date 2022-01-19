@@ -246,7 +246,7 @@ def controller(c):
 #@+node:ekr.20120913110135.10603: *3* init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)

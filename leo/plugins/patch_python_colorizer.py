@@ -10,7 +10,7 @@ assert g
 #@+node:ekr.20180119164528.6: ** init
 def init():
 
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__file__)

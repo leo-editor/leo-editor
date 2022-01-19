@@ -171,7 +171,7 @@ def init():
         return False
     if not g.app.gui:
         g.app.createDefaultGui()
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.registerHandler("create-optional-menus", createPluginsMenu)
         g.plugin_signon(__name__)

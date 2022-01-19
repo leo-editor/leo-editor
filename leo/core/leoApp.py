@@ -949,8 +949,6 @@ class LeoApp:
             return  # The bridge will create the gui later.
         if app.gui:
             return  # This method can be called twice if we had to get .leoID.txt.
-        assert argName != 'qttabs'
-            # For compatibility with g.assertUi('qt')
         if argName == 'qt':
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
@@ -2768,9 +2766,8 @@ class LoadManager:
         gui = args.gui
         if gui:
             gui = gui.lower()
-            # #1171: retire non-tabbed qt gui.
-            if gui in ('qt', 'qttabs'):
-                gui = 'qt'  # For compatibilty with g.UiTypeException
+            if gui in ('qt', 'qttabs'): 
+                gui = 'qt'  # Allow qttabs gui.
             elif gui.startswith('browser'):
                 pass
             elif gui in ('console', 'curses', 'text', 'null'):
@@ -2781,7 +2778,6 @@ class LoadManager:
         else:
             gui = 'qt'
         assert gui
-        assert gui != 'qttabs'  # For compatibilty with g.UiTypeException
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
