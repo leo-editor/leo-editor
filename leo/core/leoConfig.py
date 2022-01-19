@@ -1324,9 +1324,6 @@ class GlobalConfigManager:
         ("trailing_body_newlines", "string", "asis"),
         ("use_plugins", "bool", True),
             # New in 4.3: use_plugins = True by default.
-        # ("use_psyco","bool",False),
-            # use_pysco can not be set by config code:
-            # config processing happens too late.
         ("undo_granularity", "string", "word"),
             # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),

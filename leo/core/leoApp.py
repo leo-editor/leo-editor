@@ -116,7 +116,6 @@ class LeoApp:
         self.trace_setting = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
-        self.use_psyco = False  # True: use psyco optimization.
         self.use_splash_screen = True  # True: put up a splash screen.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
