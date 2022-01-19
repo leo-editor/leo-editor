@@ -3299,19 +3299,21 @@ class Commands:
         return ''
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event=None, redrawFlag=True):
+    def contractAllHeadlines(self):
         """Contract all nodes in the outline."""
         c = self
-        for p in c.all_positions():
-            p.contract()
-        # Select the topmost ancestor of the presently selected node.
-        p = c.p
-        while p and p.hasParent():
-            p.moveToParent()
-        if redrawFlag:
-            # Do a *full* redraw.
-            # c.redraw_after_contract(p) only contracts a single position.
-            c.redraw(p)
+        for v in c.all_nodes():
+            v.contract()
+        if c.hoistStack:
+            # #2380: Handle hoists properly.
+            bunch = c.hoistStack[-1]
+            p = bunch.p
+        else:
+            # Select the topmost ancestor of the presently selected node.
+            p = c.p
+            while p and p.hasParent():
+                p.moveToParent()
+        c.redraw(p)
         c.expansionLevel = 1  # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):
@@ -3605,14 +3607,6 @@ class Commands:
         Should not be used in any other context.
         """
         return True
-        # c = self
-        # if c.hoistStack:
-            # p = c.hoistStack[-1].p
-            # return p and not c.isCurrentPosition(p)
-        # elif c.currentPositionIsRootPosition():
-            # return c.currentPositionHasNext()
-        # else:
-            # return True
     #@+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
     def canMoveOutlineDown(self) -> bool:
         c, p = self, self.p

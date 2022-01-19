@@ -341,11 +341,11 @@ def dumpOutline(self, event=None):
 #@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 #@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.commander_command('contract-all')
-def contractAllHeadlinesCommand(self, event=None, redrawFlag=True):
+def contractAllHeadlinesCommand(self, event=None):
     """Contract all nodes in the outline."""
     # The helper does all the work.
     c = self
-    c.contractAllHeadlines(event=event, redrawFlag=redrawFlag)
+    c.contractAllHeadlines()
 #@+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
 def contractAllOtherNodes(self, event=None):
