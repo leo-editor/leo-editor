@@ -120,7 +120,6 @@ class LeoApp:
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.count = 0  # General purpose debugging count.
         self.debug_dict = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
