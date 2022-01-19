@@ -106,7 +106,6 @@ class LeoApp:
         self.ipython_inited = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
-        self.qt_use_tabs = False  # True: using qt gui: allow tabbed main window.
         self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False  # True: no signon.
         self.start_fullscreen = False  # For qt_frame plugin.
@@ -2783,7 +2782,6 @@ class LoadManager:
             gui = 'qt'
         assert gui
         assert gui != 'qttabs'  # For compatibilty with g.UiTypeException
-        g.app.qt_use_tabs = gui == 'qt'
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption

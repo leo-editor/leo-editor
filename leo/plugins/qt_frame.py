@@ -1032,19 +1032,17 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         """Select the window or tab for c."""
         # Called from the save commands.
         self.leo_master.select(c)
-    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry (legacy)
+    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
     def setGeometry(self, rect):
         """Set the window geometry, but only once when using the qt gui."""
-        if g.app.qt_use_tabs:
-            m = self.leo_master
-            assert self.leo_master
-            # Only set the geometry once, even for new files.
-            if not hasattr(m, 'leo_geom_inited'):
-                m.leo_geom_inited = True
-                self.leo_master.setGeometry(rect)
-                super().setGeometry(rect)
-        else:
+        m = self.leo_master
+        assert self.leo_master
+        # Only set the geometry once, even for new files.
+        if not hasattr(m, 'leo_geom_inited'):
+            m.leo_geom_inited = True
+            self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
+        
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
@@ -3050,7 +3048,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def getTitle(self):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        w = self.top.leo_master if g.app.qt_use_tabs else self.top
+        w = self.top.leo_master
         return w.windowTitle()
     #@+node:ekr.20190611053431.5: *4* qtFrame.iconify
     def iconify(self):
@@ -3074,7 +3072,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top:
             # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
             # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-            w = self.top.leo_master if g.app.qt_use_tabs else self.top
+            w = self.top.leo_master
             w.setWindowTitle(s)
     #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
     def setTopGeometry(self, w, h, x, y):

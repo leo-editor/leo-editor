@@ -459,7 +459,7 @@ def save(self, event=None, fileName=None):
                 # 2013/08/04: use c.computeWindowTitle.
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
-            if g.app.qt_use_tabs and hasattr(c.frame, 'top'):
+            if hasattr(c.frame, 'top'):
                 c.frame.top.leo_master.setTabName(c, c.mFileName)
             c.fileCommands.save(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
@@ -536,7 +536,7 @@ def saveAs(self, event=None, fileName=None):
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
             # Bug fix in 4.4b2.
         # Calls c.clearChanged() if no error.
-        if g.app.qt_use_tabs and hasattr(c.frame, 'top'):
+        if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.saveAs(c.mFileName)
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
