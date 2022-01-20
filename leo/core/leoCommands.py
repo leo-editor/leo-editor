@@ -3299,7 +3299,7 @@ class Commands:
         return ''
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self):
+    def contractAllHeadlines(self, event=None):
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
