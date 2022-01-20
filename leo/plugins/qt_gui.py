@@ -1344,7 +1344,6 @@ class LeoQtGui(leoGui.LeoGui):
             finally:
                 c.in_qt_dialog = False
             b = m.clickedButton()
-            g.trace(b)
             self.update_tips_setting()
             if b != m.next_tip_button:
                 break
