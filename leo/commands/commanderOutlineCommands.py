@@ -1604,7 +1604,7 @@ def moveOutlineUp(self, event=None):
     c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
-def promote(self, event=None, undoFlag=True, redrawFlag=True):
+def promote(self, event=None, undoFlag=True):
     """Make all children of the selected nodes siblings of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasChildren():
@@ -1617,9 +1617,8 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     if undoFlag:
         p.setDirty()
         u.afterPromote(p, children)
-    if redrawFlag:
-        c.redraw(p)
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+    c.redraw(p)
+    c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')
 def toggleSparseMove(self, event=None):
