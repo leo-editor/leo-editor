@@ -812,7 +812,6 @@ class LeoImportCommands:
     def importFilesCommand(self,
         files=None,
         parent=None,
-        redrawFlag=True,
         shortFn=False,
         treeType=None,
         verbose=True,  # Legacy value.
@@ -848,8 +847,6 @@ class LeoImportCommands:
                 g.es_exception()
         c.validateOutline()
         parent.expand()
-        if redrawFlag:
-            c.redraw(parent)
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
         """
@@ -1767,7 +1764,6 @@ class RecursiveImportController:
         c.importCommands.importFilesCommand(
             files=[path],
             parent=parent,
-            redrawFlag=False,
             shortFn=True,
             treeType='@file',  # '@auto','@clean','@nosent' cause problems.
             verbose=self.verbose,  # Leo 6.6.
@@ -2308,7 +2304,6 @@ class ZimImportController:
         c.importCommands.importFilesCommand(
             files=rst,
             parent=p,
-            redrawFlag=False,
             treeType='@rst',
         )
         rstNode = p.getLastChild()

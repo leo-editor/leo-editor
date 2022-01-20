@@ -186,6 +186,7 @@ def importAnyFile(self, event=None):
                 treeType='@auto',  # was '@clean'
                     # Experimental: attempt to use permissive section ref logic.
             )
+            c.redraw()
     c.raise_error_dialogs(kind='read')
 
 g.command_alias('importAtFile', importAnyFile)
