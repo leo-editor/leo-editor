@@ -608,7 +608,6 @@ def findNextClone(self, event=None):
             p.moveToThreadNext()
     if flag:
         if cc:
-            # name = cc.findChapterNameForPosition(p)
             cc.selectChapterByName('main')
         c.selectPosition(p)
         c.redraw_after_select(p)
@@ -733,19 +732,10 @@ def goToNextClone(self, event=None):
             chapter = cc.getSelectedChapter()
             old_name = chapter and chapter.name
             new_name = cc.findChapterNameForPosition(p)
-            if new_name == old_name:
-                # Always do a full redraw.
-                c.redraw(p)
-            else:
-                if 1:
-                    cc.selectChapterByName(new_name)
-                    c.redraw(p)
-                else:  # Old code.
-                    c.selectPosition(p)
-                    cc.selectChapterByName(new_name)
-        else:
-            # Always do a full redraw.
-            c.redraw(p)
+            if new_name != old_name:
+                cc.selectChapterByName(new_name)
+        # Always do a full redraw.
+        c.redraw(p)
     else:
         g.blue('done')
 #@+node:ekr.20031218072017.2917: *3* c_oc.goToNextDirtyHeadline

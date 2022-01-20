@@ -647,7 +647,7 @@ class TestNodes(LeoUnitTest):
         # Hack the chaptersDict.
         cc.chaptersDict['aaa'] = leoChapters.Chapter(c, cc, 'aaa')
         # Select the chapter.
-        cc.selectChapterByName('aaa', collapse=True)
+        cc.selectChapterByName('aaa')
         self.assertEqual(c.p.h, 'aaa node 1')
         p2 = c.p.moveToVisBack(c)
         self.assertEqual(p2, None)
