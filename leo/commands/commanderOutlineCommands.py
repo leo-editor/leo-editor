@@ -438,7 +438,7 @@ def expandAllHeadlines(self, event=None):
     c.endEditing()
     p = c.rootPosition()
     while p:
-        c.expandSubtree(p, redraw=False)
+        c.expandSubtree(p)
         p.moveToNext()
     c.redraw_after_expand(p=c.rootPosition())
     c.expansionLevel = 0  # Reset expansion level.
