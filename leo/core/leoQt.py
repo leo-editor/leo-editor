@@ -52,5 +52,7 @@ if not g.in_bridge:
             isQt5 = True
             # print('\n===== Qt5 =====')
         except Exception:
-            print('\nCan not load pyQt5 or pyQt6')
+            # print('===== No Qt =====')
+            if g.app.gui.guiName() == 'qt':
+                print('Can not load pyQt5 or pyQt6')
 #@-leo
