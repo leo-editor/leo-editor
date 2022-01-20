@@ -3311,7 +3311,7 @@ class RecentFilesManager:
         if result != self.recentFiles:
             for path in result:
                 self.updateRecentFiles(path)
-            self.writeRecentFilesFile(c, force=True)
+            self.writeRecentFilesFile(c)
     #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
     def demangleRecentFiles(self, c, data):
         """Rewrite recent files based on c.config.getData('path-demangle')"""
@@ -3332,8 +3332,7 @@ class RecentFilesManager:
             for change in changes:
                 t = t.replace(*change)
             self.updateRecentFiles(t)
-        self.writeRecentFilesFile(c, force=True)
-            # Force the write message.
+        self.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
     def clearRecentFiles(self, c):
         """Clear the recent files list, then add the present file."""
@@ -3347,7 +3346,7 @@ class RecentFilesManager:
             rf.createRecentFilesMenuItems(frame.c)
         u.afterClearRecentFiles(bunch)
         # Write the file immediately.
-        rf.writeRecentFilesFile(c, force=True)  # Force the write message.
+        rf.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10301: *3* rf.createRecentFilesMenuItems
     def createRecentFilesMenuItems(self, c):
         rf = self
@@ -3518,8 +3517,7 @@ class RecentFilesManager:
         rf.recentFiles = []
         for z in reversed(aList):
             rf.updateRecentFiles(z)
-        rf.writeRecentFilesFile(c, force=True)
-            # Force the write message.
+        rf.writeRecentFilesFile(c)
     #@+node:ekr.20031218072017.2083: *3* rf.updateRecentFiles
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
@@ -3561,19 +3559,15 @@ class RecentFilesManager:
         if p:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
             rf.recentFiles = files
-            rf.writeRecentFilesFile(c, force=False)
+            rf.writeRecentFilesFile(c)
             rf.updateRecentFiles(None)
             c.selectPosition(p)
             c.deleteOutline()
         else:
             g.red('not found:', self.edit_headline)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
-    def writeRecentFilesFile(self, c, force=False):
-        """
-        Write the appropriate .leoRecentFiles.txt file.
-
-        Write a message if force is True, or if it hasn't been written yet.
-        """
+    def writeRecentFilesFile(self, c):
+        """Write the appropriate .leoRecentFiles.txt file."""
         tag = '.leoRecentFiles.txt'
         rf = self
         # tag:#661. Do nothing if in leoBride.
@@ -3592,15 +3586,13 @@ class RecentFilesManager:
                 if g.os_path_exists(fileName) and fileName.lower() not in seen:
                     seen.append(fileName.lower())
                     ok = rf.writeRecentFilesFileHelper(fileName)
-                    if force or not rf.recentFileMessageWritten:
+                    if ok:
+                        written = True
+                    if not rf.recentFileMessageWritten and not g.unitTesting and not g.app.silentMode:  # #459:
                         if ok:
-                            if not g.app.silentMode:
-                                # Fix #459:
-                                g.es_print(f"wrote recent file: {fileName}")
-                            written = True
+                            g.es_print(f"wrote recent file: {fileName}")
                         else:
                             g.error(f"failed to write recent file: {fileName}")
-                    # Bug fix: Leo 4.4.6: write *all* recent files.
         if written:
             rf.recentFileMessageWritten = True
         else:
