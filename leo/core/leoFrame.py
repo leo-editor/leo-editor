@@ -1582,14 +1582,14 @@ class LeoTree:
         self.set_body_text_after_select(p, old_p)
         c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, force=False):
+    def set_body_text_after_select(self, p, old_p):
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b  # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        if not force and p and p == old_p and s == old_s:
+        if p and p == old_p and s == old_s:
             return
         # Part 2: set the new text. This forces a recolor.
         c.setCurrentPosition(p)
