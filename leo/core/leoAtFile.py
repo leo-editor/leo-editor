@@ -897,36 +897,15 @@ class AtFile:
         else:
             g.es("no dirty @auto nodes in the selected tree")
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
+    #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes
     @cmd('write-at-shadow-nodes')
     def writeAtShadowNodes(self, event=None):  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
-        at, c = self, self.c
+        at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
-        c.raise_error_dialogs(kind='write')
-        return val
-
-    @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event=None):  # pragma: no cover
-        """Write all dirty @shadow nodes in the selected outline."""
-        at, c = self, self.c
-        c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
-        c.raise_error_dialogs(kind='write')
-        return val
-    #@+node:ekr.20190109153627.13: *7* at.writeAtShadowNodesHelper
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True):  # pragma: no cover
-        """Write @shadow nodes in the selected outline"""
-        at, c = self, self.c
-        p = c.p
-        after = p.nodeAfterTree()
-        found = False
+        after, found = p.nodeAfterTree(), False
         while p and p != after:
-            if (
-                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-                and (p.isDirty() or not writeDirtyOnly)
-            ):
+            if p.atShadowFileNodeName() and not p.isAtIgnoreNode():
                 ok = at.writeOneAtShadowNode(p)
                 if ok:
                     found = True
@@ -936,14 +915,42 @@ class AtFile:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @shadow nodes in the selected tree")
-            else:
-                g.es("no @shadow nodes in the selected tree")
+        if g.unitTesting:
+            return found
+        if found:
+            g.es("finished")
+        else:
+            g.es("no @shadow nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
         return found
+
+    #@+node:ekr.20220120072917.1: *6* at.writeDirtyAtShadowNodes
+    @cmd('write-dirty-at-shadow-nodes')
+    def writeDirtyAtShadowNodes(self, event=None):  # pragma: no cover
+        """Write all @shadow nodes in the selected outline."""
+        at, c, p = self, self.c, self.c.p
+        c.init_error_dialogs()
+        after, found = p.nodeAfterTree(), False
+        while p and p != after:
+            if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and p.isDirty():
+                ok = at.writeOneAtShadowNode(p)
+                if ok:
+                    found = True
+                    g.blue(f"wrote {p.atShadowFileNodeName()}")
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if g.unitTesting:
+            return found
+        if found:
+            g.es("finished")
+        else:
+            g.es("no dirty @shadow nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
+        return found
+
     #@+node:ekr.20041005105605.157: *5* at.putFile
     def putFile(self, root, fromString='', sentinels=True):
         """Write the contents of the file to the output stream."""
