@@ -162,7 +162,6 @@ class AutoCompleterClass:
         # Ivars...
         self.c = k.c
         self.k = k
-        self.force = None
         self.language = None
         self.namespaces = []
             # additional namespaces to search for objects, other code
@@ -195,32 +194,42 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.8: *3* ac.Top level
     #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     @ac_cmd('auto-complete')
-    def autoComplete(self, event=None, force=False):
+    def autoComplete(self, event=None):
         """An event handler for autocompletion."""
         c, k = self.c, self.k
         # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
-        self.force = force
         if k.unboundKeyAction not in ('insert', 'overwrite'):
             return
-        if not force:
-            # Ctrl-period does *not* insert a period,
-            # but plain periods *must* be inserted!
-            c.insertCharFromEvent(event)
+        c.insertCharFromEvent(event)
         if c.exists:
             c.frame.updateStatusLine()
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
         self.language = g.scanForAtLanguage(c, c.p)
-        if w and (k.enable_autocompleter or force):
+        if w and k.enable_autocompleter:
             self.w = w
             self.start(event)
     #@+node:ekr.20061031131434.10: *4* ac.autoCompleteForce
     @ac_cmd('auto-complete-force')
     def autoCompleteForce(self, event=None):
         """Show autocompletion, even if autocompletion is not presently enabled."""
-        return self.autoComplete(event, force=True)
+        c, k = self.c, self.k
+        # pylint: disable=consider-using-ternary
+        w = event and event.w or c.get_focus()
+        if k.unboundKeyAction not in ('insert', 'overwrite'):
+            return
+        if c.exists:
+            c.frame.updateStatusLine()
+        # Allow autocompletion only in the body pane.
+        if not c.widget_name(w).lower().startswith('body'):
+            return
+        self.language = g.scanForAtLanguage(c, c.p)
+        if w:
+            self.w = w
+            self.start(event)
+
     #@+node:ekr.20061031131434.12: *4* ac.enable/disable/toggleAutocompleter/Calltips
     @ac_cmd('disable-autocompleter')
     def disableAutocompleter(self, event=None):
