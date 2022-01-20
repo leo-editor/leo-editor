@@ -3379,7 +3379,7 @@ class Commands:
                 g.trace('(c)', name)
             c.requestedFocusWidget = w
 
-    def set_focus(self, w, force=False):
+    def set_focus(self, w):
         trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
