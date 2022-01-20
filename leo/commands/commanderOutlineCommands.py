@@ -1225,8 +1225,7 @@ def deleteMarked(self, event=None):
         c.setChanged()
     # Don't even *think* about restoring the old position.
     c.contractAllHeadlines()
-    c.selectPosition(c.rootPosition())
-    c.redraw()
+    c.redraw(c.rootPosition())
 #@+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
 @g.commander_command('move-marked-nodes')
 def moveMarked(self, event=None):
@@ -1286,9 +1285,8 @@ def moveMarked(self, event=None):
         if not g.unitTesting:
             g.blue(f"moved {len(moved)} nodes")
         c.setChanged()
-    # c.contractAllHeadlines()  # Causes problems when in a chapter.
-    c.selectPosition(parent)
-    c.redraw()
+    # Calling c.contractAllHeadlines() causes problems when in a chapter.
+    c.redraw(parent)
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode
 def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()

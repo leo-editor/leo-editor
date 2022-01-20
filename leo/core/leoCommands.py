@@ -3951,7 +3951,6 @@ class Commands:
                 c.selectPosition(root)
                 c.setChanged()
                 c.contractAllHeadlines()
-                c.selectPosition(root)
                 root.expand()
                 c.redraw(root)
         elif failMsg:
