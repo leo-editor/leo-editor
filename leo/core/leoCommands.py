@@ -3113,7 +3113,10 @@ class Commands:
             c.redraw()
 
     def redraw(self, p=None):
-        """Redraw the screen immediately."""
+        """
+        Redraw the screen immediately.
+        If p is given, set c.p to p.
+        """
         c = self
         # New in Leo 5.6: clear the redraw request.
         c.requestLaterRedraw = False
@@ -3313,7 +3316,7 @@ class Commands:
             p = c.p
             while p and p.hasParent():
                 p.moveToParent()
-        c.redraw(p)
+        c.selectPosition(p)   # #2380: Don't redraw here.
         c.expansionLevel = 1  # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):
@@ -3948,9 +3951,9 @@ class Commands:
                 c.selectPosition(root)
                 c.setChanged()
                 c.contractAllHeadlines()
-                root.expand()
-                c.redraw()
                 c.selectPosition(root)
+                root.expand()
+                c.redraw(root)
         elif failMsg:
             g.es(failMsg, color='red')
         return root

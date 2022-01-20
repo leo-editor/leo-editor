@@ -346,6 +346,7 @@ def contractAllHeadlinesCommand(self, event=None):
     # The helper does all the work.
     c = self
     c.contractAllHeadlines()
+    c.redraw()
 #@+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
 def contractAllOtherNodes(self, event=None):
@@ -982,8 +983,7 @@ def cloneToAtSpot(self, event=None):
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
-        c.redraw()
-        c.selectPosition(clone)
+        c.redraw(clone)
     else:
         clone.doDelete()
         c.setCurrentPosition(p)
@@ -1286,8 +1286,7 @@ def moveMarked(self, event=None):
         if not g.unitTesting:
             g.blue(f"moved {len(moved)} nodes")
         c.setChanged()
-    # c.contractAllHeadlines()
-        # Causes problems when in a chapter.
+    # c.contractAllHeadlines()  # Causes problems when in a chapter.
     c.selectPosition(parent)
     c.redraw()
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode

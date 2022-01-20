@@ -144,6 +144,7 @@ class TestCommands(LeoUnitTest):
         while p.hasNext():
             p.moveToNext()
         c.selectPosition(p)
+        c.redraw()
     #@+node:ekr.20210906075242.6: *3* TestCommands.test_c_demote_illegal_clone_demote
     def test_c_demote_illegal_clone_demote(self):
         c, p = self.c, self.c.p
