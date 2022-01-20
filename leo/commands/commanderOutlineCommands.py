@@ -1062,7 +1062,7 @@ def insertNodeAsLastChild(self, event=None):
     """Insert a node as the last child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_last_child=True)
-#@+node:ekr.20171124091846.1: *4* functinon: insertHeadlineHelper
+#@+node:ekr.20171124091846.1: *4* function: insertHeadlineHelper
 def insertHeadlineHelper(c,
     event=None,
     op_name="Insert Node",
