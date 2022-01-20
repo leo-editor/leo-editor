@@ -321,18 +321,20 @@ class AtFile:
         root.clearDirty()
         return True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
-    def deleteUnvisitedNodes(self, root, redraw=True):  # pragma: no cover
+    def deleteUnvisitedNodes(self, root):  # pragma: no cover
         """
         Delete unvisited nodes in root's subtree, not including root.
 
         Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
         Nodes'.
         """
-        at = self
+        at, c = self, self.c
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            at.c.deletePositionsInList(aList, redraw=redraw)
+            at.c.deletePositionsInList(aList)
+            c.redraw()
+            
     #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""

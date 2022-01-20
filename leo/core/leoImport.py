@@ -1886,7 +1886,7 @@ class RecursiveImportController:
             p2 for p2 in p.self_and_subtree()
                 if not p2.b and not p2.hasChildren()]
         if aList:
-            c.deletePositionsInList(aList, redraw=False)
+            c.deletePositionsInList(aList)  # Don't redraw.
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:

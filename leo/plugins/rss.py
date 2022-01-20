@@ -319,19 +319,20 @@ class RSSController:
     def delete_selected_feed_stories(self, event=None):
         """Deletes all the children of the selected `@feed` node.
         """
-        pos = self.c.p
-        if self.is_feed(pos):
-            self.c.deletePositionsInList(pos.children())
-            self.c.redraw()
+        c, p = self.c, self.c.p
+        if self.is_feed(p):
+            c.deletePositionsInList(p.children())
+            c.redraw()
         else:
             g.es('Not a valid @feed node.', color='red')
     #@+node:peckj.20131003090809.6563: *4* delete_all_feed_stories
     def delete_all_feed_stories(self, event=None):
         """Deletes all children of all `@feed` nodes in the current outline.
         """
+        c = self.c
         for feed in self.get_all_feeds():
-            self.c.deletePositionsInList(self.c.vnode2position(feed).children())
-        self.c.redraw()
+            c.deletePositionsInList(self.c.vnode2position(feed).children())
+        c.redraw()
     #@+node:peckj.20131003101848.5579: *4* clear_selected_feed_history
     def clear_selected_feed_history(self, event=None):
         """Clears the selected `@feed` node's viewed stories history.

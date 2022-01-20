@@ -4038,9 +4038,11 @@ class Commands:
         u.afterChangeGroup(parent, undoType, undoData)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
-    def deletePositionsInList(self, aList, redraw=True):
+    def deletePositionsInList(self, aList):
         """
         Delete all vnodes corresponding to the positions in aList.
+        
+        Set c.p if the old position no longer exists.
 
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
@@ -4061,10 +4063,8 @@ class Commands:
             ch = v.children.pop(i)
             ch.parents.remove(v)
             undodata.append((v.gnx, i, ch.gnx))
-        if redraw:
-            if not c.positionExists(c.p):
-                c.setCurrentPosition(c.rootPosition())
-            c.redraw()
+        if not c.positionExists(c.p):
+            c.selectPosition(c.rootPosition())
         return undodata
 
     #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions

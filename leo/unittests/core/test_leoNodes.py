@@ -562,6 +562,7 @@ class TestNodes(LeoUnitTest):
                 aList.append(p.copy())
         self.assertEqual(len(aList), 6)
         c.deletePositionsInList(aList)
+        c.redraw()
 
     #@+node:ekr.20210830095545.26: *4* TestNodes.test_p_hasNextBack
     def test_p_hasNextBack(self):
