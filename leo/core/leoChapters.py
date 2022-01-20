@@ -358,21 +358,21 @@ class Chapter:
             return None
         return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
-    def select(self, w=None, selectEditor=True):
+    def select(self, w=None):
         """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
         try:
             tt = self.cc.tt
             self.selectLockout = True
-            self.chapterSelectHelper(w, selectEditor)
+            self.chapterSelectHelper(w)
             if tt:
                 # A bad kludge: update all the chapter names *after* the selection.
                 tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
-    def chapterSelectHelper(self, w=None, selectEditor=True):
+    def chapterSelectHelper(self, w=None):
 
         c, cc = self.c, self.cc
         cc.selectedChapter = self
@@ -393,11 +393,10 @@ class Chapter:
         else:
             # This must be done *after* switching roots.
             self.p = p = self.findPositionInChapter(self.p) or root.copy()
-            if selectEditor:
-                # Careful: c.selectPosition would pop the hoist stack.
-                w = self.findEditorInChapter(p)
-                c.frame.body.selectEditor(w)  # Switches text.
-                self.p = p  # 2016/04/20: Apparently essential.
+            # Careful: c.selectPosition would pop the hoist stack.
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w)  # Switches text.
+            self.p = p  # 2016/04/20: Apparently essential.
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
                 self.p = p = p.firstChild()
