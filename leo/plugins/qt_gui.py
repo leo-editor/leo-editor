@@ -210,7 +210,7 @@ class LeoQtGui(leoGui.LeoGui):
         filters = ['%s (%s)' % (z) for z in filetypes]
             # Careful: the second %s is *not* replaced.
         return ';;'.join(filters)
-    #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helpers
+    #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helper
     def openFindDialog(self, c):
         if g.unitTesting:
             return
