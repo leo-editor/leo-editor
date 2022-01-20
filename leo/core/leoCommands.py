@@ -3028,7 +3028,7 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2=None, set_focus=True):
+    def bringToFront(self, c2=None):
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
