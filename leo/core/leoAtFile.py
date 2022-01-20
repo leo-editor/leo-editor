@@ -2078,7 +2078,7 @@ class AtFile:
             if not ok or not ok2:
                 g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
-    def checkPythonSyntax(self, p, body, supress=False):
+    def checkPythonSyntax(self, p, body):
         at = self
         try:
             body = body.replace('\r', '')
@@ -2086,7 +2086,7 @@ class AtFile:
             compile(body + '\n', fn, 'exec')
             return True
         except SyntaxError:
-            if not supress:
+            if not g.unitTesting:
                 at.syntaxError(p, body)
         except Exception:
             g.trace("unexpected exception")

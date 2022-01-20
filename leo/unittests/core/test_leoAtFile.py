@@ -107,10 +107,7 @@ class TestAtFile(LeoUnitTest):
         pass
         ''')
 
-        assert not at.checkPythonSyntax(p, s2, supress=True), 'fail2'
-
-        if not g.unitTesting:  # A hand test of at.syntaxError
-            at.checkPythonSyntax(p, s2)
+        assert not at.checkPythonSyntax(p, s2), 'fail2'
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_directiveKind4
     def test_directiveKind4(self):
 
