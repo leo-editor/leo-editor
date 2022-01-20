@@ -3402,17 +3402,12 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18328: *4* LeoQtLog.deleteTab
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         """
         Delete the tab if it exists.  Otherwise do *nothing*.
-
-        The spell code sets force=True if there is no spell dict.
         """
         c = self.c
         w = self.tabWidget
-        if force and tabName != 'Spell':
-            g.trace('can not force delete tab:', tabName)
-            return
         i = self.findTabIndex(tabName)
         if i is None:
             return

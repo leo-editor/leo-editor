@@ -1224,11 +1224,11 @@ class LeoLog:
     def createTextWidget(self, parentFrame):
         return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         c = self.c
         if tabName == 'Log':
             pass
-        elif tabName in ('Find', 'Spell') and not force:
+        elif tabName in ('Find', 'Spell'):
             self.selectTab('Log')
         else:
             for d in (self.canvasDict, self.textDict, self.frameDict):
@@ -2009,7 +2009,7 @@ class NullLog(LeoLog):
     def createTab(self, tabName, createText=True, widget=None, wrap='none'):
         pass
 
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         pass
 
     def getSelectedTab(self):
