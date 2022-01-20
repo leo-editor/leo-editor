@@ -268,15 +268,13 @@ class AutoCompleterClass:
         self.showCalltipsStatus()
     #@+node:ekr.20061031131434.13: *4* ac.showCalltips
     @ac_cmd('show-calltips')
-    def showCalltips(self, event=None, force=False):
+    def showCalltips(self, event=None):
         """Show the calltips at the cursor."""
-        c, k = self.c, self.c.k
-        w = event and event.w
+        c, k, w = self.c, self.c.k, event and event.w
         if not w:
             return
         is_headline = c.widget_name(w).startswith('head')
-        # Insert the calltip if possible, but not in headlines.
-        if (k.enable_calltips or force) and not is_headline:
+        if k.enable_calltips and not is_headline:
             self.w = w
             self.calltip()
         else:
@@ -285,7 +283,15 @@ class AutoCompleterClass:
     @ac_cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
         """Show the calltips at the cursor, even if calltips are not presently enabled."""
-        return self.showCalltips(event, force=True)
+        c, w = self.c, event and event.w
+        if not w:
+            return
+        is_headline = c.widget_name(w).startswith('head')
+        if not is_headline:
+            self.w = w
+            self.calltip()
+        else:
+            c.insertCharFromEvent(event)
     #@+node:ekr.20061031131434.15: *4* ac.showAutocompleter/CalltipsStatus
     def showAutocompleterStatus(self):
         """Show the autocompleter status."""
