@@ -209,18 +209,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             pass  # Kill the newline in the present line.
         self.kill(event, i, j, undoType='kill-line')
-    #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave & helper
+    #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
     def killRegion(self, event):
         """Kill the text selection."""
-        self.killRegionHelper(event, deleteFlag=True)
-
-    @cmd('kill-region-save')
-    def killRegionSave(self, event):
-        """Add the selected text to the kill ring, but do not delete it."""
-        self.killRegionHelper(event, deleteFlag=False)
-
-    def killRegionHelper(self, event, deleteFlag):
         w = self.editWidget(event)
         if not w:
             return
@@ -228,13 +220,24 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         if i == j:
             return
         s = w.getSelectedText()
-        if deleteFlag:
-            self.beginCommand(w, undoType='kill-region')
-            w.delete(i, j)
-            self.endCommand(changed=True, setLabel=True)
+        self.beginCommand(w, undoType='kill-region')
+        w.delete(i, j)
+        self.endCommand(changed=True, setLabel=True)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
-        # self.removeRKeys(w)
+
+    @cmd('kill-region-save')
+    def killRegionSave(self, event):
+        """Add the selected text to the kill ring, but do not delete it."""
+        w = self.editWidget(event)
+        if not w:
+            return
+        i, j = w.getSelectionRange()
+        if i == j:
+            return
+        s = w.getSelectedText()
+        self.addToKillBuffer(s)
+        g.app.gui.replaceClipboardWith(s)
     #@+node:ekr.20150514063305.423: *3* killSentence
     @cmd('kill-sentence')
     def killSentence(self, event):

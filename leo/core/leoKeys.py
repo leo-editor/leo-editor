@@ -1915,7 +1915,7 @@ class KeyHandlerClass:
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
         ]
-    #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
+    #@+node:ekr.20061031131434.80: *4* k.finishCreate
     def finishCreate(self):
         """
         Complete the construction of the keyHandler class.
