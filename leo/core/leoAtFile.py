@@ -340,15 +340,11 @@ class AtFile:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         old_changed = c.changed
-        if force:
-            # Capture the current headline only if
-            # we aren't doing the initial read.
-            c.endEditing()  # pragma: no cover
         t1 = time.time()
         c.init_error_dialogs()
         files = at.findFilesToRead(force, root)
         for p in files:
-            at.readFileAtPosition(force, p)
+            at.readFileAtPosition(p)
         for p in files:
             p.v.clearDirty()
         if not g.unitTesting:  # pragma: no cover
@@ -398,7 +394,7 @@ class AtFile:
                 p.moveToThreadNext()
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
-    def readFileAtPosition(self, force, p):  # pragma: no cover
+    def readFileAtPosition(self, p):  # pragma: no cover
         """Read the @<file> node at p."""
         at, c, fileName = self, self.c, p.anyAtFileNodeName()
         if p.isAtThinFileNode() or p.isAtFileNode():
