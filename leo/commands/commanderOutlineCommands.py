@@ -341,11 +341,12 @@ def dumpOutline(self, event=None):
 #@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 #@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.commander_command('contract-all')
-def contractAllHeadlinesCommand(self, event=None, redrawFlag=True):
+def contractAllHeadlinesCommand(self, event=None):
     """Contract all nodes in the outline."""
     # The helper does all the work.
     c = self
-    c.contractAllHeadlines(event=event, redrawFlag=redrawFlag)
+    c.contractAllHeadlines()
+    c.redraw()
 #@+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
 def contractAllOtherNodes(self, event=None):
@@ -982,8 +983,7 @@ def cloneToAtSpot(self, event=None):
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
-        c.redraw()
-        c.selectPosition(clone)
+        c.redraw(clone)
     else:
         clone.doDelete()
         c.setCurrentPosition(p)
@@ -1225,8 +1225,7 @@ def deleteMarked(self, event=None):
         c.setChanged()
     # Don't even *think* about restoring the old position.
     c.contractAllHeadlines()
-    c.selectPosition(c.rootPosition())
-    c.redraw()
+    c.redraw(c.rootPosition())
 #@+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
 @g.commander_command('move-marked-nodes')
 def moveMarked(self, event=None):
@@ -1286,10 +1285,8 @@ def moveMarked(self, event=None):
         if not g.unitTesting:
             g.blue(f"moved {len(moved)} nodes")
         c.setChanged()
-    # c.contractAllHeadlines()
-        # Causes problems when in a chapter.
-    c.selectPosition(parent)
-    c.redraw()
+    # Calling c.contractAllHeadlines() causes problems when in a chapter.
+    c.redraw(parent)
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode
 def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()

@@ -568,9 +568,8 @@ class CompareLeoOutlines:
         if hasattr(g.app.gui, 'frameFactory'):
             tff = g.app.gui.frameFactory
             tff.setTabForCommander(c)
-        c.contractAllHeadlines(redrawFlag=False)
-        self.root.expand()
         c.selectPosition(self.root)
+        self.root.expand()
         c.bodyWantsFocus()
         c.redraw()
     #@+node:ekr.20180211170333.11: *4* loc.get_file

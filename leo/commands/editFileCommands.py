@@ -944,10 +944,9 @@ class GitDiffController:
     def finish(self):
         """Finish execution of this command."""
         c = self.c
-        c.contractAllHeadlines(redrawFlag=False)
-        self.root.expand()
         c.selectPosition(self.root)
-        c.redraw()
+        self.root.expand()
+        c.redraw(self.root)
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_directory
     def get_directory(self):
