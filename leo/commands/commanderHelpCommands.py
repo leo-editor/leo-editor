@@ -86,21 +86,19 @@ def leoQuickStart(self, event=None):
 @g.commander_command('open-cheat-sheet-leo')
 @g.commander_command('leo-cheat-sheet')
 @g.commander_command('cheat-sheet')
-def openCheatSheet(self, event=None, redraw=True):
+def openCheatSheet(self, event=None):
     """Open leo/doc/cheatSheet.leo"""
     c = self
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-    if g.os_path_exists(fn):
-        c2 = g.openWithFileName(fn, old_c=c)
-        if redraw:
-            p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
-            if p:
-                c2.selectPosition(p)
-                p.expand()
-            c2.redraw()
-        return c2
-    g.es(f"file not found: {fn}")
-    return None
+    if not g.os_path_exists(fn):
+        g.es(f"file not found: {fn}")
+        return
+    c2 = g.openWithFileName(fn, old_c=c)
+    p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
+    if p:
+        c2.selectPosition(p)
+        p.expand()
+    c2.redraw()
 #@+node:lkj.20190714022527.1: *3* c_help.openDesktopIntegration
 @g.commander_command('open-desktop-integration-leo')
 @g.commander_command('desktop-integration-leo')
