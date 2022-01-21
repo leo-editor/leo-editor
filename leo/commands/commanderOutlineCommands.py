@@ -73,12 +73,7 @@ def pasteOutline(self, event=None, s=None, undoFlag=True):
     return pasted
 #@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
 @g.commander_command('paste-retaining-clones')
-def pasteOutlineRetainingClones(self,
-    event=None,
-    redrawFlag=True,
-    s=None,
-    undoFlag=True,
-):
+def pasteOutlineRetainingClones(self, event=None, s=None, undoFlag=True):
     """
     Paste an outline into the present outline from the clipboard.
     Nodes *retain* their original identify.
@@ -110,8 +105,7 @@ def pasteOutlineRetainingClones(self,
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=redrawFlag)
-        # Prevent flash when fixing #387.
+    c.setChanged(redrawFlag=False)  # Prevent flash when fixing #387.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
@@ -122,9 +116,8 @@ def pasteOutlineRetainingClones(self,
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
-    if redrawFlag:
-        c.redraw(pasted)
-        c.recolor()
+    c.redraw(pasted)
+    c.recolor()
     return pasted
 #@+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
 def computeCopiedBunchList(c, pasted, vnodeInfoDict):
