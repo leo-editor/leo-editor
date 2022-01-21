@@ -1291,8 +1291,7 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, False)
-                # LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changed=False)  # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0:2] == "* ":
             c.frame.setTitle(s[2:])
@@ -1330,7 +1329,7 @@ class Commands:
                 c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self, redrawFlag=True):
+    def setChanged(self):
         """Set the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
@@ -1344,11 +1343,9 @@ class Commands:
             return
         if not c.frame.top:
             return
-        if not redrawFlag:  # Prevent flash when fixing #387.
-            return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, True)
+            master.setChanged(c, changed=True)
                 # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0] != '*':

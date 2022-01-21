@@ -490,7 +490,7 @@ class LeoFind:
                 clone._linkCopiedAsNthChild(found, n)
                 u.afterCloneNode(clone, 'clone', b)
         u.afterChangeGroup(p0, undoType)
-        c.setChanged(True)
+        c.setChanged()
         c.redraw(found)
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers

@@ -61,7 +61,7 @@ def pasteOutline(self, event=None, s=None, undoFlag=True):
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=False)  # Prevent flash.
+    c.setChanged()
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
@@ -105,7 +105,7 @@ def pasteOutlineRetainingClones(self, event=None, s=None, undoFlag=True):
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=False)  # Prevent flash when fixing #387.
+    c.setChanged()
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)

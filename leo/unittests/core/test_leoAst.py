@@ -951,7 +951,7 @@ class TestOrange(BaseTest):
         # Case 2.
         '''\
     @g.commander_command('promote')
-    def promote(self, event=None, undoFlag=True, redrawFlag=True):
+    def promote(self, event=None, undoFlag=True):
         """Make all children of the selected nodes siblings of the selected node."""
     ''',
         )
