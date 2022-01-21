@@ -61,7 +61,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         undoType = 'backward-kill-sentence'
         self.beginCommand(w, undoType=undoType)
         i2 = s.rfind('.', 0, i) + 1
-        self.kill(event, i2, i + 1, undoType=undoType)
+        self.killHelper(event, i2, i + 1, undoType=undoType)
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
@@ -91,7 +91,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # self.killWs(event)
             e.extendToWord(event)
             i, j = w.getSelectionRange()
-            self.kill(event, i, j, undoType=None)
+            self.killHelper(event, i, j)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
@@ -144,19 +144,19 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
-    #@+node:ekr.20150514063305.419: *3* kill (helper)
-    def kill(self, event, frm, to, force=False, undoType=None):
-        """A helper method for all kill commands."""
+    #@+node:ekr.20150514063305.419: *3* ec.killHelper
+    def killHelper(self, event, frm, to, undoType=None):
+        """
+        A helper method for all kill commands except kill-paragraph commands.
+        """
         w = self.editWidget(event)
         if not w:
             return
-        # 2016/03/05: all kill commands kill selected text, if it exists.
-        if not force:
-            # Delete the selection range if it spans a line.
-            i, j = w.getSelectionRange()
-            s = w.get(i, j)
-            if s.find('\n') > -1:
-                frm, to = i, j
+        # Extend (frm, to) if it spans a line.
+        i, j = w.getSelectionRange()
+        s = w.get(i, j)
+        if s.find('\n') > -1:
+            frm, to = i, j
         s = w.get(frm, to)
         if undoType:
             self.beginCommand(w, undoType=undoType)
@@ -166,7 +166,22 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         w.setInsertPoint(frm)
         if undoType:
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.420: *3* killToEndOfLine
+    #@+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
+    def killParagraphHelper(self, event, frm, to, undoType=None):
+        """A helper method for kill-paragraph commands."""
+        w = self.editWidget(event)
+        if not w:
+            return
+        s = w.get(frm, to)
+        if undoType:
+            self.beginCommand(w, undoType=undoType)
+        self.addToKillBuffer(s)
+        g.app.gui.replaceClipboardWith(s)
+        w.delete(frm, to)
+        w.setInsertPoint(frm)
+        if undoType:
+            self.endCommand(changed=True, setLabel=True)
+    #@+node:ekr.20150514063305.420: *3* ec.killToEndOfLine
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event):
         """Kill from the cursor to end of the line."""
@@ -188,8 +203,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             i = j
         if i < j:
-            self.kill(event, i, j, undoType='kill-line')
-    #@+node:ekr.20150514063305.421: *3* KillLine
+            self.killHelper(event, i, j, undoType='kill-to-end-of-line')
+    #@+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
     def killLine(self, event):
         """Kill the line containing the cursor."""
@@ -208,7 +223,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             j -= 1
         else:
             pass  # Kill the newline in the present line.
-        self.kill(event, i, j, undoType='kill-line')
+        self.killHelper(event, i, j, undoType='kill-line')
     #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
     def killRegion(self, event):
@@ -238,7 +253,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         s = w.getSelectedText()
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
-    #@+node:ekr.20150514063305.423: *3* killSentence
+    #@+node:ekr.20150514063305.423: *3* ec.killSentence
     @cmd('kill-sentence')
     def killSentence(self, event):
         """Kill the sentence containing the cursor."""
@@ -253,7 +268,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         undoType = 'kill-sentence'
         self.beginCommand(w, undoType=undoType)
         i2 = s.rfind('.', 0, ins) + 1
-        self.kill(event, i2, i + 1, undoType=undoType)
+        self.killHelper(event, i2, i + 1, undoType=undoType)
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.424: *3* killWs
