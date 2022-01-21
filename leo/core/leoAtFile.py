@@ -342,7 +342,7 @@ class AtFile:
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
-        files = at.findFilesToRead(root, force=False)
+        files = at.findFilesToRead(root, all=True)
         for p in files:
             at.readFileAtPosition(p)
         for p in files:
@@ -353,13 +353,13 @@ class AtFile:
         c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
-    def findFilesToRead(self, root, force):  # pragma: no cover
+    def findFilesToRead(self, root, all):  # pragma: no cover
 
         c = self.c
         p = root.copy()
         scanned_nodes = set()
         files = []
-        after = p.nodeAfterTree() if force else None
+        after = None if all else p.nodeAfterTree()
         while p and p != after:
             data = (p.gnx, g.fullPath(c, p))
             # skip clones referring to exactly the same paths.
@@ -413,7 +413,7 @@ class AtFile:
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
-        files = at.findFilesToRead(root, force=True)
+        files = at.findFilesToRead(root, all=False)
         for p in files:
             at.readFileAtPosition(p)
         for p in files:
