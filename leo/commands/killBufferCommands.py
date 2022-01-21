@@ -296,12 +296,23 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 self.addToKillBuffer(ws)
             if undoType:
                 self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.425: *3* yank
+    #@+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
-    def yank(self, event, pop=False):
+    @cmd('yank')
+    def yank(self, event=None):
+        """Insert the next entry of the kill ring."""
+        self.yankHelper(event, pop=False)
+        
+    @cmd('yank-pop')
+    def yankPop(self, event=None):
+        """Insert the first entry of the kill ring."""
+        self.yankHelper(event, pop=True)
+
+    def yankHelper(self, event, pop):
         """
-        yank: insert the first entry of the kill ring.
-        yank-pop: insert the next entry of the kill ring.
+        Helper for yank and yank-pop:
+        pop = False: insert the first entry of the kill ring.
+        pop = True:  insert the next entry of the kill ring.
         """
         c = self.c
         w = self.editWidget(event)
@@ -339,11 +350,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.lastYankP = current.copy()
         finally:
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.426: *3* yankPop
-    @cmd('yank-pop')
-    def yankPop(self, event):
-        """Insert the next entry of the kill ring."""
-        self.yank(event, pop=True)
     #@+node:ekr.20150514063305.427: *3* zapToCharacter
     @cmd('zap-to-character')
     def zapToCharacter(self, event):
