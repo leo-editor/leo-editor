@@ -833,7 +833,7 @@ def readAtFileNodes(self, event=None):
     c.endEditing()
     undoData = u.beforeChangeTree(p)
     c.endEditing()
-    c.atFileCommands.readAll(p, force=True)
+    c.atFileCommands.readAllSelected(p)
     # Force an update of the body pane.
     c.setBodyString(p, p.b)  # Not a do-nothing!
     u.afterChangeTree(p, 'Read @file Nodes', undoData)

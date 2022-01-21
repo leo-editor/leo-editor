@@ -3322,7 +3322,7 @@ class Commands:
             p.contract()
     #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
     def expandSubtree(self, p):
-        c = self
+        # c = self
         last = p.lastNode()
         p = p.copy()
         while p and p != last:

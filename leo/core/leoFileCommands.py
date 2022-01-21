@@ -752,9 +752,13 @@ class FileCommands:
         return ok
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self, fileName):
-        """Read all external files."""
+        """
+        Read all external files.
+        
+        A helper for fc.getLeoFile.
+        """
         c, fc = self.c, self
-        c.atFileCommands.readAll(c.rootPosition(), force=False)
+        c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
         #
         # Do this after reading external files.
