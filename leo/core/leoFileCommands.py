@@ -2065,8 +2065,6 @@ class FileCommands:
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
-    new = True
-
     def put_v_elements(self, p=None):
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
