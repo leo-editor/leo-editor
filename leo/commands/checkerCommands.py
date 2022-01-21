@@ -226,13 +226,14 @@ def pyflakes_command(event):
     or the first @<file> node in an ancestor.
     """
     c = event and event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if pyflakes:
-            PyflakesCommand(c).run(force=True)
-        else:
-            g.es_print('can not import pyflakes')
+    if not c:
+        return
+    if c.isChanged():
+        c.save()
+    if pyflakes:
+        PyflakesCommand(c).run(c.p, force=True)
+    else:
+        g.es_print('can not import pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
 last_pylint_path = None
 
@@ -448,12 +449,12 @@ class PyflakesCommand:
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p=None, force=False, pyflakes_errors_only=False):
-        """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
+    def run(self, p, force=False, pyflakes_errors_only=False):
+        """Run Pyflakes on all Python @<file> nodes in p's tree."""
         if not pyflakes:
             return True  # Pretend all is fine.
         c = self.c
-        root = p or c.p
+        root = p
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:

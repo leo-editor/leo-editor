@@ -2134,7 +2134,7 @@ class AtFile:
             from leo.commands import checkerCommands
             if checkerCommands.pyflakes:
                 x = checkerCommands.PyflakesCommand(self.c)
-                ok = x.run(p=root, pyflakes_errors_only=pyflakes_errors_only)
+                ok = x.run(root, pyflakes_errors_only=pyflakes_errors_only)
                 return ok
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:
