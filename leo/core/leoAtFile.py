@@ -2067,9 +2067,8 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20220120210617.1: *5* at.checkPyflakes (new)
+    #@+node:ekr.20220120210617.1: *5* at.checkPyflakes
     def checkPyflakes(self, contents, fileName, root):
-        
         at = self
         if g.unitTesting or not at.runPyFlakesOnWrite:
             return
@@ -2078,6 +2077,7 @@ class AtFile:
         ok = self.runPyflakes(root, pyflakes_errors_only=False)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
+        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents, fileName, root):  # pragma: no cover
         """Perform python-related checks on root."""
