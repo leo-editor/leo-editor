@@ -831,12 +831,13 @@ def readAtFileNodes(self, event=None):
     """Read all @file nodes in the presently selected outline."""
     c, p, u = self, self.p, self.undoer
     c.endEditing()
-    # c.init_error_dialogs() # Done in at.readAll.
     undoData = u.beforeChangeTree(p)
-    c.fileCommands.readAtFileNodes()
+    c.endEditing()
+    c.atFileCommands.readAll(p, force=True)
+    # Force an update of the body pane.
+    c.setBodyString(p, p.b)  # Not a do-nothing!
     u.afterChangeTree(p, 'Read @file Nodes', undoData)
     c.redraw()
-    # c.raise_error_dialogs(kind='read') # Done in at.readAll.
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):

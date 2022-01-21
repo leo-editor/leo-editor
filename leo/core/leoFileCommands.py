@@ -750,16 +750,6 @@ class FileCommands:
         if ok:
             frame.resizePanesToRatio(ratio, frame.secondary_ratio)
         return ok
-    #@+node:ekr.20031218072017.3029: *5* fc.readAtFileNodes
-    def readAtFileNodes(self):
-
-        c, p = self.c, self.c.p
-        c.endEditing()
-        c.atFileCommands.readAll(p, force=True)
-        c.redraw()
-        # Force an update of the body pane.
-        c.setBodyString(p, p.b)  # Not a do-nothing!
-
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self, fileName):
         """Read all external files."""
