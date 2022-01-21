@@ -1294,7 +1294,7 @@ class JEditColorizer(BaseJEditColorizer):
             j = i + len(seq)
             k = g.skip_ws(s, j)
             self.colorRangeWithTag(s, i, k, 'leokeyword')
-            c.frame.setWrap(c.p, force=True)
+            c.frame.forceWrap(c.p)
             return k - i
         return 0
     #@+node:ekr.20110605121601.18601: *5* jedit.match_blanks

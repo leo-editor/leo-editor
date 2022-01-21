@@ -2275,6 +2275,9 @@ class CoreFrame(leoFrame.LeoFrame):
 
     def destroySelf(self):
         pass
+        
+    def forceWrap(self, p):
+        pass
 
     def get_window_info(self):
         """Return width, height, left, top."""

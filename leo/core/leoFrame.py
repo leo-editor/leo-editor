@@ -1804,6 +1804,9 @@ class NullFrame(LeoFrame):
 
     def expandPane(self, event=None):
         pass
+        
+    def forceWrap(self, p):
+        pass
 
     def fullyExpandBodyPane(self, event=None):
         pass
