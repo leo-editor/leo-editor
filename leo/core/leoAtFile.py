@@ -2067,27 +2067,30 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
+    #@+node:ekr.20220120210617.1: *5* at.checkPyflakes (new)
+    def checkPyflakes(self, contents, fileName, root):
+        
+        at = self
+        if g.unitTesting or not at.runPyFlakesOnWrite:
+            return
+        if not contents or not fileName or not fileName.endswith('.py'):
+            return
+        ok = self.runPyflakes(root, pyflakes_errors_only=False)
+        if not ok:
+            g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):  # pragma: no cover
+    def checkPythonCode(self, contents, fileName, root):  # pragma: no cover
         """Perform python-related checks on root."""
         at = self
-        if (
-            contents and fileName and fileName.endswith('.py')
-            and at.checkPythonCodeOnWrite
-        ):
-            # It's too slow to check each node separately.
-            if pyflakes_errors_only:
-                ok = True
-            else:
-                ok = at.checkPythonSyntax(root, contents)
-            # Syntax checking catches most indentation problems.
-                # if ok: at.tabNannyNode(root,s)
-            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
-                ok2 = self.runPyflakes(root, pyflakes_errors_only=pyflakes_errors_only)
-            else:
-                ok2 = True
-            if not ok or not ok2:
-                g.app.syntax_error_files.append(g.shortFileName(fileName))
+        if g.unitTesting or not contents or not fileName or not fileName.endswith('.py'):
+            return
+        ok = True
+        if at.checkPythonCodeOnWrite:
+            ok = at.checkPythonSyntax(root, contents)
+        if ok and at.runPyFlakesOnWrite:
+            ok = self.runPyflakes(root, pyflakes_errors_only=False)
+        if not ok:
+            g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body):
         at = self
@@ -2140,38 +2143,6 @@ class AtFile:
         except Exception:
             g.es_exception()
             return False
-    #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
-    def tabNannyNode(self, p, body):
-        try:
-            readline = g.ReadLinesClass(body).next
-            tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except IndentationError:
-            if g.unitTesting:
-                raise
-            junk2, msg, junk = sys.exc_info()
-            g.error("IndentationError in", p.h)
-            g.es('', str(msg))
-        except tokenize.TokenError:
-            if g.unitTesting:
-                raise
-            junk3, msg, junk = sys.exc_info()
-            g.error("TokenError in", p.h)
-            g.es('', str(msg))
-        except tabnanny.NannyNag:
-            if g.unitTesting:
-                raise
-            junk4, nag, junk = sys.exc_info()
-            badline = nag.get_lineno()
-            line = nag.get_line()
-            message = nag.get_msg()
-            g.error("indentation error in", p.h, "line", badline)
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n", line2)
-        except Exception:
-            g.trace("unexpected exception")
-            g.es_exception()
-            raise
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
@@ -2540,7 +2511,7 @@ class AtFile:
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
             # Leo 5.6: Check unchanged files.
-            at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
+            at.checkPyflakes(contents, fileName, root)
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
@@ -2612,6 +2583,38 @@ class AtFile:
             g.es_print('using default delims')
             at.section_delim1 = '<<'
             at.section_delim2 = '>>'
+    #@+node:ekr.20090514111518.5665: *5* at.tabNannyNode
+    def tabNannyNode(self, p, body):
+        try:
+            readline = g.ReadLinesClass(body).next
+            tabnanny.process_tokens(tokenize.generate_tokens(readline))
+        except IndentationError:
+            if g.unitTesting:
+                raise
+            junk2, msg, junk = sys.exc_info()
+            g.error("IndentationError in", p.h)
+            g.es('', str(msg))
+        except tokenize.TokenError:
+            if g.unitTesting:
+                raise
+            junk3, msg, junk = sys.exc_info()
+            g.error("TokenError in", p.h)
+            g.es('', str(msg))
+        except tabnanny.NannyNag:
+            if g.unitTesting:
+                raise
+            junk4, nag, junk = sys.exc_info()
+            badline = nag.get_lineno()
+            line = nag.get_line()
+            message = nag.get_msg()
+            g.error("indentation error in", p.h, "line", badline)
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n", line2)
+        except Exception:
+            g.trace("unexpected exception")
+            g.es_exception()
+            raise
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 

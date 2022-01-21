@@ -1708,10 +1708,9 @@ class Commands:
             g.blue("check complete")
         return result
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
-    def checkPythonCode(self, event=None,
-        # unittestFlag=False,
+    def checkPythonCode(self,
+        event=None,
         ignoreAtIgnore=True,
-        # suppressErrors=False,
         checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
@@ -1738,7 +1737,6 @@ class Commands:
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-        ## if not unittestFlag:
         if not g.unitTesting:
             g.blue("check complete")
         # We _can_ return a result for unit tests because we aren't using doCommand.
