@@ -439,7 +439,6 @@ class LeoFind:
             predicate=isMarked,
             failMsg='No marked nodes',
             flatten=flatten,
-            redraw=True,
             undoType='clone-find-marked',
         )
         if root:

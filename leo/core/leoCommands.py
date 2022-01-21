@@ -3905,7 +3905,6 @@ class Commands:
         failMsg=None,  # Failure message. Default is no message.
         flatten=False,  # True: Put all matches at the top level.
         iconPath=None,  # Full path to icon to attach to all matches.
-        redraw=True,  # True: redraw the outline,
         undoType=None,  # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
     ):
@@ -3919,7 +3918,6 @@ class Commands:
         failMsg=None,   Message given if nothing found. Default is no message.
         flatten=False,  True: Move all node to be parents of the root node.
         iconPath=None,  Full path to icon to attach to all matches.
-        redraw=True,    True: redraw the screen.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                         The default is 'clone-find-predicate'
         """
@@ -3944,12 +3942,10 @@ class Commands:
                 n = root.numberOfChildren()
                 p2._linkCopiedAsNthChild(root, n)
             u.afterInsertNode(root, undoType, undoData)
-            if redraw:
-                c.selectPosition(root)
-                c.setChanged()
-                c.contractAllHeadlines()
-                root.expand()
-                c.redraw(root)
+            c.selectPosition(root)
+            c.setChanged()
+            c.contractAllHeadlines()
+            root.expand()
         elif failMsg:
             g.es(failMsg, color='red')
         return root
