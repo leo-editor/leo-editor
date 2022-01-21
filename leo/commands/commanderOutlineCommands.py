@@ -30,12 +30,7 @@ def cutOutline(self, event=None):
         c.recolor()
 #@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 @g.commander_command('paste-node')
-def pasteOutline(self,
-    event=None,
-    redrawFlag=True,
-    s=None,
-    undoFlag=True
-):
+def pasteOutline(self, event=None, s=None, undoFlag=True):
     """
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
@@ -66,17 +61,15 @@ def pasteOutline(self,
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=redrawFlag)
-        # Prevent flash when fixing #387.
+    c.setChanged(redrawFlag=False)  # Prevent flash.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
-    if redrawFlag:
-        c.redraw(pasted)
-        c.recolor()
+    c.redraw(pasted)
+    c.recolor()
     return pasted
 #@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
 @g.commander_command('paste-retaining-clones')
