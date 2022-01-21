@@ -2070,11 +2070,12 @@ class AtFile:
     #@+node:ekr.20220120210617.1: *5* at.checkPyflakes
     def checkPyflakes(self, contents, fileName, root):
         at = self
+        ok = True
         if g.unitTesting or not at.runPyFlakesOnWrite:
-            return
+            return ok
         if not contents or not fileName or not fileName.endswith('.py'):
-            return
-        ok = self.runPyflakes(root, pyflakes_errors_only=False)
+            return ok
+        ok = self.runPyflakes(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
         return ok
@@ -2088,7 +2089,7 @@ class AtFile:
         if at.checkPythonCodeOnWrite:
             ok = at.checkPythonSyntax(root, contents)
         if ok and at.runPyFlakesOnWrite:
-            ok = self.runPyflakes(root, pyflakes_errors_only=False)
+            ok = self.runPyflakes(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
@@ -2131,13 +2132,13 @@ class AtFile:
             else:
                 g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root, pyflakes_errors_only):  # pragma: no cover
+    def runPyflakes(self, root):  # pragma: no cover
         """Run pyflakes on the selected node."""
         try:
             from leo.commands import checkerCommands
             if checkerCommands.pyflakes:
                 x = checkerCommands.PyflakesCommand(self.c)
-                ok = x.run(root, pyflakes_errors_only=pyflakes_errors_only)
+                ok = x.run(root)
                 return ok
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:

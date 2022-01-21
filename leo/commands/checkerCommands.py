@@ -231,7 +231,7 @@ def pyflakes_command(event):
     if c.isChanged():
         c.save()
     if pyflakes:
-        PyflakesCommand(c).run(c.p, force=True)
+        PyflakesCommand(c).run(c.p)
     else:
         g.es_print('can not import pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
@@ -402,7 +402,7 @@ class PyflakesCommand:
             else:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, log_flag, pyflakes_errors_only, roots):
+    def check_all(self, roots):
         """Run pyflakes on all files in paths."""
         total_errors = 0
         for i, root in enumerate(roots):
@@ -414,8 +414,6 @@ class PyflakesCommand:
             # Report the file name.
             s = g.readFileIntoEncodedString(fn)
             if s and s.strip():
-                if not pyflakes_errors_only:
-                    g.es(f"Pyflakes: {sfn}")
                 # Send all output to the log pane.
                 r = reporter.Reporter(
                     errorStream=self.LogStream(i, roots),
@@ -449,31 +447,23 @@ class PyflakesCommand:
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p, force=False, pyflakes_errors_only=False):
+    def run(self, p):
         """Run Pyflakes on all Python @<file> nodes in p's tree."""
+        ok = True
         if not pyflakes:
-            return True  # Pretend all is fine.
+            return ok
         c = self.c
         root = p
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             # These messages are important for clarity.
-            log_flag = not force
-            total_errors = self.check_all(log_flag, pyflakes_errors_only, roots)
+            total_errors = self.check_all(roots)
             if total_errors > 0:
                 g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
-            elif force:
-                g.es(
-                    f"OK: pyflakes: "
-                    f"{len(roots)} file{g.plural(roots)} "
-                    f"in {g.timeSince(t1)}")
-            elif not pyflakes_errors_only:
-                g.es('OK: pyflakes')
             ok = total_errors == 0
         else:
             ok = True
