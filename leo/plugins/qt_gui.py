@@ -1223,7 +1223,9 @@ class LeoQtGui(leoGui.LeoGui):
         """Start the Qt main loop."""
         try:  # #2127: A crash here hard-crashes Leo: There is no main loop!
             g.app.gui.dismiss_splash_screen()
-            g.app.gui.show_tips()
+            c = g.app.log and g.app.log.c
+            if c and c.config.getBool('show-tips', default=False):
+                g.app.gui.show_tips(c)
         except Exception:
             g.es_exception()
         if self.script:
@@ -1287,10 +1289,11 @@ class LeoQtGui(leoGui.LeoGui):
             self.already_sized = True
             self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
-    @g.command('show-next-tip')
+    @g.command('show-tips')
     def show_next_tip(self, event=None):
-        g.app.gui.show_tips(force=True)
-
+        c = g.app.log and g.app.log.c
+        if c:
+            g.app.gui.show_tips(c)
 
     class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore
 
@@ -1323,17 +1326,10 @@ class LeoQtGui(leoGui.LeoGui):
                     200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
                 layout.addItem(vSpacer)
 
-    def show_tips(self, force=False):
-        from leo.core import leoTips
+    def show_tips(self, c):
         if g.unitTesting:
             return
-        c = g.app.log and g.app.log.c
-        if not c:
-            g.pr('qt_gui:show_tips: NO g.app.log')
-            return  # pyzo guard.
-        self.show_tips_flag = c.config.getBool('show-tips', default=False)
-        if not force and not self.show_tips_flag:
-            return
+        from leo.core import leoTips
         tm = leoTips.TipManager()
         while True:  # QMessageBox is always a modal dialog.
             tip = tm.get_next_tip()

@@ -2263,7 +2263,6 @@ class LeoServer:
             'show-fonts',
 
             'show-invisibles',
-            'show-next-tip',
             'show-node-uas',
             'show-outline-dock',
             'show-plugin-handlers',
@@ -2272,6 +2271,7 @@ class LeoServer:
             'show-settings-outline',
             'show-spell-info',
             'show-stats',
+            'show-tips',
 
             'style-set-selected',
 
