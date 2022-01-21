@@ -2143,7 +2143,7 @@ class AtFile:
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
-            return False
+            return True  # Pretend all is well
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.

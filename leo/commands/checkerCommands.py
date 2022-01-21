@@ -230,10 +230,12 @@ def pyflakes_command(event):
         return
     if c.isChanged():
         c.save()
-    if pyflakes:
-        PyflakesCommand(c).run(c.p)
-    else:
+    if not pyflakes:
         g.es_print('can not import pyflakes')
+        return
+    ok = PyflakesCommand(c).run(c.p)
+    if ok:
+        g.es('OK: pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
 last_pylint_path = None
 
