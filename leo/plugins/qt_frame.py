@@ -4119,8 +4119,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         c.selectPosition(p)
         p.v.contract()
         c2.close()
-        g.app.forgetOpenFile(c2.fileName())
-            # Necessary.
+        g.app.forgetOpenFile(c2.fileName())  # Necessary.
     #@+node:ekr.20120309075544.9882: *9* LeoQTreeWidget.createUrlForBinaryFile
     def createUrlForBinaryFile(self, fn, p):
         # Fix bug 1028986: create relative urls when dragging binary files to Leo.

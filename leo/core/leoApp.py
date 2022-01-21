@@ -1252,7 +1252,7 @@ class LeoApp:
             g.app.windowList.remove(frame)
         else:
             # #69.
-            g.app.forgetOpenFile(fn=c.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c.fileName())
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
@@ -1275,7 +1275,6 @@ class LeoApp:
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
-            # g.pr('destroyWindow', (g.app.windowList)
             g.app.forgetOpenFile(frame.c.fileName())
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -1319,7 +1318,7 @@ class LeoApp:
         if trace:
             g.pr('forceShutdown')
         for c in app.commanders():
-            app.forgetOpenFile(c.fileName(), force=True)
+            app.forgetOpenFile(c.fileName())
         # Wait until everything is quiet before really quitting.
         if trace:
             g.pr('forceShutdown: before end1')
@@ -1385,16 +1384,14 @@ class LeoApp:
         else:
             g.app.rememberOpenFile(fn)
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile(self, fn, force=False):
-        """Forget the open file, so that is no longer considered open."""
+    def forgetOpenFile(self, fn):
+        """
+        Remove fn from g.app.db, so that is no longer considered open.
+        """
         trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
-            # #69.
-            return
-        if not force and (
-            d is None or g.unitTesting or g.app.batchMode or g.app.reverting):
-            return
+            return # #69.
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
         if fn in aList:
@@ -1402,7 +1399,7 @@ class LeoApp:
             if trace:
                 g.pr(f"forgetOpenFile: {g.shortFileName(fn)}")
             d[tag] = aList
-        # elif trace: g.pr(f"forgetOpenFile: did not remove: {fn}")
+
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
 

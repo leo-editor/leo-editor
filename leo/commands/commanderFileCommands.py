@@ -93,7 +93,7 @@ def restartLeo(self, event=None):
             g.app.windowList.remove(frame)
         else:
             # #69.
-            g.app.forgetOpenFile(fn=c.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c.fileName())
     # 6. Complete the shutdown.
     g.app.finishQuit()
     # 7. Restart, restoring the original command line.
