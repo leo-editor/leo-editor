@@ -2242,7 +2242,7 @@ class LocalConfigManager:
         p.h = f"{h} = {value}"
         #
         # Delay the second redraw until idle time.
-        c.setChanged(redrawFlag=False)
+        c.setChanged()
         p.setDirty()
         c.redraw_later()
     #@-others

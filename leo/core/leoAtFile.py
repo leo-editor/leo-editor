@@ -321,50 +321,45 @@ class AtFile:
         root.clearDirty()
         return True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
-    def deleteUnvisitedNodes(self, root, redraw=True):  # pragma: no cover
+    def deleteUnvisitedNodes(self, root):  # pragma: no cover
         """
         Delete unvisited nodes in root's subtree, not including root.
 
         Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
         Nodes'.
         """
-        at = self
+        at, c = self, self.c
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            at.c.deletePositionsInList(aList, redraw=redraw)
+            at.c.deletePositionsInList(aList)
+            c.redraw()
+            
     #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
-    def readAll(self, root, force=False):
+    def readAll(self, root):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         old_changed = c.changed
-        if force:
-            # Capture the current headline only if
-            # we aren't doing the initial read.
-            c.endEditing()  # pragma: no cover
         t1 = time.time()
         c.init_error_dialogs()
-        files = at.findFilesToRead(force, root)
+        files = at.findFilesToRead(root, all=True)
         for p in files:
-            at.readFileAtPosition(force, p)
+            at.readFileAtPosition(p)
         for p in files:
             p.v.clearDirty()
-        if not g.unitTesting:  # pragma: no cover
-            if files:
-                t2 = time.time()
-                g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
-            elif force:
-                g.es("no @<file> nodes in the selected tree")
+        if not g.unitTesting and files:
+            t2 = time.time()
+            g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
         c.changed = old_changed
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
-    def findFilesToRead(self, force, root):  # pragma: no cover
+    def findFilesToRead(self, root, all):  # pragma: no cover
 
         c = self.c
         p = root.copy()
         scanned_nodes = set()
         files = []
-        after = p.nodeAfterTree() if force else None
+        after = None if all else p.nodeAfterTree()
         while p and p != after:
             data = (p.gnx, g.fullPath(c, p))
             # skip clones referring to exactly the same paths.
@@ -396,7 +391,7 @@ class AtFile:
                 p.moveToThreadNext()
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
-    def readFileAtPosition(self, force, p):  # pragma: no cover
+    def readFileAtPosition(self, p):  # pragma: no cover
         """Read the @<file> node at p."""
         at, c, fileName = self, self.c, p.anyAtFileNodeName()
         if p.isAtThinFileNode() or p.isAtFileNode():
@@ -411,6 +406,26 @@ class AtFile:
             at.rememberReadPath(g.fullPath(c, p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+    #@+node:ekr.20220121052056.1: *5* at.readAllSelected
+    def readAllSelected(self, root):
+        """Read all @<file> nodes in root's tree."""
+        at, c = self, self.c
+        old_changed = c.changed
+        t1 = time.time()
+        c.init_error_dialogs()
+        files = at.findFilesToRead(root, all=False)
+        for p in files:
+            at.readFileAtPosition(p)
+        for p in files:
+            p.v.clearDirty()
+        if not g.unitTesting:  # pragma: no cover
+            if files:
+                t2 = time.time()
+                g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
+            else:
+                g.es("no @<file> nodes in the selected tree")
+        c.changed = old_changed
+        c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
     def readAtShadowNodes(self, p):  # pragma: no cover
         """Read all @shadow nodes in the p's tree."""
@@ -848,34 +863,15 @@ class AtFile:
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
     #@+node:ekr.20190111153551.1: *5* at.commands
-    #@+node:ekr.20070806105859: *6* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
+    #@+node:ekr.20070806105859: *6* at.writeAtAutoNodes
     @cmd('write-at-auto-nodes')
     def writeAtAutoNodes(self, event=None):  # pragma: no cover
         """Write all @auto nodes in the selected outline."""
-        at, c = self, self.c
+        at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
-        at.writeAtAutoNodesHelper(writeDirtyOnly=False)
-        c.raise_error_dialogs(kind='write')
-
-    @cmd('write-dirty-at-auto-nodes')  # pragma: no cover
-    def writeDirtyAtAutoNodes(self, event=None):
-        """Write all dirty @auto nodes in the selected outline."""
-        at, c = self, self.c
-        c.init_error_dialogs()
-        at.writeAtAutoNodesHelper(writeDirtyOnly=True)
-        c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20190109163934.24: *7* at.writeAtAutoNodesHelper
-    def writeAtAutoNodesHelper(self, writeDirtyOnly=True):  # pragma: no cover
-        """Write @auto nodes in the selected outline"""
-        at, c = self, self.c
-        p = c.p
-        after = p.nodeAfterTree()
-        found = False
+        after, found = p.nodeAfterTree(), False
         while p and p != after:
-            if (
-                p.isAtAutoNode() and not p.isAtIgnoreNode() and
-                (p.isDirty() or not writeDirtyOnly)
-            ):
+            if p.isAtAutoNode() and not p.isAtIgnoreNode():
                 ok = at.writeOneAtAutoNode(p)
                 if ok:
                     found = True
@@ -884,43 +880,47 @@ class AtFile:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @auto nodes in the selected tree")
+        if g.unitTesting:
+            return
+        if found:
+            g.es("finished")
+        else:
+            g.es("no @auto nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
+
+    #@+node:ekr.20220120072251.1: *6* at.writeDirtyAtAutoNodes
+    @cmd('write-dirty-at-auto-nodes')  # pragma: no cover
+    def writeDirtyAtAutoNodes(self, event=None):
+        """Write all dirty @auto nodes in the selected outline."""
+        at, c, p = self, self.c, self.c.p
+        c.init_error_dialogs()
+        after, found = p.nodeAfterTree(), False
+        while p and p != after:
+            if p.isAtAutoNode() and not p.isAtIgnoreNode() and p.isDirty():
+                ok = at.writeOneAtAutoNode(p)
+                if ok:
+                    found = True
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
             else:
-                g.es("no @auto nodes in the selected tree")
-    #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
+                p.moveToThreadNext()
+        if g.unitTesting:
+            return
+        if found:
+            g.es("finished")
+        else:
+            g.es("no dirty @auto nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes
     @cmd('write-at-shadow-nodes')
     def writeAtShadowNodes(self, event=None):  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
-        at, c = self, self.c
+        at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=False)
-        c.raise_error_dialogs(kind='write')
-        return val
-
-    @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event=None):  # pragma: no cover
-        """Write all dirty @shadow nodes in the selected outline."""
-        at, c = self, self.c
-        c.init_error_dialogs()
-        val = at.writeAtShadowNodesHelper(writeDirtyOnly=True)
-        c.raise_error_dialogs(kind='write')
-        return val
-    #@+node:ekr.20190109153627.13: *7* at.writeAtShadowNodesHelper
-    def writeAtShadowNodesHelper(self, writeDirtyOnly=True):  # pragma: no cover
-        """Write @shadow nodes in the selected outline"""
-        at, c = self, self.c
-        p = c.p
-        after = p.nodeAfterTree()
-        found = False
+        after, found = p.nodeAfterTree(), False
         while p and p != after:
-            if (
-                p.atShadowFileNodeName() and not p.isAtIgnoreNode()
-                and (p.isDirty() or not writeDirtyOnly)
-            ):
+            if p.atShadowFileNodeName() and not p.isAtIgnoreNode():
                 ok = at.writeOneAtShadowNode(p)
                 if ok:
                     found = True
@@ -930,14 +930,42 @@ class AtFile:
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        if not g.unitTesting:
-            if found:
-                g.es("finished")
-            elif writeDirtyOnly:
-                g.es("no dirty @shadow nodes in the selected tree")
-            else:
-                g.es("no @shadow nodes in the selected tree")
+        if g.unitTesting:
+            return found
+        if found:
+            g.es("finished")
+        else:
+            g.es("no @shadow nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
         return found
+
+    #@+node:ekr.20220120072917.1: *6* at.writeDirtyAtShadowNodes
+    @cmd('write-dirty-at-shadow-nodes')
+    def writeDirtyAtShadowNodes(self, event=None):  # pragma: no cover
+        """Write all @shadow nodes in the selected outline."""
+        at, c, p = self, self.c, self.c.p
+        c.init_error_dialogs()
+        after, found = p.nodeAfterTree(), False
+        while p and p != after:
+            if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and p.isDirty():
+                ok = at.writeOneAtShadowNode(p)
+                if ok:
+                    found = True
+                    g.blue(f"wrote {p.atShadowFileNodeName()}")
+                    p.moveToNodeAfterTree()
+                else:
+                    p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+        if g.unitTesting:
+            return found
+        if found:
+            g.es("finished")
+        else:
+            g.es("no dirty @shadow nodes in the selected tree")
+        c.raise_error_dialogs(kind='write')
+        return found
+
     #@+node:ekr.20041005105605.157: *5* at.putFile
     def putFile(self, root, fromString='', sentinels=True):
         """Write the contents of the file to the output stream."""
@@ -2056,29 +2084,33 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
+    #@+node:ekr.20220120210617.1: *5* at.checkPyflakes
+    def checkPyflakes(self, contents, fileName, root):
+        at = self
+        ok = True
+        if g.unitTesting or not at.runPyFlakesOnWrite:
+            return ok
+        if not contents or not fileName or not fileName.endswith('.py'):
+            return ok
+        ok = self.runPyflakes(root)
+        if not ok:
+            g.app.syntax_error_files.append(g.shortFileName(fileName))
+        return ok
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):  # pragma: no cover
+    def checkPythonCode(self, contents, fileName, root):  # pragma: no cover
         """Perform python-related checks on root."""
         at = self
-        if (
-            contents and fileName and fileName.endswith('.py')
-            and at.checkPythonCodeOnWrite
-        ):
-            # It's too slow to check each node separately.
-            if pyflakes_errors_only:
-                ok = True
-            else:
-                ok = at.checkPythonSyntax(root, contents)
-            # Syntax checking catches most indentation problems.
-                # if ok: at.tabNannyNode(root,s)
-            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
-                ok2 = self.runPyflakes(root, pyflakes_errors_only=pyflakes_errors_only)
-            else:
-                ok2 = True
-            if not ok or not ok2:
-                g.app.syntax_error_files.append(g.shortFileName(fileName))
+        if g.unitTesting or not contents or not fileName or not fileName.endswith('.py'):
+            return
+        ok = True
+        if at.checkPythonCodeOnWrite:
+            ok = at.checkPythonSyntax(root, contents)
+        if ok and at.runPyFlakesOnWrite:
+            ok = self.runPyflakes(root)
+        if not ok:
+            g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
-    def checkPythonSyntax(self, p, body, supress=False):
+    def checkPythonSyntax(self, p, body):
         at = self
         try:
             body = body.replace('\r', '')
@@ -2086,7 +2118,7 @@ class AtFile:
             compile(body + '\n', fn, 'exec')
             return True
         except SyntaxError:
-            if not supress:
+            if not g.unitTesting:
                 at.syntaxError(p, body)
         except Exception:
             g.trace("unexpected exception")
@@ -2117,50 +2149,18 @@ class AtFile:
             else:
                 g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root, pyflakes_errors_only):  # pragma: no cover
+    def runPyflakes(self, root):  # pragma: no cover
         """Run pyflakes on the selected node."""
         try:
             from leo.commands import checkerCommands
             if checkerCommands.pyflakes:
                 x = checkerCommands.PyflakesCommand(self.c)
-                ok = x.run(p=root, pyflakes_errors_only=pyflakes_errors_only)
+                ok = x.run(root)
                 return ok
             return True  # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
-            return False
-    #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
-    def tabNannyNode(self, p, body):
-        try:
-            readline = g.ReadLinesClass(body).next
-            tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except IndentationError:
-            if g.unitTesting:
-                raise
-            junk2, msg, junk = sys.exc_info()
-            g.error("IndentationError in", p.h)
-            g.es('', str(msg))
-        except tokenize.TokenError:
-            if g.unitTesting:
-                raise
-            junk3, msg, junk = sys.exc_info()
-            g.error("TokenError in", p.h)
-            g.es('', str(msg))
-        except tabnanny.NannyNag:
-            if g.unitTesting:
-                raise
-            junk4, nag, junk = sys.exc_info()
-            badline = nag.get_lineno()
-            line = nag.get_line()
-            message = nag.get_msg()
-            g.error("indentation error in", p.h, "line", badline)
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n", line2)
-        except Exception:
-            g.trace("unexpected exception")
-            g.es_exception()
-            raise
+            return True  # Pretend all is well
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic)
     # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
     # However, they must allow @language python, @nocolor-node, etc.
@@ -2529,7 +2529,7 @@ class AtFile:
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
             # Leo 5.6: Check unchanged files.
-            at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
+            at.checkPyflakes(contents, fileName, root)
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
@@ -2601,6 +2601,38 @@ class AtFile:
             g.es_print('using default delims')
             at.section_delim1 = '<<'
             at.section_delim2 = '>>'
+    #@+node:ekr.20090514111518.5665: *5* at.tabNannyNode
+    def tabNannyNode(self, p, body):
+        try:
+            readline = g.ReadLinesClass(body).next
+            tabnanny.process_tokens(tokenize.generate_tokens(readline))
+        except IndentationError:
+            if g.unitTesting:
+                raise
+            junk2, msg, junk = sys.exc_info()
+            g.error("IndentationError in", p.h)
+            g.es('', str(msg))
+        except tokenize.TokenError:
+            if g.unitTesting:
+                raise
+            junk3, msg, junk = sys.exc_info()
+            g.error("TokenError in", p.h)
+            g.es('', str(msg))
+        except tabnanny.NannyNag:
+            if g.unitTesting:
+                raise
+            junk4, nag, junk = sys.exc_info()
+            badline = nag.get_lineno()
+            line = nag.get_line()
+            message = nag.get_msg()
+            g.error("indentation error in", p.h, "line", badline)
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n", line2)
+        except Exception:
+            g.trace("unexpected exception")
+            g.es_exception()
+            raise
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from putFile.
 

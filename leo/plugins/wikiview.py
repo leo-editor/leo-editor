@@ -123,7 +123,9 @@ class WikiView:
         c.registerReloadSettings(self)
         self.active = c.config.getBool('wikiview-active')
             # This setting is True by default, so the redundancy is harmless.
-    #@+node:ekr.20170205071315.1: *3* parse_options & helper
+    #@+node:ekr.20170205071315.1: *3* parse_options
+    leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
+
     def parse_options(self):
         """Return leadins, patterns from @data wikiview-link-patterns"""
         c = self.c
@@ -131,20 +133,14 @@ class WikiView:
         data = c.config.getData('wikiview-link-patterns')
         leadins, patterns = [], []
         for s in data:
-            leadin = self.get_leadin(s)
+            m = self.leadin_pattern.match(s)
+            leadin = m and m.group(3)
             if leadin:
                 leadins.append(leadin)
                 patterns.append(re.compile(s, re.IGNORECASE))
             else:
                 g.trace('bad leadin:', repr(s))
         return leadins, patterns
-    #@+node:ekr.20170205160357.1: *4* get_leadin
-    leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
-
-    def get_leadin(self, s):
-        """Return the leadin of the given pattern s, or None if there is an error."""
-        m = self.leadin_pattern.match(s)
-        return m and m.group(3)
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
         """Hide all wikiview tags. Now done in the colorizer."""

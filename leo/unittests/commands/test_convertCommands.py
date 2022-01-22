@@ -110,7 +110,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
     def test_plain_args(self):
         p = self.p
-        p.b = contents = textwrap.dedent('''\
+        p.b = textwrap.dedent('''\
             def f1(i, s):
                 pass
     ''')
@@ -135,7 +135,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
     def test_initializers(self):
         p = self.p
-        p.b = contents = textwrap.dedent('''\
+        p.b = textwrap.dedent('''\
             def f3(i = 2, f = 1.1, b = True, s = 'abc', x = None):
                 pass
     ''')
@@ -148,7 +148,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108093621.1: *3* test_ama.test_multiline_def
     def test_multiline_def(self):
         p = self.p
-        p.b = contents = textwrap.dedent('''\
+        p.b = textwrap.dedent('''\
             def f (
                 self,
                 a,
@@ -175,7 +175,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108153333.1: *3* test_ama.test_multiline_def_with_comments
     def test_multiline_def_with_comments(self):
         p = self.p
-        p.b = contents = textwrap.dedent('''\
+        p.b = textwrap.dedent('''\
             def f (
                 self,# comment 1
                 a,   # comment, 2

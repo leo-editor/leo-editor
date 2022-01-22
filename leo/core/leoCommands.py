@@ -1291,8 +1291,7 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, False)
-                # LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changed=False)  # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0:2] == "* ":
             c.frame.setTitle(s[2:])
@@ -1330,7 +1329,7 @@ class Commands:
                 c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self, redrawFlag=True):
+    def setChanged(self):
         """Set the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
@@ -1344,11 +1343,9 @@ class Commands:
             return
         if not c.frame.top:
             return
-        if not redrawFlag:  # Prevent flash when fixing #387.
-            return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, True)
+            master.setChanged(c, changed=True)
                 # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0] != '*':
@@ -1708,10 +1705,9 @@ class Commands:
             g.blue("check complete")
         return result
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
-    def checkPythonCode(self, event=None,
-        # unittestFlag=False,
+    def checkPythonCode(self,
+        event=None,
         ignoreAtIgnore=True,
-        # suppressErrors=False,
         checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
@@ -1738,7 +1734,6 @@ class Commands:
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-        ## if not unittestFlag:
         if not g.unitTesting:
             g.blue("check complete")
         # We _can_ return a result for unit tests because we aren't using doCommand.
@@ -3028,7 +3023,7 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2=None, set_focus=True):
+    def bringToFront(self, c2=None):
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -3323,14 +3318,13 @@ class Commands:
         for p in p.subtree():
             p.contract()
     #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
-    def expandSubtree(self, p, redraw=True):
-        c = self
+    def expandSubtree(self, p):
+        # c = self
         last = p.lastNode()
+        p = p.copy()
         while p and p != last:
             p.expand()
-            p = p.threadNext()
-        if redraw:
-            c.redraw()
+            p = p.moveToThreadNext()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
     def expandToLevel(self, level):
 
@@ -3379,7 +3373,7 @@ class Commands:
                 g.trace('(c)', name)
             c.requestedFocusWidget = w
 
-    def set_focus(self, w, force=False):
+    def set_focus(self, w):
         trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
@@ -3908,7 +3902,6 @@ class Commands:
         failMsg=None,  # Failure message. Default is no message.
         flatten=False,  # True: Put all matches at the top level.
         iconPath=None,  # Full path to icon to attach to all matches.
-        redraw=True,  # True: redraw the outline,
         undoType=None,  # The undo name, shown in the Edit:Undo menu.
                        # The default is 'clone-find-predicate'
     ):
@@ -3922,7 +3915,6 @@ class Commands:
         failMsg=None,   Message given if nothing found. Default is no message.
         flatten=False,  True: Move all node to be parents of the root node.
         iconPath=None,  Full path to icon to attach to all matches.
-        redraw=True,    True: redraw the screen.
         undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                         The default is 'clone-find-predicate'
         """
@@ -3947,12 +3939,10 @@ class Commands:
                 n = root.numberOfChildren()
                 p2._linkCopiedAsNthChild(root, n)
             u.afterInsertNode(root, undoType, undoData)
-            if redraw:
-                c.selectPosition(root)
-                c.setChanged()
-                c.contractAllHeadlines()
-                root.expand()
-                c.redraw(root)
+            c.selectPosition(root)
+            c.setChanged()
+            c.contractAllHeadlines()
+            root.expand()
         elif failMsg:
             g.es(failMsg, color='red')
         return root
@@ -4038,9 +4028,11 @@ class Commands:
         u.afterChangeGroup(parent, undoType, undoData)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
-    def deletePositionsInList(self, aList, redraw=True):
+    def deletePositionsInList(self, aList):
         """
         Delete all vnodes corresponding to the positions in aList.
+        
+        Set c.p if the old position no longer exists.
 
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
@@ -4061,10 +4053,8 @@ class Commands:
             ch = v.children.pop(i)
             ch.parents.remove(v)
             undodata.append((v.gnx, i, ch.gnx))
-        if redraw:
-            if not c.positionExists(c.p):
-                c.setCurrentPosition(c.rootPosition())
-            c.redraw()
+        if not c.positionExists(c.p):
+            c.selectPosition(c.rootPosition())
         return undodata
 
     #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions
@@ -4130,7 +4120,6 @@ class Commands:
             if not ok:
                 break
         return ok, d
-    #@+node:ekr.20210626151932.1: *5* newHeadline
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
     #@+<< PosList doc >>
     #@+node:bob.20101215134608.5898: *5* << PosList doc >>

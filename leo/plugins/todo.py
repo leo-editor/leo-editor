@@ -1326,7 +1326,6 @@ def todo_fix_datetime(event):
     g.es("Changed %d attribs." % changed)
 
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
-
 @g.command('todo-dec-pri')
 def todo_dec_pri(event, direction=1):
 

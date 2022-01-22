@@ -100,7 +100,7 @@ class SessionManager:
             # print('can not load session: no leo.session file')
         return None
     #@+node:ekr.20120420054855.14249: *3* SessionManager.save_snapshot
-    def save_snapshot(self, c=None):
+    def save_snapshot(self):
         """
         Save a snapshot of the present session to the leo.session file.
 
@@ -173,10 +173,9 @@ def session_snapshot_load_command(event):
 @g.command('session-snapshot-save')
 def session_snapshot_save_command(event):
     """Save a snapshot of the present session to the leo.session file."""
-    c = event.get('c')
     m = g.app.sessionManager
-    if c and m:
-        m.save_snapshot(c=c)
+    if m:
+        m.save_snapshot()
 #@-others
 #@@language python
 #@@tabwidth -4

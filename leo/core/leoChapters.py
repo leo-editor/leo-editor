@@ -51,15 +51,16 @@ class ChapterController:
 
     def finishCreate(self):
         """Create the box in the icon area."""
-        cc = self
+        c, cc = self.c, self
         cc.createIcon()
         cc.setAllChapterNames()
             # Create all chapters.
         # #31.
         cc.initing = False
-        cc.selectChapterByName('main', collapse=False)
-            # Always select the main chapter.
-            # It can be alarming to open a small chapter in a large .leo file.
+        # Always select the main chapter.
+        # It can be alarming to open a small chapter in a large .leo file.
+        cc.selectChapterByName('main')
+        c.redraw()
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
     def makeCommand(self, chapterName, binding=None):
         """Make chapter-select-<chapterName> command."""
@@ -125,8 +126,8 @@ class ChapterController:
         new_name = names[i + 1 if i + 1 < len(names) else 0]
         cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
-    def selectChapterByName(self, name, collapse=True):
-        """Select a chapter.  Return True if a redraw is needed."""
+    def selectChapterByName(self, name):
+        """Select a chapter without redrawing."""
         cc = self
         if self.selectChapterLockout:
             return
@@ -140,12 +141,12 @@ class ChapterController:
             return
         try:
             cc.selectChapterLockout = True
-            cc.selectChapterByNameHelper(chapter, collapse=collapse)
+            cc.selectChapterByNameHelper(chapter)
         finally:
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
-        """Select the chapter, and redraw if necessary."""
+        """Select the chapter."""
         cc, c = self, self.c
         if not cc.selectedChapter and chapter.name == 'main':
             chapter.p = c.p
@@ -160,24 +161,15 @@ class ChapterController:
             if main_chapter:
                 main_chapter.unselect()
         if chapter.p and c.positionExists(chapter.p):
-            p = chapter.p
+            pass
         elif chapter.name == 'main':
-            p = chapter.p  # Do *not* use c.p here!
+            pass  # Do not use c.p.
         else:
-            p = chapter.p = chapter.findRootNode()
-            if not p:
-                return
+            chapter.p = chapter.findRootNode()
         chapter.select()
-        c.setCurrentPosition(chapter.p)
-        # Clean up, but not initially.
-        if collapse and chapter.name == 'main':
-            for p in c.all_positions():
-                # Compare vnodes, not positions.
-                if p.v != c.p.v:
-                    p.contract()
-        c.redraw(chapter.p)
-            # Fix part of #265.
-            # Redraw only here, when we are sure it is needed.
+        c.contractAllHeadlines()
+        chapter.p.v.expand()
+        c.selectPosition(chapter.p)
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):
@@ -366,21 +358,21 @@ class Chapter:
             return None
         return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
-    def select(self, w=None, selectEditor=True):
+    def select(self, w=None):
         """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
         try:
             tt = self.cc.tt
             self.selectLockout = True
-            self.chapterSelectHelper(w, selectEditor)
+            self.chapterSelectHelper(w)
             if tt:
                 # A bad kludge: update all the chapter names *after* the selection.
                 tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
-    def chapterSelectHelper(self, w=None, selectEditor=True):
+    def chapterSelectHelper(self, w=None):
 
         c, cc = self.c, self.cc
         cc.selectedChapter = self
@@ -401,11 +393,10 @@ class Chapter:
         else:
             # This must be done *after* switching roots.
             self.p = p = self.findPositionInChapter(self.p) or root.copy()
-            if selectEditor:
-                # Careful: c.selectPosition would pop the hoist stack.
-                w = self.findEditorInChapter(p)
-                c.frame.body.selectEditor(w)  # Switches text.
-                self.p = p  # 2016/04/20: Apparently essential.
+            # Careful: c.selectPosition would pop the hoist stack.
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w)  # Switches text.
+            self.p = p  # 2016/04/20: Apparently essential.
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
                 self.p = p = p.firstChild()

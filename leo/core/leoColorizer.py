@@ -99,13 +99,11 @@ class BaseColorizer:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
     #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives
-    def scanLanguageDirectives(self, p, use_default=True):
+    def scanLanguageDirectives(self, p):
         """Return language based on the directives in p's ancestors."""
         c = self.c
         language = g.getLanguageFromAncestorAtFileNode(p)
-        if not language and use_default:
-            language = c.target_language
-        return language
+        return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
         """True if p's parents enable coloring in p."""
@@ -1296,7 +1294,7 @@ class JEditColorizer(BaseJEditColorizer):
             j = i + len(seq)
             k = g.skip_ws(s, j)
             self.colorRangeWithTag(s, i, k, 'leokeyword')
-            c.frame.setWrap(c.p, force=True)
+            c.frame.forceWrap(c.p)
             return k - i
         return 0
     #@+node:ekr.20110605121601.18601: *5* jedit.match_blanks

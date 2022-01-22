@@ -1576,21 +1576,26 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.make_colorizer(c, self.widget, self.wrapper)
-    #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
-    def setWrap(self, p=None, force=False):
+    #@+node:ekr.20110605121601.18183: *5* LeoQtBody.forceWrap and setWrap
+    def forceWrap(self, p):
         """Set **only** the wrap bits in the body."""
         if not p or self.useScintilla:
             return
         c = self.c
         w = c.frame.body.wrapper.widget
-        if force:
-            wrap = WrapMode.WrapAtWordBoundaryOrAnywhere
-        else:
-            wrap = g.scanAllAtWrapDirectives(c, p)
-            w.setHorizontalScrollBarPolicy(
-                ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded)
-            wrap = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
-                # was option WordWrap
+        wrap = WrapMode.WrapAtWordBoundaryOrAnywhere
+        w.setWordWrapMode(wrap)
+
+    def setWrap(self, p):
+        """Set **only** the wrap bits in the body."""
+        if not p or self.useScintilla:
+            return
+        c = self.c
+        w = c.frame.body.wrapper.widget
+        wrap = g.scanAllAtWrapDirectives(c, p)
+        policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
+        w.setHorizontalScrollBarPolicy(policy)
+        wrap = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
@@ -2748,9 +2753,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # A do-nothing because tab width is set automatically.
         # It *is* called from Leo's core.
         pass
-    #@+node:ekr.20110605121601.18280: *4* qtFrame.setWrap
-    def setWrap(self, p=None, force=False):
-        return self.c.frame.body.setWrap(p, force)
+    #@+node:ekr.20110605121601.18280: *4* qtFrame.forceWrap & setWrap
+    def forceWrap(self, p=None):
+        return self.c.frame.body.forceWrap(p)
+
+    def setWrap(self, p=None):
+        return self.c.frame.body.setWrap(p)
+
     #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes
     def reconfigurePanes(self):
         c, f = self.c, self
@@ -3402,17 +3411,12 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18328: *4* LeoQtLog.deleteTab
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         """
         Delete the tab if it exists.  Otherwise do *nothing*.
-
-        The spell code sets force=True if there is no spell dict.
         """
         c = self.c
         w = self.tabWidget
-        if force and tabName != 'Spell':
-            g.trace('can not force delete tab:', tabName)
-            return
         i = self.findTabIndex(tabName)
         if i is None:
             return
@@ -4115,8 +4119,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         c.selectPosition(p)
         p.v.contract()
         c2.close()
-        g.app.forgetOpenFile(c2.fileName())
-            # Necessary.
+        g.app.forgetOpenFile(c2.fileName())  # Necessary.
     #@+node:ekr.20120309075544.9882: *9* LeoQTreeWidget.createUrlForBinaryFile
     def createUrlForBinaryFile(self, fn, p):
         # Fix bug 1028986: create relative urls when dragging binary files to Leo.

@@ -291,7 +291,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         self.createAllCompareClones(c1, c2, inserted, deleted, changed)
         # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
         if not g.app.diff:
-            g.app.forgetOpenFile(fn=c2.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c2.fileName())
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts

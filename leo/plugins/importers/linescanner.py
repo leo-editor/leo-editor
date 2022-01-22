@@ -783,8 +783,7 @@ class Importer:
                         # Do delete p.
                         aList.append(p.copy())
         if aList:
-            c.deletePositionsInList(aList, redraw=False)
-                # Suppress redraw.
+            c.deletePositionsInList(aList)  # Don't redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
         """A placeholder for rust_i.promote_last_lines."""

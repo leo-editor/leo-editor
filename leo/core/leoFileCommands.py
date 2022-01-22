@@ -750,21 +750,15 @@ class FileCommands:
         if ok:
             frame.resizePanesToRatio(ratio, frame.secondary_ratio)
         return ok
-    #@+node:ekr.20031218072017.3029: *5* fc.readAtFileNodes
-    def readAtFileNodes(self):
-
-        c, p = self.c, self.c.p
-        c.endEditing()
-        c.atFileCommands.readAll(p, force=True)
-        c.redraw()
-        # Force an update of the body pane.
-        c.setBodyString(p, p.b)  # Not a do-nothing!
-
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self, fileName):
-        """Read all external files."""
+        """
+        Read all external files.
+        
+        A helper for fc.getLeoFile.
+        """
         c, fc = self.c, self
-        c.atFileCommands.readAll(c.rootPosition(), force=False)
+        c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
         #
         # Do this after reading external files.
@@ -2071,8 +2065,6 @@ class FileCommands:
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
-    new = True
-
     def put_v_elements(self, p=None):
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c

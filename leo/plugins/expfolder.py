@@ -100,6 +100,7 @@ def on_icondclick(tag, keywords):
             pn = p.insertAsNthChild(0)
             c.setHeadString(pn, "@expfolder " + d)
         c.expandSubtree(p)
+        c.redraw()
 #@-others
 #@@language python
 #@@tabwidth -4

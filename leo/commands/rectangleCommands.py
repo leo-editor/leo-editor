@@ -180,14 +180,14 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         c.frame.body.recolor(c.p)
     #@+node:ekr.20150514063305.460: *4* yankRectangle
     @cmd('rectangle-yank')
-    def yankRectangle(self, event, killRect=None):
+    def yankRectangle(self, event):
         """Yank into the rectangle defined by the start and end of selected text."""
         # c = self.c
         k = self.c.k
         w = self.editWidget(event)
         if not w:
             return
-        killRect = killRect or self.theKillRectangle
+        killRect = self.theKillRectangle
         if g.unitTesting:
             # This value is used by the unit test.
             killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']

@@ -349,7 +349,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """Paste the tree corresponding to s (xml) into the tree."""
         c = self.c
         c.fileCommands.leo_file_encoding = 'utf-8'
-        p = c.pasteOutline(s=s, redrawFlag=False, undoFlag=False)
+        p = c.pasteOutline(s=s, undoFlag=False)
         if p:
             # Promote the name node, then delete it.
             p.moveToLastChildOf(old_p)
