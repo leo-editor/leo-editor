@@ -59,7 +59,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.mGuiName = 'qt'
         self.main_window = None  # The *singleton* QMainWindow.
         self.plainTextWidget = qt_text.PlainTextWrapper
-        self.show_tips_flag = False  # Can't be inited in reload_settings.
+        self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
         # Be aware of the systems native colors, fonts, etc.
         QtWidgets.QApplication.setDesktopSettingsAware(True)
@@ -1333,10 +1333,9 @@ class LeoQtGui(leoGui.LeoGui):
             return
         from leo.core import leoTips
         tm = leoTips.TipManager()
+        self.show_tips_flag = c.config.getBool('show-tips', default=False)  # 2390.
         while True:  # QMessageBox is always a modal dialog.
             tip = tm.get_next_tip()
-            
-            g.trace(g.app.gui.show_tips_flag)
             m = self.DialogWithCheckBox(controller=self, checked=self.show_tips_flag, tip=tip)
             try:
                 c.in_qt_dialog = True
@@ -1352,21 +1351,18 @@ class LeoQtGui(leoGui.LeoGui):
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state):
-        g.trace(state)
         self.show_tips_flag = bool(state)
-        self.update_tips_setting()
+        self.update_tips_setting()  # #2390.
     #@+node:ekr.20180127103142.1: *4* onNext (not used)
     def onNext(self, *args, **keys):
         g.trace(args, keys)
         return True
     #@+node:ekr.20180117083930.1: *4* update_tips_setting
     def update_tips_setting(self):
-        
         c = g.app.log.c
         if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
-            g.trace(self.show_tips_flag)
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
-            c.redraw()
+            c.redraw()  # #2390.
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):

@@ -2222,6 +2222,7 @@ class LocalConfigManager:
         myLeoSettings.leo.
         """
         c = self.c
+        g.trace(setting, value)
         fn = g.shortFileName(c.fileName())
         p = self.findSettingsPosition(setting)
         if not p:
@@ -2243,7 +2244,7 @@ class LocalConfigManager:
         if i > -1:
             h = h[:i].strip()
         p.h = f"{h} = {value}"
-        print(f"Updated `{setting}` in {fn}")
+        print(f"Updated `{setting}` in {fn}")  # #2390.
         #
         # Delay the second redraw until idle time.
         c.setChanged()
