@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.7
+About Viewrendered3 V3.71
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -440,6 +440,8 @@ for more information on markdown.
 Unless ``@string vr3-default-kind`` is set to ``md``, markdown
 rendering must be specified by putting it in a ``@md`` node.
 
+Literal Blocks
+--------------
 A literal block is declared using backtick "fences"::
 
 
@@ -451,6 +453,8 @@ Note that the string ``text`` is required for proper rendering,
 even though some MD processors will accept the triple-backtick
 fence by itself without it. Fences must begin at the start of a line.
 
+Code Blocks
+------------
 A code block is indicated with the same fence, but the name of
 the language instead::
 
@@ -462,6 +466,18 @@ the language instead::
 .. note::
     No space is allowed between the fence characters and the language.
 
+Tables
+-------
+Tables may be created using the `PHP Markdown Extra` syntax: https://python-markdown.github.io/extensions/tables/.  Here is an example from the Markdown package documentation::
+
+
+    First Header  | Second Header
+    ------------- | -------------
+    Content Cell  | Content Cell
+    Content Cell  | Content Cell
+
+No Language Mixing
+-------------------
 As with RsT rendering, do not mix multiple structured languages in a single
 node or subtree.
 
@@ -834,9 +850,7 @@ else:
     got_docutils = False
     print('VR3: *** no docutils')
 try:
-    #from markdown import markdown
     import markdown
-    Markdown = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'def_list'])
     got_markdown = True
 except ImportError:
     got_markdown = False
@@ -882,6 +896,7 @@ JAVA = 'java'
 JAVASCRIPT = 'javascript'
 JULIA = 'julia'
 
+MATH = 'math'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
@@ -970,6 +985,7 @@ TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
+MD_MATH_FENCE = '```math'
 ASCDOC_CODE_LANG_MARKER = '[source,'
 ASCDOC_FENCE_MARKER = '----'
 
@@ -1684,6 +1700,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.title = None
 
+        self.Markdown = None # MD processor instance
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
 
@@ -1978,6 +1995,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_md_stylesheet()
         self.set_rst_stylesheet()
         self.create_md_header()
+
+        ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
+        if self.md_math_output:
+            ext.append('leo.extensions.mdx_math_gi')
+        self.Markdown = markdown.Markdown(extensions=ext)
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
@@ -3338,10 +3360,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
-        #ext = ['fenced_code', 'codehilite', 'def_list']
-
         try:
-            _html = Markdown.reset().convert(result)
+            _html = self.Markdown.reset().convert(result)
             self.last_markup = result
 
         except SystemMessage as sm:
@@ -4490,8 +4510,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
+    AT_MATH_CODE = auto()
     FENCED_CODE = auto()
+    FENCED_MATH = auto()
     IN_SKIP = auto()
+    IN_MATH = auto()
     TO_BE_COMPUTED = auto()
 
     STARTING_ASCDOC_CODE_BLOCK = auto()
@@ -4549,6 +4572,16 @@ class Action:
     @staticmethod
     def no_action(sm, line, tag=None, language=TEXT):
         pass
+
+    @staticmethod
+    def add_math_block_start(sm, line, tag=None, language=None):
+        line = r'\['
+        sm.current_chunk.add_line(line)
+
+    @staticmethod
+    def add_math_block_end(sm, line, tag=None, language=None):
+        line = r'\]'
+        sm.current_chunk.add_line(line)
 #@+node:TomP.20200213170250.1: *3* class Marker
 class Marker(Enum):
     """
@@ -4557,6 +4590,7 @@ class Marker(Enum):
 
     AT_LANGUAGE_MARKER = auto()
     MD_FENCE_LANG_MARKER = auto() # fence token with language; e.g. ```python
+    MD_FENCE_MATH_MARKER = auto() # math fence: ```math
     MD_FENCE_MARKER = auto() # fence token with no language
     MARKER_NONE = auto() # Not a special line.
     START_SKIP = auto()
@@ -4722,6 +4756,10 @@ class StateMachine:
                 lang = _lang
                 tag = CODE
                 marker = Marker.MD_FENCE_LANG_MARKER
+            elif _lang == MATH:
+                lang = MATH
+                tag = MATH
+                marker = Marker.MD_FENCE_MATH_MARKER
             else:
                 # If _lang is TEXT or unknown, we are starting a new literal block.
                 lang = _lang
@@ -4858,6 +4896,9 @@ class StateMachine:
         (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE),
         (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):
                     (Action.add_line, State.AT_LANG_CODE),
+        (State.BASE, Marker.MD_FENCE_MATH_MARKER):   (Action.add_math_block_start, State.FENCED_MATH),
+        (State.FENCED_MATH, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_MATH),
+        (State.FENCED_MATH, Marker.MD_FENCE_MARKER): (Action.add_math_block_end, State.BASE),
 
         # ========== ASCIIDOC-specific states =================
         (State.BASE, Marker.ASCDOC_CODE_LANG_MARKER):
