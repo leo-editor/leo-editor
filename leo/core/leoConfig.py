@@ -2222,7 +2222,6 @@ class LocalConfigManager:
         myLeoSettings.leo.
         """
         c = self.c
-        g.trace(setting, value)
         fn = g.shortFileName(c.fileName())
         p = self.findSettingsPosition(setting)
         if not p:

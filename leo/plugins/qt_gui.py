@@ -1351,18 +1351,15 @@ class LeoQtGui(leoGui.LeoGui):
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state):
+        c = g.app.log.c
         self.show_tips_flag = bool(state)
-        self.update_tips_setting()  # #2390.
+        if c:  # #2390: The setting *has* changed.
+            c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
+            c.redraw()  # #2390: Show the change immediately.
     #@+node:ekr.20180127103142.1: *4* onNext (not used)
     def onNext(self, *args, **keys):
         g.trace(args, keys)
         return True
-    #@+node:ekr.20180117083930.1: *4* update_tips_setting
-    def update_tips_setting(self):
-        c = g.app.log.c
-        if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
-            c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
-            c.redraw()  # #2390.
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
