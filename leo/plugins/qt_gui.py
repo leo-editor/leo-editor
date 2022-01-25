@@ -57,13 +57,11 @@ class LeoQtGui(leoGui.LeoGui):
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
-        self.main_window = None
-            # The *singleton* QMainWindow.
+        self.main_window = None  # The *singleton* QMainWindow.
         self.plainTextWidget = qt_text.PlainTextWrapper
+        self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
-            # For c.idle_focus_helper and activate/deactivate events.
-        #
-        # Set to be aware of the systems native colors, fonts, etc.
+        # Be aware of the systems native colors, fonts, etc.
         QtWidgets.QApplication.setDesktopSettingsAware(True)
         # Create objects...
         self.qtApp = QtWidgets.QApplication(sys.argv)
@@ -144,7 +142,7 @@ class LeoQtGui(leoGui.LeoGui):
             # qtFrame.finishCreate does all the other work.
 
     def reloadSettings(self):
-        pass
+        pass  # Note: self.c does not exist.
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
 
@@ -1294,10 +1292,12 @@ class LeoQtGui(leoGui.LeoGui):
         c = g.app.log and g.app.log.c
         if c:
             g.app.gui.show_tips(c)
-
+            
+    #@+<< define DialogWithCheckBox >>
+    #@+node:ekr.20220123052350.1: *4* << define DialogWithCheckBox >>
     class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore
 
-        def __init__(self, controller, tip):
+        def __init__(self, controller, checked, tip):
             super().__init__()
             c = g.app.log.c
             self.leo_checked = True
@@ -1317,7 +1317,8 @@ class LeoQtGui(leoGui.LeoGui):
             cb = QtWidgets.QCheckBox()
             cb.setObjectName('TipCheckbox')
             cb.setText('Show Tip On Startup')
-            cb.setCheckState(QtConst.CheckState.Checked)  # #2127.
+            state = QtConst.CheckState.Checked if checked else QtConst.CheckState.Unchecked  # #2383
+            cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
             layout.addWidget(cb, 4, 0, -1, -1)
             if 0:  # Does not work well.
@@ -1325,22 +1326,23 @@ class LeoQtGui(leoGui.LeoGui):
                 vSpacer = QtWidgets.QSpacerItem(
                     200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
                 layout.addItem(vSpacer)
+    #@-<< define DialogWithCheckBox >>
 
     def show_tips(self, c):
         if g.unitTesting:
             return
         from leo.core import leoTips
         tm = leoTips.TipManager()
+        self.show_tips_flag = c.config.getBool('show-tips', default=False)  # 2390.
         while True:  # QMessageBox is always a modal dialog.
             tip = tm.get_next_tip()
-            m = self.DialogWithCheckBox(controller=self, tip=tip)
+            m = self.DialogWithCheckBox(controller=self, checked=self.show_tips_flag, tip=tip)
             try:
                 c.in_qt_dialog = True
                 m.exec_()
             finally:
                 c.in_qt_dialog = False
             b = m.clickedButton()
-            self.update_tips_setting()
             if b != m.next_tip_button:
                 break
 
@@ -1349,13 +1351,12 @@ class LeoQtGui(leoGui.LeoGui):
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state):
-        self.show_tips_flag = bool(state)
-    #@+node:ekr.20180117083930.1: *5* update_tips_setting
-    def update_tips_setting(self):
         c = g.app.log.c
-        if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
+        self.show_tips_flag = bool(state)
+        if c:  # #2390: The setting *has* changed.
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
-    #@+node:ekr.20180127103142.1: *4* onNext
+            c.redraw()  # #2390: Show the change immediately.
+    #@+node:ekr.20180127103142.1: *4* onNext (not used)
     def onNext(self, *args, **keys):
         g.trace(args, keys)
         return True
