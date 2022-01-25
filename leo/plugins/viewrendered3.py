@@ -466,6 +466,48 @@ the language instead::
 .. note::
     No space is allowed between the fence characters and the language.
 
+Mathematics
+------------
+Mathematics symbols and equations can be rendered with MathJax.  When enabled by the *vr3-md-math-output* setting, inline formulas and separate equation blocks can be specifed.  Equations are written in a Latex dialect.
+
+Inline Formulas
+________________
+Inline formulas are enclosed with the symbol pairs *\\(* and *\\)*.
+
+Equation Blocks
+________________
+There are several ways to enclose equation blocks.  The Markdown (semi-)standard way is to use a math fence, similar to a literal or code block::
+
+    ```math
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    ```
+The fence must start at the beginning of a line.
+
+Blocks may also be enclosed with the standard MathJax delimiters, either double *$* characters::
+
+    $$
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    $$
+
+or *\\[*, *\\]* pairs::
+
+    \[
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    \]
+
+
 Tables
 -------
 Tables may be created using the `PHP Markdown Extra` syntax: https://python-markdown.github.io/extensions/tables/.  Here is an example from the Markdown package documentation::
@@ -1780,27 +1822,24 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.md_stylesheet -- The URL to the stylesheet.  Must include
                                the "file:///" if it is a local file.
         self.md_mathjax_url -- The URL to the MathJax code package.  Must include
-                               the "file:///" if it is a local file. A typical URL
-                               is http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_HTMLorMML
+                               the "file:///" if it is a local file. The URL 
+                               should be to a MathJax V3 site.  A typical URL
+                               is https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
                                If the MathJax package has been downloaded to the
                                local computer, a typical (Windows) URL would be
                                file:///D:/utility/mathjax/es5/tex-chtml.js
         self.md_header -- where the header string gets stored.
         """
 
+        script_str = ''
         if self.md_math_output and self.mathjax_url:
-            self.md_header = fr'''
-    <head>
+            script_str = fr'<script defer type="text/javascript" src="{self.mathjax_url}"></script>'
+        self.md_header = fr'''
+    <!DOCTYPE html>
+    <html><head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
-    <script type="text/javascript" src="{self.mathjax_url}"></script>
-    </head>
-    '''
-        else:
-            self.md_header = fr'''
-    <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
+    {script_str}
     </head>
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
@@ -1996,10 +2035,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_rst_stylesheet()
         self.create_md_header()
 
-        ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
         if self.md_math_output:
+            ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
             ext.append('leo.extensions.mdx_math_gi')
-        self.Markdown = markdown.Markdown(extensions=ext)
+            self.Markdown = markdown.Markdown(extensions=ext)
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
