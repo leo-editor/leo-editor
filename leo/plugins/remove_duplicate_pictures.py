@@ -12,9 +12,9 @@ types known by the Qt PixMap class, including '.gif' and '.bmp'.
 
 This file may be run externally as follows::
     
-python -m leo.plugins.remove_duplicate_slides
+    python -m leo.plugins.remove_duplicate_slides
 
-This plugin may be called from a script (or @command or @button node) as follows:
+This plugin may be called from a script (or @command or @button node) as follows::
 
     from leo.plugins.remove_duplicate_slides import RemoveDuplicates
     Slides().run(c)  # See below for defaults.
@@ -32,9 +32,8 @@ The following keyword arguments may be supplied to the run method:
     path = None,  # If none, display a dialog.
     width = 1500,  # Window width (pixels) when not un full screen mode.
     
-The algorithm used is a much faster verions of the code here:
+The algorithm used is a faster verions of the code here:
 https://medium.com/@somilshah112/how-to-find-duplicate-or-similar-images-quickly-with-python-2d636af9452f
-
 """
 #@-<< docstring (remove_duplicate_pictures.py) >>
 #@+<< imports (remove_duplicate_pictures.py) >>
@@ -84,13 +83,11 @@ def init():
     return Image and imagehash and np and g.app.gui.guiName().lower().startswith('qt')
 #@+node:ekr.20220126054240.5: ** get_args & checkers
 def get_args():
-
     # Automatically implements the --help option.
     description = "usage: python -m remove_duplicate_pictures [options]"
     parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
-
     # Add args.
     add = parser.add_argument
     add('--background', dest='background', metavar='COLOR', 
@@ -106,10 +103,8 @@ def get_args():
         help='Path to root directory')
     add('--width', dest='width', metavar='PIXELS',
         help='Width of window')
-
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
-
     # Check and return the args.
     return {
          'background_color': args.background or "black",
