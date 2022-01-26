@@ -332,8 +332,9 @@ class RemoveDuplicates:
         # Find the duplicates.
         self.duplicates = self.find_duplicates()
         g.es_print(f"{len(self.duplicates):4} duplicate sets")
-        self.next_window()
-        return True
+        if self.duplicates:
+            self.next_window()
+        return bool(self.duplicates)
     #@-others
 #@-others
 
