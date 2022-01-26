@@ -152,7 +152,6 @@ class RemoveDuplicates:
     filename_dict = {}  # Keys are filenames, values are hashes.
     hash_size = 8
     hash_dict = defaultdict(list)  # Keys are hashes, values are lists of filenames.
-    window = None
     window_height = 900
     window_width = 1500
             
