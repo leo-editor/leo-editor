@@ -332,9 +332,9 @@ class RemoveDuplicates:
         t3 = time.process_time()
         g.es_print(f"{len(duplicates):4} duplicate sets")
         print(
-            f"preprocess: {t2-t1:8.2} sec.\n"
-            f"duplicates: {t3-t2:8.2} sec.\n"
-            f"     total: {t3-t1:8.2} sec.")
+            f"preprocess: {int(t2-t1):3} sec.\n"
+            f"duplicates: {int(t3-t2):3} sec.\n"
+            f"     total: {int(t3-t1):3} sec.")
         # Show the duplicates
         if max_open_windows:
             for aList in duplicates[:max_open_windows]:
