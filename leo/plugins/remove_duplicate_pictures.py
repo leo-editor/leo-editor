@@ -3,51 +3,37 @@
 #@+<< docstring (remove_duplicate_pictures.py) >>
 #@+node:ekr.20220126054240.2: ** << docstring (remove_duplicate_pictures.py) >>
 """
-Remove duplicate 
+Remove duplicate files.
 
-This plugin will display all files in a directory tree that have image
+This plugin will display all duplicate files in a tree that have image
 extensions. By default the recognized extensions are '.jpeg', '.jpg', and
 '.png'. Other types of image files can be displayed as long as the they are
-types known by the Qt PixMap class, including '.gif' and '.bmp'. See, for
-example:
+types known by the Qt PixMap class, including '.gif' and '.bmp'.
 
-https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
+This file may be run externally as follows::
+    
+python -m leo.plugins.remove_duplicate_slides
 
-This plugin should be called from a script (or @command or @button node) as follows:
+This plugin may be called from a script (or @command or @button node) as follows:
 
-    from leo.plugins.picture_viewer import Slides
+    from leo.plugins.remove_duplicate_slides import RemoveDuplicates
     Slides().run(c)  # See below for defaults.
 
-*Note*: do not enable this plugin. It will be loaded by the calling script.
-
-**Key bindings**
-
-Plain keys control the display of slides:
-
-      space: show the next slide.
-  backspace: show the previous slide.
-     escape: end the slideshow
-          =: zoom in
-          -: zoom out
-arrows keys: pan the slide
-          d: prompt to move the slide to the trash
-          h: show the help message
-          m: move the file.
-          r: restart: choose another folder
+*Note*: There is no need to enable this plugin. It will be loaded by the calling script.
 
 **Defaults**
 
 The following keyword arguments may be supplied to the run method:
 
     background_color = "black",  # Default background color.
-    delay = 100,  # Delay between slides, in seconds.
     extensions = ['.jpeg', '.jpg', '.png'],  # List of file extensions.
     full_screen = True,  # True: start in full-screen mode.
     height = 900,  # Window height (pixels) when not in full screen mode.
     path = None,  # If none, display a dialog.
-    reset_zoom = True,  # True, reset zoom factor when changing slides.
-    sort_kind = 'random',  # 'date', 'name', 'none', 'random', or 'size'
     width = 1500,  # Window width (pixels) when not un full screen mode.
+    
+The algorithm used is a much faster verions of the code here:
+https://medium.com/@somilshah112/how-to-find-duplicate-or-similar-images-quickly-with-python-2d636af9452f
 
 """
 #@-<< docstring (remove_duplicate_pictures.py) >>
@@ -89,7 +75,7 @@ from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 
 # Globals to retain references to objects.
 gApp = None
-gWidget = None
+gWindow = None
 
 #@+others
 #@+node:ekr.20220126054240.4: ** init (remove_duplicate_pictures.py)
@@ -175,7 +161,6 @@ class RemoveDuplicates:
     filename_dict = {}  # Keys are filenames, values are hashes.
     hash_size = 8
     hash_dict = defaultdict(list)  # Keys are hashes, values are lists of filenames.
-    max_open_windows = 20
     window = None
     window_height = 900
     window_width = 1500
@@ -206,16 +191,27 @@ class RemoveDuplicates:
         layout.addWidget(QLabel(text=filename, parent=frame))
         size = os.path.getsize(filename) / 1000
         layout.addWidget(QLabel(text=f"size: {size} KB date: {creation_time}"))
-        # Create the delete button.
+        # Create the delete and quit buttons.
+        next_button = QtWidgets.QPushButton(text='Next', parent=frame)
         delete_button = QtWidgets.QPushButton(text='Delete', parent=frame)
+        quit_button = QtWidgets.QPushButton(text='Quit', parent=frame)
+        layout.addWidget(next_button)
         layout.addWidget(delete_button)
+        layout.addWidget(quit_button)
         # Set the button actions.
         def delete_action(arg):
             self.delete_file(filename)
             filenames.remove(filename)
             if len(filenames) < 2:
                 window.close()
+
+        def next_action(arg):
+            window.close()
+            self.next_window()
+
         delete_button.clicked.connect(delete_action)
+        next_button.clicked.connect(next_action)
+        quit_button.clicked.connect(self.quit)
         # Create the picture area.
         picture = QtWidgets.QLabel('picture', parent=frame)
         layout.addWidget(picture)
@@ -234,7 +230,8 @@ class RemoveDuplicates:
     #@+node:ekr.20220126062304.1: *3* Dups.create_window
     def create_window(self, filenames):
         # Create the widget.
-        self.window = window = QtWidgets.QWidget()
+        global gWindow
+        gWindow = window = QtWidgets.QWidget()
         window.setWindowTitle(f"{len(filenames)} duplicates of {filenames[0]}")
         window.setMinimumHeight(self.window_height)
         # Move the window.
@@ -247,6 +244,11 @@ class RemoveDuplicates:
             frame = self.create_frame(filename, filenames[:], window)
             if frame:
                 layout.addWidget(frame)
+        # Handle close events.
+        def closeEvent(*args, **kwargs):
+            window.close()
+            self.next_window()
+        window.closeEvent = closeEvent
         # Show the window.
         window.show()
     #@+node:ekr.20220126064335.1: *3* Dups.delete_file
@@ -283,6 +285,20 @@ class RemoveDuplicates:
                 if z.is_file()
                 and os.path.splitext(str(z))[1].lower() in self.extensions
         ]
+    #@+node:ekr.20220126121116.1: *3* Dups.next_window
+    def next_window(self):
+        if self.duplicates:
+            aList = self.duplicates.pop()
+            self.create_window(aList)
+        else:
+            self.quit()
+    #@+node:ekr.20220126120555.1: *3* Dups.quit
+    def quit(self):
+        global gApp
+        if gApp:  # Running externally.
+            gApp.exit()
+            gApp = None
+        print('picture_viewer: done')
     #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
         c,  # Required. The commander for this slideshow.
@@ -292,13 +308,12 @@ class RemoveDuplicates:
         hash_size = 8,  # Size of compressed image.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
-        max_open_windows = None,  # Maximum number of open windows.
         starting_directory = None,  # Starting directory for file dialogs.
         width = None,  # Window width (default 1500 pixels) when not in full screen mode.
     ):
         """
-        Create the widgets and run the slideshow.
-        Return True if any pictures were found.
+        Preprecess the files and show the first duplicates.
+        Return True if any duplicates were found.
         """
         # Init ivars.
         self.c = c
@@ -324,24 +339,11 @@ class RemoveDuplicates:
         print(f"{len(filenames)} file{g.plural(len(filenames))} in {path}")
         print(f"\nPreprocessing with hash size {self.hash_size}. This may take awhile...")
         # Compute the hash dicts.
-        t1 = time.process_time()
         self.compute_dicts(filenames)
         # Find the duplicates.
-        t2 = time.process_time()
-        duplicates = self.find_duplicates()
-        t3 = time.process_time()
-        g.es_print(f"{len(duplicates):4} duplicate sets")
-        print(
-            f"preprocess: {int(t2-t1):3} sec.\n"
-            f"duplicates: {int(t3-t2):3} sec.\n"
-            f"     total: {int(t3-t1):3} sec.")
-        # Show the duplicates
-        if max_open_windows:
-            for aList in duplicates[:max_open_windows]:
-                self.create_window(aList)
-        else:
-            for aList in duplicates[:]:
-                self.create_window(aList)
+        self.duplicates = self.find_duplicates()
+        g.es_print(f"{len(self.duplicates):4} duplicate sets")
+        self.next_window()
         return True
     #@-others
 #@-others
