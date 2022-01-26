@@ -86,8 +86,6 @@ except Exception:
 import leo.core.leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 #@-<< imports (remove_duplicate_pictures.py) >>
-assert pathlib ###
-assert QtCore and QtGui
 
 # Globals to retain references to objects.
 gApp = None
@@ -111,8 +109,6 @@ def get_args():
     add = parser.add_argument
     add('--background', dest='background', metavar='COLOR', 
         help='Background color')
-    # add('--delay', dest='delay', metavar='DELAY',
-        # help='Delay (seconds)')
     add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
         help='List of image file extensions.')
         # Default: .jpeg,.jpg,.png  (no spaces allowed)
@@ -122,16 +118,6 @@ def get_args():
         help='Height of window')
     add('--path', dest='path', metavar='DIRECTORY',
         help='Path to root directory')
-    # add('--reset-zoom', dest='reset_zoom', action='store_false',
-        # help='Reset zoom factor when changing slides')
-    # add('--scale', dest='scale', metavar='FLOAT',
-        # help='Initial scale (zoom) factor')
-    # add('--sort-kind', dest='sort_kind', metavar="KIND",
-        # help='Sort kind: (date, name, none, random, or size)')
-    # add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
-        # help='Starting directory for file dialogs')
-    # add('--verbose', dest='verbose', action='store_true',
-        # help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
         help='Width of window')
 
@@ -141,16 +127,10 @@ def get_args():
     # Check and return the args.
     return {
          'background_color': args.background or "black",
-         # 'delay': get_delay(args.delay),
          'extensions': get_extensions(args.extensions),
          'full_screen': args.fullscreen,
          'height': get_pixels('height', args.height),
          'path': get_path(args.path),
-         # 'reset_zoom': args.reset_zoom,
-         # 'scale': get_scale(args.scale),
-         # 'sort_kind': get_sort_kind(args.sort_kind),
-         # 'starting_directory': get_path(args.starting_directory),
-         # 'verbose': args.verbose,
          'width': get_pixels('width', args.width)
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
@@ -183,7 +163,6 @@ def main():
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
-   
     ok = RemoveDuplicates().run(c = None, **args)
     if ok:
         if isQt5:
@@ -194,8 +173,9 @@ def main():
 class RemoveDuplicates:
     
     filename_dict = {}  # Keys are filenames, values are hashes.
-    hash_size = 8  ### To do.
+    hash_size = 8
     hash_dict = defaultdict(list)  # Keys are hashes, values are lists of filenames.
+    max_open_windows = 20
     window = None
     window_height = 900
     window_width = 1500
@@ -210,7 +190,7 @@ class RemoveDuplicates:
                 self.hash_dict [str(h)].append(filename)
             except Exception:
                 print('Bad img:', filename)
-                g.es_exception()  ###
+                # g.es_exception()
                 filenames.remove(filename)
     #@+node:ekr.20220126064207.1: *3* Dups.create_frame
     def create_frame(self, filename, filenames, window):
@@ -259,8 +239,6 @@ class RemoveDuplicates:
         window.setMinimumHeight(self.window_height)
         # Move the window.
         window.move(50, 50)
-        # Retain the reference
-        ### g.app.permanentScriptDict['find-dups'].append(window)
         # Set the layout.
         layout = QtWidgets.QHBoxLayout()
         window.setLayout(layout)
@@ -311,8 +289,10 @@ class RemoveDuplicates:
         background_color = None,  # Default background color.
         extensions = None,  # List of file extensions.
         full_screen = False,  # True: start in full-screen mode.
+        hash_size = 8,  # Size of compressed image.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
+        max_open_windows = None,  # Maximum number of open windows.
         starting_directory = None,  # Starting directory for file dialogs.
         width = None,  # Window width (default 1500 pixels) when not in full screen mode.
     ):
@@ -325,6 +305,7 @@ class RemoveDuplicates:
         self.background_color = background_color or "black"
         self.extensions = extensions or ['.jpeg', '.jpg', '.png']
         self.full_screen = False
+        self.hash_size = hash_size or 8
         self.starting_directory = starting_directory or os.getcwd()
         self.window_height = height or 900
         self.window_width = width or 1500
@@ -341,7 +322,7 @@ class RemoveDuplicates:
             print(f"No slides found in {path!r}")
             return False
         print(f"{len(filenames)} file{g.plural(len(filenames))} in {path}")
-        print('\nPreprocessing. This may take awhile...')
+        print(f"\nPreprocessing with hash size {self.hash_size}. This may take awhile...")
         # Compute the hash dicts.
         t1 = time.process_time()
         self.compute_dicts(filenames)
@@ -355,8 +336,12 @@ class RemoveDuplicates:
             f"duplicates: {t3-t2:8.2} sec.\n"
             f"     total: {t3-t1:8.2} sec.")
         # Show the duplicates
-        for aList in duplicates[:30]:
-            self.create_window(aList)
+        if max_open_windows:
+            for aList in duplicates[:max_open_windows]:
+                self.create_window(aList)
+        else:
+            for aList in duplicates[:]:
+                self.create_window(aList)
         return True
     #@-others
 #@-others
