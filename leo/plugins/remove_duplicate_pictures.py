@@ -107,8 +107,8 @@ def get_args():
     add = parser.add_argument
     add('--background', dest='background', metavar='COLOR', 
         help='Background color')
-    add('--delay', dest='delay', metavar='DELAY',
-        help='Delay (seconds)')
+    # add('--delay', dest='delay', metavar='DELAY',
+        # help='Delay (seconds)')
     add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
         help='List of image file extensions.')
         # Default: .jpeg,.jpg,.png  (no spaces allowed)
@@ -118,14 +118,14 @@ def get_args():
         help='Height of window')
     add('--path', dest='path', metavar='DIRECTORY',
         help='Path to root directory')
-    add('--reset-zoom', dest='reset_zoom', action='store_false',
-        help='Reset zoom factor when changing slides')
-    add('--scale', dest='scale', metavar='FLOAT',
-        help='Initial scale (zoom) factor')
-    add('--sort-kind', dest='sort_kind', metavar="KIND",
-        help='Sort kind: (date, name, none, random, or size)')
-    add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
-        help='Starting directory for file dialogs')
+    # add('--reset-zoom', dest='reset_zoom', action='store_false',
+        # help='Reset zoom factor when changing slides')
+    # add('--scale', dest='scale', metavar='FLOAT',
+        # help='Initial scale (zoom) factor')
+    # add('--sort-kind', dest='sort_kind', metavar="KIND",
+        # help='Sort kind: (date, name, none, random, or size)')
+    # add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
+        # help='Starting directory for file dialogs')
     add('--verbose', dest='verbose', action='store_true',
         help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
@@ -137,27 +137,18 @@ def get_args():
     # Check and return the args.
     return {
          'background_color': args.background or "black",
-         'delay': get_delay(args.delay),
+         # 'delay': get_delay(args.delay),
          'extensions': get_extensions(args.extensions),
          'full_screen': args.fullscreen,
          'height': get_pixels('height', args.height),
          'path': get_path(args.path),
-         'reset_zoom': args.reset_zoom,
-         'scale': get_scale(args.scale),
-         'sort_kind': get_sort_kind(args.sort_kind),
-         'starting_directory': get_path(args.starting_directory),
+         # 'reset_zoom': args.reset_zoom,
+         # 'scale': get_scale(args.scale),
+         # 'sort_kind': get_sort_kind(args.sort_kind),
+         # 'starting_directory': get_path(args.starting_directory),
          'verbose': args.verbose,
          'width': get_pixels('width', args.width)
     }
-#@+node:ekr.20220126054240.6: *3* get_delay
-def get_delay(delay):
-    if delay is None:
-        return None
-    try:
-        return float(delay)
-    except ValueError:
-        print(f"Bad delay value: {delay!r}")
-        return None
 #@+node:ekr.20220126054240.7: *3* get_extensions
 def get_extensions(aList):
     
@@ -183,24 +174,6 @@ def get_pixels(kind, pixels):
     except ValueError:
         print(f"Bad --{kind} value: {pixels!r}")
         return None
-#@+node:ekr.20220126054240.10: *3* get_scale
-def get_scale(scale):
-    
-    try:
-        return float(scale or 1.0)
-    except ValueError:
-        print(f"Bad --scale: {scale!r}")
-        return 1.0
-#@+node:ekr.20220126054240.11: *3* get_sort_kind
-def get_sort_kind(kind):
-    
-    if not kind:
-        return None
-    kind = kind.lower()
-    if kind not in ('date', 'name', 'none', 'random', 'size'):
-        print(f"bad --sort-kind: {kind!r}")
-        kind = 'none'
-    return kind
 #@+node:ekr.20220126054240.12: ** main
 def main():
     global gApp
@@ -215,16 +188,116 @@ def main():
             sys.exit(gApp.exec())
 #@+node:ekr.20220126054240.13: ** class RemoveDuplicates
 class RemoveDuplicates:
-    
-    if 0:
-    
-        def __init__(self):
-            pass
             
-    def run(self):
-        pass
-
     #@+others
+    #@+node:ekr.20220126060911.1: *3* Dups.get_files
+    def get_files(self, path):
+        """Return all files in path, including all subdirectories."""
+        return [
+            str(z) for z in pathlib.Path(path).rglob('*')
+                if z.is_file()
+                and os.path.splitext(str(z))[1].lower() in self.extensions
+        ]
+    #@+node:ekr.20220126060646.1: *3* Dups.run & helper
+    def run(self,
+        c,  # Required. The commander for this slideshow.
+        background_color = None,  # Default background color.
+        ### delay = None,  # Delay between slides, in seconds. Default 100.
+        extensions = None,  # List of file extensions.
+        full_screen = False,  # True: start in full-screen mode.
+        height = None,  # Window height (default 1500 pixels) when not in full screen mode.
+        path = None,  # Root directory.
+        ### scale = None,  # Initial scale factor. Default 1.0
+        ### reset_zoom = True,  # True: reset zoom factor when changing slides.
+        ### sort_kind = None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
+        starting_directory = None,  # Starting directory for file dialogs.
+        verbose = False,  # True, print info messages.
+        width = None,  # Window width (default 1500 pixels) when not in full screen mode.
+    ):
+        """
+        Create the widgets and run the slideshow.
+        Return True if any pictures were found.
+        """
+        # Keep a reference to this class!
+        global gWidget
+        gWidget = self
+        # Init ivars.
+        ### w = self
+        self.c = c
+        self.background_color = background_color or "black"
+        ### self.delay = delay or 100
+        self.extensions = extensions or ['.jpeg', '.jpg', '.png']
+        self.full_screen = False
+        ### self.reset_zoom = reset_zoom
+        ### self.scale = scale or 1.0
+        ### self.sort_kind = sort_kind or 'random'
+        self.starting_directory = starting_directory or os.getcwd()
+        self.verbose = verbose
+        # Careful: width and height are QWidget methods.
+        self._height = height or 900
+        self._width = width or 1500
+        # Compute the files list.
+        if not path:
+            dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
+            path = dialog.getExistingDirectory()
+        if not path:
+            if self.verbose:
+                print("No path given")
+            return False
+        self.files_list = self.get_files(path)
+        if not self.files_list:
+            print(f"No slides found in {path!r}")
+            return False
+        print(f"Found {len(self.files_list)} files")
+        self.starting_directory = path
+        os.chdir(path)
+        n = len(self.files_list)
+        if self.verbose:
+            print(f"Found {n} picture{g.plural(n)} in {path}")
+        ###
+            # # Init the widget.
+            # w.make_widgets()
+            # # Center the widget
+            # qtRectangle = w.frameGeometry()
+            # centerPoint = QtGui.QGuiApplication.primaryScreen().availableGeometry().center()
+            # qtRectangle.moveCenter(centerPoint)
+            # w.move(qtRectangle.topLeft())
+            # # Show the widget.
+            # w.showNormal()
+            # if full_screen:  # Not self.full_screen.
+                # w.toggle_full_screen()
+            # # Show the next slide.
+            # self.sort(sort_kind)
+            # self.next_slide()  # show_slide resets the timer.
+        return True
+    #@+node:ekr.20220126060646.2: *4* Slides.make_widgets
+    def make_widgets(self):
+
+        w = self
+
+        # Init the window's attributes.
+        w.setStyleSheet(f"background: {self.background_color}")
+        w.setGeometry(0, 0, self._width, self._height)  # The non-full-screen sizes.
+        
+        # Create the picture area.
+        w.picture = QtWidgets.QLabel('picture', self)
+        w.picture.keyPressEvent = w.keyPressEvent
+
+        # Create the scroll area.
+        w.scroll_area = area =QtWidgets.QScrollArea()
+        area.setWidget(self.picture)
+        AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
+
+        # Disable scrollbars.
+        ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+        area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+        area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        # Init the layout.
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.scroll_area)
+        w.setLayout(layout)
     #@-others
 #@-others
 
