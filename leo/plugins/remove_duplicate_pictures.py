@@ -25,9 +25,8 @@ This plugin may be called from a script (or @command or @button node) as follows
 
 The following keyword arguments may be supplied to the run method:
 
-    background_color = "black",  # Default background color.
     extensions = ['.jpeg', '.jpg', '.png'],  # List of file extensions.
-    full_screen = True,  # True: start in full-screen mode.
+    hash_size = 8  # Size of reduced image.
     height = 900,  # Window height (pixels) when not in full screen mode.
     path = None,  # If none, display a dialog.
     width = 1500,  # Window width (pixels) when not un full screen mode.
@@ -90,13 +89,11 @@ def get_args():
         formatter_class=argparse.RawTextHelpFormatter)
     # Add args.
     add = parser.add_argument
-    add('--background', dest='background', metavar='COLOR', 
-        help='Background color')
     add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
         help='List of image file extensions.')
         # Default: .jpeg,.jpg,.png  (no spaces allowed)
-    add('--full-screen', dest='fullscreen', action='store_true',
-        help='Start in full-screen mode')
+    add('--hash-size', dest='hash_size', metavar='INT',
+        help='hash_size, default 8')
     add('--height', dest='height', metavar='PIXELS',
         help='Height of window')
     add('--path', dest='path', metavar='DIRECTORY',
@@ -107,12 +104,11 @@ def get_args():
     args = parser.parse_args()
     # Check and return the args.
     return {
-         'background_color': args.background or "black",
          'extensions': get_extensions(args.extensions),
-         'full_screen': args.fullscreen,
-         'height': get_pixels('height', args.height),
+         'hash_size': get_int('hash_size', args.hash_size),
+         'height': get_int('height', args.height),
          'path': get_path(args.path),
-         'width': get_pixels('width', args.width)
+         'width': get_int('width', args.width)
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
 def get_extensions(aList):
@@ -122,6 +118,16 @@ def get_extensions(aList):
         z if z.startswith('.') else f".{z}"
             for z in aList or []
     ]
+#@+node:ekr.20220126054240.9: *3* get_int
+def get_int(kind, n):
+    
+    if n is None:
+        return None
+    try:
+        return int(n)
+    except ValueError:
+        print(f"Bad --{kind} value: {n!r}")
+        return None
 #@+node:ekr.20220126054240.8: *3* get_path
 def get_path(path):
     
@@ -129,16 +135,6 @@ def get_path(path):
         print(f"--path: not found: {path!r}")
         path = None
     return path
-#@+node:ekr.20220126054240.9: *3* get_pixels
-def get_pixels(kind, pixels):
-    
-    if pixels is None:
-        return None
-    try:
-        return int(pixels)
-    except ValueError:
-        print(f"Bad --{kind} value: {pixels!r}")
-        return None
 #@+node:ekr.20220126054240.12: ** main
 def main():
     global gApp
@@ -194,6 +190,7 @@ class RemoveDuplicates:
         layout.addWidget(delete_button)
         layout.addWidget(quit_button)
         # Set the button actions.
+        
         def delete_action(arg):
             self.delete_file(filename)
             filenames.remove(filename)
@@ -201,8 +198,7 @@ class RemoveDuplicates:
                 window.close()
 
         def next_action(arg):
-            window.close()
-            self.next_window()
+            window.close()  # Calls next_window.
 
         delete_button.clicked.connect(delete_action)
         next_button.clicked.connect(next_action)
@@ -229,6 +225,7 @@ class RemoveDuplicates:
         gWindow = window = QtWidgets.QWidget()
         window.setWindowTitle(f"{len(filenames)} duplicates of {filenames[0]}")
         window.setMinimumHeight(self.window_height)
+        window.setGeometry(0, 0, self.window_width, self.window_height)  # The non-full-screen sizes.
         # Move the window.
         window.move(50, 50)
         # Set the layout.
@@ -246,6 +243,7 @@ class RemoveDuplicates:
         window.closeEvent = closeEvent
         # Show the window.
         window.show()
+        
     #@+node:ekr.20220126064335.1: *3* Dups.delete_file
     send_to_trash_warning_given = False
 
@@ -282,6 +280,7 @@ class RemoveDuplicates:
         ]
     #@+node:ekr.20220126121116.1: *3* Dups.next_window
     def next_window(self):
+        """Show the next set of duplicates in a new window."""
         if self.duplicates:
             aList = self.duplicates.pop()
             self.create_window(aList)
@@ -297,9 +296,7 @@ class RemoveDuplicates:
     #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
         c,  # Required. The commander for this slideshow.
-        background_color = None,  # Default background color.
         extensions = None,  # List of file extensions.
-        full_screen = False,  # True: start in full-screen mode.
         hash_size = 8,  # Size of compressed image.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
@@ -312,9 +309,7 @@ class RemoveDuplicates:
         """
         # Init ivars.
         self.c = c
-        self.background_color = background_color or "black"
         self.extensions = extensions or ['.jpeg', '.jpg', '.png']
-        self.full_screen = False
         self.hash_size = hash_size or 8
         self.starting_directory = starting_directory or os.getcwd()
         self.window_height = height or 900
