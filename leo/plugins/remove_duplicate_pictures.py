@@ -78,11 +78,15 @@ except Exception:
     np = None
     print('remove_duplicate_pictures: numpy required')
     print('pip install numpy')
+try:
+    from send2trash import send2trash
+except Exception:
+    send2trash = None  # Optional
 # Leo
 import leo.core.leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 #@-<< imports (remove_duplicate_pictures.py) >>
-assert defaultdict and pathlib and time ###
+assert pathlib ###
 assert QtCore and QtGui
 
 # Globals to retain references to objects.
@@ -126,8 +130,8 @@ def get_args():
         # help='Sort kind: (date, name, none, random, or size)')
     # add('--starting-directory', dest='starting_directory', metavar='DIRECTORY',
         # help='Starting directory for file dialogs')
-    add('--verbose', dest='verbose', action='store_true',
-        help='Enable status messages')
+    # add('--verbose', dest='verbose', action='store_true',
+        # help='Enable status messages')
     add('--width', dest='width', metavar='PIXELS',
         help='Width of window')
 
@@ -146,7 +150,7 @@ def get_args():
          # 'scale': get_scale(args.scale),
          # 'sort_kind': get_sort_kind(args.sort_kind),
          # 'starting_directory': get_path(args.starting_directory),
-         'verbose': args.verbose,
+         # 'verbose': args.verbose,
          'width': get_pixels('width', args.width)
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
@@ -188,8 +192,111 @@ def main():
             sys.exit(gApp.exec())
 #@+node:ekr.20220126054240.13: ** class RemoveDuplicates
 class RemoveDuplicates:
+    
+    filename_dict = {}  # Keys are filenames, values are hashes.
+    hash_size = 8  ### To do.
+    hash_dict = defaultdict(list)  # Keys are hashes, values are lists of filenames.
+    window = None
+    window_height = 900
+    window_width = 1500
             
     #@+others
+    #@+node:ekr.20220126063935.1: *3* Dups.compute_dicts
+    def compute_dicts(self, filenames):
+        for i, filename in enumerate(filenames):
+            try:
+                h = imagehash.average_hash(Image.open(filename), self.hash_size)
+                self.filename_dict [filename] = h.hash
+                self.hash_dict [str(h)].append(filename)
+            except Exception:
+                print('Bad img:', filename)
+                g.es_exception()  ###
+                filenames.remove(filename)
+    #@+node:ekr.20220126064207.1: *3* Dups.create_frame
+    def create_frame(self, filename, filenames, window):
+
+        QLabel = QtWidgets.QLabel
+        # Create the frame.
+        frame = QtWidgets.QFrame(parent=window)
+        # Create the vertical layout.
+        layout = QtWidgets.QVBoxLayout()
+        frame.setLayout(layout)
+        # Create the labels..
+        creation_time = time.ctime(os.path.getctime(filename))
+        layout.addWidget(QLabel(text=filename, parent=frame))
+        size = os.path.getsize(filename) / 1000
+        layout.addWidget(QLabel(text=f"size: {size} KB date: {creation_time}"))
+        # Create the delete button.
+        delete_button = QtWidgets.QPushButton(text='Delete', parent=frame)
+        layout.addWidget(delete_button)
+        # Set the button actions.
+        def delete_action(arg):
+            self.delete_file(filename)
+            filenames.remove(filename)
+            if len(filenames) < 2:
+                window.close()
+        delete_button.clicked.connect(delete_action)
+        # Create the picture area.
+        picture = QtWidgets.QLabel('picture', parent=frame)
+        layout.addWidget(picture)
+        # Display the picture.
+        pixmap = QtGui.QPixmap(filename)
+        try:
+            TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+            image = pixmap.scaledToHeight(self.window_height, TransformationMode.SmoothTransformation)
+            picture.setPixmap(image)
+            picture.adjustSize()
+            return frame
+        except Exception:
+            g.trace('Bad image')
+            g.es_exception()
+            return None
+    #@+node:ekr.20220126062304.1: *3* Dups.create_window
+    def create_window(self, filenames):
+        # Create the widget.
+        self.window = window = QtWidgets.QWidget()
+        window.setWindowTitle(f"{len(filenames)} duplicates of {filenames[0]}")
+        window.setMinimumHeight(self.window_height)
+        # Move the window.
+        window.move(50, 50)
+        # Retain the reference
+        ### g.app.permanentScriptDict['find-dups'].append(window)
+        # Set the layout.
+        layout = QtWidgets.QHBoxLayout()
+        window.setLayout(layout)
+        # Create the subframes.
+        for filename in filenames:
+            frame = self.create_frame(filename, filenames[:], window)
+            if frame:
+                layout.addWidget(frame)
+        # Show the window.
+        window.show()
+    #@+node:ekr.20220126064335.1: *3* Dups.delete_file
+    send_to_trash_warning_given = False
+
+    def delete_file(self, filename):
+        """Issue a prompt and delete the file if the user agrees."""
+        if not send2trash:
+            if not self.send_to_trash_warning_given:
+                self.send_to_trash_warning_given = True
+                print("Deleting files requires send2trash")
+                print("pip install Send2Trash")
+                return
+        if os.path.exists(filename):
+            send2trash(filename)
+            print('Deleted', filename)
+        else:
+            print('Not found', filename)
+    #@+node:ekr.20220126064032.1: *3* Dups.find_duplicates
+    def find_duplicates(self):
+        """Find duplicates."""
+        duplicates = []
+        for h in self.hash_dict:
+            aList = self.hash_dict.get(h)
+            if len(aList) > 1:
+                duplicates.append(aList)
+        return duplicates
+        
     #@+node:ekr.20220126060911.1: *3* Dups.get_files
     def get_files(self, path):
         """Return all files in path, including all subdirectories."""
@@ -198,106 +305,59 @@ class RemoveDuplicates:
                 if z.is_file()
                 and os.path.splitext(str(z))[1].lower() in self.extensions
         ]
-    #@+node:ekr.20220126060646.1: *3* Dups.run & helper
+    #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
         c,  # Required. The commander for this slideshow.
         background_color = None,  # Default background color.
-        ### delay = None,  # Delay between slides, in seconds. Default 100.
         extensions = None,  # List of file extensions.
         full_screen = False,  # True: start in full-screen mode.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
-        ### scale = None,  # Initial scale factor. Default 1.0
-        ### reset_zoom = True,  # True: reset zoom factor when changing slides.
-        ### sort_kind = None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
         starting_directory = None,  # Starting directory for file dialogs.
-        verbose = False,  # True, print info messages.
         width = None,  # Window width (default 1500 pixels) when not in full screen mode.
     ):
         """
         Create the widgets and run the slideshow.
         Return True if any pictures were found.
         """
-        # Keep a reference to this class!
-        global gWidget
-        gWidget = self
         # Init ivars.
-        ### w = self
         self.c = c
         self.background_color = background_color or "black"
-        ### self.delay = delay or 100
         self.extensions = extensions or ['.jpeg', '.jpg', '.png']
         self.full_screen = False
-        ### self.reset_zoom = reset_zoom
-        ### self.scale = scale or 1.0
-        ### self.sort_kind = sort_kind or 'random'
         self.starting_directory = starting_directory or os.getcwd()
-        self.verbose = verbose
-        # Careful: width and height are QWidget methods.
-        self._height = height or 900
-        self._width = width or 1500
-        # Compute the files list.
+        self.window_height = height or 900
+        self.window_width = width or 1500
+        # Get the directory.
         if not path:
             dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
             path = dialog.getExistingDirectory()
         if not path:
-            if self.verbose:
-                print("No path given")
+            print("No path given")
             return False
-        self.files_list = self.get_files(path)
-        if not self.files_list:
+        # Get the files.
+        filenames = self.get_files(path)
+        if not filenames:
             print(f"No slides found in {path!r}")
             return False
-        print(f"Found {len(self.files_list)} files")
-        self.starting_directory = path
-        os.chdir(path)
-        n = len(self.files_list)
-        if self.verbose:
-            print(f"Found {n} picture{g.plural(n)} in {path}")
-        ###
-            # # Init the widget.
-            # w.make_widgets()
-            # # Center the widget
-            # qtRectangle = w.frameGeometry()
-            # centerPoint = QtGui.QGuiApplication.primaryScreen().availableGeometry().center()
-            # qtRectangle.moveCenter(centerPoint)
-            # w.move(qtRectangle.topLeft())
-            # # Show the widget.
-            # w.showNormal()
-            # if full_screen:  # Not self.full_screen.
-                # w.toggle_full_screen()
-            # # Show the next slide.
-            # self.sort(sort_kind)
-            # self.next_slide()  # show_slide resets the timer.
+        print(f"{len(filenames)} file{g.plural(len(filenames))} in {path}")
+        print('\nPreprocessing. This may take awhile...')
+        # Compute the hash dicts.
+        t1 = time.process_time()
+        self.compute_dicts(filenames)
+        # Find the duplicates.
+        t2 = time.process_time()
+        duplicates = self.find_duplicates()
+        t3 = time.process_time()
+        g.es_print(f"{len(duplicates):4} duplicate sets")
+        print(
+            f"preprocess: {t2-t1:8.2} sec.\n"
+            f"duplicates: {t3-t2:8.2} sec.\n"
+            f"     total: {t3-t1:8.2} sec.")
+        # Show the duplicates
+        for aList in duplicates[:30]:
+            self.create_window(aList)
         return True
-    #@+node:ekr.20220126060646.2: *4* Slides.make_widgets
-    def make_widgets(self):
-
-        w = self
-
-        # Init the window's attributes.
-        w.setStyleSheet(f"background: {self.background_color}")
-        w.setGeometry(0, 0, self._width, self._height)  # The non-full-screen sizes.
-        
-        # Create the picture area.
-        w.picture = QtWidgets.QLabel('picture', self)
-        w.picture.keyPressEvent = w.keyPressEvent
-
-        # Create the scroll area.
-        w.scroll_area = area =QtWidgets.QScrollArea()
-        area.setWidget(self.picture)
-        AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
-        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
-
-        # Disable scrollbars.
-        ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
-        area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
-        area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
-
-        # Init the layout.
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.scroll_area)
-        w.setLayout(layout)
     #@-others
 #@-others
 
