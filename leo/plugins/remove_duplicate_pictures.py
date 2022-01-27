@@ -176,7 +176,8 @@ class RemoveDuplicates:
             except Exception:
                 print('Bad img:', filename)
                 # g.es_exception()
-                filenames.remove(filename)
+                if filename in filenames:
+                    filenames.remove(filename)
     #@+node:ekr.20220126064207.1: *3* Dups.create_frame
     def create_frame(self, filename, filenames, window):
 
@@ -201,7 +202,8 @@ class RemoveDuplicates:
         # Set the button action.
         def delete_action(arg):
             self.delete_file(filename)
-            filenames.remove(filename)
+            if filename in filenames:
+                filenames.remove(filename)
             if len(filenames) < 2:
                 window.close()
         delete_button.clicked.connect(delete_action)
