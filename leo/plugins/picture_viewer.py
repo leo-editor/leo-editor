@@ -81,7 +81,7 @@ def init():
 def get_args():
 
     # Automatically implements the --help option.
-    description = "usage: python -m picture-viewer [options]"
+    description = "usage: python -m picture_viewer [options]"
     parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
