@@ -27,11 +27,21 @@ The following keyword arguments may be supplied to the run method:
 
     extensions = ['.jpeg', '.jpg', '.png'],  # List of file extensions.
     hash_size = 8  # Size of reduced image.
-    height = 900,  # Window height (pixels) when not in full screen mode.
-    path = None,  # If none, display a dialog.
-    width = 1500,  # Window width (pixels) when not un full screen mode.
+    height = 900,  # Window height in pixels.
+    path = None,  # Path to the folder.
     
-The algorithm used is a faster verions of the code here:
+**Required packages**
+
+This plugin requires the following third-party packages::
+    
+    imagehash:  pip install imagehash
+    numpy:      pip install numpy
+    PIL:        pip install pillow
+    send2trash: pip install send2trash
+  
+**Acknowledgment**
+    
+The algorithm used is a faster version of the code here:
 https://medium.com/@somilshah112/how-to-find-duplicate-or-similar-images-quickly-with-python-2d636af9452f
 """
 #@-<< docstring (remove_duplicate_pictures.py) >>
@@ -98,8 +108,6 @@ def get_args():
         help='Height of window')
     add('--path', dest='path', metavar='DIRECTORY',
         help='Path to root directory')
-    add('--width', dest='width', metavar='PIXELS',
-        help='Width of window')
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
     # Check and return the args.
@@ -108,7 +116,6 @@ def get_args():
          'hash_size': get_int('hash_size', args.hash_size),
          'height': get_int('height', args.height),
          'path': get_path(args.path),
-         'width': get_int('width', args.width)
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
 def get_extensions(aList):
@@ -150,10 +157,9 @@ def main():
 class RemoveDuplicates:
     
     filename_dict = {}  # Keys are filenames, values are hashes.
-    hash_size = 8
     hash_dict = defaultdict(list)  # Keys are hashes, values are lists of filenames.
+    hash_size = 8
     window_height = 900
-    window_width = 1500
             
     #@+others
     #@+node:ekr.20220126063935.1: *3* Dups.compute_dicts
@@ -213,7 +219,6 @@ class RemoveDuplicates:
         gWindow = window = QtWidgets.QWidget()
         window.setWindowTitle(f"{len(filenames)} duplicates of {filenames[0]}")
         window.setMinimumHeight(self.window_height)
-        window.setGeometry(0, 0, self.window_width, self.window_height)  # The non-full-screen sizes.
         # Move the window.
         window.move(50, 50)
         # Init the layouts.
@@ -240,7 +245,6 @@ class RemoveDuplicates:
                 frame_layout.addWidget(frame)
         # Handle close events.
         def closeEvent(*args, **kwargs):
-            g.trace(len(self.duplicates), g.callers())
             window.close()
             self.next_window()
         window.closeEvent = closeEvent
@@ -304,7 +308,6 @@ class RemoveDuplicates:
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
         starting_directory = None,  # Starting directory for file dialogs.
-        width = None,  # Window width (default 1500 pixels) when not in full screen mode.
     ):
         """
         Preprecess the files and show the first duplicates.
@@ -316,7 +319,6 @@ class RemoveDuplicates:
         self.hash_size = hash_size or 8
         self.starting_directory = starting_directory or os.getcwd()
         self.window_height = height or 900
-        self.window_width = width or 1500
         # Get the directory.
         if not path:
             dialog = QtWidgets.QFileDialog(directory=self.starting_directory)
