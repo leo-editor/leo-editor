@@ -182,26 +182,15 @@ class RemoveDuplicates:
         size = os.path.getsize(filename) / 1000
         layout.addWidget(QLabel(text=f"size: {size} KB date: {creation_time}"))
         # Create the delete and quit buttons.
-        next_button = QtWidgets.QPushButton(text='Next', parent=frame)
         delete_button = QtWidgets.QPushButton(text='Delete', parent=frame)
-        quit_button = QtWidgets.QPushButton(text='Quit', parent=frame)
-        layout.addWidget(next_button)
         layout.addWidget(delete_button)
-        layout.addWidget(quit_button)
-        # Set the button actions.
-        
+        # Set the button action.
         def delete_action(arg):
             self.delete_file(filename)
             filenames.remove(filename)
             if len(filenames) < 2:
                 window.close()
-
-        def next_action(arg):
-            window.close()  # Calls next_window.
-
         delete_button.clicked.connect(delete_action)
-        next_button.clicked.connect(next_action)
-        quit_button.clicked.connect(self.quit)
         # Create the picture area.
         picture = QtWidgets.QLabel('picture', parent=frame)
         layout.addWidget(picture)
@@ -227,14 +216,29 @@ class RemoveDuplicates:
         window.setGeometry(0, 0, self.window_width, self.window_height)  # The non-full-screen sizes.
         # Move the window.
         window.move(50, 50)
-        # Set the layout.
-        layout = QtWidgets.QHBoxLayout()
-        window.setLayout(layout)
-        # Create the subframes.
+        # Init the layouts.
+        outer_layout = QtWidgets.QVBoxLayout()
+        window.setLayout(outer_layout)
+        button_layout = QtWidgets.QHBoxLayout()
+        frame_layout = QtWidgets.QHBoxLayout()
+        outer_layout.addLayout(button_layout)
+        outer_layout.addLayout(frame_layout)
+        # Create the common buttons.
+        next_button = QtWidgets.QPushButton(text='Next', parent=window)
+        quit_button = QtWidgets.QPushButton(text='Quit', parent=window)
+        button_layout.addWidget(next_button)
+        button_layout.addWidget(quit_button)
+        # Create the actions.
+        def next_action(arg):
+            window.close()  # Calls next_window.
+        next_button.clicked.connect(window.close) ###next_action)
+        quit_button.clicked.connect(self.quit)
+
+        # Create the subframes and add them to the frame_layout.
         for filename in filenames:
             frame = self.create_frame(filename, filenames[:], window)
             if frame:
-                layout.addWidget(frame)
+                frame_layout.addWidget(frame)
         # Handle close events.
         def closeEvent(*args, **kwargs):
             window.close()
