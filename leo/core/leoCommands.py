@@ -1982,7 +1982,7 @@ class Commands:
             if name:
                 return g.fullPath(c, p)  # #1914.
         return ''
-    #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
+    #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLanguage
     def hasAmbiguousLanguage(self, p):
         """Return True if p.b contains different @language directives."""
         # c = self
