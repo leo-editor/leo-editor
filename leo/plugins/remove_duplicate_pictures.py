@@ -231,11 +231,8 @@ class RemoveDuplicates:
         button_layout.addWidget(quit_button)
         button_layout.addStretch()
         # Create the actions.
-        def next_action(arg):
-            window.close()  # Calls next_window.
-        next_button.clicked.connect(window.close) ###next_action)
+        next_button.clicked.connect(window.close)
         quit_button.clicked.connect(self.quit)
-
         # Create the subframes and add them to the frame_layout.
         for filename in filenames:
             frame = self.create_frame(filename, filenames[:], window)
@@ -243,6 +240,7 @@ class RemoveDuplicates:
                 frame_layout.addWidget(frame)
         # Handle close events.
         def closeEvent(*args, **kwargs):
+            g.trace(len(self.duplicates), g.callers())
             window.close()
             self.next_window()
         window.closeEvent = closeEvent
@@ -337,10 +335,11 @@ class RemoveDuplicates:
         self.compute_dicts(filenames)
         # Find the duplicates.
         self.duplicates = self.find_duplicates()
-        g.es_print(f"{len(self.duplicates):4} duplicate sets")
+        g.es_print(f"{len(self.duplicates)} duplicate sets")
+        ok = bool(self.duplicates)  # Do this before calling next_window.
         if self.duplicates:
             self.next_window()
-        return bool(self.duplicates)
+        return ok
     #@-others
 #@-others
 
