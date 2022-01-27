@@ -29,6 +29,7 @@ The following keyword arguments may be supplied to the run method:
     hash_size = 8  # Size of reduced image.
     height = 900,  # Window height in pixels.
     path = None,  # Path to the folder.
+    starting_directoy = None  # Starting directory for file dialog if no path given.
     
 **Required packages**
 
@@ -100,14 +101,16 @@ def get_args():
     # Add args.
     add = parser.add_argument
     add('--extensions', dest='extensions', nargs='*', metavar='TYPES',
-        help='List of image file extensions.')
+        help='List of image file extensions')
         # Default: .jpeg,.jpg,.png  (no spaces allowed)
     add('--hash-size', dest='hash_size', metavar='INT',
         help='hash_size, default 8')
     add('--height', dest='height', metavar='PIXELS',
         help='Height of window')
-    add('--path', dest='path', metavar='DIRECTORY',
+    add('--path', dest='path', metavar='DIR',
         help='Path to root directory')
+    add('--starting-dir', dest='starting_dir', metavar='DIR',
+        help='Starting directory of dialog if no path given')
     # Parse the options, and remove them from sys.argv.
     args = parser.parse_args()
     # Check and return the args.
@@ -116,6 +119,7 @@ def get_args():
          'hash_size': get_int('hash_size', args.hash_size),
          'height': get_int('height', args.height),
          'path': get_path(args.path),
+         'starting_directory': get_path(args.starting_dir)
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
 def get_extensions(aList):
@@ -311,7 +315,7 @@ class RemoveDuplicates:
         hash_size = 8,  # Size of compressed image.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
         path = None,  # Root directory.
-        starting_directory = None,  # Starting directory for file dialogs.
+        starting_directory = None,  # Starting directory for file dialog if no path given.
     ):
         """
         Preprecess the files and show the first duplicates.
