@@ -187,9 +187,13 @@ class RemoveDuplicates:
         layout.addWidget(QLabel(text=filename, parent=frame))
         size = os.path.getsize(filename) / 1000
         layout.addWidget(QLabel(text=f"size: {size} KB date: {creation_time}"))
-        # Create the delete and quit buttons.
+        # Create the delete button, centered.
+        button_layout = QtWidgets.QHBoxLayout()
+        button_layout.addStretch()
         delete_button = QtWidgets.QPushButton(text='Delete', parent=frame)
-        layout.addWidget(delete_button)
+        button_layout.addWidget(delete_button)
+        button_layout.addStretch()
+        layout.addLayout(button_layout)
         # Set the button action.
         def delete_action(arg):
             self.delete_file(filename)
