@@ -223,11 +223,13 @@ class RemoveDuplicates:
         frame_layout = QtWidgets.QHBoxLayout()
         outer_layout.addLayout(button_layout)
         outer_layout.addLayout(frame_layout)
-        # Create the common buttons.
+        # Create the common buttons, centered.
+        button_layout.addStretch()
         next_button = QtWidgets.QPushButton(text='Next', parent=window)
         quit_button = QtWidgets.QPushButton(text='Quit', parent=window)
         button_layout.addWidget(next_button)
         button_layout.addWidget(quit_button)
+        button_layout.addStretch()
         # Create the actions.
         def next_action(arg):
             window.close()  # Calls next_window.
