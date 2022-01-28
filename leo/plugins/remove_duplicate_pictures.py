@@ -200,12 +200,10 @@ class RemoveDuplicates:
         button_layout.addStretch()
         layout.addLayout(button_layout)
         # Set the button action.
+
         def delete_action(arg):
             self.delete_file(filename)
-            if filename in filenames:
-                filenames.remove(filename)
-            if len(filenames) < 2:
-                window.close()
+            
         delete_button.clicked.connect(delete_action)
         # Create the picture area.
         picture = QtWidgets.QLabel('picture', parent=frame)
@@ -266,6 +264,7 @@ class RemoveDuplicates:
 
     def delete_file(self, filename):
         """Issue a prompt and delete the file if the user agrees."""
+        global gWindow
         if not send2trash:
             if not self.send_to_trash_warning_given:
                 self.send_to_trash_warning_given = True
@@ -275,6 +274,10 @@ class RemoveDuplicates:
         if os.path.exists(filename):
             send2trash(filename)
             print('Deleted', filename)
+            if filename in self.dup_list:
+                self.dup_list.remove(filename)
+            if len(self.dup_list) < 2:
+                gWindow.close()
         else:
             print('Not found', filename)
     #@+node:ekr.20220126064032.1: *3* Dups.find_duplicates
@@ -299,8 +302,8 @@ class RemoveDuplicates:
     def next_window(self):
         """Show the next set of duplicates in a new window."""
         if self.duplicates:
-            aList = self.duplicates.pop()
-            self.create_window(aList)
+            self.dup_list = self.duplicates.pop()
+            self.create_window(self.dup_list)
         else:
             self.quit()
     #@+node:ekr.20220126120555.1: *3* Dups.quit
