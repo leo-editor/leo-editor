@@ -187,11 +187,21 @@ class RemoveDuplicates:
         # Create the vertical layout.
         layout = QtWidgets.QVBoxLayout()
         frame.setLayout(layout)
+        # Set the font.
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPointSize(12)
         # Create the labels..
-        creation_time = time.ctime(os.path.getctime(filename))
-        layout.addWidget(QLabel(text=filename, parent=frame))
+        ctime = time.ctime(os.path.getctime(filename))
+        struct_time = time.strptime(ctime)
+        creation_time = time.strftime('%Y %m %d', struct_time)
+        file_label = QLabel(text=filename, parent=frame)
+        file_label.setFont(font)
+        layout.addWidget(file_label)
         size = os.path.getsize(filename) / 1000
-        layout.addWidget(QLabel(text=f"size: {size} KB date: {creation_time}"))
+        info_label = QLabel(text=f"size: {size} KB date: {creation_time}")
+        info_label.setFont(font)
+        layout.addWidget(info_label)
         # Create the delete button, centered.
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -236,10 +246,15 @@ class RemoveDuplicates:
         frame_layout = QtWidgets.QHBoxLayout()
         outer_layout.addLayout(button_layout)
         outer_layout.addLayout(frame_layout)
-        # Create the common buttons, centered.
-        button_layout.addStretch()
+        # Set the font.
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPointSize(12)
+        # Create the common buttons, left aligned.
         next_button = QtWidgets.QPushButton(text='Next', parent=window)
         quit_button = QtWidgets.QPushButton(text='Quit', parent=window)
+        next_button.setFont(font)
+        quit_button.setFont(font)
         button_layout.addWidget(next_button)
         button_layout.addWidget(quit_button)
         button_layout.addStretch()
