@@ -12,12 +12,12 @@ types known by the Qt PixMap class, including '.gif' and '.bmp'.
 
 This file may be run externally as follows::
     
-    python -m leo.plugins.remove_duplicate_slides
+    python -m leo.plugins.remove_duplicate_pictures
 
 This plugin may be called from a script (or @command or @button node) as follows::
 
-    from leo.plugins.remove_duplicate_slides import RemoveDuplicates
-    Slides().run(c)  # See below for defaults.
+    from leo.plugins.remove_duplicate_pictures import RemoveDuplicates
+    RemoveDuplicates().run()  # See below for defaults.
 
 *Note*: There is no need to enable this plugin. It will be loaded by the calling script.
 
@@ -151,7 +151,7 @@ def main():
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
-    ok = RemoveDuplicates().run(c = None, **args)
+    ok = RemoveDuplicates().run(**args)
     if ok:
         if isQt5:
             sys.exit(gApp.exec_())
@@ -330,7 +330,6 @@ class RemoveDuplicates:
         print('picture_viewer: done')
     #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
-        c,  # Required. The commander for this slideshow.
         extensions = None,  # List of file extensions.
         hash_size = 8,  # Size of compressed image.
         height = None,  # Window height (default 1500 pixels) when not in full screen mode.
@@ -342,7 +341,6 @@ class RemoveDuplicates:
         Return True if any duplicates were found.
         """
         # Init ivars.
-        self.c = c
         self.extensions = extensions or ['.jpeg', '.jpg', '.png']
         self.hash_size = hash_size or 8
         self.starting_directory = starting_directory or os.getcwd()
@@ -357,7 +355,7 @@ class RemoveDuplicates:
         # Get the files.
         filenames = self.get_files(path)
         if not filenames:
-            print(f"No slides found in {path!r}")
+            print(f"No pictures found in {path!r}")
             return False
         print(f"{len(filenames)} file{g.plural(len(filenames))} in {path}")
         print(f"\nPreprocessing with hash size {self.hash_size}. This may take awhile...")

@@ -16,7 +16,7 @@ https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
 This plugin should be called from a script (or @command or @button node) as follows:
 
     from leo.plugins.picture_viewer import Slides
-    Slides().run(c)  # See below for defaults.
+    Slides().run()  # See below for defaults.
 
 *Note*: do not enable this plugin. It will be loaded by the calling script.
 
@@ -190,7 +190,7 @@ def main():
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
    
-    ok = Slides().run(c = None, **args)
+    ok = Slides().run(**args)
     if ok:
         if isQt5:
             sys.exit(gApp.exec_())
@@ -361,7 +361,6 @@ if QtWidgets:
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
-            c,  # Required. The commander for this slideshow.
             background_color = None,  # Default background color.
             delay = None,  # Delay between slides, in seconds. Default 100.
             extensions = None,  # List of file extensions.
@@ -384,7 +383,6 @@ if QtWidgets:
             gWidget = self
             # Init ivars.
             w = self
-            self.c = c
             self.background_color = background_color or "black"
             self.delay = delay or 100
             self.extensions = extensions or ['.jpeg', '.jpg', '.png']
