@@ -752,7 +752,6 @@
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
-<v t="ekr.20131030071311.17087"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
@@ -768,6 +767,7 @@
 <v t="ekr.20131009100732.16755"><vh>\@rst-no-head suppresses sections</vh></v>
 <v t="ekr.20131025044901.17147"><vh>\@rst-ignore &amp; @rst-ignore-tree ignore text</vh></v>
 <v t="ekr.20131025044901.17148"><vh>Inserting raw markup</vh></v>
+<v t="ekr.20220129083216.1"><vh>Filtering contents</vh></v>
 </v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
@@ -2379,6 +2379,7 @@
 </v>
 </v>
 <v t="ekr.20211105051031.1"></v>
+<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16519,10 +16520,6 @@ myDocument.html.txt is the **input** file for sphinx.
                             initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
-<t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to actually get an html file that can be loaded into a word processor to output an .odt or .docx file for example.
-
-For most of the purposes that a programmer would use rst, i.e., documentation or a web page, the tutorial goes far enough. But for those who have different output goals, highlighting the flexibility that Leo with rst should be a primary goal. There are literally hundreds of writers in the world for every programmer. If you want Leo to become popular, this is a critical understanding.
-</t>
 <t tx="ekr.20131030082936.17514">s = p.b
 for child in p.children():
     s = s + '\n- ' + child.h
@@ -31166,6 +31163,14 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - The user may choose *other* commands after starting repeat-complex-command.
 - Complete coverage testing for leoAtFile.py.
 </t>
+<t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
+
+    def headline_filter(c, p)
+    def body_filter(c, p)
+    
+so these filters have full access to all nodes of the entire outline. As a result, these filters can return arbitrary text that comes from anywhere in the outline.
+
+The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
