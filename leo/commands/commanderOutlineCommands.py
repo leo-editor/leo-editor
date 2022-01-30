@@ -1585,7 +1585,7 @@ def moveOutlineUp(self, event=None):
     if moved:
         p.setDirty()
         c.setChanged()
-        u.afterMoveNode(p, 'Move Right', undoData)
+        u.afterMoveNode(p, 'Move Up', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
