@@ -400,9 +400,10 @@ class GlobalSearch:
         if len(parts) > 1:
             segs = parts[1].split("-->")
             p = g.findUNL(segs, c)
-            c.redraw(p)
-            c.bringToFront()
-            c.bodyWantsFocusNow()
+            if p:
+                c.redraw(p)
+                c.bringToFront()
+                c.bodyWantsFocusNow()
 
 
     #@+node:ekr.20140919160020.17899: *3* show
