@@ -2941,40 +2941,34 @@ class Commands:
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
     #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p, parent, n):
-        c = self
-        u = c.undoer
-        undoType = 'Drag'
-        current = c.p
+        c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, parent):
             return
         if not c.checkMoveWithParentWithWarning(p, parent, True):
             return
         c.endEditing()
-        undoData = u.beforeMoveNode(current)
+        undoData = u.beforeMoveNode(p)
         p.setDirty()
         p.moveToNthChildOf(parent, n)
         p.setDirty()
         c.setChanged()
-        u.afterMoveNode(p, undoType, undoData)
+        u.afterMoveNode(p, 'Drag', undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2353: *5* c.dragAfter
     def dragAfter(self, p, after):
-        c = self
-        u = self.undoer
-        undoType = 'Drag'
-        current = c.p
+        c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
             return
         c.endEditing()
-        undoData = u.beforeMoveNode(current)
+        undoData = u.beforeMoveNode(p)
         p.setDirty()
         p.moveAfter(after)
         p.setDirty()
         c.setChanged()
-        u.afterMoveNode(p, undoType, undoData)
+        u.afterMoveNode(p, 'Drag', undoData)
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
