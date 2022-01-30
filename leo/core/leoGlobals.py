@@ -4355,11 +4355,6 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     while unlList:
         for p in c.all_unique_positions():
             if full_match(p):
-                if p.hasChildren():
-                    p.expand()
-                c.redraw(p)
-                c.frame.bringToFront()
-                c.bodyWantsFocusNow()
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
@@ -7671,7 +7666,9 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     """
     Handle a Leo UNL. This must *never* open a browser.
 
-    Return the commander for the UNL, or None.
+    Return the commander for the found UNL, or None.
+    
+    Redraw the commander if the UNL is found.
     """
     if not unl:
         return None
@@ -7688,16 +7685,20 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     if unl.find('#') == -1 and unl.find('-->') == -1:
         # The path is the entire unl.
         path, unl = unl, None
-    elif unl.find('#') == -1:
+    elif '#' not in unl:
         # The path is empty.
         # Move to the unl in *this* commander.
-        g.findUNL(unl.split("-->"), c)
+        p = g.findUNL(unl.split("-->"), c)
+        if p:
+            c.redraw(p)
         return c
     else:
         path, unl = unl.split('#', 1)
     if not path:
         # Move to the unl in *this* commander.
-        g.findUNL(unl.split("-->"), c)
+        p = g.findUNL(unl.split("-->"), c)
+        if p:
+            c.redraw(p)
         return c
     if c:
         base = g.os_path_dirname(c.fileName())
@@ -7727,15 +7728,18 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     # End editing in *this* outline, so typing in the new outline works.
     c.endEditing()
     c.redraw()
-    if g.unitTesting:
-        return None
+    # Open the path.
     c2 = g.openWithFileName(path, old_c=c)
-    if unl:
-        g.findUNL(unl.split("-->"), c2 or c)
-    if c2:
-        c2.bringToFront()
-        return c2
-    return None
+    if not c2:
+        return None
+    # Find the UNL, select the node, and redraw.
+    p = g.findUNL(unl.split("-->"), c2)
+    if not p:
+        return None
+    c2.redraw(p)
+    c2.bringToFront()
+    c2.bodyWantsFocusNow()
+    return c2
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""

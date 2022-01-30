@@ -392,14 +392,19 @@ class GlobalSearch:
 
             res.append((li, (m.start() - st, m.end() - st), (spre, spost)))
         return res
-    #@+node:ekr.20140919160020.17919: *3* open_unl
+    #@+node:ekr.20140919160020.17919: *3* open_unl (bigdash)
     def open_unl(self, unl):
 
         parts = unl.split("#", 1)
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
             segs = parts[1].split("-->")
-            g.findUNL(segs, c)
+            p = g.findUNL(segs, c)
+            c.redraw(p)
+            c.bringToFront()
+            c.bodyWantsFocusNow()
+
+
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""
