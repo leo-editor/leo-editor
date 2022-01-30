@@ -4332,7 +4332,7 @@ def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]
                         return [p.copy()]
     return []
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL
-def findUNL(unlList: List[str], c: Cmdr) -> None:
+def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     """
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
