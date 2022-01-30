@@ -1197,8 +1197,8 @@ class BookMarkDisplayProvider:
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
 
-                    ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
-                    if ok:
+                    other_p = g.findUNL(UNL.split('-->'), other_c)
+                    if other_p:
                         v = other_p.v
                     else:
                         g.es("Couldn't find '%s'" % gnx)

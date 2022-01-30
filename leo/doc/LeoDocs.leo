@@ -2381,7 +2381,18 @@
 </v>
 <v t="ekr.20211105051031.1"></v>
 <v t="ekr.20180126061923.1"></v>
-<v t="ekr.20220129092626.1"><vh>test</vh></v>
+<v t="ekr.20220130042521.1"><vh>Found 8:unl</vh>
+<v t="ekr.20101113063552.9458"></v>
+<v t="ekr.20170228104028.1"></v>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20101113063552.9483"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
+<v t="ekr.20220129091501.1"></v>
+<v t="ekr.20220130042644.1"><vh>Found 2:unls</vh>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31175,14 +31186,20 @@ so these filters have full access to all nodes of the entire outline. As a resul
 The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
 <t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, g.handleUnl(unl, c) will select the referenced node.  For example::
 
-    g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes'', c)
+    g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes', c)
     
 will select this node in LeoDocs.leo.
 </t>
-<t tx="ekr.20220129092626.1">@language python
+<t tx="ekr.20220130042521.1">@nosearch
 
-c = g.handleUnl('@rst html\tutorial-tips.html--&gt;Scripting tips--&gt;Use g.handleUnl to select nodes', c)
-g.trace(c, c.p)</t>
+# Word, Ignore Case, Head, Body
+
+# found 8 nodes</t>
+<t tx="ekr.20220130042644.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 2 nodes</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

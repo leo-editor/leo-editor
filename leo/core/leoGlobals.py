@@ -304,11 +304,10 @@ g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
 #
 # Patterns used only in this module...
 
-# This pattern excludes @encoding.whatever and @encoding(whatever)
+# g_is_directive_pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
 g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
 g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
-g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 # #2267: Support for @section-delims.
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
@@ -4332,200 +4331,39 @@ def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]
                     if p2.v in clones:
                         return [p.copy()]
     return []
-#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helpers
-def recursiveUNLSearch(
-    unlList: List[str],
-    c: Cmdr,
-    depth: int=0,
-    p: Pos=None,
-    maxdepth: int=0,
-    maxp: Pos=None,
-    soft_idx: bool=False,
-    hard_idx: bool=False,
-) -> Tuple[bool, int, Pos]:
-    """try and move to unl in the commander c
-
-    All parameters passed on to recursiveUNLFind(), see that for docs.
-
-    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
-          how far we will recurse.  So it should default to 0 (zero).
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL
+def findUNL(unlList: List[str], c: Cmdr) -> None:
     """
-    if g.unitTesting:
-        return True, maxdepth, maxp
-
-    def moveToP(c: Cmdr, p: Pos, unlList: List) -> None:
-        # Process events, to calculate new sizes.
-        g.app.gui.qtApp.processEvents()
-        c.expandAllAncestors(p)
-        c.selectPosition(p)
-        nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[-1])
-        if nth_line_no:
-            if nth_line_no < 0:
-                c.goToLineNumber(-nth_line_no)
-                if nth_col_no:
-                    pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
-                    c.frame.body.wrapper.setInsertPoint(pos)
-            else:
-                pos = sum(len(i) + 1 for i in p.b.split('\n')[: nth_line_no - 1])
-                if nth_col_no:
-                    pos += nth_col_no
-                c.frame.body.wrapper.setInsertPoint(pos)
-        if p.hasChildren():
-            p.expand()
-        c.redraw()
-        c.frame.bringToFront()
-        c.bodyWantsFocusNow()
-
-    found, maxdepth, maxp = recursiveUNLFind(
-        unlList, c, depth, p, maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
-    g.printObj(unlList)
-    g.trace(found, maxp) ###
-    if maxp:
-        moveToP(c, maxp, unlList)
-    return found, maxdepth, maxp
-#@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
-def recursiveUNLFind(
-    unlList: List[str],
-    c: Cmdr,
-    depth: int=0,
-    p: Pos=None,
-    maxdepth: int=0,
-    maxp: Pos=None,
-    soft_idx: bool=False,
-    hard_idx: bool=False,
-) -> Tuple[bool, int, Pos]:
+    Find and move to the unl given by the unlList in the commander c.
+    Return the found position, or None.
     """
-    Internal part of recursiveUNLSearch which doesn't change the
-    selected position or call c.frame.bringToFront()
+    
+    def full_match(p):
+        """Return True if the headlines of p and all p's parents match unlList."""
+        if not p.h == unlList[-1]:
+            return False
+        # Careful: make copies.
+        aList = unlList[:-1]
+        p = p.copy()
+        while aList:
+            p.moveToParent()
+            if not p or p.h != aList[-1]:
+                return False
+            aList.pop(0)
+        return True
 
-    returns found, depth, p, where:
-
-        - found is True if a full match was found
-        - depth is the depth of the best match
-        - p is the position of the best match
-
-    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
-          how far we will recurse.  So it should default to 0 (zero).
-
-    - `unlList`: list of 'headline', 'headline:N', or 'headline:N,M'
-      elements, where N is the node's position index and M the zero based
-      count of like named nodes, eg. 'foo:2', 'foo:4,1', 'foo:12,3'
-    - `c`: outline
-    - `soft_idx`: use index when matching name not found
-    - `hard_idx`: use only indexes, ignore node names
-    - `depth`: part of recursion, don't set explicitly
-    - `p`: part of recursion, don't set explicitly
-    - `maxdepth`: part of recursion, don't set explicitly
-    - `maxp`: part of recursion, don't set explicitly
-    """
-    if depth == 0:
-        nds = list(c.rootPosition().self_and_siblings())
-        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
-        # drop empty parts so "-->node name" works
-    else:
-        nds = list(p.children())  # type:ignore
-    heads = [i.h for i in nds]
-    # work out order in which to try nodes
-    order: Any = []
-    nth_sib = nth_same = nth_line_no = nth_col_no = None
-    try:
-        target = unlList[depth]
-    except IndexError:
-        target = ''
-    try:
-        target = g_pos_pattern.sub('', unlList[depth])
-        nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
-        pos = nth_sib is not None
-    except IndexError:
-        # #36.
-        pos = False
-    if pos:
-        use_idx_mode = True  # ok to use hard/soft_idx
-        target = re.sub(g_pos_pattern, "", target).replace('--%3E', '-->')
-        if hard_idx:
-            if nth_sib < len(heads):  # type:ignore
-                order.append(nth_sib)
-        else:
-            # First we try the nth node with same header
-            if nth_same:
-                nths = [n for n, i in enumerate(heads) if i == target]
-                if nth_same < len(nths) and heads[nths[nth_same]] == target:
-                    order.append(nths[nth_same])
-            # Then we try *all* other nodes with same header
-            order += [n for n, s in enumerate(heads)
-                        if n not in order and s == target]
-            # Then position based, if requested
-            if soft_idx and nth_sib < len(heads):  # type:ignore
-                order.append(nth_sib)
-    elif hard_idx:
-        pass  # hard_idx mode with no idx in unl, go with empty order list
-    else:
-        order = range(len(nds))
-        target = target.replace('--%3E', '-->')
-        use_idx_mode = False  # not ok to use hard/soft_idx
-        # note, the above also fixes calling with soft_idx=True and an old UNL
-
-    for ndi in order:
-        nd = nds[ndi]
-        if (
-            target == nd.h or
-            (use_idx_mode and (soft_idx or hard_idx) and ndi == nth_sib)
-        ):
-            if depth + 1 == len(unlList):  # found it
-                return True, maxdepth, nd
-            if maxdepth < depth + 1:
-                maxdepth = depth + 1
-                maxp = nd.copy()
-            found, maxdepth, maxp = g.recursiveUNLFind(
-                unlList, c, depth + 1, nd,
-                maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
-            if found:
-                return found, maxdepth, maxp
-            # else keep looking through nds
-    if depth == 0 and maxp:  # inexact match
-        g.es('Partial UNL match')
-    if soft_idx and depth + 2 < len(unlList):
-        aList = []
+    while unlList:
         for p in c.all_unique_positions():
-            if any(p.h.replace('--%3E', '-->') in unl for unl in unlList):  # type:ignore
-                aList.append((p.copy(), p.get_UNL(False, False, True)))  # type:ignore
-        maxcount = 0
-        singleMatch = True
-        for iter_unl in aList:
-            count = 0
-            compare_list = unlList[:]
-            for header in reversed(iter_unl[1].split('-->')):
-                if (re.sub(g_pos_pattern, "", header).replace('--%3E', '-->') ==
-                     compare_list[-1]
-                ):
-                    count = count + 1
-                    compare_list.pop(-1)
-                else:
-                    break
-            if count > maxcount:
-                p = iter_unl[0]
-                singleMatch = True
-            elif count == maxcount:
-                singleMatch = False
-        if maxcount and singleMatch:
-            maxp = p
-            maxdepth = p.level()  # type:ignore
-    return False, maxdepth, maxp
-#@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
-def recursiveUNLParts(text: str) -> Tuple:
-    """Parse the tail, returning whatever follows ':'.
-
-    Examples: foo or foo:2 or foo:2,0,4,10.
-
-    return (index, occurence, line_number, col_number) or (None, None, None, None).
-
-    A negative line_number indicates a global line number within the file.
-    """
-    # Match up to 4 comma-separated ints.
-    pos = re.findall(g_pos_pattern, text)
-    if pos:
-        return tuple(int(i) if i else 0 for i in pos[0])
-    return (None, None, None, None)
+            if full_match(p):
+                if p.hasChildren():
+                    p.expand()
+                c.redraw(p)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
+    return None
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
@@ -7853,13 +7691,13 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     elif unl.find('#') == -1:
         # The path is empty.
         # Move to the unl in *this* commander.
-        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        g.findUNL(unl.split("-->"), c)
         return c
     else:
         path, unl = unl.split('#', 1)
     if not path:
         # Move to the unl in *this* commander.
-        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        g.findUNL(unl.split("-->"), c)
         return c
     if c:
         base = g.os_path_dirname(c.fileName())
@@ -7893,7 +7731,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return None
     c2 = g.openWithFileName(path, old_c=c)
     if unl:
-        g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
+        g.findUNL(unl.split("-->"), c2 or c)
     if c2:
         c2.bringToFront()
         return c2
