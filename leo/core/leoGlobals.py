@@ -4340,7 +4340,7 @@ def findUNL(unlList: List[str], c: Cmdr) -> None:
     
     def full_match(p):
         """Return True if the headlines of p and all p's parents match unlList."""
-        if not p.h == unlList[-1]:
+        if not p.h.strip() == unlList[-1].strip():
             return False
         # Careful: make copies.
         aList = unlList[:-1]
