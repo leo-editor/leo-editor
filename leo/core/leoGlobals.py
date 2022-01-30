@@ -4378,6 +4378,8 @@ def recursiveUNLSearch(
 
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
+    g.printObj(unlList)
+    g.trace(found, maxp) ###
     if maxp:
         moveToP(c, maxp, unlList)
     return found, maxdepth, maxp
@@ -7675,7 +7677,7 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     # pytest reports too many errors.
     # command = f"python -m pytest --pdb {tests or ''}"
     g.execute_shell_commands(command, trace=False)
-#@+node:ekr.20120311151914.9916: ** g.Urls
+#@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 unl_regex = re.compile(r'\bunl:.*$')
 
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
