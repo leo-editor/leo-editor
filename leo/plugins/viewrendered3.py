@@ -244,6 +244,7 @@ This priority scheme allow a user to modify any of the standard stylesheets in t
 
 When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
 can be any mix of Windows and Linux separators.
+
 #@+node:tom.20210612193820.1: *4* MathJax Script Location
 MathJax Script Location
 =======================
@@ -257,9 +258,10 @@ If the MathJax scripts are installed on the local computer, it is recommended
 that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
 include a ``?config`` specifer.  The one shown in the example above works well.
+
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
 External Processors For Other Languages
-========================================
+=======================================
 
 VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
 
@@ -282,6 +284,7 @@ This directory and .ini file must be created by the user.  VR3 will not create t
 A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
 
 VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+
 #@+node:TomP.20210423000029.1: *5* @param Optional Parameters
 Optional Parameters
 ====================
@@ -322,6 +325,7 @@ Limitations
 1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
 
 2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
+
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
