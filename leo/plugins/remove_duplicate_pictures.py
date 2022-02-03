@@ -270,10 +270,10 @@ class RemoveDuplicates:
         def closeEvent(*args, **kwargs):
             window.close()
             self.next_window()
+
         window.closeEvent = closeEvent
         # Show the window.
         window.show()
-        
     #@+node:ekr.20220126064335.1: *3* Dups.delete_file
     send_to_trash_warning_given = False
 
@@ -323,10 +323,13 @@ class RemoveDuplicates:
             self.quit()
     #@+node:ekr.20220126120555.1: *3* Dups.quit
     def quit(self):
-        global gApp
+        global gApp, gWindow
         if gApp:  # Running externally.
             gApp.exit()
             gApp = None
+        elif gWindow:
+            gWindow.destroy()
+            gWindow = None
         print('picture_viewer: done')
     #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
