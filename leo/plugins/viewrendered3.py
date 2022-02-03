@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.7
+About Viewrendered3 V3.71
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -244,6 +244,7 @@ This priority scheme allow a user to modify any of the standard stylesheets in t
 
 When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
 can be any mix of Windows and Linux separators.
+
 #@+node:tom.20210612193820.1: *4* MathJax Script Location
 MathJax Script Location
 =======================
@@ -257,9 +258,10 @@ If the MathJax scripts are installed on the local computer, it is recommended
 that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
 include a ``?config`` specifer.  The one shown in the example above works well.
+
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
 External Processors For Other Languages
-========================================
+=======================================
 
 VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
 
@@ -282,6 +284,7 @@ This directory and .ini file must be created by the user.  VR3 will not create t
 A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
 
 VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+
 #@+node:TomP.20210423000029.1: *5* @param Optional Parameters
 Optional Parameters
 ====================
@@ -322,6 +325,7 @@ Limitations
 1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
 
 2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
+
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
@@ -440,6 +444,8 @@ for more information on markdown.
 Unless ``@string vr3-default-kind`` is set to ``md``, markdown
 rendering must be specified by putting it in a ``@md`` node.
 
+Literal Blocks
+--------------
 A literal block is declared using backtick "fences"::
 
 
@@ -451,6 +457,8 @@ Note that the string ``text`` is required for proper rendering,
 even though some MD processors will accept the triple-backtick
 fence by itself without it. Fences must begin at the start of a line.
 
+Code Blocks
+------------
 A code block is indicated with the same fence, but the name of
 the language instead::
 
@@ -462,6 +470,60 @@ the language instead::
 .. note::
     No space is allowed between the fence characters and the language.
 
+Mathematics
+------------
+Mathematics symbols and equations can be rendered with MathJax.  When enabled by the *vr3-md-math-output* setting, inline formulas and separate equation blocks can be specifed.  Equations are written in a Latex dialect.
+
+Inline Formulas
+________________
+Inline formulas are enclosed with the symbol pairs *\\(* and *\\)*.
+
+Equation Blocks
+________________
+There are several ways to enclose equation blocks.  The Markdown (semi-)standard way is to use a math fence, similar to a literal or code block::
+
+    ```math
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    ```
+The fence must start at the beginning of a line.
+
+Blocks may also be enclosed with the standard MathJax delimiters, either double *$* characters::
+
+    $$
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    $$
+
+or *\\[*, *\\]* pairs::
+
+    \[
+    \begin{align*}
+        α_t(i) &=P(O_1,O_2,…O_t,q_t)=S_iλ\\
+        k &=\int_{0}^{10}xdx\\
+        E &=mc^2
+    \end{align*}
+    \]
+
+
+Tables
+-------
+Tables may be created using the `PHP Markdown Extra` syntax: https://python-markdown.github.io/extensions/tables/.  Here is an example from the Markdown package documentation::
+
+
+    First Header  | Second Header
+    ------------- | -------------
+    Content Cell  | Content Cell
+    Content Cell  | Content Cell
+
+No Language Mixing
+-------------------
 As with RsT rendering, do not mix multiple structured languages in a single
 node or subtree.
 
@@ -834,9 +896,7 @@ else:
     got_docutils = False
     print('VR3: *** no docutils')
 try:
-    #from markdown import markdown
     import markdown
-    Markdown = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'def_list'])
     got_markdown = True
 except ImportError:
     got_markdown = False
@@ -882,6 +942,7 @@ JAVA = 'java'
 JAVASCRIPT = 'javascript'
 JULIA = 'julia'
 
+MATH = 'math'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
@@ -970,6 +1031,7 @@ TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
+MD_MATH_FENCE = '```math'
 ASCDOC_CODE_LANG_MARKER = '[source,'
 ASCDOC_FENCE_MARKER = '----'
 
@@ -1684,6 +1746,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.title = None
 
+        self.Markdown = None # MD processor instance
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
 
@@ -1763,27 +1826,24 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.md_stylesheet -- The URL to the stylesheet.  Must include
                                the "file:///" if it is a local file.
         self.md_mathjax_url -- The URL to the MathJax code package.  Must include
-                               the "file:///" if it is a local file. A typical URL
-                               is http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_HTMLorMML
+                               the "file:///" if it is a local file. The URL 
+                               should be to a MathJax V3 site.  A typical URL
+                               is https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
                                If the MathJax package has been downloaded to the
                                local computer, a typical (Windows) URL would be
                                file:///D:/utility/mathjax/es5/tex-chtml.js
         self.md_header -- where the header string gets stored.
         """
 
+        script_str = ''
         if self.md_math_output and self.mathjax_url:
-            self.md_header = fr'''
-    <head>
+            script_str = fr'<script defer type="text/javascript" src="{self.mathjax_url}"></script>'
+        self.md_header = fr'''
+    <!DOCTYPE html>
+    <html><head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
-    <script type="text/javascript" src="{self.mathjax_url}"></script>
-    </head>
-    '''
-        else:
-            self.md_header = fr'''
-    <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
+    {script_str}
     </head>
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
@@ -1978,6 +2038,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_md_stylesheet()
         self.set_rst_stylesheet()
         self.create_md_header()
+
+        if self.md_math_output:
+            ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
+            ext.append('leo.extensions.mdx_math_gi')
+            self.Markdown = markdown.Markdown(extensions=ext)
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
@@ -3338,10 +3403,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
-        #ext = ['fenced_code', 'codehilite', 'def_list']
-
         try:
-            _html = Markdown.reset().convert(result)
+            _html = self.Markdown.reset().convert(result)
             self.last_markup = result
 
         except SystemMessage as sm:
@@ -4490,8 +4553,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
+    AT_MATH_CODE = auto()
     FENCED_CODE = auto()
+    FENCED_MATH = auto()
     IN_SKIP = auto()
+    IN_MATH = auto()
     TO_BE_COMPUTED = auto()
 
     STARTING_ASCDOC_CODE_BLOCK = auto()
@@ -4549,6 +4615,16 @@ class Action:
     @staticmethod
     def no_action(sm, line, tag=None, language=TEXT):
         pass
+
+    @staticmethod
+    def add_math_block_start(sm, line, tag=None, language=None):
+        line = r'\['
+        sm.current_chunk.add_line(line)
+
+    @staticmethod
+    def add_math_block_end(sm, line, tag=None, language=None):
+        line = r'\]'
+        sm.current_chunk.add_line(line)
 #@+node:TomP.20200213170250.1: *3* class Marker
 class Marker(Enum):
     """
@@ -4557,6 +4633,7 @@ class Marker(Enum):
 
     AT_LANGUAGE_MARKER = auto()
     MD_FENCE_LANG_MARKER = auto() # fence token with language; e.g. ```python
+    MD_FENCE_MATH_MARKER = auto() # math fence: ```math
     MD_FENCE_MARKER = auto() # fence token with no language
     MARKER_NONE = auto() # Not a special line.
     START_SKIP = auto()
@@ -4722,6 +4799,10 @@ class StateMachine:
                 lang = _lang
                 tag = CODE
                 marker = Marker.MD_FENCE_LANG_MARKER
+            elif _lang == MATH:
+                lang = MATH
+                tag = MATH
+                marker = Marker.MD_FENCE_MATH_MARKER
             else:
                 # If _lang is TEXT or unknown, we are starting a new literal block.
                 lang = _lang
@@ -4858,6 +4939,9 @@ class StateMachine:
         (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE),
         (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):
                     (Action.add_line, State.AT_LANG_CODE),
+        (State.BASE, Marker.MD_FENCE_MATH_MARKER):   (Action.add_math_block_start, State.FENCED_MATH),
+        (State.FENCED_MATH, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_MATH),
+        (State.FENCED_MATH, Marker.MD_FENCE_MARKER): (Action.add_math_block_end, State.BASE),
 
         # ========== ASCIIDOC-specific states =================
         (State.BASE, Marker.ASCDOC_CODE_LANG_MARKER):
