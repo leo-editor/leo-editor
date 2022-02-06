@@ -50,9 +50,9 @@ def create_app(gui_name='null'):
         raise ValueError("unable to set LeoID.")
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
-    g.app.db = g.NullObject('g.app.db')
-    g.app.pluginsController = g.NullObject('g.app.pluginsController')
-    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
+    g.app.db = g.NullObject('g.app.db')  # type:ignore
+    g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
+    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
     elif gui_name == 'qt':
