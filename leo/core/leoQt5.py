@@ -57,7 +57,7 @@ except ImportError:
         # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
         # Reinhard: Support pyqt 5.6...
         # used by viewrendered(2|3).py, bigdash.py, richtext.py.
-        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
+        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
         QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
         QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
         QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
@@ -80,7 +80,6 @@ Icon = QtWidgets.QMessageBox
 Information = QtWidgets.QMessageBox
 ItemFlag = QtCore.Qt  # 2347
 ItemDataRole = QtCore.Qt  # 2347
-ItemFlag = QtCore.Qt
 Key = QtCore.Qt
 KeyboardModifier = QtCore.Qt
 Modifier = QtCore.Qt
