@@ -39,7 +39,7 @@ try:  # #1973
 except Exception:
     QtWidgets = None
     MouseButton = None
-    NestedSplitter = None
+    NestedSplitter = None  # type:ignore
 #
 # Do not call g.assertUi('qt') here. It's too early in the load process.
 #@-<< imports >>

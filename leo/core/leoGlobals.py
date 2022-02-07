@@ -3401,6 +3401,7 @@ def getLanguageFromAncestorAtFileNode(p: Pos) -> Optional[str]:
     3. Search p's "extended parents" for an unambiguous @language directive.
     """
     v0 = p.v
+    seen: Set[VNode]
     
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
     # Original idea by Виталије Милошевић (Vitalije Milosevic).

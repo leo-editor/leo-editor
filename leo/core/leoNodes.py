@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
@@ -108,6 +108,11 @@ class NodeIndices:
     def new_vnode_helper(self, c: "Cmdr", gnx: str, v: "VNode") -> None:
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
+        # Special case for the c.hiddenRootNode. This eliminates a hack in c.initObjects.
+        if not getattr(c, 'fileCommands', None):
+            assert gnx == 'hidden-root-vnode-gnx'
+            v.fileIndex = gnx
+            return 
         if gnx:
             v.fileIndex = gnx
             ni.check_gnx(c, gnx, v)
@@ -2514,7 +2519,7 @@ class VNode:
         Modified by EKR.
         """
         v = self
-        seen = set([v.context.hiddenRootNode])
+        seen: Set[VNode] = set([v.context.hiddenRootNode])
 
         def v_and_parents(v: "VNode") -> Generator:
             if v in seen:
