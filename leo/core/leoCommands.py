@@ -210,17 +210,8 @@ class Commands:
     def initObjects(self, gui):
 
         c = self
-        gnx = 'hidden-root-vnode-gnx'
-        assert not hasattr(c, 'fileCommands'), c.fileCommands  # type:ignore
-
-        class DummyFileCommands:
-            def __init__(self):
-                self.gnxDict = {}
-
-        c.fileCommands = DummyFileCommands()  # type:ignore
-        self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
+        self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
-        c.fileCommands = None  # type:ignore
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:
@@ -272,7 +263,7 @@ class Commands:
         from leo.commands import commanderOutlineCommands
         assert commanderOutlineCommands
         # Other subcommanders.
-        from leo.core import leoFind # Leo 4.11.1
+        from leo.core import leoFind  # Leo 4.11.1
         from leo.core import leoKeys
         from leo.core import leoFileCommands
         from leo.core import leoImport
@@ -285,7 +276,7 @@ class Commands:
         from leo.core import leoVim
         # Import commands.testCommands to define commands.
         import leo.commands.testCommands as testCommands
-        assert testCommands # For pylint.
+        assert testCommands  # For pylint.
         # Define the subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)

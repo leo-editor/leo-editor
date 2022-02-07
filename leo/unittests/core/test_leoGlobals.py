@@ -234,14 +234,14 @@ class TestGlobals(LeoUnitTest):
             table = (
                 (http + 'writemonkey.com/index.php', ['browser']),
                 (file_ + 'x.py', ['os_startfile']),
-                (file_ + fn1, ['g.recursiveUNLSearch']),
-                (file_ + fn2, ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + fn1 + unl3, ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + '#' + unl3, ['g.recursiveUNLSearch']),
-                (unl1 + unl2, ['g.recursiveUNLSearch']),
-                (unl1 + unl3, ['g.recursiveUNLSearch']),
+                (file_ + fn1, ['g.findUNL']),
+                (file_ + fn2, ['g.findUNL']),
+                (unl1 + fn1 + unl2, ['g.findUNL']),
+                (unl1 + fn1 + unl3, ['g.findUNL']),
+                (unl1 + '#' + unl2, ['g.findUNL']),
+                (unl1 + '#' + unl3, ['g.findUNL']),
+                (unl1 + unl2, ['g.findUNL']),
+                (unl1 + unl3, ['g.findUNL']),
             )
             for url, aList in table:
                 g.handleUrl(c=c, p=c.p, url=url)

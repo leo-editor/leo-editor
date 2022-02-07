@@ -820,6 +820,7 @@
 <v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
 <v t="ekr.20180126061429.20"><vh>Use g.trace to debug scripts</vh></v>
 <v t="ekr.20180126061429.4"><vh>Use section references sparingly</vh></v>
+<v t="ekr.20220129091501.1"><vh>Use g.handleUnl to select nodes</vh></v>
 </v>
 </v>
 </v>
@@ -2379,7 +2380,19 @@
 </v>
 </v>
 <v t="ekr.20211105051031.1"></v>
-<v t="ekr.20131008041326.16241"></v>
+<v t="ekr.20180126061923.1"></v>
+<v t="ekr.20220130042521.1"><vh>Found 8:unl</vh>
+<v t="ekr.20101113063552.9458"></v>
+<v t="ekr.20170228104028.1"></v>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20101113063552.9483"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
+<v t="ekr.20220129091501.1"></v>
+<v t="ekr.20220130042644.1"><vh>Found 2:unls</vh>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31171,6 +31184,22 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 so these filters have full access to all nodes of the entire outline. As a result, these filters can return arbitrary text that comes from anywhere in the outline.
 
 The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
+<t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, g.handleUnl(unl, c) will select the referenced node.  For example::
+
+    g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes', c)
+    
+will select this node in LeoDocs.leo.
+</t>
+<t tx="ekr.20220130042521.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 8 nodes</t>
+<t tx="ekr.20220130042644.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 2 nodes</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

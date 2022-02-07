@@ -747,14 +747,11 @@ class quickMove:
             path, unl = full_path.split('#', 1)
             c2 = g.openWithFileName(path, old_c=self.c)
             self.c.bringToFront(c2=self.c)
-            found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
-
-            if found:
-
+            maxp = g.findUNL(unl.split('-->'), c2)
+            if maxp:
                 if not bookmark and (for_p == maxp or for_p.isAncestorOf(maxp)):
                     g.es("Invalid move")
                     return None, None
-
                 nd = maxp.insertAsNthChild(0)
             else:
                 g.es("Could not find '%s'" % full_path)

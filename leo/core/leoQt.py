@@ -48,7 +48,7 @@ if not g.in_bridge:
     except Exception:
         # g.es_exception()
         try:
-            from leo.core.leoQt5 import *
+            from leo.core.leoQt5 import *  # type:ignore
             isQt5 = True
             # print('\n===== Qt5 =====')
         except Exception:
