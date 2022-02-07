@@ -4338,26 +4338,21 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    
     # #2303: Allow up to four ints following a trailing colon.
     pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
     
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
-        
-        h =  unlList[-1].strip()
-        m = pat.match(h)
-        if not m or m.group(1).strip() != p.h.strip():
-            return False
         # Careful: make copies.
-        aList = unlList[:-1]
-        
-        p = p.copy()
+        aList, p = unlList[:], p.copy()
         while aList:
-            p.moveToParent()
-            if not p or p.h != aList[-1]:
+            if not p:
+                return False
+            m = pat.match(aList[-1].strip())
+            if not m or m.group(1).strip() != p.h.strip():
                 return False
             aList.pop(0)
+            p.moveToParent()
         return True
 
     while unlList:
