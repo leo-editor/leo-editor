@@ -4339,12 +4339,13 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     Return the found position, or None.
     """
     
-    def full_match(p):
+    def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         if not p.h.strip() == unlList[-1].strip():
             return False
         # Careful: make copies.
         aList = unlList[:-1]
+        
         p = p.copy()
         while aList:
             p.moveToParent()
