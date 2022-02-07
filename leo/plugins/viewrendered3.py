@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.71
+About Viewrendered3 V3.72
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -54,6 +54,15 @@ A number of other special types of nodes can be rendered (see the
 section `Special Renderings`_.
 
 @setting nodes in an @settings tree can modify the behavior of the plugin.
+
+New With This Version
+======================
+Added Lua to the list of supported languages.  Lua programs can be syntax-colored
+and executed using the ``@language lua`` directive. For Lua programs to be executable,
+the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.  
+Add a line similar to the following to the *[executables]* section::
+
+    lua = C:\Program Files (x86)\Lua\5.1\lua.exe
 #@+node:TomP.20200309205046.1: *3* Compatibility
 Compatibility
 =============
@@ -942,6 +951,7 @@ JAVA = 'java'
 JAVASCRIPT = 'javascript'
 JULIA = 'julia'
 
+LUA = 'lua'
 MATH = 'math'
 MD = 'md'
 PYPLOT = 'pyplot'
@@ -1026,7 +1036,7 @@ RST_DEFAULT_DARK_STYLESHEET = 'v3_rst_solarized-dark.css'
 RST_USE_DARK = False
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, CSS, XML, SQL)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, JULIA, LUA, CSS, XML, SQL)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
