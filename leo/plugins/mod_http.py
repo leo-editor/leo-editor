@@ -713,7 +713,7 @@ class LeoActions:
             if c:
                 g.es_print("Opened '%s' for bookmarks" % path)
                 if parsed.fragment:
-                    g.recursiveUNLSearch(parsed.fragment.split("-->"), c)
+                    g.findUNL(parsed.fragment.split("-->"), c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
                     previous = parent.getFirstChild()

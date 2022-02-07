@@ -127,8 +127,9 @@ class SettingsFinder:
         c2 = g.app.loadManager.openSettingsFile(path)
         if not c2:
             return ''  # Fix 434.
-        found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
-
+        maxp = g.findUNL(unl, c2)
+        if not maxp:
+            return ''  # 2022/01/30
         nd = settings.insertAsLastChild()
         dest = nd.get_UNL()
         self.copy_recursively(maxp, nd)
@@ -137,7 +138,6 @@ class SettingsFinder:
         shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
         self.c.config.settingsDict.update(settingsDict)
         my_settings_c.config.settingsDict.update(settingsDict)
-
         return '-->'.join([dest] + tail)
     #@+node:tbrown.20150818161651.6: *3* sf.find_setting
     def find_setting(self, setting):
@@ -186,7 +186,9 @@ class SettingsFinder:
             path = path.replace("file://", "").replace("unl://", "")
             src_unl = src_unl.replace('%20', ' ').split("-->")
             c2 = g.app.loadManager.openSettingsFile(path)
-            found, maxdepth, maxp = g.recursiveUNLFind(src_unl, c2)
+            maxp = g.findUNL(src_unl, c2)
+            if not maxp:
+                return  # 2022/01/30
             # scan this setting's group and category for conflicts
             up = maxp.parent()
             if up and self.no_conflict(up, settingsDict):

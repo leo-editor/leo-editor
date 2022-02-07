@@ -828,12 +828,10 @@ class Position:
                     if i.h == p.h:
                         count = count + 1
                 aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
-                    # g.recursiveUNLFind and sf.copy_to_my_settings undo this replacement.
                 if count or with_count:
                     aList[-1] = aList[-1] + "," + str(count)
             else:
                 aList.append(i.h.replace('-->', '--%3E'))
-                    # g.recursiveUNLFind  and sf.copy_to_my_settings undo this replacement.
         UNL = '-->'.join(reversed(aList))
         if with_proto:
             # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
