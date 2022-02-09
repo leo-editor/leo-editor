@@ -339,6 +339,7 @@ class MypyCommand:
             link_root = g.findNodeByPath(c, path)
             if link_root:
                 unl = link_root.get_UNL(with_proto=True, with_count=True)
+                print('') ; g.trace(unl)  ###
                 if s.lower().startswith(s_head):
                     s = s[len(s_head) :]  # Do *not* strip the line!
                 c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")

@@ -49,7 +49,7 @@ class SessionManager:
         else:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
-            result.append(c.p.get_UNL(with_file=True, with_proto=False, with_index=True))
+            result.append(c.p.get_UNL()) ### with_file=True, with_proto=False, with_index=True))
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self):

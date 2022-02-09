@@ -4332,36 +4332,6 @@ def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]
                     if p2.v in clones:
                         return [p.copy()]
     return []
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL
-def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
-    """
-    Find and move to the unl given by the unlList in the commander c.
-    Return the found position, or None.
-    """
-    # #2303: Allow up to four ints following a trailing colon.
-    pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-    
-    def full_match(p: Pos) -> bool:
-        """Return True if the headlines of p and all p's parents match unlList."""
-        # Careful: make copies.
-        aList, p = unlList[:], p.copy()
-        while aList:
-            if not p:
-                return False
-            m = pat.match(aList[-1].strip())
-            if not m or m.group(1).strip() != p.h.strip():
-                return False
-            aList.pop(0)
-            p.moveToParent()
-        return True
-
-    while unlList:
-        for p in c.all_unique_positions():
-            if full_match(p):
-                return p
-        # Not found. Pop the first parent from unlList.
-        unlList.pop(0)
-    return None
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
@@ -7518,10 +7488,6 @@ unl_regex = re.compile(r'\bunl:.*$')
 
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
-#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
-def unquoteUrl(url: str) -> str:
-    """Replace special characters (especially %20, by their equivalent)."""
-    return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
     """
@@ -7558,6 +7524,64 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
             path = g.os_path_finalize(path)
         url = f"{tag}{path}"
     return url
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL
+def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
+    """
+    Find and move to the unl given by the unlList in the commander c.
+    Return the found position, or None.
+    """
+    # #2303: Allow up to four ints following a trailing colon.
+    pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+    
+    g.trace(g.callers())
+    g.printObj(unlList)
+    
+    def full_match(p: Pos) -> bool:
+        """Return True if the headlines of p and all p's parents match unlList."""
+        # Careful: make copies.
+        aList, p = unlList[:], p.copy()
+        while aList:
+            if not p:
+                return False
+            m = pat.match(aList[-1].strip())
+            if not m or m.group(1).strip() != p.h.strip():
+                return False
+            aList.pop(0)
+            p.moveToParent()
+        return True
+
+    while unlList:
+        for p in c.all_unique_positions():
+            if full_match(p):
+                if 1:  # Experimental ###
+                    m = pat.match(unlList[-1].strip())
+                    assert m
+                    line = m.group(4)
+                    g.trace(line)
+                    try:
+                        nth_line_no = int(line)
+                    except ValueError:
+                        nth_line_no = 0
+                    if nth_line_no:
+                        if nth_line_no < 0:
+                            c.goToLineNumber(- nth_line_no)
+                            # # # if nth_col_no:
+                                # # # pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
+                                # # # c.frame.body.wrapper.setInsertPoint(pos)
+                        else:
+                            pos = sum(len(i) + 1 for i in p.b.split('\n')[: nth_line_no - 1])
+                            # if nth_col_no:
+                                # pos += nth_col_no
+                            c.frame.body.wrapper.setInsertPoint(pos)
+                    if p.hasChildren():
+                        p.expand()
+                    c.redraw()
+                    c.frame.bringToFront()
+                    c.bodyWantsFocusNow()
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
+    return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Pos) -> Optional[str]:
     """
@@ -7592,6 +7616,86 @@ def getUrlFromNode(p: Pos) -> Optional[str]:
         if s.startswith("#"):
             return s
     return None
+#@+node:ekr.20170221063527.1: *3* g.handleUnl
+def handleUnl(unl: str, c: Cmdr) -> Any:
+    """
+    Handle a Leo UNL. This must *never* open a browser.
+
+    Return the commander for the found UNL, or None.
+    
+    Redraw the commander if the UNL is found.
+    """
+    if not unl:
+        return None
+    unll = unl.lower()
+    if unll.startswith('unl:' + '//'):
+        unl = unl[6:]
+    elif unll.startswith('file://'):
+        unl = unl[7:]
+    unl = unl.strip()
+    if not unl:
+        return None
+    unl = g.unquoteUrl(unl)
+    # Compute path and unl.
+    ### if unl.find('#') == -1 and unl.find('-->') == -1:
+    if '#' not in unl and '-->' not in unl:
+        # The path is the entire unl.
+        path, unl = unl, None
+    elif '#' not in unl:
+        # The path is empty.
+        # Move to the unl in *this* commander.
+        p = g.findUNL(unl.split("-->"), c)
+        if p:
+            c.redraw(p)
+        return c
+    else:
+        path, unl = unl.split('#', 1)
+    if not path:
+        # Move to the unl in *this* commander.
+        p = g.findUNL(unl.split("-->"), c)
+        if p:
+            c.redraw(p)
+        return c
+    if c:
+        base = g.os_path_dirname(c.fileName())
+        c_path = g.os_path_finalize_join(base, path)
+    else:
+        c_path = None
+    # Look for the file in various places.
+    table = (
+        c_path,
+        g.os_path_finalize_join(g.app.loadDir, '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
+        g.app.loadDir,
+        g.app.homeDir,
+    )
+    for path2 in table:
+        if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
+            path = path2
+            break
+    else:
+        g.es_print('path not found', repr(path))
+        return None
+    # End editing in *this* outline, so typing in the new outline works.
+    c.endEditing()
+    c.redraw()
+    # Open the path.
+    c2 = g.openWithFileName(path, old_c=c)
+    if not c2:
+        return None
+    # Find the UNL, select the node, and redraw.
+    p = g.findUNL(unl.split("-->"), c2)
+    if not p:
+        return None
+    c2.redraw(p)
+    c2.bringToFront()
+    c2.bodyWantsFocusNow()
+    return c2
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     """Open a url or a unl."""
@@ -7664,85 +7768,6 @@ def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
     g.trace('parsed.netloc', parsed.netloc)
     g.trace('parsed.path  ', parsed.path)
     g.trace('parsed.scheme', repr(parsed.scheme))
-#@+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl: str, c: Cmdr) -> Any:
-    """
-    Handle a Leo UNL. This must *never* open a browser.
-
-    Return the commander for the found UNL, or None.
-    
-    Redraw the commander if the UNL is found.
-    """
-    if not unl:
-        return None
-    unll = unl.lower()
-    if unll.startswith('unl:' + '//'):
-        unl = unl[6:]
-    elif unll.startswith('file://'):
-        unl = unl[7:]
-    unl = unl.strip()
-    if not unl:
-        return None
-    unl = g.unquoteUrl(unl)
-    # Compute path and unl.
-    if unl.find('#') == -1 and unl.find('-->') == -1:
-        # The path is the entire unl.
-        path, unl = unl, None
-    elif '#' not in unl:
-        # The path is empty.
-        # Move to the unl in *this* commander.
-        p = g.findUNL(unl.split("-->"), c)
-        if p:
-            c.redraw(p)
-        return c
-    else:
-        path, unl = unl.split('#', 1)
-    if not path:
-        # Move to the unl in *this* commander.
-        p = g.findUNL(unl.split("-->"), c)
-        if p:
-            c.redraw(p)
-        return c
-    if c:
-        base = g.os_path_dirname(c.fileName())
-        c_path = g.os_path_finalize_join(base, path)
-    else:
-        c_path = None
-    # Look for the file in various places.
-    table = (
-        c_path,
-        g.os_path_finalize_join(g.app.loadDir, '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
-        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
-        g.app.loadDir,
-        g.app.homeDir,
-    )
-    for path2 in table:
-        if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
-            path = path2
-            break
-    else:
-        g.es_print('path not found', repr(path))
-        return None
-    # End editing in *this* outline, so typing in the new outline works.
-    c.endEditing()
-    c.redraw()
-    # Open the path.
-    c2 = g.openWithFileName(path, old_c=c)
-    if not c2:
-        return None
-    # Find the UNL, select the node, and redraw.
-    p = g.findUNL(unl.split("-->"), c2)
-    if not p:
-        return None
-    c2.redraw(p)
-    c2.bringToFront()
-    c2.bodyWantsFocusNow()
-    return c2
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
@@ -7839,6 +7864,10 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     if word:
         c.findCommands.find_def_strict(event)
     return None
+#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
+def unquoteUrl(url: str) -> str:
+    """Replace special characters (especially %20, by their equivalent)."""
+    return urllib.parse.unquote(url)
 #@-others
 # set g when the import is about to complete.
 g: Any = sys.modules.get('leo.core.leoGlobals')

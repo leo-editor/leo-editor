@@ -38,6 +38,7 @@ class GoToCommands:
             else:
                 # Not all sentinels cound as real lines.
                 gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
+            g.trace(gnx, h, offset)  ###
             p, found = self.find_gnx(root, gnx, h)
             if gnx and found:
                 self.success(lines, n, offset, p)
@@ -344,8 +345,9 @@ class GoToCommands:
             i += 1
         return s[i:]
     #@+node:ekr.20100216141722.5638: *4* goto.success
-    def success(self, lines, n, n2, p):
+    def success(self, lines, n, n2, p):  ### Why is lines here ???
         """Place the cursor on line n2 of p.b."""
+        g.trace(n, n2, p.h)
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.

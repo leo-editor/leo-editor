@@ -801,7 +801,7 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
+    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL (with_index, with_file)
     def get_UNL(self,
         with_file: bool=True,
         with_proto: bool=False,
@@ -834,7 +834,6 @@ class Position:
                 aList.append(i.h.replace('-->', '--%3E'))
         UNL = '-->'.join(reversed(aList))
         if with_proto:
-            # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
             s = "unl:" + f"//{self.v.context.fileName()}#{UNL}"
             return s.replace(' ', '%20')
         if with_file:

@@ -758,6 +758,11 @@ if QtWidgets:
                     ui.linkList.addItem(list_item)
                 else:
                     ui.linkList.addItem(item)
+        #@+node:ekr.20140920145803.17993: *3* ui.enableDelete
+        def enableDelete(self, enable):
+            ui = self.UI
+            ui.deleteBtn.setChecked(False)
+            ui.deleteBtn.setEnabled(enable)
         #@+node:ekr.20140920145803.17992: *3* ui.showMessage
         def showMessage(self, msg, color):
             """Show the message in the label area."""
@@ -770,11 +775,6 @@ if QtWidgets:
                 pal.setColor(QtGui.QPalette.WindowText, fg)
             ui.label.setPalette(pal)
             ui.label.setText(msg)
-        #@+node:ekr.20140920145803.17993: *3* ui.enableDelete
-        def enableDelete(self, enable):
-            ui = self.UI
-            ui.deleteBtn.setChecked(False)
-            ui.deleteBtn.setEnabled(enable)
         #@-others
 #@-others
 #@@language python

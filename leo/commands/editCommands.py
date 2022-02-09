@@ -209,8 +209,7 @@ def show_clone_ancestors(event=None):
     for clone in c.all_positions():
         if clone.v == p.v:
             unl = clone.get_UNL(with_file=False, with_index=False)
-            runl = " <- ".join(unl.split("-->")[::-1][1:])
-                # reverse and drop first
+            runl = " <- ".join(unl.split("-->")[::-1][1:])  # reverse and drop first
             g.es("  ", newline=False)
             g.es_clickable_link(c, clone, 1, runl + "\n")
 #@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')

@@ -1276,7 +1276,7 @@ class todoController:
         self.ui.UI.txtDetails.setToolTip("Priority set %s" %
             (str(prisetdate).strip() or '?')
         )
-    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
+    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos (todo.py)
     def unl_to_pos(self, unl, for_p):
         """"unl may be an outline (like c) or an UNL (string)
 

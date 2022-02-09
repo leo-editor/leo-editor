@@ -730,7 +730,7 @@ class quickMove:
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
-    #@+node:tbrown.20120620073922.33740: *3* unl_to_pos
+    #@+node:tbrown.20120620073922.33740: *3* unl_to_pos (quickmove.py)
     def unl_to_pos(self, c2, for_p, bookmark=False):
         """"c2 may be an outline (like c) or an UNL (string)
 

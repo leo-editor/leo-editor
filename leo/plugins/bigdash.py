@@ -340,7 +340,7 @@ class GlobalSearch:
             c.bringToFront()
             return
         g.es_print("Not found in any open document: %s" % l)
-    #@+node:ekr.20140919160020.17903: *3* do_search
+    #@+node:ekr.20140919160020.17903: *3* do_search (bigdash.py)
     def do_search(self, tgt, qs):
 
         ss = str(qs)
