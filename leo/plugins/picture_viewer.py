@@ -13,7 +13,11 @@ example:
 
 https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
 
-This plugin should be called from a script (or @command or @button node) as follows:
+This file may be run externally as follows::
+    
+    python -m leo.plugins.picture_viewer
+
+This plugin may be called from a script (or @command or @button node) as follows:
 
     from leo.plugins.picture_viewer import Slides
     Slides().run()  # See below for defaults.
@@ -232,6 +236,15 @@ if QtWidgets:
             dialog.setText( f"Delete file {g.shortFileName(file_name)}?")
             dialog.setIcon(Information.Warning)
             dialog.setDefaultButton(yes)
+            
+            def dialog_keypress_event(event):
+                s = event.text()
+                if s == 'y':
+                    dialog.done(0)
+                elif s == 'n' or s == '\x1b':  # ESC.
+                    dialog.done(1)
+
+            dialog.keyPressEvent = dialog_keypress_event
             dialog.raise_()
             result = dialog.exec() if isQt6 else dialog.exec_()
             if result == 0:
