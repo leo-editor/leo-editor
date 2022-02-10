@@ -3276,8 +3276,6 @@ class LeoQtLog(leoFrame.LeoLog):
 
         The from_redirect keyword argument is no longer used.
         """
-        if nodeLink:
-            g.trace('nodeLink', nodeLink, g.callers())
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
@@ -3314,7 +3312,6 @@ class LeoQtLog(leoFrame.LeoLog):
         s = f'<font color="{color}">{s}</font>'
         if nodeLink:
             url = nodeLink
-            g.trace(url, g.callers(6)) ###
             for scheme in 'file', 'unl':
                 # QUrl requires paths start with '/'
                 if (
