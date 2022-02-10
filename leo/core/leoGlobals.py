@@ -7533,49 +7533,45 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     # #2303: Allow up to four ints following a trailing colon.
     pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
     
-    g.trace(g.callers())
-    g.printObj(unlList)
-    
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p = unlList[:], p.copy()
-        while aList:
-            if not p:
-                return False
+        while aList and p:
             m = pat.match(aList[-1].strip())
             if not m or m.group(1).strip() != p.h.strip():
                 return False
             aList.pop(0)
             p.moveToParent()
         return True
-
+        
+    # First, find all positions in the unlList.
+    targets = []
+    for unl in unlList:
+        m = pat.match(unl)
+        target = m and m.group(1)
+        if target:
+            targets.append(target)
+    # Prefer later positions.
+    positions = reversed(list(p for p in c.all_positions() if p.h in targets))
     while unlList:
-        for p in c.all_unique_positions():
+        for p in positions:
             if full_match(p):
-                if 1:  # Experimental ###
-                    m = pat.match(unlList[-1].strip())
-                    assert m
+                m = pat.match(unlList[-1])  # Parse the last target.
+                if m:
                     line = m.group(4)
-                    g.trace(line)
                     try:
-                        nth_line_no = int(line)
-                    except ValueError:
-                        nth_line_no = 0
-                    if nth_line_no:
-                        if nth_line_no < 0:
-                            c.goToLineNumber(- nth_line_no)
-                            # # # if nth_col_no:
-                                # # # pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
-                                # # # c.frame.body.wrapper.setInsertPoint(pos)
-                        else:
-                            pos = sum(len(i) + 1 for i in p.b.split('\n')[: nth_line_no - 1])
-                            # if nth_col_no:
-                                # pos += nth_col_no
-                            c.frame.body.wrapper.setInsertPoint(pos)
-                    if p.hasChildren():
-                        p.expand()
-                    c.redraw()
+                        n = int(line)
+                    except (TypeError, ValueError):
+                        n = 0
+                    if n == 0:
+                        c.redraw(p)
+                    elif n < 0:
+                        c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    elif n > 0:
+                        pos = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
+                        c.redraw(p)
+                        c.frame.body.wrapper.setInsertPoint(pos)
                     c.frame.bringToFront()
                     c.bodyWantsFocusNow()
                 return p
@@ -7637,7 +7633,6 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return None
     unl = g.unquoteUrl(unl)
     # Compute path and unl.
-    ### if unl.find('#') == -1 and unl.find('-->') == -1:
     if '#' not in unl and '-->' not in unl:
         # The path is the entire unl.
         path, unl = unl, None
