@@ -419,7 +419,7 @@ class LeoServer:
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server:leo overridden methods
-    #@+node:felix.20210711194729.1: *4* _runAskOkDialog
+    #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
@@ -429,7 +429,7 @@ class LeoServer:
             s = title
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
-    #@+node:felix.20210711194736.1: *4* _runAskYesNoDialog
+    #@+node:felix.20210711194736.1: *4* LeoServer._runAskYesNoDialog
     def _runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
@@ -448,7 +448,7 @@ class LeoServer:
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210711194745.1: *4* _runAskYesNoCancelDialog
+    #@+node:felix.20210711194745.1: *4* LeoServer._runAskYesNoCancelDialog
     def _runAskYesNoCancelDialog(self, c, title,
         message=None, yesMessage="Yes", noMessage="No",
         yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
@@ -464,7 +464,7 @@ class LeoServer:
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210622235209.1: *4* _es
+    #@+node:felix.20210622235209.1: *4* LeoServer._es
     def _es(self, * args, **keys):  # pragma: no cover (tested in client).
         """Output to the Log Pane"""
         d = {
@@ -483,7 +483,7 @@ class LeoServer:
         if color:
             package["color"] = color
         self._send_async_output(package, True)
-    #@+node:felix.20210626002856.1: *4* _getScript
+    #@+node:felix.20210626002856.1: *4* LeoServer._getScript
     def _getScript(self, c, p,
                    useSelectedText=True,
                    forcePythonSentinels=True,
@@ -513,15 +513,15 @@ class LeoServer:
             g.es_exception()
             script = ''
         return script
-    #@+node:felix.20210627004238.1: *4* _asyncIdleLoop
+    #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
     async def _asyncIdleLoop(self, seconds, func):
         while True:
             await asyncio.sleep(seconds)
             func(self)
-    #@+node:felix.20210627004039.1: *4* _idleTime
+    #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn, delay, tag):
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
-    #@+node:felix.20210626003327.1: *4* _show_find_success
+    #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
         """Handle a successful find match."""
         if in_headline:
