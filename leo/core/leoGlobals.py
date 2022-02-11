@@ -7552,8 +7552,10 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
         target = m and m.group(1)
         if target:
             targets.append(target)
+    g.printObj(targets, tag='targets')
     # Prefer later positions.
-    positions = reversed(list(p for p in c.all_positions() if p.h in targets))
+    positions = list(reversed(list(p for p in c.all_positions() if p.h in targets)))
+    g.printObj([z.h for z in positions], tag='positions')
     while unlList:
         for p in positions:
             if full_match(p):
