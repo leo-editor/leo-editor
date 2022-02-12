@@ -7528,9 +7528,6 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL
 # Define the patterns applied to the last unlList element.
 
-# #2303: ':' is the separator. Allow up to four ints following a trailing colon.
-old_unl_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-
 # #2403: '::' is the separator. Support only line numbers.
 new_unl_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
 
@@ -7545,26 +7542,46 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     if not unlList:
         return None
     # The code no longers supports old UNL's.
-    if old_unl_pat.match(unlList[-1]):
-        g.printObj(unlList, tag='Old-style UNLs not supported')
+    if not new_unl_pat.match(unlList[-1]):
+        if not g.unitTesting:
+            g.printObj(unlList, tag='Old-style UNLs not supported')
         return None
+        
+    def dump_parents(p):
+        g.trace(g.callers(2))
+        p3 = p.copy()
+        while p3:
+            print('  ', p3.h)
+            p3.moveToParent()
+        ###g.printObj([z.h for z in p.self_and_parents()], tag=f"Found line: {n} p: {p.h}") ###
 
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList, p = unlList[:], p.copy()
+        aList0, p0 = unlList[:], p.copy()  ### for traces.
+        aList, p1 = unlList[:], p.copy()
         # Expect '::' only on the last element of the unlList
         m = new_unl_pat.match(aList[-1])
-        if not m or m.group(1) != p.h:
+        if not m or m.group(1) != p1.h:
+            g.trace('fail 1')
+            dump_parents(p0)
             return False
-        # Check the rest of the headlines.
         aList.pop()
-        p.moveToParent()
-        while aList and p:
-            if aList[-1] != p.h:
+        p1.moveToParent()
+        # Check the rest of the headlines.
+        while aList and p1:
+            if aList[-1] != p1.h:
+                g.trace('fail 2')
+                dump_parents(p0)
                 return False
             aList.pop()
-            p.moveToParent()
+            p1.moveToParent()
+        if aList:
+            g.trace('fail 2')
+            dump_parents(p0)
+            return False
+        g.printObj(aList0, tag=f"full_match: found: {p0.h}")
+        dump_parents(p0)
         return True
         
     # Find all target headlines.
@@ -7581,11 +7598,14 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
         g.printObj(targets, tag='targets')
 
     # Find all target positions. Prefer later positions.
-    positions = list(reversed(list(p for p in c.all_positions() if p.h in targets)))
-    if trace: g.printObj([z.h for z in positions], tag='positions')  ###
+    positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
+    if trace: g.printObj(positions, tag='positions')  ###
     while unlList:
+        g.printObj(unlList, tag='Loop')
         for p in positions:
+            p1 = p.copy()
             if full_match(p):
+                assert p == p1, (p, p1)
                 n = 0  # The default line.
                 # Parse the last target.
                 m = new_unl_pat.match(unlList[-1]) 
@@ -7595,7 +7615,9 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
                         n = int(line)
                     except (TypeError, ValueError):
                         g.trace('bad line number', line)
-                if trace: g.printObj([z.h for z in p.self_and_parents()], tag=f"Found line: {n} p: {p.h}") ###
+                if trace:
+                    f"Found line: {n} p: {p.h}"
+                    dump_parents(p)
                 if n == 0:
                     c.redraw(p)
                 elif n < 0:
