@@ -823,42 +823,11 @@ class Position:
         1. Never translate '-->' to '--%3E'.
         2. Never generate child indices.
         """
-
-        # with_file=True - include path to Leo file
-        # with_proto=False - include 'file://'
-        # with_index - include ',x' at end where x is child index in parent
-        # with_count - include ',x,y' at end where y zero based count of same headlines
-
         return (
             'unl:' + '//'
             + self.v.context.fileName() + '#'
             + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         )
-
-        ###
-            # aList = []
-            # for i in self.self_and_parents(copy=False):
-                # if with_index or with_count:
-                    # count = 0
-                    # ind = 0
-                    # p = i.copy()
-                    # while p.hasBack():
-                        # ind = ind + 1
-                        # p.moveToBack()
-                        # if i.h == p.h:
-                            # count = count + 1
-                    # aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
-                    # if count or with_count:
-                        # aList[-1] = aList[-1] + "," + str(count)
-                # else:
-                    # aList.append(i.h.replace('-->', '--%3E'))
-            # UNL = '-->'.join(reversed(aList))
-            # if with_proto:
-                # s = "unl:" + f"//{self.v.context.fileName()}#{UNL}"
-                # return s.replace(' ', '%20')
-            # if with_file:
-                # return f"{self.v.context.fileName()}#{UNL}"
-            # return UNL
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self

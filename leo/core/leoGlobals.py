@@ -6130,7 +6130,6 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     message = message.strip() + '\n'
     unl = p.get_UNL(with_proto=True, with_count=True)
     if unl:
-        ### log.put(message, nodeLink=f"{unl},{line_number}")
         log.put(message, nodeLink=f"{unl}::{line_number}")  # Local line.
     else:
         log.put(message)
@@ -7536,9 +7535,6 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # pylint: disable=multiple-statements  ###
-
-    trace = True and not g.unitTesting ###
     if not unlList:
         return None
     # The code no longers supports old UNL's.
@@ -7546,42 +7542,25 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
         if not g.unitTesting:
             g.printObj(unlList, tag='Old-style UNLs not supported')
         return None
-        
-    def dump_parents(p):
-        g.trace(g.callers(2))
-        p3 = p.copy()
-        while p3:
-            print('  ', p3.h)
-            p3.moveToParent()
-        ###g.printObj([z.h for z in p.self_and_parents()], tag=f"Found line: {n} p: {p.h}") ###
-
+   
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList0, p0 = unlList[:], p.copy()  ### for traces.
         aList, p1 = unlList[:], p.copy()
         # Expect '::' only on the last element of the unlList
         m = new_unl_pat.match(aList[-1])
         if not m or m.group(1) != p1.h:
-            g.trace('fail 1')
-            dump_parents(p0)
             return False
         aList.pop()
         p1.moveToParent()
         # Check the rest of the headlines.
         while aList and p1:
             if aList[-1] != p1.h:
-                g.trace('fail 2')
-                dump_parents(p0)
                 return False
             aList.pop()
             p1.moveToParent()
         if aList:
-            g.trace('fail 2')
-            dump_parents(p0)
             return False
-        g.printObj(aList0, tag=f"full_match: found: {p0.h}")
-        dump_parents(p0)
         return True
         
     # Find all target headlines.
@@ -7592,14 +7571,8 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     if target:
         targets.append(target)
     targets.extend(unlList[:-1])
-    
-    if trace:
-        g.printObj(unlList, tag='unlList')
-        g.printObj(targets, tag='targets')
-
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
-    if trace: g.printObj(positions, tag='positions')  ###
     while unlList:
         g.printObj(unlList, tag='Loop')
         for p in positions:
@@ -7615,9 +7588,6 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
                         n = int(line)
                     except (TypeError, ValueError):
                         g.trace('bad line number', line)
-                if trace:
-                    f"Found line: {n} p: {p.h}"
-                    dump_parents(p)
                 if n == 0:
                     c.redraw(p)
                 elif n < 0:
@@ -7631,9 +7601,7 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
                 c.bodyWantsFocusNow()
                 return p
         # Not found. Pop the first parent from unlList.
-        if trace: g.trace('*** POP ***')  ###
         unlList.pop(0)
-    if trace: g.trace('Not found')  ###
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Pos) -> Optional[str]:

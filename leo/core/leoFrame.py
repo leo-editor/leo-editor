@@ -1629,9 +1629,8 @@ class LeoTree:
         c.frame.updateStatusLine()
             # New in Leo 4.4.1.
         c.frame.clearStatusLine()
-        ### verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
-            c.frame.putStatusLine(p.get_UNL())  ### with_proto=verbose, with_index=verbose))
+            c.frame.putStatusLine(p.get_UNL())
     #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
