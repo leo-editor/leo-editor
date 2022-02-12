@@ -341,7 +341,7 @@ class MypyCommand:
                 unl = link_root.get_UNL(with_proto=True, with_count=True)
                 if s.lower().startswith(s_head):
                     s = s[len(s_head) :]  # Do *not* strip the line!
-                c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")
+                c.frame.log.put(s, nodeLink=f"{unl}::{-line_number}")  # Global line
             elif path not in self.unknown_path_names:
                 self.unknown_path_names.append(path)
                 print(f"no @<file> node found: {path}")
@@ -397,7 +397,7 @@ class PyflakesCommand:
                     root = roots[fn_n]
                     line = int(s.split(':')[1])
                     unl = root.get_UNL(with_proto=True, with_count=True)
-                    g.es(s, nodeLink=f"{unl},{(-line)}")
+                    g.es(s, nodeLink=f"{unl}::{(-line)}")  # Global line
                 except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail
                     g.es(s)

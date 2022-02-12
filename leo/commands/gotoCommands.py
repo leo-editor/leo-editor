@@ -349,8 +349,7 @@ class GoToCommands:
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.
-        if c.p.isOutsideAnyAtFileTree():
-            p = c.findNodeOutsideAnyAtFileTree(p)
+        c.selectPosition(p)
         c.redraw(p)
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()

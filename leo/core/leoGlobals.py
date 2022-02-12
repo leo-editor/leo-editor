@@ -6130,7 +6130,8 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     message = message.strip() + '\n'
     unl = p.get_UNL(with_proto=True, with_count=True)
     if unl:
-        log.put(message, nodeLink=f"{unl},{line_number}")
+        ### log.put(message, nodeLink=f"{unl},{line_number}")
+        log.put(message, nodeLink=f"{unl}::{line_number}")  # Local line.
     else:
         log.put(message)
 #@+node:ekr.20060917120951: *3* g.es_dump
@@ -7530,55 +7531,95 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # #2303: Allow up to four ints following a trailing colon.
-    pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-    
+    trace = True and not g.unitTesting ###
+    if not unlList:
+        return None
+    # #2303: ':' is the separator. Allow up to four ints following a trailing colon.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+    # #24-3: '::' is the separator. Support only line numbers.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
+    # Check unlList
+    m = new_pat.match(unlList[-1]) # Expect a line number only on list element.
+    is_new = not all(old_pat.match(z) for z in unlList)
+    if trace: g.trace('is_new', is_new) ###
+    pat = new_pat if is_new else old_pat
+    line_group = 3 if is_new else 4
+
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p = unlList[:], p.copy()
-        while aList and p:
-            m = pat.match(aList[-1].strip())
-            if not m or m.group(1).strip() != p.h.strip():
+        if is_new:
+            # Expect '::' only on the last element of the unlList
+            m = pat.match(aList[-1])
+            if not m or m.group(1) != p.h:
                 return False
-            aList.pop(0)
+            aList.pop()
             p.moveToParent()
+            while aList and p:
+                if aList[-1] != p.h:
+                    return False
+                aList.pop()
+                p.moveToParent()
+        else:
+            while aList and p:
+                m = pat.match(aList[-1].strip())
+                if not m or m.group(1).strip() != p.h.strip():
+                    return False
+                aList.pop()
+                p.moveToParent()
         return True
         
-    # First, find all positions in the unlList.
+    # Find all target headlines.
     targets = []
-    for unl in unlList:
-        m = pat.match(unl)
+    if is_new:
+        # Expect '::' only on the last element of the unlList
+        m = pat.match(unlList[-1])
         target = m and m.group(1)
         if target:
             targets.append(target)
-    g.printObj(targets, tag='targets')
-    # Prefer later positions.
+        targets.extend(unlList[:-1])
+    else:
+        # Expect ':' for all elements of the unlList.
+        for unl in unlList:
+            m = pat.match(unl)
+            target = m and m.group(1)
+            if target:
+                targets.append(target)
+    if trace:
+        g.printObj(unlList, tag='unlList')
+        g.printObj(targets, tag='targets')
+    # Find all target positions. Prefer later positions.
     positions = list(reversed(list(p for p in c.all_positions() if p.h in targets)))
-    g.printObj([z.h for z in positions], tag='positions')
+    if trace: g.printObj([z.h for z in positions], tag='positions')  ###
     while unlList:
         for p in positions:
             if full_match(p):
+                n = 0  # The default line.
                 m = pat.match(unlList[-1])  # Parse the last target.
                 if m:
-                    line = m.group(4)
+                    line = m.group(line_group)
                     try:
                         n = int(line)
                     except (TypeError, ValueError):
-                        n = 0
-                    if n == 0:
-                        c.redraw(p)
-                    elif n < 0:
-                        c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
-                    elif n > 0:
-                        pos = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
-                        c.redraw(p)
-                        c.frame.body.wrapper.setInsertPoint(pos)
-                    c.frame.bringToFront()
-                    c.bodyWantsFocusNow()
+                        g.trace('bad line number', line) ###
+                if trace: g.printObj([z.h for z in p.self_and_parents()], tag=f"Found line: {n} p: {p.h}") ###
+                if n == 0:
+                    c.redraw(p)
+                elif n < 0:
+                    p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    return p if ok else None
+                elif n > 0:
+                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
+                    c.redraw(p)
+                    c.frame.body.wrapper.setInsertPoint(insert_point)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
                 return p
         # Not found. Pop the first parent from unlList.
+        if trace: g.trace('*** POP ***')  ###
         unlList.pop(0)
+    if trace: g.trace('Not found')  ###
     return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Pos) -> Optional[str]:
@@ -7710,7 +7751,7 @@ def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     try:
         return g.handleUrlHelper(url, c, p)
     except Exception:
-        g.es_print("exception opening", repr(url))
+        g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
         return None
 #@+node:ekr.20170226054459.1: *4* g.handleUrlHelper

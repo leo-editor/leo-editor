@@ -205,13 +205,15 @@ def show_clone_ancestors(event=None):
     if not c:
         return
     p = c.p
-    g.es(f"Ancestors of '{p.h}':")
+    g.es(f"Ancestors of {p.h}...")
     for clone in c.all_positions():
         if clone.v == p.v:
-            unl = clone.get_UNL(with_file=False, with_index=False)
-            runl = " <- ".join(unl.split("-->")[::-1][1:])  # reverse and drop first
-            g.es("  ", newline=False)
-            g.es_clickable_link(c, clone, 1, runl + "\n")
+            unl = clone.get_UNL()
+            i = unl.find('#')
+            if i > 0:
+                message = unl[i + 1:]
+            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
+               
 #@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event=None):

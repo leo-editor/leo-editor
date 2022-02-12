@@ -2256,7 +2256,7 @@ class Commands:
             # Create the link.
             unl = p.get_UNL(with_proto=True, with_count=True)
             if unl:
-                log.put(s + '\n', nodeLink=f"{unl},{n2}")
+                log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line

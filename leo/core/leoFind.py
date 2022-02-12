@@ -1623,7 +1623,7 @@ class LeoFind:
             unl = p.get_UNL(with_proto=True, with_count=True)
             if self.in_headline:
                 line_number = 1
-            log.put(line.strip() + '\n', nodeLink=f"{unl},{line_number}")
+            log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
 
         seen = []  # List of (vnode, pos).
         both = self.search_body and self.search_headline

@@ -801,7 +801,7 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL (with_index, with_file)
+    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
     def get_UNL(self,
         ### To be deleted.
         with_file: bool=True,
@@ -818,21 +818,21 @@ class Position:
         - self.v.context.fileName() #
         - a list of headlines separated by '-->'
         
-        New in Leo 6.6: This method *never* does the following:
+        New in Leo 6.6:
         
-        1. Translate '-->' to '--%3E'.
-        2. Add child indices.
+        1. Never translate '-->' to '--%3E'.
+        2. Never generate child indices.
         """
 
         # with_file=True - include path to Leo file
         # with_proto=False - include 'file://'
         # with_index - include ',x' at end where x is child index in parent
         # with_count - include ',x,y' at end where y zero based count of same headlines
-        
+
         return (
             'unl:' + '//'
             + self.v.context.fileName() + '#'
-            + '-->'.join(z.h for z in self.self_and_parents(copy=False))
+            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         )
 
         ###
