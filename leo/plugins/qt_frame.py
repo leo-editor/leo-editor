@@ -3989,7 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
                 s = g.toUnicode(b)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        nodeLink = p.get_UNL(with_proto=True, with_count=True)
+        nodeLink = p.get_UNL()
         g.es_print(f"not found: {fn}", nodeLink=nodeLink)
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper

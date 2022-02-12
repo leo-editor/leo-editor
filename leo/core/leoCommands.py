@@ -2254,7 +2254,7 @@ class Commands:
             # Find the node and offset corresponding to line n.
             p, n2 = find_line(fn, n)
             # Create the link.
-            unl = p.get_UNL(with_proto=True, with_count=True)
+            unl = p.get_UNL()
             if unl:
                 log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:

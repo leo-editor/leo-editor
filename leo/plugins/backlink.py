@@ -215,9 +215,7 @@ class backlinkController:
             url.lower().startswith('file://') and url.find('-->') > -1 or
             url.startswith('#')
         ):
-            our_unl = 'unl://' + self.c.p.get_UNL(with_index=False)
-            # don't use .get_UNL(with_proto=True), that
-            # unecessarily does ' ' -> %20 conversion
+            our_unl = 'unl:' + '//' + self.c.p.get_UNL()
             new_c = g.handleUnl(url, self.c)
             if new_c and hasattr(new_c, 'backlinkController'):
                 unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')

@@ -338,7 +338,7 @@ class MypyCommand:
             # Look for the @<file> node.
             link_root = g.findNodeByPath(c, path)
             if link_root:
-                unl = link_root.get_UNL(with_proto=True, with_count=True)
+                unl = link_root.get_UNL()
                 if s.lower().startswith(s_head):
                     s = s[len(s_head) :]  # Do *not* strip the line!
                 c.frame.log.put(s, nodeLink=f"{unl}::{-line_number}")  # Global line
@@ -396,7 +396,7 @@ class PyflakesCommand:
                 try:
                     root = roots[fn_n]
                     line = int(s.split(':')[1])
-                    unl = root.get_UNL(with_proto=True, with_count=True)
+                    unl = root.get_UNL()
                     g.es(s, nodeLink=f"{unl}::{(-line)}")  # Global line
                 except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail

@@ -445,7 +445,7 @@ class AtFile:
         at, c, ic = self, self.c, self.c.importCommands
         fileName = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fileName):
-            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
+            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return p
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
@@ -535,10 +535,7 @@ class AtFile:
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
         if not g.os_path_exists(fileName):
-            g.es_print(
-                f"not found: {fileName}",
-                color='red',
-                nodeLink=root.get_UNL(with_proto=True))
+            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
@@ -626,7 +623,7 @@ class AtFile:
         c, ic = self.c, self.c.importCommands
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
-            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
+            g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return p
         # Delete all the child nodes.
         while p.hasChildren():
@@ -2143,7 +2140,7 @@ class AtFile:
         for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
             line = lines[j].rstrip()
             if j == i:
-                unl = p.get_UNL(with_proto=True, with_count=True)
+                unl = p.get_UNL()
                 g.es_print(f"{j+1:5}:* {line}", nodeLink=f"{unl}::-{j+1:d}")  # Global line.
                 g.es_print(' ' * (7 + offset) + '^')
             else:

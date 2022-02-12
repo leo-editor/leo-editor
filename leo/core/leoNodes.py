@@ -802,13 +802,7 @@ class Position:
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self,
-        ### To be deleted.
-        with_file: bool=True,
-        with_proto: bool=False,
-        with_index: bool=True,
-        with_count: bool=False,
-    ) -> str:
+    def get_UNL(self) -> str:
         """
         Return a UNL representing a clickable link.
         
@@ -819,9 +813,9 @@ class Position:
         - a list of headlines separated by '-->'
         
         New in Leo 6.6:
-        
-        1. Never translate '-->' to '--%3E'.
-        2. Never generate child indices.
+        - Always add unl: // and file name.
+        - Never translate '-->' to '--%3E'.
+        - Never generate child indices.
         """
         return (
             'unl:' + '//'

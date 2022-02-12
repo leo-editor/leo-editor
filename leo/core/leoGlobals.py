@@ -6128,7 +6128,7 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     """
     log = c.frame.log
     message = message.strip() + '\n'
-    unl = p.get_UNL(with_proto=True, with_count=True)
+    unl = p.get_UNL()
     if unl:
         log.put(message, nodeLink=f"{unl}::{line_number}")  # Local line.
     else:
