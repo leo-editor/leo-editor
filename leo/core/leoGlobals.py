@@ -7526,69 +7526,60 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
         url = f"{tag}{path}"
     return url
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL
+# Define the patterns applied to the last unlList element.
+
+# #2303: ':' is the separator. Allow up to four ints following a trailing colon.
+old_unl_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+
+# #2403: '::' is the separator. Support only line numbers.
+new_unl_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
+
 def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     """
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
+    # pylint: disable=multiple-statements  ###
+
     trace = True and not g.unitTesting ###
     if not unlList:
         return None
-    # #2303: ':' is the separator. Allow up to four ints following a trailing colon.
-    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-    # #24-3: '::' is the separator. Support only line numbers.
-    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
-    # Check unlList
-    m = new_pat.match(unlList[-1]) # Expect a line number only on list element.
-    is_new = not all(old_pat.match(z) for z in unlList)
-    if trace: g.trace('is_new', is_new) ###
-    pat = new_pat if is_new else old_pat
-    line_group = 3 if is_new else 4
+    # The code no longers supports old UNL's.
+    if old_unl_pat.match(unlList[-1]):
+        g.printObj(unlList, tag='Old-style UNLs not supported')
+        return None
 
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p = unlList[:], p.copy()
-        if is_new:
-            # Expect '::' only on the last element of the unlList
-            m = pat.match(aList[-1])
-            if not m or m.group(1) != p.h:
+        # Expect '::' only on the last element of the unlList
+        m = new_unl_pat.match(aList[-1])
+        if not m or m.group(1) != p.h:
+            return False
+        # Check the rest of the headlines.
+        aList.pop()
+        p.moveToParent()
+        while aList and p:
+            if aList[-1] != p.h:
                 return False
             aList.pop()
             p.moveToParent()
-            while aList and p:
-                if aList[-1] != p.h:
-                    return False
-                aList.pop()
-                p.moveToParent()
-        else:
-            while aList and p:
-                m = pat.match(aList[-1].strip())
-                if not m or m.group(1).strip() != p.h.strip():
-                    return False
-                aList.pop()
-                p.moveToParent()
         return True
         
     # Find all target headlines.
     targets = []
-    if is_new:
-        # Expect '::' only on the last element of the unlList
-        m = pat.match(unlList[-1])
-        target = m and m.group(1)
-        if target:
-            targets.append(target)
-        targets.extend(unlList[:-1])
-    else:
-        # Expect ':' for all elements of the unlList.
-        for unl in unlList:
-            m = pat.match(unl)
-            target = m and m.group(1)
-            if target:
-                targets.append(target)
+    # Expect '::' only on the last element of the unlList
+    m = new_unl_pat.match(unlList[-1])
+    target = m and m.group(1)
+    if target:
+        targets.append(target)
+    targets.extend(unlList[:-1])
+    
     if trace:
         g.printObj(unlList, tag='unlList')
         g.printObj(targets, tag='targets')
+
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(p for p in c.all_positions() if p.h in targets)))
     if trace: g.printObj([z.h for z in positions], tag='positions')  ###
@@ -7596,13 +7587,14 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
         for p in positions:
             if full_match(p):
                 n = 0  # The default line.
-                m = pat.match(unlList[-1])  # Parse the last target.
+                # Parse the last target.
+                m = new_unl_pat.match(unlList[-1]) 
                 if m:
-                    line = m.group(line_group)
+                    line = m.group(3)
                     try:
                         n = int(line)
                     except (TypeError, ValueError):
-                        g.trace('bad line number', line) ###
+                        g.trace('bad line number', line)
                 if trace: g.printObj([z.h for z in p.self_and_parents()], tag=f"Found line: {n} p: {p.h}") ###
                 if n == 0:
                     c.redraw(p)
