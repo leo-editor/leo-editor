@@ -208,12 +208,16 @@ def show_clone_ancestors(event=None):
     g.es(f"Ancestors of {p.h}...")
     for clone in c.all_positions():
         if clone.v == p.v:
-            unl = clone.get_UNL()
+            unl = message = clone.get_UNL()
+            # Drop the file part.
             i = unl.find('#')
             if i > 0:
                 message = unl[i + 1:]
+            # Drop the target node from the message.
+            parts = message.split('-->')
+            if len(parts) > 1:
+                message = '-->'.join(parts[:-1])
             c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
-               
 #@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event=None):
