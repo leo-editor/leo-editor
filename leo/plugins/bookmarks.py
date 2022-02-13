@@ -425,7 +425,7 @@ def cmd_bookmark_find_flat(event):
     for nd in nodes[:40]:
         new = container.insertAsLastChild()
         new.h = nd.h
-        new.b = c.vnode2position(nd).get_UNL(with_proto=True)
+        new.b = c.vnode2position(nd).get_UNL()
     bm.show_list(bm.get_list())
     if len(nodes) > 40:
         g.es("Stopped after 40 hits")

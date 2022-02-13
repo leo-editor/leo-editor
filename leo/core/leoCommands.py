@@ -2254,9 +2254,9 @@ class Commands:
             # Find the node and offset corresponding to line n.
             p, n2 = find_line(fn, n)
             # Create the link.
-            unl = p.get_UNL(with_proto=True, with_count=True)
+            unl = p.get_UNL()
             if unl:
-                log.put(s + '\n', nodeLink=f"{unl},{n2}")
+                log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:
                 log.put(s + '\n')
         #@+node:ekr.20210529164957.1: *5* function: find_line
@@ -4172,20 +4172,6 @@ class Commands:
             pc.matchiter = t2
             res.append(pc)
         return res
-    #@+node:ekr.20150410095543.1: *4* c.findNodeOutsideAnyAtFileTree
-    def findNodeOutsideAnyAtFileTree(self, target):
-        """Select the first clone of target that is outside any @file node."""
-        c = self
-        if target.isCloned():
-            v = target.v
-            for p in c.all_positions():
-                if p.v == v:
-                    for parent in p.self_and_parents(copy=False):
-                        if parent.isAnyAtFileNode():
-                            break
-                    else:
-                        return p
-        return target
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
     def registerReloadSettings(self, obj):

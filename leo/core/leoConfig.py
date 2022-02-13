@@ -896,7 +896,7 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind,  # type:ignore
             path=c.mFileName,
             tag='setting',
-            unl=(p and p.get_UNL(with_proto=True)),
+            unl=(p and p.get_UNL()),
             val=val,
         )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse

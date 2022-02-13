@@ -205,13 +205,19 @@ def show_clone_ancestors(event=None):
     if not c:
         return
     p = c.p
-    g.es(f"Ancestors of '{p.h}':")
+    g.es(f"Ancestors of {p.h}...")
     for clone in c.all_positions():
         if clone.v == p.v:
-            unl = clone.get_UNL(with_file=False, with_index=False)
-            runl = " <- ".join(unl.split("-->")[::-1][1:])  # reverse and drop first
-            g.es("  ", newline=False)
-            g.es_clickable_link(c, clone, 1, runl + "\n")
+            unl = message = clone.get_UNL()
+            # Drop the file part.
+            i = unl.find('#')
+            if i > 0:
+                message = unl[i + 1:]
+            # Drop the target node from the message.
+            parts = message.split('-->')
+            if len(parts) > 1:
+                message = '-->'.join(parts[:-1])
+            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 #@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event=None):
@@ -224,7 +230,13 @@ def show_clones(event=None):
         parent = clone.parent()
         if parent and parent not in seen:
             seen.append(parent)
-            g.es_clickable_link(c, clone, 1, f"{parent.h} -> {clone.h}\n")
+            unl = message = parent.get_UNL()
+            # Drop the file part.
+            i = unl.find('#')
+            if i > 0:
+                message = unl[i + 1:]
+            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
+
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):

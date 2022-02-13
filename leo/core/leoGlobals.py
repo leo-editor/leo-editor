@@ -6118,21 +6118,6 @@ def es(*args: Any, **keys: Any) -> None:
         app.logWaiting.append((s, color, newline, d),)
 
 log = es
-#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
-    """
-    Write a clickable message to the given line number of p.b.
-
-    Negative line numbers indicate global lines.
-
-    """
-    log = c.frame.log
-    message = message.strip() + '\n'
-    unl = p.get_UNL(with_proto=True, with_count=True)
-    if unl:
-        log.put(message, nodeLink=f"{unl},{line_number}")
-    else:
-        log.put(message)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n: int=30, title: str=None) -> None:
     if title:
@@ -7524,56 +7509,88 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
             path = g.os_path_finalize(path)
         url = f"{tag}{path}"
     return url
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL
-def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
+def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     """
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    # #2303: Allow up to four ints following a trailing colon.
-    pat = re.compile(r'(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-    
+    # Define the unl patterns.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+
+    #@+others  # Define helper functions
+    #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
-        aList, p = unlList[:], p.copy()
-        while aList and p:
-            m = pat.match(aList[-1].strip())
-            if not m or m.group(1).strip() != p.h.strip():
+        aList, p1 = unlList[:], p.copy()
+        # Expect '::' only on the last element of the unlList
+        m = new_pat.match(aList[-1])
+        if not m or m.group(1) != p1.h:
+            return False
+        aList.pop()
+        p1.moveToParent()
+        # Check the rest of the headlines.
+        while aList and p1:
+            if aList[-1] != p1.h:
                 return False
-            aList.pop(0)
-            p.moveToParent()
+            aList.pop()
+            p1.moveToParent()
+        if aList:
+            return False
         return True
-        
-    # First, find all positions in the unlList.
+    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    def convert_unl_list(aList: List[str]) -> List[str]:
+        """Convert old-style unl's to new-style unl's."""
+        result = []
+        for s in aList:
+            m = old_pat.match(s)
+            if m:
+                result.append(f"{m.group(1)}::{m.group(3)}")
+            else:
+                result.append(s)
+        return result
+    #@-others
+    
+    unlList = convert_unl_list(unlList1)
+    if not unlList:
+        return None
+    # Find all target headlines.
     targets = []
-    for unl in unlList:
-        m = pat.match(unl)
-        target = m and m.group(1)
-        if target:
-            targets.append(target)
-    # Prefer later positions.
-    positions = reversed(list(p for p in c.all_positions() if p.h in targets))
+    # Expect '::' only on the last element of the unlList
+    m = new_pat.match(unlList[-1])
+    target = m and m.group(1)
+    if target:
+        targets.append(target)
+    targets.extend(unlList[:-1])
+    # Find all target positions. Prefer later positions.
+    positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
     while unlList:
         for p in positions:
+            p1 = p.copy()
             if full_match(p):
-                m = pat.match(unlList[-1])  # Parse the last target.
+                assert p == p1, (p, p1)
+                n = 0  # The default line number.
+                # Parse the last target.
+                m = new_pat.match(unlList[-1]) 
                 if m:
-                    line = m.group(4)
+                    line = m.group(3)
                     try:
                         n = int(line)
                     except (TypeError, ValueError):
-                        n = 0
-                    if n == 0:
-                        c.redraw(p)
-                    elif n < 0:
-                        c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
-                    elif n > 0:
-                        pos = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
-                        c.redraw(p)
-                        c.frame.body.wrapper.setInsertPoint(pos)
-                    c.frame.bringToFront()
-                    c.bodyWantsFocusNow()
+                        g.trace('bad line number', line)
+                if n == 0:
+                    c.redraw(p)
+                elif n < 0:
+                    p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    return p if ok else None
+                elif n > 0:
+                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
+                    c.redraw(p)
+                    c.frame.body.wrapper.setInsertPoint(insert_point)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
                 return p
         # Not found. Pop the first parent from unlList.
         unlList.pop(0)
@@ -7708,7 +7725,7 @@ def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     try:
         return g.handleUrlHelper(url, c, p)
     except Exception:
-        g.es_print("exception opening", repr(url))
+        g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
         return None
 #@+node:ekr.20170226054459.1: *4* g.handleUrlHelper

@@ -801,44 +801,27 @@ class Position:
     # New in Leo 4.4.3:
     hasVisBack = visBack
     hasVisNext = visNext
-    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL (with_index, with_file)
-    def get_UNL(self,
-        with_file: bool=True,
-        with_proto: bool=False,
-        with_index: bool=True,
-        with_count: bool=False,
-    ) -> str:
+    #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
+    def get_UNL(self) -> str:
         """
         Return a UNL representing a clickable link.
-
-        with_file=True - include path to Leo file
-        with_proto=False - include 'file://'
-        with_index - include ',x' at end where x is child index in parent
-        with_count - include ',x,y' at end where y zero based count of same headlines
+        
+        New in Leo 6.6: Use a single, simplified format for UNL's:
+        
+        - unl: //
+        - self.v.context.fileName() #
+        - a list of headlines separated by '-->'
+        
+        New in Leo 6.6:
+        - Always add unl: // and file name.
+        - Never translate '-->' to '--%3E'.
+        - Never generate child indices.
         """
-        aList = []
-        for i in self.self_and_parents(copy=False):
-            if with_index or with_count:
-                count = 0
-                ind = 0
-                p = i.copy()
-                while p.hasBack():
-                    ind = ind + 1
-                    p.moveToBack()
-                    if i.h == p.h:
-                        count = count + 1
-                aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
-                if count or with_count:
-                    aList[-1] = aList[-1] + "," + str(count)
-            else:
-                aList.append(i.h.replace('-->', '--%3E'))
-        UNL = '-->'.join(reversed(aList))
-        if with_proto:
-            s = "unl:" + f"//{self.v.context.fileName()}#{UNL}"
-            return s.replace(' ', '%20')
-        if with_file:
-            return f"{self.v.context.fileName()}#{UNL}"
-        return UNL
+        return (
+            'unl:' + '//'
+            + self.v.context.fileName() + '#'
+            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        )
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
@@ -1005,14 +988,6 @@ class Position:
                     offset += g.skip_ws(s, 0)
                     break
         return offset if found else None
-    #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
-    def isOutsideAnyAtFileTree(self) -> bool:
-        """Select the first clone of target that is outside any @file node."""
-        p = self
-        for parent in p.self_and_parents(copy=False):
-            if parent.isAnyAtFileNode():
-                return False
-        return True
     #@+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
