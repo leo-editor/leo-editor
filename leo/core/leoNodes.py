@@ -988,14 +988,6 @@ class Position:
                     offset += g.skip_ws(s, 0)
                     break
         return offset if found else None
-    #@+node:ekr.20150410101842.1: *3* p.isOutsideAtFileTree
-    def isOutsideAnyAtFileTree(self) -> bool:
-        """Select the first clone of target that is outside any @file node."""
-        p = self
-        for parent in p.self_and_parents(copy=False):
-            if parent.isAnyAtFileNode():
-                return False
-        return True
     #@+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
