@@ -7509,31 +7509,24 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
             path = g.os_path_finalize(path)
         url = f"{tag}{path}"
     return url
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL
-# Define the patterns applied to the last unlList element.
-
-# #2403: '::' is the separator. Support only line numbers.
-new_unl_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')
-
-def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
+def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     """
     Find and move to the unl given by the unlList in the commander c.
     Return the found position, or None.
     """
-    if not unlList:
-        return None
-    # The code no longers supports old UNL's.
-    if not new_unl_pat.match(unlList[-1]):
-        if not g.unitTesting:
-            g.printObj(unlList, tag='Old-style UNLs not supported')
-        return None
-   
+    # Define the unl patterns.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+
+    #@+others  # Define helper functions
+    #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p1 = unlList[:], p.copy()
         # Expect '::' only on the last element of the unlList
-        m = new_unl_pat.match(aList[-1])
+        m = new_pat.match(aList[-1])
         if not m or m.group(1) != p1.h:
             return False
         aList.pop()
@@ -7547,11 +7540,26 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
         if aList:
             return False
         return True
-        
+    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    def convert_unl_list(aList: List[str]) -> List[str]:
+        """Convert old-style unl's to new-style unl's."""
+        result = []
+        for s in aList:
+            m = old_pat.match(s)
+            if m:
+                result.append(f"{m.group(1)}::{m.group(3)}")
+            else:
+                result.append(s)
+        return result
+    #@-others
+    
+    unlList = convert_unl_list(unlList1)
+    if not unlList:
+        return None
     # Find all target headlines.
     targets = []
     # Expect '::' only on the last element of the unlList
-    m = new_unl_pat.match(unlList[-1])
+    m = new_pat.match(unlList[-1])
     target = m and m.group(1)
     if target:
         targets.append(target)
@@ -7563,9 +7571,9 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
             p1 = p.copy()
             if full_match(p):
                 assert p == p1, (p, p1)
-                n = 0  # The default line.
+                n = 0  # The default line number.
                 # Parse the last target.
-                m = new_unl_pat.match(unlList[-1]) 
+                m = new_pat.match(unlList[-1]) 
                 if m:
                     line = m.group(3)
                     try:
