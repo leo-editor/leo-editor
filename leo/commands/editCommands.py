@@ -218,7 +218,7 @@ def show_clone_ancestors(event=None):
             if len(parts) > 1:
                 message = '-->'.join(parts[:-1])
             c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
-#@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
+#@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents') *** revise
 @g.command('show-clone-parents')
 def show_clones(event=None):
     """Display links to all parent nodes of the node c.p."""
@@ -230,7 +230,13 @@ def show_clones(event=None):
         parent = clone.parent()
         if parent and parent not in seen:
             seen.append(parent)
-            g.es_clickable_link(c, clone, 1, f"{parent.h} -> {clone.h}\n")
+            unl = message = parent.get_UNL()
+            # Drop the file part.
+            i = unl.find('#')
+            if i > 0:
+                message = unl[i + 1:]
+            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
+
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):
