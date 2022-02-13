@@ -2306,7 +2306,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.statusBar.addWidget(splitter, True)
             sizes = c.config.getString('status-line-split-sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-            # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
                 w = [w1, w2][n]
                 policy = w.sizePolicy()
@@ -2315,23 +2314,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 w.setSizePolicy(policy)
             splitter.addWidget(w1)
             splitter.addWidget(w2)
-            c.status_line_unl_mode = 'original'
-
-            def cycle_unl_mode():
-                if c.status_line_unl_mode == 'original':
-                    c.status_line_unl_mode = 'canonical'
-                else:
-                    c.status_line_unl_mode = 'original'
-                verbose = c.status_line_unl_mode == 'canonical'
-                w2.setText(c.p.get_UNL(with_proto=verbose, with_index=verbose))
-
-            def add_item(event, w2=w2):
-                menu = w2.createStandardContextMenu()
-                menu.addSeparator()
-                menu.addAction("Toggle UNL mode", cycle_unl_mode)
-                menu.exec_(event.globalPos())
-
-            w2.contextMenuEvent = add_item
             self.put('')
             self.update()
         #@+node:ekr.20110605121601.18260: *4* QtStatusLineClass.clear, get & put/1
@@ -4007,7 +3989,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
                 s = g.toUnicode(b)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        nodeLink = p.get_UNL(with_proto=True, with_count=True)
+        nodeLink = p.get_UNL()
         g.es_print(f"not found: {fn}", nodeLink=nodeLink)
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper

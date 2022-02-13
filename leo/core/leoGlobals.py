@@ -4332,35 +4332,6 @@ def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]
                     if p2.v in clones:
                         return [p.copy()]
     return []
-#@+node:tbrown.20140311095634.15188: *3* g.findUNL
-def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
-    """
-    Find and move to the unl given by the unlList in the commander c.
-    Return the found position, or None.
-    """
-    
-    def full_match(p: Pos) -> bool:
-        """Return True if the headlines of p and all p's parents match unlList."""
-        if not p.h.strip() == unlList[-1].strip():
-            return False
-        # Careful: make copies.
-        aList = unlList[:-1]
-        
-        p = p.copy()
-        while aList:
-            p.moveToParent()
-            if not p or p.h != aList[-1]:
-                return False
-            aList.pop(0)
-        return True
-
-    while unlList:
-        for p in c.all_unique_positions():
-            if full_match(p):
-                return p
-        # Not found. Pop the first parent from unlList.
-        unlList.pop(0)
-    return None
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
@@ -6147,21 +6118,6 @@ def es(*args: Any, **keys: Any) -> None:
         app.logWaiting.append((s, color, newline, d),)
 
 log = es
-#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
-    """
-    Write a clickable message to the given line number of p.b.
-
-    Negative line numbers indicate global lines.
-
-    """
-    log = c.frame.log
-    message = message.strip() + '\n'
-    unl = p.get_UNL(with_proto=True, with_count=True)
-    if unl:
-        log.put(message, nodeLink=f"{unl},{line_number}")
-    else:
-        log.put(message)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n: int=30, title: str=None) -> None:
     if title:
@@ -7517,10 +7473,6 @@ unl_regex = re.compile(r'\bunl:.*$')
 
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
-#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
-def unquoteUrl(url: str) -> str:
-    """Replace special characters (especially %20, by their equivalent)."""
-    return urllib.parse.unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
     """
@@ -7557,6 +7509,92 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
             path = g.os_path_finalize(path)
         url = f"{tag}{path}"
     return url
+#@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
+def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
+    """
+    Find and move to the unl given by the unlList in the commander c.
+    Return the found position, or None.
+    """
+    # Define the unl patterns.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+
+    #@+others  # Define helper functions
+    #@+node:ekr.20220213142735.1: *4* function: full_match
+    def full_match(p: Pos) -> bool:
+        """Return True if the headlines of p and all p's parents match unlList."""
+        # Careful: make copies.
+        aList, p1 = unlList[:], p.copy()
+        # Expect '::' only on the last element of the unlList
+        m = new_pat.match(aList[-1])
+        if not m or m.group(1) != p1.h:
+            return False
+        aList.pop()
+        p1.moveToParent()
+        # Check the rest of the headlines.
+        while aList and p1:
+            if aList[-1] != p1.h:
+                return False
+            aList.pop()
+            p1.moveToParent()
+        if aList:
+            return False
+        return True
+    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    def convert_unl_list(aList: List[str]) -> List[str]:
+        """Convert old-style unl's to new-style unl's."""
+        result = []
+        for s in aList:
+            m = old_pat.match(s)
+            if m:
+                result.append(f"{m.group(1)}::{m.group(3)}")
+            else:
+                result.append(s)
+        return result
+    #@-others
+    
+    unlList = convert_unl_list(unlList1)
+    if not unlList:
+        return None
+    # Find all target headlines.
+    targets = []
+    # Expect '::' only on the last element of the unlList
+    m = new_pat.match(unlList[-1])
+    target = m and m.group(1)
+    if target:
+        targets.append(target)
+    targets.extend(unlList[:-1])
+    # Find all target positions. Prefer later positions.
+    positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
+    while unlList:
+        for p in positions:
+            p1 = p.copy()
+            if full_match(p):
+                assert p == p1, (p, p1)
+                n = 0  # The default line number.
+                # Parse the last target.
+                m = new_pat.match(unlList[-1]) 
+                if m:
+                    line = m.group(3)
+                    try:
+                        n = int(line)
+                    except (TypeError, ValueError):
+                        g.trace('bad line number', line)
+                if n == 0:
+                    c.redraw(p)
+                elif n < 0:
+                    p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    return p if ok else None
+                elif n > 0:
+                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
+                    c.redraw(p)
+                    c.frame.body.wrapper.setInsertPoint(insert_point)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
+    return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Pos) -> Optional[str]:
     """
@@ -7591,78 +7629,6 @@ def getUrlFromNode(p: Pos) -> Optional[str]:
         if s.startswith("#"):
             return s
     return None
-#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
-    """Open a url or a unl."""
-    if c and not p:
-        p = c.p
-    urll = url.lower()
-    if urll.startswith('@url'):
-        url = url[4:].lstrip()
-    if (
-        urll.startswith('unl:' + '//') or
-        urll.startswith('file://') and url.find('-->') > -1 or
-        urll.startswith('#')
-    ):
-        return g.handleUnl(url, c)
-    try:
-        return g.handleUrlHelper(url, c, p)
-    except Exception:
-        g.es_print("exception opening", repr(url))
-        g.es_exception()
-        return None
-#@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
-def handleUrlHelper(url: str, c: Cmdr, p: Pos) -> None:
-    """Open a url.  Most browsers should handle:
-        ftp://ftp.uu.net/public/whatever
-        http://localhost/MySiteUnderDevelopment/index.html
-        file:///home/me/todolist.html
-    """
-    tag = 'file://'
-    original_url = url
-    if url.startswith(tag) and not url.startswith(tag + '#'):
-        # Finalize the path *before* parsing the url.
-        url = g.computeFileUrl(url, c=c, p=p)
-    parsed = urlparse.urlparse(url)
-    if parsed.netloc:
-        leo_path = os.path.join(parsed.netloc, parsed.path)
-        # "readme.txt" gets parsed into .netloc...
-    else:
-        leo_path = parsed.path
-    if leo_path.endswith('\\'):
-        leo_path = leo_path[:-1]
-    if leo_path.endswith('/'):
-        leo_path = leo_path[:-1]
-    if parsed.scheme == 'file' and leo_path.endswith('.leo'):
-        g.handleUnl(original_url, c)
-    elif parsed.scheme in ('', 'file'):
-        unquote_path = g.unquoteUrl(leo_path)
-        if g.unitTesting:
-            pass
-        elif g.os_path_exists(leo_path):
-            g.os_startfile(unquote_path)
-        else:
-            g.es(f"File '{leo_path}' does not exist")
-    else:
-        if g.unitTesting:
-            pass
-        else:
-            # Mozilla throws a weird exception, then opens the file!
-            try:
-                webbrowser.open(url)
-            except Exception:
-                pass
-#@+node:ekr.20170226060816.1: *4* g.traceUrl
-def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
-
-    print()
-    g.trace('url          ', url)
-    g.trace('c.frame.title', c.frame.title)
-    g.trace('path         ', path)
-    g.trace('parsed.fragment', parsed.fragment)
-    g.trace('parsed.netloc', parsed.netloc)
-    g.trace('parsed.path  ', parsed.path)
-    g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl: str, c: Cmdr) -> Any:
     """
@@ -7684,7 +7650,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return None
     unl = g.unquoteUrl(unl)
     # Compute path and unl.
-    if unl.find('#') == -1 and unl.find('-->') == -1:
+    if '#' not in unl and '-->' not in unl:
         # The path is the entire unl.
         path, unl = unl, None
     elif '#' not in unl:
@@ -7742,6 +7708,78 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     c2.bringToFront()
     c2.bodyWantsFocusNow()
     return c2
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
+def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
+    """Open a url or a unl."""
+    if c and not p:
+        p = c.p
+    urll = url.lower()
+    if urll.startswith('@url'):
+        url = url[4:].lstrip()
+    if (
+        urll.startswith('unl:' + '//') or
+        urll.startswith('file://') and url.find('-->') > -1 or
+        urll.startswith('#')
+    ):
+        return g.handleUnl(url, c)
+    try:
+        return g.handleUrlHelper(url, c, p)
+    except Exception:
+        g.es_print("g.handleUrl: exception opening", repr(url))
+        g.es_exception()
+        return None
+#@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
+def handleUrlHelper(url: str, c: Cmdr, p: Pos) -> None:
+    """Open a url.  Most browsers should handle:
+        ftp://ftp.uu.net/public/whatever
+        http://localhost/MySiteUnderDevelopment/index.html
+        file:///home/me/todolist.html
+    """
+    tag = 'file://'
+    original_url = url
+    if url.startswith(tag) and not url.startswith(tag + '#'):
+        # Finalize the path *before* parsing the url.
+        url = g.computeFileUrl(url, c=c, p=p)
+    parsed = urlparse.urlparse(url)
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    else:
+        leo_path = parsed.path
+    if leo_path.endswith('\\'):
+        leo_path = leo_path[:-1]
+    if leo_path.endswith('/'):
+        leo_path = leo_path[:-1]
+    if parsed.scheme == 'file' and leo_path.endswith('.leo'):
+        g.handleUnl(original_url, c)
+    elif parsed.scheme in ('', 'file'):
+        unquote_path = g.unquoteUrl(leo_path)
+        if g.unitTesting:
+            pass
+        elif g.os_path_exists(leo_path):
+            g.os_startfile(unquote_path)
+        else:
+            g.es(f"File '{leo_path}' does not exist")
+    else:
+        if g.unitTesting:
+            pass
+        else:
+            # Mozilla throws a weird exception, then opens the file!
+            try:
+                webbrowser.open(url)
+            except Exception:
+                pass
+#@+node:ekr.20170226060816.1: *4* g.traceUrl
+def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:
+
+    print()
+    g.trace('url          ', url)
+    g.trace('c.frame.title', c.frame.title)
+    g.trace('path         ', path)
+    g.trace('parsed.fragment', parsed.fragment)
+    g.trace('parsed.netloc', parsed.netloc)
+    g.trace('parsed.path  ', parsed.path)
+    g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url: str) -> bool:
     """Return true if url *looks* like a valid url."""
@@ -7838,6 +7876,10 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     if word:
         c.findCommands.find_def_strict(event)
     return None
+#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
+def unquoteUrl(url: str) -> str:
+    """Replace special characters (especially %20, by their equivalent)."""
+    return urllib.parse.unquote(url)
 #@-others
 # set g when the import is about to complete.
 g: Any = sys.modules.get('leo.core.leoGlobals')

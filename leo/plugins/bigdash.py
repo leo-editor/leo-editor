@@ -340,7 +340,7 @@ class GlobalSearch:
             c.bringToFront()
             return
         g.es_print("Not found in any open document: %s" % l)
-    #@+node:ekr.20140919160020.17903: *3* do_search
+    #@+node:ekr.20140919160020.17903: *3* do_search (bigdash.py)
     def do_search(self, tgt, qs):
 
         ss = str(qs)
@@ -399,13 +399,7 @@ class GlobalSearch:
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
             segs = parts[1].split("-->")
-            p = g.findUNL(segs, c)
-            if p:
-                c.redraw(p)
-                c.bringToFront()
-                c.bodyWantsFocusNow()
-
-
+            g.findUNL(segs, c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""
