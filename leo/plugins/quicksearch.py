@@ -393,12 +393,10 @@ class QuickSearchController:
             if self.frozen:
                 return
             out = self.worker.output
-            #print("dumper")
             self.throttler.add(out)
 
         def throttledDump(lst):
             """ dumps the last output """
-            #print "Throttled dump"
             # we do get called with empty list on occasion
             if not lst:
                 return
