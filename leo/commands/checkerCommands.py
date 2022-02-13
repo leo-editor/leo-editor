@@ -65,6 +65,7 @@ def find_long_lines(event):
                 return True
         return False
     #@-others
+    log = c.frame.log
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
@@ -88,7 +89,8 @@ def find_long_lines(event):
                     g.es_print(root.h)
                     g.es_print(p.h)
                     print(short_s)
-                    g.es_clickable_link(c, p, line_number=i, message=short_s)
+                    unl = p.get_UNL()
+                    log.put(short_s.strip() + '\n', nodeLink=f"{unl}::{i + 1}")  # Local line.
                 break
     g.es_print(
         f"found {count} long line{g.plural(count)} "
@@ -136,6 +138,7 @@ def find_missing_docstrings(event):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
     #@-others
+    log = c.frame.log
     count, files, found, t1 = 0, 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         files += 1
@@ -149,7 +152,8 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es_clickable_link(c, p, i + 1, line)  # *Local* index.
+                    unl = p.get_UNL()
+                    log.put(line.strip() + '\n', nodeLink=f"{unl}::{i + 1}")  # Local line.
                     break
     g.es_print('')
     g.es_print(

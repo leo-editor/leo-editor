@@ -218,7 +218,7 @@ def show_clone_ancestors(event=None):
             if len(parts) > 1:
                 message = '-->'.join(parts[:-1])
             c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
-#@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents') *** revise
+#@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event=None):
     """Display links to all parent nodes of the node c.p."""

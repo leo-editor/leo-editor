@@ -6118,21 +6118,6 @@ def es(*args: Any, **keys: Any) -> None:
         app.logWaiting.append((s, color, newline, d),)
 
 log = es
-#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
-    """
-    Write a clickable message to the given line number of p.b.
-
-    Negative line numbers indicate global lines.
-
-    """
-    log = c.frame.log
-    message = message.strip() + '\n'
-    unl = p.get_UNL()
-    if unl:
-        log.put(message, nodeLink=f"{unl}::{line_number}")  # Local line.
-    else:
-        log.put(message)
 #@+node:ekr.20060917120951: *3* g.es_dump
 def es_dump(s: str, n: int=30, title: str=None) -> None:
     if title:
@@ -7574,7 +7559,6 @@ def findUNL(unlList: List[str], c: Cmdr) -> Optional[Pos]:
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
     while unlList:
-        g.printObj(unlList, tag='Loop')
         for p in positions:
             p1 = p.copy()
             if full_match(p):
