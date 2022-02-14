@@ -17,6 +17,14 @@ qt_version = QtCore.QT_VERSION_STR
 assert QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt5 import QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    print('No Qt5 QtWebEngineWidgets')
+
 try:
     import PyQt5.QtDeclarative as QtDeclarative
 except ImportError:
