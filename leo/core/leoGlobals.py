@@ -7569,8 +7569,6 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
-    ### g.printObj(targets, tag='targets')
-    ### g.printObj(positions, tag='positions')
     while unlList:
         for p in positions:
             p1 = p.copy()
