@@ -7527,24 +7527,18 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         """
         result = []
         for s in aList:
-            # First, try to get the line number from an old-style unl.
-            m1 = old_pat.match(s)
-            if m1:
-                try:
-                    n = int(m1.group(4))
-                    result.append(f"{m1.group(1)}::{n}")
-                    continue
-                except Exception:
-                    pass
-            # Second, try to get the line number from a new-style unl.
-            m2 = new_pat.match(s)
-            if m2:
-                try:
-                    n = int(m2.group(3))
-                    result.append(f"{m2.group(1)}::{n}")
-                    continue
-                except Exception:
-                    pass
+            # Try to get the line number.
+            for m, line_group in (
+                (old_pat.match(s), 4),
+                (new_pat.match(s), 3),
+            ):
+                if m:
+                    try:
+                        n = int(m.group(line_group))
+                        result.append(f"{m.group(1)}::{n}")
+                        continue
+                    except Exception:
+                        pass
             # Finally, just add the whole UNL.
             result.append(s)
         return result
