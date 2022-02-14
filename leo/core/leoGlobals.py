@@ -7520,41 +7520,42 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
 
     #@+others  # Define helper functions
+    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    def convert_unl_list(aList: List[str]) -> List[str]:
+        """
+        Convert old-style UNLs to new UNLs, retaining line numbers if possible.
+        """
+        result = []
+        for s in aList:
+            # Try to get the line number.
+            for m, line_group in (
+                (old_pat.match(s), 4),
+                (new_pat.match(s), 3),
+            ):
+                if m:
+                    try:
+                        n = int(m.group(line_group))
+                        result.append(f"{m.group(1)}::{n}")
+                        continue
+                    except Exception:
+                        pass
+            # Finally, just add the whole UNL.
+            result.append(s)
+        return result
     #@+node:ekr.20220213142735.1: *4* function: full_match
     def full_match(p: Pos) -> bool:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p1 = unlList[:], p.copy()
-        # Expect '::' only on the last element of the unlList
-        m = new_pat.match(aList[-1])
-        if not m or m.group(1) != p1.h:
-            return False
-        aList.pop()
-        p1.moveToParent()
-        # Check the rest of the headlines.
         while aList and p1:
-            if aList[-1] != p1.h:
+            m = new_pat.match(aList[-1])
+            if m and m.group(1) != p1.h:
+                return False
+            if not m and aList[-1] != p1.h:
                 return False
             aList.pop()
             p1.moveToParent()
-        if aList:
-            return False
-        return True
-    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
-    def convert_unl_list(aList: List[str]) -> List[str]:
-        """Convert old-style unl's to new-style unl's."""
-        result = []
-        for s in aList:
-            m = old_pat.match(s)
-            if m:
-                try:
-                    n = int(m.group(4))
-                except Exception:
-                    n = 0
-                result.append(f"{m.group(1)}::{n}")
-            else:
-                result.append(s)
-        return result
+        return not aList
     #@-others
     
     unlList = convert_unl_list(unlList1)
@@ -7562,11 +7563,9 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         return None
     # Find all target headlines.
     targets = []
-    # Expect '::' only on the last element of the unlList
     m = new_pat.match(unlList[-1])
-    target = m and m.group(1)
-    if target:
-        targets.append(target)
+    target = m and m.group(1) or unlList[-1]
+    targets.append(target)
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
     positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
