@@ -7547,7 +7547,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         for s in aList:
             m = old_pat.match(s)
             if m:
-                result.append(f"{m.group(1)}::{m.group(3)}")
+                result.append(f"{m.group(1)}::{m.group(4)}")
             else:
                 result.append(s)
         return result
@@ -7662,7 +7662,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return c
     else:
         path, unl = unl.split('#', 1)
-    if not path:
+    if unl and not path:  # #2407
         # Move to the unl in *this* commander.
         p = g.findUNL(unl.split("-->"), c)
         if p:
