@@ -7547,7 +7547,11 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         for s in aList:
             m = old_pat.match(s)
             if m:
-                result.append(f"{m.group(1)}::{m.group(4)}")
+                try:
+                    n = int(m.group(4))
+                except Exception:
+                    n = 0
+                result.append(f"{m.group(1)}::{n}")
             else:
                 result.append(s)
         return result
