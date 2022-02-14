@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.72
+About Viewrendered3 V3.73
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -77,8 +77,9 @@ Alt-0 for VR3 and Alt-F10 for VR.
 Limitations and Quirks
 ======================
 
-    #. The plugin requires pyqt5 or pyqt6. All Leo versions since 6.0 can
-       use at least pyqt5 so this requirement should always be met.
+    #. The plugin requires PyQt5 or PyQt6. All Leo versions since 6.0 can
+       use at least PyQt5 so this requirement should always be met. The PyQt6
+       version must be at least 6.23 to avoid limited rendering capability.
 
     #. The RsT processor (``docutils``) is fussy about having blank lines after
        blocks.  A node may render correctly on its own, but will show errors
@@ -853,23 +854,32 @@ except ImportError:
     raise ImportError from None
 
 QWebView = None
-try:
-    from leo.core.leoQt import QtWebKitWidgets
-    QWebView = QtWebKitWidgets.QWebView
-except ImportError:
-    if not g.unitTesting:
-        g.trace("Can't import QtWebKitWidgets")
-except AttributeError:
-    if not g.unitTesting:
-        g.trace('No QWebView')
-except Exception as e:
-    g.trace(e)
+# Not imported above because we might have PyQt without QWebEngineWidgets
+from leo.core.leoQt import has_WebEngineWidgets
+if has_WebEngineWidgets:
+    from leo.core.leoQt import QtWebEngineWidgets
+    QWebView = QtWebEngineWidgets.QWebEngineView
+else:
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        if not g.unitTesting:
+            g.trace("Can't import QtWebKitWidgets")
+    except AttributeError:
+        if not g.unitTesting:
+            g.trace('No QWebView')
+    except Exception as e:
+        g.trace(e)
 
 if not QWebView:
     try:
         QWebView = QtWidgets.QTextBrowser
         if not g.unitTesting:
             print("VR3: *** limited RsT rendering in effect")
+            print('VR3" *** For full rendering capability,')
+            print('VR3:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
+            print('VR3:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
     except Exception as e:
         g.trace(e)
         # The top-level init function gives the error.
@@ -1790,14 +1800,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
         Create a QWebView.
 
-        For QT5, this is actually a QWebEngineView
+        For QT5 and Qt6, this is actually a QWebEngineView.
         """
         c = self.c
         w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
         if hasattr(w, 'settings') and n is not None:
             settings = w.settings()
-            settings.setFontSize(settings.DefaultFontSize, n)
+            try:
+                settings.setFontSize(settings.DefaultFontSize, n)
+            except Exception as e:
+                g.es(e, color='red')
         return w
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):

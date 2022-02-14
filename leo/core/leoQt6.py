@@ -24,6 +24,14 @@ QtConst = Qt
 qt_version = QtCore.QT_VERSION_STR
 #
 # Optional imports: #2005
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt6 import QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    print('No Qt6 QtWebEngineWidgets')
+
 try:
     from PyQt6 import QtPrintSupport as printsupport
 except Exception:
