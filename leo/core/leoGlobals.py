@@ -7547,7 +7547,6 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         """Return True if the headlines of p and all p's parents match unlList."""
         # Careful: make copies.
         aList, p1 = unlList[:], p.copy()
-        # Check the rest of the headlines.
         while aList and p1:
             m = new_pat.match(aList[-1])
             if m and m.group(1) != p1.h:
@@ -7556,9 +7555,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
                 return False
             aList.pop()
             p1.moveToParent()
-        if aList:
-            return False
-        return True
+        return not aList
     #@-others
     
     unlList = convert_unl_list(unlList1)
