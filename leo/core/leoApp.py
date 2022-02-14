@@ -94,6 +94,7 @@ class LeoApp:
 
         leoGlobals.py contains global switches to be set by hand.
         """
+        self.qt6_QtWebEngineWidgets = None  # A hack for #2415
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False  # True: run in batch mode.
@@ -985,6 +986,13 @@ class LeoApp:
             except Exception:
                 g.es_exception()
             sys.exit(1)
+        try:  # #2415: Sheesh: must import QtWebEngineWidgets before creating the app.
+            from leo.core.leoQt import isQt6
+            if isQt6:
+                from PyQt6 import QtWebEngineWidgets as qt6_QtWebEngineWidgets
+                self.qt6_QtWebEngineWidgets = qt6_QtWebEngineWidgets
+        except Exception:
+            pass
         try:
             from leo.plugins import qt_gui
         except Exception:
