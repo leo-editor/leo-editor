@@ -211,11 +211,11 @@ class backlinkController:
         g.es(url)
         # UNL detection copied from g.handleUrl()
         if (
-            url.lower().startswith('unl:' + '//') or
+            url.lower().startswith('unl://') or
             url.lower().startswith('file://') and url.find('-->') > -1 or
             url.startswith('#')
         ):
-            our_unl = 'unl:' + '//' + self.c.p.get_UNL()
+            our_unl = 'unl://' + self.c.p.get_UNL()
             new_c = g.handleUnl(url, self.c)
             if new_c and hasattr(new_c, 'backlinkController'):
                 unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')

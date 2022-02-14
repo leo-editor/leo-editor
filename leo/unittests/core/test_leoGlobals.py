@@ -226,7 +226,7 @@ class TestGlobals(LeoUnitTest):
     def test_g_handleUrl(self):
         c = self.c
         if sys.platform.startswith('win'):
-            file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+            file_, http, unl1 = 'file://', 'http://', 'unl://'
             fn1 = 'LeoDocs.leo#'
             fn2 = 'doc/LeoDocs.leo#'
             unl2 = '@settings-->Plugins-->wikiview plugin'

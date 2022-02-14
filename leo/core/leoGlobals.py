@@ -7641,7 +7641,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     if not unl:
         return None
     unll = unl.lower()
-    if unll.startswith('unl:' + '//'):
+    if unll.startswith('unl://'):
         unl = unl[6:]
     elif unll.startswith('file://'):
         unl = unl[7:]
@@ -7717,7 +7717,7 @@ def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     if urll.startswith('@url'):
         url = url[4:].lstrip()
     if (
-        urll.startswith('unl:' + '//') or
+        urll.startswith('unl://') or
         urll.startswith('file://') and url.find('-->') > -1 or
         urll.startswith('#')
     ):
@@ -7788,7 +7788,7 @@ def isValidUrl(url: str) -> bool:
         'mailto', 'mms', 'news', 'nntp', 'prospero', 'rsync', 'rtsp', 'rtspu',
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
-    if url.lower().startswith('unl:' + '//') or url.startswith('#'):
+    if url.lower().startswith('unl://') or url.startswith('#'):
         # All Leo UNL's.
         return True
     if url.startswith('@'):

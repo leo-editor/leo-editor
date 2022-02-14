@@ -1489,7 +1489,14 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20170225103140.1: *5* jedit.match_unl
     def match_unl(self, s, i):
         if g.match(s.lower(), i, 'unl://'):
-            j = len(s)
+            j = len(s)  # By default, color the whole line.
+            # #2410: Limit the coloring if possible.
+            if i > 0:
+                ch = s[i-1]
+                if ch in ('"', "'", '`'):
+                    k = s.find(ch, i)
+                    if k > -1:
+                        j = k
             self.colorRangeWithTag(s, i, j, 'url')
             return j
         return 0
