@@ -28,6 +28,7 @@ qt_version = QtCore.QT_VERSION_STR
 has_WebEngineWidgets = False
 try:
     from PyQt6 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
     print('No Qt6 QtWebEngineWidgets')
