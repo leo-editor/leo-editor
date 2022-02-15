@@ -63,11 +63,15 @@ class SessionManager:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
             return
+
         unls = [z.strip() for z in unls or [] if z.strip()]
         for unl in unls:
             i = unl.find("#")
             if i > -1:
                 fn, unl = unl[:i], unl[i:]
+                fn_ = fn.split('unl://')  # #2412.
+                if len(fn_) > 1:
+                    fn = fn_[1]
             else:
                 fn, unl = unl, ''
             fn = fn.strip()
