@@ -2431,7 +2431,6 @@ class TypedDict:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
         self._checkKeyType(key)
-        self._checkKeyType(key)
         try:
             for z in val:
                 self._checkValType(z)
@@ -2481,7 +2480,7 @@ class TypedDict:
 
     def values(self) -> Any:
         return self.d.values()
-    #@+node:ekr.20190903181030.1: *4* td.get_getting & get_string_setting
+    #@+node:ekr.20190903181030.1: *4* td.get_setting & get_string_setting
     def get_setting(self, key: str) -> Any:
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
