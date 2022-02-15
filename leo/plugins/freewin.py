@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Version: 1.71
-:Date: 13 Oct 2021
+:Version: 1.8
+:Date: 14 Feb 2022
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -241,15 +241,21 @@ if not qt_imports_ok:
 #@+<<import  QWebView>>
 #@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
-try:
-    from leo.core.leoQt import QtWebKitWidgets
-    QWebView = QtWebKitWidgets.QWebView
-except ImportError:
-    if not g.unitTesting:
-        print("Freewin: Can't import QtWebKitWidgets")
-except AttributeError:
-    if not g.unitTesting:
-        print("Freewin: limited RsT rendering in effect")
+# Not imported above because we might have PyQt without QWebEngineWidgets
+from leo.core.leoQt import has_WebEngineWidgets
+if has_WebEngineWidgets:
+    from leo.core.leoQt import QtWebEngineWidgets
+    QWebView = QtWebEngineWidgets.QWebEngineView
+else:
+    try:
+        from leo.core.leoQt import QtWebKitWidgets
+        QWebView = QtWebKitWidgets.QWebView
+    except ImportError:
+        if not g.unitTesting:
+            print("Freewin: Can't import QtWebKitWidgets")
+    except AttributeError:
+        if not g.unitTesting:
+            print("Freewin: limited RsT rendering in effect")
 #@-<<import  QWebView>>
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
