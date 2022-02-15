@@ -855,7 +855,7 @@ except ImportError:
 
 QWebView = None
 # Not imported above because we might have PyQt without QWebEngineWidgets
-from leo.core.leoQt import has_WebEngineWidgets
+from leo.core.leoQt import has_WebEngineWidgets # pylint: disable=wrong-import-position
 if has_WebEngineWidgets:
     from leo.core.leoQt import QtWebEngineWidgets
     QWebView = QtWebEngineWidgets.QWebEngineView
