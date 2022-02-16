@@ -2358,7 +2358,7 @@ class LoadManager:
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         if not c:
             return None  # #1201: AttributeError below.
-        if g.app.batchMode and g.os_path_exists(fn):
+        if g.app.batchMode or g.os_path_exists(fn):
             return c
         # Open the cheatsheet.
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
