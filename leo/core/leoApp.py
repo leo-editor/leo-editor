@@ -22,7 +22,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
 StringIO = io.StringIO
 #@-<< imports >>
-# Test commit 5, from ekr-test, based on devel.
+# Test commit 6, from ekr-test, based on devel.
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
 def cmd(name):
