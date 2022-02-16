@@ -21,6 +21,7 @@ assert QUrl and Signal  # For pyflakes.
 has_WebEngineWidgets = False
 try:
     from PyQt5 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
     print('No Qt5 QtWebEngineWidgets')

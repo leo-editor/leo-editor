@@ -117,12 +117,13 @@ class FastRead:
         return v
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
-    translate_table = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
+    translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
     def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s)
-        contents = contents.translate(self.translate_table)  # #1036 and #1046.
+        table = contents.maketrans(self.translate_dict)  # #1510.
+        contents = contents.translate(table)  # #1036, #1046.
         try:
             xroot = ElementTree.fromstring(contents)
         except Exception as e:
