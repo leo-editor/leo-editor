@@ -142,8 +142,8 @@
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
 <v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
-<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
-<v t="maphew.20200605112532.1"><vh>@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
+<v t="matt.20190205105334.1"><vh>@@@clean ../../.travis.yml</vh></v>
+<v t="maphew.20200605112532.1"><vh>@@@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
 </v>
 <v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
 <v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
@@ -2382,7 +2382,7 @@ a = Analysis(['launchLeo.py'],
 # fix errors as can until everything works.
 
 -----</t>
-<t tx="maphew.20200605112459.1"></t>
+<t tx="maphew.20200605112459.1">Disabled for now.</t>
 <t tx="maphew.20200605112532.1">@language yaml
 # Create an "all in one" bundle of Leo and all dependencies for Windows that 
 # doesn't need to be installed in order to run, just unzip and use.
