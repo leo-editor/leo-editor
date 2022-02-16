@@ -17,6 +17,15 @@ qt_version = QtCore.QT_VERSION_STR
 assert QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt5 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    print('No Qt5 QtWebEngineWidgets')
+
 try:
     import PyQt5.QtDeclarative as QtDeclarative
 except ImportError:
@@ -57,7 +66,7 @@ except ImportError:
         # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
         # Reinhard: Support pyqt 5.6...
         # used by viewrendered(2|3).py, bigdash.py, richtext.py.
-        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets
+        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
         QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
         QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
         QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
@@ -78,7 +87,8 @@ Format = QtGui.QImage
 GlobalColor = QtCore.Qt
 Icon = QtWidgets.QMessageBox
 Information = QtWidgets.QMessageBox
-ItemFlag = QtCore.Qt
+ItemFlag = QtCore.Qt  # 2347
+ItemDataRole = QtCore.Qt  # 2347
 Key = QtCore.Qt
 KeyboardModifier = QtCore.Qt
 Modifier = QtCore.Qt
@@ -99,6 +109,7 @@ SizeAdjustPolicy = QtWidgets.QComboBox
 SliderAction = QtWidgets.QAbstractSlider
 StandardButton = QtWidgets.QDialogButtonBox
 StandardPixmap = QtWidgets.QStyle
+Style = QtGui.QFont
 TextInteractionFlag = QtCore.Qt
 TextOption = QtGui.QTextOption
 ToolBarArea = QtCore.Qt
@@ -107,5 +118,6 @@ UnderlineStyle = QtGui.QTextCharFormat
 Weight = QtGui.QFont
 WindowType = QtCore.Qt
 WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
 WrapMode = QtGui.QTextOption
 #@-leo

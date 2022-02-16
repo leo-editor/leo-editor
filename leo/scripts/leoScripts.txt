@@ -13878,6 +13878,8 @@ and plot styling.
 The pyperclip package is requied to read the clipboard. The 
 matplotlib package is required for plotting.
 
+This command must be installed in Leo before it can be used.  See the section *Installing The Command* below about how to do this.
+
 @others
 #@+node:tom.20211108175319.3: *6* Data Format
 Data Format
@@ -13978,6 +13980,53 @@ directory. On Linux, this is usually *~/.local*.
 When no style file can be found, Matplotlib will use its default
 styling, as modified by a *.matplotlib.rc* file if Matplotlib can
 find one.
+#@+node:tom.20211113134000.1: *6* Installing The Command
+Installing The Command
+-----------------------
+
+This command should be installed by adding its node to the *myLeoSettings.leo* file.  Once added, it can also be bound to a keystroke or added to a menu in the same way as other Leo commands.
+
+To install, open *myLeoSettings.leo*, expand the *@settings* tree, and at some convenient place in that tree copy the entire tree of this *plot-2d-clipboard* command.  Edit its headline by adding "@command " to the start of the headline.  Then close and restart Leo.  The command will now be available.  You can observe this by pressing ALT-X and typing "plot-" into the minibuffer.  Hit TAB to get tab completion, and you will see the command listed.  You would invoke it by completing the command, then pressing <ENTER>.  If there is plottable data in the clipboard, the plot will appear.
+
+#@+node:tom.20211113135245.1: *7* Binding to a Key or Menu
+Binding to a Key or Menu
+-------------------------
+
+Leo lets you connect a command to a button, shortcut key or a menu.
+
+To a Button
+............
+Under *@settings/@buttons* add a new node with headline *@button Plot 2D Clipboard*. In the body, type the following::
+
+    c.executeMinibufferCommand('plot-2d-clipboard')
+
+To a Key
+.........
+In the *@settings* tree, find or create a node with headline "@shortcuts".  To its body, add a line::
+
+    plot-2d-clipboard = <your key>
+
+where <your key> is the abbreviation of the shortcut key you want to use.  For example, if you want to bind to the Alt F9 key, you would use::
+
+    plot-2d-clipboard = ALT+F9
+
+To A Menu
+.........
+You can bind to an existing menu or create a new one.  Here is how to create a new menu on Leo's menu bar, just before the *Help* menu. The new menu will be named *Local*. In the *@settings* tree, find or create a node *@menus*. Add a new node with headline reading "@menuat help before".  Under that node add a new one with headline *@menu &Local*.  Under that node add a new one with headline *@item plot-2d-clipboard*.
+
+Type "Plot &2D Clipboard" into the body of the @item node.
+
+Note that the accelerator key markings "&" in front of a name are optional.
+
+Your outline tree should now look like this:
+
+@settings
+    @menus
+        @menuat help before
+            @menu &Local
+                @item plot-2d-clipboard
+
+When you restart Leo, there will be a new menu *Local* with a menu item labeled *Plot 2D Clipboard*.
 #@+node:tom.20211108175319.6: *5* declarations
 STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
 SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')

@@ -283,7 +283,7 @@ def at_rich_check(tag, key):
         cmd_OpenEditor(key, at_rich=True)
 #@+node:tbrown.20130813134319.5692: ** @g.command('cke-text-open')
 @g.command('cke-text-open')
-def cmd_OpenEditor(event, at_rich=False):
+def cmd_OpenEditor(event=None, at_rich=False):
     """Open the rich text editor, hide the regular editor."""
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
@@ -299,7 +299,7 @@ def cmd_OpenEditor(event, at_rich=False):
     splitter.replace_widget(body, w)
 #@+node:tbrown.20130813134319.5693: ** @g.command('cke-text-close')
 @g.command('cke-text-close')
-def cmd_CloseEditor(event, at_rich=False):
+def cmd_CloseEditor(event=None, at_rich=False):
     """Close the rich text editor, unhide the regular editor."""
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()

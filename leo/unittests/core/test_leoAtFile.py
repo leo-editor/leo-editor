@@ -107,10 +107,7 @@ class TestAtFile(LeoUnitTest):
         pass
         ''')
 
-        assert not at.checkPythonSyntax(p, s2, supress=True), 'fail2'
-
-        if not g.unitTesting:  # A hand test of at.syntaxError
-            at.checkPythonSyntax(p, s2)
+        assert not at.checkPythonSyntax(p, s2), 'fail2'
     #@+node:ekr.20210905052021.19: *3* TestAtFile.test_directiveKind4
     def test_directiveKind4(self):
 
@@ -796,6 +793,10 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(contents, s)
     #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
     def test_at_section_delim(self):
+
+        import sys
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')
 
         c, x = self.c, self.x
         h = '@file /test/at_section_delim.py'

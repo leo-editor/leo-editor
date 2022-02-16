@@ -425,7 +425,7 @@ def cmd_bookmark_find_flat(event):
     for nd in nodes[:40]:
         new = container.insertAsLastChild()
         new.h = nd.h
-        new.b = c.vnode2position(nd).get_UNL(with_proto=True)
+        new.b = c.vnode2position(nd).get_UNL()
     bm.show_list(bm.get_list())
     if len(nodes) > 40:
         g.es("Stopped after 40 hits")
@@ -1197,8 +1197,8 @@ class BookMarkDisplayProvider:
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
 
-                    ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
-                    if ok:
+                    other_p = g.findUNL(UNL.split('-->'), other_c)
+                    if other_p:
                         v = other_p.v
                     else:
                         g.es("Couldn't find '%s'" % gnx)

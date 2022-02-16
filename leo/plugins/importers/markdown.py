@@ -21,15 +21,20 @@ class Markdown_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for markdown importer."""
-        if not s or s.isspace():
+        if all(s.isspace() for s in lines):
             return
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         # We may as well do this first.  See warning below.
         self.stack = [parent]
         in_code = False
-        lines = g.splitLines(s)
+
         skip = 0
         for i, line in enumerate(lines):
             top = self.stack[-1]
@@ -71,14 +76,14 @@ class Markdown_Importer(Importer):
             while level > len(self.stack):
                 child = self.create_child_node(
                     parent=top,
-                    body=None,
+                    line=None,
                     headline='INSERTED NODE'
                 )
                 self.stack.append(child)
         assert level == len(self.stack), (level, len(self.stack))
         child = self.create_child_node(
             parent=top,
-            body=None,
+            line=None,
             headline=h,  # Leave the headline alone
         )
         self.stack.append(child)
@@ -133,7 +138,7 @@ class Markdown_Importer(Importer):
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
             parent=self.stack[-1],
-            body=line,
+            line=line,
             headline='!Declarations',
         )
         self.stack.append(child)
@@ -156,7 +161,7 @@ class Markdown_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
-    'class': Markdown_Importer,
+    'func': Markdown_Importer.do_import(),
     'extensions': ['.md', '.rmd', '.Rmd',],
 }
 #@@language python

@@ -24,6 +24,15 @@ QtConst = Qt
 qt_version = QtCore.QT_VERSION_STR
 #
 # Optional imports: #2005
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt6 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    print('No Qt6 QtWebEngineWidgets')
+
 try:
     from PyQt6 import QtPrintSupport as printsupport
 except Exception:
@@ -75,6 +84,7 @@ try:
     StandardButton = QtWidgets.QDialogButtonBox.StandardButton
     TextInteractionFlag = QtCore.Qt.TextInteractionFlag
     ToolBarArea = QtCore.Qt.ToolBarArea
+    WidgetAttribute = QtCore.Qt.WidgetAttribute  # #2347
     WindowType = QtCore.Qt.WindowType
     WindowState = QtCore.Qt.WindowState
 except AttributeError:
@@ -104,11 +114,12 @@ Format = QtGui.QImage.Format
 GlobalColor = QtCore.Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
 Information = QtWidgets.QMessageBox.Icon.Information
+ItemDataRole = QtCore.Qt.ItemDataRole  # 2347
+ItemFlag = QtCore.Qt.ItemFlag
 Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
 Policy = QtWidgets.QSizePolicy.Policy
-QStyle = QtWidgets.QStyle.StandardPixmap
 ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
 SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
@@ -117,6 +128,7 @@ Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
+Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle

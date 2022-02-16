@@ -896,7 +896,7 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind,  # type:ignore
             path=c.mFileName,
             tag='setting',
-            unl=(p and p.get_UNL(with_proto=True)),
+            unl=(p and p.get_UNL()),
             val=val,
         )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
@@ -1324,9 +1324,6 @@ class GlobalConfigManager:
         ("trailing_body_newlines", "string", "asis"),
         ("use_plugins", "bool", True),
             # New in 4.3: use_plugins = True by default.
-        # ("use_psyco","bool",False),
-            # use_pysco can not be set by config code:
-            # config processing happens too late.
         ("undo_granularity", "string", "word"),
             # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),
@@ -1787,30 +1784,21 @@ class LocalConfigManager:
         Return a string representing the source file of the given setting,
         one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
         """
-        trace = False
         if not isinstance(setting, g.GeneralSetting):
             return "error"
         try:
             path = setting.path
         except Exception:
             return "error"
-        val = g.truncate(repr(setting.val), 50)
         if not path:
-            # g.trace('NO PATH', setting.kind, val)
             return "local_file"
         path = path.lower()
         for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(tag.lower()):
-                if setting.kind == 'color':
-                    if trace:
-                        g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
-                return tag.rstrip('.leo')
+                return tag[:-4]  # PR: #2422.
         theme_path = g.app.loadManager.theme_path
         if theme_path and g.shortFileName(theme_path.lower()) in path:
-            if trace:
-                g.trace('FOUND:', "theme_file", setting.kind, setting.ivar, val)
             return "theme_file"
-        # g.trace('NOT FOUND', repr(theme_path), repr(path))
         if path == 'register-command' or path.find('mode') > -1:
             return 'ignore'
         return "local_file"
@@ -2225,16 +2213,19 @@ class LocalConfigManager:
         myLeoSettings.leo.
         """
         c = self.c
+        fn = g.shortFileName(c.fileName())
         p = self.findSettingsPosition(setting)
         if not p:
             c = c.openMyLeoSettings()
             if not c:
                 return
+            fn = 'myLeoSettings.leo'
             p = c.config.findSettingsPosition(setting)
         if not p:
             root = c.config.settingsRoot()
             if not root:
                 return
+            fn = 'leoSettings.leo'
             p = c.config.findSettingsPosition(setting)
             if not p:
                 p = root.insertAsLastChild()
@@ -2243,9 +2234,10 @@ class LocalConfigManager:
         if i > -1:
             h = h[:i].strip()
         p.h = f"{h} = {value}"
+        print(f"Updated `{setting}` in {fn}")  # #2390.
         #
         # Delay the second redraw until idle time.
-        c.setChanged(redrawFlag=False)
+        c.setChanged()
         p.setDirty()
         c.redraw_later()
     #@-others

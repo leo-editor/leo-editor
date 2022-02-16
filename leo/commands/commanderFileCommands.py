@@ -12,9 +12,23 @@ from leo.core import leoImport
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
-    """Reload settings for the selected outline, saving it if necessary."""
-    c = self
-    reloadSettingsHelper(c)
+    """Reload settings in all commanders, or just c."""
+    lm = g.app.loadManager
+    # Save any changes so they can be seen.
+    for c2 in g.app.commanders():
+        if c2.isChanged():
+            c2.save()
+    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+    lm.readGlobalSettingsFiles()
+    for c in g.app.commanders():
+        # Read the local file, using a null gui.
+        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+        # Init the config classes.
+        c.initSettings(previousSettings)
+        # Init the commander config ivars.
+        c.initConfigSettings()
+        # Reload settings in all configurable classes
+        c.reloadConfigurableSettings()
 #@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
 def reloadSettingsHelper(c):
     """
@@ -79,7 +93,7 @@ def restartLeo(self, event=None):
             g.app.windowList.remove(frame)
         else:
             # #69.
-            g.app.forgetOpenFile(fn=c.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c.fileName())
     # 6. Complete the shutdown.
     g.app.finishQuit()
     # 7. Restart, restoring the original command line.
@@ -172,6 +186,7 @@ def importAnyFile(self, event=None):
                 treeType='@auto',  # was '@clean'
                     # Experimental: attempt to use permissive section ref logic.
             )
+            c.redraw()
     c.raise_error_dialogs(kind='read')
 
 g.command_alias('importAtFile', importAnyFile)
@@ -380,7 +395,7 @@ def refreshFromDisk(self, event=None):
 #@+node:ekr.20210610083257.1: *3* c_file.pwd
 @g.commander_command('pwd')
 def pwd_command(self, event=None):
-    """Refresh an @<file> node from disk."""
+    """Print the current working directory."""
     g.es_print('pwd:', os.getcwd())
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save')
@@ -433,7 +448,6 @@ def save(self, event=None, fileName=None):
             fileName = ''.join(c.k.givenArgs)
             if not fileName:
                 fileName = g.app.gui.runSaveFileDialog(c,
-                    initialfile=c.mFileName,
                     title="Save",
                     filetypes=[("Leo files", "*.leo *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
@@ -446,7 +460,7 @@ def save(self, event=None, fileName=None):
                 # 2013/08/04: use c.computeWindowTitle.
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
                 # Bug fix in 4.4b2.
-            if g.app.qt_use_tabs and hasattr(c.frame, 'top'):
+            if hasattr(c.frame, 'top'):
                 c.frame.top.leo_master.setTabName(c, c.mFileName)
             c.fileCommands.save(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
@@ -506,7 +520,6 @@ def saveAs(self, event=None, fileName=None):
         fileName = ''.join(c.k.givenArgs)
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=c.mFileName,
             title="Save As",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
@@ -524,7 +537,7 @@ def saveAs(self, event=None, fileName=None):
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
             # Bug fix in 4.4b2.
         # Calls c.clearChanged() if no error.
-        if g.app.qt_use_tabs and hasattr(c.frame, 'top'):
+        if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.saveAs(c.mFileName)
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
@@ -565,7 +578,6 @@ def saveTo(self, event=None, fileName=None, silent=False):
         fileName = ''.join(c.k.givenArgs)
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=c.mFileName,
             title="Save To",
             filetypes=[("Leo files", "*.leo *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
@@ -608,7 +620,6 @@ def save_as_leojs(self, event=None):
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=c.mFileName,  # .leojs will be added if necessary.
         title="Save As JSON (.leojs)",
         filetypes=[("Leo files", "*.leojs")],
         defaultextension='.leojs')
@@ -628,7 +639,6 @@ def save_as_zipped(self, event=None):
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=c.mFileName,  # .db will be added if necessary.
         title="Save As Zipped",
         filetypes=[("Leo files", "*.db")],
         defaultextension='.db')
@@ -645,10 +655,11 @@ def save_as_zipped(self, event=None):
 def save_as_xml(self, event=None):
     """
     Save a Leo outline as a .leo file with a new file name.
+    
+    Useful for converting a .leo.db file to a .leo file.
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=c.mFileName,  # .leo will be added if necessary.
         title="Save As XML",
         filetypes=[("Leo files", "*.leo")],
         defaultextension=g.defaultLeoFileExtension(c))
@@ -667,7 +678,6 @@ def exportHeadlines(self, event=None):
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile="headlines.txt",
         title="Export Headlines",
         filetypes=filetypes,
         defaultextension=".txt")
@@ -686,7 +696,6 @@ def flattenOutline(self, event=None):
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile="flat.txt",
         title="Flatten Selected Outline",
         filetypes=filetypes,
         defaultextension=".txt")
@@ -735,7 +744,6 @@ def outlineToCWEB(self, event=None):
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile="cweb.w",
         title="Outline To CWEB",
         filetypes=filetypes,
         defaultextension=".w")
@@ -757,7 +765,6 @@ def outlineToNoweb(self, event=None):
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile=self.outlineToNowebDefaultFileName,
         title="Outline To Noweb",
         filetypes=filetypes,
         defaultextension=".nw")
@@ -796,11 +803,9 @@ def removeSentinels(self, event=None):
 def weave(self, event=None):
     """Simulate a literate-programming weave operation by writing the outline to a text file."""
     c = self
-    filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        initialfile="weave.txt",
         title="Weave",
-        filetypes=filetypes,
+        filetypes=[("Text files", "*.txt"), ("All files", "*")],
         defaultextension=".txt")
     c.bringToFront()
     if fileName:
@@ -826,12 +831,13 @@ def readAtFileNodes(self, event=None):
     """Read all @file nodes in the presently selected outline."""
     c, p, u = self, self.p, self.undoer
     c.endEditing()
-    # c.init_error_dialogs() # Done in at.readAll.
     undoData = u.beforeChangeTree(p)
-    c.fileCommands.readAtFileNodes()
+    c.endEditing()
+    c.atFileCommands.readAllSelected(p)
+    # Force an update of the body pane.
+    c.setBodyString(p, p.b)  # Not a do-nothing!
     u.afterChangeTree(p, 'Read @file Nodes', undoData)
     c.redraw()
-    # c.raise_error_dialogs(kind='read') # Done in at.readAll.
 #@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
@@ -910,12 +916,9 @@ def writeFileFromNode(self, event=None):
     else:
         fileName = None
     if not fileName:
-        filetypes = [
-            ("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
         fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=None,
             title='Write File From Node',
-            filetypes=filetypes,
+            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo")],
             defaultextension=None)
     if fileName:
         try:

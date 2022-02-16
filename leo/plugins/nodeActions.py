@@ -311,7 +311,7 @@ def doNodeAction(pClicked, c):
                 if pClicked.isAnyAtFileNode():
                     clickedAtFileTypeNode = True  #Tell "write @file type nodes" code
                     #Replace "@files" in pattern with clicked node's @file type
-                    pattern = re.sub("^@files", pNA.h.split(' ')[0], pattern)
+                    pattern = re.sub("^@files", hClicked.split(' ')[0], pattern)
                     if messageLevel >= 4:
                         g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 

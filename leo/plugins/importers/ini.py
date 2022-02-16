@@ -2,7 +2,6 @@
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 """The @auto importer for .ini files."""
 import re
-from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
@@ -20,15 +19,20 @@ class Ini_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         """
         self.at_others_flag = False
         p = self.root
-        self.inject_lines_ivar(p)
-        for line in g.splitLines(s):
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            p.v: {
+                'lines': [],
+            }
+        }
+        for line in lines:
             if self.starts_block(line):
                 p = self.start_block(line)
             else:
@@ -51,12 +55,12 @@ class Ini_Importer(Importer):
         # Create the new node.
         return self.create_child_node(
             parent=self.root,
-            body=line,
+            line=line,
             headline=line.strip())
     #@-others
 #@-others
 importer_dict = {
-    'class': Ini_Importer,
+    'func': Ini_Importer.do_import(),
     'extensions': ['.ini',],
 }
 #@@language python

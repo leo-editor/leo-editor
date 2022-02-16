@@ -340,7 +340,7 @@ class GlobalSearch:
             c.bringToFront()
             return
         g.es_print("Not found in any open document: %s" % l)
-    #@+node:ekr.20140919160020.17903: *3* do_search
+    #@+node:ekr.20140919160020.17903: *3* do_search (bigdash.py)
     def do_search(self, tgt, qs):
 
         ss = str(qs)
@@ -392,14 +392,14 @@ class GlobalSearch:
 
             res.append((li, (m.start() - st, m.end() - st), (spre, spost)))
         return res
-    #@+node:ekr.20140919160020.17919: *3* open_unl
+    #@+node:ekr.20140919160020.17919: *3* open_unl (bigdash)
     def open_unl(self, unl):
 
         parts = unl.split("#", 1)
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
             segs = parts[1].split("-->")
-            g.recursiveUNLSearch(segs, c)
+            g.findUNL(segs, c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""

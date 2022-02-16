@@ -680,11 +680,14 @@ def alwaysIndentBody(self, event=None):
     # Calculate the result.
     changed, result = False, []
     for line in lines:
-        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-        if s != line:
-            changed = True
-        result.append(s)
+        if line.strip():
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
+            result.append(s)
+            if s != line:
+                changed = True
+        else:
+            result.append('\n')  # #2418
     if not changed:
         return
     #
@@ -711,7 +714,6 @@ def alwaysIndentBody(self, event=None):
     #
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
-
 #@+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
 def indentBody(self, event=None):

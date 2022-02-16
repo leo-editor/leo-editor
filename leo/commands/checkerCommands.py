@@ -65,6 +65,7 @@ def find_long_lines(event):
                 return True
         return False
     #@-others
+    log = c.frame.log
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
@@ -88,7 +89,8 @@ def find_long_lines(event):
                     g.es_print(root.h)
                     g.es_print(p.h)
                     print(short_s)
-                    g.es_clickable_link(c, p, line_number=i, message=short_s)
+                    unl = p.get_UNL()
+                    log.put(short_s.strip() + '\n', nodeLink=f"{unl}::{i + 1}")  # Local line.
                 break
     g.es_print(
         f"found {count} long line{g.plural(count)} "
@@ -136,6 +138,7 @@ def find_missing_docstrings(event):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
     #@-others
+    log = c.frame.log
     count, files, found, t1 = 0, 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         files += 1
@@ -149,7 +152,8 @@ def find_missing_docstrings(event):
                         g.es_print('')
                         g.es_print(root.h)
                     print(line)
-                    g.es_clickable_link(c, p, i + 1, line)  # *Local* index.
+                    unl = p.get_UNL()
+                    log.put(line.strip() + '\n', nodeLink=f"{unl}::{i + 1}")  # Local line.
                     break
     g.es_print('')
     g.es_print(
@@ -226,13 +230,16 @@ def pyflakes_command(event):
     or the first @<file> node in an ancestor.
     """
     c = event and event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if pyflakes:
-            PyflakesCommand(c).run(force=True)
-        else:
-            g.es_print('can not import pyflakes')
+    if not c:
+        return
+    if c.isChanged():
+        c.save()
+    if not pyflakes:
+        g.es_print('can not import pyflakes')
+        return
+    ok = PyflakesCommand(c).run(c.p)
+    if ok:
+        g.es('OK: pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
 last_pylint_path = None
 
@@ -257,13 +264,14 @@ class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
 
     def __init__(self, c):
-        """ctor for PyflakesCommand class."""
+        """ctor for MypyCommand class."""
         self.c = c
         self.link_limit = None  # Set in check_file.
         self.unknown_path_names = []
         # Settings.
         self.args = c.config.getData('mypy-arguments') or []
         self.config_file = c.config.getString('mypy-config-file') or None
+        self.directory = c.config.getString('mypy-directory') or None
         self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
@@ -275,6 +283,7 @@ class MypyCommand:
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
+        print('mypy done')
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
@@ -283,23 +292,29 @@ class MypyCommand:
         # Init.
         c.frame.log.clearLog()
         link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
-        # Change working directory.
-        directory = os.path.dirname(fn)
+        # Set the working directory.
+        if self.directory:
+            directory = self.directory
+        else:
+            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+        print(' mypy cwd:', directory)
         os.chdir(directory)
-        # Check the config file.
+        # Set the args. Set the config file only if explicitly given.
         if self.config_file:
             config_file = g.os_path_finalize_join(directory, self.config_file)
-            if not os.path.exists(config_file):
-                print(f"config file not found: {config_file!r}")
-                return
             args = [f"--config-file={config_file}"] + self.args
-        args_s = ' '.join(args + [g.shortFileName(fn)])
-        args = self.args + [fn]
+            if not os.path.exists(config_file):
+                print(f"config file not found: {config_file}")
+                return
+        else:
+            args = self.args
+        if args:
+            print('mypy args:', args)
         # Run mypy.
-        g.es_print(f"mypy {args_s}")
-        result = mypy.api.run(args)
+        final_args = args + [fn]
+        result = mypy.api.run(final_args)
+        g.es('mypy: done')
         # Print result, making clickable links.
-        print('Exit status:', result[2])
         lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep
         for i, s in enumerate(lines):
@@ -327,10 +342,10 @@ class MypyCommand:
             # Look for the @<file> node.
             link_root = g.findNodeByPath(c, path)
             if link_root:
-                unl = link_root.get_UNL(with_proto=True, with_count=True)
+                unl = link_root.get_UNL()
                 if s.lower().startswith(s_head):
                     s = s[len(s_head) :]  # Do *not* strip the line!
-                c.frame.log.put(s, nodeLink=f"{unl},{-line_number}")
+                c.frame.log.put(s, nodeLink=f"{unl}::{-line_number}")  # Global line
             elif path not in self.unknown_path_names:
                 self.unknown_path_names.append(path)
                 print(f"no @<file> node found: {path}")
@@ -385,15 +400,15 @@ class PyflakesCommand:
                 try:
                     root = roots[fn_n]
                     line = int(s.split(':')[1])
-                    unl = root.get_UNL(with_proto=True, with_count=True)
-                    g.es(s, nodeLink=f"{unl},{(-line)}")
+                    unl = root.get_UNL()
+                    g.es(s, nodeLink=f"{unl}::{(-line)}")  # Global line
                 except(IndexError, TypeError, ValueError):
                     # in case any assumptions fail
                     g.es(s)
             else:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, log_flag, pyflakes_errors_only, roots):
+    def check_all(self, roots):
         """Run pyflakes on all files in paths."""
         total_errors = 0
         for i, root in enumerate(roots):
@@ -405,8 +420,6 @@ class PyflakesCommand:
             # Report the file name.
             s = g.readFileIntoEncodedString(fn)
             if s and s.strip():
-                if not pyflakes_errors_only:
-                    g.es(f"Pyflakes: {sfn}")
                 # Send all output to the log pane.
                 r = reporter.Reporter(
                     errorStream=self.LogStream(i, roots),
@@ -440,31 +453,23 @@ class PyflakesCommand:
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p=None, force=False, pyflakes_errors_only=False):
-        """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
+    def run(self, p):
+        """Run Pyflakes on all Python @<file> nodes in p's tree."""
+        ok = True
         if not pyflakes:
-            return True  # Pretend all is fine.
+            return ok
         c = self.c
-        root = p or c.p
+        root = p
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        t1 = time.time()
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if roots:
             # These messages are important for clarity.
-            log_flag = not force
-            total_errors = self.check_all(log_flag, pyflakes_errors_only, roots)
+            total_errors = self.check_all(roots)
             if total_errors > 0:
                 g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
-            elif force:
-                g.es(
-                    f"OK: pyflakes: "
-                    f"{len(roots)} file{g.plural(roots)} "
-                    f"in {g.timeSince(t1)}")
-            elif not pyflakes_errors_only:
-                g.es('OK: pyflakes')
             ok = total_errors == 0
         else:
             ok = True
@@ -474,9 +479,9 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
+    # m.group(1) is the line number.
+    # m.group(2) is the (unused) test name.
     link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-        # m.group(1) is the line number.
-        # m.group(2) is the (unused) test name.
 
     # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
 
@@ -506,7 +511,7 @@ class PylintCommand:
             for parent in p.self_and_parents():
                 if g.match_word(parent.h, 0, '@nopylint'):
                     return False
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+            return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         data = [(self.get_fn(p), p.copy()) for p in roots]

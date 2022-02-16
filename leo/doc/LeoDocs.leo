@@ -752,7 +752,6 @@
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
-<v t="ekr.20131030071311.17087"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
@@ -768,6 +767,7 @@
 <v t="ekr.20131009100732.16755"><vh>\@rst-no-head suppresses sections</vh></v>
 <v t="ekr.20131025044901.17147"><vh>\@rst-ignore &amp; @rst-ignore-tree ignore text</vh></v>
 <v t="ekr.20131025044901.17148"><vh>Inserting raw markup</vh></v>
+<v t="ekr.20220129083216.1"><vh>Filtering contents</vh></v>
 </v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
@@ -820,6 +820,7 @@
 <v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
 <v t="ekr.20180126061429.20"><vh>Use g.trace to debug scripts</vh></v>
 <v t="ekr.20180126061429.4"><vh>Use section references sparingly</vh></v>
+<v t="ekr.20220129091501.1"><vh>Use g.handleUnl to select nodes</vh></v>
 </v>
 </v>
 </v>
@@ -2379,6 +2380,19 @@
 </v>
 </v>
 <v t="ekr.20211105051031.1"></v>
+<v t="ekr.20180126061923.1"></v>
+<v t="ekr.20220130042521.1"><vh>Found 8:unl</vh>
+<v t="ekr.20101113063552.9458"></v>
+<v t="ekr.20170228104028.1"></v>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20101113063552.9483"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
+<v t="ekr.20220129091501.1"></v>
+<v t="ekr.20220130042644.1"><vh>Found 2:unls</vh>
+<v t="ekr.20170228101933.20"></v>
+<v t="ekr.20220129091501.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3513,15 +3527,7 @@ Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access t
     :local:
 
 </t>
-<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand, which calls the "command1" and "command2" hook routines for the given label. c.doCommand catches all exceptions thrown by the command::
-
-    c.doCommand(c.markHeadline,label="markheadline")
-
-You can also call command handlers directly so that hooks will not be called::
-
-    c.markHeadline()
-
-You can invoke minibuffer commands by name.  For example::
+<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">You can invoke minibuffer commands by name.  For example::
 
     c.executeMinibufferCommand('open-outline')
 
@@ -8798,13 +8804,7 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one @others directive, but descendant nodes
     may have other @others directives.
 </t>
-<t tx="ekr.20100821182153.4343">@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-######
+<t tx="ekr.20100821182153.4343">######
 Slides
 ######
 
@@ -11820,15 +11820,7 @@ run-all-unit-tests-externally = Alt-5
 creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
     
 </t>
-<t tx="ekr.20111127144911.5544">@pagewidth 75
-
-@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+<t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
 .. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
 .. _`Nightly snapshot`:         download.html#snapshots       
 .. _`Python wheel`:             https://pythonwheels.com/
@@ -14744,7 +14736,7 @@ This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 These instructions look complicated because they're long, but really they just boil down to:
 
-- install python (v3.6 or newer).
+- install python. Python 3.9 or later is highly recommended.
 - run `pip install leo` from a python enabled command prompt.
 - run leo from that same python enabled command prompt.
 
@@ -16541,10 +16533,6 @@ myDocument.html.txt is the **input** file for sphinx.
                             initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
-<t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to actually get an html file that can be loaded into a word processor to output an .odt or .docx file for example.
-
-For most of the purposes that a programmer would use rst, i.e., documentation or a web page, the tutorial goes far enough. But for those who have different output goals, highlighting the flexibility that Leo with rst should be a primary goal. There are literally hundreds of writers in the world for every programmer. If you want Leo to become popular, this is a critical understanding.
-</t>
 <t tx="ekr.20131030082936.17514">s = p.b
 for child in p.children():
     s = s + '\n- ' + child.h
@@ -17304,7 +17292,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
 Leo's minimal dependencies are:
 
-* `Python`_ 3.6 or later.
+* `Python`_ 3.6 or later. Python 3.9 or later is highly recommended.
 * `PyQt5`_.
 * `PyQtWebEngine`
 
@@ -31188,6 +31176,30 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - The user may choose *other* commands after starting repeat-complex-command.
 - Complete coverage testing for leoAtFile.py.
 </t>
+<t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
+
+    def headline_filter(c, p)
+    def body_filter(c, p)
+    
+so these filters have full access to all nodes of the entire outline. As a result, these filters can return arbitrary text that comes from anywhere in the outline.
+
+The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
+<t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, g.handleUnl(unl, c) will select the referenced node.  For example::
+
+    g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes', c)
+    
+will select this node in LeoDocs.leo.
+</t>
+<t tx="ekr.20220130042521.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 8 nodes</t>
+<t tx="ekr.20220130042644.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 2 nodes</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

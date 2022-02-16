@@ -65,7 +65,7 @@ class Lua_Importer(Importer):
             g.trace('unmatched "end" statement at line', i)
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -75,8 +75,13 @@ class Lua_Importer(Importer):
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        self.inject_lines_ivar(parent)
-        lines = g.splitLines(s)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
+
         self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
@@ -250,7 +255,7 @@ class Lua_ScanState:
 
 #@-others
 importer_dict = {
-    'class': Lua_Importer,
+    'func': Lua_Importer.do_import(),
     'extensions': ['.lua',],
 }
 #@@language python

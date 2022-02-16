@@ -23,6 +23,7 @@ def cover_all(event=None):
         ('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py'),
         ('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py'),
         ('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py'),
+        ('leo.commands.convertCommands', 'leo/unittests/commands/convertCommands.py'),
         ('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py'),
         ('leo.core.leoFileCommands', 'leo/unittests/core/test_leoFileCommands.py'),
         ('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py'),
@@ -75,6 +76,11 @@ def cover_colorizer(event=None):
 def cover_commands(event=None):
     """Run all coverage tests for leoCommands.py."""
     g.run_coverage_tests('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py')
+#@+node:ekr.20220109041701.1: *3* cover-convert
+@g.command('cover-convert-commands')
+def cover_convert_commands(event=None):
+    """Run all coverage tests for convertCommands.py."""
+    g.run_coverage_tests('leo.commands.convertCommands', 'leo/unittests/commands/test_convertCommands.py')
 #@+node:ekr.20210911072153.9: *3* cover-config
 @g.command('cover-config')
 def cover_config(event=None):

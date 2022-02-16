@@ -5,7 +5,7 @@
 """Leo's file-conversion commands."""
 
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -16,7 +16,7 @@ def cmd(name):
 
 #@+<< class To_Python >>
 #@+node:ekr.20150514063305.123: ** << class To_Python >>
-class To_Python:
+class To_Python:  # pragma: no cover
     """The base class for x-to-python commands."""
     #@+others
     #@+node:ekr.20150514063305.125: *3* To_Python.ctor
@@ -444,7 +444,7 @@ class To_Python:
 
 #@+others
 #@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
-def convert_at_test_nodes(c, converter, root, copy_tree=False):
+def convert_at_test_nodes(c, converter, root, copy_tree=False):  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
     root's tree to children a new last top-level node.
@@ -473,10 +473,229 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
+
     #@+others
+    #@+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
+    @cmd('add-mypy-annotations')
+    def addMypyAnnotations(self, event):  # pragma: no cover
+        """
+        The add-mypy-annotations command adds mypy annotations to function and
+        method definitions based on naming conventions.
+        
+        To use, select an @<file> node for a python external file and execute
+        add-mypy-annotations. The command rewrites the @<file> tree, adding
+        mypy annotations for untyped function/method arguments.
+
+        The command attempts no type analysis. It uses "Any" as the type of
+        functions and methods that do not specify a return type. As as special
+        case, the type of __init__ methods is "None".
+
+        @data add-mypy-annotations in leoSettings.leo contains a list of
+        key/value pairs. Keys are argument names (as used in Leo); values are
+        mypy type names.
+        
+        This command adds annotations for kwargs that have a constant initial
+        value.
+        """
+        self.Add_Mypy_Annotations(self.c).add_annotations()
+        self.c.bodyWantsFocus()
+    #@+node:ekr.20220105152521.1: *4* class Add_Mypy_Annotations
+    class Add_Mypy_Annotations:
+        
+        """A class that implements the add-mypy-annotations command."""
+
+        changed_lines = 0
+        tag = 'add-mypy-annotations'
+        types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
+
+        def __init__(self, c):
+            self.c = c
+
+        #@+others
+        #@+node:ekr.20220105154019.1: *5* ama.init_types_d
+        def init_types_d(self):  # pragma: no cover
+            """Init the annotations dict."""
+            c, d, tag = self.c, self.types_d, self.tag
+            data = c.config.getData(tag)
+            if not data:
+                print(f"@data {tag} not found")
+                return
+            for s in data:
+                try:
+                    key, val = s.split(',', 1)
+                    if key in d:
+                        print(f"{tag}: ignoring duplicate key: {s!r}")
+                    else:
+                        d [key] = val.strip()
+                except ValueError:
+                    print(f"{tag}: ignoring invalid key/value pair: {s!r}")
+        #@+node:ekr.20220105154158.1: *5* ama.add_annotations
+        def add_annotations(self):  # pragma: no cover
+
+            c, p, tag = self.c, self.c.p, self.tag
+            # Checks.
+            if not p.isAnyAtFileNode():
+                g.es_print(f"{tag}: not an @file node: {p.h}")
+                return
+            if not p.h.endswith('.py'):
+                g.es_print(f"{tag}: not a python file: {p.h}")
+                return
+            # Init.
+            self.init_types_d()
+            if not self.types_d:
+                print(f"{self.tag}: no types given")
+                return
+            try:
+                # Convert p and (recursively) all its descendants.
+                self.convert_node(p)
+                # Redraw.
+                c.expandAllSubheads(p)
+                c.treeWantsFocusNow()
+            except Exception:
+                g.es_exception()
+        #@+node:ekr.20220105155837.4: *5* ama.convert_node
+        def convert_node(self, p):  # pragma: no cover
+            # Convert p.b into child.b
+            self.convert_body(p)
+            # Recursively create all descendants.
+            for child in p.children():
+                self.convert_node(child)
+        #@+node:ekr.20220105173331.1: *5* ama.convert_body 
+        def convert_body(self, p):
+            """Convert p.b in place."""
+            c = self.c
+            if not p.b.strip():
+                return  # pragma: no cover
+            s = self.def_pat.sub(self.do_def, p.b)
+            if p.b != s:
+                self.changed_lines += 1
+                if not g.unitTesting:
+                    print(f"changed {p.h}")  # pragma: no cover
+                p.setDirty()
+                c.setChanged()
+                p.b = s
+        #@+node:ekr.20220105174453.1: *5* ama.do_def
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+
+        def do_def(self, m):
+            lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+            args = self.do_args(args)
+            if not return_val.strip():
+                val_s = 'None' if name == '__init__' else 'Any'
+                return_val = f" -> {val_s}"
+            if not tail.strip():
+                tail = ''
+            return f"{lws}def {name}({args}){return_val}:{tail}\n"
+        #@+node:ekr.20220105174453.2: *5* ama.do_args
+        arg_pat = re.compile(r'(\s*[\*\w]+\s*)([:,=])?')
+        comment_pat = re.compile(r'(\s*#.*?\n)')
+
+        def do_args(self, args):
+            """Add type annotations."""
+            multiline = '\n' in args.strip()
+            comma = ',\n' if multiline else ', '
+            lws = ' '*4 if multiline else ''
+            result: List[str] = []
+            i = 0
+            while i < len(args):
+                rest = args[i:]
+                if not rest.strip():
+                    break
+                # Handle comments following arguments.
+                if multiline and result:
+                    m = self.comment_pat.match(rest)
+                    if m:
+                        comment = m.group(0)
+                        i += len(comment)
+                        last = result.pop()
+                        result.append(f"{last.rstrip()}  {comment.strip()}\n")
+                        continue
+                m = self.arg_pat.match(rest)
+                if not m:  # pragma: no cover
+                    g.trace('==== bad args', i, repr(rest))
+                    return args
+                name1, tail = m.group(1), m.group(2)
+                name = name1.strip()
+                i += len(name1)
+                if name == 'self':
+                    # Don't annotate self.
+                    result.append(f"{lws}{name}{comma}")
+                    if i < len(args) and args[i] == ',':
+                        i += 1
+                elif tail == ':':
+                    arg, i = self.find_arg(args, i)
+                    result.append(f"{lws}{name}: {arg}{comma}")
+                elif tail == '=':
+                    arg, i = self.find_arg(args, i)
+                    kind = self.kind(arg)
+                    result.append(f"{lws}{name}: {kind}={arg}{comma}")
+                elif tail == ',':
+                    kind = self.types_d.get(name.strip(), 'Any')
+                    result.append(f"{lws}{name}: {kind}{comma}")
+                    i += 1
+                else:
+                    kind = self.types_d.get(name.strip(), 'Any')
+                    result.append(f"{lws}{name}: {kind}{comma}")
+            s = ''.join(result)
+            if multiline:
+                s = '\n' + s
+            if not multiline and s.endswith(', '):
+                s = s[:-2]
+            return s
+        #@+node:ekr.20220105190332.1: *5* ama.find_arg
+        def find_arg(self, s, i):
+            """
+            Scan over type annotations or initializers.
+            
+            Return (arg, j), the index of the character following the argument starting at s[i].
+            """
+            assert s[i] in ':=', (i, s[i], s)
+            i += 1
+            while i < len(s) and s[i] == ' ':
+                i += 1
+            i1 = i
+            level = 0  # Assume balanced parens, brackets and strings.
+            while i < len(s):
+                ch = s[i]
+                i += 1
+                if ch in '[{(':
+                    level += 1
+                elif ch in ']}':
+                    level -= 1
+                elif ch in '\'"':
+                    i = g.skip_python_string(s, i - 1)
+                elif ch == ',' and level == 0:
+                    # Skip the comma, but don't include it in the result.
+                    break
+            assert level == 0, (level, i == len(s), s)
+            result = s[i1 : i].strip()
+            if result.endswith(','):
+                result = result[:-1].strip()
+            return result, i
+        #@+node:ekr.20220105222028.1: *5* ama.kind
+        bool_pat = re.compile(r'(True|False)')
+        float_pat = re.compile(r'[0-9]*\.[0-9]*')
+        int_pat = re.compile(r'[0-9]+')
+        none_pat = re.compile(r'None')
+        string_pat = re.compile(r'[\'"].*[\'"]')
+
+        def kind(self, s):
+            """Return the kind of the initial value s."""
+            if self.bool_pat.match(s):
+                return 'bool'
+            if self.float_pat.match(s):
+                return 'float'
+            if self.int_pat.match(s):
+                return 'int'
+            if self.none_pat.match(s):
+                return 'Any'
+            if self.string_pat.match(s):
+                return 'str'
+            return 'Any'  # pragma: no cover
+        #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def cToPy(self, event):
+    def cToPy(self, event):  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -485,7 +704,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.160: *4* class C_To_Python (To_Python)
-    class C_To_Python(To_Python):
+    class C_To_Python(To_Python):  # pragma: no cover
         #@+others
         #@+node:ekr.20150514063305.161: *5* ctor & helpers (C_To_Python)
         def __init__(self, c):
@@ -728,37 +947,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result.extend(body)
             aList[prevSemi:k] = result
             return prevSemi + len(result)
-        #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
-        def massageFunctionArgs(self, args):
-            assert args[0] == '('
-            assert args[-1] == ')'
-            result = ['(']
-            lastWord = []
-            if self.class_name:
-                for item in list("self,"):
-                    result.append(item)  #can put extra comma
-            i = 1
-            while i < len(args):
-                i = self.skip_ws_and_nl(args, i)
-                ch = args[i]
-                if ch.isalpha():
-                    j = self.skip_past_word(args, i)
-                    lastWord = args[i:j]
-                    i = j
-                elif ch == ',' or ch == ')':
-                    for item in lastWord:
-                        result.append(item)
-                    if lastWord != [] and ch == ',':
-                        result.append(',')
-                    lastWord = []
-                    i += 1
-                else: i += 1
-            if result[-1] == ',':
-                del result[-1]
-            result.append(')')
-            result.append(':')
-            # print "new args:", ''.join(result)
-            return result
         #@+node:ekr.20150514063305.170: *7* massageFunctionHead (sets .class_name)
         def massageFunctionHead(self, head):
             result: List[Any] = []
@@ -795,6 +983,37 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             finalResult = list("def ")
             finalResult.extend(result)
             return finalResult
+        #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
+        def massageFunctionArgs(self, args):
+            assert args[0] == '('
+            assert args[-1] == ')'
+            result = ['(']
+            lastWord = []
+            if self.class_name:
+                for item in list("self,"):
+                    result.append(item)  #can put extra comma
+            i = 1
+            while i < len(args):
+                i = self.skip_ws_and_nl(args, i)
+                ch = args[i]
+                if ch.isalpha():
+                    j = self.skip_past_word(args, i)
+                    lastWord = args[i:j]
+                    i = j
+                elif ch == ',' or ch == ')':
+                    for item in lastWord:
+                        result.append(item)
+                    if lastWord and ch == ',':
+                        result.append(',')
+                    lastWord = []
+                    i += 1
+                else: i += 1
+            if result[-1] == ',':
+                del result[-1]
+            result.append(')')
+            result.append(':')
+            # print "new args:", ''.join(result)
+            return result
         #@+node:ekr.20150514063305.171: *7* massageFunctionBody & helpers
         def massageFunctionBody(self, body):
             body = self.massageIvars(body)
@@ -936,14 +1155,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
     @cmd('make-stub-files')
-    def make_stub_files(self, event):
+    def make_stub_files(self, event):  # pragma: no cover
         """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
         """
         #@+others
         #@+node:ekr.20160213070235.1: *4* class MakeStubFileAdapter
-        class MakeStubFileAdapter:
+        class MakeStubFileAdapter:  # pragma: no cover
             """
             An class that adapts leo/external/make_stub_files.py to Leo.
 
@@ -1093,14 +1312,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         MakeStubFileAdapter(self.c).run(self.c.p)
     #@+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
-    def python2coffeescript(self, event):
+    def python2coffeescript(self, event):  # pragma: no cover
         """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
         """
         #@+others
         #@+node:ekr.20160316092837.1: *4* class Python_To_Coffeescript_Adapter
-        class Python_To_Coffeescript_Adapter:
+        class Python_To_Coffeescript_Adapter:  # pragma: no cover
             """An interface class between Leo and leo/external/py2cs.py."""
             #@+others
             #@+node:ekr.20160316112717.1: *5* py2cs.ctor
@@ -1198,7 +1417,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def pythonToTypescriptCommand(self, event):
+    def pythonToTypescriptCommand(self, event):  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -1221,14 +1440,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.c.bodyWantsFocus()
     #@+node:ekr.20211013080132.2: *4* class PythonToTypescript
     #@@nobeautify
-    class PythonToTypescript:
+    class PythonToTypescript:  # pragma: no cover
 
         # The handlers are clear as they are.
         # pylint: disable=no-else-return
 
         # Keys are argument names. Values are typescript types.
         # Typescript can infer types of initialized kwargs.
-        types_d = {}
+        types_d: Dict[str, str] = {}
 
         #@+others
         #@+node:ekr.20211020162251.1: *5* py2ts.ctor
@@ -1260,6 +1479,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 parent.promote()
                 parent.doDelete()
                 p = c.lastTopLevel()
+                p.h = p.h.replace('.py', '.ts').replace('@','@@')
                 c.redraw(p)
                 c.expandAllSubheads(p)
                 c.treeWantsFocusNow()
@@ -1276,7 +1496,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        patterns = []
+        patterns: Optional[Tuple] = None
 
         def convert_body(self, p, target):
             """
@@ -1937,7 +2157,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@-others
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def tsToPy(self, event):
+    def tsToPy(self, event):  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
@@ -1945,7 +2165,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """
         #@+others
         #@+node:ekr.20150514063305.176: *4* class TS_To_Python (To_Python)
-        class TS_To_Python(To_Python):
+        class TS_To_Python(To_Python):  # pragma: no cover
             #@+others
             #@+node:ekr.20150514063305.177: *5* ctor (TS_To_Python)
             def __init__(self, c):
@@ -2246,7 +2466,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     elif ch == ',' or ch == ')':
                         for item in lastWord:
                             result.append(item)
-                        if lastWord != [] and ch == ',':
+                        if lastWord and ch == ',':
                             result.append(',')
                         lastWord = []
                         i += 1
@@ -2364,7 +2584,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
     @cmd('import-jupyter-notebook')
-    def importJupyterNotebook(self, event):
+    def importJupyterNotebook(self, event):  # pragma: no cover
         """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
         try:
             import nbformat
@@ -2386,7 +2606,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@+node:ekr.20160321072007.1: *3* ccc.export-jupyter-notebook
     @cmd('export-jupyter-notebook')
-    def exportJupyterNotebook(self, event):
+    def exportJupyterNotebook(self, event):  # pragma: no cover
         """Convert the present outline to a .ipynb file."""
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c

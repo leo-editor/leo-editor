@@ -211,7 +211,7 @@ class C_ScanState:
 
 #@-others
 importer_dict = {
-    'class': C_Importer,
+    'func': C_Importer.do_import(),
     'extensions': ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++',],
 }
 #@@language python

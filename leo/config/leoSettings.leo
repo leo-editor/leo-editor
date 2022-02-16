@@ -543,9 +543,10 @@
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
-<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
+<v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
 <v t="ekr.20210530064911.1"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530064922.1"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20211014064402.1"><vh>@data python-to-typescript-types</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
@@ -590,7 +591,8 @@
 <v t="ekr.20210728045642.1"><vh>mypy settings</vh>
 <v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
 <v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
-<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=''</vh></v>
+<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=</vh></v>
+<v t="ekr.20220101093956.1"><vh>@string mypy-directory =</vh></v>
 </v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
@@ -726,6 +728,7 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
+<v t="ekr.20211209060458.1"><vh>@bool put-class-in-imported-headlines = True</vh></v>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
@@ -1018,10 +1021,10 @@
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
+<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
 <v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
-<v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
@@ -5484,9 +5487,9 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21833"></t>
 <t tx="ekr.20131213135427.21834">&amp;Save...</t>
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
-<t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
-<t tx="ekr.20131213135427.21837">Save As &amp;Zipped...</t>
-<t tx="ekr.20131213135427.21838">Save &amp;To...</t>
+<t tx="ekr.20131213135427.21836">Save As .leo (&amp;XML)...</t>
+<t tx="ekr.20131213135427.21837">Save As .leojs (&amp;JSON)...</t>
+<t tx="ekr.20131213135427.21838">Save A &amp;Copy...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
@@ -11558,7 +11561,7 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
-<t tx="ekr.20210324162150.1"></t>
+<t tx="ekr.20210324162150.1">Save As .db (&amp;SQLite)...</t>
 <t tx="ekr.20210327192658.1"></t>
 <t tx="ekr.20210327193058.1"></t>
 <t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
@@ -11607,9 +11610,11 @@ rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 # --disallow-untyped-defs
 # --follow-imports=skip</t>
 <t tx="ekr.20210728045750.1"># 0 means no limit.</t>
-<t tx="ekr.20210802064734.1">Path to .mypy.ini file.
+<t tx="ekr.20210802064734.1">Path to .mypy.ini file, for the --config-file option.
 
-Relative paths are resolved starting from the location of the file being checked.</t>
+If not given, no --config-file option is added to the mypy argument list.
+
+Relative paths are relative to  @string mypy-directory.</t>
 <t tx="ekr.20210823172721.1"></t>
 <t tx="ekr.20210823172729.1"></t>
 <t tx="ekr.20210823172944.1"></t>
@@ -11629,6 +11634,22 @@ k, number
 n, number
 p, Position
 s, string
+v, VNode</t>
+<t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
+<t tx="ekr.20220101093956.1">The working directory for the mypy command.
+
+Defaults to os.path.join(g.app.loadDir, '..', '..')</t>
+<t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+c, Cmdr
+ch, str
+gnx, str
+d, Dict[str, str]
+i, int
+j, int
+k, int
+n, int
+p, Pos
+s, str
 v, VNode</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 

@@ -94,8 +94,7 @@ def main():
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others
-    #@+node:ekr.20121126095734.12434: *3* __init__
-
+    #@+node:ekr.20121126095734.12434: *3* NowOrLater.__init__
     def __init__(self, worker, gran=1.0):
         """ worker takes list of tasks, does something for it """
 
@@ -105,7 +104,7 @@ class NowOrLater:
         self.granularity = gran
         self.scheduled = False
 
-    #@+node:ekr.20121126095734.12435: *3* add
+    #@+node:ekr.20121126095734.12435: *3* NowOrLater.add
     def add(self, task):
         now = time.time()
         self.l.append(task)
@@ -130,16 +129,13 @@ class NowOrLater:
                 self.scheduled = False
 
         if (now - self.lasttime) > self.granularity:
-            #print "now"
             callit()
         else:
             if not self.scheduled:
-                #print "later"
-                QtCore.QTimer.singleShot(self.granularity * 1000, callit)
+                QtCore.QTimer.singleShot(int(self.granularity * 1000), callit)  # #2402
                 self.scheduled = True
             else:
                 pass
-                #print "already sched"
 
 
     #@-others

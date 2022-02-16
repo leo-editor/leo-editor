@@ -659,7 +659,8 @@ class TestFind(LeoUnitTest):
             test_n = 0
             for pattern, s, i, j, expected, expected_i, expected_j in table:
                 test_n += 1
-                if j == -1: j = len(s)
+                if j == -1:
+                    j = len(s)
                 got_i, got_j = x._inner_search_backward(s, i, j,
                     pattern, nocase=nocase, word=word)
                 got = s[got_i:got_j]
@@ -703,7 +704,8 @@ class TestFind(LeoUnitTest):
             test_n = 0
             for pattern, s, i, j, expected, expected_i, expected_j in table:
                 test_n += 1
-                if j == -1: j = len(s)
+                if j == -1:
+                    j = len(s)
                 got_i, got_j = x._inner_search_plain(s, i, j, pattern,
                     nocase=nocase, word=word)
                 got = s[got_i:got_j]

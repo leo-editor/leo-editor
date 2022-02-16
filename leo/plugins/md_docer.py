@@ -118,7 +118,7 @@ def sync_transformations(event):
     trscripts = {}
     trtargets = {}
     #@+others
-    #@+node:vitalije.20180805121201.1: *3* collect_data
+    #@+node:vitalije.20180805121201.1: *3* collect_data (md_docer.py)
     def collect_data():
         p = c.rootPosition()
         seen = set()

@@ -40,7 +40,7 @@ class GoToCommands:
                 gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
             p, found = self.find_gnx(root, gnx, h)
             if gnx and found:
-                self.success(lines, n, offset, p)
+                self.success(n, offset, p)
                 return p, offset, True
             self.fail(lines, n, root)
             return None, -1, False
@@ -78,7 +78,7 @@ class GoToCommands:
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         p, found = self.find_gnx(root, gnx, h)
         if gnx and found:
-            self.success(lines, n, offset, p)
+            self.success(n, offset, p)
             return p, offset, True
         self.fail(lines, n, root)
         return None, -1, False
@@ -344,13 +344,12 @@ class GoToCommands:
             i += 1
         return s[i:]
     #@+node:ekr.20100216141722.5638: *4* goto.success
-    def success(self, lines, n, n2, p):
+    def success(self, n, n2, p):
         """Place the cursor on line n2 of p.b."""
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.
-        if c.p.isOutsideAnyAtFileTree():
-            p = c.findNodeOutsideAnyAtFileTree(p)
+        c.selectPosition(p)
         c.redraw(p)
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()

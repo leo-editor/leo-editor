@@ -14,7 +14,7 @@ alt-x stickynote to pop out current node as a note.
 import webbrowser
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import QAction, KeyboardModifier
+from leo.core.leoQt import QAction, KeyboardModifier, Weight
 # Third-party tools.
 try:
     # pylint: disable=import-error
@@ -140,9 +140,9 @@ class SimpleRichText(QTextEdit):
     def setBold(self):
         format = QTextCharFormat()
         if self.boldAct.isChecked():
-            weight = QFont.Bold
+            weight = Weight.Bold
         else:
-            weight = QFont.Normal
+            weight = Weight.Normal
         format.setFontWeight(weight)
         self.setFormat(format)
 
@@ -254,14 +254,13 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5404: *3* toggleBold
     def toggleBold(self):
-        #self.setFontWeight(QFont.Normal if self.fontWeight() > QFont.Normal else QFont.Bold)
         if self.which_header():
             return
-        bold = self.fontWeight() > QFont.Normal
+        bold = self.fontWeight() > Weight.Normal
         cursor = self.textCursor()
         char_format = QTextCharFormat()
         char_format.setFont(self.font)
-        char_format.setFontWeight(QFont.Normal if bold else QFont.Bold)
+        char_format.setFontWeight(Weight.Normal if bold else Weight.Bold)
         cursor.setCharFormat(char_format)
 
     #@+node:ekr.20100103100944.5405: *3* toggleCode
@@ -283,7 +282,7 @@ class notetextedit(QTextEdit):
             char_format.setFontFamily("courier")
 
         char_format.setFontItalic(False)
-        char_format.setFontWeight(QFont.Normal)
+        char_format.setFontWeight(Weight.Normal)
 
         cursor.setCharFormat(char_format)
 
@@ -399,7 +398,7 @@ class notetextedit(QTextEdit):
         menu = QMenu("Text Effect")
         for text, shortcut, data, checked in (
                 ("&Bold", "Ctrl+B", notetextedit.Bold,
-                 self.fontWeight() > QFont.Normal),
+                 self.fontWeight() > Weight.Normal),
                 ("&Italic", "Ctrl+I", notetextedit.Italic,
                  self.fontItalic()),
                 ("&Monospaced", None, notetextedit.Code,
@@ -576,7 +575,7 @@ class notetextedit(QTextEdit):
                             text = "`%1`".arg(text)
                         elif char_format.fontItalic():
                             text = "*%1*".arg(text)
-                        elif char_format.fontWeight() > QFont.Normal:
+                        elif char_format.fontWeight() > Weight.Normal:
                             text = "**%1**".arg(text)
                         para += text
                     iterator += 1

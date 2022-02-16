@@ -124,7 +124,7 @@ class LeoGui:
         """Create and run an open file dialog ."""
         self.oops()
 
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+    def runSaveFileDialog(self, c, title, filetypes, defaultextension):
         """Create and run a save file dialog ."""
         self.oops()
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
@@ -343,7 +343,7 @@ class NullGui(LeoGui):
     ):
         return self.simulateDialog("openFileDialog", None)
 
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+    def runSaveFileDialog(self, c, title, filetypes, defaultextension):
         return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(self, c, title,

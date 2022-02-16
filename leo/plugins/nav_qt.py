@@ -17,9 +17,9 @@ the left side of toolbar.
 """
 #@-<< docstring >>
 #@+<< imports >>
-#@+node:ville.20090518182905.5422: ** << imports >>
+#@+node:ville.20090518182905.5422: ** << imports >> (nav_qt.py)
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QAction, QStyle
+from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -77,8 +77,8 @@ class NavController:
         w = c.frame.iconBar.w
         if not w:
             return []  # EKR: can be an empty list when unit testing.
-        icon_l = w.style().standardIcon(QStyle.SP_ArrowLeft)
-        icon_r = w.style().standardIcon(QStyle.SP_ArrowRight)
+        icon_l = w.style().standardIcon(StandardPixmap.SP_ArrowLeft)
+        icon_r = w.style().standardIcon(StandardPixmap.SP_ArrowRight)
         # Create the actions.
         act_l = QAction(icon_l, 'prev', w)
         act_r = QAction(icon_r, 'next', w)

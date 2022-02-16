@@ -35,15 +35,20 @@ class Rst_Importer(Importer):
         """
         return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for reStructuredText importer."""
-        if not s or s.isspace():
+        if all(s.isspace() for s in lines):
             return
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         # We may as well do this first.  See note below.
         self.stack = [parent]
         skip = 0
-        lines = g.splitLines(s)
+
         for i, line in enumerate(lines):
             if skip > 0:
                 skip -= 1
@@ -76,7 +81,7 @@ class Rst_Importer(Importer):
             top = self.stack[-1]
             child = self.create_child_node(
                 parent=top,
-                body=None,
+                line=None,
                 headline='placeholder',
             )
             self.stack.append(child)
@@ -84,7 +89,7 @@ class Rst_Importer(Importer):
         top = self.stack[-1]
         child = self.create_child_node(
             parent=top,
-            body=None,
+            line=None,
             headline=h,  # Leave the headline alone
         )
         self.stack.append(child)
@@ -140,7 +145,7 @@ class Rst_Importer(Importer):
         assert parent == self.root, repr(parent)
         child = self.create_child_node(
             parent=self.stack[-1],
-            body=None,
+            line=None,
             headline=headline,
         )
         self.stack.append(child)
@@ -205,9 +210,11 @@ class Rst_ScanState:
         return i
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return Rst_Importer(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
-    'class': Rst_Importer,
+    'func': Rst_Importer.do_import(),
     'extensions': ['.rst', '.rest'],
 }
 #@@language python

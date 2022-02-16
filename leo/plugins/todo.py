@@ -1276,7 +1276,7 @@ class todoController:
         self.ui.UI.txtDetails.setToolTip("Priority set %s" %
             (str(prisetdate).strip() or '?')
         )
-    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
+    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos (todo.py)
     def unl_to_pos(self, unl, for_p):
         """"unl may be an outline (like c) or an UNL (string)
 
@@ -1294,20 +1294,16 @@ class todoController:
         path, unl = full_path.split('#', 1)
         c2 = g.openWithFileName(path, old_c=self.c)
         self.c.bringToFront(c2=self.c)
-        found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
-
-        if found:
-
+        maxp = g.findUNL(unl.split('-->'), c2)
+        if maxp:
             if (for_p == maxp or for_p.isAncestorOf(maxp)):
                 g.es("Invalid move")
                 return None, None
-
             nd = maxp
         else:
             g.es("Could not find '%s'" % full_path)
             self.c.bringToFront(c2=self.c)
             return None, None
-
         return c2, nd
     #@-others
 #@+node:tbrown.20170928065405.1: ** command fix datetime
@@ -1326,7 +1322,6 @@ def todo_fix_datetime(event):
     g.es("Changed %d attribs." % changed)
 
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
-
 @g.command('todo-dec-pri')
 def todo_dec_pri(event, direction=1):
 

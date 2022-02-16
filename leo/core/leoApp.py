@@ -107,7 +107,6 @@ class LeoApp:
         self.ipython_inited = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
-        self.qt_use_tabs = False  # True: using qt gui: allow tabbed main window.
         self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
         self.silentMode = False  # True: no signon.
         self.start_fullscreen = False  # For qt_frame plugin.
@@ -117,12 +116,10 @@ class LeoApp:
         self.trace_setting = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
-        self.use_psyco = False  # True: use psyco optimization.
         self.use_splash_screen = True  # True: put up a splash screen.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.count = 0  # General purpose debugging count.
         self.debug_dict = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
@@ -953,8 +950,6 @@ class LeoApp:
             return  # The bridge will create the gui later.
         if app.gui:
             return  # This method can be called twice if we had to get .leoID.txt.
-        assert argName != 'qttabs'
-            # For compatibility with g.assertUi('qt')
         if argName == 'qt':
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
@@ -1002,6 +997,7 @@ class LeoApp:
             g.command('edit-pane-test-open')(edit_pane_test_open)
             g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
+            # g.es_exception()
             print('Failed to import editpane')
         #
         # Complete the initialization.
@@ -1257,7 +1253,7 @@ class LeoApp:
             g.app.windowList.remove(frame)
         else:
             # #69.
-            g.app.forgetOpenFile(fn=c.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c.fileName())
         if g.app.windowList:
             c2 = new_c or g.app.windowList[0].c
             g.app.selectLeoWindow(c2)
@@ -1280,7 +1276,6 @@ class LeoApp:
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
-            # g.pr('destroyWindow', (g.app.windowList)
             g.app.forgetOpenFile(frame.c.fileName())
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -1324,7 +1319,7 @@ class LeoApp:
         if trace:
             g.pr('forceShutdown')
         for c in app.commanders():
-            app.forgetOpenFile(c.fileName(), force=True)
+            app.forgetOpenFile(c.fileName())
         # Wait until everything is quiet before really quitting.
         if trace:
             g.pr('forceShutdown: before end1')
@@ -1390,16 +1385,14 @@ class LeoApp:
         else:
             g.app.rememberOpenFile(fn)
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile(self, fn, force=False):
-        """Forget the open file, so that is no longer considered open."""
+    def forgetOpenFile(self, fn):
+        """
+        Remove fn from g.app.db, so that is no longer considered open.
+        """
         trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
-            # #69.
-            return
-        if not force and (
-            d is None or g.unitTesting or g.app.batchMode or g.app.reverting):
-            return
+            return # #69.
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
         if fn in aList:
@@ -1407,7 +1400,7 @@ class LeoApp:
             if trace:
                 g.pr(f"forgetOpenFile: {g.shortFileName(fn)}")
             d[tag] = aList
-        # elif trace: g.pr(f"forgetOpenFile: did not remove: {fn}")
+
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
 
@@ -1445,43 +1438,14 @@ class LeoApp:
         d = g.app.atAutoDict
         for key in d:
             # pylint: disable=cell-var-from-loop
-            aClass = d.get(key)
-            if aClass and g.match_word(p.h, 0, key):
-
-                def scanner_for_at_auto_cb(c, parent, s, **kwargs):
-                    try:
-                        ic = c.importCommands
-                        scanner = aClass(importCommands=ic, **kwargs)
-                        return scanner.run(s, parent)
-                    except Exception:
-                        g.es_print('Exception running', aClass.__name__)
-                        g.es_exception()
-                        return None
-
-                scanner_for_at_auto_cb.scanner_name = aClass.__name__  # type:ignore
-                    # For traces in ic.createOutline.
-                return scanner_for_at_auto_cb
+            func = d.get(key)
+            if func and g.match_word(p.h, 0, key):
+                return func
         return None
     #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
     def scanner_for_ext(self, c, ext, **kwargs):
         """A factory returning a scanner function for the given file extension."""
-        aClass = g.app.classDispatchDict.get(ext)
-        if aClass:
-
-            def scanner_for_ext_cb(c, parent, s, **kwargs):
-                try:
-                    ic = c.importCommands
-                    scanner = aClass(importCommands=ic, **kwargs)
-                    return scanner.run(s, parent)
-                except Exception:
-                    g.es_print('Exception running', aClass.__name__)
-                    g.es_exception()
-                    return None
-
-            scanner_for_ext_cb.scanner_name = aClass.__name__  # type:ignore
-                # For traces in ic.createOutline.
-            return scanner_for_ext_cb
-        return None
+        return g.app.classDispatchDict.get(ext)
     #@+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
@@ -2395,32 +2359,33 @@ class LoadManager:
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         if not c:
             return None  # #1201: AttributeError below.
-        # Open the cheatsheet, but not in batch mode.
-        if not g.app.batchMode and not g.os_path_exists(fn):
-            # #933: Save clipboard.
-            old_clipboard = g.app.gui.getTextFromClipboard()
-            # Paste the contents of CheetSheet.leo into c.
-            c2 = c.openCheatSheet(redraw=False)
-            if c2:
-                for p2 in c2.rootPosition().self_and_siblings():
-                    c2.setCurrentPosition(p2)  # 1380
-                    c2.copyOutline()
-                    p = c.pasteOutline()
-                    # #1380 & #1381: Add guard & use vnode methods to prevent redraw.
-                    if p:
-                        c.setCurrentPosition(p)  # 1380
-                        p.v.contract()
-                        p.v.clearDirty()
-                c2.close(new_c=c)
-                # Delete the dummy first node.
-                root = c.rootPosition()
-                root.doDelete(newNode=root.next())
-                c.target_language = 'rest'
-                    # Settings not parsed the first time.
-                c.clearChanged()
-                c.redraw(c.rootPosition())  # # 1380: Select the root.
-            # #933: Restore clipboard
-            g.app.gui.replaceClipboardWith(old_clipboard)
+        if g.app.batchMode or g.os_path_exists(fn):
+            return c
+        # Open the cheatsheet.
+        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+        if not g.os_path_exists(fn):
+            g.es(f"file not found: {fn}")
+            return None
+        # Paste the contents of CheetSheet.leo into c.
+        old_clipboard = g.app.gui.getTextFromClipboard()  # #933: Save clipboard.
+        c2 = g.openWithFileName(fn, old_c=c)
+        for p2 in c2.rootPosition().self_and_siblings():
+            c2.setCurrentPosition(p2)  # 1380
+            c2.copyOutline()
+            # #1380 & #1381: Add guard & use vnode methods to prevent redraw.
+            p = c.pasteOutline()
+            if p:
+                c.setCurrentPosition(p)  # 1380
+                p.v.contract()
+                p.v.clearDirty()
+        c2.close(new_c=c)
+        # Delete the dummy first node.
+        root = c.rootPosition()
+        root.doDelete(newNode=root.next())
+        c.target_language = 'rest'
+        c.clearChanged()
+        c.redraw(c.rootPosition())  # # 1380: Select the root.
+        g.app.gui.replaceClipboardWith(old_clipboard)  # #933: Restore clipboard
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
@@ -2499,21 +2464,21 @@ class LoadManager:
         importer_d = getattr(m, 'importer_dict', None)
         if importer_d:
             at_auto = importer_d.get('@auto', [])
-            scanner_class = importer_d.get('class', None)
+            scanner_func = importer_d.get('func', None)
             # scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
             if at_auto:
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict
                 for s in at_auto:
-                    d[s] = scanner_class
-                    g.app.atAutoDict[s] = scanner_class
+                    d[s] = scanner_func
+                    g.app.atAutoDict[s] = scanner_func
                     g.app.atAutoNames.add(s)
             if extensions:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
                 for ext in extensions:
-                    d[ext] = scanner_class
+                    d[ext] = scanner_func #importer_d.get('func')#scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
             'basescanner.py',
@@ -2800,9 +2765,8 @@ class LoadManager:
         gui = args.gui
         if gui:
             gui = gui.lower()
-            # #1171: retire non-tabbed qt gui.
-            if gui in ('qt', 'qttabs'):
-                gui = 'qt'  # For compatibilty with g.UiTypeException
+            if gui in ('qt', 'qttabs'): 
+                gui = 'qt'  # Allow qttabs gui.
             elif gui.startswith('browser'):
                 pass
             elif gui in ('console', 'curses', 'text', 'null'):
@@ -2813,8 +2777,6 @@ class LoadManager:
         else:
             gui = 'qt'
         assert gui
-        assert gui != 'qttabs'  # For compatibilty with g.UiTypeException
-        g.app.qt_use_tabs = gui == 'qt'
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
@@ -2965,7 +2927,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color = d.get('color')
+                color: Any = d.get('color')
                 if color == 'suppress':
                     return
                 if log and color is None:
@@ -3348,7 +3310,7 @@ class RecentFilesManager:
         if result != self.recentFiles:
             for path in result:
                 self.updateRecentFiles(path)
-            self.writeRecentFilesFile(c, force=True)
+            self.writeRecentFilesFile(c)
     #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
     def demangleRecentFiles(self, c, data):
         """Rewrite recent files based on c.config.getData('path-demangle')"""
@@ -3369,8 +3331,7 @@ class RecentFilesManager:
             for change in changes:
                 t = t.replace(*change)
             self.updateRecentFiles(t)
-        self.writeRecentFilesFile(c, force=True)
-            # Force the write message.
+        self.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
     def clearRecentFiles(self, c):
         """Clear the recent files list, then add the present file."""
@@ -3384,7 +3345,7 @@ class RecentFilesManager:
             rf.createRecentFilesMenuItems(frame.c)
         u.afterClearRecentFiles(bunch)
         # Write the file immediately.
-        rf.writeRecentFilesFile(c, force=True)  # Force the write message.
+        rf.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10301: *3* rf.createRecentFilesMenuItems
     def createRecentFilesMenuItems(self, c):
         rf = self
@@ -3555,8 +3516,7 @@ class RecentFilesManager:
         rf.recentFiles = []
         for z in reversed(aList):
             rf.updateRecentFiles(z)
-        rf.writeRecentFilesFile(c, force=True)
-            # Force the write message.
+        rf.writeRecentFilesFile(c)
     #@+node:ekr.20031218072017.2083: *3* rf.updateRecentFiles
     def updateRecentFiles(self, fileName):
         """Create the RecentFiles menu.  May be called with Null fileName."""
@@ -3598,19 +3558,15 @@ class RecentFilesManager:
         if p:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
             rf.recentFiles = files
-            rf.writeRecentFilesFile(c, force=False)
+            rf.writeRecentFilesFile(c)
             rf.updateRecentFiles(None)
             c.selectPosition(p)
             c.deleteOutline()
         else:
             g.red('not found:', self.edit_headline)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
-    def writeRecentFilesFile(self, c, force=False):
-        """
-        Write the appropriate .leoRecentFiles.txt file.
-
-        Write a message if force is True, or if it hasn't been written yet.
-        """
+    def writeRecentFilesFile(self, c):
+        """Write the appropriate .leoRecentFiles.txt file."""
         tag = '.leoRecentFiles.txt'
         rf = self
         # tag:#661. Do nothing if in leoBride.
@@ -3629,15 +3585,13 @@ class RecentFilesManager:
                 if g.os_path_exists(fileName) and fileName.lower() not in seen:
                     seen.append(fileName.lower())
                     ok = rf.writeRecentFilesFileHelper(fileName)
-                    if force or not rf.recentFileMessageWritten:
+                    if ok:
+                        written = True
+                    if not rf.recentFileMessageWritten and not g.unitTesting and not g.app.silentMode:  # #459:
                         if ok:
-                            if not g.app.silentMode:
-                                # Fix #459:
-                                g.es_print(f"wrote recent file: {fileName}")
-                            written = True
+                            g.es_print(f"wrote recent file: {fileName}")
                         else:
                             g.error(f"failed to write recent file: {fileName}")
-                    # Bug fix: Leo 4.4.6: write *all* recent files.
         if written:
             rf.recentFileMessageWritten = True
         else:

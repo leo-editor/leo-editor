@@ -2,7 +2,6 @@
 #@+node:ekr.20140723122936.18150: * @file ../plugins/importers/otl.py
 """The @auto importer for vim-outline files."""
 import re
-from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
@@ -25,11 +24,17 @@ class Otl_Importer(Importer):
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         self.parents = [parent]
-        for line in g.splitLines(s):
+
+        for line in lines:
             m = self.otl_body_pattern.match(line)
             if m:
                 p = self.parents[-1]
@@ -55,7 +60,7 @@ class Otl_Importer(Importer):
         while level >= len(self.parents):
             child = self.create_child_node(
                 parent=self.parents[-1],
-                body=None,
+                line=None,
                 headline=h,
             )
             self.parents.append(child)
@@ -78,7 +83,7 @@ class Otl_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-otl', '@auto-vim-outline',],
-    'class': Otl_Importer,
+    'func': Otl_Importer.do_import(),
     'extensions': ['.otl',],
 }
 #@@language python

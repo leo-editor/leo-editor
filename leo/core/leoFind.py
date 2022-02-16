@@ -439,7 +439,6 @@ class LeoFind:
             predicate=isMarked,
             failMsg='No marked nodes',
             flatten=flatten,
-            redraw=True,
             undoType='clone-find-marked',
         )
         if root:
@@ -491,7 +490,7 @@ class LeoFind:
                 clone._linkCopiedAsNthChild(found, n)
                 u.afterCloneNode(clone, 'clone', b)
         u.afterChangeGroup(p0, undoType)
-        c.setChanged(True)
+        c.setChanged()
         c.redraw(found)
         return True
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
@@ -1621,10 +1620,10 @@ class LeoFind:
 
             if g.unitTesting:
                 return
-            unl = p.get_UNL(with_proto=True, with_count=True)
+            unl = p.get_UNL()
             if self.in_headline:
                 line_number = 1
-            log.put(line.strip() + '\n', nodeLink=f"{unl},{line_number}")
+            log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number}")  # Local line.
 
         seen = []  # List of (vnode, pos).
         both = self.search_body and self.search_headline
@@ -2015,6 +2014,8 @@ class LeoFind:
             assert c.positionExists(found, trace=True), found
             c.setChanged()
             c.selectPosition(found)
+            # Put the count in found.h.
+            found.h = found.h.replace('Found:', f"Found {count}:")
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes

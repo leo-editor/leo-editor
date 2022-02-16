@@ -843,7 +843,6 @@ class LeoFrame:
                     c.atFileCommands.writeOneAtEditNode(root)
                 return False  # Don't save and don't veto.
             c.mFileName = g.app.gui.runSaveFileDialog(c,
-                initialfile='',
                 title="Save",
                 filetypes=[("Leo files", "*.leo")],
                 defaultextension=".leo")
@@ -1225,11 +1224,11 @@ class LeoLog:
     def createTextWidget(self, parentFrame):
         return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         c = self.c
         if tabName == 'Log':
             pass
-        elif tabName in ('Find', 'Spell') and not force:
+        elif tabName in ('Find', 'Spell'):
             self.selectTab('Log')
         else:
             for d in (self.canvasDict, self.textDict, self.frameDict):
@@ -1583,14 +1582,14 @@ class LeoTree:
         self.set_body_text_after_select(p, old_p)
         c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, force=False):
+    def set_body_text_after_select(self, p, old_p):
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b  # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        if not force and p and p == old_p and s == old_s:
+        if p and p == old_p and s == old_s:
             return
         # Part 2: set the new text. This forces a recolor.
         c.setCurrentPosition(p)
@@ -1630,9 +1629,8 @@ class LeoTree:
         c.frame.updateStatusLine()
             # New in Leo 4.4.1.
         c.frame.clearStatusLine()
-        verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
-            c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
+            c.frame.putStatusLine(p.get_UNL())
     #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
@@ -1804,6 +1802,9 @@ class NullFrame(LeoFrame):
         pass
 
     def expandPane(self, event=None):
+        pass
+        
+    def forceWrap(self, p):
         pass
 
     def fullyExpandBodyPane(self, event=None):
@@ -2010,7 +2011,7 @@ class NullLog(LeoLog):
     def createTab(self, tabName, createText=True, widget=None, wrap='none'):
         pass
 
-    def deleteTab(self, tabName, force=False):
+    def deleteTab(self, tabName):
         pass
 
     def getSelectedTab(self):
@@ -2080,8 +2081,7 @@ class NullTree(LeoTree):
         super().__init__(frame)
         assert self.frame
         self.c = frame.c
-        self.editWidgetsDict = {}
-            # Keys are tnodes, values are StringTextWidgets.
+        self.editWidgetsDict = {}  # Keys are vnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None

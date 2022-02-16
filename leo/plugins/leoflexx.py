@@ -300,7 +300,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Select the proper position.
         c.selectPosition(c.p or c.rootPosition())
         c.contractAllHeadlines()
-            # #1127: This calls c.redraw. Do *not* call it again below.
+        c.redraw()  # 2380.
         #
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True

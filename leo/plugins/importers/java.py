@@ -174,7 +174,7 @@ class Java_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Java_Importer,
+    'func': Java_Importer.do_import(),
     'extensions': ['.java'],
 }
 #@@language python

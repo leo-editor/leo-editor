@@ -22,7 +22,7 @@ class TestSyntax(LeoUnitTest):
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
         except SyntaxError:
-            raise SyntaxError(fileName)
+            raise SyntaxError(fileName)  # pylint: disable=raise-missing-from
         except Exception:
             g.trace("unexpected error in:", fileName)
             raise
@@ -57,6 +57,7 @@ class TestSyntax(LeoUnitTest):
         assert self.check_syntax(fn, s)
     #@+node:ekr.20210906062410.1: *4* TestSyntax.test_that_leo_starts
     def test_that_leo_starts(self):
+        return self.skipTest('forbidden')
         # It's possible that Leo can be corrupted without this test failing.
         # However, the risk seems small enough!
         if 1:

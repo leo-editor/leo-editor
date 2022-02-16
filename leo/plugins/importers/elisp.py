@@ -136,7 +136,7 @@ class Elisp_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Elisp_Importer,
+    'func': Elisp_Importer.do_import(),
         # Also clojure, clojurescript
     'extensions': ['.el', '.clj', '.cljs', '.cljc',],
 }

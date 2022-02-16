@@ -91,7 +91,7 @@ class Tcl_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Tcl_Importer,
+    'func': Tcl_Importer.do_import(),
     'extensions': ['.tcl'],
 }
 #@@language python

@@ -166,6 +166,8 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"></v>
+<v t="ekr.20180318145515.813"></v>
+<v t="ekr.20180318145515.822"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -844,10 +846,10 @@ QLineEdit#lineEdit {
 }
 </t>
 <t tx="ekr.20180318145515.822">QScrollBar::horizontal {
-   height: 18px;
+   height: 8px;
 }
 QScrollBar::vertical {
-   width: 18px;
+   width: 12px;
 }
 QScrollBar::add-page, QScrollBar::sub-page {
    background: @dark-base03;

@@ -951,7 +951,7 @@ class TestOrange(BaseTest):
         # Case 2.
         '''\
     @g.commander_command('promote')
-    def promote(self, event=None, undoFlag=True, redrawFlag=True):
+    def promote(self, event=None, undoFlag=True):
         """Make all children of the selected nodes siblings of the selected node."""
     ''',
         )
@@ -1630,6 +1630,10 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210914161519.1: *5* test_bug_2171
     def test_bug_2171(self):
 
+        import sys
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')
+
         contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
@@ -1757,6 +1761,10 @@ class TestTOG(BaseTest):
         # dump_ast(tree)
     #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
     def test_FunctionDef_with_posonly_args(self):
+
+        import sys
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')
 
         # From PEP 570
         contents = r"""\

@@ -100,7 +100,7 @@ class CText_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-ctext',],
-    'class': CText_Importer,
+    'func': CText_Importer.do_import(),
 }
 #@@language python
 #@@tabwidth -4

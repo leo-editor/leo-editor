@@ -30,12 +30,7 @@ def cutOutline(self, event=None):
         c.recolor()
 #@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
 @g.commander_command('paste-node')
-def pasteOutline(self,
-    event=None,
-    redrawFlag=True,
-    s=None,
-    undoFlag=True
-):
+def pasteOutline(self, event=None, s=None, undoFlag=True):
     """
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
@@ -66,26 +61,19 @@ def pasteOutline(self,
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=redrawFlag)
-        # Prevent flash when fixing #387.
+    c.setChanged()
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
-    if redrawFlag:
-        c.redraw(pasted)
-        c.recolor()
+    c.redraw(pasted)
+    c.recolor()
     return pasted
 #@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones & helpers
 @g.commander_command('paste-retaining-clones')
-def pasteOutlineRetainingClones(self,
-    event=None,
-    redrawFlag=True,
-    s=None,
-    undoFlag=True,
-):
+def pasteOutlineRetainingClones(self, event=None, s=None, undoFlag=True):
     """
     Paste an outline into the present outline from the clipboard.
     Nodes *retain* their original identify.
@@ -117,8 +105,7 @@ def pasteOutlineRetainingClones(self,
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(redrawFlag=redrawFlag)
-        # Prevent flash when fixing #387.
+    c.setChanged()
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         pasted.moveToNthChildOf(back, 0)
@@ -129,9 +116,8 @@ def pasteOutlineRetainingClones(self,
     # Finish the command.
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
-    if redrawFlag:
-        c.redraw(pasted)
-        c.recolor()
+    c.redraw(pasted)
+    c.recolor()
     return pasted
 #@+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
 def computeCopiedBunchList(c, pasted, vnodeInfoDict):
@@ -226,7 +212,7 @@ def pasteAsTemplate(self, event=None):
         # the first node is inserted at the given index
         # and the rest are just appended at parents children
         # to achieve this we first create a generator object
-        rows = viter(vpargnx, xvnodes[0])
+        rows = viter(vpargnx, xvelements[0])
 
         # then we just take first tuple
         pgnx, gnx, h, b = next(rows)
@@ -273,12 +259,12 @@ def pasteAsTemplate(self, event=None):
         c.redraw(newp)
     #@-others
     xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
-    xvnodes = xroot.find('vnodes')
-    xtnodes = xroot.find('tnodes')
+    xvelements = xroot.find('vnodes')  # <v> elements.
+    xtelements = xroot.find('tnodes')  # <t> elements.
 
-    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtnodes)
+    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
 
-    root_gnx = xvnodes[0].attrib.get('t')  # the gnx of copied node
+    root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
         # outside will contain gnxes of nodes that are outside the copied tree
 
@@ -341,11 +327,12 @@ def dumpOutline(self, event=None):
 #@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 #@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.commander_command('contract-all')
-def contractAllHeadlinesCommand(self, event=None, redrawFlag=True):
+def contractAllHeadlinesCommand(self, event=None):
     """Contract all nodes in the outline."""
     # The helper does all the work.
     c = self
-    c.contractAllHeadlines(event=event, redrawFlag=redrawFlag)
+    c.contractAllHeadlines()
+    c.redraw()
 #@+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
 def contractAllOtherNodes(self, event=None):
@@ -437,7 +424,7 @@ def expandAllHeadlines(self, event=None):
     c.endEditing()
     p = c.rootPosition()
     while p:
-        c.expandSubtree(p, redraw=False)
+        c.expandSubtree(p)
         p.moveToNext()
     c.redraw_after_expand(p=c.rootPosition())
     c.expansionLevel = 0  # Reset expansion level.
@@ -607,7 +594,6 @@ def findNextClone(self, event=None):
             p.moveToThreadNext()
     if flag:
         if cc:
-            # name = cc.findChapterNameForPosition(p)
             cc.selectChapterByName('main')
         c.selectPosition(p)
         c.redraw_after_select(p)
@@ -732,19 +718,10 @@ def goToNextClone(self, event=None):
             chapter = cc.getSelectedChapter()
             old_name = chapter and chapter.name
             new_name = cc.findChapterNameForPosition(p)
-            if new_name == old_name:
-                # Always do a full redraw.
-                c.redraw(p)
-            else:
-                if 1:
-                    cc.selectChapterByName(new_name)
-                    c.redraw(p)
-                else:  # Old code.
-                    c.selectPosition(p)
-                    cc.selectChapterByName(new_name)
-        else:
-            # Always do a full redraw.
-            c.redraw(p)
+            if new_name != old_name:
+                cc.selectChapterByName(new_name)
+        # Always do a full redraw.
+        c.redraw(p)
     else:
         g.blue('done')
 #@+node:ekr.20031218072017.2917: *3* c_oc.goToNextDirtyHeadline
@@ -982,8 +959,7 @@ def cloneToAtSpot(self, event=None):
     if c.validateOutline():
         u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
-        c.redraw()
-        c.selectPosition(clone)
+        c.redraw(clone)
     else:
         clone.doDelete()
         c.setCurrentPosition(p)
@@ -1051,14 +1027,19 @@ def insertChild(self, event=None):
 #@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
 @g.commander_command('insert-node')
 def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
-    """Insert a node after the presently selected node."""
+    """
+    If c.p is expanded, insert a new node as the first or last child of c.p,
+    depending on @bool insert-new-nodes-at-end.
+    
+    If c.p is not expanded, insert a new node after c.p.
+    """
     c = self
     # Fix #600.
     return insertHeadlineHelper(c, event=event, as_child=as_child)
 
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self, event=None):
-    """Insert a node as the last child of the previous node."""
+    """Insert a node as the last last of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_first_child=True)
 
@@ -1067,7 +1048,7 @@ def insertNodeAsLastChild(self, event=None):
     """Insert a node as the last child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_last_child=True)
-#@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper
+#@+node:ekr.20171124091846.1: *4* function: insertHeadlineHelper
 def insertHeadlineHelper(c,
     event=None,
     op_name="Insert Node",
@@ -1220,8 +1201,7 @@ def deleteMarked(self, event=None):
         c.setChanged()
     # Don't even *think* about restoring the old position.
     c.contractAllHeadlines()
-    c.selectPosition(c.rootPosition())
-    c.redraw()
+    c.redraw(c.rootPosition())
 #@+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
 @g.commander_command('move-marked-nodes')
 def moveMarked(self, event=None):
@@ -1281,10 +1261,8 @@ def moveMarked(self, event=None):
         if not g.unitTesting:
             g.blue(f"moved {len(moved)} nodes")
         c.setChanged()
-    # c.contractAllHeadlines()
-        # Causes problems when in a chapter.
-    c.selectPosition(parent)
-    c.redraw()
+    # Calling c.contractAllHeadlines() causes problems when in a chapter.
+    c.redraw(parent)
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode
 def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()
@@ -1607,12 +1585,12 @@ def moveOutlineUp(self, event=None):
     if moved:
         p.setDirty()
         c.setChanged()
-        u.afterMoveNode(p, 'Move Right', undoData)
+        u.afterMoveNode(p, 'Move Up', undoData)
     c.redraw(p)
     c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
-def promote(self, event=None, undoFlag=True, redrawFlag=True):
+def promote(self, event=None, undoFlag=True):
     """Make all children of the selected nodes siblings of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasChildren():
@@ -1625,9 +1603,8 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     if undoFlag:
         p.setDirty()
         u.afterPromote(p, children)
-    if redrawFlag:
-        c.redraw(p)
-        c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
+    c.redraw(p)
+    c.updateSyntaxColorer(p)  # Moving can change syntax coloring.
 #@+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')
 def toggleSparseMove(self, event=None):

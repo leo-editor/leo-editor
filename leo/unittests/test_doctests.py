@@ -77,7 +77,7 @@ class TestDocTests(unittest.TestCase):  # No need to be a subclass of leoTest2.L
                 # Exclude two problematic files.
                 if 'dtest.py' in f or 'javascript.py' in f:
                     continue
-                fails, count = doctest.testfile(f)
+                fails, count = doctest.testfile(f, False)
                 n += count
                 if count:
                     files_list.append(f)

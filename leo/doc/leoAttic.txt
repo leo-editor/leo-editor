@@ -3643,6 +3643,222 @@ def on_event(self, *events):
         assert text
         # self.label.set_html(text + '<br />' + self.label.html)
 #@+node:ekr.20190412154439.1: ** Abandoned projects
+#@+node:ekr.20211226081112.1: *3* script: iterative traverse
+# See ENB: Recent studies and thoughts.
+# https://groups.google.com/g/leo-editor/c/cqI2EhLKUMk
+g.cls()
+import ast
+import os
+import textwrap
+import time
+@others
+<< define contents >>
+p1 = p.copy()
+try:
+    IterativeTraverser().traverse(contents)
+except Exception:
+    g.es_exception()
+c.redraw(p1)
+#@+node:ekr.20211227203717.1: *4* << define contents >>
+if 1:
+    contents = textwrap.dedent('''
+        << contents >>
+    ''')
+else:
+    filename = os.path.abspath(os.path.join(g.app.loadDir, 'leoAst.py'))
+    with open(filename) as f:
+        contents = f.read()
+#@+node:ekr.20211227203236.1: *5* << contents >>
+# global g
+a = b
+# c = d
+#@+node:ekr.20211228143727.1: *4* class Action
+class Action:
+    
+    def __init__(self, func, args):
+        self.func = func
+        self.args = args
+
+    def __str__(self):
+        result = [f"Action: {self.func.__name__} args: "]
+        if isinstance(self.args, tuple):
+            for z in self.args:
+                if isinstance(z, ast.AST):
+                    result.append(f"node: {z.__class__.__name__} {id(z)}")
+                else:
+                    result.append(repr(z))
+        elif isinstance(self.args, ast.AST):
+            z = self.args
+            result.append(f"node: {z.__class__.__name__} {id(z)}")
+        else:
+            result.append(repr(self.args))
+        return ''.join(result)
+
+    __repr__ = __str__
+    
+#@+node:ekr.20211228144225.1: *4* class StackEntry
+class StackEntry:
+    
+    def __init__(self, parent, action_list):
+        self.parent = parent
+        assert isinstance(action_list, list)
+        self.action_list = action_list.copy()  # Don't change the action dict!
+        assert all(isinstance(z, Action) for z in action_list)
+        
+    def __str__(self):
+        parent_s = self.parent.__class__.__name__ if self.parent else '<no parent>'
+        action_list_s = g.objToString(self.action_list)
+        return f"Stack Entry: parent: {parent_s} {action_list_s}"
+        
+    __repr__ = __str__
+#@+node:ekr.20211226160128.1: *4* class IterativeTraverser
+class IterativeTraverser:
+    """
+    An abandoned prototype of an iterative generator. In effect, this class
+    shows how to simulate generators without using recursion.
+    
+    Imo, the scheme could be made to work as a complete replacement for the
+    Token Order Generator (TOG) class in leoAst.py. However, the result
+    would be slower and less clear than the TOG class.
+    """
+    @others
+#@+node:ekr.20211228143252.1: *5* it.dump_stack
+def dump_stack(self):
+    print('From', g.caller(), 'Stack:')
+    for z in self.stack:
+        print(z)
+    print('')
+#@+node:ekr.20211227160522.1: *5* it.sync*
+# These methods correspond to the gen_name, gen_op and gen_token methods
+# of the TokenOrderTraverser class. They must be called in the correcto order.
+
+def sync_name(self, s):
+    g.trace(s)
+    
+def sync_op(self, s):
+    g.trace(s)
+    
+def sync_token(self, token):
+    g.trace(token)
+#@+node:ekr.20211226082555.1: *5* it.traverse
+def traverse(self, contents):
+    """Completely traverse the ast tree for the given file."""
+    << define action_dict >>
+    t1 = time.process_time()
+    self.node = root = ast.parse(contents)
+    t2 = time.process_time()
+    action_list = self.action_dict.get(root.__class__.__name__, []).copy()
+    self.stack = [StackEntry(None, action_list)]
+    total_actions = 0
+    trace = False
+    while self.stack:
+        if trace:
+            self.dump_stack()
+            g.printObj(action_list, tag='LOOP: action_list')
+        if action_list:
+            action = action_list.pop(0)
+            assert isinstance(action, Action), repr(action)
+            total_actions += 1
+            action.func(action.args)
+        else:
+            entry = self.stack.pop()
+            assert isinstance(entry, StackEntry)
+            self.node = entry.parent
+            action_list = entry.action_list
+            if trace:
+                g.trace('POP')
+                self.dump_stack()
+    t3 = time.process_time()
+    print('Stats...\n',
+        f"   nodes: {sum(1 for z in ast.walk(root))}\n",
+        f" actions: {total_actions}\n",
+        f"   parse: {float(t2-t1):<5.3} sec.\n",
+        f"traverse: {float(t3-t2):<5.3} sec.",
+    )
+    # print('actions:', ', '.join(sorted(self.actions_set)))
+    # print('Dummies:', ', '.join(sorted(self.do_nothing_set)))
+#@+node:ekr.20211227103216.1: *6* << define action_dict >>
+# Keys are strings (ast node names); values are zero or more arguments.
+#
+# To do: This table should contain:
+# - Entries for all ast nodes
+# - Entries for int, str, and possibly tuple and list.
+# - Entries for node-specific specializations of ast nodes.
+#   In effect, these specializations split TOG generators into pieces.
+sync_name, sync_op = self.sync_name, self.sync_op
+visit, visit_if = self.visit, self.visit_if
+self.action_dict = {
+    'alias': [
+        # (visit, 'name'),
+        # (visit_if, 'asname', []),
+    ],
+    'Assign': [
+        Action(visit, 'targets'),
+        Action(visit, 'value'),
+    ],
+    'Global': [
+        Action(sync_name, 'global'),
+        Action(visit, 'names'),
+    ],
+    'If': [
+        Action(visit, 'value',),  # visit_if_value
+        Action(visit, 'test'),    # visit_if_test
+        Action(visit, 'body'),    # visit_if_body
+        Action(visit, 'orelse'),  # visit_if_orelse
+    ],
+    'Import': [
+         Action(sync_name, 'import'),
+         Action(visit, 'names'),
+    ],
+    'Module': [
+        Action(visit, 'body')
+    ],
+    'Name':[]
+}
+#@+node:ekr.20211227103957.1: *5* it.visit
+def visit(self, field):
+    child = getattr(self.node, field, None)
+    g.trace(self.node.__class__.__name__, child.__class__.__name__)
+    if not child:
+        g.trace('no child!')
+        return
+    if isinstance(child, str):
+        # Should be part of an action list!
+        g.trace('ignore node!', child.__class__.__name__)
+        return
+    if isinstance(child, (list, tuple)):
+        # Do *not* change self.node.
+        for z in child:
+            self.stack.append(StackEntry(self.node, [Action(self.visit_list, z)]))
+        return
+    assert isinstance(child, ast.AST), repr(child)
+    action_list = self.action_dict.get(child.__class__.__name__, None)
+    if not action_list:
+        if action_list is None:
+            print(f"visit: Missing: {child.__class__.__name__}")
+        return
+    self.stack.append(StackEntry(self.node, action_list.copy()))
+    # *Do* change self.node.
+    self.node = child
+#@+node:ekr.20211227160615.1: *5* it.visit_if
+def visit_if(self, field, action_list):
+    val = getattr(self.node, field, None)
+    if val:
+        self.action_stack.extend(list(reversed(action_list)))
+#@+node:ekr.20211229075058.1: *5* it.visit_list
+def visit_list(self, node):
+    # Nested lists never happen.
+    assert isinstance(node, ast.AST), repr(node)
+    g.trace(node.__class__.__name__)
+    action_list = self.action_dict.get(node.__class__.__name__, None)
+    if not action_list:
+        if action_list is None:
+            print(f"visit_list: Missing in action_dict: {node.__class__.__name__}")
+        return
+    self.node = node
+    g.printObj(action_list, tag='visit_list: append action list')
+    self.stack.append(StackEntry(self.node, action_list.copy()))
+    ### self.dump_stack()  ###
 #@+node:ekr.20180813063846.1: *3* Fast-draw branches
 #@+node:ekr.20180808075509.1: *4* qtree.partialDraw & helpers (never used)
 def partialDraw(self, p):
@@ -6921,6 +7137,85 @@ def compute_unit_test_kind(self, ext):
             if d2.get(z) == aClass:
                 return z
     return '@file'
+#@+node:ekr.20211125060945.1: *3* @@command table2test
+g.cls()
+
+last = c.lastTopLevel()
+if last.h == 'Generated Tests':
+    last.doDelete()
+result_root = last.insertAfter()
+result_root.h = 'Generated Tests'
+
+@others
+
+root1 = g.findNodeAnywhere(c, '--- Patterns')
+for p in root1.subtree():
+    if not p.h.startswith('---'):
+        convert(p)
+
+result_root.expand()
+c.redraw()
+#@+node:ekr.20211127024946.1: *4* clean
+def clean(s):
+    return ''.join(z for z in s.replace(' ','_') if z.isalnum() or z == '_') 
+#@+node:ekr.20211125061220.1: *4* convert
+def convert(p):
+    
+    test_p = result_root.insertAsLastChild()
+    test_p.h = f"test_{clean(p.h)}"
+    s = p.b.replace('@', 'AT')
+    s1, s2 = s.split('# Expect:\n')
+    input_lines = g.splitLines(s1.strip() + '\n')
+    expected_lines = g.splitLines(s2.strip() + '\n')
+    create_test(test_p, input_lines, expected_lines)
+#@+node:ekr.20211125062917.1: *4* create_test_outline (no longer used)
+def create_test(test_p, expected_lines):
+    """Create one unit test from the expected lines."""
+    stack = [(-1, test_p)]  # (level, p)
+    for s in expected_lines:
+        if s.strip().startswith('- '):
+            n = len(s) - len(s.lstrip())
+            lws = s[:n]
+            assert n == 0 or lws.isspace(), repr(lws)
+            while stack:
+                level, p = stack.pop()
+                if n > level:
+                    child = p.insertAsLastChild()
+                    child.h = s.strip()[2:]  # Remove '- '
+                    p = child
+                    stack.append((n, p))
+                    break
+                elif n == level:
+                    child = p.insertAfter()
+                    child.h = s.strip()[2:]  # Remove '- '
+                    p = child
+                    stack.append((n, p))
+                    break
+                else:
+                    pass  # Look for next entry.
+            else:
+                g.printObj(expected_lines, tag='expected_lines')
+                assert False, f"No node at level {n}"
+#@+node:ekr.20211127022936.1: *4* create_test
+def create_test(p, input_lines, expected_lines):
+    """Create a unit test from the input and expected lines."""
+    lws = ' ' * 8
+    # Assumes ''' not in either set of lines.
+    p.b = (
+        f"def {p.h}(self):\n\n"
+        f"    input_s = '''\n"
+        f"{lws}{lws.join(input_lines)}"
+        f"    '''\n"
+        f"    expected_s = '''\n"
+        f"{lws}{lws.join(expected_lines)}"
+        f"    '''\n"
+        f"    self.run_python_test(input_s, expected_s)\n\n"
+    )
+#@+node:ekr.20211201042033.1: *3* @@command test-python
+@nosearch
+
+g.cls()
+g.run_unit_tests('leo.unittests.core.test_leoImport.TestPython')
 #@-all
 #@@nosearch
 #@-leo

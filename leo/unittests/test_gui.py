@@ -54,8 +54,9 @@ class TestQtGui(LeoUnitTest):
             with self.assertRaises(AttributeError):
                 flag = option.ShowTabsAndSpaces  # As in the old code.
                 assert flag is not None
+            return
         # Test the new code.
-        flag = option.Flag.ShowTabsAndSpaces
+        flag = option.ShowTabsAndSpaces
         assert flag is not None
     #@+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
     # These tests exist to test the startup logic.

@@ -217,6 +217,7 @@ class LeoImportCommands:
         self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
+        self.verbose = True  # Leo 6.6
         self.webType = "@noweb"  # "cweb" or "noweb"
         self.web_st = []  # noweb symbol table.
         self.reload_settings()
@@ -660,18 +661,18 @@ class LeoImportCommands:
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            # func is actually a factory: it instantiates the importer class.
-            func(c=c, parent=p, s=s)
-                # force_at_others=force_at_others #tag:no-longer-used
+            # func is a factory that instantiates the importer class.
+            ok = func(c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            self.scanUnknownFileType(s, p, ext)
-        if not g.unitTesting:
-            # Fix bug 488894: unsettling dialog when saving Leo file
-            # Fix bug 889175: Remember the full fileName.
-            c.atFileCommands.rememberReadPath(fileName, p)
+            ok = self.scanUnknownFileType(s, p, ext)
+        if g.unitTesting:
+            return p if ok else None
+        # #488894: unsettling dialog when saving Leo file
+        # #889175: Remember the full fileName.
+        c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
@@ -811,9 +812,9 @@ class LeoImportCommands:
     def importFilesCommand(self,
         files=None,
         parent=None,
-        redrawFlag=True,
         shortFn=False,
         treeType=None,
+        verbose=True,  # Legacy value.
     ):
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -821,6 +822,7 @@ class LeoImportCommands:
             return
         self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
+        self.verbose = verbose
         if not parent:
             g.trace('===== no parent', g.callers())
             return
@@ -835,7 +837,7 @@ class LeoImportCommands:
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
                 if p:  # createOutline may fail.
-                    if not g.unitTesting:
+                    if self.verbose and not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
                     p.contract()
                     p.setDirty()
@@ -845,8 +847,6 @@ class LeoImportCommands:
                 g.es_exception()
         c.validateOutline()
         parent.expand()
-        if redrawFlag:
-            c.redraw(parent)
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
         """
@@ -1148,7 +1148,7 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
     def parse_body(self, p):
         """
         Parse p.b as source code, creating a tree of descendant nodes.
@@ -1156,47 +1156,36 @@ class LeoImportCommands:
         """
         if not p:
             return
-        c, ic = self.c, self
+        c, d, ic = self.c, g.app.language_extension_dict, self
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = g.scanForAtLanguage(c, p)
         self.treeType = '@file'
-        ext = '.' + g.app.language_extension_dict.get(language)
-        parser = self.body_parser_for_ext(ext)
+        ext = '.' + d.get(language)
+        parser = g.app.classDispatchDict.get(ext)
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
             ic.methodName, ic.fileType = g.os_path_splitext(fn)
-        else:
-            d = g.app.language_extension_dict
+        else: 
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        if parser:
-            bunch = c.undoer.beforeChangeTree(p)
-            s = p.b
-            p.b = ''
-            try:
-                parser(p, s)
-                c.undoer.afterChangeTree(p, 'parse-body', bunch)
-                p.expand()
-                c.selectPosition(p)
-                c.redraw()
-            except Exception:
-                g.es_exception()
-                p.b = s
-        else:
+        if not parser:
             g.es_print(f"parse-body: no parser for @language {language or 'None'}")
-    #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
-    def body_parser_for_ext(self, ext):
-        """A factory returning a body parser function for the given file extension."""
-        aClass = ext and g.app.classDispatchDict.get(ext)
-
-        def body_parser_for_class(parent, s):
-            obj = aClass(importCommands=self)
-            return obj.run(s, parent, parse_body=True)
-
-        return body_parser_for_class if aClass else None
+            return
+        bunch = c.undoer.beforeChangeTree(p)
+        s = p.b
+        p.b = ''
+        try:
+            parser(c, s, p)  # 2357.
+            c.undoer.afterChangeTree(p, 'parse-body', bunch)
+            p.expand()
+            c.selectPosition(p)
+            c.redraw()
+        except Exception:
+            g.es_exception()
+            p.b = s
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
@@ -1657,17 +1646,19 @@ class RecursiveImportController:
         safe_at_file=True,
         theTypes=None,
         ignore_pattern=None,
+        verbose=True,  # legacy value.
     ):
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
         self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
         self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
+        self.verbose = verbose
         # #1605:
 
         def set_bool(setting, val):
@@ -1698,7 +1689,8 @@ class RecursiveImportController:
             # Leo 5.6: Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
-                g.es_print('\nimporting file:', dir_)
+                if self.verbose:
+                    g.es_print('\nimporting file:', dir_)
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
@@ -1725,7 +1717,8 @@ class RecursiveImportController:
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
-            g.es_print('importing directory:', dir_)
+            if self.verbose:
+                g.es_print('importing directory:', dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
@@ -1771,9 +1764,9 @@ class RecursiveImportController:
         c.importCommands.importFilesCommand(
             files=[path],
             parent=parent,
-            redrawFlag=False,
             shortFn=True,
             treeType='@file',  # '@auto','@clean','@nosent' cause problems.
+            verbose=self.verbose,  # Leo 6.6.
         )
         p = parent.lastChild()
         p.h = self.kind + p.h[5:]
@@ -1889,7 +1882,7 @@ class RecursiveImportController:
             p2 for p2 in p.self_and_subtree()
                 if not p2.b and not p2.hasChildren()]
         if aList:
-            c.deletePositionsInList(aList, redraw=False)
+            c.deletePositionsInList(aList)  # Don't redraw.
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:
@@ -2311,7 +2304,6 @@ class ZimImportController:
         c.importCommands.importFilesCommand(
             files=rst,
             parent=p,
-            redrawFlag=False,
             treeType='@rst',
         )
         rstNode = p.getLastChild()

@@ -294,7 +294,7 @@ def init():
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     # This plugin is now gui-independent.
-    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
+    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'nullGui')
     if ok:
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc) or
@@ -715,9 +715,8 @@ class ScriptingController:
                         return c2, p2
                 c2.close()
         # Fix bug 92: restore the previously selected tab.
-        if g.app.qt_use_tabs:
+        if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.select(c)
-                # c.frame.top.leo_master is a LeoTabbedTopLevel.
         return None, None  # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     # Important: common @button and @command nodes do **not** update dynamically!

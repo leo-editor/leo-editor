@@ -9,6 +9,7 @@ import re
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
+    # pip install pyenchant
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
@@ -458,7 +459,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.handler = SpellTabHandler(c, tabName)
         # Bug fix: 2013/05/22.
         if not self.handler.loaded:
-            log.deleteTab(tabName, force=True)
+            log.deleteTab(tabName)
         # spell as you type stuff
         self.suggestions = []
         self.suggestions_idx = None

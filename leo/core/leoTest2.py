@@ -13,6 +13,7 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
 import time
 import unittest
+import warnings
 from leo.core import leoGlobals as g
 from leo.core import leoApp
 
@@ -34,6 +35,7 @@ def create_app(gui_name='null'):
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
     # Late imports.
+    warnings.simplefilter("ignore")
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
@@ -48,9 +50,9 @@ def create_app(gui_name='null'):
         raise ValueError("unable to set LeoID.")
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
-    g.app.db = g.NullObject('g.app.db')
-    g.app.pluginsController = g.NullObject('g.app.pluginsController')
-    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
+    g.app.db = g.NullObject('g.app.db')  # type:ignore
+    g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
+    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
     elif gui_name == 'qt':
@@ -161,13 +163,6 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
-    #@+node:ekr.20210831101111.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, tag=''):
-        c = self.c
-        print('')
-        g.trace(tag)
-        for p in c.all_positions():
-            print(f"clone? {int(p.isCloned())} {' '*p.level()} {p.h}")
     #@-others
 #@-others
 #@-leo

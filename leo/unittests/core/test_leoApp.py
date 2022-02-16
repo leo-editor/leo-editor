@@ -44,7 +44,6 @@ class TestApp(LeoUnitTest):
             'realMenuNameDict',
             # 'searchDict',
             'scriptDict',
-            'use_psyco',
         )
         for ivar in ivars:
             self.assertTrue(hasattr(g.app, ivar))

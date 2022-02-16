@@ -22,7 +22,7 @@ class Html_Importer(Xml_Importer):
         ]
 #@-others
 importer_dict = {
-    'class': Html_Importer,
+    'func': Html_Importer.do_import(),
     'extensions': ['.html', '.htm',],
 }
 #@@language python

@@ -20,6 +20,7 @@ import socket
 import textwrap
 import time
 import tkinter as Tk
+from typing import List, Union
 # Third-party.
 # #2300
 try:
@@ -44,11 +45,12 @@ g = None  # The bridge's leoGlobals module.
 
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
-connectionsPool = set() # Websocket connections (to be sent 'notify' messages)
+# Websocket connections (to be sent 'notify' messages)
+connectionsPool = set()  # type:ignore
 connectionsTotal = 0 # Current connected client total
 # Customizable server options
 argFile = ""
-traces = []
+traces: List = []
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -89,7 +91,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+        self.yesno_all_time: Union[None, bool, float] = None  # previous yes/no to all answer, time of answer
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
@@ -417,7 +419,7 @@ class LeoServer:
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server:leo overridden methods
-    #@+node:felix.20210711194729.1: *4* _runAskOkDialog
+    #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
@@ -427,7 +429,7 @@ class LeoServer:
             s = title
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
-    #@+node:felix.20210711194736.1: *4* _runAskYesNoDialog
+    #@+node:felix.20210711194736.1: *4* LeoServer._runAskYesNoDialog
     def _runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
@@ -446,7 +448,7 @@ class LeoServer:
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210711194745.1: *4* _runAskYesNoCancelDialog
+    #@+node:felix.20210711194745.1: *4* LeoServer._runAskYesNoCancelDialog
     def _runAskYesNoCancelDialog(self, c, title,
         message=None, yesMessage="Yes", noMessage="No",
         yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
@@ -462,7 +464,7 @@ class LeoServer:
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
-    #@+node:felix.20210622235209.1: *4* _es
+    #@+node:felix.20210622235209.1: *4* LeoServer._es
     def _es(self, * args, **keys):  # pragma: no cover (tested in client).
         """Output to the Log Pane"""
         d = {
@@ -481,7 +483,7 @@ class LeoServer:
         if color:
             package["color"] = color
         self._send_async_output(package, True)
-    #@+node:felix.20210626002856.1: *4* _getScript
+    #@+node:felix.20210626002856.1: *4* LeoServer._getScript
     def _getScript(self, c, p,
                    useSelectedText=True,
                    forcePythonSentinels=True,
@@ -511,15 +513,15 @@ class LeoServer:
             g.es_exception()
             script = ''
         return script
-    #@+node:felix.20210627004238.1: *4* _asyncIdleLoop
+    #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
     async def _asyncIdleLoop(self, seconds, func):
         while True:
             await asyncio.sleep(seconds)
             func(self)
-    #@+node:felix.20210627004039.1: *4* _idleTime
+    #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn, delay, tag):
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
-    #@+node:felix.20210626003327.1: *4* _show_find_success
+    #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
         """Handle a successful find match."""
         if in_headline:
@@ -845,7 +847,7 @@ class LeoServer:
                 w.clear()
                 w.insert(s)
             # Check boxes.
-            table = (
+            table2 = (
                 ('ignore_case', 'check_box_ignore_case'),
                 ('mark_changes', 'check_box_mark_changes'),
                 ('mark_finds', 'check_box_mark_finds'),
@@ -854,19 +856,19 @@ class LeoServer:
                 ('search_headline', 'check_box_search_headline'),
                 ('whole_word', 'check_box_whole_word'),
             )
-            for setting_name, widget_ivar in table:
+            for setting_name, widget_ivar in table2:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name)
                 setattr(find, setting_name, val)
                 if val != w.isChecked():
                     w.toggle()
             # Radio buttons
-            table = (
+            table3 = (
                 ('node_only', 'node_only', 'radio_button_node_only'),
                 ('entire_outline', None, 'radio_button_entire_outline'),
                 ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
             )
-            for setting_name, ivar, widget_ivar in table:
+            for setting_name, ivar, widget_ivar in table3:
                 w = getattr(ftm, widget_ivar)
                 val = searchSettings.get(setting_name, False)
                 if ivar is not None:
@@ -1236,6 +1238,9 @@ class LeoServer:
         )
         # Get the body wrap state
         wrap = g.scanAllAtWrapDirectives(c, p)
+        tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+        if not isinstance(tabWidth, int):
+            tabWidth = False
         # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
             insert = wrapper.getInsertPoint()
@@ -1244,6 +1249,7 @@ class LeoServer:
             states = {
                 'language': language.lower(),
                 'wrap': wrap,
+                'tabWidth': tabWidth,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
@@ -1260,6 +1266,7 @@ class LeoServer:
             states = {
                 'language': language.lower(),
                 'wrap': wrap,
+                'tabWidth': tabWidth,
                 'selection': {
                     "gnx": p.v.gnx,
                     "scroll": scroll,
@@ -1352,6 +1359,20 @@ class LeoServer:
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_minimal_response({"states": states})
+    #@+node:felix.20211210213603.1: *5* server.get_undos
+    def get_undos(self, param):
+        """Return list of undo operations"""
+        c = self._check_c()
+        undoer = c.undoer
+        undos = []
+        try:
+            for bead in undoer.beads:
+                undos.append(bead.undoType)
+            response = {"bead": undoer.bead, "undos": undos}
+        except Exception:  # pragma: no cover
+            response = {"bead": 0, "undos": []}
+        # _make_response adds all the cheap redraw data.
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server:node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
@@ -1639,6 +1660,30 @@ class LeoServer:
         v.insertSpot = insert
         v.selectionStart = startSel
         v.selectionLength = abs(startSel - endSel)
+        return self._make_response()
+    #@+node:felix.20211114202046.1: *5* server.set_ua_member
+    def set_ua_member(self, param):
+        """
+        Set a single member of a node's ua.
+        """
+        self._check_c()
+        p = self._get_p(param)
+        name = param.get('name')
+        value = param.get('value', '')
+        if not p.v.u:
+            p.v.u = {}  # assert at least an empty dict if null or non existent
+        if name and isinstance(name, str):
+            p.v.u[name] = value
+        return self._make_response()
+    #@+node:felix.20211114202058.1: *5* server.set_ua
+    def set_ua(self, param):
+        """
+        Replace / set the whole user attribute dict of a node.
+        """
+        self._check_c()
+        p = self._get_p(param)
+        ua = param.get('ua', {})
+        p.v.u = ua
         return self._make_response()
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
     def toggle_mark(self, param):
@@ -2218,7 +2263,6 @@ class LeoServer:
             'show-fonts',
 
             'show-invisibles',
-            'show-next-tip',
             'show-node-uas',
             'show-outline-dock',
             'show-plugin-handlers',
@@ -2227,6 +2271,7 @@ class LeoServer:
             'show-settings-outline',
             'show-spell-info',
             'show-stats',
+            'show-tips',
 
             'style-set-selected',
 
@@ -2657,14 +2702,12 @@ class LeoServer:
             # Save Files.
             'file-save',
             'file-save-as',
-            'file-save-as-unzipped',
             'file-save-by-name',
             'file-save-to',
             'save',
             'save-as',
             'save-file',
             'save-file-as',
-            'save-file-as-unzipped',
             'save-file-by-name',
             'save-file-to',
             'save-to',
@@ -3313,10 +3356,13 @@ class LeoServer:
         d = self._p_to_ap(p)
         d['headline'] = p.h
         d['level'] = p.level()
-        # TODO : Send p.v.u as simple boolean flag and let user inspect.
         if p.v.u:
-            d['u'] = p.v.u
-        # TODO : Maybe Send body length, icon#, non-optional names, and/or other...
+            if g.leoServer.leoServerConfig and g.leoServer.leoServerConfig.get("uAsBoolean", False):
+                # uAsBoolean is 'thruthy'
+                d['u'] = True
+            else:
+                # Normal output if no options set
+                d['u'] = p.v.u
         if bool(p.b):
             d['hasBody'] = True
         if p.hasChildren():
@@ -3672,7 +3718,7 @@ def main():  # pragma: no cover (tested in client)
             # None of these grabs focus from the console window.
             dialog.raise_()
             dialog.setFocus()
-            app.processEvents()
+            app.processEvents()  # type:ignore
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
             val = dialog.exec() if isQt6 else dialog.exec_()
@@ -3850,6 +3896,7 @@ def main():  # pragma: no cover (tested in client)
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
+                    # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"

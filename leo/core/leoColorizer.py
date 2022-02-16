@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Tuple
 #
 # Third-part tools.
 try:
-    import pygments
+    import pygments  # type:ignore
 except ImportError:
     pygments = None  # type:ignore
 #
@@ -28,10 +28,10 @@ from leo.core.leoColor import leo_color_database
 # Qt imports. May fail from the bridge.
 try:  # #1973
     from leo.core.leoQt import Qsci, QtGui, QtWidgets
-    from leo.core.leoQt import UnderlineStyle
+    from leo.core.leoQt import UnderlineStyle, Weight  # #2330
 except Exception:
     Qsci = QtGui = QtWidgets = None
-    UnderlineStyle = None
+    UnderlineStyle = Weight = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
@@ -99,13 +99,11 @@ class BaseColorizer:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
     #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives
-    def scanLanguageDirectives(self, p, use_default=True):
+    def scanLanguageDirectives(self, p):
         """Return language based on the directives in p's ancestors."""
         c = self.c
         language = g.getLanguageFromAncestorAtFileNode(p)
-        if not language and use_default:
-            language = c.target_language
-        return language
+        return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
         """True if p's parents enable coloring in p."""
@@ -1296,7 +1294,7 @@ class JEditColorizer(BaseJEditColorizer):
             j = i + len(seq)
             k = g.skip_ws(s, j)
             self.colorRangeWithTag(s, i, k, 'leokeyword')
-            c.frame.setWrap(c.p, force=True)
+            c.frame.forceWrap(c.p)
             return k - i
         return 0
     #@+node:ekr.20110605121601.18601: *5* jedit.match_blanks
@@ -1491,7 +1489,14 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20170225103140.1: *5* jedit.match_unl
     def match_unl(self, s, i):
         if g.match(s.lower(), i, 'unl://'):
-            j = len(s)
+            j = len(s)  # By default, color the whole line.
+            # #2410: Limit the coloring if possible.
+            if i > 0:
+                ch = s[i-1]
+                if ch in ('"', "'", '`'):
+                    k = s.find(ch, i)
+                    if k > -1:
+                        j = k
             self.colorRangeWithTag(s, i, j, 'url')
             return j
         return 0
@@ -2410,7 +2415,7 @@ class JEditColorizer(BaseJEditColorizer):
 if QtGui:
 
 
-    class LeoHighlighter(QtGui.QSyntaxHighlighter):
+    class LeoHighlighter(QtGui.QSyntaxHighlighter):  # type:ignore
         """
         A subclass of QSyntaxHighlighter that overrides
         the highlightBlock and rehighlight methods.
@@ -2523,23 +2528,24 @@ if QtGui:
                     elif key == 'bgcolor':
                         result.setBackground(self._get_brush(value))
                     elif key == 'bold':
-                        result.setFontWeight(QtGui.QFont.Bold)
+                        result.setFontWeight(Weight.Bold)
                     elif key == 'italic':
                         result.setFontItalic(True)
                     elif key == 'underline':
-                        result.setUnderlineStyle(QtGui.QTextCharFormat.SingleUnderline)
+                        result.setUnderlineStyle(UnderlineStyle.SingleUnderline)
                     elif key == 'sans':
-                        result.setFontStyleHint(QtGui.QFont.SansSerif)
+                        result.setFontStyleHint(Weight.SansSerif)
                     elif key == 'roman':
-                        result.setFontStyleHint(QtGui.QFont.Times)
+                        result.setFontStyleHint(Weight.Times)
                     elif key == 'mono':
-                        result.setFontStyleHint(QtGui.QFont.TypeWriter)
+                        result.setFontStyleHint(Weight.TypeWriter)
             return result
         #@+node:ekr.20190320153958.1: *4* leo_h.setStyle
         def setStyle(self, style):
             """ Sets the style to the specified Pygments style.
             """
-            from pygments.styles import get_style_by_name
+            from pygments.styles import get_style_by_name  # type:ignore
+
             if isinstance(style, str):
                 style = get_style_by_name(style)
             self._style = style
@@ -2575,7 +2581,7 @@ if QtGui:
 if Qsci:
 
 
-    class NullScintillaLexer(Qsci.QsciLexerCustom):
+    class NullScintillaLexer(Qsci.QsciLexerCustom):  # type:ignore
         """A do-nothing colorizer for Scintilla."""
 
         def __init__(self, c, parent=None):
@@ -2765,7 +2771,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
     def at_color_callback(self, lexer, match):
-        from pygments.token import Name, Text
+        from pygments.token import Name, Text  # type: ignore
         kind = match.group(0)
         self.color_enabled = kind == '@color'
         if self.color_enabled:
@@ -2786,7 +2792,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
     def get_lexer(self, language):
         """Return the lexer for self.language, creating it if necessary."""
-        import pygments.lexers as lexers
+        import pygments.lexers as lexers  # type: ignore
         tag = 'get_lexer'
         trace = 'coloring' in g.app.debug
         try:
@@ -2805,8 +2811,8 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
 
-        from pygments.token import Comment
-        from pygments.lexer import inherit
+        from pygments.token import Comment  # type:ignore
+        from pygments.lexer import inherit  # type:ignore
 
 
         class PatchedLexer(lexer.__class__):  # type:ignore
@@ -2901,7 +2907,7 @@ class QScintillaColorizer(BaseColorizer):
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)
         else:
-            self.lexersDict = {}
+            self.lexersDict = {}  # type:ignore
             self.nullLexer = g.NullObject()  # type:ignore
 
     def reloadSettings(self):
@@ -2928,7 +2934,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         wrapper = c.frame.body.wrapper
         w = wrapper.widget  # A Qsci.QsciSintilla object.
-        self.lexer = self.lexersDict.get(language, self.nullLexer)
+        self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):
@@ -3119,7 +3125,7 @@ if pygments:
     if QtGui:
 
 
-        class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+        class PygmentsBlockUserData(QtGui.QTextBlockUserData):  # type:ignore
             """ Storage for the user data associated with each line."""
 
             syntax_stack = ('root',)

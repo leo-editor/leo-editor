@@ -1724,7 +1724,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+    def runSaveFileDialog(self, c, title, filetypes, defaultextension):
         if g.unitTesting:
             return None
         # Not tested.
@@ -2275,6 +2275,9 @@ class CoreFrame(leoFrame.LeoFrame):
 
     def destroySelf(self):
         pass
+        
+    def forceWrap(self, p):
+        pass
 
     def get_window_info(self):
         """Return width, height, left, top."""
@@ -2663,7 +2666,7 @@ class CoreTree(leoFrame.LeoTree):
         if trace:
             g.trace(e)
     #@+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, traceTime=False, force=False):
+    def set_body_text_after_select(self, p, old_p):
         """Set the text after selecting a node."""
         c = self.c
         wrapper = c.frame.body.wrapper
@@ -2675,8 +2678,8 @@ class CoreTree(leoFrame.LeoTree):
         wrapper.setAllText(s)
         widget.values = g.splitLines(s)
         widget.update()
-            # Now done after c.p has been changed.
-                # p.restoreCursorAndScroll()
+        # Now done after c.p has been changed.
+        # p.restoreCursorAndScroll()
     #@-others
 #@+node:ekr.20171129200050.1: *3* class CoreStatusLine
 class CoreStatusLine:

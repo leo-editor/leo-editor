@@ -438,7 +438,7 @@ class QLineEditWrapper(QTextMixin):
     # setSelectionRangeHelper = setSelectionRange
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
-class LeoLineTextWidget(QtWidgets.QFrame):
+class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
     """
     A QFrame supporting gutter line numbers.
 
@@ -479,7 +479,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
 if QtWidgets:
 
 
-    class LeoQTextBrowser(QtWidgets.QTextBrowser):
+    class LeoQTextBrowser(QtWidgets.QTextBrowser):  # type:ignore
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
@@ -524,7 +524,7 @@ if QtWidgets:
         __str__ = __repr__
         #@+node:ekr.20110605121601.18008: *3* lqtb.Auto completion
         #@+node:ekr.20110605121601.18009: *4* class LeoQListWidget(QListWidget)
-        class LeoQListWidget(QtWidgets.QListWidget):
+        class LeoQListWidget(QtWidgets.QListWidget):  # type:ignore
             #@+others
             #@+node:ekr.20110605121601.18010: *5* lqlw.ctor
             def __init__(self, c):
@@ -1021,7 +1021,7 @@ if QtWidgets:
             QtWidgets.QTextBrowser.wheelEvent(self, event)
         #@-others
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
-class NumberBar(QtWidgets.QFrame):
+class NumberBar(QtWidgets.QFrame):  # type:ignore
     #@+others
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c, e, *args):

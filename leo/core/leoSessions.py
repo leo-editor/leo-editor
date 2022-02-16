@@ -49,7 +49,7 @@ class SessionManager:
         else:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
-            result.append(c.p.get_UNL(with_file=True, with_proto=False, with_index=True))
+            result.append(c.p.get_UNL())
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self):
@@ -63,11 +63,15 @@ class SessionManager:
         """Open a tab for each item in UNLs & select the indicated node in each."""
         if not unls:
             return
+
         unls = [z.strip() for z in unls or [] if z.strip()]
         for unl in unls:
             i = unl.find("#")
             if i > -1:
                 fn, unl = unl[:i], unl[i:]
+                fn_ = fn.split('unl://')  # #2412.
+                if len(fn_) > 1:
+                    fn = fn_[1]
             else:
                 fn, unl = unl, ''
             fn = fn.strip()
@@ -100,7 +104,7 @@ class SessionManager:
             # print('can not load session: no leo.session file')
         return None
     #@+node:ekr.20120420054855.14249: *3* SessionManager.save_snapshot
-    def save_snapshot(self, c=None):
+    def save_snapshot(self):
         """
         Save a snapshot of the present session to the leo.session file.
 
@@ -173,10 +177,9 @@ def session_snapshot_load_command(event):
 @g.command('session-snapshot-save')
 def session_snapshot_save_command(event):
     """Save a snapshot of the present session to the leo.session file."""
-    c = event.get('c')
     m = g.app.sessionManager
-    if c and m:
-        m.save_snapshot(c=c)
+    if m:
+        m.save_snapshot()
 #@-others
 #@@language python
 #@@tabwidth -4

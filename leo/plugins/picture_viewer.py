@@ -13,10 +13,14 @@ example:
 
 https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
 
-This plugin should be called from a script (or @command or @button node) as follows:
+This file may be run externally as follows::
+    
+    python -m leo.plugins.picture_viewer
+
+This plugin may be called from a script (or @command or @button node) as follows:
 
     from leo.plugins.picture_viewer import Slides
-    Slides().run(c)  # See below for defaults.
+    Slides().run()  # See below for defaults.
 
 *Note*: do not enable this plugin. It will be loaded by the calling script.
 
@@ -81,7 +85,7 @@ def init():
 def get_args():
 
     # Automatically implements the --help option.
-    description = "usage: python -m picture-viewer [options]"
+    description = "usage: python -m picture_viewer [options]"
     parser = argparse.ArgumentParser(
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
@@ -190,7 +194,7 @@ def main():
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
    
-    ok = Slides().run(c = None, **args)
+    ok = Slides().run(**args)
     if ok:
         if isQt5:
             sys.exit(gApp.exec_())
@@ -232,6 +236,15 @@ if QtWidgets:
             dialog.setText( f"Delete file {g.shortFileName(file_name)}?")
             dialog.setIcon(Information.Warning)
             dialog.setDefaultButton(yes)
+            
+            def dialog_keypress_event(event):
+                s = event.text()
+                if s == 'y':
+                    dialog.done(0)
+                elif s == 'n' or s == '\x1b':  # ESC.
+                    dialog.done(1)
+
+            dialog.keyPressEvent = dialog_keypress_event
             dialog.raise_()
             result = dialog.exec() if isQt6 else dialog.exec_()
             if result == 0:
@@ -285,7 +298,7 @@ if QtWidgets:
             elif i == 16777236:
                 self.move_right()
             else:
-                print(f"picture_viewer.py: ignoring {s!r} {i}")
+                print(f"picture_viewer.py: ignoring key: {s!r} {i}")
 
         #@+node:ekr.20211021200821.6: *3* Slides.move_up/down/left/right
         def move_down(self):
@@ -308,15 +321,18 @@ if QtWidgets:
                 new_path = os.path.join(path, os.path.basename(file_name))
                 if os.path.exists(new_path):
                     print("File exists:", new_path)
+                    pathlib.Path(file_name).unlink(new_path)
                 else:
                     pathlib.Path(file_name).rename(new_path)
-                    del self.files_list[self.slide_number]
-                    self.slide_number = max(0, self.slide_number - 1)
-                    self.next_slide()
-                    self.raise_()
+                del self.files_list[self.slide_number]
+                self.slide_number = max(0, self.slide_number - 1)
+                self.next_slide()
+                self.raise_()
         #@+node:ekr.20211021200821.8: *3* Slides.next_slide
         def next_slide(self):
 
+            if not self.files_list:
+                self.quit()
             if self.slide_number + 1 < len(self.files_list):
                 self.slide_number += 1  # Don't wrap.
             if self.reset_zoom:
@@ -352,12 +368,12 @@ if QtWidgets:
             self.starting_directory = path
             os.chdir(path)
             self.files_list = self.get_files(path)
+            print(f"Found {len(self.files_list)} files")
             self.slide_number = -1
             self.sort(self.sort_kind)
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
-            c,  # Required. The commander for this slideshow.
             background_color = None,  # Default background color.
             delay = None,  # Delay between slides, in seconds. Default 100.
             extensions = None,  # List of file extensions.
@@ -380,7 +396,6 @@ if QtWidgets:
             gWidget = self
             # Init ivars.
             w = self
-            self.c = c
             self.background_color = background_color or "black"
             self.delay = delay or 100
             self.extensions = extensions or ['.jpeg', '.jpg', '.png']
@@ -405,6 +420,7 @@ if QtWidgets:
             if not self.files_list:
                 print(f"No slides found in {path!r}")
                 return False
+            print(f"Found {len(self.files_list)} files")
             self.starting_directory = path
             os.chdir(path)
             n = len(self.files_list)
@@ -414,7 +430,7 @@ if QtWidgets:
             w.make_widgets()
             # Center the widget
             qtRectangle = w.frameGeometry()
-            centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+            centerPoint = QtGui.QGuiApplication.primaryScreen().availableGeometry().center()
             qtRectangle.moveCenter(centerPoint)
             w.move(qtRectangle.topLeft())
             # Show the widget.

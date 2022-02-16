@@ -47,11 +47,16 @@ class Org_Importer(Importer):
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
-    def gen_lines(self, s, parent):
+    def gen_lines(self, lines, parent):
         """Node generator for org mode."""
-        self.inject_lines_ivar(parent)
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
         self.parents = [parent]
-        for line in g.splitLines(s):
+        for line in lines:
             m = self.org_pattern.match(line)
             if m:
                 # Cut back the stack, then allocate a new node.
@@ -77,18 +82,20 @@ class Org_Importer(Importer):
             n -= 1
             child = self.create_child_node(
                 parent=self.parents[-1],
-                body=None,
+                line=None,
                 headline=headline,
             )
             self.parents.append(child)
         return self.parents[level]
     #@+node:ekr.20190210091845.1: *4* org_i.create_child_node
-    def create_child_node(self, parent, body, headline):
+    def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
+        self.vnode_info [child.v] = {
+            'lines': [],
+        }
+        if line:
+            self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
         child.h = headline
             # #1037: do rstrip, not strip.
@@ -119,7 +126,7 @@ class Org_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-org', '@auto-org-mode',],
-    'class': Org_Importer,
+    'func': Org_Importer.do_import(),
     'extensions': ['.org'],
 }
 #@@language python

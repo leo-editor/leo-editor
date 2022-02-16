@@ -68,7 +68,7 @@ class Csharp_ScanState:
 
 #@-others
 importer_dict = {
-    'class': Csharp_Importer,
+    'func': Csharp_Importer.do_import(),
     'extensions': ['.cs', '.c#'],
 }
 #@@language python

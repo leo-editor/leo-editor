@@ -82,7 +82,7 @@ def onIdle(tag, keywords):
                 if time.time() - last >= interval:
                     g.es_print("Autosave: %s" % time.ctime(), color="orange")
                     c.fileCommands.save(c.mFileName)
-                    c.set_focus(w, force=True)
+                    c.set_focus(w)
                     d['last'] = time.time()
                     gDict[c.hash()] = d
         else:

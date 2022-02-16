@@ -142,7 +142,7 @@ class Pascal_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'class': Pascal_Importer,
+    'func': Pascal_Importer.do_import(),
     'extensions': ['.pas'],
 }
 #@@language python

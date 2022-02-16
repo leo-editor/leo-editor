@@ -35,12 +35,11 @@ from leo.core import leoGlobals as g
 try:  # #1973
     from leo.core.leoQt import QtWidgets
     from leo.core.leoQt import MouseButton
+    from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
 except Exception:
     QtWidgets = None
     MouseButton = None
-if QtWidgets:
-    from leo.plugins.nested_splitter import NestedSplitter
-        # NestedSplitterChoice
+    NestedSplitter = None  # type:ignore
 #
 # Do not call g.assertUi('qt') here. It's too early in the load process.
 #@-<< imports >>
@@ -48,7 +47,7 @@ if QtWidgets:
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init():
     """Return True if the free_layout plugin can be loaded."""
-    return g.app.gui.guiName() == "qt"
+    return bool(NestedSplitter and g.app.gui.guiName() == "qt")
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
 
@@ -118,6 +117,8 @@ class FreeLayoutController:
           for NestedSplitter
         """
         c = self.c
+        if not NestedSplitter:
+            return
         if c != keys.get('c'):
             return
         # Careful: we could be unit testing.

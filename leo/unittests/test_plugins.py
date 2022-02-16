@@ -17,7 +17,7 @@ class TestPlugins(LeoUnitTest):
     """General tests of plugoins."""
     #@+others
     #@+node:ekr.20210909165100.1: *3*  TestPlugin.check_syntax
-    def check_syntax(self, filename):
+    def check_syntax(self, filename):  # pylint: disable=inconsistent-return-statements
         with open(filename, 'r') as f:
             s = f.read()
         try:
@@ -29,6 +29,7 @@ class TestPlugins(LeoUnitTest):
             raise
         except Exception:
             self.fail(f"unexpected error in: {filename}")
+
     #@+node:ekr.20210907082746.1: *3*  TestPlugins.get_plugins
     def get_plugins(self):
         """Return a list of all plugins *without* importing them."""
@@ -84,7 +85,7 @@ class TestPlugins(LeoUnitTest):
             'nodetags.py',  # #2031: Qt imports are optional.
             'picture_viewer.py',  # Special case.
             'pyplot_backend.py',
-            # 'free_layout.py',
+            'remove_duplicate_pictures.py'  # Special case.
         )
         pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
         for fn in files:

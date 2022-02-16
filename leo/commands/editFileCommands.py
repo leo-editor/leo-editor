@@ -291,7 +291,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         self.createAllCompareClones(c1, c2, inserted, deleted, changed)
         # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
         if not g.app.diff:
-            g.app.forgetOpenFile(fn=c2.fileName(), force=True)
+            g.app.forgetOpenFile(fn=c2.fileName())
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
@@ -594,7 +594,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile=None,
             title='save-file',
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")
@@ -945,10 +944,9 @@ class GitDiffController:
     def finish(self):
         """Finish execution of this command."""
         c = self.c
-        c.contractAllHeadlines(redrawFlag=False)
-        self.root.expand()
         c.selectPosition(self.root)
-        c.redraw()
+        self.root.expand()
+        c.redraw(self.root)
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_directory
     def get_directory(self):
