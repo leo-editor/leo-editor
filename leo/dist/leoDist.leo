@@ -2405,7 +2405,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [3.6]
+        python-version: [3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -2497,7 +2497,7 @@ deploy:
 <t tx="mhw.20190718140254.1"></t>
 <t tx="mhw.20190718140259.1">language: python
 python:
-  - "3.6"
+  - "3.9"
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
