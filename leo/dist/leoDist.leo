@@ -180,6 +180,7 @@
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
+<v t="maphew.20200605112459.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -2465,7 +2466,7 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 <t tx="matt.20190205105334.1">@language yaml
 language: python
 python:
-  - "3.6"
+  - "3.9"
 git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
