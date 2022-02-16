@@ -528,7 +528,7 @@
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
-<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
+<v t="maphew.20200616225715.1"><vh>@ignore Standalone Leo.exe</vh></v>
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
@@ -2380,19 +2380,6 @@
 </v>
 </v>
 <v t="ekr.20211105051031.1"></v>
-<v t="ekr.20180126061923.1"></v>
-<v t="ekr.20220130042521.1"><vh>Found 8:unl</vh>
-<v t="ekr.20101113063552.9458"></v>
-<v t="ekr.20170228104028.1"></v>
-<v t="ekr.20170228101933.20"></v>
-<v t="ekr.20101113063552.9483"></v>
-<v t="ekr.20220129091501.1"></v>
-</v>
-<v t="ekr.20220129091501.1"></v>
-<v t="ekr.20220130042644.1"><vh>Found 2:unls</vh>
-<v t="ekr.20170228101933.20"></v>
-<v t="ekr.20220129091501.1"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11826,13 +11813,13 @@ creates a permanent reference to the window so the window won't be garbage colle
 .. _`Python wheel`:             https://pythonwheels.com/
 .. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
-.. _`Standalone leo.exe`:       download.html#standalone
+.. .. _`Standalone leo.exe`:       download.html#standalone
 
 ###############
 Downloading Leo
 ###############
 
-There are three ways to download Leo:
+There are two ways to download Leo:
 
 - ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
 
@@ -11840,7 +11827,7 @@ There are three ways to download Leo:
 
 - If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
 
-- All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
+.. - All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -17355,7 +17342,7 @@ Then run "pip --editable install . " in the same folder. Foo.exe will be created
 Yeah! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\foo.py
 --do-stuff-here ..." for me. :)
 
-Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
+.. Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
 </t>
 <t tx="ekr.20141108064630.13">.. in FAQ
 
@@ -31190,16 +31177,6 @@ The leo/plugins/example_rst_filter.py shows how to define and register these fil
     
 will select this node in LeoDocs.leo.
 </t>
-<t tx="ekr.20220130042521.1">@nosearch
-
-# Word, Ignore Case, Head, Body
-
-# found 8 nodes</t>
-<t tx="ekr.20220130042644.1">@nosearch
-
-# Word, Ignore Case, Head, Body
-
-# found 2 nodes</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
@@ -31276,7 +31253,9 @@ first draft of the all-important ws_handler function.
 Edward K. Ream made the code more pythonic and provided Leo-specific
 advice.
 </t>
-<t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
+<t tx="maphew.20200616225715.1">.. This section is no longer valid.
+
+Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
 
