@@ -78,8 +78,8 @@ need to do so.
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>
 import io
 import re
-from leo.core import leoGlobals as g
 from typing import Any, Dict, List
+from leo.core import leoGlobals as g
 StringIO = io.StringIO
 #@-<< linescanner imports >>
 #@+others
