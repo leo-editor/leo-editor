@@ -1809,8 +1809,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             settings = w.settings()
             try:
                 settings.setFontSize(settings.DefaultFontSize, n)
-            except Exception as e:
-                g.es(e, color='red')
+            except Exception:
+                pass
         return w
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
