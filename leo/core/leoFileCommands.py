@@ -122,7 +122,7 @@ class FastRead:
     def readWithElementTree(self, path, s):
 
         contents = g.toUnicode(s)
-        table = contents.maketrans(self.translate_dict)  # #1510.
+        table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
         contents = contents.translate(table)  # #1036, #1046.
         try:
             xroot = ElementTree.fromstring(contents)
