@@ -279,18 +279,17 @@ class MypyCommand:
     def check_all(self, roots):
         """Run mypy on all files in paths."""
         c = self.c
+        c.frame.log.clearLog()  # #2405: Clear the log *once*.
         self.unknown_path_names = []
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
-        print('mypy done')
+        g.es_print('mypy done')
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
         """Run mypy on one file."""
         c = self.c
-        # Init.
-        c.frame.log.clearLog()
         link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
         # Set the working directory.
         if self.directory:
