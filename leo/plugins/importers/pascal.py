@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18147: * @file ../plugins/importers/pascal.py
 """The @auto importer for the pascal language."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -57,6 +58,8 @@ class Pascal_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

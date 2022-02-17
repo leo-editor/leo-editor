@@ -6,6 +6,7 @@ The @auto importer for the lua language.
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -125,6 +126,8 @@ class Lua_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

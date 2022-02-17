@@ -2,6 +2,7 @@
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 """The @auto importer for coffeescript."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -39,6 +40,8 @@ class CS_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

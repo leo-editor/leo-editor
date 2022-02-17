@@ -2,6 +2,7 @@
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 """The @auto importer for Perl."""
 import re
+from typing import Any, Dict, List
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
@@ -54,6 +55,8 @@ class Perl_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

@@ -2,6 +2,7 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -105,7 +106,7 @@ class Cython_Importer(Importer):
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            if self.prev_state.context or self.ws_pattern.match(line):
+            if self.prev_state.context or self.ws_pattern.match(line):  # type:ignore
                 pass
             else:
                 m = self.class_or_def_pattern.match(line)
@@ -445,6 +446,8 @@ class Cython_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

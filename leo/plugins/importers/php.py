@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18148: * @file ../plugins/importers/php.py
 """The @auto importer for the php language."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -41,6 +42,8 @@ class Php_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {

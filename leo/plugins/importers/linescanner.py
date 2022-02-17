@@ -79,6 +79,7 @@ need to do so.
 import io
 import re
 from leo.core import leoGlobals as g
+from typing import Any, Dict, List
 StringIO = io.StringIO
 #@-<< linescanner imports >>
 #@+others
@@ -149,11 +150,11 @@ class Importer:
         if ic:
             ic.errors = 0  # Required.
         self.parse_body = False
-        self.refs_dict = {}
-            # Keys are headlines. Values are disambiguating number.
-        self.skip = 0  # A skip count for x.gen_lines & its helpers.
-        self.ws_error = False
+        self.refs_dict: Dict[str, int] = {} # Keys are headlines. Values are disambiguating number.
         self.root = None
+        self.skip = 0  # A skip count for x.gen_lines & its helpers.
+        self.vnode_info: Dict[str, Any] = {}
+        self.ws_error = False
 
     def reloadSettings(self):
         c = self.c
@@ -227,6 +228,8 @@ class Importer:
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {
@@ -258,7 +261,7 @@ class Importer:
         return d
     #@+node:ekr.20161113135037.1: *4* i.get_table
     #@@nobeautify
-    cached_scan_tables = {}
+    cached_scan_tables: Dict[str, Any] = {}
 
     def get_table(self, context):
         """
@@ -671,9 +674,9 @@ class Importer:
         """Print everything important in the i.gen_lines loop."""
         print('')
         try:
-            g.trace('===== %r' % line)
+            g.trace(repr(line))
         except Exception:
-            g.trace('     top.p: %s' % g.toEncodedString(top.p.h))
+            g.trace(f"    top.p: {g.toUnicode(top.p.h)}")
         # print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
         print('prev_state: %s' % prev_state)
