@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
 """The @auto importer for the elisp language."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -33,6 +34,8 @@ class Elisp_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict[str, List[Any]]
 
         if context:
             d = {
@@ -84,9 +87,9 @@ class Elisp_Importer(Importer):
             return  # for elisp
         print('')
         try:
-            g.trace('===== %r' % line)
+            g.trace(repr(line))
         except Exception:
-            g.trace('     top.p: %s' % g.toEncodedString(top.p.h))
+            g.trace(f"     top.p: {g.toUnicode(top.p.h)}")
         # print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
         print('prev_state: %s' % prev_state)

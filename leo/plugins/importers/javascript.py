@@ -4,6 +4,7 @@
 import re
 import textwrap
 import unittest
+from typing import List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -94,7 +95,8 @@ class JS_Importer(Importer):
         Return (head_lines, tail_lines).
         """
         s = ''.join(lines)
-        head, tail = [], []
+        head: List[str] = []
+        tail: List[str] = []
         if not s.strip:
             return head, tail
         in_block_comment = False

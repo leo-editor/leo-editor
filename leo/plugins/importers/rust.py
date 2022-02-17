@@ -2,6 +2,7 @@
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
 """The @auto importer for rust."""
 import re
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 assert g
@@ -83,7 +84,7 @@ class Rust_Importer(Importer):
             if '@others' in ''.join(lines):
                 # Don't move anything.
                 continue
-            comment_lines = []
+            comment_lines: List[str] = []
             for line in reversed(lines):
                 if line.strip().startswith(('//', '#[', '#!')):
                     comment_lines.insert(0, line)
@@ -156,6 +157,8 @@ class Rust_Importer(Importer):
         # https://doc.rust-lang.org/stable/reference/tokens.html#lifetimes-and-loop-labels
         #
         # It looks like we can just ignore 'x' and 'x tokens.
+        d: Dict[str, List[Any]]
+
         if context:
             d = {
                 # key    kind      pattern  ends?

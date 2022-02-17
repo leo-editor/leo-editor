@@ -279,12 +279,11 @@ class MypyCommand:
     def check_all(self, roots):
         """Run mypy on all files in paths."""
         c = self.c
-        c.frame.log.clearLog()  # #2405: Clear the log *once*.
         self.unknown_path_names = []
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
             self.check_file(fn)
-        g.es_print('mypy done')
+        g.es_print('mypy: done')
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
     def check_file(self, fn):
@@ -312,7 +311,6 @@ class MypyCommand:
         # Run mypy.
         final_args = args + [fn]
         result = mypy.api.run(final_args)
-        g.es('mypy: done')
         # Print result, making clickable links.
         lines = g.splitLines(result[0] or [])  # type:ignore
         s_head = directory.lower() + os.path.sep

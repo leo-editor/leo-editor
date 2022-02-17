@@ -2,6 +2,7 @@
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
 #@@language python
 #@@tabwidth -4
+from typing import List
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
@@ -65,7 +66,7 @@ class CText_Importer(Importer):
             cchar = '/'
         level = -1
         nd = parent.copy()
-        lines = []
+        lines: List[str] = []
         for line in s.split('\n'):
             if line.startswith(cchar * 3):
                 word = line.split()

@@ -5,6 +5,7 @@ The @auto importer for restructured text.
 
 This module must **not** be named rst, so as not to conflict with docutils.
 """
+from typing import Dict
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
@@ -156,7 +157,7 @@ class Rst_Importer(Importer):
         self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
     # # 430, per RagBlufThim. Was {'#': 1,}
-    rst_seen = {}
+    rst_seen: Dict[str, int] = {}
     rst_level = 0  # A trick.
 
     def ch_level(self, ch):
