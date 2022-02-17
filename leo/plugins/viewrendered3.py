@@ -1650,6 +1650,144 @@ def markup_to_editor(event):
 #@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
 @g.command('vr3-plot-2d')
 def vr3_plot_2d(event):
+    #@+<< vr3-plot-2d docstring >>
+    #@+node:tom.20211104105903.2: *4* << vr3-plot-2d docstring >>
+    #@@language rest
+    r"""
+    Show a plot of x-y data in the selected node.
+
+    The data can be either a one-column or two-column list
+    of rows.  Columns are separated by whitespace.  Optionally,
+    the node may contain a config file-like set of sections
+    that define the labels, and plot styling.
+
+    Optionally, the data can be read from a file instead of taken 
+    from the selected node.
+
+    The matplotlib package is required for plotting.
+
+    Data Format
+    ------------
+    Data must be in one or two columns separated by whitespace  Here
+    is an example of two-column data::
+
+        1 1
+        2 2
+        3 4
+        # comment
+        ; comment
+
+        4 16
+        5 32
+
+    Comment lines start with one of ";", "#". Comment, non-numeric, and 
+    blank lines are ignored.
+
+    Here is an example of one-column data - the missing first column will 
+    assigned integers starting with 0::
+
+        1
+        .5
+        6
+        # comment
+        ; comment
+
+        16
+        32
+
+    Whether the data contains one or two columns is determined
+    from the first non-comment, non-blank, all numeric row.
+    If one-column, an implicit first column is added starting
+    with zero.
+
+
+    Configuration Sections
+    -----------------------
+    The labeling, styling, and data source for the plot can be
+    specified in configuration sections.  Each section starts with
+    a *[name]*, has zero or more lines in the form *key = value*,
+    and must end with a blank line or the end of the node.
+
+    Sections may be placed anywhere in the selected node.  The 
+    *[sectionname]* must be left-justified.  Currently the
+    following sections are recognized::
+
+        [style]
+        [labels]
+        [source]
+
+    Optional Data Source
+    ---------------------
+    Data to be plotted can be read from a file.  The selected node must
+    contain a section *[source]* with a *file* key, like this::
+
+        [source]
+        file = c:\example\datafile.txt
+
+    If the file exists, it will be used as the data source instead of the
+    selected Leo node.  All configuration sections in the selected nodes 
+    will still take effect.
+
+    Graph And Data Labels
+    ----------------------
+
+    A figure title and axis labels can optionally be added. These are
+    specified by the configuration section *[labels]*.
+
+    Here is an example::
+
+        [labels]
+        title = Plot Example
+        xaxis = Days
+        yaxis = Values
+
+    Any or all of the entries may be omitted.
+
+    Plot Styling
+    -------------
+
+    The appearance of the plot can optionally be changed in several
+    ways. By default, a certain Matplotlib style file will be used if
+    present (see below), or default Matplotlib styling will be
+    applied. If the data node has a section *[style]*, one of two
+    styling methods can be used:
+
+    1. A named style. Matplotlib has a number of named
+       styles, such as *ggplot*. One of these built-in
+       style names can be specified by the *stylename*
+       key. The style *xkcd* can also be used even
+       though it is not one of the named styles.
+
+    2. A Matplotlib style file. The name of this file
+       is specified by the *stylefile* key. The file
+       can be located Leo's home directory, typically
+       *~/.leo* or its equivalent in Windows.
+
+    Here is an example *[data]* section, with explanatory comments added::
+
+        [style]
+        # For VR3 "Plot 2D", only one of these 
+        # will be used. "stylename" has priority
+        # over "stylefile".
+        stylename = ggplot
+        #stylefile = styles.mpl
+
+    The section may be placed anywhere in the node.
+
+    The Default Style File
+    ----------------------
+
+    When no *[data]* section is present, a style file named
+    *local_mplstyle* will be used if found. It will first be looked
+    for in Leo's home directory, and then in the *site.userbase()*
+    directory. On Windows, this is usually the *%APPDATA%\\Python*
+    directory. On Linux, this is usually *~/.local*.
+
+    When no style file can be found, Matplotlib will use its default
+    styling, as modified by a *matplotlibrc* file if Matplotlib can
+    find one.
+    """
+    #@-<< vr3-plot-2d docstring >>
     vr3 = getVr3(event)
     vr3.plot_2d()
 #@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
@@ -2268,150 +2406,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
-        r"""
-        #@+<< docstring >>
-        #@+node:tom.20211104105903.2: *5* << docstring >>
-        Show a plot of x-y data in the selected node.
-
-        The data can be either a one-column or two-column list
-        of rows.  Columns are separated by whitespace.  Optionally,
-        the node may contain a config file-like set of sections
-        that define the labels, and plot styling.
-
-        Optionally, the data can be read from a file instead of taken 
-        from the selected node.
-
-        The matplotlib package is required for plotting.
-
-        #@+others
-        #@+node:tom.20211104105903.3: *6* Data Format
-        Data Format
-        ------------
-        Data must be in one or two columns separated by whitespace  Here
-        is an example of two-column data::
-
-            1 1
-            2 2
-            3 4
-            # comment
-            ; comment
-
-            4 16
-            5 32
-
-        Comment lines start with one of ";", "#". Comment, non-numeric, and 
-        blank lines are ignored.
-
-        Here is an example of one-column data - the missing first column will 
-        assigned integers starting with 0::
-
-            1
-            .5
-            6
-            # comment
-            ; comment
-
-            16
-            32
-
-        Whether the data contains one or two columns is determined
-        from the first non-comment, non-blank, all numeric row.
-        If one-column, an implicit first column is added starting
-        with zero.
-
-
-        #@+node:tom.20211108101908.1: *6* Configuration Sections
-        Configuration Sections
-        -----------------------
-        The labeling, styling, and data source for the plot can be
-        specified in configuration sections.  Each section starts with
-        a *[name]*, has zero or more lines in the form *key = value*,
-        and must end with a blank line or the end of the node.
-
-        Sections may be placed anywhere in the selected node.  The 
-        *[sectionname]* must be left-justified.  Currently the
-        following sections are recognized::
-
-            [style]
-            [labels]
-            [source]
-
-        #@+node:tom.20211108100421.1: *6* Optional Data Source
-        Optional Data Source
-        ---------------------
-        Data to be plotted can be read from a file.  The selected node must
-        contain a section *[source]* with a *file* key, like this::
-
-            [source]
-            file = c:\example\datafile.txt
-
-        If the file exists, it will be used as the data source instead of the
-        selected Leo node.  All configuration sections in the selected nodes 
-        will still take effect.
-
-        #@+node:tom.20211104105903.4: *6* Graph And Data Labels
-        Graph And Data Labels
-        ----------------------
-
-        A figure title and axis labels can optionally be added. These are
-        specified by the configuration section *[labels]*.
-
-        Here is an example::
-
-            [labels]
-            title = Plot Example
-            xaxis = Days
-            yaxis = Values
-
-        Any or all of the entries may be omitted.
-
-        #@+node:tom.20211104183046.1: *6* Plot Styling
-        Plot Styling
-        -------------
-
-        The appearance of the plot can optionally be changed in several
-        ways. By default, a certain Matplotlib style file will be used if
-        present (see below), or default Matplotlib styling will be
-        applied. If the data node has a section *[style]*, one of two
-        styling methods can be used:
-
-        1. A named style. Matplotlib has a number of named
-           styles, such as *ggplot*. One of these built-in
-           style names can be specified by the *stylename*
-           key. The style *xkcd* can also be used even
-           though it is not one of the named styles.
-
-        2. A Matplotlib style file. The name of this file
-           is specified by the *stylefile* key. The file
-           can be located Leo's home directory, typically
-           *~/.leo* or its equivalent in Windows.
-
-        Here is an example *[data]* section, with explanatory comments added::
-
-            [style]
-            # For VR3 "Plot 2D", only one of these 
-            # will be used. "stylename" has priority
-            # over "stylefile".
-            stylename = ggplot
-            #stylefile = styles.mpl
-
-        The section may be placed anywhere in the node.
-
-        The Default Style File
-        ........................
-
-        When no *[data]* section is present, a style file named
-        *local_mplstyle* will be used if found. It will first be looked
-        for in Leo's home directory, and then in the *site.userbase()*
-        directory. On Windows, this is usually the *%APPDATA%\\Python*
-        directory. On Linux, this is usually *~/.local*.
-
-        When no style file can be found, Matplotlib will use its default
-        styling, as modified by a *matplotlibrc* file if Matplotlib can
-        find one.
-        #@-others
-        #@-<< docstring >>
-        """
         # pylint: disable = too-many-branches, too-many-locals
         # pylint: disable = too-many-statements
         if not matplotlib:
