@@ -4,7 +4,9 @@
 #@@first
 """Tests for leo.core.leoNodes"""
 
+# pylint has troubles finding Commands methods.
 # pylint: disable=no-member
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -656,17 +658,17 @@ class TestNodes(LeoUnitTest):
     def test_p_nosentinels(self):
 
         p = self.c.p
+        p.b = textwrap.dedent("""\
 
-        def not_a_sentinel(x):
-            pass
+            def not_a_sentinel(x):
+                pass
 
-        @not_a_sentinel
-        def spam():
-            pass
-
-        s1 = ''.join(g.splitLines(p.b)[2:])
-        s2 = p.nosentinels
-        self.assertEqual(s1, s2)
+            @not_a_sentinel
+            def spam():
+                pass
+        
+    """)
+        self.assertEqual(p.b, p.nosentinels)
     #@+node:ekr.20210830095545.22: *4* TestNodes.test_p_relinkAsCloneOf
     def test_p_relinkAsCloneOf(self):
 
