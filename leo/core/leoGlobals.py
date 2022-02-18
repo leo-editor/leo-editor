@@ -83,7 +83,7 @@ globalDirectiveList = [
     'nosearch',  # Leo 5.3.
     'others', 'pagewidth', 'path', 'quiet',
     # 'raw',  # #2276.
-    'section-delims', # Leo 6.6. #2276.
+    'section-delims',  # Leo 6.6. #2276.
     'silent',
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
@@ -3400,7 +3400,7 @@ def getLanguageFromAncestorAtFileNode(p: Pos) -> Optional[str]:
     """
     v0 = p.v
     seen: Set[VNode]
-    
+
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
     # Original idea by Виталије Милошевић (Vitalije Milosevic).
     # Modified by EKR.
@@ -7556,7 +7556,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
             p1.moveToParent()
         return not aList
     #@-others
-    
+
     unlList = convert_unl_list(unlList1)
     if not unlList:
         return None
@@ -7575,12 +7575,12 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
                 assert p == p1, (p, p1)
                 n = 0  # The default line number.
                 # Parse the last target.
-                m = new_pat.match(unlList[-1]) 
+                m = new_pat.match(unlList[-1])
                 if m:
                     line = m.group(3)
                     try:
                         n = int(line)
-                    except (TypeError, ValueError):
+                    except(TypeError, ValueError):
                         g.trace('bad line number', line)
                 if n == 0:
                     c.redraw(p)
@@ -7588,7 +7588,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
                     p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
                     return p if ok else None
                 elif n > 0:
-                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[:n - 1])
+                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[: n - 1])
                     c.redraw(p)
                     c.frame.body.wrapper.setInsertPoint(insert_point)
                 c.frame.bringToFront()
