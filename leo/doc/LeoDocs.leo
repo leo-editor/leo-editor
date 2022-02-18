@@ -798,7 +798,7 @@
 <v t="ekr.20180126061429.25"><vh>Search for settings in leoSettings.leo</vh></v>
 <v t="ekr.20180126061429.10"><vh>Use abbreviations</vh></v>
 </v>
-<v t="ekr.20180126062558.1"><vh>Useful commands</vh>
+<v t="ekr.20180126062558.1"><vh>Useful commands and actions</vh>
 <v t="ekr.20180126061429.7"><vh>The beautify command &amp; @nobeautify directive</vh></v>
 <v t="ekr.20180126061429.22"><vh>The find-quick-selected command</vh></v>
 <v t="ekr.20180126061429.23"><vh>The parse-body command</vh></v>
@@ -809,6 +809,7 @@
 <v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
 <v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
 <v t="ekr.20180126184230.1"><vh>Use Ctrl-P (repeat-complex-command) to avoid key bindings</vh></v>
+<v t="ekr.20220218121757.1"><vh>Ctrl-click urls and unls</vh></v>
 </v>
 <v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
 <v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
@@ -31177,6 +31178,21 @@ The leo/plugins/example_rst_filter.py shows how to define and register these fil
     
 will select this node in LeoDocs.leo.
 </t>
+<t tx="ekr.20220218121757.1">Clicking a url, such as https://www.leoeditor.com/ will open the link in your default browser.
+
+Similarly, you can select a node by clicking the node's **UNL** (Uniform Node Locator).
+UNL's have the form:
+
+    
+    unl://
+    Full path of a .leo file
+    List of ancestor nodes, separated by "--&gt;"
+  
+For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
+
+    unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html
+    
+Moving or renaming nodes may (partially) break UNL's.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
