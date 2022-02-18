@@ -23,7 +23,7 @@ def cover_all(event=None):
         ('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py'),
         ('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py'),
         ('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py'),
-        ('leo.commands.convertCommands', 'leo/unittests/commands/convertCommands.py'),
+        ('leo.commands.convertCommands', 'leo/unittests/commands/test_convertCommands.py'),
         ('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py'),
         ('leo.core.leoFileCommands', 'leo/unittests/core/test_leoFileCommands.py'),
         ('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py'),
