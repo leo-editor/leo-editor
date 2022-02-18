@@ -639,20 +639,6 @@
 <v t="ekr.20060524151415.1"><vh>@string debugger-kind = winpdb</vh></v>
 <v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
 </v>
-<v t="ekr.20171121100639.1"><vh>Declutter</vh>
-<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
-<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
-<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
-<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
-<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
-</v>
-<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
-<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
-<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
-<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
-<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
-</v>
-</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
@@ -2217,6 +2203,20 @@
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline-nav-extend-delay = 2.0</vh></v>
 <v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
+<v t="ekr.20171121100639.1"><vh>Declutter</vh>
+<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
+<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
+<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
+</v>
+<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
+<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
+<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
+<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
+<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
