@@ -15,12 +15,13 @@ from QtGui import QCloseEvent
 QtConst = QtCore.Qt
 printsupport = Qt
 qt_version = QtCore.QT_VERSION_STR
-assert QUrl and Signal  # For pyflakes.
+assert QCloseEvent and QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
 # Must import this before creating the GUI
 has_WebEngineWidgets = False
 try:
+    # pylint: disable=ungrouped-imports
     from PyQt5 import QtWebEngineWidgets
     assert QtWebEngineWidgets
     has_WebEngineWidgets = True
