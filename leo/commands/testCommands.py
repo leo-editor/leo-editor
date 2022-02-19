@@ -11,13 +11,47 @@ from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20210907103024.2: ** coverage test commands...
 #@+node:ekr.20210907103024.3: *3* cover-all
+#@@nowrap
 @g.command('cover-all')
 def cover_all(event=None):
     """Run all coverage tests in leo.unittests."""
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
-    command =  r"python -m pytest --cov-report html --cov-report term-missing --cov"
-    g.execute_shell_commands(command, trace=False)
+    if 1:
+        # This is usually best:
+        # - It creates a full report in index.html.
+        # - It runs all unit tests in the leo.unittests directory.
+        command =  r"python -m pytest --cov-report html --cov-report term-missing --cov"
+        g.execute_shell_commands(command, trace=False)
+    else:
+        # This runs only the listed files. index.html describes only the last file.
+        table = (
+            ('leo.core.leoApp', 'leo/unittests/core/test_leoApp.py'),
+            ('leo.core.leoAst', 'leo/unittests/core/test_leoAst.py'),
+            ('leo.core.leoAtFile', 'leo/unittests/core/test_leoAtFile.py'),
+            ('leo.core.leoBridge', 'leo/unittests/core/test_leoBridge.py'),
+            ('leo.commands.checkerCommands', 'leo/unittests/commands/test_checkerCommands.py'),
+            ('leo.core.leoColorizer', 'leo/unittests/core/test_leoColorizer.py'),
+            ('leo.core.leoCommands', 'leo/unittests/core/test_leoCommands.py'),
+            ('leo.core.leoConfig', 'leo/unittests/core/test_leoConfig.py'),
+            ('leo.commands.convertCommands', 'leo/unittests/commands/test_convertCommands.py'),
+            ('leo.commands.editCommands', 'leo/unittests/commands/test_editCommands.py'),
+            ('leo.core.leoFileCommands', 'leo/unittests/core/test_leoFileCommands.py'),
+            ('leo.core.leoFind', 'leo/unittests/core/test_leoFind.py'),
+            ('leo.core.leoFrame', 'leo/unittests/core/test_leoFrame.py'),
+            ('leo.core.leoGlobals', 'leo/unittests/core/test_leoGlobals.py'),
+            ('leo.core.leoImport', 'leo/unittests/core/test_leoImport.py'),
+            ('leo.core.leoKeys', 'leo/unittests/core/test_leoKeys.py'),
+            ('leo.core.leoserver', 'leo/unittests/core/test_leoserver.py'),
+            ('leo.core.leoNodes', 'leo/unittests/core/test_leoNodes.py'),
+            ('leo.core.leoPersistence', 'leo/unittests/core/test_leoPersistence.py'),
+            ('leo.core.leoRst', 'leo/unittests/core/test_leoRst.py'),
+            ('leo.core.leoShadow', 'leo/unittests/core/test_leoShadow.py'),
+            ('leo.core.leoUndo', 'leo/unittests/core/test_leoUndo.py'),
+            ('leo.core.leoVim', 'leo/unittests/core/test_leoVim.py'),
+        )
+        for module, filename in table:
+            g.run_coverage_tests(module, filename)
 #@+node:ekr.20210911072153.3: *3* cover-app
 @g.command('cover-app')
 def cover_app(event=None):
