@@ -35,7 +35,7 @@ if not g.in_bridge:
     try:
         if 0:  # Testing: Force Qt5.
             raise AttributeError
-        from leo.core.leoQt6 import *
+        from leo.core.leoQt6 import *  # type:ignore
         #
         # Restore the exec_method!
         def exec_(self, *args, **kwargs):

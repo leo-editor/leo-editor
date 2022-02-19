@@ -1595,7 +1595,7 @@ class LeoQtBody(leoFrame.LeoBody):
         wrap = g.scanAllAtWrapDirectives(c, p)
         policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
         w.setHorizontalScrollBarPolicy(policy)
-        wrap = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
+        wrap = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap  # type:ignore
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
@@ -3193,9 +3193,9 @@ class LeoQtLog(leoFrame.LeoLog):
             (Weight.DemiBold, 'demibold'),
             (Weight.Bold, 'bold'),
             (Weight.Black, 'black'))
-        for val, name in table2:
-            if weight == val:
-                weight = name
+        for val2, name2 in table2:
+            if weight == val2:
+                weight = name2
                 break
         else:
             weight = ''
@@ -3205,9 +3205,9 @@ class LeoQtLog(leoFrame.LeoLog):
             ('style ', style),
             ('weight', weight),
         )
-        for key, val in table3:
-            if val:
-                g.es(key, val, tabName='Fonts')
+        for key3, val3 in table3:
+            if val3:
+                g.es(key3, val3, tabName='Fonts')
     #@+node:ekr.20110605121601.18339: *4* LeoQtLog.hideFontTab
     def hideFontTab(self, event=None):
         c = self.c

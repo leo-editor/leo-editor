@@ -1343,7 +1343,7 @@ class LeoApp:
         if 'shutdown' in g.app.debug:
             g.trace()
         # #2433 - use the same method as clicking on the close box.
-        g.app.gui.close_event(QCloseEvent())
+        g.app.gui.close_event(QCloseEvent())  # type:ignore
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
