@@ -17,7 +17,7 @@ import leo.core.leoGlobals as g
 isQt6 = isQt5 = False
 #
 # Make *sure* this module always imports the following symbols.
-Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
+Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = QCloseEvent = None
 QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
 phonon = uic = None
 QtMultimedia = None  # Replacement for phonon.

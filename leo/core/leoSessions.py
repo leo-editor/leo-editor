@@ -112,7 +112,9 @@ class SessionManager:
         """
         if self.path:
             session = self.get_session()
-            # print('save_snaphot: %s' % (len(session)))
+            # #2433 - don't save an empty session
+            if not session:
+                return
             with open(self.path, 'w') as f:
                 json.dump(session, f)
                 f.close()
