@@ -11,7 +11,7 @@ For Qt6, plugins are responsible for loading all optional modules.
 # Required imports
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
-from PyQt6.QtGui import QAction, QActionGroup
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 from PyQt6.QtCore import pyqtSignal as Signal
 #
 # For pyflakes.

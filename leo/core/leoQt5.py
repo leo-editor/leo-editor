@@ -11,6 +11,7 @@ from PyQt5 import QtWidgets
 assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
 from PyQt5.QtCore import QUrl
 from PyQt5.QtCore import pyqtSignal as Signal
+from QtGui import QCloseEvent
 QtConst = QtCore.Qt
 printsupport = Qt
 qt_version = QtCore.QT_VERSION_STR

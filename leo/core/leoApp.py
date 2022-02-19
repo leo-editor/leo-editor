@@ -20,6 +20,7 @@ import zipfile
 import platform
 from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
+from leo.core.leoQt import QCloseEvent
 StringIO = io.StringIO
 #@-<< imports >>
 #@+others
@@ -1341,15 +1342,8 @@ class LeoApp:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
-        g.app.quitting = True
-        if g.app.loaded_session and g.app.sessionManager:
-            g.app.sessionManager.save_snapshot()
-        while g.app.windowList:
-            w = g.app.windowList[0]
-            if not g.app.closeLeoWindow(w):
-                break
-        if g.app.windowList:
-            g.app.quitting = False  # If we get here the quit has been disabled.
+        # #2433 - use the same method as clicking on the close box.
+        g.app.gui.close_event(QCloseEvent())
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
