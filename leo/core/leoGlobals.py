@@ -7508,6 +7508,16 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
             path = g.os_path_finalize(path)
         url = f"{tag}{path}"
     return url
+#@+node:ekr.20190608090856.1: *3* g.es_clickable_link
+def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
+    """
+    Write a clickable message to the given line number of p.b.
+
+    Negative line numbers indicate global lines.
+
+    """
+    unl = p.get_UNL()
+    c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
 def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     """
