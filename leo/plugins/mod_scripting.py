@@ -272,7 +272,7 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     if top_level:
         # command_p will be None for leoSettings.leo and myLeoSettings.leo.
         if command_p:
-            if has_at_others(command_p):
+            if not has_at_others(command_p):
                 rclicks.extend([
                     RClick(
                         position=i.copy(), # -2 for top level entries, i.e. before "Remove button"
