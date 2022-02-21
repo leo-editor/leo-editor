@@ -256,17 +256,28 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     # representation of an rclick node
     from collections import namedtuple
     RClick = namedtuple('RClick', 'position,children')
+    
+    at_others_pat = re.compile(r'@others\b')
+    
+    def has_at_others(p): 
+        """Return True if p.b has a valid @others directive."""
+        # #2439: A much simplified version of g.get_directives_dict.
+        if 'others' in g.globalDirectiveList:
+            return bool(re.search(at_others_pat, p.b))
+        return False
 
     # Called from QtIconBarClass.setCommandForButton.
     if rclicks is None:
-        rclicks = list()
+        rclicks = []
     if top_level:
         # command_p will be None for leoSettings.leo and myLeoSettings.leo.
         if command_p:
-            if '@others' not in command_p.b:
+            if has_at_others(command_p):
                 rclicks.extend([
-                    RClick(position=i.copy(), children=[])
-                    # -2 for top level entries, i.e. before "Remove button"
+                    RClick(
+                        position=i.copy(), # -2 for top level entries, i.e. before "Remove button"
+                        children=[],
+                    )
                     for i in command_p.children()
                         if i.h.startswith('@rclick ')
                 ])
