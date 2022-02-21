@@ -257,7 +257,7 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     from collections import namedtuple
     RClick = namedtuple('RClick', 'position,children')
     
-    at_others_pat = re.compile(r'@others\b')
+    at_others_pat = re.compile(r'^\s*@others\b', re.MULTILINE)
     
     def has_at_others(p): 
         """Return True if p.b has a valid @others directive."""
