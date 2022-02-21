@@ -44,7 +44,7 @@ class BaseSpellWrapper:
                 s2 = s2[1:]
             if s != s2:
                 g.es_print('cleaning', fn)
-                f = open(fn, mode='wb')
+                f = open(fn, mode='wb')  # type:ignore
                 f.write(s2)
                 f.close()
     #@+node:ekr.20180207071114.5: *3* spell.create
@@ -362,21 +362,6 @@ class EnchantWrapper(BaseSpellWrapper):
             # A fallback.  Unlikely to happen.
             d = enchant.Dict(language)
         return d
-    #@+node:ekr.20150514063305.513: *3* spell.clean_dict
-    def clean_dict(self, fn):
-        if g.os_path_exists(fn):
-            f = open(fn, mode='rb')
-            s = f.read()
-            f.close()
-            # Blanks lines cause troubles.
-            s2 = s.replace(b'\r', b'').replace(b'\n\n', b'\n')
-            if s2.startswith(b'\n'):
-                s2 = s2[1:]
-            if s != s2:
-                g.es_print('cleaning', fn)
-                f = open(fn, mode='wb')
-                f.write(s2)
-                f.close()
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word):
 
