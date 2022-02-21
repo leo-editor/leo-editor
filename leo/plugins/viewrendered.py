@@ -215,6 +215,7 @@ import os
 from pathlib import Path
 import shutil
 import textwrap
+from typing import Any, Dict
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 
@@ -254,7 +255,7 @@ else:
 try:
     from jinja2 import Template
 except ImportError:
-    Template = None
+    Template = None  # type:ignore
 #
 # Markdown.
 try:
@@ -262,7 +263,7 @@ try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
-    got_markdown = False
+    got_markdown = False  # type:ignore
 #
 # nbformat (@jupyter) support.
 try:
@@ -320,7 +321,7 @@ latex_template = '''\
 </html>
 '''
 #@-<< define html templates >>
-controllers = {}
+controllers: Dict[int, Any] = {}
     # Keys are c.hash(): values are PluginControllers (QWidget's).
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)

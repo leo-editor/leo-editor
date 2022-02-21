@@ -11,8 +11,8 @@ try:  # #1973
     from leo.core.leoQt import printsupport, QtGui
     from leo.core.leoQt import DialogCode
 except Exception:
-    printsupport = QtGui = None
-    DialogCode = None
+    printsupport = QtGui = None  # type:ignore
+    DialogCode = None  # type:ignore
 #@+others
 #@+node:ekr.20150509035503.1: ** cmd (decorator)
 def cmd(name):
