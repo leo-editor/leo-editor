@@ -7,6 +7,7 @@ import logging
 import sys
 import time
 import traceback
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
 #
@@ -55,7 +56,7 @@ def leo_echo_cb(out, err, code, ent):
         g.es_error(err)
 
 #@+node:ekr.20121126095734.12430: *3* log_filedes
-garbage = []
+garbage: List[Any] = []
 
 def log_filedes(f, level):
 
@@ -100,7 +101,7 @@ class NowOrLater:
 
         self.w = worker
         self.l = []
-        self.lasttime = 1
+        self.lasttime = 1.0
         self.granularity = gran
         self.scheduled = False
 

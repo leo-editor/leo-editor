@@ -37,8 +37,8 @@ try:  # #1973
     from leo.core.leoQt import MouseButton
     from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
 except Exception:
-    QtWidgets = None
-    MouseButton = None
+    QtWidgets = None  # type:ignore
+    MouseButton = None  # type:ignore
     NestedSplitter = None  # type:ignore
 #
 # Do not call g.assertUi('qt') here. It's too early in the load process.

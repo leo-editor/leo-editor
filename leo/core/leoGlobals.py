@@ -7509,7 +7509,7 @@ def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
         url = f"{tag}{path}"
     return url
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link
-def es_clickable_link(c: Cmdr, p: Pos, line_number, message):
+def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     """
     Write a clickable message to the given line number of p.b.
 

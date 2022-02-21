@@ -17,6 +17,7 @@ from PyQt6.QtCore import pyqtSignal as Signal
 # For pyflakes.
 assert QtCore and QtGui and QtWidgets
 assert QAction and QActionGroup
+assert QCloseEvent
 assert Qt and QUrl and Signal
 #
 # Standard abbreviations.
@@ -89,19 +90,19 @@ try:
     WindowState = QtCore.Qt.WindowState
 except AttributeError:
     # Old spellings (6.0): mostly plural.
-    Alignment = QtCore.Qt.Alignment
-    ControlType = QtWidgets.QSizePolicy.ControlTypes
-    DropAction = QtCore.Qt.DropActions
-    ItemFlag = QtCore.Qt.ItemFlags
-    KeyboardModifier = QtCore.Qt.KeyboardModifiers
-    Modifier = QtCore.Qt.Modifiers
-    MouseButton = QtCore.Qt.MouseButtons
-    Orientation = QtCore.Qt.Orientations
-    StandardButton = QtWidgets.QDialog.StandardButtons
-    TextInteractionFlag = QtCore.Qt.TextInteractionFlags
-    ToolBarArea = QtCore.Qt.ToolBarAreas
-    WindowType = QtCore.Qt.WindowFlags
-    WindowState = QtCore.Qt.WindowStates
+    Alignment = QtCore.Qt.Alignment  # type:ignore
+    ControlType = QtWidgets.QSizePolicy.ControlTypes  # type:ignore
+    DropAction = QtCore.Qt.DropActions  # type:ignore
+    ItemFlag = QtCore.Qt.ItemFlags  # type:ignore
+    KeyboardModifier = QtCore.Qt.KeyboardModifiers  # type:ignore
+    Modifier = QtCore.Qt.Modifiers  # type:ignore
+    MouseButton = QtCore.Qt.MouseButtons  # type:ignore
+    Orientation = QtCore.Qt.Orientations  # type:ignore
+    StandardButton = QtWidgets.QDialog.StandardButtons  # type:ignore
+    TextInteractionFlag = QtCore.Qt.TextInteractionFlags  # type:ignore
+    ToolBarArea = QtCore.Qt.ToolBarAreas  # type:ignore
+    WindowType = QtCore.Qt.WindowFlags  # type:ignore
+    WindowState = QtCore.Qt.WindowStates  # type:ignore
 #
 # Other enums.
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
@@ -115,7 +116,6 @@ GlobalColor = QtCore.Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
 Information = QtWidgets.QMessageBox.Icon.Information
 ItemDataRole = QtCore.Qt.ItemDataRole  # 2347
-ItemFlag = QtCore.Qt.ItemFlag
 Key = QtCore.Qt.Key
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
