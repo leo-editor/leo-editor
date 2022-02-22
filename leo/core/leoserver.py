@@ -38,7 +38,7 @@ from leo.core.leoNodes import Position
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-version_tuple = (1, 0, 0)
+version_tuple = (1, 0, 1)
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -542,6 +542,19 @@ class LeoServer:
             # This will happen unless mod_scripting is loaded!
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
+    #@+node:felix.20220220203658.1: *5* _get_rclickTree
+    def _get_rclickTree(self, rclicks):
+        rclickList = []
+
+        for rc in rclicks:
+            children = []
+            if rc.children:
+                children = self._get_rclickTree(rc.children)
+            rclickList.append({"name": rc.position.h, "children":children })
+
+        return rclickList
+
+
     #@+node:felix.20210621233316.9: *5* server.click_button
     def click_button(self, param):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
@@ -560,7 +573,20 @@ class LeoServer:
             raise ServerError(f"{tag}: button {index!r} does not exist")
 
         try:
-            button.command()
+            w_rclick = param.get("rclick", False)
+            if w_rclick and hasattr(button, 'rclicks'):
+                # not zero
+                toChooseFrom = button.rclicks
+                for i_rc in  w_rclick:
+                    w_rclickChosen = toChooseFrom[i_rc]
+                    toChooseFrom = w_rclickChosen.children
+                if w_rclickChosen:
+                    c = self._check_c()
+                    sc = getattr(c, "theScriptingController", None)
+                    sc.executeScriptFromButton(button, "", w_rclickChosen.position, "")
+
+            else:
+                button.command()
         except Exception as e:
             raise ServerError(f"{tag}: exception clicking button {index!r}: {e}")
         # Tag along a possible return value with info sent back by _make_response
@@ -571,18 +597,31 @@ class LeoServer:
         Gets the currently opened file's @buttons list
         as an array of dict.
 
-        Typescript interface:
+        Typescript RClick recursive interface:
+        RClick: {name: string, children: RClick[]}
+
+        Typescript return interface:
             {
                 name: string;
                 index: string;
+                rclicks: RClick[];
             }[]
         """
         d = self._check_button_command('get_buttons')
+
         buttons = []
         # Some button keys are objects so we have to convert first
         for key in d:
-            entry = {"name": d[key], "index": str(key)}
+            rclickList = []
+            if  hasattr(key, 'rclicks'):
+                rclickList = self._get_rclickTree(key.rclicks)
+                # buttonRClicks = key.rclicks
+                # for rc in buttonRClicks:
+                #     rclickList.append(rc.position.h)
+
+            entry = {"name": d[key], "index": str(key), "rclicks": rclickList}
             buttons.append(entry)
+
         return self._make_minimal_response({
             "buttons": buttons
         })
