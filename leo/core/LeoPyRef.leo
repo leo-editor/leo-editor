@@ -567,10 +567,11 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
-<v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
+<v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
+<v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
