@@ -12,7 +12,9 @@ from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
 from leo.core import leoNodes
+from leo.plugins.mod_scripting import build_rclick_tree
 assert time
+assert build_rclick_tree
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -1953,6 +1955,10 @@ class NullIconBarClass:
     #@+node:ekr.20140904043623.18575: *3* NullIconBarClass.setCommandForButton
     def setCommandForButton(self, button, command, command_p, controller, gnx, script):
         button.command = command
+        if build_rclick_tree:
+            rclicks = build_rclick_tree(command_p, top_level=True)
+            button.rclicks = rclicks
+
     #@-others
 #@+node:ekr.20031218072017.2232: ** class NullLog (LeoLog)
 class NullLog(LeoLog):
