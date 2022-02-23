@@ -1450,12 +1450,10 @@ class LeoServer:
         p = self._get_p(param)
         if p == c.p:
             s = c.fileCommands.outline_to_clipboard_string()
-            print("copy node!")
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
             s = c.fileCommands.outline_to_clipboard_string()
-            print("copy node!")
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
@@ -1472,15 +1470,11 @@ class LeoServer:
         if p == c.p:
             s = c.fileCommands.outline_to_clipboard_string()
             c.cutOutline()  # already on this node, so cut it
-            print("cut node!")
-
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
             s = c.fileCommands.outline_to_clipboard_string()
             c.cutOutline()
-            print("cut node!")
-
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
@@ -1611,12 +1605,10 @@ class LeoServer:
             raise ServerError(f"{tag}: no string given")
         if p == c.p:
             c.pasteOutline(s=s)
-            print("paste_node!")
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
             c.pasteOutline(s=s)
-            print("paste_node!")
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
@@ -1637,12 +1629,10 @@ class LeoServer:
             raise ServerError(f"{tag}: no string given")
         if p == c.p:
             c.pasteOutlineRetainingClones(s=s)
-            print("paste node as clone!")
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
             c.pasteOutlineRetainingClones(s=s)
-            print("paste node as clone!")
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
