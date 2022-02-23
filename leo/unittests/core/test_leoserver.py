@@ -37,7 +37,7 @@ class TestLeoServer(LeoUnitTest):
             print('===== server did not terminate properly ====')  # pragma:no cover
         except g_leoserver.TerminateServer:
             pass
-        except leoserver.ServerError:
+        except leoserver.ServerError:  # pragma:no cover
             pass
 
     def setUp(self):
@@ -134,7 +134,7 @@ class TestLeoServer(LeoUnitTest):
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"Exception in {tag}: {method_name!r} {e}")
+                            print(f"Exception in {tag}: {method_name!r} {e}")  # pragma:no cover
         finally:
             server.close_file({"forced": True})
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close

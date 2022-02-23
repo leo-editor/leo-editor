@@ -21,7 +21,7 @@ class TestGlobals(LeoUnitTest):
             assert False
         except AssertionError:
             fn, n = g.getLastTracebackFileAndLineNumber()
-        self.assertEqual(fn, __file__)
+        self.assertEqual(fn.lower(), __file__.lower())
 
     #@+node:ekr.20210905203541.4: *3* TestGlobals.test_g_checkVersion
     def test_g_checkVersion(self):
