@@ -1597,6 +1597,10 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20220222173659.1: *5* server.paste_node
     def paste_node(self, param):
+        """
+        Pastes a node,
+        Try to keep selection, then return the selected node.
+        """
         tag = 'paste_node'
         c = self._check_c()
         p = self._get_p(param)
@@ -1621,6 +1625,10 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20220222173707.1: *5* paste_as_clone_node
     def paste_as_clone_node(self, param):
+        """
+        Pastes a node as a clone,
+        Try to keep selection, then return the selected node.
+        """
         tag = 'paste_as_clone_node'
         c = self._check_c()
         p = self._get_p(param)
