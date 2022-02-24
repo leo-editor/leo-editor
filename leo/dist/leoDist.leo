@@ -186,7 +186,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2021 by Edward K. Ream.
+Copyright (c) 1997-2022 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -230,7 +230,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6b1
+Version: 6.6b2
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -249,7 +249,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -258,9 +258,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Improved python importer.
+- Add plugins/picture_viewer.py, a stand-alone app that displays images.
+- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
+- Many bug fixes.
 
 **6.6 Links**
 
@@ -283,6 +285,9 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617

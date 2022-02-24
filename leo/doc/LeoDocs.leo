@@ -7120,7 +7120,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2021 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2022 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -31119,7 +31119,7 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -31128,9 +31128,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Improved python importer.
+- Add plugins/picture_viewer.py, a stand-alone app that displays images.
+- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
+- Many bug fixes.
 
 **6.6 Links**
 
@@ -31160,10 +31162,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 <t tx="ekr.20211105051309.1">- Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Improved python importer.
+- Add plugins/picture_viewer.py, a stand-alone app that displays images.
+- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
-</t>
+- Many bug fixes.</t>
 <t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
 
     def headline_filter(c, p)
