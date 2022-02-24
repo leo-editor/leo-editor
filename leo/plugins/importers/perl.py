@@ -40,7 +40,7 @@ class Perl_Importer(Importer):
                     if tail:
                         self.set_lines(p, lines)
                         self.prepend_lines(next, reversed(tail))
-                
+
     #@+node:ekr.20161129024520.1: *3* perl_i.get_new_dict (test)
     #@@nobeautify
 

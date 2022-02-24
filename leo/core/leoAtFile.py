@@ -334,7 +334,7 @@ class AtFile:
         if aList:
             at.c.deletePositionsInList(aList)
             c.redraw()
-            
+
     #@+node:ekr.20041005105605.26: *5* at.readAll & helpers
     def readAll(self, root):
         """Scan positions, looking for @<file> nodes to read."""
@@ -1648,16 +1648,16 @@ class AtFile:
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
-        
+
 
         class Status:
-            at_comment_seen=False
-            at_delims_seen=False
-            at_warning_given=False
-            has_at_others=False
-            in_code=True
-        
-        
+            at_comment_seen = False
+            at_delims_seen = False
+            at_warning_given = False
+            has_at_others = False
+            in_code = True
+
+
         i = 0
         status = Status()
         while i < len(s):
@@ -1839,7 +1839,7 @@ class AtFile:
         Return the reference, *including* brackes.
         """
         at = self
-        
+
         def is_space(i1, i2):
             """A replacement for s[i1 : i2] that doesn't create any substring."""
             return i == j or all(s[z] in ' \t\n' for z in range(i1, i2))
@@ -1856,13 +1856,13 @@ class AtFile:
         n3 = n2 + len(at.section_delim2)
         if -1 < n1 < n2:  # A *possible* section reference.
             if is_space(i, n1) and is_space(n3, j):  # A *real* section reference.
-                return s[n1 : n3], n1, n3
+                return s[n1:n3], n1, n3
             # An apparent section reference.
             if 'sections' in g.app.debug and not g.unitTesting:  # pragma: no cover
                 i1, i2 = g.getLine(s, i)
                 g.es_print('Ignoring apparent section reference:', color='red')
                 g.es_print('Node: ', p.h)
-                g.es_print('Line: ', s[i1 : i2].rstrip())
+                g.es_print('Line: ', s[i1:i2].rstrip())
         return None, 0, 0
     #@+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s, i):
@@ -2507,7 +2507,7 @@ class AtFile:
                     at.rememberReadPath(fileName, root)
                     at.checkPythonCode(contents, fileName, root)
             else:
-                at.addToOrphanList(root)   # pragma: no cover
+                at.addToOrphanList(root)  # pragma: no cover
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
         #
@@ -2957,21 +2957,21 @@ class FastAtRead:
 
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode = gnx2vnode # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.gnx2vnode = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.path = None
         self.root = None
         # compiled patterns...
         self.after_pat = None
-        self.all_pat = None   
+        self.all_pat = None
         self.code_pat = None
-        self.comment_pat = None   
-        self.delims_pat = None   
+        self.comment_pat = None
+        self.delims_pat = None
         self.doc_pat = None
-        self.first_pat = None   
-        self.last_pat = None 
-        self.node_start_pat = None  
+        self.first_pat = None
+        self.last_pat = None
+        self.node_start_pat = None
         self.others_pat = None
-        self.ref_pat = None   
+        self.ref_pat = None
         self.section_delims_pat = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
@@ -3295,7 +3295,7 @@ class FastAtRead:
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                     continue
-                else: # pragma: no cover
+                else:  # pragma: no cover
                     g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')
@@ -3421,7 +3421,7 @@ class FastAtRead:
             # Handle an apparent sentinel line.
             # This *can* happen after the git-diff or refresh-from-disk commands.
             #
-            if 1:   # pragma: no cover (defensive)
+            if 1:  # pragma: no cover (defensive)
                 # This assert verifies the short-circuit test.
                 assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
                 # A useful trace.

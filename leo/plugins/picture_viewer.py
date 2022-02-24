@@ -92,7 +92,7 @@ def get_args():
 
     # Add args.
     add = parser.add_argument
-    add('--background', dest='background', metavar='COLOR', 
+    add('--background', dest='background', metavar='COLOR',
         help='Background color')
     add('--delay', dest='delay', metavar='DELAY',
         help='Delay (seconds)')
@@ -147,7 +147,7 @@ def get_delay(delay):
         return None
 #@+node:ekr.20211024034921.1: *3* get_extensions
 def get_extensions(aList):
-    
+
     # Ensure extensions start with '.'
     return [
         z if z.startswith('.') else f".{z}"
@@ -155,14 +155,14 @@ def get_extensions(aList):
     ]
 #@+node:ekr.20211024041658.1: *3* get_path
 def get_path(path):
-    
+
     if path and not os.path.exists(path):
         print(f"--path: not found: {path!r}")
         path = None
     return path
 #@+node:ekr.20211024035501.1: *3* get_pixels
 def get_pixels(kind, pixels):
-    
+
     if pixels is None:
         return None
     try:
@@ -172,7 +172,7 @@ def get_pixels(kind, pixels):
         return None
 #@+node:ekr.20211024041359.1: *3* get_scale
 def get_scale(scale):
-    
+
     try:
         return float(scale or 1.0)
     except ValueError:
@@ -180,7 +180,7 @@ def get_scale(scale):
         return 1.0
 #@+node:ekr.20211024040842.1: *3* get_sort_kind
 def get_sort_kind(kind):
-    
+
     if not kind:
         return None
     kind = kind.lower()
@@ -193,7 +193,7 @@ def main():
     global gApp
     gApp = QtWidgets.QApplication(sys.argv)
     args = get_args()
-   
+
     ok = Slides().run(**args)
     if ok:
         if isQt5:
@@ -233,10 +233,10 @@ if QtWidgets:
             yes = dialog.addButton('Yes', ButtonRole.YesRole)
             dialog.addButton('No', ButtonRole.NoRole)
             dialog.setWindowTitle("Delete File?")
-            dialog.setText( f"Delete file {g.shortFileName(file_name)}?")
+            dialog.setText(f"Delete file {g.shortFileName(file_name)}?")
             dialog.setIcon(Information.Warning)
             dialog.setDefaultButton(yes)
-            
+
             def dialog_keypress_event(event):
                 s = event.text()
                 if s == 'y':
@@ -264,7 +264,7 @@ if QtWidgets:
                     and os.path.splitext(str(z))[1].lower() in self.extensions
             ]
         #@+node:ekr.20211021200821.5: *3* Slides.keyPressEvent
-        def keyPressEvent (self, event):
+        def keyPressEvent(self, event):
 
             i = event.key()
             s = event.text()
@@ -341,7 +341,7 @@ if QtWidgets:
         #@+node:ekr.20211021200821.9: *3* Slides.prev_slide
         def prev_slide(self):
 
-            if self.slide_number > 0: # Don't wrap.
+            if self.slide_number > 0:  # Don't wrap.
                 self.slide_number -= 1
             if self.reset_zoom:
                 self.scale = 1.0
@@ -374,18 +374,18 @@ if QtWidgets:
             self.next_slide()  # show_slide resets the timer.
         #@+node:ekr.20211021200821.11: *3* Slides.run & helper
         def run(self,
-            background_color = None,  # Default background color.
-            delay = None,  # Delay between slides, in seconds. Default 100.
-            extensions = None,  # List of file extensions.
-            full_screen = False,  # True: start in full-screen mode.
-            height = None,  # Window height (default 1500 pixels) when not in full screen mode.
-            path = None,  # Root directory.
-            scale = None,  # Initial scale factor. Default 1.0
-            reset_zoom = True,  # True: reset zoom factor when changing slides.
-            sort_kind = None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
-            starting_directory = None,  # Starting directory for file dialogs.
-            verbose = False,  # True, print info messages.
-            width = None,  # Window width (default 1500 pixels) when not in full screen mode.
+            background_color=None,  # Default background color.
+            delay=None,  # Delay between slides, in seconds. Default 100.
+            extensions=None,  # List of file extensions.
+            full_screen=False,  # True: start in full-screen mode.
+            height=None,  # Window height (default 1500 pixels) when not in full screen mode.
+            path=None,  # Root directory.
+            scale=None,  # Initial scale factor. Default 1.0
+            reset_zoom=True,  # True: reset zoom factor when changing slides.
+            sort_kind=None,  # 'date', 'name', 'none', 'random', or 'size'.  Default is 'random'.
+            starting_directory=None,  # Starting directory for file dialogs.
+            verbose=False,  # True, print info messages.
+            width=None,  # Window width (default 1500 pixels) when not in full screen mode.
         ):
             """
             Create the widgets and run the slideshow.
@@ -449,13 +449,13 @@ if QtWidgets:
             # Init the window's attributes.
             w.setStyleSheet(f"background: {self.background_color}")
             w.setGeometry(0, 0, self._width, self._height)  # The non-full-screen sizes.
-            
+
             # Create the picture area.
             w.picture = QtWidgets.QLabel('picture', self)
             w.picture.keyPressEvent = w.keyPressEvent
 
             # Create the scroll area.
-            w.scroll_area = area =QtWidgets.QScrollArea()
+            w.scroll_area = area = QtWidgets.QScrollArea()
             area.setWidget(self.picture)
             AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
             area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
@@ -516,7 +516,7 @@ if QtWidgets:
             if sort_kind == 'date':
                 if self.verbose:
                     print('Sorting by date...')
-                self.files_list.sort(key = os.path.getmtime)
+                self.files_list.sort(key=os.path.getmtime)
             elif sort_kind == 'name':
                 if self.verbose:
                     print('Sorting by name...')
@@ -530,7 +530,7 @@ if QtWidgets:
             elif sort_kind == 'size':
                 if self.verbose:
                     print('Sorting by size...')
-                self.files_list.sort(key = os.path.getsize)
+                self.files_list.sort(key=os.path.getsize)
             else:
                 g.trace(f"unknown sort kind: {sort_kind!r}")
         #@+node:ekr.20211021200821.16: *3* Slides.timerEvent

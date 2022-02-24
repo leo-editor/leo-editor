@@ -124,7 +124,7 @@ def get_args():
     }
 #@+node:ekr.20220126054240.7: *3* get_extensions
 def get_extensions(aList):
-    
+
     # Ensure extensions start with '.'
     return [
         z if z.startswith('.') else f".{z}"
@@ -132,7 +132,7 @@ def get_extensions(aList):
     ]
 #@+node:ekr.20220126054240.9: *3* get_int
 def get_int(kind, n):
-    
+
     if n is None:
         return None
     try:
@@ -142,7 +142,7 @@ def get_int(kind, n):
         return None
 #@+node:ekr.20220126054240.8: *3* get_path
 def get_path(path):
-    
+
     if path and not os.path.exists(path):
         print(f"--path: not found: {path!r}")
         path = None
@@ -160,21 +160,21 @@ def main():
             sys.exit(gApp.exec())
 #@+node:ekr.20220126054240.13: ** class RemoveDuplicates
 class RemoveDuplicates:
-    
+
     dup_list: List[str] = []
     filename_dict: Dict[str, Any] = {}  # Keys are filenames, values are hashes.
     hash_dict: Dict[Any, List[Any]] = defaultdict(list)  # Keys are hashes, values are lists of filenames.
     hash_size = 8
     window_height = 900
-            
+
     #@+others
     #@+node:ekr.20220126063935.1: *3* Dups.compute_dicts
     def compute_dicts(self, filenames):
         for i, filename in enumerate(filenames):
             try:
                 h = imagehash.average_hash(Image.open(filename), self.hash_size)
-                self.filename_dict [filename] = h.hash
-                self.hash_dict [str(h)].append(filename)
+                self.filename_dict[filename] = h.hash
+                self.hash_dict[str(h)].append(filename)
             except Exception:
                 print('Bad img:', filename)
                 # g.es_exception()
@@ -215,7 +215,7 @@ class RemoveDuplicates:
 
         def delete_action(arg):
             self.delete_file(filename)
-            
+
         delete_button.clicked.connect(delete_action)
         # Create the picture area.
         picture = QtWidgets.QLabel('picture', parent=frame)
@@ -306,7 +306,7 @@ class RemoveDuplicates:
             if len(aList) > 1:
                 duplicates.append(aList)
         return duplicates
-        
+
     #@+node:ekr.20220126060911.1: *3* Dups.get_files
     def get_files(self, path):
         """Return all files in path, including all subdirectories."""
@@ -335,11 +335,11 @@ class RemoveDuplicates:
         print('picture_viewer: done')
     #@+node:ekr.20220126060646.1: *3* Dups.run
     def run(self,
-        extensions = None,  # List of file extensions.
-        hash_size = 8,  # Size of compressed image.
-        height = None,  # Window height (default 1500 pixels) when not in full screen mode.
-        path = None,  # Root directory.
-        starting_directory = None,  # Starting directory for file dialog if no path given.
+        extensions=None,  # List of file extensions.
+        hash_size=8,  # Size of compressed image.
+        height=None,  # Window height (default 1500 pixels) when not in full screen mode.
+        path=None,  # Root directory.
+        starting_directory=None,  # Starting directory for file dialog if no path given.
     ):
         """
         Preprecess the files and show the first duplicates.

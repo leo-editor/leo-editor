@@ -256,10 +256,10 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     # representation of an rclick node
     from collections import namedtuple
     RClick = namedtuple('RClick', 'position,children')
-    
+
     at_others_pat = re.compile(r'^\s*@others\b', re.MULTILINE)
-    
-    def has_at_others(p): 
+
+    def has_at_others(p):
         """Return True if p.b has a valid @others directive."""
         # #2439: A much simplified version of g.get_directives_dict.
         if 'others' in g.globalDirectiveList:
@@ -275,7 +275,7 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
             if not has_at_others(command_p):
                 rclicks.extend([
                     RClick(
-                        position=i.copy(), # -2 for top level entries, i.e. before "Remove button"
+                        position=i.copy(),  # -2 for top level entries, i.e. before "Remove button"
                         children=[],
                     )
                     for i in command_p.children()

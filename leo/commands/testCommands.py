@@ -21,7 +21,7 @@ def cover_all(event=None):
         # This is usually best:
         # - It creates a full report in index.html.
         # - It runs all unit tests in the leo.unittests directory.
-        command =  r"python -m pytest --cov-report html --cov-report term-missing --cov"
+        command = r"python -m pytest --cov-report html --cov-report term-missing --cov"
         g.execute_shell_commands(command, trace=False)
     else:
         # This runs only the listed files. index.html describes only the last file.

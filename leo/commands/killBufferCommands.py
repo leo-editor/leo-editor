@@ -302,7 +302,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def yank(self, event=None):
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
-        
+
     @cmd('yank-pop')
     def yankPop(self, event=None):
         """Insert the first entry of the kill ring."""

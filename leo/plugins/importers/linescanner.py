@@ -150,7 +150,7 @@ class Importer:
         if ic:
             ic.errors = 0  # Required.
         self.parse_body = False
-        self.refs_dict: Dict[str, int] = {} # Keys are headlines. Values are disambiguating number.
+        self.refs_dict: Dict[str, int] = {}  # Keys are headlines. Values are disambiguating number.
         self.root = None
         self.skip = 0  # A skip count for x.gen_lines & its helpers.
         self.vnode_info: Dict[str, Any] = {}
@@ -172,23 +172,23 @@ class Importer:
     def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
         assert s and isinstance(s, str), (repr(s), g.callers())
-        self.vnode_info [p.v] ['lines'].append(s)
+        self.vnode_info[p.v]['lines'].append(s)
 
     def extend_lines(self, p, lines):
-        self.vnode_info [p.v] ['lines'].extend(list(lines))
-        
+        self.vnode_info[p.v]['lines'].extend(list(lines))
+
     def get_lines(self, p):
-        return self.vnode_info [p.v] ['lines']
+        return self.vnode_info[p.v]['lines']
 
     def has_lines(self, p):
         d = self.vnode_info.get(p.v)
         return d is not None and d.get('lines') is not None
 
     def prepend_lines(self, p, lines):
-        self.vnode_info [p.v] ['lines'] = list(lines) + self.vnode_info [p.v] ['lines']
+        self.vnode_info[p.v]['lines'] = list(lines) + self.vnode_info[p.v]['lines']
 
     def set_lines(self, p, lines):
-        self.vnode_info [p.v] ['lines'] = list(lines)
+        self.vnode_info[p.v]['lines'] = list(lines)
     #@+node:ekr.20161108131153.7: *3* i.Overrides
     # These can be overridden in subclasses.
     #@+node:ekr.20161108131153.8: *4* i.adjust_parent
@@ -567,7 +567,7 @@ class Importer:
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.vnode_info [child.v] = {
+        self.vnode_info[child.v] = {
             'lines': [],
         }
         if line:
@@ -1024,7 +1024,7 @@ class Importer:
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            lines = d [p.v] ['lines'] if p.v in d else g.splitLines(p.v.b)
+            lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
             g.printObj(lines)
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):

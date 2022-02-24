@@ -89,7 +89,7 @@ warning_given = False
 def init():
     """Return True if the plugin has loaded successfully."""
     global warning_given
-    ok = QtGui and g.app.gui.guiName() == 'qt'    # #2197.
+    ok = QtGui and g.app.gui.guiName() == 'qt'  # #2197.
     if not ok:
         return False
     g.registerHandler('after-create-leo-frame', onCreate)

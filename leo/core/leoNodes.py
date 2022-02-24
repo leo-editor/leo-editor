@@ -112,7 +112,7 @@ class NodeIndices:
         if not getattr(c, 'fileCommands', None):
             assert gnx == 'hidden-root-vnode-gnx'
             v.fileIndex = gnx
-            return 
+            return
         if gnx:
             v.fileIndex = gnx
             ni.check_gnx(c, gnx, v)
@@ -776,7 +776,7 @@ class Position:
 
     def getThreadNext(self) -> "Position":
         return self.copy().moveToThreadNext()
-        
+
     # New in Leo 4.4.3 b2: add c args.
 
     def getVisBack(self, c: "Cmdr") -> "Position":
