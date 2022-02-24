@@ -165,7 +165,6 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
-<v t="ekr.20210815105140.1"><vh>Overview</vh></v>
 <v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
@@ -1461,7 +1460,20 @@ g.es_print('done')
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
-<t tx="ekr.20180405171433.1">@language rest</t>
+<t tx="ekr.20180405171433.1">@language rest
+
+Overview
+
+1. Create a **release branch**, called 6.N.  Base this branch on devel.
+   This branch holds all work for 6.N, including beta and rc releases.
+
+2. Fix last-minute bugs in a **bug-fix branch**.
+   Then merge into devel and 6.N.
+   
+3. Create pypi version by running `python -m build` in the leo-editor folder.
+   
+4. Update leoVersion.py in devel after merging the release branch into devel.
+</t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
 - Run beautify-files.
 
@@ -2099,15 +2111,6 @@ python -m leo.core.runLeo
 **uninstall after testint**
 
 python -m pip uninstall leo</t>
-<t tx="ekr.20210815105140.1">1. Create a **release branch**, called 6.N.  Base this branch on devel.
-   This branch holds all work for 6.N, including beta and rc releases.
-
-2. Fix last-minute bugs in a **bug-fix branch**.
-   Then merge into devel and 6.N.
-   
-3. Create pypi version by running `python -m build` in the leo-editor folder.
-   
-4. Update leoVersion.py in devel after merging the release branch into devel.</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
