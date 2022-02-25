@@ -153,7 +153,7 @@ class LeoFind:
             wrapping=False,
         )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
-    def finishCreate(self):
+    def finishCreate(self):  # pragma: no cover
         # New in 4.11.1.
         # Must be called when config settings are valid.
         c = self.c
@@ -319,7 +319,7 @@ class LeoFind:
         if errors:  # pragma: no cover
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20210925161148.1: *3* find.interactive_search_helper
-    def interactive_search_helper(self, root=None, settings=None):
+    def interactive_search_helper(self, root=None, settings=None):  # pragma: no cover
         #@+<< docstring: find.interactive_search >>
         #@+node:ekr.20210925161451.1: *4* << docstring: find.interactive_search >>
         """
