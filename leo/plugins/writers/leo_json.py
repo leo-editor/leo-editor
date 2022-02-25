@@ -26,7 +26,7 @@ class JSON_Writer(basewriter.BaseWriter):
         # pylint confuses this module with the stdlib json module
         s = json.dumps(d,
             sort_keys=True,
-            indent=2, # Pretty print.
+            indent=2,  # Pretty print.
             separators=(',', ': '))
         self.put(s)
         root.setVisited()

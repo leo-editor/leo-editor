@@ -1042,7 +1042,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             m.leo_geom_inited = True
             self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
-        
+
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """

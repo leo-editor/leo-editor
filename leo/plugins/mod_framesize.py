@@ -17,7 +17,7 @@ def init():
     from leo.plugins import qt_frame
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        setattr(qt_frame.LeoQtFrame,'setTopGeometry',setTopGeometry_mod_framesize)
+        setattr(qt_frame.LeoQtFrame, 'setTopGeometry', setTopGeometry_mod_framesize)
         g.plugin_signon(__name__)
     return ok
 #@+node:ville.20090726125902.5294: ** setTopGeometry_mod_framesize
@@ -25,6 +25,6 @@ def setTopGeometry_mod_framesize(self, *args):
 
     """ Monkeypatced version of setTopGeometry """
 
-    self.top.resize(1000,700)
+    self.top.resize(1000, 700)
 #@-others
 #@-leo

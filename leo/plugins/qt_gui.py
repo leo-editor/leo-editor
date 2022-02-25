@@ -1292,7 +1292,7 @@ class LeoQtGui(leoGui.LeoGui):
         c = g.app.log and g.app.log.c
         if c:
             g.app.gui.show_tips(c)
-            
+
     #@+<< define DialogWithCheckBox >>
     #@+node:ekr.20220123052350.1: *4* << define DialogWithCheckBox >>
     class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore

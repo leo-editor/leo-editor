@@ -87,11 +87,11 @@ class InteractPSQL(Interact):
     #@+node:tbrown.20090603104805.4947: *3* __init__
     def __init__(self, c):
         super().__init__(c)
-        prompts = ' '.join(['--set PROMPT%d=%s'%(i,self.prompt) for i in range(1,4)])
+        prompts = ' '.join(['--set PROMPT%d=%s' % (i, self.prompt) for i in range(1, 4)])
         prompts += ' --pset pager=off'
         self._available = True
         try:
-            self.psqlLink = pexpect.spawn('psql %s'%prompts)
+            self.psqlLink = pexpect.spawn('psql %s' % prompts)
             self.leftover = ''
             for i in self.psqlReader(self.psqlLink):
                 pass  # eat the initial output as it isn't interesting
@@ -121,20 +121,20 @@ class InteractPSQL(Interact):
         if q is None:
             g.es('No valid / uncommented query')
         else:
-            self.psqlLink.send(q.strip()+'\n')
+            self.psqlLink.send(q.strip() + '\n')
             ans = []
-            maxlen=100
+            maxlen = 100
             for d in self.psqlReader(self.psqlLink):
                 if d.strip():
                     ans.append(d)
                     if len(ans) > maxlen:
-                        del ans[maxlen-10]
-                        ans[maxlen-10] = '   ... skipping ...'
+                        del ans[maxlen - 10]
+                        ans[maxlen - 10] = '   ... skipping ...'
             n = p.insertAsNthChild(0)
             n.h = '-- ' + time.asctime()
             n.b = '\n'.join(ans)
             if p.b.strip().startswith('--- ') or not p.b.strip():
-                p.b = '-'+n.h+'\n\n'+n.b
+                p.b = '-' + n.h + '\n\n' + n.b
                 p.contract()
             else:
                 c.selectPosition(n)
@@ -148,12 +148,12 @@ class InteractPSQL(Interact):
         while not timeout:
             dat = []
             try:
-                dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
+                dat = self.leftover + proc.read_nonblocking(size=10240, timeout=1)
                 self.leftover = ''
                 #X print dat
                 if not dat.endswith('\n'):
                     if '\n' in dat:
-                        dat, self.leftover = dat.rsplit('\n',1)
+                        dat, self.leftover = dat.rsplit('\n', 1)
                     else:
                         time.sleep(0.5)
                         self.leftover = dat
@@ -172,7 +172,7 @@ class InteractPSQL(Interact):
                     #X if d == self.prompt:
                     #X     timeout = True
                     #X else:
-                    yield d.replace(self.prompt,'# ') # '%4d: %s' % (cnt,d)
+                    yield d.replace(self.prompt, '# ')  # '%4d: %s' % (cnt,d)
     #@-others
 #@+node:tbrown.20090603104805.4953: ** class InteractBASH
 class InteractBASH(Interact):
@@ -186,7 +186,7 @@ class InteractBASH(Interact):
         self._available = True
         try:
             self.bashLink = pexpect.spawn('bash -i')
-            self.bashLink.setwinsize(30,256)
+            self.bashLink.setwinsize(30, 256)
             # stop bash emitting chars for long lines
             self.bashLink.send("PS1='> '\n")
             self.bashLink.send("unalias ls\n")
@@ -225,20 +225,20 @@ class InteractBASH(Interact):
                 path = os.path.dirname(c.fileName())
             if path:
                 self.bashLink.send('cd %s\n' % path)
-            self.bashLink.send(q.strip()+'\n')
+            self.bashLink.send(q.strip() + '\n')
             ans = []
-            maxlen=100
+            maxlen = 100
             for d in self.bashReader(self.bashLink):
                 if d.strip():
                     ans.append(d)
                     if len(ans) > maxlen:
-                        del ans[maxlen-10]
-                        ans[maxlen-10] = '   ... skipping ...'
+                        del ans[maxlen - 10]
+                        ans[maxlen - 10] = '   ... skipping ...'
             n = p.insertAsNthChild(0)
             n.h = '## ' + time.asctime()
             n.b = '\n'.join(ans)
             if p.b.strip().startswith('### ') or not p.b.strip():
-                p.b = '#'+n.h+'\n\n'+n.b
+                p.b = '#' + n.h + '\n\n' + n.b
                 p.contract()
             else:
                 c.selectPosition(n)
@@ -252,12 +252,12 @@ class InteractBASH(Interact):
         while not timeout:
             dat = []
             try:
-                dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
+                dat = self.leftover + proc.read_nonblocking(size=10240, timeout=1)
                 self.leftover = ''
                 #X print dat
                 if not dat.endswith('\n'):
                     if '\n' in dat:
-                        dat, self.leftover = dat.rsplit('\n',1)
+                        dat, self.leftover = dat.rsplit('\n', 1)
                     else:
                         time.sleep(0.5)
                         self.leftover = dat
@@ -276,7 +276,7 @@ class InteractBASH(Interact):
                     #X if d == self.prompt:
                     #X     timeout = True
                     #X else:
-                    yield d.replace(self.prompt,'# ') # '%4d: %s' % (cnt,d)
+                    yield d.replace(self.prompt, '# ')  # '%4d: %s' % (cnt,d)
 
     #@+node:tbrown.20090603104805.4960: *3* getPath
     def getPath(self, c, p):
@@ -313,24 +313,24 @@ class InteractController:
         self.addButton(InteractPSQL)
         self.addButton(InteractBASH)
     #@+node:tbrown.20090603104805.4963: *3* addToFirstChildButton
-    def addToFirstChildButton (self,event=None):
+    def addToFirstChildButton(self, event=None):
         self.addButton(first=True)
 
     #@+node:tbrown.20090603104805.4964: *3* addToLastChildButton
-    def addToLastChildButton (self,event=None):
+    def addToLastChildButton(self, event=None):
         self.addButton(first=False)
     #@+node:tbrown.20090603104805.4965: *3* addButton (interact.py)
-    def addButton(self,first):
+    def addButton(self, first):
         """Add a button for an interact class."""
         c = self.c
         sc = scriptingController(c)
-        mb = InteractButton(c,class_=first)
+        mb = InteractButton(c, class_=first)
         if mb.available():
             sc.createIconButton(
                 args=None,
-                text = mb.interactor.buttonText(),
-                command = mb.run,
-                statusLine = mb.interactor.statusText(),
+                text=mb.interactor.buttonText(),
+                command=mb.run,
+                statusLine=mb.interactor.statusText(),
                 kind='interact',
             )
     #@-others

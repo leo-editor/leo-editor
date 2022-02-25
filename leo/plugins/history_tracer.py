@@ -92,7 +92,7 @@ def save_snapshot(c):
     c.user_dict['last_snapshot_data'] = x
     def pf():
         t1 = time.perf_counter()
-        url = 'http://localhost:%d/add-snapshot'%c.config.getInt('history-tracer-port')
+        url = 'http://localhost:%d/add-snapshot' % c.config.getInt('history-tracer-port')
         with urlopen(url, data=data.encode('utf8')) as resp:
             try:
                 txt = resp.read().decode('utf8')
@@ -103,7 +103,7 @@ def save_snapshot(c):
                 g.es(c.mFileName, 'is not tracked by history_tracer plugin\n'
                     'You have to restart leo-ver-serv to accept new files',
                     color='warning')
-        ms = '%.2fms'%(1000 * (time.perf_counter() - t1))
+        ms = '%.2fms' % (1000 * (time.perf_counter() - t1))
         print("save_snapshot:", data.partition('\n')[0], txt, 'in', ms)
     threading.Thread(target=pf, name="snapshot-saver").start()
     return True
@@ -114,14 +114,14 @@ def snap(c):
     nbuf = {}
     def it(v, lev):
         if v.gnx not in nbuf:
-            s = '%s\n%s'%(v.gnx,v.b)
+            s = '%s\n%s' % (v.gnx, v.b)
             n = len(s.encode('utf8'))
-            nbuf[v.gnx] = '%d %s'%(n, s)
+            nbuf[v.gnx] = '%d %s' % (n, s)
         yield v, lev
         for ch in v.children:
-            yield from it(ch, lev+1)
+            yield from it(ch, lev + 1)
     for v, lev in it(c.hiddenRootNode, 0):
-        buf.append('%d %s %s\n'%(lev, v.fileIndex, v._headString))
+        buf.append('%d %s %s\n' % (lev, v.fileIndex, v._headString))
     buf.append('\n')
     for gnx, hb in nbuf.items():
         buf.append(hb)

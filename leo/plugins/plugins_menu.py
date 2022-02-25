@@ -74,7 +74,7 @@ def addPluginMenuItem(p, c):
     @param p:  Plugin object for one currently loaded plugin
     @param c:  Leo-editor "commander" for the current .leo file
     """
-    plugin_name = p.name.split('.')[-1] # TNB 20100304 strip module path
+    plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
@@ -149,13 +149,13 @@ def add_menu_from_settings(c):
     for z in aList:
         kind, val, val2 = z
         if kind.startswith('@menu'):
-            name = kind[len('@menu'):].strip().strip('&')
+            name = kind[len('@menu') :].strip().strip('&')
             if name.lower() == 'plugins':
                 table = []
                 for kind2, val21, val22 in val:
                     if kind2 == '@item':
                         # Similar to createMenuFromConfigList.
-                        name = str(val21) # Item names must always be ascii.
+                        name = str(val21)  # Item names must always be ascii.
                         if val21:
                             # Translated names can be unicode.
                             table.append((val21, name),)

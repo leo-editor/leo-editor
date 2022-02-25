@@ -3917,7 +3917,7 @@ class TestEditCommands(LeoUnitTest):
         new_s2, i, j = ac.next_place(new_s, offset=40)
         self.assertEqual(i, 54)
         self.assertEqual(j, 58)
-        
+
     #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c

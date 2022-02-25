@@ -1216,7 +1216,7 @@ class LeoGlobals:
                 print("toUnicode: Error converting %s... from %s encoding to unicode" % (
                     s[:200], encoding))
         return s
-    #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py) 
+    #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py)
     def trace(self, *args, **keys):
         try:
             from leo.core import leoGlobals as leo_g
@@ -1264,7 +1264,7 @@ class MakeCoffeeScriptController:
         base_fn = os.path.basename(fn)
         out_fn = os.path.join(self.output_directory, base_fn)
         out_fn = os.path.normpath(out_fn)
-        out_fn = out_fn[: -3] + '.coffee'
+        out_fn = out_fn[:-3] + '.coffee'
         dir_ = os.path.dirname(out_fn)
         if os.path.exists(out_fn) and not self.overwrite:
             print('file exists: %s' % out_fn)
@@ -1435,7 +1435,7 @@ class MakeCoffeeScriptController:
 
         s = s.strip()
         if s.startswith('[') and s.endswith(']'):
-            s = munge(s[1 : -1])
+            s = munge(s[1:-1])
             for s2 in self.section_names:
                 if s == munge(s2):
                     return True
@@ -1633,7 +1633,7 @@ class TokenSync:
             while n < len(self.lines):
                 s = self.lines[n]
                 if s.endswith('\\'):
-                    aList.append(s[: -1])
+                    aList.append(s[:-1])
                     n += 1
                 else:
                     aList.append(s)

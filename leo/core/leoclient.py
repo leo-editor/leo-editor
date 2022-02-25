@@ -84,14 +84,14 @@ def _get_action_list():
         # ("get_body_length", {}),  # All responses now contain len(p.b).
         ("!find_all", {"find_text": "def"}),
         ("!get_ua", {"log": log}),
-        ("!get_parent",  {"log": log}),
-        ("!get_children",  {"log": log}),
+        ("!get_parent", {"log": log}),
+        ("!get_children", {"log": log}),
         ("!set_body", {"body": "new body"}),
         ("!set_headline", {"name": "new headline", 'gnx': "ekr.20061008140603"}),
-        ("contractAllHeadlines", {}), # normal leo command
+        ("contractAllHeadlines", {}),  # normal leo command
         ("!insert_node", {}),
         ("!contract_node", {}),
-        ("!close_file", {"forced": True}), # forced flag set to true because it was modified
+        ("!close_file", {"forced": True}),  # forced flag set to true because it was modified
         ("!get_all_leo_commands", {}),
         ("!get_all_server_commands", {}),
         ("!shut_down", {}),
@@ -101,7 +101,7 @@ def _get_action_list():
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
-    middle: List = [("!"+z, {}) for z in test_names
+    middle: List = [("!" + z, {}) for z in test_names
         if z not in head_names + tail_names + exclude_names]
     middle_names = [name for (name, package) in middle]  # type:ignore
     all_tests = head + middle + tail  # type:ignore
@@ -165,11 +165,11 @@ async def client_main_loop(timeout):
         while True:
             n += 1
             try:
-                times_d [n] = time.perf_counter()
+                times_d[n] = time.perf_counter()
                 await asyncio.sleep(timeout)
                 # Get the next package. The last action is shut_down.
                 try:
-                    action, param = action_list[n-1]
+                    action, param = action_list[n - 1]
                 except IndexError:
                     break
                 request_package = {
