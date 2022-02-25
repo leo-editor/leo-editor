@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.73
+About Viewrendered3 V3.74
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,6 +57,10 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+Added new command *vr3-render-html-from-clip*.
+
+Previous Recent Changes
+========================
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
 the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.  
@@ -781,6 +785,15 @@ browser when *Other Actions/Help For Plot 2D* is clicked. This
 help is also invoked by the minibuffer command
 *vr3-help-plot-2d*.
 
+#@+node:tom.20220225114320.1: *3* Rendering HTML From Clipboard
+Rendering HTML From Clipboard
+==============================
+
+The VR3 command *vr3-render-html-from-clip* renders the clipboard string contents with the assumption that it is HTML.  The rendering can be exported to the system web browser using the VR3 *Export* button.
+
+Pressing the *Reload* button restores the view to the current node.
+
+Currently VR3 has to be open for the command to work.
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
 ================
@@ -1826,6 +1839,25 @@ def vr3_help_for_plot_2d(event):
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
+#@+node:tom.20220225110149.1: *3* g.command('vr3-render-html-from-clip')
+@g.command('vr3-render-html-from-clip')
+def vr3_render_html_from_clip(event):
+    """Render HTML string from clipboard.
+    
+    The html is available for export until the current selected
+    node is reloaded.
+    """
+    vr3 = getVr3(event)
+    clip_str = g.app.gui.getTextFromClipboard()
+    vr3.rst_html = clip_str  # So we can be exported to system browser.
+
+    # For some reason, the update below doesn't take effect if vr3 was
+    # not previously open.  The getVr3() call opens it and
+    # renders the current node, but then the update does
+    # not happen.
+    vr3.update_html(clip_str, {})
+
+
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
