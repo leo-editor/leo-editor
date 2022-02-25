@@ -168,13 +168,11 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
-<v t="ekr.20200313063940.1"><vh>Create the release branch, based on devel</vh></v>
-<v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
-<v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update versions.py in devel</vh></v>
+<v t="ekr.20190618104430.1"><vh>Merge devel into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
-<v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
-<v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
+<v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
@@ -1469,20 +1467,15 @@ g.es_print('done')
 
 Overview
 
-Do all work in devel *before* creating a release branch.
+There is no need for a release branch. devel will suffice.
+
+To do (in devel) first:
 - Beautify all files before running tests.
 - Update web docs.
 - Run all checks in devel.
-- Fix any late bugs in devel, possibly in a separate branch.
+- Fix any late bugs, possibly in a separate branch.
    
-For *each* release, create a branch called 6.6-b1, 6.6-b2, ... 6.6-final.
-- The only change from devel will be version number and date.
-- In the release branch, create pypi version::
-    cd leo-editor
-    python -m build
-- Merge the release branch *only* into master.
-   
-Update leoVersion.py in devel after merging the release branch into master.
+Update leoVersion.py in devel after merging the devel into master.
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
 - Run beautify-files.
@@ -1544,13 +1537,11 @@ git push --follow-tags
 - Update version constant.
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches
-    static version added to leoversion.py earlier.
-    #static version = '6.N-devel'
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches the static version added to leoversion.py earlier.
 
 git checkout devel
 update version in leoVersion.py.
-git tag -a v6.NNN-devel -m "Added v6.NNN-devel tag"
+git tag -a v6.6-rc1-devel -m "Added v6.t-rc1-devel tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
@@ -2011,16 +2002,12 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
 </t>
 <t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.NNN branch:
     
-- Push any changes to release branch.
+- Push any changes to devel.
+- gco devel
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge &lt;rel branch&gt;</t>
-<t tx="ekr.20190618104609.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">When a release tag is created on Master it should be merged to Devel quickly.
-
-git checkout devel
-git merge master (will update leoVersion.py, so tags are also updated)
-git push</t>
+- git merge devel</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -2047,14 +2034,6 @@ Public announcements, after creating a package.
 </t>
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
-</t>
-<t tx="ekr.20200313063940.1">git checkout -b 6.6-b2
-
-Update the version number and date in leoVersion.py
-
-git commit -m "Update version number"
-
-git push origin 6.6-b2
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 # Processed in order listed
@@ -2089,7 +2068,7 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
-- git checkout 6.5
+- git checkout devel
 - Delete files in leoeditor/dist
 - python -m build
 
@@ -2109,14 +2088,14 @@ password:  EKR: Copy contents ofleo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.5-2-py3-none-any.whl
-    leo-6.5-2.tar.gz
+    leo-6.6-2-py3-none-any.whl
+    leo-6.6-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.5b1
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.6-rc1
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.5b1
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6-rc1
 
 **test**
 

@@ -449,7 +449,6 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
-<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20170215081358.1"><vh> Table of contents</vh>
 <v t="ekr.20170215075612.1"><vh>@rst html\leo_toc.html</vh></v>
@@ -1534,7 +1533,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20211105051309.1"></v>
+<v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
@@ -2380,6 +2379,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20211105051309.1"></v>
 <v t="ekr.20211105051031.1"></v>
 </vnodes>
 <tnodes>
@@ -31119,19 +31119,22 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6b2 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6b2/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6**
 
-- Replace @raw and @end_raw with @section-delims.
+- Replace `@raw` and `@end_raw` with `@section-delims`.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
 - Improved python importer.
 - Add plugins/picture_viewer.py, a stand-alone app that displays images.
 - Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
+- Improvements to leoserver.py to support leointeg.
 - Many bug fixes.
 
 **6.6 Links**
@@ -31166,6 +31169,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Add plugins/picture_viewer.py, a stand-alone app that displays images.
 - Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
+- Improvements to leoserver.py to support leointeg.
 - Many bug fixes.</t>
 <t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
 
