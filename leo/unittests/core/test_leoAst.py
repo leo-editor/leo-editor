@@ -2322,7 +2322,7 @@ class TestTOG(BaseTest):
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
         self.make_data(contents)
-    #@+node:ekr.20220224120239.1: *5* test_Raise (new)
+    #@+node:ekr.20220224120239.1: *5* test_Raise
     def test_Raise(self):
         contents = "raise ImportError from None"
         self.make_data(contents)

@@ -2409,7 +2409,9 @@ class TokenOrderGenerator:
         cause = getattr(node, 'cause', None)
         tback = getattr(node, 'tback', None)
         yield from self.gen(exc)
-        yield from self.gen(cause)
+        if cause:
+            yield from self.gen_name('from')  # #2446.
+            yield from self.gen(cause)
         yield from self.gen(tback)
     #@+node:ekr.20191113063144.82: *6* tog.Return
     def do_Return(self, node):
