@@ -7558,9 +7558,9 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
         aList, p1 = unlList[:], p.copy()
         while aList and p1:
             m = new_pat.match(aList[-1])
-            if m and m.group(1) != p1.h:
+            if m and m.group(1).strip() != p1.h.strip():
                 return False
-            if not m and aList[-1] != p1.h:
+            if not m and aList[-1].strip() != p1.h.strip():
                 return False
             aList.pop()
             p1.moveToParent()
@@ -7577,7 +7577,7 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
     targets.append(target)
     targets.extend(unlList[:-1])
     # Find all target positions. Prefer later positions.
-    positions = list(reversed(list(z for z in c.all_positions() if z.h in targets)))
+    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
     while unlList:
         for p in positions:
             p1 = p.copy()
