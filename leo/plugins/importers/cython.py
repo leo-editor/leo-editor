@@ -75,7 +75,7 @@ class Cython_Importer(Importer):
 
         def strip(s):
             return s.strip() if s.isspace() else s.lstrip() if s.strip().startswith('#') else s
-        
+
         return [strip(z) for z in lines]
     #@+node:vitalije.20211207173901.1: *3* get_decorator
     decorator_pat = re.compile(r'\s*@\s*([\w\.]+)')
@@ -188,12 +188,12 @@ class Cython_Importer(Importer):
                     else:
                         p = self.do_def(line, p)
                 else:
-                    p = self.do_normal_line(line,p)
+                    p = self.do_normal_line(line, p)
     #@+node:vitalije.20211207174130.1: *3* do_class
     def do_class(self, line, parent):
-        
-        d = self.vnode_info [parent.v]
-        parent_kind = d ['kind']
+
+        d = self.vnode_info[parent.v]
+        parent_kind = d['kind']
         if parent_kind in ('outer', 'org', 'class'):
             # Create a new parent.
             self.gen_python_ref(line, parent)
@@ -205,11 +205,11 @@ class Cython_Importer(Importer):
         return p
     #@+node:vitalije.20211207174137.1: *3* do_def
     def do_def(self, line, parent):
-        
+
         new_indent = self.new_state.indent
-        d = self.vnode_info 
-        parent_indent = d [parent.v] ['indent']
-        parent_kind = d [parent.v] ['kind']
+        d = self.vnode_info
+        parent_indent = d[parent.v]['indent']
+        parent_kind = d[parent.v]['kind']
         if parent_kind in ('outer', 'class'):
             # Create a new parent.
             self.gen_python_ref(line, parent)
@@ -218,7 +218,7 @@ class Cython_Importer(Importer):
             return p
         # For 'org' parents, look at the grand parent kind.
         if parent_kind == 'org':
-            grand_kind = d [parent.parent().v] ['kind']
+            grand_kind = d[parent.parent().v]['kind']
             if grand_kind == 'class' and new_indent <= parent_indent:
                 self.gen_python_ref(line, parent)
                 p = parent.parent()
@@ -232,9 +232,9 @@ class Cython_Importer(Importer):
     def do_normal_line(self, line, p):
 
         new_indent = self.new_state.indent
-        d = self.vnode_info [p.v]
-        parent_indent = d ['indent']
-        parent_kind = d ['kind']
+        d = self.vnode_info[p.v]
+        parent_indent = d['indent']
+        parent_kind = d['kind']
         if parent_kind == 'outer':
             # Create an organizer node, regardless of indentation.
             p = self.start_python_block('org', line, p)
@@ -242,7 +242,7 @@ class Cython_Importer(Importer):
             # Create an organizer node.
             self.gen_python_ref(line, p)
             p = self.start_python_block('org', line, p)
-        self.add_line(p, line, tag='normal')        
+        self.add_line(p, line, tag='normal')
         return p
     #@+node:vitalije.20211207174159.1: *3* end_previous_blocks
     def end_previous_blocks(self, kind, line, p):
@@ -256,8 +256,8 @@ class Cython_Importer(Importer):
         """
         new_indent = self.new_state.indent
         while p:
-            d = self.vnode_info [p.v]
-            parent_indent, parent_kind = d ['indent'], d ['kind']
+            d = self.vnode_info[p.v]
+            parent_indent, parent_kind = d['indent'], d['kind']
             if parent_kind == 'outer':
                 return p
             if new_indent > parent_indent:
@@ -284,8 +284,8 @@ class Cython_Importer(Importer):
             assert kind == 'def', repr(kind)
             if parent_kind in ('class', 'outer'):
                 return p
-            d2 = self.vnode_info [p.parent().v]
-            grand_kind = d2 ['kind']
+            d2 = self.vnode_info[p.parent().v]
+            grand_kind = d2['kind']
             if parent_kind == 'def' and grand_kind in ('class', 'outer'):
                 return p.parent()
             return p
@@ -293,10 +293,10 @@ class Cython_Importer(Importer):
     #@+node:vitalije.20211207174206.1: *3* gen_python_ref
     def gen_python_ref(self, line, p):
         """Generate the at-others directive and set p's at-others flag"""
-        d = self.vnode_info [p.v]
-        if d ['@others']:
+        d = self.vnode_info[p.v]
+        if d['@others']:
             return
-        d ['@others'] = True
+        d['@others'] = True
         indent_ws = self.get_str_lws(line)
         ref_line = f"{indent_ws}@others\n"
         self.add_line(p, ref_line, tag='@others')
@@ -324,7 +324,7 @@ class Cython_Importer(Importer):
         indent = parent_indent + 4 if kind == 'class' else parent_indent
         # Update vnode_info for p.v
         assert not v in self.vnode_info, (p.h, g.callers())
-        self.vnode_info [v] = {
+        self.vnode_info[v] = {
             '@others': False,
             'indent': indent,
             'kind': kind,
@@ -374,10 +374,10 @@ class Cython_Importer(Importer):
                 g.trace(f"{'tag or caller  ':>20} {' '*8+'top node':30} line")
                 g.trace(f"{'-' * 13 + '  ':>20} {' '*8+'-' * 8:30} {'-' * 4}")
             if tag:
-                kind = self.vnode_info [p.v] ['kind']
+                kind = self.vnode_info[p.v]['kind']
                 tag = f"{kind:>5}:{tag:<10}"
             g.trace(f"{(tag or g.caller()):>20} {h[:30]!r:30} {s!r}")
-        self.vnode_info [p.v] ['lines'].append(s)
+        self.vnode_info[p.v]['lines'].append(s)
     #@+node:vitalije.20211207174416.1: *3* common_lws
     def common_lws(self, lines):
         """
@@ -407,7 +407,7 @@ class Cython_Importer(Importer):
         Find the tail (trailing unindented) lines.
         return head, tail
         """
-        lines = self.get_lines(p) [:]
+        lines = self.get_lines(p)[:]
         tail = []
         # First, find all potentially tail lines, including blank lines.
         while lines:

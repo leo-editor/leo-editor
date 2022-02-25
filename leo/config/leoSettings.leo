@@ -718,7 +718,6 @@
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
 <v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
-<v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
@@ -2039,6 +2038,7 @@
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
 <v t="ekr.20201021105344.1"><vh>viewrendered3 plugin</vh>
+<v t="ekr.20220224094744.1"><vh>@bool vr3-md-style-auto  = True</vh></v>
 <v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = False</vh></v>
 <v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
 <v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
@@ -10667,10 +10667,6 @@ if 0: # The base class
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20170617135317.1">True: The python importer will copy the first decorator preceding a
-      function/method into the headline of the imported node.
-      
-**Note**: The importer will copy only the first line of a multiline decorator.</t>
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
@@ -11651,6 +11647,12 @@ n, int
 p, Pos
 s, str
 v, VNode</t>
+<t tx="ekr.20220224094744.1">True: Attempt to use a dark-vs-light theme according to whether the Leo
+      theme is marked dark or not.
+
+False: Use the default stylesheet at leo/plugins/viewrendered3.
+       If not present, create a default stylesheet and write it to a file
+       at that place.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -894,12 +894,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
     def render_rst(self, text):
         """Render text of the editor widget as HTML and display it."""
         if not got_docutils:
-            return("<h1>Can't find Docutils to Render This Node</h1>")
+            return "<h1>Can't find Docutils to Render This Node</h1>"
 
         # Call docutils to get the html rendering.
         _html = ''
         args = {'output_encoding': 'unicode',  # return a string, not a byte array
-                'report_level' : RST_NO_WARNINGS,
+                'report_level': RST_NO_WARNINGS,
                }
 
         if self.rst_stylesheet:

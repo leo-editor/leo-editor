@@ -1138,7 +1138,7 @@ class JEditColorizer(BaseJEditColorizer):
                 if m:
                     return m
             return None
-            
+
         v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
         if v:
             m = find_delims(v)
@@ -1492,7 +1492,7 @@ class JEditColorizer(BaseJEditColorizer):
             j = len(s)  # By default, color the whole line.
             # #2410: Limit the coloring if possible.
             if i > 0:
-                ch = s[i-1]
+                ch = s[i - 1]
                 if ch in ('"', "'", '`'):
                     k = s.find(ch, i)
                     if k > -1:

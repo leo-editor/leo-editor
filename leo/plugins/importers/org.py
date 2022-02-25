@@ -91,7 +91,7 @@ class Org_Importer(Importer):
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.vnode_info [child.v] = {
+        self.vnode_info[child.v] = {
             'lines': [],
         }
         if line:

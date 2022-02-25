@@ -3296,7 +3296,7 @@ class Commands:
             p = c.p
             while p and p.hasParent():
                 p.moveToParent()
-        c.selectPosition(p)   # #2380: Don't redraw here.
+        c.selectPosition(p)  # #2380: Don't redraw here.
         c.expansionLevel = 1  # Reset expansion level.
     #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
     def contractSubtree(self, p):

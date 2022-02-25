@@ -1168,7 +1168,7 @@ class LeoImportCommands:
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
             ic.methodName, ic.fileType = g.os_path_splitext(fn)
-        else: 
+        else:
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
         if not parser:

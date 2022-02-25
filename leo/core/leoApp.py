@@ -1385,7 +1385,7 @@ class LeoApp:
         trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
-            return # #69.
+            return  # #69.
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
         if fn in aList:
@@ -2471,7 +2471,7 @@ class LoadManager:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
                 for ext in extensions:
-                    d[ext] = scanner_func #importer_d.get('func')#scanner_class
+                    d[ext] = scanner_func  #importer_d.get('func')#scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
             'basescanner.py',
@@ -2758,7 +2758,7 @@ class LoadManager:
         gui = args.gui
         if gui:
             gui = gui.lower()
-            if gui in ('qt', 'qttabs'): 
+            if gui in ('qt', 'qttabs'):
                 gui = 'qt'  # Allow qttabs gui.
             elif gui.startswith('browser'):
                 pass

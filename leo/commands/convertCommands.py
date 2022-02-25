@@ -501,7 +501,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.c.bodyWantsFocus()
     #@+node:ekr.20220105152521.1: *4* class Add_Mypy_Annotations
     class Add_Mypy_Annotations:
-        
+
         """A class that implements the add-mypy-annotations command."""
 
         changed_lines = 0
@@ -526,7 +526,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if key in d:
                         print(f"{tag}: ignoring duplicate key: {s!r}")
                     else:
-                        d [key] = val.strip()
+                        d[key] = val.strip()
                 except ValueError:
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
         #@+node:ekr.20220105154158.1: *5* ama.add_annotations
@@ -560,7 +560,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Recursively create all descendants.
             for child in p.children():
                 self.convert_node(child)
-        #@+node:ekr.20220105173331.1: *5* ama.convert_body 
+        #@+node:ekr.20220105173331.1: *5* ama.convert_body
         def convert_body(self, p):
             """Convert p.b in place."""
             c = self.c
@@ -594,7 +594,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """Add type annotations."""
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
-            lws = ' '*4 if multiline else ''
+            lws = ' ' * 4 if multiline else ''
             result: List[str] = []
             i = 0
             while i < len(args):
@@ -668,7 +668,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # Skip the comma, but don't include it in the result.
                     break
             assert level == 0, (level, i == len(s), s)
-            result = s[i1 : i].strip()
+            result = s[i1:i].strip()
             if result.endswith(','):
                 result = result[:-1].strip()
             return result, i
@@ -1458,7 +1458,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for line in data:
                 try:
                     key, value = line.split(',')
-                    self.types_d [key.strip()] = value.strip()
+                    self.types_d[key.strip()] = value.strip()
                 except Exception:
                     g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
                     g.es_print(repr(line))
@@ -1479,7 +1479,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 parent.promote()
                 parent.doDelete()
                 p = c.lastTopLevel()
-                p.h = p.h.replace('.py', '.ts').replace('@','@@')
+                p.h = p.h.replace('.py', '.ts').replace('@', '@@')
                 c.redraw(p)
                 c.expandAllSubheads(p)
                 c.treeWantsFocusNow()
@@ -1656,7 +1656,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1
         #@+node:ekr.20211013141725.1: *7* py2ts.do_for
         for1_s = r'^([ \t]*)for[ \t]+(.*):(.*)\n'  # for (cond):
-        for2_s = r'^([ \t]*)for[ \t]*\((.*)\n'      # for (
+        for2_s = r'^([ \t]*)for[ \t]*\((.*)\n'  # for (
 
         for1_pat = re.compile(for1_s)
         for2_pat = re.compile(for2_s)
@@ -1712,7 +1712,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1
         #@+node:ekr.20211014022432.1: *7* py2ts.do_elif
         elif1_s = r'^([ \t]*)elif[ \t]+(.*):(.*)\n'  # elif (cond):
-        elif2_s = r'^([ \t]*)elif[ \t]*\((.*)\n'      # elif (
+        elif2_s = r'^([ \t]*)elif[ \t]*\((.*)\n'  # elif (
 
         elif1_pat = re.compile(elif1_s)
         elif2_pat = re.compile(elif2_s)
@@ -1771,7 +1771,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1
         #@+node:ekr.20211013131016.1: *7* py2ts.do_if
         if1_s = r'^([ \t]*)if[ \t]+(.*):(.*)\n'  # if (cond):
-        if2_s = r'^([ \t]*)if[ \t]*\((.*)\n'      # if (
+        if2_s = r'^([ \t]*)if[ \t]*\((.*)\n'  # if (
 
         if1_pat = re.compile(if1_s)
         if2_pat = re.compile(if2_s)
@@ -1827,7 +1827,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i + 1
         #@+node:ekr.20211013141809.1: *7* py2ts.do_while
         while1_s = r'^([ \t]*)while[ \t]+(.*):(.*)\n'  # while (cond):
-        while2_s = r'^([ \t]*)while[ \t]*\((.*)\n'      # while (
+        while2_s = r'^([ \t]*)while[ \t]*\((.*)\n'  # while (
 
         while1_pat = re.compile(while1_s)
         while2_pat = re.compile(while2_s)
@@ -1890,7 +1890,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211022090919.1: *6* helpers
         #@+node:ekr.20211017210122.1: *7* py2ts.do_operators
         def do_operators(self, i, lines, p):
-            
+
             # Regex replacements.
             table = (
                 ('True', 'true'),
@@ -1906,7 +1906,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
-            
+
         #@+node:ekr.20211017134103.1: *7* py2ts.do_semicolon
         def do_semicolon(self, i, lines, p):
             """
@@ -1924,7 +1924,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # For now, use a maximal policy.
             if self.ends_statement(i, lines):
                 lines[i] = f"{lines[i].rstrip()};\n"
-                
+
 
         #@+node:ekr.20211017135603.1: *7* py2ts.ends_statement
         def ends_statement(self, i, lines):
@@ -2013,14 +2013,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 while k < len(lines) and '*/' not in lines[k]:
                     k += 1
                 if k >= len(lines):
-                    g.printObj(lines[i-1:len(lines)-1], tag='OOPS')
+                    g.printObj(lines[i - 1 : len(lines) - 1], tag='OOPS')
                     continue
                 # Remove 4 blanks from the docstrings.
                 for n in range(j, k + 1):
                     if lines[n].startswith(' ' * 4):
                         lines[n] = lines[n][4:]
                 # Rearrange the lines.
-                lines[i-1 : k + 1] = lines[j : k + 1] + [lines[i-1]]
+                lines[i - 1 : k + 1] = lines[j : k + 1] + [lines[i - 1]]
                 i = k + 1
             ### return lines
         #@+node:ekr.20211016200908.1: *7* py2ts.post_pass & helpers
@@ -2037,14 +2037,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             )
             return re.sub(r'\bNone\b', 'null', s)
 
-            
+
         #@+node:ekr.20211021061023.1: *8* py2ts.do_assignment
         assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
 
         def do_assignment(self, lines):
             """Add const to all non-tuple assignments."""
             # Do this late so that we can test for the ending semicolon.
-            
+
             # Suppression table.
             # Missing elements are likely to cause this method to generate '= ='.
             table = (
@@ -2077,7 +2077,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     continue
                 lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4).rstrip()
                 string_s = (
-                    string.replace('{', '${') # Add the '$'
+                    string.replace('{', '${')  # Add the '$'
                     .replace('! ', 'not ')  # Undo erroneous replacement.
                 )
                 # Remove format strings. Not perfect, but seemingly good enough.
@@ -2102,7 +2102,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         ternary_pat2 = re.compile(r'^([ \t]*)return\s+(.*?) if (.*?) else (.*);$')  # return statement
 
         def do_ternary(self, lines):
-            
+
             i = 0
             while i < len(lines):
                 progress = i
@@ -2127,13 +2127,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
             # Remove the python encoding lines.
             s = s.replace('@first # -*- coding: utf-8 -*-\n', '')
-            
+
             # Replace 'self' by 'this' *everywhere*.
             s = re.sub(r'\bself\b', 'this', s)
-            
+
             # Comment out @cmd decorators.
             s = re.sub(r"^@cmd(.*?)$", r'// @cmd\1\n', s, flags=re.MULTILINE)
-            
+
             # Replace the alias for 'self' by 'this' *only* in specif contexts.
             # Do *not* replace the alias everywhere: that could do great harm.
             if self.alias:

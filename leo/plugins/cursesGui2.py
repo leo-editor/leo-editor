@@ -2275,7 +2275,7 @@ class CoreFrame(leoFrame.LeoFrame):
 
     def destroySelf(self):
         pass
-        
+
     def forceWrap(self, p):
         pass
 

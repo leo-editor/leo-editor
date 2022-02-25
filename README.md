@@ -1,4 +1,4 @@
-Leo http://leoeditor.com 6.6b1 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -7,9 +7,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Replace @raw and @end_raw with @section-delims.
 - Leo recognizes section references only when they appear on an otherwise blank line.
 - Many improvements to python-to-typescript command.
-- picture_viewer.py is a stand-alone app that displays images in a folder.
+- Improved python importer.
+- Add plugins/picture_viewer.py, a stand-alone app that displays images.
+- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
-- Complete coverage testing for leoAtFile.py.
+- Many bug fixes.
 
 **6.6 Links**
 
@@ -32,3 +34,4 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+
