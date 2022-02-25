@@ -267,8 +267,8 @@ class BaseTest(unittest.TestCase):
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
-            print('\n')
-            g.trace(g.callers(), '\n')
+            # print('\n')
+            # g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug_list:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
@@ -2321,6 +2321,10 @@ class TestTOG(BaseTest):
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
+        self.make_data(contents)
+    #@+node:ekr.20220224120239.1: *5* test_Raise
+    def test_Raise(self):
+        contents = "raise ImportError from None"
         self.make_data(contents)
     #@+node:ekr.20191227052446.46: *5* test_Try
     def test_Try(self):

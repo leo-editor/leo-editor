@@ -855,7 +855,7 @@ except ImportError:
 
 QWebView = None
 # Not imported above because we might have PyQt without QWebEngineWidgets
-from leo.core.leoQt import has_WebEngineWidgets # pylint: disable=wrong-import-position
+from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
 if has_WebEngineWidgets:
     from leo.core.leoQt import QtWebEngineWidgets
     QWebView = QtWebEngineWidgets.QWebEngineView
@@ -921,7 +921,7 @@ except ImportError:
     got_markdown = False
     print('VR3: *** No Markdown ***')
 try:
-    import matplotlib # Make *sure* this is imported.
+    import matplotlib  # Make *sure* this is imported.
     import matplotlib.pyplot as plt
     from matplotlib import animation
 except ImportError:
@@ -1134,7 +1134,7 @@ def find_exe(exename):
     # Works for Linux and Windows
     venvdir = os.getenv("VIRTUAL_ENV")
     if venvdir:
-        scriptsdir = os.path.join(venvdir,'Scripts')
+        scriptsdir = os.path.join(venvdir, 'Scripts')
         scripts_local_dir = ''
     else:
         scriptsdir = os.path.join(os.path.dirname(sys.executable), 'Scripts')
@@ -1269,7 +1269,7 @@ inifile_exists = os.path.exists(inifile)
 
 exepaths = {}
 if inifile_exists:
-    config=ConfigParser()
+    config = ConfigParser()
     config.read(inifile)
     if config.has_section(EXECUTABLES_SECTION):
         exepaths = dict(config[EXECUTABLES_SECTION])
@@ -1335,7 +1335,7 @@ def onClose(tag, keys):
 #@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
-        return None # This just slows the unit tests.
+        return None  # This just slows the unit tests.
 
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
@@ -1348,7 +1348,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr3.show_dock_or_pane() # #1332.
+    vr3.show_dock_or_pane()  # #1332.
     vr3.update(
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
@@ -1402,7 +1402,7 @@ def viewrendered(event):
         controllers[h] = vr3 = ViewRenderedController3(c)
 
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
-    vr3._ns_id = VR3_NS_ID # for free_layout load/save
+    vr3._ns_id = VR3_NS_ID  # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
 
     if splitter:
@@ -1508,7 +1508,7 @@ def toggle_rendering_pane(event):
     controllers[h] = vr3 = controllers.get(h) if h else None
     if not vr3:
         vr3 = viewrendered(event)
-        vr3.hide() # So the toggle below will work.
+        vr3.hide()  # So the toggle below will work.
 
     if vr3.isHidden():
         show_rendering_pane(event)
@@ -1592,11 +1592,11 @@ def open_with_layout(event):
     layout = {'orientation': 1,
               'content': [{'orientation': 2,
 	                      'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
-	                      'sizes': [200,200]
+	                      'sizes': [200, 200]
 	                      },
                            '_leo_pane:bodyFrame', VR3_NS_ID
                          ],
-              'sizes': [200,200,200]
+              'sizes': [200, 200, 200]
              }
 
     vr3.splitter = c.free_layout.get_top_splitter()
@@ -1632,12 +1632,12 @@ def markup_to_editor(event):
     """
     vr3 = getVr3(event)
     editor_from_settings = vr3.external_editor
-    if editor_from_settings.lower() == 'none': # weird but has happened
+    if editor_from_settings.lower() == 'none':  # weird but has happened
         editor_from_settings = ''
     editor = editor_from_settings or g.guessExternalEditor(event.get('c'))
 
     if not editor:
-        g.es('No external editor defined', color = 'red')
+        g.es('No external editor defined', color='red')
         return
 
     with open('vr3_last_markup.txt', 'w', encoding=ENCODING) as f:
@@ -1878,7 +1878,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global _in_code_block
         self.c = c
         # Create the widget.
-        QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        QtWidgets.QWidget.__init__(self)  # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
         #super().__init__(parent)
 
         self.create_pane(parent)
@@ -1891,22 +1891,22 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.pyplot_canvas = None
 
         self.pyplot_imported = False
-        self.gs = None # For @graphics-script: a QGraphicsScene
-        self.gv = None # For @graphics-script: a QGraphicsView
+        self.gs = None  # For @graphics-script: a QGraphicsScene
+        self.gv = None  # For @graphics-script: a QGraphicsView
         self.inited = False
-        self.length = 0 # The length of previous p.b.
+        self.length = 0  # The length of previous p.b.
         self.locked = False
 
         self.pyplot_active = False
-        self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
-        self.sizes = [] # Saved splitter sizes.
+        self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
+        self.sizes = []  # Saved splitter sizes.
         self.splitter = None
-        self.splitter_index = None # The index of the rendering pane in the splitter.
+        self.splitter_index = None  # The index of the rendering pane in the splitter.
         self.title = None
 
-        self.Markdown = None # MD processor instance
-        self.vp = None # The present video player.
-        self.w = None # The present widget in the rendering pane.
+        self.Markdown = None  # MD processor instance
+        self.vp = None  # The present video player.
+        self.w = None  # The present widget in the rendering pane.
 
         # For viewrendered3
         self.qwev = self.create_base_text_widget()
@@ -2149,7 +2149,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action.triggered.connect(lambda: c.k.simulateCommand('vr3-help-plot-2d'))
         menu.addAction(_action)
 
-        _action =  QAction('Reload', self, checkable=False)
+        _action = QAction('Reload', self, checkable=False)
         _action.triggered.connect(lambda: c.k.simulateCommand('vr3-update'))
         menu.addAction(_action)
 
@@ -2392,7 +2392,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if use_default:
             leo_theme_path = g.app.loadManager.computeThemeFilePath()
             leo_theme_name = g.os_path_basename(leo_theme_path)
-            use_dark_theme =  self.use_dark_theme or 'dark' in leo_theme_name \
+            use_dark_theme = self.use_dark_theme or 'dark' in leo_theme_name \
                                 or leo_theme_name == LEO_THEME_NAME
             if use_dark_theme:
                 stylesheet = RST_DEFAULT_DARK_STYLESHEET
@@ -2419,7 +2419,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+others
         #@+node:tom.20211104105903.5: *5* declarations
         ENCODING = 'utf-8'
-        STYLEFILE = 'local_mplstyle' # Must be in site.getuserbase()
+        STYLEFILE = 'local_mplstyle'  # Must be in site.getuserbase()
         SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
         #@+node:tom.20211104105903.6: *5* functions
         #@+node:tom.20211104105903.7: *6* has_config_section()
@@ -2462,13 +2462,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
             style_dir = lm.computeHomeLeoDir()
             if g.isWindows:
                 style_dir = style_dir.replace('/', '\\')
-            style_file=os.path.join(style_dir, STYLEFILE)
+            style_file = os.path.join(style_dir, STYLEFILE)
             if os.path.exists(style_file):
                 plt.style.use(style_file)
                 found_styles = True
             else:
-                style_dir=site.getuserbase()
-                style_file=os.path.join(style_dir, STYLEFILE)
+                style_dir = site.getuserbase()
+                style_file = os.path.join(style_dir, STYLEFILE)
                 if os.path.exists(style_file):
                     plt.style.use(style_file)
                     found_styles = True
@@ -2519,7 +2519,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # skip non-data lines (first or 2nd col is not a number)
                 t = []
                 for line in lines:
-                    line = line.replace(',', '') # remove formatting commas
+                    line = line.replace(',', '')  # remove formatting commas
                     if is_numeric(line):
                         t.append(line.strip())
                         # Check if first all-numeric row has one or more fields
@@ -2546,7 +2546,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.es('VR3 -- cannot find data')
                 return
 
-            plt.plot(x,y)
+            plt.plot(x, y)
             plt.show()
 
 
@@ -2629,7 +2629,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     _, filename = fields[0].strip(), fields[1].strip()
                     g.es(filename)
                     if os.path.exists(filename):
-                        with open(filename, encoding = ENCODING) as f:
+                        with open(filename, encoding=ENCODING) as f:
                             data_lines = f.readlines()
                         if not data_lines:
                             g.es(f'VR3 -- no data in file {filename}')
@@ -2718,7 +2718,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Suppress updates until we change nodes.
             pc.node_changed = pc.gnx != p.v.gnx
             pc.gnx = p.v.gnx
-            pc.length = len(p.b) # not s
+            pc.length = len(p.b)  # not s
 
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
@@ -2778,7 +2778,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the free_layout splitter."""
-        pc = self; c = pc.c #X ; splitter = pc.splitter
+        pc = self; c = pc.c  #X ; splitter = pc.splitter
         pc.w = w
         layout = self.layout()
         for i in range(layout.count()):
@@ -2839,7 +2839,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         elif len(p.b) != pc.length:
             if pc.get_kind(p) in ('html', 'pyplot'):
                 pc.length = len(p.b)
-                _must_update = False # Only update explicitly.
+                _must_update = False  # Only update explicitly.
             _must_update = True
         # This trace would be called at idle time.
             # g.trace('no change')
@@ -2931,7 +2931,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             execution_result, err_result = None, None
             code = '\n'.join(codelist)
             c = self.c
-            environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+            environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c & p.
             execution_result, err_result = self.exec_code(code, environment)
             execution_result, err_result = execution_result.strip(), err_result.strip()
             self.execute_flag = False
@@ -2985,7 +2985,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
         h = ''
         if self.prefer_external == 'asciidoctor' and asciidoctor:
-            h =  self.convert_to_asciidoc_external(s)
+            h = self.convert_to_asciidoc_external(s)
             self.rst_html = h
             return h
 
@@ -3136,7 +3136,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Create the widgets.
             pc.gs = QtWidgets.QGraphicsScene(splitter)
             pc.gv = QtWidgets.QGraphicsView(pc.gs)
-            w = pc.gv.viewport() # A QWidget
+            w = pc.gv.viewport()  # A QWidget
             # Embed the widgets.
 
             def delete_callback():
@@ -3162,7 +3162,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             w = pc.w
         if isQt5 or isQt6:
-            w.hide() # This forces a proper update.
+            w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -3188,7 +3188,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             ok = True
             path = fn
             is_url = True
-        else: #file URL
+        else:  #file URL
             ok, path = pc.get_fn(fn, '@image')
 
         if not ok:
@@ -3226,7 +3226,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         s = self.get_jupyter_source(c)
         self.rst_html = s
-        w.hide() # This forces a proper update.
+        w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -3256,7 +3256,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             e = HTMLExporter()
             (s, junk_resources) = e.from_notebook_node(nb)
         except nbformat.reader.NotJSONError:
-            pass # Assume the result is html.
+            pass  # Assume the result is html.
         return s
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
@@ -3276,7 +3276,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             assert w == pc.w
         else:
             w = pc.w
-        w.hide() # This forces a proper update.
+        w.hide()  # This forces a proper update.
         s = self.create_latex_html(s)
         w.setHtml(s)
         w.show()
@@ -3320,7 +3320,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
             if s.startswith('<svg'):
-                g.es(NO_SVG_WIDGET_MSG, color = 'red')
+                g.es(NO_SVG_WIDGET_MSG, color='red')
                 return
             self.rst_html = ''
             if s and isHtml:
@@ -3405,7 +3405,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             execution_result, err_result = None, None
             code = '\n'.join(codelist)
             c = self.c
-            environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+            environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c & p.
             execution_result, err_result = self.exec_code(code, environment)
             execution_result, err_result = execution_result.strip(), err_result.strip()
             self.execute_flag = False
@@ -3489,7 +3489,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Update a networkx graphic in the vr3 pane."""
         pc = self
         w = pc.ensure_text_widget()
-        w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
+        w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
         pc.show()
     #@+node:TomP.20191215195433.69: *4* vr3.update_pandoc & helpers
     def update_pandoc(self, s, keywords):
@@ -3568,7 +3568,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 g.trace('===== MISSING: pyplot.backend')
         try:
-            plt.ion() # Automatically set interactive mode.
+            plt.ion()  # Automatically set interactive mode.
             namespace = {
                 'animation': animation,
                 'matplotlib': matplotlib,
@@ -3586,14 +3586,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.executeScript(
             event=None,
             args=None, p=None,
-            script=c.p.b, #None,
+            script=c.p.b,  #None,
             useSelectedText=False,
             define_g=True,
             define_name='__main__',
             silent=False,
             namespace=namespace,
             raiseFlag=False,
-            runPyflakes=False, # Suppress warnings about pre-defined symbols.
+            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
         )
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.73: *4* vr3.update_rst & helpers
@@ -3644,7 +3644,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 self.rst_html = h
         else:
             _text_list = [n.b for n in node_list]
-            s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
+            s = '<pre>' + '\n'.join(_text_list) + r'\</pre>'
             self.set_html(s, w)
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
     #@@language python
@@ -3707,7 +3707,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if self.execute_flag and codelist:
             code = '\n'.join(codelist)
             c = self.c
-            environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+            environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c & p.
 
             execution_result = err_result = ''
 
@@ -3787,9 +3787,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the external processor.
         """
         exepath = exepaths[lang]
-        progfile='_##temp_execute.txt'
+        progfile = '_##temp_execute.txt'
 
-        with open(progfile,'w', encoding=ENCODING) as f:
+        with open(progfile, 'w', encoding=ENCODING) as f:
             f.write(code)
 
         cmd = [exepath]
@@ -3835,7 +3835,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if len(_fields) > 1:
                 _lang = _fields[1].strip()
             else:
-                _lang = PYTHON # Standard RsT default.
+                _lang = PYTHON  # Standard RsT default.
             _tag = CODE if _lang in LANGUAGES else TEXT
             _in_code_block = _tag == CODE
             if _tag == CODE and not self.controlling_code_lang:
@@ -3894,7 +3894,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if empty_line(line):
                     try:
                         next_line = lines[i + 1]
-                    except IndexError: # no more lines
+                    except IndexError:  # no more lines
                         continue
                     if not empty_line(next_line) and not indented(next_line):
                         _in_skipblock = False
@@ -3983,7 +3983,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # and to detect the end of the block.  We need to un-indent
                 # because CODE chunks assume the lines are not indented.
                 _numlines = len(lines)
-                if _numlines < i + 2: continue # Reached the end of the node.
+                if _numlines < i + 2: continue  # Reached the end of the node.
 
                 # Skip mandatory first blank line before indent
                 _first_code_line_num = i + 2
@@ -4014,7 +4014,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _in_rst_block = False
                 _in_code_block = _language in LANGUAGES
                 if _in_code_block and not self.controlling_code_lang:
-                    self.controlling_code_lang = _language if _in_code_block  else None
+                    self.controlling_code_lang = _language if _in_code_block else None
             #@-<< identify_code_blocks >>
             #@+<< fill_chunks >>
             #@+node:TomP.20200112103729.5: *7* << fill_chunks >>
@@ -4140,7 +4140,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 _headline_str = p.h
 
-            _headline_str = _headline_str.strip() # Docutils raises error for leading space
+            _headline_str = _headline_str.strip()  # Docutils raises error for leading space
             _headline_str = _headline_str.replace('\\', '\\\\')
 
 
@@ -4161,7 +4161,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_svg(self, s, keywords):
         if not QtSvg:
-            g.es(NO_SVG_WIDGET_MSG, color = 'red')
+            g.es(NO_SVG_WIDGET_MSG, color='red')
             return
         pc = self
 
@@ -4233,7 +4233,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.anchorClicked.connect(handleClick)
             w.setOpenLinks(False)
 
-            pc.embed_widget(w) # Creates w.wrapper
+            pc.embed_widget(w)  # Creates w.wrapper
             assert w == pc.w
         return pc.w
     #@+node:TomP.20191227101625.1: *5* vr3.ensure_web_widget
@@ -4242,7 +4242,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc = self
         w = self.qwev
         if pc.must_change_widget(QWebView):
-            pc.embed_widget(w) # Creates w.wrapper
+            pc.embed_widget(w)  # Creates w.wrapper
             assert w == pc.w
         return pc.w
     #@+node:TomP.20191215195433.81: *5* vr3.get_kind
@@ -4271,7 +4271,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # First, look for headline directives.
         if h.startswith('@'):
             i = g.skip_id(h, 1, chars='-')
-            word = h[1: i].lower().strip()
+            word = h[1:i].lower().strip()
             if word in self.dispatch_dict:
                 return word
         # Look for @language directives.
@@ -4282,7 +4282,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def get_fn(self, s, tag):
         pc = self
         c = pc.c
-        fn = s or c.p.h[len(tag):]
+        fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
         # Similar to code in g.computeFileUrl
         if fn.startswith('~'):
@@ -4309,7 +4309,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #VrC.get_url(self, s, tag)
 
         p = self.c.p
-        url = s or p.h[len(tag):]
+        url = s or p.h[len(tag) :]
         url = url.strip()
         return url
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
@@ -4328,7 +4328,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for li in lines:
             if li.startswith('@'):
                 i = g.skip_id(li, 1)
-                word = li[1: i]
+                word = li[1:i]
                 if word in _directives:
                     continue
             result.append(li)
@@ -4337,7 +4337,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # Modified from VR2
     def exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
-        saveout = sys.stdout # save stdout
+        saveout = sys.stdout  # save stdout
         saveerr = sys.stderr
         sys.stdout = bufferout = StringIO()
         sys.stderr = buffererr = StringIO()
@@ -4351,8 +4351,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             except_err = f'{type(e).__name__}: {str(e)}\n'
         # Restore stdout, stderr
         finally:
-            sys.stdout = saveout # was sys.__stdout__
-            sys.stderr = saveerr # restore stderr
+            sys.stdout = saveout  # was sys.__stdout__
+            sys.stderr = saveerr  # restore stderr
 
         return bufferout.getvalue(), buffererr.getvalue() + except_err
     #@+node:TomP.20200330152649.1: *4* vr3.update_text
@@ -4649,16 +4649,16 @@ class Marker(Enum):
     """
 
     AT_LANGUAGE_MARKER = auto()
-    MD_FENCE_LANG_MARKER = auto() # fence token with language; e.g. ```python
-    MD_FENCE_MATH_MARKER = auto() # math fence: ```math
-    MD_FENCE_MARKER = auto() # fence token with no language
-    MARKER_NONE = auto() # Not a special line.
+    MD_FENCE_LANG_MARKER = auto()  # fence token with language; e.g. ```python
+    MD_FENCE_MATH_MARKER = auto()  # math fence: ```math
+    MD_FENCE_MARKER = auto()  # fence token with no language
+    MARKER_NONE = auto()  # Not a special line.
     START_SKIP = auto()
     END_SKIP = auto()
     IMAGE_MARKER = auto()
 
     ASCDOC_CODE_MARKER = auto()
-    ASCDOC_CODE_LANG_MARKER = auto() # a line like "[source, python]" before a line "---"
+    ASCDOC_CODE_LANG_MARKER = auto()  # a line like "[source, python]" before a line "---"
 
 #@+node:TomP.20191231172446.1: *3* class Chunk
 #@@language python
@@ -4666,11 +4666,11 @@ class Chunk:
     """Holds a block of text, with various metadata about it."""
 
     def __init__(self, tag='', structure=RST, language=''):
-        self.text_lines = [''] # The text as a sequence of lines, free of directives
+        self.text_lines = ['']  # The text as a sequence of lines, free of directives
         self.tag = tag  # A descriptive value for the kind of chunk, such as CODE, TEXT.
-        self.structure = structure # The type of structure (rst, md, etc.).
-        self.language = language # The programming language, if any, for this chunk.
-        self.formatted = '' # The formatted text.
+        self.structure = structure  # The type of structure (rst, md, etc.).
+        self.language = language  # The programming language, if any, for this chunk.
+        self.formatted = ''  # The formatted text.
 
     def add_line(self, line):
         self.text_lines.append(line)
@@ -4754,7 +4754,7 @@ class StateMachine:
 
         for self.i, line in enumerate(lines):
             self.do_state(self.state, line)
-        self.chunk_list.append(self.current_chunk) # have to pick up the last chunk
+        self.chunk_list.append(self.current_chunk)  # have to pick up the last chunk
 
 
         for ch in self.chunk_list:
@@ -4850,7 +4850,7 @@ class StateMachine:
                 marker = Marker.ASCDOC_CODE_LANG_MARKER
                 self.last_marker = marker
                 self.tag = TEXT
-        elif line.startswith (ASCDOC_FENCE_MARKER):
+        elif line.startswith(ASCDOC_FENCE_MARKER):
             # Might be either the start or end of a code block
             if self.last_marker == Marker.ASCDOC_CODE_LANG_MARKER:
                 if self.codelang in LANGUAGES:
@@ -4896,7 +4896,7 @@ class StateMachine:
         # For debugging
         if line.startswith('#%%%%'):
             g.es(f'==== state: {self.state}, lang: {self.lang}, chunk_lang: {self.current_chunk.language}, tag: {self.current_chunk.tag}')
-            return(None, None, None)
+            return (None, None, None)
 
         # Omit lines between @ and @c
         if line.rstrip() == '@':
@@ -4935,29 +4935,29 @@ class StateMachine:
     #@-<< get_marker >>
     #@+<< State Table >>
     #@+node:TomP.20200213171040.1: *4* << State Table >>
-    State_table = { # (state, marker): (action, next_state)
+    State_table = {  # (state, marker): (action, next_state)
 
-        (State.BASE, Marker.AT_LANGUAGE_MARKER):  (Action.new_chunk, State.AT_LANG_CODE),
+        (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
         #(State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
         (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
-        (State.BASE, Marker.MARKER_NONE):         (Action.add_line, State.BASE),
+        (State.BASE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
 
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
         (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER):
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
-        (State.BASE, Marker.IMAGE_MARKER):          (Action.add_image, State.BASE),
+        (State.BASE, Marker.IMAGE_MARKER): (Action.add_image, State.BASE),
 
         # ========= Markdown-specific states ==================
-        (State.BASE, Marker.MD_FENCE_LANG_MARKER):   (Action.new_chunk, State.FENCED_CODE),
-        (State.BASE, Marker.MD_FENCE_MARKER):        (Action.add_line, State.BASE),
-        (State.FENCED_CODE, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_CODE),
+        (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
+        (State.BASE, Marker.MD_FENCE_MARKER): (Action.add_line, State.BASE),
+        (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
         (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE),
         (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):
                     (Action.add_line, State.AT_LANG_CODE),
-        (State.BASE, Marker.MD_FENCE_MATH_MARKER):   (Action.add_math_block_start, State.FENCED_MATH),
-        (State.FENCED_MATH, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_MATH),
+        (State.BASE, Marker.MD_FENCE_MATH_MARKER): (Action.add_math_block_start, State.FENCED_MATH),
+        (State.FENCED_MATH, Marker.MARKER_NONE): (Action.add_line, State.FENCED_MATH),
         (State.FENCED_MATH, Marker.MD_FENCE_MARKER): (Action.add_math_block_end, State.BASE),
 
         # ========== ASCIIDOC-specific states =================
@@ -4966,7 +4966,7 @@ class StateMachine:
         (State.ASCDOC_READY_FOR_FENCE, Marker.ASCDOC_CODE_MARKER):
                     # Start a new code chunk
                     (Action.new_chunk, State.FENCED_CODE),
-        (State.FENCED_CODE, Marker.MARKER_NONE):        (Action.add_line, State.FENCED_CODE),
+        (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
         (State.FENCED_CODE, Marker.ASCDOC_CODE_MARKER):
                     # End fenced code chunk
                     (Action.new_chunk, State.BASE)
