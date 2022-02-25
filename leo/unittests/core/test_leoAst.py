@@ -267,8 +267,8 @@ class BaseTest(unittest.TestCase):
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:
-            print('\n')
-            g.trace(g.callers(), '\n')
+            # print('\n')
+            # g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug_list:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
