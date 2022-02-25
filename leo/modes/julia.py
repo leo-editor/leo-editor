@@ -506,49 +506,49 @@ def julia_rule3(colorer, s, i):
 def julia_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral2",exclude_match=False,
+        delegate="julia::stringliteral2", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="I\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral2",exclude_match=False,
+        delegate="julia::stringliteral2", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="E\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="L\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule9(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal4", begin="r[ims]*\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal4", begin="b\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral4",exclude_match=False,
+        delegate="julia::stringliteral4", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::stringliteral3",exclude_match=False,
+        delegate="julia::stringliteral3", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule12(colorer, s, i):
@@ -558,7 +558,7 @@ def julia_rule12(colorer, s, i):
 def julia_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::typedescription",exclude_match=False,
+        delegate="julia::typedescription", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule14(colorer, s, i):
@@ -770,19 +770,19 @@ def julia_rule65(colorer, s, i):
 
 # Rules dict for julia_main ruleset.
 rulesDict1 = {
-	"!": [julia_rule22,julia_rule37,],
+	"!": [julia_rule22, julia_rule37,],
 	"\"": [julia_rule5,],
-	"#": [julia_rule0,julia_rule1,julia_rule2,julia_rule3,],
-	"$": [julia_rule17,julia_rule26,julia_rule32,],
-	"%": [julia_rule48,julia_rule54,],
-	"&": [julia_rule20,julia_rule24,julia_rule30,],
+	"#": [julia_rule0, julia_rule1, julia_rule2, julia_rule3,],
+	"$": [julia_rule17, julia_rule26, julia_rule32,],
+	"%": [julia_rule48, julia_rule54,],
+	"&": [julia_rule20, julia_rule24, julia_rule30,],
 	"'": [julia_rule4,],
 	"(": [julia_rule15,],
-	"*": [julia_rule45,julia_rule51,],
-	"+": [julia_rule43,julia_rule49,],
-	"-": [julia_rule19,julia_rule44,julia_rule50,],
+	"*": [julia_rule45, julia_rule51,],
+	"+": [julia_rule43, julia_rule49,],
+	"-": [julia_rule19, julia_rule44, julia_rule50,],
 	".": [julia_rule55,],
-	"/": [julia_rule42,julia_rule46,julia_rule52,],
+	"/": [julia_rule42, julia_rule46, julia_rule52,],
 	"0": [julia_rule65,],
 	"1": [julia_rule65,],
 	"2": [julia_rule65,],
@@ -793,25 +793,25 @@ rulesDict1 = {
 	"7": [julia_rule65,],
 	"8": [julia_rule65,],
 	"9": [julia_rule65,],
-	":": [julia_rule12,julia_rule18,julia_rule61,julia_rule63,],
+	":": [julia_rule12, julia_rule18, julia_rule61, julia_rule63,],
 	";": [julia_rule64,],
-	"<": [julia_rule14,julia_rule29,julia_rule35,julia_rule39,julia_rule41,],
-	"=": [julia_rule36,julia_rule60,],
-	">": [julia_rule27,julia_rule28,julia_rule33,julia_rule34,julia_rule38,julia_rule40,],
+	"<": [julia_rule14, julia_rule29, julia_rule35, julia_rule39, julia_rule41,],
+	"=": [julia_rule36, julia_rule60,],
+	">": [julia_rule27, julia_rule28, julia_rule33, julia_rule34, julia_rule38, julia_rule40,],
 	"?": [julia_rule62,],
-	"@": [julia_rule16,julia_rule65,],
+	"@": [julia_rule16, julia_rule65,],
 	"A": [julia_rule65,],
 	"B": [julia_rule65,],
 	"C": [julia_rule65,],
 	"D": [julia_rule65,],
-	"E": [julia_rule7,julia_rule65,],
+	"E": [julia_rule7, julia_rule65,],
 	"F": [julia_rule65,],
 	"G": [julia_rule65,],
 	"H": [julia_rule65,],
-	"I": [julia_rule6,julia_rule65,],
+	"I": [julia_rule6, julia_rule65,],
 	"J": [julia_rule65,],
 	"K": [julia_rule65,],
-	"L": [julia_rule8,julia_rule65,],
+	"L": [julia_rule8, julia_rule65,],
 	"M": [julia_rule65,],
 	"N": [julia_rule65,],
 	"O": [julia_rule65,],
@@ -828,11 +828,11 @@ rulesDict1 = {
 	"Z": [julia_rule65,],
 	"[": [julia_rule57,],
 	"]": [julia_rule56,],
-	"^": [julia_rule47,julia_rule53,],
+	"^": [julia_rule47, julia_rule53,],
 	"_": [julia_rule65,],
 	"`": [julia_rule11,],
 	"a": [julia_rule65,],
-	"b": [julia_rule10,julia_rule65,],
+	"b": [julia_rule10, julia_rule65,],
 	"c": [julia_rule65,],
 	"d": [julia_rule65,],
 	"e": [julia_rule65,],
@@ -848,7 +848,7 @@ rulesDict1 = {
 	"o": [julia_rule65,],
 	"p": [julia_rule65,],
 	"q": [julia_rule65,],
-	"r": [julia_rule9,julia_rule65,],
+	"r": [julia_rule9, julia_rule65,],
 	"s": [julia_rule65,],
 	"t": [julia_rule65,],
 	"u": [julia_rule65,],
@@ -857,8 +857,8 @@ rulesDict1 = {
 	"x": [julia_rule65,],
 	"y": [julia_rule65,],
 	"z": [julia_rule65,],
-	"{": [julia_rule13,julia_rule58,],
-	"|": [julia_rule21,julia_rule25,julia_rule31,],
+	"{": [julia_rule13, julia_rule58,],
+	"|": [julia_rule21, julia_rule25, julia_rule31,],
 	"}": [julia_rule59,],
 	"~": [julia_rule23,],
 }
@@ -868,13 +868,13 @@ rulesDict1 = {
 def julia_rule66(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule67(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule68(colorer, s, i):
@@ -883,7 +883,7 @@ def julia_rule68(colorer, s, i):
 
 # Rules dict for julia_stringliteral2 ruleset.
 rulesDict2 = {
-	"$": [julia_rule66,julia_rule67,julia_rule68,],
+	"$": [julia_rule66, julia_rule67, julia_rule68,],
 }
 
 # Rules for julia_stringliteral3 ruleset.
@@ -891,13 +891,13 @@ rulesDict2 = {
 def julia_rule69(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule70(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule71(colorer, s, i):
@@ -906,7 +906,7 @@ def julia_rule71(colorer, s, i):
 
 # Rules dict for julia_stringliteral3 ruleset.
 rulesDict3 = {
-	"$": [julia_rule69,julia_rule70,julia_rule71,],
+	"$": [julia_rule69, julia_rule70, julia_rule71,],
 }
 
 # Rules for julia_stringliteral4 ruleset.
@@ -914,13 +914,13 @@ rulesDict3 = {
 def julia_rule72(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule73(colorer, s, i):
     return colorer.match_span(s, i, kind="operator", begin="$[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="julia::main",exclude_match=False,
+        delegate="julia::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def julia_rule74(colorer, s, i):
@@ -929,7 +929,7 @@ def julia_rule74(colorer, s, i):
 
 # Rules dict for julia_stringliteral4 ruleset.
 rulesDict4 = {
-	"$": [julia_rule72,julia_rule73,julia_rule74,],
+	"$": [julia_rule72, julia_rule73, julia_rule74,],
 }
 
 # Rules for julia_typedescription ruleset.

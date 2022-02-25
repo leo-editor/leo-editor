@@ -15,7 +15,7 @@ class BaseWriter:
     def put(self, s):
         """Write line s using at.os, taking special care of newlines."""
         at = self.at
-        at.os(s[: -1] if s.endswith('\n') else s)
+        at.os(s[:-1] if s.endswith('\n') else s)
         at.onl()
     #@+node:ekr.20150626092140.1: ** basewriter.put_node_sentinel
     def put_node_sentinel(self, p, delim, delim2=''):

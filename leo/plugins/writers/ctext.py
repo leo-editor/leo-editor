@@ -9,14 +9,14 @@ class CTextWriter(basewriter.BaseWriter):
     #@+others
     #@+node:tbrown.20140804103545.29978: *3* recurse
     def recurse(self, nd, level=0):
-        self.put(nd.b.strip()+'\n\n')
+        self.put(nd.b.strip() + '\n\n')
         for child in nd.children():
-            txt = self.cchar*3 + self.cchar*level + ' ' + child.h.strip() + ' '
-            txt += self.cchar * max(0, 75-len(txt))
-            self.put(txt+'\n\n')
-            self.recurse(child, level+1)
+            txt = self.cchar * 3 + self.cchar * level + ' ' + child.h.strip() + ' '
+            txt += self.cchar * max(0, 75 - len(txt))
+            self.put(txt + '\n\n')
+            self.recurse(child, level + 1)
     #@+node:tbrown.20140804103545.29979: *3* write
-    def write(self,root):
+    def write(self, root):
 
         self.cchar = '#'
         if root.h.lower()[-4:] == '.tex':

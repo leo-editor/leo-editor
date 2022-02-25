@@ -85,7 +85,7 @@ class TestPythonToTypeScript(LeoUnitTest):
 #@+node:ekr.20220108083112.1: ** class TestAddMypyAnnotations(LeoUnitTest):
 class TestAddMypyAnnotations(LeoUnitTest):
     """Test cases for add-mypy-annotations command"""
-    
+
     def setUp(self):
         super().setUp()
         # print(self.id())

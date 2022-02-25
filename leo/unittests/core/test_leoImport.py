@@ -23,11 +23,11 @@ import leo.plugins.importers.xml as xml
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
 class BaseTestImporter(LeoUnitTest):
     """The base class for tests of leoImport.py"""
-    
+
     ext = None  # Subclasses must set this to the language's extension.
     skip_flag = False  # Subclasses can set this to suppress perfect-import checks.
     treeType = '@file'  # Fix #352.
-    
+
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
@@ -43,12 +43,12 @@ class BaseTestImporter(LeoUnitTest):
             i = 0
             for p in p1.subtree():
                 self.assertTrue(i < len(table), msg=repr(p.h))
-                data = table [i]
+                data = table[i]
                 i += 1
                 n, h = data
                 self.assertEqual(p.h, h)
                 # Subtract 1 for compatibility with values in previous tables.
-                self.assertEqual(p.level() -1 , n, msg=f"{p.h}: expected level {n}, got {p.level()}")
+                self.assertEqual(p.level() - 1, n, msg=f"{p.h}: expected level {n}, got {p.level()}")
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:
@@ -100,7 +100,7 @@ class BaseTestImporter(LeoUnitTest):
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
-        kind = { '.md': '@auto-md'
+        kind = {'.md': '@auto-md'
                , '.org': '@auto-org'
                , '.otl': '@auto-otl'
                , '.rst': '@auto-rst'
@@ -113,7 +113,7 @@ class BaseTestImporter(LeoUnitTest):
                     return z
         return '@file'
     #@+node:ekr.20211125101517.4: *3* BaseTestImporter.create_expected_outline
-    def  create_expected_outline(self, expected_parent, expected_s):
+    def create_expected_outline(self, expected_parent, expected_s):
         """
         Create the expected outline, making 'kind' entries in g.vnode_info for
         all *created* vnodes.
@@ -122,9 +122,9 @@ class BaseTestImporter(LeoUnitTest):
         expect_s:   A string representing the outline in enhanced MORE format.
         
         """
-        d = g.vnode_info 
+        d = g.vnode_info
         # Special case for the top-level node.
-        d [expected_parent.v] = { 'kind': 'outer' }
+        d[expected_parent.v] = {'kind': 'outer'}
         # Munge expected_s
         expected_s2 = textwrap.dedent(expected_s).strip() + '\n\n'
         expected_lines = g.splitLines(expected_s2)
@@ -140,7 +140,7 @@ class BaseTestImporter(LeoUnitTest):
                 assert n == 0 or lws.isspace(), repr(lws)
                 while stack:
                     level, p = stack.pop()
-                    
+
                     if s.strip().startswith('- '):
                         aList = s.strip()[2:].split(':')
                         kind, h = aList[0].strip(), ':'.join(aList[1:])
@@ -152,7 +152,7 @@ class BaseTestImporter(LeoUnitTest):
                         else:
                             child = p.insertAfter()
                         child.h = h
-                        d [child.v] = { 'kind': kind }
+                        d[child.v] = {'kind': kind}
                         p = child
                         stack.append((n, p))
                         break
@@ -180,7 +180,7 @@ class BaseTestImporter(LeoUnitTest):
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            lines = d [p.v] ['lines'] if p.v in d else g.splitLines(p.v.b)
+            lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
             g.printObj(lines)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s, verbose=False):
@@ -210,8 +210,8 @@ class BaseTestImporter(LeoUnitTest):
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
-class TestAtAuto (BaseTestImporter):
-    
+class TestAtAuto(BaseTestImporter):
+
     #@+others
     #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
     def test_importers_can_be_imported(self):
@@ -225,9 +225,9 @@ class TestAtAuto (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
 class TestC(BaseTestImporter):
-    
+
     ext = '.c'
-    
+
     #@+others
     #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
@@ -274,7 +274,7 @@ class TestC(BaseTestImporter):
             (2, 'int foo'),
             (2, 'char bar'),
         ))
-       
+
     #@+node:ekr.20210904065459.5: *3* TestC.test_comment_follows_arg_list
     def test_comment_follows_arg_list(self):
 
@@ -397,10 +397,10 @@ class TestC(BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
-class TestCoffeescript (BaseTestImporter):
-    
+class TestCoffeescript(BaseTestImporter):
+
     ext = '.coffee'
-    
+
     #@+others
     #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
     def test_1(self):
@@ -467,7 +467,7 @@ class TestCoffeescript (BaseTestImporter):
           (2, 'transform: (args...) ->'),
           (2, 'body: (node, opts={}) ->'),
         ))
-       
+
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
@@ -481,9 +481,9 @@ class TestCoffeescript (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
 class TestCSharp(BaseTestImporter):
-    
+
     ext = '.c#'
-    
+
     #@+others
     #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
@@ -517,7 +517,7 @@ class TestCSharp(BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
-class TestCython (BaseTestImporter):
+class TestCython(BaseTestImporter):
 
     ext = '.pyx'
     #@+others
@@ -548,10 +548,10 @@ class TestCython (BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
-class TestDart (BaseTestImporter):
-    
+class TestDart(BaseTestImporter):
+
     ext = '.dart'
-    
+
     #@+others
     #@+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
     def test_hello_world(self):
@@ -576,7 +576,7 @@ class TestDart (BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (1, 'hello'), 
+            (1, 'hello'),
             (1, 'printNumber'),
             (1, 'void main'),
         ))
@@ -593,10 +593,10 @@ class TestDart (BaseTestImporter):
             self.assertEqual(got, expected)
     #@-others
 #@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
-class TestElisp (BaseTestImporter):
-    
+class TestElisp(BaseTestImporter):
+
     ext = '.el'
-    
+
     #@+others
     #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
     def test_1(self):
@@ -618,13 +618,13 @@ class TestElisp (BaseTestImporter):
             (1, 'defun abc'),
             (1, 'defun cde'),
         ))
-        
+
     #@-others
 #@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
-class TestHtml (BaseTestImporter):
-    
+class TestHtml(BaseTestImporter):
+
     ext = '.htm'
-    
+
     def setUp(self):
         super().setUp()
         c = self.c
@@ -633,7 +633,7 @@ class TestHtml (BaseTestImporter):
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
-    
+
     #@+others
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_lowercase_tags
     def test_lowercase_tags(self):
@@ -654,7 +654,7 @@ class TestHtml (BaseTestImporter):
             (2, '<head>'),
             (2, '<body class="bodystring">'),
         ))
-        
+
     #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
@@ -716,7 +716,7 @@ class TestHtml (BaseTestImporter):
             (7, '<table id="6">'),
             (4, '<DIV class="webonly">'),
         ))
-      
+
     #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
@@ -816,7 +816,7 @@ class TestHtml (BaseTestImporter):
             (1, '<body>'),
             (2, '<div id="D666">'),
         ))
-       
+
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
 
@@ -839,7 +839,7 @@ class TestHtml (BaseTestImporter):
             (1, '<html>'),
             (2, '<head>'),
         ))
-        
+
     #@+node:ekr.20210904065459.27: *3* TestHtml.test_improperly_terminated_tags2
     def test_improperly_terminated_tags2(self):
 
@@ -862,7 +862,7 @@ class TestHtml (BaseTestImporter):
             (1, '<html>'),
             (2, '<head>'),
         ))
-        
+
     #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
     def test_brython(self):
 
@@ -1013,9 +1013,9 @@ class TestHtml (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
-    
+
     ext = '.ini'
-    
+
     #@+others
     #@+node:ekr.20210904065459.29: *3* TestIni.test_1
     def test_1(self):
@@ -1041,10 +1041,10 @@ class TestIni(BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
-class TestJava (BaseTestImporter):
-    
+class TestJava(BaseTestImporter):
+
     ext = '.java'
-    
+
     #@+others
     #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
@@ -1155,10 +1155,10 @@ class TestJava (BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
-class TestJavascript (BaseTestImporter):
-    
+class TestJavascript(BaseTestImporter):
+
     ext = '.js'
-    
+
     #@+others
     #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
     def test_regex_1(self):
@@ -1329,10 +1329,10 @@ class TestJavascript (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
-    
+
     ext = '.md'
     treeType = '@auto-md'
-    
+
     #@+others
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
@@ -1529,11 +1529,11 @@ class TestMarkdown(BaseTestImporter):
             assert not got, repr(line)
     #@-others
 #@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
-class TestOrg (BaseTestImporter):
-    
+class TestOrg(BaseTestImporter):
+
     ext = '.org'
     treeType = '@auto-org'
-    
+
     #@+others
     #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
     def test_1(self):
@@ -1560,7 +1560,7 @@ class TestOrg (BaseTestImporter):
             (1, 'Section 3'),
             (2, 'Section 3.1'),
         ))
-        
+
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
 
@@ -1670,11 +1670,11 @@ class TestOrg (BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
-class TestOtl (BaseTestImporter):
-    
+class TestOtl(BaseTestImporter):
+
     ext = '.otl'
     treeType = '@auto-otl'
-    
+
     #@+others
     #@+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
     def test_otl_1(self):
@@ -1721,10 +1721,10 @@ class TestOtl (BaseTestImporter):
             self.assertTrue(m, msg=repr(line))
     #@-others
 #@+node:ekr.20211108081719.1: ** class TestPascal (BaseTestImporter)
-class TestPascal (BaseTestImporter):
-    
+class TestPascal(BaseTestImporter):
+
     ext = '.pas'
-    
+
     #@+others
     #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
@@ -1785,10 +1785,10 @@ class TestPascal (BaseTestImporter):
             self.assertEqual(x.clean_headline(line), cleaned)
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
-class TestPerl (BaseTestImporter):
-    
+class TestPerl(BaseTestImporter):
+
     ext = '.pl'
-    
+
     #@+others
     #@+node:ekr.20210904065459.51: *3* TestPerl.test_1
     def test_1(self):
@@ -1914,10 +1914,10 @@ class TestPerl (BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
-class TestPhp (BaseTestImporter):
-    
+class TestPhp(BaseTestImporter):
+
     ext = '.php'
-    
+
     #@+others
     #@+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
     def test_import_class(self):
@@ -2014,12 +2014,12 @@ class TestPhp (BaseTestImporter):
         self.run_test(s)
     #@-others
 #@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
-class TestPython (BaseTestImporter):
+class TestPython(BaseTestImporter):
 
     check_tree = False
     ext = '.py'
     treeType = '@file'
-    
+
     def setUp(self):
         super().setUp()
         if sys.version_info < (3, 7, 0):
@@ -2038,7 +2038,7 @@ class TestPython (BaseTestImporter):
             '    pass\n'
             'print(7)\n'
         )
-        exp_nodes = [ (0, 'ignored h',
+        exp_nodes = [(0, 'ignored h',
                '@language python\n'
                '@tabwidth -4\n'
                '"""A docstring"""\n'
@@ -2131,7 +2131,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
-        s = ( 'import sys\n'
+        s = ('import sys\n'
               'def f1():\n'
               '    pass\n'
               '\n'
@@ -2255,7 +2255,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
-        s = ( 'import sys\n'
+        s = ('import sys\n'
               'def f1():\n'
               '    pass\n'
               '\n'
@@ -2314,7 +2314,7 @@ class TestPython (BaseTestImporter):
 
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        txt = ( 'class TestCopyFile(unittest.TestCase):\n'
+        txt = ('class TestCopyFile(unittest.TestCase):\n'
                 '\n'
                 '    _delete = False\n'
                 '    a00 = 1\n'
@@ -2391,7 +2391,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes
     def test_nested_classes_with_async(self):
-        txt = ( 'class TestCopyFile(unittest.TestCase):\n'
+        txt = ('class TestCopyFile(unittest.TestCase):\n'
                 '\n'
                 '    _delete = False\n'
                 '    a00 = 1\n'
@@ -2474,7 +2474,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:ekr.20211202094115.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
-        txt = ( 'if 1:\n'
+        txt = ('if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
                 "  print('2')\n"
@@ -2563,7 +2563,7 @@ class TestPython (BaseTestImporter):
     #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation_with_added_class_in_the_headline(self):
         self.c.config.set(None, 'bool', 'put-class-in-imported-headlines', True)
-        txt = ( 'if 1:\n'
+        txt = ('if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
                 "  print('2')\n"
@@ -2651,7 +2651,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
     def test_no_defs(self):
-        txt = ( 'a = 1\n'
+        txt = ('a = 1\n'
                 'if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
@@ -2678,7 +2678,7 @@ class TestPython (BaseTestImporter):
                 "    print('12')\n"
             )
         exp_nodes = [
-            (0, 'ignored h',   '@language python\n'
+            (0, 'ignored h', '@language python\n'
                                '@tabwidth -4\n'
                                'a = 1\n'
                                'if 1:\n'
@@ -2712,7 +2712,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
     def test_only_docs(self):
-        txt = ( 'class A:\n'
+        txt = ('class A:\n'
                 '    """\n'
                 '    dummy doc\n'
                 "    another line\n"
@@ -2795,7 +2795,7 @@ class TestPython (BaseTestImporter):
         if sys.version_info < (3, 9, 0):
             self.skipTest('Requires Python 3.9')
 
-        txt = ( 'class A:\n'
+        txt = ('class A:\n'
                 '    a=1\n'
                 '    b=1\n'
                 '    c=1\n'
@@ -2866,7 +2866,7 @@ class TestPython (BaseTestImporter):
         assert ok, msg
     #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_no_methods
     def test_large_class_under_indented(self):
-        txt = ( 'class A:\n'
+        txt = ('class A:\n'
                 '    a=1\n'
                 '    b=1\n'
                 '    c=1\n'
@@ -2950,7 +2950,7 @@ class TestPython (BaseTestImporter):
         zlev = p.level()
         for p1 in p.self_and_subtree():
             lev, h, b = next(it)
-            assert p1.level()-zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
+            assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
             if lev > 0:
                 assert p1.h == h, f'"{p1.h}" != "{h}"'
             assert p1.b == b, f'\n{repr(p1.b)} !=\n{repr(b)}'
@@ -2962,10 +2962,10 @@ class TestPython (BaseTestImporter):
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
-    
+
     ext = '.rst'
     treeType = '@auto-rst'
-    
+
     #@+others
     #@+node:ekr.20210904065459.115: *3* TestRst.test_rst_1
     def test_rst_1(self):
@@ -3220,10 +3220,10 @@ class TestRst(BaseTestImporter):
         ))
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
-class TestTypescript (BaseTestImporter):
-    
+class TestTypescript(BaseTestImporter):
+
     ext = '.ts'
-    
+
     #@+others
     #@+node:ekr.20210904065459.103: *3* TestTypescript.test_class
     def test_class(self):
@@ -3278,10 +3278,10 @@ class TestTypescript (BaseTestImporter):
         self.run_test(s)
     #@-others
 #@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
-class TestXML (BaseTestImporter):
-    
+class TestXML(BaseTestImporter):
+
     ext = '.xml'
-    
+
     def setUp(self):
         super().setUp()
         c = self.c
@@ -3290,7 +3290,7 @@ class TestXML (BaseTestImporter):
         settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
-    
+
     #@+others
     #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):

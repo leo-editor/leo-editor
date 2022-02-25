@@ -115,8 +115,8 @@ class WaxOff:
         new_contents = contents
         for data in reversed(replacements):
             start, old, new = data
-            assert new_contents[start:].startswith(old), (start, old, new_contents[start:start+50])
-            new_contents = new_contents[:start] + new + new_contents[start+len(old):]
+            assert new_contents[start:].startswith(old), (start, old, new_contents[start : start + 50])
+            new_contents = new_contents[:start] + new + new_contents[start + len(old) :]
         # Diff or write the file.
         if self.diff:  # Diff the old and new contents.
             lines = list(difflib.unified_diff(
@@ -268,13 +268,13 @@ class WaxOff:
             elif ch == ']':
                 s_level -= 1
             elif ch in "'\"":
-                i = self.skip_string(s, i-1)
+                i = self.skip_string(s, i - 1)
             elif ch == "#":
-                i = self.skip_comment(s, i-1)
+                i = self.skip_comment(s, i - 1)
             else:
                 pass
             assert progress < i, (i, repr(s[i:]))
-        assert (c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
+        assert(c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
         return len(s)
     #@+node:ekr.20210709052929.5: *3* wax_off.skip_comment
     def skip_comment(self, s, i):
@@ -310,7 +310,7 @@ class WaxOff:
 
         Return the argument list without annotations.
         """
-        s = s.replace('\n',' ').replace('  ','').rstrip().rstrip(',')
+        s = s.replace('\n', ' ').replace('  ', '').rstrip().rstrip(',')
         args, i = [], 0
         while i < len(s):
             progress = i

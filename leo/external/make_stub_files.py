@@ -1411,10 +1411,10 @@ class ReduceTypes:
             elif Pattern(s2 + '(*)', s).match_entire_string(s):
                 return True
         if s.startswith('[') and s.endswith(']'):
-            inner = s[1 : -1]
+            inner = s[1:-1]
             return self.is_known_type(inner) if inner else True
         elif s.startswith('(') and s.endswith(')'):
-            inner = s[1 : -1]
+            inner = s[1:-1]
             return self.is_known_type(inner) if inner else True
         elif s.startswith('{') and s.endswith('}'):
             return True
@@ -1639,7 +1639,7 @@ class StandAloneMakeStubFile:
             return
         base_fn = os.path.basename(fn)
         out_fn = os.path.join(self.output_directory, base_fn)
-        out_fn = out_fn[: -3] + '.pyi'
+        out_fn = out_fn[:-3] + '.pyi'
         self.output_fn = os.path.normpath(out_fn)
         s = open(fn).read()
         node = ast.parse(s, filename=fn, mode='exec')
@@ -1887,7 +1887,7 @@ class StandAloneMakeStubFile:
 
         s = s.strip()
         if s.startswith('[') and s.endswith(']'):
-            s = munge(s[1 : -1])
+            s = munge(s[1:-1])
             for s2 in self.section_names:
                 if s == munge(s2):
                     return True
@@ -2011,7 +2011,7 @@ class Stub:
 
     def parents(self):
         '''Return a list of this stub's parents.'''
-        return self.full_name.split('.')[: -1]
+        return self.full_name.split('.')[:-1]
     #@-others
 #@+node:ekr.20160317054700.140: ** class StubFormatter (AstFormatter)
 class StubFormatter(AstFormatter):
@@ -2877,7 +2877,7 @@ class TestClass:
     #@+node:ekr.20160317054700.189: *3* parse_group (Guido)
     def parse_group(self, group):
         if len(group) >= 3 and group[-2] == 'as':
-            del group[-2 :]
+            del group[-2:]
         ndots = 0
         i = 0
         while len(group) > i and group[i].startswith('.'):
@@ -2898,7 +2898,7 @@ class TestClass:
         def f(s):
             pass
 
-        return f(s[1 : -1])
+        return f(s[1:-1])
     #@+node:ekr.20160317054700.192: *3* return_list
     def return_list(self, a):
         return [a]

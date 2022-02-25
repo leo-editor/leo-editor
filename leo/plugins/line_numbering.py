@@ -59,7 +59,7 @@ def toggleLineNumberingOff(event):
     c.user_dict[LNOFF] = not c.user_dict.get(LNOFF, False)
     renumber(c)
 #@+node:vitalije.20170727204246.1: ** onSelect
-def onSelect (tag, keys):
+def onSelect(tag, keys):
     c = keys.get('c')
     if not c.hash():
         return
@@ -122,7 +122,7 @@ def request_update(c):
     if REQUESTS.get(h):
         return
     REQUESTS[h] = True
-    QtCore.QTimer.singleShot(200, lambda:renumber(c))
+    QtCore.QTimer.singleShot(200, lambda: renumber(c))
 
 def finish_update(c):
     REQUESTS[c.hash()] = False
@@ -155,7 +155,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
     #@+node:vitalije.20170726124959.1: *3* is_verbatim
     verbaline = delim_st + '@'
     if delim_st:
-        is_verbatim = lambda x:x.startswith(verbaline)
+        is_verbatim = lambda x: x.startswith(verbaline)
         inc = lambda x: x + 1
     else:
         is_verbatim = lambda x: False
@@ -210,7 +210,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             for p1 in others_iterator(p):
                 n = numerate_node(p1, n)
             n = inc(n)
-            return (0, n-st) if delim_st else (0, n-st)
+            return (0, n - st) if delim_st else (0, n - st)
         #@+node:vitalije.20170726193858.1: *4* directives in clean
         if not delim_st and g.isDirective(line):
             return 0, 0
@@ -224,9 +224,9 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
                     for x in vlines(p1):
                         n += 1
                         if is_verbatim(x):
-                            n+=1
+                            n += 1
                         flines.append(n)
-                    flines.append(n+1)
+                    flines.append(n + 1)
                 else:
                     flines = [n]
                 flines_data[pkey(p1)] = tuple(flines), n
@@ -236,14 +236,14 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         if m:
             p1 = g.findReference(m.group(2), p)
             if not p1:
-                g.warning('unresolved section reference %s'%m.group(2))
+                g.warning('unresolved section reference %s' % m.group(2))
                 if delim_st:
-                    return 0,2
-                return 0,0
+                    return 0, 2
+                return 0, 0
             n = inc(st)
             n = numerate_node(p1, n)
             n = inc(n)
-            return (0, n-st) if delim_st else (0, n-st)
+            return (0, n - st) if delim_st else (0, n - st)
         #@+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
             if delim_st:
@@ -256,7 +256,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             return 0, 0
         #@-others
         # if we get here it is an ordinary line
-        return 0,1
+        return 0, 1
     #@+node:vitalije.20170727202446.1: *3* pkey
     def pkey(p):
         # this is enough for short-term key inside this function
@@ -275,7 +275,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         tlast = tuple(range(n, n + last))
         return tfirst + flines + tlast
     k = pkey(target_p)
-    return flines_data.get(k, (tuple(), ))[0]
+    return flines_data.get(k, (tuple(),))[0]
 #@-others
 #@@language python
 #@@tabwidth -4

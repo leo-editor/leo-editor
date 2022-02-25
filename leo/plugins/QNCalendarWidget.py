@@ -19,7 +19,7 @@ from leo.core.leoQt import isQt6, QtCore, QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 def init():
-    return True # For unit tests.
+    return True  # For unit tests.
 
 class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
@@ -53,8 +53,8 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
         size = self.minimumSizeHint()
         x, y = size.width(), size.height()
         x *= min(n, columns)
-        y *= 1 + ((n-1) // columns)
-        self.setMinimumSize(QtCore.QSize(x, y) )
+        y *= 1 + ((n - 1) // columns)
+        self.setMinimumSize(QtCore.QSize(x, y))
 
         for i in range(n):
             calendar = QtWidgets.QCalendarWidget()
@@ -70,7 +70,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             calendar.clicked.connect(self.return_result)
             calendar.activated.connect(self.return_result)
             self.calendars.append(calendar)
-            layout.addWidget(calendar, i//columns, i%columns)
+            layout.addWidget(calendar, i // columns, i % columns)
 
     def currentPageChanged(self, year, month, cal):
         """currentPageChanged - Handle change of view
@@ -146,7 +146,7 @@ def main():
     l.addWidget(QNDateEdit(columns=1))
     last = QNDateEdit()
     l.addWidget(last)
-    last.calendarWidget().build(5,4)
+    last.calendarWidget().build(5, 4)
 
     win.show()
 
