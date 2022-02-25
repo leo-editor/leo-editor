@@ -235,7 +235,7 @@ class LeoFind:
             for find, change in replacements:
                 count += self._batch_change_helper(root, find, change)
             return count
-        except Exception:
+        except Exception:  # pragma: no cover
             g.es_exception()
             return 0
     #@+node:ekr.20210108070948.1: *4* find._batch_change_helper
@@ -2135,7 +2135,7 @@ class LeoFind:
             # pylint: disable=no-member
             flags = re.MULTILINE
             if self.ignore_case:
-                flags |= re.IGNORECASE
+                flags |= re.IGNORECASE  # pragma: no cover
             # Escape the search text.
             # Ignore the whole_word option.
             s = self.find_text
@@ -2242,8 +2242,8 @@ class LeoFind:
         if self.search_headline or self.search_body:
             # Search the only enabled pane.
             return self.search_headline
-        g.trace('can not happen: no search enabled')
-        return False  # pragma: no cover (now search the body)
+        g.trace('can not happen: no search enabled')  # pragma: no cover
+        return False  # pragma: no cover
     #@+node:ekr.20031218072017.3077: *5* find._fnm_search
     def _fnm_search(self, p):
         """
@@ -2451,7 +2451,7 @@ class LeoFind:
             return True
         except Exception:
             if not g.unitTesting:
-                g.warning('invalid regular expression:', self.find_text)
+                g.warning('invalid regular expression:', self.find_text)  # pragma: no cover
             return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s):
