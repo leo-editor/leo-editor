@@ -15,12 +15,12 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+node:ekr.20210901172446.1: ** class TestAtFile(LeoUnitTest)
 class TestAtFile(LeoUnitTest):
     """Test cases for leoAtFile.py"""
-    
+
     def setUp(self):
         # Create a pristine instance of the AtFile class.
         super().setUp()
         self.at = leoAtFile.AtFile(self.c)
-        
+
     #@+others
     #@+node:ekr.20200204095726.1: *3*  TestAtFile.bridge
     def bridge(self):
@@ -33,7 +33,7 @@ class TestAtFile(LeoUnitTest):
         )
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
-        
+
         at, c = self.at, self.c
         d = at.scanAllDirectives(c.p)
         # These are the commander defaults, without any settings.
@@ -42,7 +42,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(d.get('pagewidth'), 132)
     #@+node:ekr.20210905052021.29: *3* TestAtFile.test_at_scanAllDirectives_minimal_
     def test_at_scanAllDirectives_minimal_(self):
-        
+
         at, c = self.at, self.c
         d = at.scanAllDirectives(c.p)
         d = c.atFileCommands.scanAllDirectives(c.p)
@@ -230,7 +230,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(result, expected)
     #@+node:ekr.20211102110833.1: *3* TestAtFile.test_putBody_at_all
     def test_putBody_at_all(self):
-        
+
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.py'
@@ -261,7 +261,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(result, expected)
     #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc
     def test_putBody_at_all_after_at_doc(self):
-        
+
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.py'
@@ -282,7 +282,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(result, expected)
     #@+node:ekr.20211102150707.1: *3* TestAtFile.test_putBody_at_others
     def test_putBody_at_others(self):
-        
+
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test_putBody_at_others.py'
@@ -307,7 +307,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(result, expected)
     #@+node:ekr.20211102102024.1: *3* TestAtFile.test_putBody_unterminated_at_doc_part
     def test_putBody_unterminated_at_doc_part(self):
-        
+
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.html'
@@ -328,7 +328,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(result, expected)
     #@+node:ekr.20211104154501.1: *3* TestAtFile.test_putCodeLine
     def test_putCodeLine(self):
-        
+
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
         at.startSentinelComment = '#'
@@ -341,7 +341,7 @@ class TestAtFile(LeoUnitTest):
             at.putCodeLine(line, 0)
     #@+node:ekr.20211104161927.1: *3* TestAtFile.test_putDelims
     def test_putDelims(self):
-        
+
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
         # Cover the missing code.
@@ -350,7 +350,7 @@ class TestAtFile(LeoUnitTest):
         at.putDelims(directive, s, 0)
     #@+node:ekr.20211104155139.1: *3* TestAtFile.test_putLeadInSentinel
     def test_putLeadInSentinel(self):
-        
+
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
         # Cover the special case code.
@@ -363,12 +363,12 @@ class TestAtFile(LeoUnitTest):
         at.initWriteIvars(p)
 
         class Status:  # at.putBody defines the status class.
-            at_comment_seen=False
-            at_delims_seen=False
-            at_warning_given=True  # Always suppress warning messages.
-            has_at_others=False
-            in_code=True
-            
+            at_comment_seen = False
+            at_delims_seen = False
+            at_warning_given = True  # Always suppress warning messages.
+            has_at_others = False
+            in_code = True
+
         # For now, test only the case that hasn't been covered:
         # kind == at.othersDirective and not status.in_code
         status = Status()
@@ -376,11 +376,11 @@ class TestAtFile(LeoUnitTest):
         i, kind = 0, at.othersDirective
         s = 'A doc line\n'
         at.putLine(i, kind, p, s, status)
-        
-            
+
+
     #@+node:ekr.20211104163122.1: *3* TestAtFile.test_putRefLine
     def test_putRefLine(self):
-        
+
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
         # Create one section definition node.
@@ -394,11 +394,11 @@ class TestAtFile(LeoUnitTest):
         name, n1, n2 = at.findSectionName(s, 0, p)
         self.assertTrue(name)
         at.putRefLine(s, 0, n1, n2, name, p)
-        
-       
+
+
     #@+node:ekr.20210905052021.24: *3* TestAtFile.test_remove
     def test_remove(self):
-        
+
         at = self.at
         exists = g.os_path_exists
 
@@ -418,7 +418,7 @@ class TestAtFile(LeoUnitTest):
         assert not exists(path)
     #@+node:ekr.20210905052021.25: *3* TestAtFile.test_replaceFile_different_contents
     def test_replaceFile_different_contents(self):
-        
+
         at, c = self.at, self.c
         # Duplicate init logic...
         at.initCommonIvars()
@@ -436,7 +436,7 @@ class TestAtFile(LeoUnitTest):
             os.unlink(f.name)
     #@+node:ekr.20210905052021.26: *3* TestAtFile.test_replaceFile_no_target_file
     def test_replaceFile_no_target_file(self):
-        
+
         at, c = self.at, self.c
         # Duplicate init logic...
         at.initCommonIvars()
@@ -490,7 +490,7 @@ class TestAtFile(LeoUnitTest):
             self.assertEqual(val, 'abc', msg=kind)
     #@+node:ekr.20210901140645.14: *3* TestAtFile.test_tabNannyNode
     def test_tabNannyNode(self):
-        
+
         at, p = self.at, self.c.p
         # Test 1.
         s = textwrap.dedent("""\
@@ -514,7 +514,7 @@ class TestAtFile(LeoUnitTest):
     def test_validInAtOthers(self):
 
         at, p = self.at, self.c.p
-        
+
         # Just test the last line.
         at.sentinels = False
         at.validInAtOthers(p)
@@ -522,7 +522,7 @@ class TestAtFile(LeoUnitTest):
 #@+node:ekr.20211031085414.1: ** class TestFastAtRead(LeoUnitTest)
 class TestFastAtRead(LeoUnitTest):
     """Test the FastAtRead class."""
-    
+
     def setUp(self):
         super().setUp()
         self.x = leoAtFile.FastAtRead(self.c, gnx2vnode={})
@@ -530,11 +530,11 @@ class TestFastAtRead(LeoUnitTest):
     #@+others
     #@+node:ekr.20211104162514.1: *3* TestFast.test_afterref
     def test_afterref(self):
-        
+
         c, x = self.c, self.x
         h = '@file /test/test_afterLastRef.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211106112233.1: *4* << define contents >>
         # Be careful: no line should look like a Leo sentinel!
@@ -591,11 +591,11 @@ class TestFastAtRead(LeoUnitTest):
 
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all
     def test_at_all(self):
-        
+
         c, x = self.c, self.x
         h = '@file /test/test_at_all.txt'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103093424.1: *4* << define contents >> (test_at_all)
         # Be careful: no line should look like a Leo sentinel!
@@ -630,7 +630,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_at_comment.txt'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101090447.1: *4* << define contents >> (test_at_comment)
         # Be careful: no line should look like a Leo sentinel!
@@ -681,7 +681,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_at_delims.txt'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101111652.1: *4* << define contents >> (test_at_delims)
         # Be careful: no line should look like a Leo sentinel!
@@ -727,11 +727,11 @@ class TestFastAtRead(LeoUnitTest):
             self.assertEqual(child.h, h)
     #@+node:ekr.20211103095616.1: *3* TestFast.test_at_last
     def test_at_last(self):
-        
+
         c, x = self.c, self.x
         h = '@file /test/test_at_last.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103095959.1: *4* << define contents >> (test_at_last)
         # Be careful: no line should look like a Leo sentinel!
@@ -765,12 +765,12 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(contents, s)
     #@+node:ekr.20211103092228.1: *3* TestFast.test_at_others
     def test_at_others(self):
-        
+
         # In particular, we want to test indented @others.
         c, x = self.c, self.x
         h = '@file /test/test_at_others'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103092228.2: *4* << define contents >> (test_at_others)
         # Be careful: no line should look like a Leo sentinel!
@@ -801,7 +801,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/at_section_delim.py'
         root = c.rootPosition()
-        root.h =  h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101050923.1: *4* << define contents >> (test_at_section_delim)
         # The contents of a personal test file, slightly altered.
@@ -853,7 +853,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_clones.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101155930.2: *4* << define contents >> (test_clones)
         # Be careful: no line should look like a Leo sentinel!
@@ -905,7 +905,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_cweb.w'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211103080718.2: *4* << define contents >> (test_cweb)
         # pylint: disable=anomalous-backslash-in-string
@@ -952,7 +952,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_directives.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101152843.1: *4* << define contents >> (test_doc_parts)
         # Be careful: no line should look like a Leo sentinel!
@@ -985,7 +985,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_html_doc_part.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101154651.1: *4* << define contents >> (test_html_doc_part)
         # Be careful: no line should look like a Leo sentinel!
@@ -1013,7 +1013,7 @@ class TestFastAtRead(LeoUnitTest):
         c, x = self.c, self.x
         h = '@file /test/test_verbatim.py'
         root = c.rootPosition()
-        root.h = h # To match contents.
+        root.h = h  # To match contents.
         #@+<< define contents >>
         #@+node:ekr.20211101180404.1: *4* << define contents >> (test_verbatim)
         # Be careful: no line should look like a Leo sentinel!

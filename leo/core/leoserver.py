@@ -44,10 +44,10 @@ __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
 
 # Server defaults
-SERVER_STARTED_TOKEN = "LeoBridge started" # Output when started successfully
+SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
 connectionsPool = set()  # type:ignore
-connectionsTotal = 0 # Current connected client total
+connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
 traces: List = []
@@ -138,7 +138,7 @@ class ServerExternalFilesController(ExternalFilesController):
             if bool(p_result and 'yes' in p_result.lower()):
                 # self.lastCommander.close() Stops too much if last file closed
                 g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
-                g.leoServer.open_file({"filename":path }) # ignore returned value
+                g.leoServer.open_file({"filename": path})  # ignore returned value
 
         # Always update the path & time to prevent future warnings for this path.
         if path:
@@ -153,7 +153,7 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
     def check_overwrite(self, c, path):
         if self.has_changed(path):
-            package = {"async": "info", "message": "Overwritten "+ path}
+            package = {"async": "info", "message": "Overwritten " + path}
             g.leoServer._send_async_output(package, True)
         return True
 
@@ -224,7 +224,7 @@ class ServerExternalFilesController(ExternalFilesController):
             #reload Commander
             # self.lastCommander.close() Stops too much if last file closed
             g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
-            g.leoServer.open_file({"filename":path }) # ignore returned value
+            g.leoServer.open_file({"filename": path})  # ignore returned value
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         """Check the @<file> node at p for external changes."""
@@ -239,12 +239,12 @@ class ServerExternalFilesController(ExternalFilesController):
                 # Fix #1081: issue a warning.
                 self.warn(c, path, p=p)
             elif self.ask(c, path, p=p):
-                old_p = c.p # To restore selection if refresh option set to yes-all & is descendant of at-file
+                old_p = c.p  # To restore selection if refresh option set to yes-all & is descendant of at-file
                 c.selectPosition(self.lastPNode)
-                c.refreshFromDisk() # Ends with selection on new c.p which is the at-file node
+                c.refreshFromDisk()  # Ends with selection on new c.p which is the at-file node
                 # check with leoServer's config first, and if new c.p is ancestor of old_p
                 if g.leoServer.leoServerConfig:
-                    if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()=='yes-all':
+                    if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all':
                         if c.positionExists(old_p) and c.p.isAncestorOf(old_p):
                             c.selectPosition(old_p)
 
@@ -280,7 +280,7 @@ class ServerExternalFilesController(ExternalFilesController):
             self.yesno_all_time = time.time()  # Still reloading?  Extend time
             # if yesAll/noAll forced, then just show info message
             yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
-            return yesno_all_bool # We already have our answer here, so return it
+            return yesno_all_bool  # We already have our answer here, so return it
         if not p:
             where = 'the outline node'
         else:
@@ -302,9 +302,9 @@ class ServerExternalFilesController(ExternalFilesController):
         package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
                      "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
 
-        g.leoServer._send_async_output(package) # Ask the connected client
-        self.waitingForAnswer = True # Block the loop and further checks until 'clientResult'
-        return False # return false so as not to refresh until 'clientResult' says so
+        g.leoServer._send_async_output(package)  # Ask the connected client
+        self.waitingForAnswer = True  # Block the loop and further checks until 'clientResult'
+        return False  # return false so as not to refresh until 'clientResult' says so
     #@+node:felix.20210626222905.13: *4* sefc.is_enabled
     def is_enabled(self, c):
         """Return the cached @bool check_for_changed_external_file setting."""
@@ -380,10 +380,10 @@ class LeoServer:
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
-            loadPlugins=True,   # True: attempt to load plugins.
+            loadPlugins=True,  # True: attempt to load plugins.
             readSettings=True,  # True: read standard settings files.
-            silent=True,         # True: don't print signon messages.
-            verbose=False,       # True: prints messages that would be sent to the log pane.
+            silent=True,  # True: don't print signon messages.
+            verbose=False,  # True: prints messages that would be sent to the log pane.
         )
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
         g.in_leo_server = True  # #2098.
@@ -393,7 +393,7 @@ class LeoServer:
         g.es = self._es  # pointer - not a function call
         #
         # Set in _init_connection
-        self.web_socket = None # Main Control Client
+        self.web_socket = None  # Main Control Client
         self.loop = None
         #
         # To inspect commands
@@ -440,11 +440,11 @@ class LeoServer:
         if title.startswith('Overwrite'):
             s = "@<file> tree was overwritten"
         elif title.startswith('Revert'):
-            s= "Leo outline reverted to last saved contents"
+            s = "Leo outline reverted to last saved contents"
         elif title.startswith('Create'):
-            s= "myLeoSettings.leo created"
+            s = "myLeoSettings.leo created"
         elif title.startswith('Move'):
-            s= "Marked nodes were moved"
+            s = "Marked nodes were moved"
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
@@ -458,14 +458,14 @@ class LeoServer:
         # used in prompt for save with title: 'Confirm'
         s = "runAskYesNoCancelDialog called"
         if title.startswith('Overwrite'):
-            s= "File Overwritten"
+            s = "File Overwritten"
         elif title.startswith('Confirm'):
-            s= "File Saved"
+            s = "File Saved"
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
         return "yes"
     #@+node:felix.20210622235209.1: *4* LeoServer._es
-    def _es(self, * args, **keys):  # pragma: no cover (tested in client).
+    def _es(self, *args, **keys):  # pragma: no cover (tested in client).
         """Output to the Log Pane"""
         d = {
             'color': None,
@@ -520,7 +520,7 @@ class LeoServer:
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn, delay, tag):
-        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay/1000, fn))
+        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self, c, in_headline, insert, p):
         """Handle a successful find match."""
@@ -550,7 +550,7 @@ class LeoServer:
             children = []
             if rc.children:
                 children = self._get_rclickTree(rc.children)
-            rclickList.append({"name": rc.position.h, "children":children })
+            rclickList.append({"name": rc.position.h, "children": children})
 
         return rclickList
 
@@ -577,7 +577,7 @@ class LeoServer:
             if w_rclick and hasattr(button, 'rclicks'):
                 # not zero
                 toChooseFrom = button.rclicks
-                for i_rc in  w_rclick:
+                for i_rc in w_rclick:
                     w_rclickChosen = toChooseFrom[i_rc]
                     toChooseFrom = w_rclickChosen.children
                 if w_rclickChosen:
@@ -613,7 +613,7 @@ class LeoServer:
         # Some button keys are objects so we have to convert first
         for key in d:
             rclickList = []
-            if  hasattr(key, 'rclicks'):
+            if hasattr(key, 'rclicks'):
                 rclickList = self._get_rclickTree(key.rclicks)
                 # buttonRClicks = key.rclicks
                 # for rc in buttonRClicks:
@@ -640,7 +640,7 @@ class LeoServer:
                 key = i_key
         if key:
             try:
-                del d [key]
+                del d[key]
             except Exception as e:
                 raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
         else:
@@ -704,7 +704,7 @@ class LeoServer:
         self.c = c
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
-        c.recreateGnxDict() # refresh c.fileCommands.gnxDict used in ap_to_p
+        c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
@@ -761,7 +761,7 @@ class LeoServer:
                 if c.fileName():
                     c.revert()
                 else:
-                    c.changed = False # Needed in g.app.closeLeoWindow
+                    c.changed = False  # Needed in g.app.closeLeoWindow
             # Then, if still possible, close it.
             if forced or not c.changed:
                 # c.close() # Stops too much if last file closed
@@ -1252,7 +1252,7 @@ class LeoServer:
 
         def row_col_wrapper_dict(i):
             if not i:
-                i = 0 # prevent none type
+                i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
             junk, line, col = wrapper.toPythonIndexRowCol(i)
@@ -1260,7 +1260,7 @@ class LeoServer:
 
         def row_col_pv_dict(i, s):
             if not i:
-                i = 0 # prevent none type
+                i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
             line, col = g.convertPythonIndexToRowCol(s, i)
@@ -1322,7 +1322,7 @@ class LeoServer:
         where p is root if param.ap is missing
         """
         c = self._check_c()
-        children = [] # default empty array
+        children = []  # default empty array
         if param.get("ap"):
             # Maybe empty param, for tree-root children(s).
             # _get_p called with the strict=True parameter because
@@ -1479,7 +1479,7 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex-1
+                oldPosition._childIndex = oldPosition._childIndex - 1
                 # Try again with childIndex decremented
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
@@ -1503,7 +1503,7 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex-1
+                oldPosition._childIndex = oldPosition._childIndex - 1
                 # Try again with childIndex decremented
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
@@ -1617,7 +1617,7 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex+1
+                oldPosition._childIndex = oldPosition._childIndex + 1
                 # Try again with childIndex incremented
                 if c.positionExists(oldPosition):
                     # additional try with higher childIndex
@@ -1645,7 +1645,7 @@ class LeoServer:
                 # select if old position still valid
                 c.selectPosition(oldPosition)
             else:
-                oldPosition._childIndex = oldPosition._childIndex+1
+                oldPosition._childIndex = oldPosition._childIndex + 1
                 # Try again with childIndex incremented
                 if c.positionExists(oldPosition):
                     # additional try with higher childIndex
@@ -1674,7 +1674,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no body given")
         for p in c.all_positions():
             if p.v.gnx == gnx:
-                if body==p.v.b:
+                if body == p.v.b:
                     return self._make_response()
                     # Just exit if there is no need to change at all.
                 bunch = u.beforeChangeNodeContents(p)
@@ -1752,7 +1752,7 @@ class LeoServer:
         convert = g.convertRowColToPythonIndex
         start = param.get('start', 0)
         end = param.get('end', 0)
-        active = param.get('insert', 0) # temp var to check if int.
+        active = param.get('insert', 0)  # temp var to check if int.
         scroll = param.get('scroll', 0)
         # If sent as number, use 'as is'
         if isinstance(active, int):
@@ -1863,7 +1863,7 @@ class LeoServer:
         along with the three version members as numbers 'major', 'minor' and 'patch'.
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
-        result = {"version": __version__ , "major": v1, "minor": v2, "patch": v3}
+        result = {"version": __version__, "major": v1, "minor": v2, "patch": v3}
         return self._make_minimal_response(result)
     #@+node:felix.20210818012827.1: *5* server.do_nothing
     def do_nothing(self, param):
@@ -1881,7 +1881,7 @@ class LeoServer:
     #@+node:felix.20210621233316.70: *5* server.set_config
     def set_config(self, param):
         """Got auto-reload's config from client"""
-        self.leoServerConfig = param # PARAM IS THE CONFIG-DICT
+        self.leoServerConfig = param  # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
     def error(self, param):
@@ -1944,12 +1944,12 @@ class LeoServer:
             'delete-last-icon',
             'delete-node-icons',
             'insert-icon',
-            'set-ua', # TODO : Should be easy to implement
-            'export-headlines', # export TODO
-            'export-jupyter-notebook', # export TODO
-            'outline-to-cweb', # export TODO
-            'outline-to-noweb', # export TODO
-            'remove-sentinels', # import TODO
+            'set-ua',  # TODO : Should be easy to implement
+            'export-headlines',  # export TODO
+            'export-jupyter-notebook',  # export TODO
+            'outline-to-cweb',  # export TODO
+            'outline-to-noweb',  # export TODO
+            'remove-sentinels',  # import TODO
 
             'save-all',
             'save-file-as-zipped',
@@ -1979,7 +1979,7 @@ class LeoServer:
             'help-for-regular-expressions',
             'help-for-scripting',
             'help-for-settings',
-            'join-leo-irc', # Some online irc - parameters not working anymore
+            'join-leo-irc',  # Some online irc - parameters not working anymore
 
             'print-body',
             'print-cmd-docstrings',
@@ -2000,7 +2000,7 @@ class LeoServer:
             'save-buffers-kill-leo',
             'screen-capture-5sec',
             'screen-capture-now',
-            'set-reference-file', # TODO : maybe offer this
+            'set-reference-file',  # TODO : maybe offer this
             'show-style-sheet',
             'sort-recent-files',
             'view-lossage',
@@ -3085,7 +3085,7 @@ class LeoServer:
             self.loop = asyncio.get_event_loop()
         else:
             # already exist, so "spectator-clients" setup
-            pass # nothing for now
+            pass  # nothing for now
     #@+node:felix.20210621233316.77: *5* server.shut_down
     def shut_down(self, param):
         """Shut down the server."""
@@ -3115,7 +3115,7 @@ class LeoServer:
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
             #
-            def d_to_childIndex_v (d):
+            def d_to_childIndex_v(d):
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex = d.get('childIndex')
                 if childIndex is None:  # pragma: no cover.
@@ -3152,7 +3152,7 @@ class LeoServer:
                     # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
                     f"{tag}: stack: {stack!r}", flush=True)
-            return False # Return false on any error so caller can react
+            return False  # Return false on any error so caller can react
         return p
     #@+node:felix.20210621233316.80: *4* server._check_c
     def _check_c(self):
@@ -3205,24 +3205,24 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = c.commandsDict.get(command_name) # Getting from kebab-cased 'Command Name'
+        func = c.commandsDict.get(command_name)  # Getting from kebab-cased 'Command Name'
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
 
         p = self._get_p(param)
         try:
             if p == c.p:
-                value = func(event={"c":c})  # no need for re-selection
+                value = func(event={"c": c})  # no need for re-selection
             else:
                 old_p = c.p  # preserve old position
                 c.selectPosition(p)  # set position upon which to perform the command
-                value = func(event={"c":c})
+                value = func(event={"c": c})
                 if keepSelection and c.positionExists(old_p):
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
-            return self._make_response() # Return empty on error
+            return self._make_response()  # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
@@ -3251,24 +3251,24 @@ class LeoServer:
         if "keep" in param:
             keepSelection = param["keep"]
 
-        func = self._get_commander_method(function_name) # GET FUNC
+        func = self._get_commander_method(function_name)  # GET FUNC
         if not func:  # pragma: no cover
             raise ServerError(f"{tag}: Leo command not found: {function_name!r}")
 
         p = self._get_p(param)
         try:
             if p == c.p:
-                value = func(event={"c":c})  # no need for re-selection
+                value = func(event={"c": c})  # no need for re-selection
             else:
                 old_p = c.p  # preserve old position
                 c.selectPosition(p)  # set position upon which to perform the command
-                value = func(event={"c":c})
+                value = func(event={"c": c})
                 if keepSelection and c.positionExists(old_p):
                     # Only if 'keep' old position was set, and old_p still exists
                     c.selectPosition(old_p)
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
-            return self._make_response() # Return empty on error
+            return self._make_response()  # Return empty on error
         #
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
@@ -3307,7 +3307,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no action")
 
         # TODO : make/force always an object from the client connected.
-        param = d.get('param', {}) # Can be none or a string
+        param = d.get('param', {})  # Can be none or a string
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
@@ -3335,10 +3335,10 @@ class LeoServer:
 
         # Execute the requested action.
         if action[0] == "!":
-            action = action[1:] # Remove exclamation point "!"
+            action = action[1:]  # Remove exclamation point "!"
             func = self._do_server_command  # Server has this method.
         elif action[0] == '-':
-            action = action[1:] # Remove dash "-"
+            action = action[1:]  # Remove dash "-"
             func = self._do_leo_command_by_name  # It's a command name.
         else:
             func = self._do_leo_function_by_name  # It's the name of a method in some commander.
@@ -3437,7 +3437,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
         return focus
     #@+node:felix.20210621233316.90: *4* server._get_p
-    def _get_p(self, param, strict = False):
+    def _get_p(self, param, strict=False):
         """
         Return _ap_to_p(param["ap"]) or c.p.,
         or False if the strict flag is set
@@ -3501,7 +3501,7 @@ class LeoServer:
         try:
             json.dumps(x, cls=SetEncoder)
             return True
-        except (TypeError, OverflowError):
+        except(TypeError, OverflowError):
             return False
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
     def _make_minimal_response(self, package=None):
@@ -3525,7 +3525,7 @@ class LeoServer:
             package = {}
 
         # Always add id.
-        package ["id"] = self.current_id
+        package["id"] = self.current_id
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
@@ -3557,7 +3557,7 @@ class LeoServer:
             package = {}
         p = package.get("p")
         if p:
-            del package ["p"]
+            del package["p"]
         # Raise an *internal* error if checks fail.
         if isinstance(package, str):  # pragma: no cover
             raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
@@ -3571,21 +3571,21 @@ class LeoServer:
             raise InternalServerError(f"{tag}: empty c.p")
 
         # Always add id
-        package ["id"] = self.current_id
+        package["id"] = self.current_id
 
         # The following keys are relevant only if there is an open commander.
         if c:
             # Allow commands, especially _get_redraw_d, to specify p!
             p = p or c.p
-            package ["commander"] = {
+            package["commander"] = {
                 "changed": c.isChanged(),
-                "fileName": c.fileName(), # Can be None for new files.
+                "fileName": c.fileName(),  # Can be None for new files.
             }
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
-            package ["node"] = redraw_d
+            package["node"] = redraw_d
 
         # Handle traces.
         if trace and verbose:  # pragma: no cover
@@ -3624,7 +3624,7 @@ class LeoServer:
                 return p
         return False
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package, toAll = False):
+    def _send_async_output(self, package, toAll=False):
         """
         Send data asynchronously to the client
         """
@@ -3637,7 +3637,7 @@ class LeoServer:
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json, toAll = False):  # pragma: no cover (tested in server)
+    async def _async_output(self, json, toAll=False):  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
         tag = '_async_output'
@@ -3712,8 +3712,8 @@ def main():  # pragma: no cover (tested in client)
         screen_width = top.winfo_screenwidth()
         screen_height = top.winfo_screenheight()
         size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
-        x = screen_width/2 - size[0]/2
-        y = screen_height/2 - size[1]/2
+        x = screen_width / 2 - size[0] / 2
+        y = screen_height / 2 - size[1] / 2
         top.geometry("+%d+%d" % (x, y))
     #@+node:felix.20210804130751.1: *3* function: close_server
     def close_Server():
@@ -3894,7 +3894,7 @@ def main():  # pragma: no cover (tested in client)
         add('-p', '--port', dest='wsPort', type=int, default=wsPort, metavar='N',
             help='port number. Defaults to ' + str(wsPort))
         add('-l', '--limit', dest='wsLimit', type=int, default=wsLimit, metavar='N',
-            help='maximum number of clients. Defaults to '+ str(wsLimit))
+            help='maximum number of clients. Defaults to ' + str(wsLimit))
         add('-f', '--file', dest='argFile', type=leo_file, metavar='PATH',
             help='open a .leo file at startup')
         add('--persist', dest='wsPersist', action='store_true',
@@ -3932,11 +3932,11 @@ def main():  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action, excludedConn = None):
+    async def notify_clients(action, excludedConn=None):
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
-            opened = bool(controller.c) # c can be none if no files opened
-            m =  json.dumps({
+            opened = bool(controller.c)  # c can be none if no files opened
+            m = json.dumps({
                 "async": "refresh",
                 "action": action,
                 "opened": opened,
@@ -3964,7 +3964,7 @@ def main():  # pragma: no cover (tested in client)
         commanders = g.app.commanders()
         for commander in commanders:
             if commander.isChanged() and commander.fileName():
-                commander.close() # Patched 'ask' methods will open dialog
+                commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
     async def unregister_client(websocket):
         global connectionsTotal
@@ -3989,8 +3989,8 @@ def main():  # pragma: no cover (tested in client)
                 print(f"{tag}: User Refused, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
                 await websocket.close(1001)
                 return
-            connected = True # local variable
-            connectionsTotal += 1 # global variable
+            connected = True  # local variable
+            connectionsTotal += 1  # global variable
             print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
             # If first connection set it as the main client connection
             controller._init_connection(websocket)
@@ -4048,7 +4048,7 @@ def main():  # pragma: no cover (tested in client)
         finally:
             if connected:
                 connectionsTotal -= 1
-                await  unregister_client(websocket)
+                await unregister_client(websocket)
                 print(f"{tag} connection finished.  Total: {connectionsTotal}, Limit: {wsLimit}")
             # Check for persistence flag if all connections are closed
             if connectionsTotal == 0 and not wsPersist:
@@ -4056,23 +4056,23 @@ def main():  # pragma: no cover (tested in client)
                 # Preemptive closing of tasks
                 for task in asyncio.all_tasks():
                     task.cancel()
-                close_Server() # Stops the run_forever loop
+                close_Server()  # Stops the run_forever loop
     #@-others
 
     # Make the first real line of output more visible.
     print("", flush=True)
 
     # Sets sHost, wsPort, wsLimit, wsPersist, wsSkipDirty fileArg and traces
-    get_args() # Set global values from the command line arguments
+    get_args()  # Set global values from the command line arguments
     print("Starting LeoBridge... (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
-    controller = LeoServer() # Single instance of LeoServer, i.e., an instance of leoBridge
+    controller = LeoServer()  # Single instance of LeoServer, i.e., an instance of leoBridge
     if argFile:
         # Open specified file argument
         try:
             print(f"Opening file: {argFile}", flush=True)
-            controller.open_file({"filename":argFile})
+            controller.open_file({"filename": argFile})
         except Exception:
             print("Opening file failed", flush=True)
 

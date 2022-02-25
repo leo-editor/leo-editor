@@ -152,10 +152,10 @@ class Export_IPYNB(basewriter.BaseWriter):
         nb = self.get_ua(root, key='prefix') or self.default_metadata()
         # Write the expansion status of the root.
         meta = nb.get('metadata') or {}
-        meta ['collapsed'] = not root.isExpanded()
-        nb ['metadata'] = meta
+        meta['collapsed'] = not root.isExpanded()
+        nb['metadata'] = meta
         # Put all the cells.
-        nb ['cells'] = [self.put_body(p) for p in root.subtree()]
+        nb['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
     #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
     def put_body(self, p):
@@ -189,41 +189,41 @@ class Export_IPYNB(basewriter.BaseWriter):
             lines = clean(lines)
             # Insert a new header markup line.
             if level > 0:
-                lines.insert(0, '%s %s\n' % ('#'*level, self.clean_headline(p.h)))
+                lines.insert(0, '%s %s\n' % ('#' * level, self.clean_headline(p.h)))
         else:
             # Remember the level for the importer.
-            meta ['leo_level'] = level
+            meta['leo_level'] = level
             lines = clean(lines)
             # Remove leading whitespace lines inserted during import.
-        cell ['source'] = lines
+        cell['source'] = lines
     #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
     def update_cell_properties(self, cell, meta, p):
         """Update cell properties."""
         # Update the metadata.
-        meta ['leo_headline'] = p.h
-        meta ['collapsed'] = not p.isExpanded()
+        meta['leo_headline'] = p.h
+        meta['collapsed'] = not p.isExpanded()
         # "cell_type" should not be in the metadata.
         if meta.get('cell_type'):
-            del meta ['cell_type']
-        cell ['metadata'] = meta
+            del meta['cell_type']
+        cell['metadata'] = meta
         # Update required properties.
-        cell ['cell_type'] = kind = self.cell_type(p)
+        cell['cell_type'] = kind = self.cell_type(p)
         if kind == 'code':
             if cell.get('outputs') is None:
-                cell ['outputs'] = []
+                cell['outputs'] = []
             if cell.get('execution_count') is None:
-                cell ['execution_count'] = 0
+                cell['execution_count'] = 0
         else:
             # These properties are invalid!
             for prop in ('execution_count', 'outputs'):
                 if cell.get(prop) is not None:
-                    del cell [prop]
+                    del cell[prop]
         return kind
 
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-jupyter','@auto-ipynb',],
+    '@auto': ['@auto-jupyter', '@auto-ipynb',],
     'class': Export_IPYNB,
     'extensions': ['.ipynb',],
 }

@@ -43,12 +43,12 @@ class MarkdownWriter(basewriter.BaseWriter):
         assert level > 0, p.h
         kind = p.h and p.h[0]
         if kind == '!':
-            pass # The signal for a declaration node.
+            pass  # The signal for a declaration node.
         # elif kind in '=-':
             # self.put(p.h)
             # self.put(kind*max(4,len(p.h)))
         else:
-            self.put('%s %s' % ('#'*level, p.h))
+            self.put('%s %s' % ('#' * level, p.h))
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
     def write_root(self, root):
         """Write the root @auto-org node."""
@@ -58,7 +58,7 @@ class MarkdownWriter(basewriter.BaseWriter):
     #@-others
 #@-others
 writer_dict = {
-    '@auto': ['@auto-md','@auto-markdown',],
+    '@auto': ['@auto-md', '@auto-markdown',],
     'class': MarkdownWriter,
     'extensions': ['.md',],
 }

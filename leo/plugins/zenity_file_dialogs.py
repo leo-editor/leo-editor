@@ -19,14 +19,14 @@ trace = False
 #@+node:ekr.20101110095557.5886: ** testForZenity
 def testForZenity():
 
-    command = [ 'which', 'zenity']
+    command = ['which', 'zenity']
     o = subprocess.Popen(command, stdout=subprocess.PIPE)
     o.wait()
     o.communicate()[0].rstrip()
     ret = o.returncode
     return not ret
 #@+node:ekr.20101110095557.5888: ** init
-def init ():
+def init():
     """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
         return False
@@ -38,14 +38,14 @@ def init ():
         g.trace('failed to load zenity')
     return ok
 #@+node:ekr.20101110095557.5890: ** onStart2
-def onStart2 (tag, keywords):
+def onStart2(tag, keywords):
     """Replace tkfile open/save method with external calls to zenity."""
-    g.funcToMethod(runOpenFileDialog,g.app.gui)
-    g.funcToMethod(runSaveFileDialog,g.app.gui)
+    g.funcToMethod(runOpenFileDialog, g.app.gui)
+    g.funcToMethod(runSaveFileDialog, g.app.gui)
 #@+node:ekr.20101110095557.5892: ** callZenity
 def callZenity(title, multiple=False, save=False, test=False):
 
-    command = [ 'zenity', '--file-selection', '--title=%s'%title]
+    command = ['zenity', '--file-selection', '--title=%s' % title]
     if save:
         command.append('--save')
     if multiple:

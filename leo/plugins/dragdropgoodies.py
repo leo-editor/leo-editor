@@ -22,21 +22,21 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:ville.20110115234843.8746: ** init
-def init ():
+def init():
 
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        if 0: # Use this if you want to create the commander class before the frame is fully created.
-            g.registerHandler('before-create-leo-frame',onCreate)
-        else: # Use this if you want to create the commander class after the frame is fully created.
-            g.registerHandler('after-create-leo-frame',onCreate)
+        if 0:  # Use this if you want to create the commander class before the frame is fully created.
+            g.registerHandler('before-create-leo-frame', onCreate)
+        else:  # Use this if you want to create the commander class after the frame is fully created.
+            g.registerHandler('after-create-leo-frame', onCreate)
 
         g.registerHandler('outlinedrop', onDrop)
         g.plugin_signon(__name__)
     return ok
 #@+node:ville.20110115234843.8753: ** onDrop
 def onDrop(tag, keys):
-    print("ta",tag)
+    print("ta", tag)
     ev = keys['dropevent']
     formats = keys['formats']
     md = ev.mimeData()
@@ -56,7 +56,7 @@ def mime_data_dump(md):
         print(da)
         print("END")
 #@+node:ville.20110115234843.8747: ** onCreate
-def onCreate (tag, keys):
+def onCreate(tag, keys):
 
     c = keys.get('c')
     if c:
@@ -66,7 +66,7 @@ class pluginController:
 
     #@+others
     #@+node:ville.20110115234843.8749: *3* __init__
-    def __init__ (self,c):
+    def __init__(self, c):
 
         pass
 

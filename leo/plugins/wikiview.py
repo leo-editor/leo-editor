@@ -69,7 +69,7 @@ def cmd_toggle(event):
     """wikiview: toggle active flag"""
     c = event.get('c')
     c._wikiview.active = not c._wikiview.active
-    if  c._wikiview.active:
+    if c._wikiview.active:
         g.es("WikiView active")
         cmd_hide_all(event)
     else:
@@ -103,13 +103,13 @@ class WikiView:
         if hasattr(self.colorizer, 'set_wikiview_patterns'):
             self.colorizer.set_wikiview_patterns(leadins, self.urlpats)
         self.select = 'select3'  # Leo hook to hide text
-        self.pts=1  # hidden text size (0.1 does not work!)
-        self.pct=1  # hidden text letter spacing
+        self.pts = 1  # hidden text size (0.1 does not work!)
+        self.pct = 1  # hidden text letter spacing
         self.reloadSettings()
         w = c.frame.body.widget
         if not w:
-            return # w may not exist during unit testing.
-        g.registerHandler(self.select,self.hide)
+            return  # w may not exist during unit testing.
+        g.registerHandler(self.select, self.hide)
         w.cursorPositionChanged.connect(self.unhide)
         # size to restore text to when unhiding,
         # w.currentFont().pointSize() is -1 which doesn't work, hence QFontInfo
@@ -155,8 +155,8 @@ class WikiView:
                 for group_n, group in enumerate(m.groups()):
                     if group is None:
                         continue
-                    cursor.setPosition(m.start(group_n+1))
-                    cursor.setPosition(m.end(group_n+1), MoveMode.KeepAnchor)
+                    cursor.setPosition(m.start(group_n + 1))
+                    cursor.setPosition(m.end(group_n + 1), MoveMode.KeepAnchor)
                     cfmt = cursor.charFormat()
                     cfmt.setFontPointSize(self.pts)
                     cfmt.setFontLetterSpacing(self.pct)

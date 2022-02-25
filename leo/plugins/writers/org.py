@@ -8,7 +8,7 @@ import leo.plugins.writers.basewriter as basewriter
 class OrgModeWriter(basewriter.BaseWriter):
     """The writer class for .org files."""
 
-    def __init__(self,c):
+    def __init__(self, c):
         super().__init__(c)
         self.tc = self.load_nodetags()
 

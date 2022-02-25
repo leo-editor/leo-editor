@@ -190,7 +190,7 @@ class TestCommands(LeoUnitTest):
             c.findMatchingBracket(event=None)
             i2, j2 = w.getSelectionRange()
             self.assertTrue(i2 < j2, msg=f"i: {i}, j: {j}")
-            
+
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
@@ -227,7 +227,7 @@ class TestCommands(LeoUnitTest):
         assert not c.hoistStack
         c.selectPosition(aaa)
         assert not c.hoistStack
-       
+
         # The de-hoist happens in c.expandOnlyAncestorsOfNode, the call to c.selectPosition.
         if 1:
             c.hoist()

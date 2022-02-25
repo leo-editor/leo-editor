@@ -14,7 +14,7 @@ import re
 import sys
 import traceback
 # Third-part tools.
-import setuptools # Prefer setuptools over distutils.
+import setuptools  # Prefer setuptools over distutils.
 #@-<< imports >>
 #@+<< define classifiers >>
 #@+node:maphew.20141126230535.4: ** << define classifiers >>
@@ -116,8 +116,8 @@ def test_is_valid_version():
     However, `python -m setup` won't work :-)
     """
     table = (
-        '1.2', '3.4.5', '6.7b1', '8.9rc3', # good.
-        'v1.2', '3.4a1', '5.6-b1', # bad
+        '1.2', '3.4.5', '6.7b1', '8.9rc3',  # good.
+        'v1.2', '3.4a1', '5.6-b1',  # bad
     )
     for s in table:
         ok = is_valid_version(s)

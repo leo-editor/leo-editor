@@ -23,15 +23,15 @@ def init():
         if name not in ('curses', 'nullGui'):
             print('xdb_pane.py plugin not loading because gui is not Qt')
         return False
-    g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('after-create-leo-frame', onCreate)
         # Can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20181004143535.5: *3* onCreate (xdb_pane.py)
-def onCreate (tag,key):
+def onCreate(tag, key):
     c = key.get('c')
     c.xpd_pane = w = XdbPane(c)
-    c.frame.log.createTab('Debug',widget=w)
+    c.frame.log.createTab('Debug', widget=w)
 #@+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
 
