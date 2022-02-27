@@ -2113,7 +2113,6 @@ class StyleSheetManager:
             for s in g.splitLines(stylesheet)])
         return s.rstrip()
             # Don't care about ending newline.
-    #@+node:ekr.20180317062556.1: *3* sss.Theme files
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
     def get_master_widget(self, top=None):
