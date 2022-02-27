@@ -1725,6 +1725,7 @@ class LeoServer:
         h = param.get('name', '')
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
+        c.setChanged()
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:felix.20210621233316.63: *5* server.set_selection
