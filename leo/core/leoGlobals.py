@@ -7712,10 +7712,9 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     c2 = g.openWithFileName(path, old_c=c)
     if not c2:
         return None
-    # Find the UNL, select the node, and redraw.
-    p = g.findUNL(unl.split("-->"), c2)
-    if not p:
-        return None
+    # Find  and redraw.
+    # #2445: Default to c2.rootPosition().
+    p = g.findUNL(unl.split("-->"), c2) or c2.rootPosition()
     c2.redraw(p)
     c2.bringToFront()
     c2.bodyWantsFocusNow()
