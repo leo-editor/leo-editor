@@ -846,8 +846,9 @@ if QtWidgets:
                 else:
                     hl_color = params['last_hl_color']
             else:
-                ssm = c.styleSheetManager
-                sheet = ssm.expand_css_constants(c.active_stylesheet)
+                c1 = g.app.commanders()[-1]
+                ssm = c1.styleSheetManager
+                sheet = ssm.expand_css_constants(c1.active_stylesheet)
                 h = hash(sheet)
                 params['last_color_setting'] = ''
                 if params['last_style_hash'] != h or config_setting_changed:
