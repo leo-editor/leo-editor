@@ -458,12 +458,12 @@ if QtWidgets:
             w.scroll_area = area = QtWidgets.QScrollArea()
             area.setWidget(self.picture)
             AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
-            area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
+            area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
 
             # Disable scrollbars.
             ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
-            area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
-            area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+            area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
+            area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
 
             # Init the layout.
             layout = QtWidgets.QVBoxLayout()
@@ -506,7 +506,7 @@ if QtWidgets:
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
                 image = pixmap.scaledToHeight(
                     int(self.height() * self.scale),
-                    TransformationMode.SmoothTransformation,
+                    TransformationMode.SmoothTransformation,  # pylint: disable=no-member
                 )
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
@@ -548,7 +548,7 @@ if QtWidgets:
             else:
                 w.full_screen = True
                 WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
-                w.setWindowState(WindowState.WindowFullScreen)
+                w.setWindowState(WindowState.WindowFullScreen)  # pylint: disable=no-member
                 w.picture.setGeometry(0, 0, w.width(), w.height())
                 w.picture.adjustSize()
         #@+node:ekr.20211021200821.18: *3* Slides.zoom_in & zoom_out
