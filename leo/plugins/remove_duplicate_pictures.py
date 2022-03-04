@@ -224,7 +224,7 @@ class RemoveDuplicates:
         pixmap = QtGui.QPixmap(filename)
         try:
             TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
-            image = pixmap.scaledToHeight(self.window_height, TransformationMode.SmoothTransformation)
+            image = pixmap.scaledToHeight(self.window_height, TransformationMode.SmoothTransformation)  # pylint: disable=no-member
             picture.setPixmap(image)
             picture.adjustSize()
             return frame
