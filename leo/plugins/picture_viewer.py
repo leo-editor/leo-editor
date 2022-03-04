@@ -492,6 +492,8 @@ if QtWidgets:
             # Reset the timer.
             self.timer.stop()
             self.timer.start(int(self.delay * 1000.0), self)
+            if not self.files_list:
+                self.quit()
             # Get the file name.
             file_name = self.files_list[self.slide_number]
             if self.verbose:
