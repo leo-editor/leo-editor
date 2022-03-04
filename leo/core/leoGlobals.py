@@ -7854,6 +7854,21 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i:j]
+
+        # Navigate to section reference if one was clickedon
+        l_ = line.strip()
+        if l_.startswith('<<') and l_.endswith('>>'):
+            p = c.p
+            px = None
+            for p1 in p.nearest_roots():
+                for p2 in p1.self_and_subtree():
+                    if p2.h.strip() == l_:
+                        px = p2
+                        break
+            if px:
+                c.selectPosition(px)
+                c.redraw()
+
         # Find the url on the line.
         for match in g.url_regex.finditer(line):
             # Don't open if we click after the url.
