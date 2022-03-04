@@ -7860,11 +7860,10 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         if l_.startswith('<<') and l_.endswith('>>'):
             p = c.p
             px = None
-            for p1 in p.nearest_roots():
-                for p2 in p1.self_and_subtree():
-                    if p2.h.strip() == l_:
-                        px = p2
-                        break
+            for p1 in p.subtree():
+                if p1.h.strip() == l_:
+                    px = p1
+                    break
             if px:
                 c.selectPosition(px)
                 c.redraw()
