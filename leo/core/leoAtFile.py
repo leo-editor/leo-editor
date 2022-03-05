@@ -260,7 +260,7 @@ class AtFile:
                 at._file_bytes = g.toEncodedString('')
                 return None, None
             at.warnOnReadOnlyFile(fn)
-        except Exception:
+        except Exception:  # pragma: no cover
             at.error(f"unexpected exception opening: '@file {fn}'")
             at._file_bytes = g.toEncodedString('')
             fn, s = None, None
@@ -347,7 +347,7 @@ class AtFile:
             at.readFileAtPosition(p)
         for p in files:
             p.v.clearDirty()
-        if not g.unitTesting and files:
+        if not g.unitTesting and files:  # pragma: no cover
             t2 = time.time()
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
         c.changed = old_changed
@@ -407,7 +407,7 @@ class AtFile:
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
-    def readAllSelected(self, root):
+    def readAllSelected(self, root):  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
         old_changed = c.changed
@@ -758,9 +758,9 @@ class AtFile:
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
-        except IOError:
+        except IOError:  # pragma: no cover
             at.error(f"can not open {fileName}")
-        except Exception:
+        except Exception:  # pragma: no cover
             at.error(f"Exception reading {fileName}")
             g.es_exception()
         return s
@@ -992,7 +992,7 @@ class AtFile:
         for p in files:
             try:
                 at.writeAllHelper(p, root)
-            except Exception:
+            except Exception:  # pragma: no cover
                 at.internalWriteError(p)
         # Make *sure* these flags are cleared for other commands.
         at.canCancelFlag = False
@@ -1091,7 +1091,7 @@ class AtFile:
             return
         try:
             at.writePathChanged(p)
-        except IOError:
+        except IOError:  # pragma: no cover
             return
         table = (
             (p.isAtAsisFileNode, at.asisWrite),
@@ -2082,7 +2082,7 @@ class AtFile:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
     #@+node:ekr.20220120210617.1: *5* at.checkPyflakes
-    def checkPyflakes(self, contents, fileName, root):
+    def checkPyflakes(self, contents, fileName, root):  # pragma: no cover
         at = self
         ok = True
         if g.unitTesting or not at.runPyFlakesOnWrite:
@@ -2114,10 +2114,10 @@ class AtFile:
             fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
             return True
-        except SyntaxError:
+        except SyntaxError:  # pragma: no cover
             if not g.unitTesting:
                 at.syntaxError(p, body)
-        except Exception:
+        except Exception:  # pragma: no cover
             g.trace("unexpected exception")
             g.es_exception()
         return False
@@ -2202,7 +2202,7 @@ class AtFile:
         # needs to be treated as plain text; the following does not enforce the
         # 'string delimiter' part of that.  An @doc followed by something other than
         # a space will fall through to usual Leo @doc processing.
-        if at.language == "elixir" and g.match_word(s, i, '@doc '):
+        if at.language == "elixir" and g.match_word(s, i, '@doc '):  # pragma: no cover
             return at.noDirective
         for name, directive in table:
             if g.match_word(s, i, name):
@@ -2603,19 +2603,19 @@ class AtFile:
         try:
             readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except IndentationError:
+        except IndentationError:  # pragma: no cover
             if g.unitTesting:
                 raise
             junk2, msg, junk = sys.exc_info()
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
-        except tokenize.TokenError:
+        except tokenize.TokenError:  # pragma: no cover
             if g.unitTesting:
                 raise
             junk3, msg, junk = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
-        except tabnanny.NannyNag:
+        except tabnanny.NannyNag:  # pragma: no cover
             if g.unitTesting:
                 raise
             junk4, nag, junk = sys.exc_info()
@@ -2626,7 +2626,7 @@ class AtFile:
             g.es(message)
             line2 = repr(str(line))[1:-1]
             g.es("offending line:\n", line2)
-        except Exception:
+        except Exception:  # pragma: no cover
             g.trace("unexpected exception")
             g.es_exception()
             raise
@@ -2938,7 +2938,7 @@ class AtFile:
         # os.access() may not exist on all platforms.
         try:
             read_only = not os.access(fn, os.W_OK)
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             read_only = False
         if read_only:
             g.error("read only:", fn)  # pragma: no cover
@@ -3482,8 +3482,6 @@ class FastAtRead:
         Parse the file's contents, creating a tree of vnodes
         anchored in root.v.
         """
-        trace = False
-        t1 = time.process_time()
         self.path = path
         self.root = root
         sfn = g.shortFileName(path)
@@ -3498,9 +3496,6 @@ class FastAtRead:
         root.v._deleteAllChildren()
         comment_delims, first_lines, start_i = data
         self.scan_lines(comment_delims, first_lines, lines, path, start_i)
-        if trace:
-            t2 = time.process_time()
-            g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
 #@-others
