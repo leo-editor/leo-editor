@@ -21,6 +21,9 @@ def cover_all(event=None):
         # - It runs all unit tests in the leo.unittests directory.
         g.run_coverage_tests()
     else:
+        unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+        assert os.path.exists(unittests_dir)
+        os.chdir(unittests_dir)
         # This runs only the listed files. index.html describes only the last file.
         table = (
             ('leo.core.leoApp', 'core/test_leoApp.py'),

@@ -7418,8 +7418,8 @@ def run_coverage_tests(module: str='', filename: str='') -> None:
     """
     Run the coverage tests given by the module and filename strings.
     """
-    unittests_dir = os.path.join(g.app.loadDir, '..', 'unittests')
-    assert os.path.exists(unittests_dir), repr(unittests_dir)
+    unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+    assert os.path.exists(unittests_dir)
     os.chdir(unittests_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
     command = f"{prefix} {module} {filename}"
