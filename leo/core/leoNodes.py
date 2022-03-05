@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = None
@@ -47,7 +47,7 @@ class NodeIndices:
             return
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
-            g.internalError(
+            g.internalError(  # pragma: no cover
                 f"getNewIndex: gnx clash {gnx}\n"
                 f"          v: {v}\n"
                 f"         v2: {v2}")
@@ -66,7 +66,7 @@ class NodeIndices:
                     try:
                         n = int(n)  # type:ignore
                         self.lastIndex = max(self.lastIndex, n)  # type:ignore
-                    except Exception:
+                    except Exception:  # pragma: no cover
                         g.es_exception()
                         self.lastIndex += 1
     #@+node:ekr.20200528131303.1: *3* ni.computeNewIndex
@@ -76,23 +76,13 @@ class NodeIndices:
             # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
-    #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
-    # These are used by the FileCommands read/write code.
-
-    def getDefaultId(self) -> str:
-        """Return the id to be used by default in all gnx's"""
-        return self.defaultId
-
-    def setDefaultId(self, theId: str) -> None:
-        """Set the id to be used by default in all gnx's"""
-        self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex(self, v: "VNode", cached: bool=False) -> str:
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         """
-        if v is None:
+        if v is None:  # pragma: no cover
             g.internalError('getNewIndex: v is None')
             return ''
         c = v.context
@@ -122,7 +112,7 @@ class NodeIndices:
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx(self, s: str) -> Tuple[str, str, str]:
         """Create a gnx from its string representation."""
-        if not isinstance(s, str):
+        if not isinstance(s, str):  # pragma: no cover
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()
@@ -182,7 +172,7 @@ class NodeIndices:
                 if n2 > self.lastIndex:
                     self.lastIndex = n2
                     g.trace(gnx, '-->', n2)
-            except Exception:
+            except Exception:  # pragma: no cover
                 g.trace('can not happen', repr(n))
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
@@ -293,7 +283,7 @@ class Position:
         """
         return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         p = self
         if p.v:
             return (
@@ -325,10 +315,10 @@ class Position:
         aList.reverse()
         return aList
     #@+node:ekr.20040310153624: *4* p.dump
-    def dumpLink(self, link: Optional[str]) -> str:
+    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str="") -> None:
+    def dump(self, label: str="") -> None:  # pragma: no cover
         p = self
         if p.v:
             p.v.dump()  # Don't print a label
@@ -833,7 +823,7 @@ class Position:
             parent_v = p._parentVnode()
                 # Returns None if p.v is None.
             return p.v and parent_v and p._childIndex + 1 < len(parent_v.children)  # type:ignore
-        except Exception:
+        except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
             g.es_exception()
             return None
@@ -846,7 +836,7 @@ class Position:
         p = self
         return bool(p.hasParent() or p.hasBack())
             # Much cheaper than computing the actual value.
-    #@+node:ekr.20080416161551.193: *5* hasThreadNext (the only complex hasX method)
+    #@+node:ekr.20080416161551.193: *5* p.hasThreadNext (the only complex hasX method)
     def hasThreadNext(self) -> bool:
         p = self
         if not p.v:
