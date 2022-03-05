@@ -81,7 +81,7 @@ class TestDocTests(unittest.TestCase):  # No need to be a subclass of leoTest2.L
                 n += count
                 if count:
                     files_list.append(f)
-                if fails:
+                if fails:  # pragma: no cover
                     fails_list.append(f)
                     print(f"{fails} failures in {g.shortFileName(f)}")
             self.assertEqual(fails_list, [])

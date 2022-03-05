@@ -404,7 +404,7 @@ class TestAtFile(LeoUnitTest):
 
         path = g.os_path_join(g.app.testDir, 'xyzzy')
         if exists(path):
-            os.remove(path)
+            os.remove(path)  # pragma: no cover
 
         assert not exists(path)
         assert not at.remove(path)
@@ -796,7 +796,7 @@ class TestFastAtRead(LeoUnitTest):
 
         import sys
         if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')
+            self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         c, x = self.c, self.x
         h = '@file /test/at_section_delim.py'

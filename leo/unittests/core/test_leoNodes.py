@@ -57,16 +57,6 @@ class TestNodes(LeoUnitTest):
             self.assertTrue(v in v1)
         for v in v1:
             self.assertTrue(v in v2)
-    #@+node:ekr.20210830095545.41: *4* TestNodes.test_at_most_one_VNode_has_str_leo_pos_attribute
-    def test_at_most_one_VNode_has_str_leo_pos_attribute(self):
-        c = self.c
-        n = 0
-        for v in c.all_unique_vnodes_iter():
-            if hasattr(v, 'unknownAttributes'):
-                d = v.unknownAttributes
-                if d.get('str_leo_pos'):
-                    n += 1
-        self.assertTrue(n == 0)
     #@+node:ekr.20210830095545.58: *4* TestNodes.test_at_others_directive
     def test_at_others_directive(self):
         p = self.c.p
@@ -782,7 +772,7 @@ class TestNodes(LeoUnitTest):
         try:
             a = set()
             a.add(p)
-            assert False, 'Adding position to set should throw exception'
+            assert False, 'Adding position to set should throw exception'  # pragma: no cover
         except TypeError:
             pass
     #@+node:ekr.20210830095545.53: *4* TestNodes.test_promote

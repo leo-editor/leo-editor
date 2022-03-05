@@ -32,7 +32,7 @@ class TestAtShadow(LeoUnitTest):
             return
         files = g.os_path_abspath(g.os_path_join(shadow_dir, "*.*"))
         files = glob.glob(files)
-        for z in files:
+        for z in files:  # pragma: no cover
             if z != shadow_dir:
                 os.unlink(z)
         os.rmdir(shadow_dir)
@@ -92,7 +92,7 @@ class TestAtShadow(LeoUnitTest):
                         line = lines[i]
                         results.append(line)
                     else:
-                        self.shadow_controller.verbatim_error()
+                        self.shadow_controller.verbatim_error()  # pragma: no cover
             else:
                 results.append(line)
             i += 1

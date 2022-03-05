@@ -148,10 +148,10 @@ class Undoer:
                 # g.trace('Cutting undo stack to %d entries' % (n))
             u.beads = u.beads[-n :]
             u.bead = n - 1
-        if 'undo' in g.app.debug and 'verbose' in g.app.debug:
+        if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
             print(f"u.cutStack: {len(u.beads):3}")
     #@+node:ekr.20080623083646.10: *4* u.dumpBead
-    def dumpBead(self, n):
+    def dumpBead(self, n):  # pragma: no cover
         u = self
         if n < 0 or n >= len(u.beads):
             return 'no bead: n = ', n
@@ -163,7 +163,7 @@ class Undoer:
             result.append(f"{ivar} = {getattr(self, ivar)}")
         return '\n'.join(result)
 
-    def dumpTopBead(self):
+    def dumpTopBead(self):  # pragma: no cover
         u = self
         n = len(u.beads)
         if n > 0:
@@ -174,10 +174,10 @@ class Undoer:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
-            return None
+            return None  # pragma: no cover
         bunch = u.beads[n]
         self.setIvarsFromBunch(bunch)
-        if 'undo' in g.app.debug:
+        if 'undo' in g.app.debug:  # pragma: no cover
             print(f" u.getBead: {n:3} of {len(u.beads)}")
         return bunch
     #@+node:EKR.20040526150818.1: *4* u.peekBead
@@ -201,7 +201,7 @@ class Undoer:
             u.beads[u.bead:] = [bunch]
             # Recalculate the menu labels.
             u.setUndoTypes()
-        if 'undo' in g.app.debug:
+        if 'undo' in g.app.debug:  # pragma: no cover
             print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
     #@+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name):
@@ -217,7 +217,7 @@ class Undoer:
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
-        if False and not g.unitTesting:  # Debugging.
+        if False and not g.unitTesting:  # Debugging. # pragma: no cover
             print('-' * 40)
             for key in list(bunch.keys()):
                 g.trace(f"{key:20} {bunch.get(key)!r}")
@@ -238,7 +238,7 @@ class Undoer:
 
         u = self
         frame = u.c.frame
-        if not isinstance(theType, str):
+        if not isinstance(theType, str):  # pragma: no cover
             g.trace(f"oops: expected string for command, got {theType!r}")
             g.trace(g.callers())
             theType = '<unknown>'
@@ -375,7 +375,7 @@ class Undoer:
             bunch.unknownAttributes = v.unknownAttributes
         return bunch
     #@+node:ekr.20050525151449: *4* u.trace
-    def trace(self):
+    def trace(self):  # pragma: no cover
         ivars = ('kind', 'undoType')
         for ivar in ivars:
             g.pr(ivar, getattr(self, ivar))
@@ -384,7 +384,7 @@ class Undoer:
         """Update dirty and marked bits."""
         u = self
         c = u.c
-        if oldOrNew not in ('new', 'old'):
+        if oldOrNew not in ('new', 'old'):  # pragma: no cover
             g.trace("can't happen")
             return
         isOld = oldOrNew == 'old'
@@ -412,7 +412,7 @@ class Undoer:
         c = self.c
         u, w = self, c.frame.body.wrapper
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Set the type & helpers.
         bunch.kind = 'body'
         bunch.undoType = command
@@ -426,13 +426,13 @@ class Undoer:
         if w:
             bunch.newSel = w.getSelectionRange()
         else:
-            bunch.newSel = 0, 0
+            bunch.newSel = 0, 0  # pragma: no cover
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
         #
         if g.unitTesting:
             assert command.lower() != 'typing', g.callers()
-        elif command.lower() == 'typing':
+        elif command.lower() == 'typing':  # pragma: no cover
             g.trace(
                 'Error: undoType should not be "Typing"\n'
                 'Call u.doTyping instead')
@@ -447,14 +447,14 @@ class Undoer:
         c = self.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         bunch = u.beads[u.bead]
-        if not u.beads:
+        if not u.beads:  # pragma: no cover
             g.trace('oops: empty undo stack.')
             return
         if bunch.kind == 'beforeGroup':
             bunch.kind = 'afterGroup'
-        else:
+        else:  # pragma: no cover
             g.trace(f"oops: expecting beforeGroup, got {bunch.kind}")
         # Set the types & helpers.
         bunch.kind = 'afterGroup'
@@ -494,7 +494,7 @@ class Undoer:
         if w:
             bunch.newSel = w.getSelectionRange()
         else:
-            bunch.newSel = 0, 0
+            bunch.newSel = 0, 0  # pragma: no cover
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
     #@+node:ekr.20201107145642.1: *5* u.afterChangeHeadline
@@ -502,7 +502,7 @@ class Undoer:
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Set the type & helpers.
         bunch.kind = 'headline'
         bunch.undoType = command
@@ -519,7 +519,7 @@ class Undoer:
         c = self.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Set the types & helpers.
         bunch.kind = 'tree'
         bunch.undoType = command
@@ -583,7 +583,7 @@ class Undoer:
     def afterCloneNode(self, p, command, bunch):
         u = self
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Set types & helpers
         bunch.kind = 'clone'
         bunch.undoType = command
@@ -658,7 +658,7 @@ class Undoer:
     def afterHoist(self, p, command):
         u = self
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         bunch = u.createCommonBunch(p)
         # Set types & helpers
         bunch.kind = 'hoist'
@@ -696,7 +696,7 @@ class Undoer:
         # 'command' unused, but present for compatibility with similar methods.
         u = self
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Set the type & helpers.
         bunch.undoHelper = u.undoMark
         bunch.redoHelper = u.redoMark
@@ -741,7 +741,7 @@ class Undoer:
         u = self
         # c = self.c
         if u.redoing or u.undoing:
-            return
+            return  # pragma: no cover
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
@@ -925,16 +925,16 @@ class Undoer:
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
-            return None
+            return None  # pragma: no cover
         if undo_type is None:
-            return None
+            return None  # pragma: no cover
         if undo_type == "Can't Undo":
             u.clearUndoState()
             u.setUndoTypes()  # Must still recalculate the menu labels.
-            return None
+            return None  # pragma: no cover
         if oldText == newText:
             u.setUndoTypes()  # Must still recalculate the menu labels.
-            return None
+            return None  # pragma: no cover
         #@-<< return if there is nothing to do >>
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
