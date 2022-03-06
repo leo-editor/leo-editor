@@ -1901,7 +1901,7 @@ class Position:
 
 position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
-class PosList(list):
+class PosList(list):  # pragma: no cover
 
     __slots__: List[str] = []
 

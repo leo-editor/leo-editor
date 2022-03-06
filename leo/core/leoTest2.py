@@ -46,8 +46,7 @@ def create_app(gui_name='null'):
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
     lm.computeStandardDirectories()
-    if not g.app.setLeoID(useDialog=False, verbose=True):
-        raise ValueError("unable to set LeoID.")
+    g.app.leoID = 'TestLeoId'  # 2022/03/06: Use a standard user id for all tests.
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
     g.app.db = g.NullObject('g.app.db')  # type:ignore

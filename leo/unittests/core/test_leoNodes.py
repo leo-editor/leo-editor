@@ -13,7 +13,7 @@ from leo.core.leoTest2 import LeoUnitTest
 #@+others
 #@+node:ekr.20210828112210.1: ** class TestNodes(LeoUnitTest)
 class TestNodes(LeoUnitTest):
-    """Unit tests for leo/core/leoNodes.py."""
+    """Unit tests for Position and Vnode classes leo/core/leoNodes.py."""
 
     test_outline = None  # Set by create_test_outline.
 
@@ -859,6 +859,72 @@ class TestNodes(LeoUnitTest):
             result2 = p.v.atAutoRstNodeName(h=s)
             self.assertEqual(result1, expected1, msg=s)
             self.assertEqual(result2, expected2, msg=s)
+    #@-others
+#@+node:ekr.20220306054624.1: ** class TestNodeIndices(LeoUnitTest)
+class TestNodeIndices(LeoUnitTest):
+    """Unit tests for NodeIndices class in leo/core/leoNodes.py."""
+
+    test_outline = None  # Set by create_test_outline.
+
+    #@+others
+    #@+node:ekr.20220306054659.1: *3* TestNodeIndices.setUp
+    def setUp(self):
+        """Create the nodes in the commander."""
+        super().setUp()
+        c = self.c
+        self.create_test_outline()
+        # Make sure all indices in the test outline have the proper id, set in create_app.
+        for v in c.all_nodes():
+            self.assertTrue(v.fileIndex.startswith(g.app.leoID), msg=repr(v.fileIndex))
+        c.selectPosition(c.rootPosition())
+    #@+node:ekr.20220306055432.1: *3* TestNodeIndices.test_compute_last_index
+    def test_compute_last_index(self):
+
+        ni = g.app.nodeIndices
+        ni.compute_last_index(self.c)
+        self.assertTrue(isinstance(ni.lastIndex, int))
+    #@+node:ekr.20220306055505.1: *3* TestNodeIndices.test_computeNewIndex
+    def test_computeNewIndex(self):
+
+        ni = g.app.nodeIndices
+        gnx = ni.computeNewIndex()
+        self.assertTrue(isinstance(gnx, str))
+    #@+node:ekr.20220306055506.1: *3* TestNodeIndices.test_scanGnx
+    def test_scanGnx(self):
+
+        ni = g.app.nodeIndices
+        for s, id1, t1, n1 in (
+            ('ekr.123', 'ekr', '123', None),
+            ('ekr.456.2', 'ekr', '456', '2'),
+            ('', g.app.leoID, None, None),
+        ):
+            id2, t2, n2 = ni.scanGnx(s)
+            self.assertEqual(id1, id2)
+            self.assertEqual(t1, t2)
+            self.assertEqual(n1, n2)
+    #@+node:ekr.20220306055507.1: *3* TestNodeIndices.test_tupleToString
+    def test_tupleToString(self):
+
+        ni = g.app.nodeIndices
+        for s1, id1, t1, n1 in (
+            ('ekr.123', 'ekr', '123', None),
+            ('ekr.456.2', 'ekr', '456', '2'),
+            (f"{g.app.leoID}.1", g.app.leoID, '1', None),
+        ):
+            s = ni.tupleToString((id1, t1, n1))
+            self.assertEqual(s, s1)
+    #@+node:ekr.20220306070213.1: *3* TestNodeIndices.test_updateLastIndex
+    def test_updateLastIndex(self):
+        
+        ni = g.app.nodeIndices
+        old_last = ni.lastIndex
+        for gnx, new_last in (
+            ('', old_last),  # For error logic: no change.
+            (f"{g.app.leoID}.{ni.timeString}.1000", 1000),
+        ):
+            ni.lastIndex = old_last
+            ni.updateLastIndex(gnx)
+            self.assertEqual(ni.lastIndex, new_last)
     #@-others
 #@-others
 
