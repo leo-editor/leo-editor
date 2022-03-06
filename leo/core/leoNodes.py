@@ -171,7 +171,8 @@ class NodeIndices:
                 n2 = int(n)
                 if n2 > self.lastIndex:
                     self.lastIndex = n2
-                    g.trace(gnx, '-->', n2)
+                    if not g.unitTesting:
+                        g.trace(gnx, '-->', n2)  # pragma: no cover
             except Exception:  # pragma: no cover
                 g.trace('can not happen', repr(n))
     #@-others
