@@ -657,6 +657,23 @@ class TestNodes(LeoUnitTest):
                 self.assertTrue(p < next)
                 next.moveToThreadNext()
             p.moveToThreadNext()
+    #@+node:ekr.20220306100004.1: *5* TestNodes.test_p_following_siblings
+    def test_p_following_siblings(self):
+        
+        p = self.c.rootPosition()
+        while p:
+            for sib in p.following_siblings():
+                self.assertTrue(p != sib)
+                self.assertTrue(p < sib)
+            p.moveToThreadNext()
+    #@+node:ekr.20220306100527.1: *5* TestNodes.test_p_unique_subtree
+    def test_p_unique_subtree(self):
+
+        p = self.c.rootPosition()
+        while p:
+            for descendant in p.unique_subtree():
+                self.assertTrue(p <= descendant)
+            p.moveToThreadNext()
     #@+node:ekr.20210830095545.24: *5* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
         
