@@ -384,9 +384,9 @@ class TestGlobals(LeoUnitTest):
         aList = g.get_directives_dict_list(p)
         s = g.scanAtLineendingDirectives(aList)
         if sys.platform.startswith('win'):
-            self.assertEqual(s, '\r\n')
+            self.assertEqual(s, '\r\n')  # pragma: no cover
         else:
-            self.assertEqual(s, '\n')
+            self.assertEqual(s, '\n')  # pragma: no cover
     #@+node:ekr.20210905203541.41: *3* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
     def test_g_scanAtPagewidthDirectives_minus_40(self):
         c = self.c
@@ -548,11 +548,11 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         fc = c.fileCommands
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test-read-only.txt')
-        if os.path.exists(path):
+        if os.path.exists(path):  # pragma: no cover
             os.chmod(path, stat.S_IREAD)
             fc.warnOnReadOnlyFiles(path)
             assert fc.read_only
-        else:
+        else:  # pragma: no cover
             fc.warnOnReadOnlyFiles(path)
     #@-others
 #@-others
