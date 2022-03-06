@@ -25,9 +25,9 @@ class TestPlugins(LeoUnitTest):
             tree = compile(s + '\n', filename, 'exec')
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
-        except SyntaxError:
+        except SyntaxError:  # pragma: no cover
             raise
-        except Exception:
+        except Exception:  # pragma: no cover
             self.fail(f"unexpected error in: {filename}")
 
     #@+node:ekr.20210907082746.1: *3*  TestPlugins.get_plugins
@@ -126,7 +126,7 @@ class TestPlugins(LeoUnitTest):
         for filename in files:
             self.check_syntax(filename)
     #@+node:ekr.20210909165720.1: *3* TestPlugins.xx_test_import_all_plugins
-    def xx_test_import_of_all_plugins(self):
+    def xx_test_import_of_all_plugins(self):  # pragma: no cover
         # This works, but is slow.
         files = self.get_plugins()
         for filename in files:
