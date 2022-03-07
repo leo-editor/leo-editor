@@ -4,7 +4,6 @@
 #@@first
 """Tests of leoCommands.py"""
 # pylint: disable=no-member
-import inspect
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -76,33 +75,6 @@ class TestCommands(LeoUnitTest):
         w.setSelectionRange(i, i + 4)
         c.addComments()
         self.assertEqual(p.b, expected)
-    #@+node:ekr.20210901140645.2: *3* TestCommands.test_all_commands_have_an_event_arg
-    def test_all_commands_have_an_event_arg(self):
-        c = self.c
-        d = c.commandsDict
-        keys = sorted(d.keys())
-        table = ('bookmark', 'quickmove_', 'screen-capture', 'stickynote')
-        for key in keys:
-            continue_flag = False
-            for prefix in table:
-                if key.startswith(prefix):
-                    continue_flag = True
-                    break  # These plugins have their own signatures.
-            if continue_flag:
-                continue
-            f = d.get(key)
-            # print(key, f.__name__ if f else repr(f))
-            # Test true __call__ methods if they exist.
-            name = getattr(f, '__name__', None) or repr(f)
-            if hasattr(f, '__call__') and inspect.ismethod(f.__call__):
-                f = getattr(f, '__call__')
-            t = inspect.getfullargspec(f)  # t is a named tuple.
-            args = t.args
-            arg0 = len(args) > 0 and args[0]
-            arg1 = len(args) > 1 and args[1]
-            expected = ('event',)
-            message = f"no event arg for command {key}, func: {name}, args: {args}"
-            assert arg0 in expected or arg1 in expected, message
     #@+node:ekr.20210906075242.2: *3* TestCommands.test_c_alert
     def test_c_alert(self):
         c = self.c
@@ -252,27 +224,6 @@ class TestCommands(LeoUnitTest):
         # s = w.getAllText()
         # w.setInsertPoint(len(s))
         c.insertBodyTime()
-    #@+node:ekr.20210906075242.14: *3* TestCommands.test_c_markAllAtFileNodesDirty
-    def test_c_markAllAtFileNodesDirty(self):
-        c = self.c
-        marks = [p.v for p in c.all_positions() if p.isMarked()]
-        try:
-            ok = True
-            try:
-                c.markAllAtFileNodesDirty()
-            except Exception:
-                g.es_exception()
-                ok = False
-        finally:
-            for p in c.all_positions():
-                if p.v in marks:
-                    if not p.isMarked():
-                        c.setMarked(p)
-                else:
-                    if p.isMarked():
-                        c.clearMarked(p)
-
-        assert ok
     #@+node:ekr.20210906075242.15: *3* TestCommands.test_c_markSubheads
     def test_c_markSubheads(self):
         c = self.c
@@ -425,40 +376,6 @@ class TestCommands(LeoUnitTest):
         w.setSelectionRange(i, i + 4)
         c.deleteComments()
         self.assertEqual(p.b, expected)
-    #@+node:ekr.20210906075242.22: *3* TestCommands.test_efc_ask
-    def test_efc_ask(self):
-        c = self.c
-        p = c.p
-        # Not a perfect test, but stil significant.
-        efc = g.app.externalFilesController
-        if not efc:
-            self.skipTest('No externalFilesController')
-        result = efc.ask(c, p.h)
-        assert result in (True, False), result
-    #@+node:ekr.20210906075242.23: *3* TestCommands.test_efc_compute_ext
-    def test_efc_compute_ext(self):
-        c, p = self.c, self.c.p
-        efc = g.app.externalFilesController
-        if not efc:
-            self.skipTest('No externalFilesController')
-        table = (
-            # (None,'.py'),
-            # ('','.py'),
-            ('txt', '.txt'),
-            ('.txt', '.txt'),
-        )
-        for ext, result in table:
-            result2 = efc.compute_ext(c, p, ext)
-            self.assertEqual(result, result2, msg=repr(ext))
-    #@+node:ekr.20210906075242.24: *3* TestCommands.test_efc_compute_temp_file_path
-    def test_efc_compute_temp_file_path(self):
-        c = self.c
-        p = c.p
-        efc = g.app.externalFilesController
-        if not efc:
-            self.skipTest('no externalFilesController')
-        s = efc.compute_temp_file_path(c, p, '.py')
-        assert s.endswith('.py')
     #@+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
         c, p = self.c, self.c.p

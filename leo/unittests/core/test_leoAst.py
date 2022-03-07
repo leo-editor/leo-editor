@@ -19,13 +19,13 @@ warnings.simplefilter("ignore")
 # Third-party.
 try:
     import asttokens
-except Exception:
+except Exception:  # pragma: no cover
     asttokens = None
 try:
     # Suppress a warning about imp being deprecated.
     with warnings.catch_warnings():
         import black
-except Exception:
+except Exception:  # pragma: no cover
     black = None
 
 # pylint: disable=wrong-import-position
@@ -42,7 +42,7 @@ py_version = (v1, v2)
 #@+others
 #@+node:ekr.20200107114620.1: ** functions: unit testing
 #@+node:ekr.20191027072126.1: *3* function: compare_asts & helpers
-def compare_asts(ast1, ast2):
+def compare_asts(ast1, ast2):  # pragma: no cover
     """Compare two ast trees. Return True if they are equal."""
     # Compare the two parse trees.
     try:
@@ -57,7 +57,7 @@ def compare_asts(ast1, ast2):
         return False
     return True
 #@+node:ekr.20191027071653.2: *4* function._compare_asts
-def _compare_asts(node1, node2):
+def _compare_asts(node1, node2):  # pragma: no cover
     """
     Compare both nodes, and recursively compare their children.
 
@@ -80,7 +80,7 @@ def _compare_asts(node1, node2):
                 raise AstNotEqual(f"attrs1: {attr1},\n" f"attrs2: {attr2}")
             _compare_asts(attr1, attr2)
 #@+node:ekr.20191027071653.3: *4* function._compare_nodes
-def _compare_nodes(node1, node2):
+def _compare_nodes(node1, node2):  # pragma: no cover
     """
     Compare node1 and node2.
     For lists and tuples, compare elements recursively.
@@ -110,7 +110,7 @@ def _compare_nodes(node1, node2):
                 )
             _compare_asts(item1, item2)
 #@+node:ekr.20191121081439.1: *3* function: compare_lists
-def compare_lists(list1, list2):
+def compare_lists(list1, list2):  # pragma: no cover
     """
     Compare two lists of strings, showing the first mismatch.
 
@@ -162,7 +162,7 @@ class BaseTest(unittest.TestCase):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
-            return '', None, None
+            return '', None, None  # pragma: no cover
         self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -174,33 +174,33 @@ class BaseTest(unittest.TestCase):
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
         if not tokens:
-            self.fail('make_tokens failed')
+            self.fail('make_tokens failed')  # pragma: no cover
         tree = self.make_tree(contents)
         if not tree:
-            self.fail('make_tree failed')
+            self.fail('make_tree failed')  # pragma: no cover
         if 'contents' in self.debug_list:
-            dump_contents(contents)
-        if 'ast' in self.debug_list:
+            dump_contents(contents)  # pragma: no cover
+        if 'ast' in self.debug_list:  # pragma: no cover
             if py_version >= (3, 9):
                 # pylint: disable=unexpected-keyword-arg
                 g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
             else:
                 g.printObj(ast.dump(tree), tag='ast.dump')
         if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
-            dump_ast(tree)
+            dump_ast(tree)  # pragma: no cover
         if 'tokens' in self.debug_list:
-            dump_tokens(tokens)
+            dump_tokens(tokens)  # pragma: no cover
         self.balance_tokens(tokens)
         # Pass 1: create the links.
         self.create_links(tokens, tree)
         if 'post-tree' in self.debug_list:
-            dump_tree(tokens, tree)
+            dump_tree(tokens, tree)  # pragma: no cover
         if 'post-tokens' in self.debug_list:
-            dump_tokens(tokens)
+            dump_tokens(tokens)  # pragma: no cover
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
         if self.link_error:
-            self.fail(self.link_error)
+            self.fail(self.link_error)  # pragma: no cover
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
@@ -266,7 +266,7 @@ class BaseTest(unittest.TestCase):
             t2 = get_time()
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             # print('\n')
             # g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug_list:
@@ -295,7 +295,7 @@ class BaseTest(unittest.TestCase):
         """
         t1 = get_time()
         if not contents:
-            return ''
+            return ''  # pragma: no cover
         if not filename:
             filename = g.callers(2).split(',')[0]
         orange = Orange()
@@ -309,7 +309,7 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
     # Actions should fail by throwing an exception.
     #@+node:ekr.20191228095945.12: *5* BaseTest.dump_stats & helpers
-    def dump_stats(self):
+    def dump_stats(self):  # pragma: no cover
         """Show all calculated statistics."""
         if self.counts or self.times:
             print('')
@@ -317,12 +317,12 @@ class BaseTest(unittest.TestCase):
             self.dump_times()
             print('')
     #@+node:ekr.20191228154757.1: *6* BaseTest.dump_counts
-    def dump_counts(self):
+    def dump_counts(self):  # pragma: no cover
         """Show all calculated counts."""
         for key, n in self.counts.items():
             print(f"{key:>16}: {n:>6}")
     #@+node:ekr.20191228154801.1: *6* BaseTest.dump_times
-    def dump_times(self):
+    def dump_times(self):  # pragma: no cover
         """
         Show all calculated times.
 
@@ -333,12 +333,12 @@ class BaseTest(unittest.TestCase):
             key2 = key[3:]
             print(f"{key2:>16}: {t:6.3f} sec.")
     #@+node:ekr.20191228181624.1: *5* BaseTest.update_counts & update_times
-    def update_counts(self, key, n):
+    def update_counts(self, key, n):  # pragma: no cover
         """Update the count statistic given by key, n."""
         old_n = self.counts.get(key, 0)
         self.counts[key] = old_n + n
 
-    def update_times(self, key, t):
+    def update_times(self, key, t):  # pragma: no cover
         """Update the timing statistic given by key, t."""
         old_t = self.times.get(key, 0.0)
         self.times[key] = old_t + t
@@ -383,7 +383,7 @@ class Optional_TestFiles(BaseTest):
 
         self.make_file_data('runLeo.py')
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
-    def compare_tog_vs_asttokens(self):
+    def compare_tog_vs_asttokens(self):  # pragma: no cover
         """Compare asttokens token lists with TOG token lists."""
         if not asttokens:
             self.skipTest('requires asttokens')
@@ -523,7 +523,7 @@ class TestFstringify(BaseTest):
         results = self.fstringify(contents, tokens, tree)
         self.assertEqual(results, expected)
     #@+node:ekr.20200214155156.1: *4* TestFstringify.show_message
-    def show_message(self):
+    def show_message(self):  # pragma: no cover
         """Separate test of fs.message."""
         fs = Fstringify()
         fs.filename = 'test_file.py'
@@ -795,14 +795,14 @@ class TestOrange(BaseTest):
     def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
         if not black:
-            self.skipTest('Can not import black')
+            self.skipTest('Can not import black')  # pragma: no cover
         # Suppress string normalization!
         try:
             mode = black.FileMode()
             mode.string_normalization = False
             if line_length is not None:
                 mode.line_length = line_length
-        except TypeError:
+        except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
@@ -960,7 +960,7 @@ class TestOrange(BaseTest):
             expected = contents
             results = self.beautify(contents, tokens, tree)
             if results != expected:
-                g.trace('Fail:', i)
+                g.trace('Fail:', i)  # pragma: no cover
             self.assertEqual(results, expected)
     #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
@@ -1047,11 +1047,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:
-                print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
@@ -1106,11 +1104,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:
-                print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200121093134.1: *4* TestOrange.test_join_lines
     def test_join_lines(self):
@@ -1139,11 +1135,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"    orange: {results!r}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:
-                print(f"Ok:\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
@@ -1192,11 +1186,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:
-                print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
@@ -1276,8 +1268,6 @@ class TestOrange(BaseTest):
     def test_one_line_pet_peeves(self):
 
         tag = 'test_one_line_pet_peeves'
-        verbose_pass = False
-        verbose_fail = True
         # Except where noted, all entries are expected values....
         if 0:
             # Test fails or recents...
@@ -1363,12 +1353,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents.rstrip()}\n"
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results.rstrip()}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
-                if verbose_fail:
-                    print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:
-                print(f"Ok:\n{message}")
+                print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
@@ -1416,11 +1403,9 @@ class TestOrange(BaseTest):
                 f"  contents: {contents!s}\n"
                 f"     black: {expected!s}\n"
                 f"    orange: {results!s}")
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 0:
-                print(f"Ok:\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20200210073227.1: *4* TestOrange.test_split_lines_2
     def test_split_lines_2(self):
@@ -1449,11 +1434,9 @@ class TestOrange(BaseTest):
             f"  contents: {contents!r}\n"
             f"  expected: {expected!r}\n"
             f"       got: {results!r}")
-        if results != expected:
+        if results != expected:  # pragma: no cover
             fails += 1
             print(f"Fail: {fails}\n{message}")
-        elif 0:
-            print(f"Ok:\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20200219144837.1: *4* TestOrange.test_split_lines_3
     def test_split_lines_3(self):
@@ -1483,11 +1466,9 @@ class TestOrange(BaseTest):
             f"  contents: {contents!r}\n"
             f"  expected: {expected!r}\n"
             f"       got: {results!r}")
-        if results != expected:
+        if results != expected:  # pragma: no cover
             fails += 1
             print(f"Fail: {fails}\n{message}")
-        elif 0:
-            print(f"Ok:\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
@@ -1632,7 +1613,7 @@ class TestTOG(BaseTest):
 
         import sys
         if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')
+            self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
         contents, tokens, tree = self.make_data(contents)
@@ -1643,7 +1624,7 @@ class TestTOG(BaseTest):
         path = os.path.abspath(os.path.join(dir_, '..', 'py3_test_grammar.py'))
         assert os.path.exists(path), path
         if py_version < (3, 8):
-            self.skipTest('Requires Python 3.8 or above')
+            self.skipTest('Requires Python 3.8 or above')  # pragma: no cover
         # Verify that leoAst can parse the file.
         contents = read_file(path)
         self.make_data(contents)
@@ -1661,7 +1642,7 @@ class TestTOG(BaseTest):
         *[3, 4], y=5)
     '''
         elif 1:  # Expected order.
-            contents = '''f(1, *[a, 3], x=2, y=5)'''
+            contents = '''f(1, *[a, 3], x=2, y=5)'''  # pragma: no cover
         else:  # Legacy.
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
@@ -1671,14 +1652,14 @@ class TestTOG(BaseTest):
         if py_version >= (3, 8):  # Requires neither line_no nor col_offset fields.
             contents = '''def f(a, b:1, c:2, d, e:3=4, f=5, *g:6, h:7, i=8, j:9=10, **k:11) -> 12: pass'''
         else:
-            contents = '''def f(a, b, d=4, *arg, **keys): pass'''
+            contents = '''def f(a, b, d=4, *arg, **keys): pass'''  # pragma: no cover
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065202.1: *5* test_line_483
     def test_line_483(self):
 
         if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")  # pragma: no cover
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065344.1: *5* test_line_494
@@ -1693,7 +1674,7 @@ class TestTOG(BaseTest):
         """
         if py_version < (3, 8):
             # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")
+            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")  # pragma: no cover
         contents = '''def g2(): yield 1, *yield_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210319130349.1: *5* test_line_875
@@ -1710,7 +1691,7 @@ class TestTOG(BaseTest):
     def test_walrus_operator(self):
 
         if py_version < (3, 8):
-            self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")
+            self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")  # pragma: no cover
         contents = '''if (n := len(a)) > 10: pass'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20191227052446.10: *4* TestTOG.Contexts...
@@ -1764,7 +1745,7 @@ class TestTOG(BaseTest):
 
         import sys
         if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')
+            self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         # From PEP 570
         contents = r"""\
@@ -2405,7 +2386,7 @@ class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
     #@+others
     #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
-    def show_asttokens_script(self):
+    def show_asttokens_script(self):  # pragma: no cover
         """
         A script showing how asttokens can *easily* do the following:
         - Inject parent/child links into ast nodes.
@@ -2502,7 +2483,7 @@ class TestTokens(BaseTest):
             # Print the resulting tokens.
             g.printObj(tokens, tag='Tokens')
     #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
-    def show_example_dump(self):
+    def show_example_dump(self):  # pragma: no cover
 
         # Will only be run when enabled explicitly.
 
@@ -2605,7 +2586,7 @@ class TestTokens(BaseTest):
                     nodes += 1
                 elif _op_names.get(z):
                     ops += 1
-                else:
+                else:  # pragma: no cover
                     errors += 1
                     print(
                         f"Missing visitor: "

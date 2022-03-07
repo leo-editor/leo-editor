@@ -21,9 +21,9 @@ class TestSyntax(LeoUnitTest):
             tree = compile(s + '\n', fileName, 'exec')
             del tree  # #1454: Suppress -Wd ResourceWarning.
             return True
-        except SyntaxError:
+        except SyntaxError:  # pragma: no cover
             raise SyntaxError(fileName)  # pylint: disable=raise-missing-from
-        except Exception:
+        except Exception:  # pragma: no cover
             g.trace("unexpected error in:", fileName)
             raise
     #@+node:ekr.20210901140645.21: *4* TestSyntax.test_syntax_of_all_files
@@ -52,38 +52,9 @@ class TestSyntax(LeoUnitTest):
         fn = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
         # Only run this test if setup.py exists: it may not in the actual distribution.
         if not g.os_path_exists(fn):
-            self.skipTest('setup.py not found')
+            self.skipTest('setup.py not found')  # pragma: no cover
         s, e = g.readFileIntoString(fn)
         assert self.check_syntax(fn, s)
-    #@+node:ekr.20210906062410.1: *4* TestSyntax.test_that_leo_starts
-    def test_that_leo_starts(self):
-        return self.skipTest('forbidden')
-        # It's possible that Leo can be corrupted without this test failing.
-        # However, the risk seems small enough!
-        if 1:
-            # Verify (weakly) that Leo's startup logic doesn't crash.
-            # Similar (but not exactly so) the startup code in runLeo.py
-            import importlib
-            import leo.core.leoApp as leoApp
-            # It's not clear that the reloads improve the test.
-            importlib.reload(g)
-            importlib.reload(leoApp)
-            assert g
-            assert leoApp
-            app = leoApp.LeoApp()
-            lm = leoApp.LoadManager()
-            assert app and lm
-        else:
-            # Run Leo in a separate process.
-            # Alas, this can leave files open in g.app.db,
-            # and it's not easy here to do anything about it
-            import subprocess
-            command = 'leo --quit --gui=null --no-plugins'
-            proc = subprocess.Popen(
-                command,
-                stdout=subprocess.DEVNULL,
-                shell=True)
-            proc.communicate()
     #@-others
 #@-others
 #@-leo

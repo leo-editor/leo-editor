@@ -69,7 +69,7 @@ class TestApp(LeoUnitTest):
         assert g.os_path_exists(testDir), testDir
         path = g.os_path_finalize_join(testDir, 'testzip.zip')
         if os.path.exists(path):
-            os.remove(path)
+            os.remove(path)  # pragma: no cover
         f = zipfile.ZipFile(path, 'x')
         assert f, path
         try:

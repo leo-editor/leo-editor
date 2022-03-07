@@ -25,7 +25,6 @@ class BaseTestImporter(LeoUnitTest):
     """The base class for tests of leoImport.py"""
 
     ext = None  # Subclasses must set this to the language's extension.
-    skip_flag = False  # Subclasses can set this to suppress perfect-import checks.
     treeType = '@file'  # Fix #352.
 
     def setUp(self):
@@ -51,24 +50,12 @@ class BaseTestImporter(LeoUnitTest):
                 self.assertEqual(p.level() - 1, n, msg=f"{p.h}: expected level {n}, got {p.level()}")
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
-        except AssertionError:
+        except AssertionError:  # pragma: no cover
             g.trace(self.short_id)
             self.dump_tree(p1)
             raise
-    #@+node:ekr.20211129044730.1: *3* BaseTestImporter.check_result
-    def check_result(self, root, expected_s):
-        """
-        Check that the generated outline matches the expected outline.
-        
-        - root: the root of the imported outline.
-        - expected s: A (string) description of the expected outline, in augmented MORE format.
-        """
-        expected_parent = root.insertAfter()
-        expected_parent.h = root.h
-        self.create_expected_outline(expected_parent, expected_s)
-        self.compare_outlines(root, expected_parent)
     #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
-    def compare_outlines(self, created_p, expected_p):
+    def compare_outlines(self, created_p, expected_p):  # pragma: no cover
         """
         Ensure that the created and expected trees have equal shape and contents.
         
@@ -105,74 +92,16 @@ class BaseTestImporter(LeoUnitTest):
                , '.otl': '@auto-otl'
                , '.rst': '@auto-rst'
                }.get(ext)
-        if kind: return kind
+        if kind:
+            return kind
         if aClass:
             d2 = g.app.atAutoDict
             for z in d2:
                 if d2.get(z) == aClass:
-                    return z
+                    return z  # pragma: no cover
         return '@file'
-    #@+node:ekr.20211125101517.4: *3* BaseTestImporter.create_expected_outline
-    def create_expected_outline(self, expected_parent, expected_s):
-        """
-        Create the expected outline, making 'kind' entries in g.vnode_info for
-        all *created* vnodes.
-        
-        root_p:     The root of the expected outline.
-        expect_s:   A string representing the outline in enhanced MORE format.
-        
-        """
-        d = g.vnode_info
-        # Special case for the top-level node.
-        d[expected_parent.v] = {'kind': 'outer'}
-        # Munge expected_s
-        expected_s2 = textwrap.dedent(expected_s).strip() + '\n\n'
-        expected_lines = g.splitLines(expected_s2)
-        stack = [(-1, expected_parent)]  # (level, p)
-        for s in expected_lines:
-            if s.strip().startswith('- outer:'):
-                # The lines following `- outer` can specify non-standard top-level text.
-                # If none are given, assume the standard top-level text below.
-                pass  # ignore.
-            elif s.strip().startswith('-'):
-                n = len(s) - len(s.lstrip())
-                lws = s[:n]
-                assert n == 0 or lws.isspace(), repr(lws)
-                while stack:
-                    level, p = stack.pop()
-
-                    if s.strip().startswith('- '):
-                        aList = s.strip()[2:].split(':')
-                        kind, h = aList[0].strip(), ':'.join(aList[1:])
-                        self.assertTrue(kind in ('outer', 'org', 'class', 'def'), msg=repr(s))
-                    if n >= level:
-                        p.b = p.b.strip()
-                        if n > level:
-                            child = p.insertAsLastChild()
-                        else:
-                            child = p.insertAfter()
-                        child.h = h
-                        d[child.v] = {'kind': kind}
-                        p = child
-                        stack.append((n, p))
-                        break
-                    else:
-                        pass  # Look for next entry.
-                else:
-                    g.printObj(expected_lines, tag='===== Expected')
-                    assert False, f"No node at level {n}"
-            else:
-                junk_level, p = stack[-1]
-                p.b += s
-        # Create standard outer node body if expected_parent.b is empty.
-        if not expected_parent.b:
-            expected_parent.b = textwrap.dedent("""
-                ATothers
-                ATlanguage python
-                ATtabwidth -4
-            """).replace('AT', '@')
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
-    def dump_tree(self, root, tag=None):
+    def dump_tree(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
         d = g.vnode_info  # Same as Importer.vnode_info!
         if tag:
@@ -183,7 +112,7 @@ class BaseTestImporter(LeoUnitTest):
             lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
             g.printObj(lines)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
-    def run_test(self, s, verbose=False):
+    def run_test(self, s):
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -197,16 +126,12 @@ class BaseTestImporter(LeoUnitTest):
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
-        # Suppress perfect-import checks if self.skip_flag is True
-        if self.skip_flag:
-            g.app.suppressImportChecks = True
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
         ok = c.importCommands.createOutline(parent.copy(), ext, test_s)
-        if verbose or not ok:
+        if not ok:  # pragma: no cover
             self.dump_tree(parent)
-        if not ok:
-            self.fail('Perfect import failed')
+            self.fail('Perfect import failed')  # pragma: no cover
         return parent
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
@@ -2023,7 +1948,7 @@ class TestPython(BaseTestImporter):
     def setUp(self):
         super().setUp()
         if sys.version_info < (3, 7, 0):
-            self.skipTest('The python importer requires python 3.7 or above')
+            self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
 
     #@+others
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
@@ -2126,7 +2051,7 @@ class TestPython(BaseTestImporter):
                         '\n'
             )
         ]
-        p = self.run_test(s, verbose=False)
+        p = self.run_test(s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
@@ -2250,7 +2175,7 @@ class TestPython(BaseTestImporter):
                                    '\n'
                         )
         ]
-        p = self.run_test(s, verbose=False)
+        p = self.run_test(s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
@@ -2308,7 +2233,7 @@ class TestPython(BaseTestImporter):
                                '\n'
                     )
         ]
-        p = self.run_test(s, verbose=False)
+        p = self.run_test(s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
 
@@ -2793,7 +2718,7 @@ class TestPython(BaseTestImporter):
 
         import sys
         if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')
+            self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         txt = ('class A:\n'
                 '    a=1\n'
@@ -2956,7 +2881,7 @@ class TestPython(BaseTestImporter):
             assert p1.b == b, f'\n{repr(p1.b)} !=\n{repr(b)}'
         try:
             next(it)
-            return False, 'extra nodes'
+            return False, 'extra nodes'  # pragma: no cover
         except StopIteration:
             return True, 'ok'
     #@-others
@@ -2973,7 +2898,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3035,7 +2960,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3060,7 +2985,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3121,7 +3046,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3143,7 +3068,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3166,7 +3091,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         s = """
@@ -3191,7 +3116,7 @@ class TestRst(BaseTestImporter):
         try:
             import docutils
             assert docutils
-        except Exception:
+        except Exception:  # pragma: no cover
             self.skipTest('no docutils')
 
         # All heading must be followed by an empty line.

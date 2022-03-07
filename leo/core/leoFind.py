@@ -153,7 +153,7 @@ class LeoFind:
             wrapping=False,
         )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
-    def finishCreate(self):
+    def finishCreate(self):  # pragma: no cover
         # New in 4.11.1.
         # Must be called when config settings are valid.
         c = self.c
@@ -235,7 +235,7 @@ class LeoFind:
             for find, change in replacements:
                 count += self._batch_change_helper(root, find, change)
             return count
-        except Exception:
+        except Exception:  # pragma: no cover
             g.es_exception()
             return 0
     #@+node:ekr.20210108070948.1: *4* find._batch_change_helper
@@ -319,7 +319,7 @@ class LeoFind:
         if errors:  # pragma: no cover
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20210925161148.1: *3* find.interactive_search_helper
-    def interactive_search_helper(self, root=None, settings=None):
+    def interactive_search_helper(self, root=None, settings=None):  # pragma: no cover
         #@+<< docstring: find.interactive_search >>
         #@+node:ekr.20210925161451.1: *4* << docstring: find.interactive_search >>
         """
@@ -2135,7 +2135,7 @@ class LeoFind:
             # pylint: disable=no-member
             flags = re.MULTILINE
             if self.ignore_case:
-                flags |= re.IGNORECASE
+                flags |= re.IGNORECASE  # pragma: no cover
             # Escape the search text.
             # Ignore the whole_word option.
             s = self.find_text
@@ -2242,8 +2242,8 @@ class LeoFind:
         if self.search_headline or self.search_body:
             # Search the only enabled pane.
             return self.search_headline
-        g.trace('can not happen: no search enabled')
-        return False  # pragma: no cover (now search the body)
+        g.trace('can not happen: no search enabled')  # pragma: no cover
+        return False  # pragma: no cover
     #@+node:ekr.20031218072017.3077: *5* find._fnm_search
     def _fnm_search(self, p):
         """
@@ -2451,7 +2451,7 @@ class LeoFind:
             return True
         except Exception:
             if not g.unitTesting:
-                g.warning('invalid regular expression:', self.find_text)
+                g.warning('invalid regular expression:', self.find_text)  # pragma: no cover
             return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s):

@@ -56,8 +56,7 @@ class TestQtGui(LeoUnitTest):
                 assert flag is not None
             return
         # Test the new code.
-        flag = option.ShowTabsAndSpaces
-        assert flag is not None
+        assert option.ShowTabsAndSpaces is not None  # pragma: no cover
     #@+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
     # These tests exist to test the startup logic.
     if 0:
@@ -89,7 +88,7 @@ class TestQtGui(LeoUnitTest):
         # https://github.com/leo-editor/leo-editor/issues/1973 list of enums
 
         if not QtCore and QtCore.Qt:
-            self.skipTest('no qt')
+            self.skipTest('no qt')  # pragma: no cover
         table = (
             'DropAction', 'ItemFlag', 'KeyboardModifier',
             'MouseButton', 'Orientation',

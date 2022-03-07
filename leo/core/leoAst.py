@@ -1213,10 +1213,9 @@ class TokenOrderGenerator:
                         index = stack.pop()
                         tokens[index].matching_paren = token.index
                         tokens[token.index].matching_paren = index
-                    else:
+                    else:  # pragma: no cover
                         g.trace(f"unmatched ')' at index {token.index}")
-        # g.trace(f"tokens: {len(tokens)} matched parens: {count}")
-        if stack:
+        if stack:  # pragma: no cover
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
     #@+node:ekr.20191113063144.4: *5* tog.create_links
@@ -1485,7 +1484,7 @@ class TokenOrderGenerator:
         trace = False
         if node is None:
             return
-        if trace:
+        if trace:  # pragma: no cover
             # Keep this trace. It's useful.
             cn = node.__class__.__name__ if node else ' '
             caller1, caller2 = g.callers(2).split(',')
@@ -1985,7 +1984,7 @@ class TokenOrderGenerator:
             # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
-        if trace:
+        if trace:  # pragma: no cover
             g.printObj(results, tag=f"{tag}: Results")
         return results
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
@@ -2634,7 +2633,7 @@ class Orange:
         self.state_stack.append(state)
     #@+node:ekr.20200107165250.8: *4* orange: Entries
     #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
-    def oops(self):
+    def oops(self):  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
     def beautify(self, contents, filename, tokens, tree, max_join_line_length=None, max_split_line_length=None):
@@ -3335,7 +3334,7 @@ class Orange:
                 self.code_list.append(t)
             else:
                 self.code_list.append(t)
-        g.trace('BAD DELIMS', delim_count)
+        g.trace('BAD DELIMS', delim_count)  # pragma: no cover
     #@+node:ekr.20200107165250.36: *6* orange.find_prev_line
     def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
@@ -3456,7 +3455,7 @@ class ParseState:
         self.value = value
 
     def __repr__(self):
-        return f"State: {self.kind} {self.value!r}"
+        return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 
     __str__ = __repr__
 #@+node:ekr.20200122033203.1: ** TOT classes...
@@ -3601,10 +3600,10 @@ class Fstringify(TokenOrderTraverser):
             return
         lt_s = tokens_to_string(lt_token_list)
         if trace:
-            g.trace('lt_s:', lt_s)
+            g.trace('lt_s:', lt_s)  # pragma: no cover
         # Get the RHS values, a list of token lists.
         values = self.scan_rhs(node.right)
-        if trace:
+        if trace:  # pragma: no cover
             for i, z in enumerate(values):
                 dump_tokens(z, tag=f"RHS value {i}")
         # Compute rt_s, self.line and self.line_number for later messages.
@@ -3794,7 +3793,7 @@ class Fstringify(TokenOrderTraverser):
             for i, elt in enumerate(elts):
                 tokens = tokens_for_node(self.filename, elt, self.tokens)
                 result.append(tokens)
-                if trace:
+                if trace:  # pragma: no cover
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
                     g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
@@ -3976,12 +3975,12 @@ class Token:
         self.level = 0
         self.node = None
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         nl_kind = getattr(self, 'newline_kind', '')
         s = f"{self.kind:}.{self.index:<3}"
         return f"{s:>18}:{nl_kind:7} {self.show_val(80)}"
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         nl_kind = getattr(self, 'newline_kind', '')
         return f"{self.kind}.{self.index:<3}{nl_kind:8} {self.show_val(80)}"
 
@@ -4140,7 +4139,7 @@ class Tokenizer:
 #@-others
 g = LeoGlobals()
 if __name__ == '__main__':
-    main()
+    main()  # pragma: no cover
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

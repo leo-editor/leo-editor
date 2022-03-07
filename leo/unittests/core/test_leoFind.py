@@ -272,18 +272,20 @@ class TestFind(LeoUnitTest):
         #
         # Now the main tests...
         # Test 1.
-        p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
-        assert p
-        self.assertEqual(p.h, 'child 5')
-        s = p.b[pos:newpos]
-        self.assertEqual(s, 'def child5')
-        # Test 2: switch style.
-        p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
-        assert p
-        self.assertEqual(p.h, 'child 5')
-        # Test 3: not found after switching style.
-        p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
-        assert p is None, repr(p)
+        for bool_val in (True, False):
+            x.reverse_find_defs = bool_val
+            p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
+            assert p
+            self.assertEqual(p.h, 'child 5')
+            s = p.b[pos:newpos]
+            self.assertEqual(s, 'def child5')
+            # Test 2: switch style.
+            p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
+            assert p
+            self.assertEqual(p.h, 'child 5')
+            # Test 3: not found after switching style.
+            p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
+            assert p is None, repr(p)
     #@+node:ekr.20210110073117.64: *4* TestFind.find-next
     def test_find_next(self):
         settings, x = self.settings, self.x
@@ -779,7 +781,7 @@ class TestFind(LeoUnitTest):
         test(plain_table, 'plain_table', back=False, nocase=False)
         test(nocase_table, 'nocase_table', back=False, nocase=True)
         test(back_table, 'back_table', back=True, nocase=False)
-    #@+node:ekr.20210110073117.82: *4* TestFind.test_make_regex_subs (to do)
+    #@+node:ekr.20210110073117.82: *4* TestFind.test_make_regex_subs
     def test_make_regex_subs(self):
         x = self.x
         x.re_obj = re.compile(r'(.*)pattern')  # The search pattern.

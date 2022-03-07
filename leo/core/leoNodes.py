@@ -14,7 +14,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = None
@@ -47,7 +47,7 @@ class NodeIndices:
             return
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
-            g.internalError(
+            g.internalError(  # pragma: no cover
                 f"getNewIndex: gnx clash {gnx}\n"
                 f"          v: {v}\n"
                 f"         v2: {v2}")
@@ -66,7 +66,7 @@ class NodeIndices:
                     try:
                         n = int(n)  # type:ignore
                         self.lastIndex = max(self.lastIndex, n)  # type:ignore
-                    except Exception:
+                    except Exception:  # pragma: no cover
                         g.es_exception()
                         self.lastIndex += 1
     #@+node:ekr.20200528131303.1: *3* ni.computeNewIndex
@@ -76,23 +76,13 @@ class NodeIndices:
             # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
-    #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
-    # These are used by the FileCommands read/write code.
-
-    def getDefaultId(self) -> str:
-        """Return the id to be used by default in all gnx's"""
-        return self.defaultId
-
-    def setDefaultId(self, theId: str) -> None:
-        """Set the id to be used by default in all gnx's"""
-        self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex(self, v: "VNode", cached: bool=False) -> str:
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         """
-        if v is None:
+        if v is None:  # pragma: no cover
             g.internalError('getNewIndex: v is None')
             return ''
         c = v.context
@@ -122,7 +112,7 @@ class NodeIndices:
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx(self, s: str) -> Tuple[str, str, str]:
         """Create a gnx from its string representation."""
-        if not isinstance(s, str):
+        if not isinstance(s, str):  # pragma: no cover
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()
@@ -181,8 +171,9 @@ class NodeIndices:
                 n2 = int(n)
                 if n2 > self.lastIndex:
                     self.lastIndex = n2
-                    g.trace(gnx, '-->', n2)
-            except Exception:
+                    if not g.unitTesting:
+                        g.trace(gnx, '-->', n2)  # pragma: no cover
+            except Exception:  # pragma: no cover
                 g.trace('can not happen', repr(n))
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
@@ -293,7 +284,7 @@ class Position:
         """
         return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # pragma: no cover
         p = self
         if p.v:
             return (
@@ -325,10 +316,10 @@ class Position:
         aList.reverse()
         return aList
     #@+node:ekr.20040310153624: *4* p.dump
-    def dumpLink(self, link: Optional[str]) -> str:
+    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str="") -> None:
+    def dump(self, label: str="") -> None:  # pragma: no cover
         p = self
         if p.v:
             p.v.dump()  # Don't print a label
@@ -345,6 +336,7 @@ class Position:
         return '.'.join(result)
 
     def sort_key(self, p: "Position") -> List[int]:
+        """Used as a sort function, which explains "redundant" argument."""
         return [int(s.split(':')[1]) for s in p.key().split('.')]
 
     # Positions should *not* be hashable.
@@ -447,20 +439,21 @@ class Position:
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         """
+        p1 = self.copy()
+
         def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-        p1 = self
-        for p in p1.self_and_parents(copy=False):
+        for p in p1.copy().self_and_parents(copy=False):
             if the_predicate(p):
                 yield p.copy() if copy else p
                 return
-        # Next, look for all .md files in the tree.
+        # Next, look for all root's in p's subtree.
         after = p1.nodeAfterTree()
-        p = p1
+        p = p1.copy()
         while p and p != after:
             if the_predicate(p):
                 yield p.copy() if copy else p
@@ -481,6 +474,7 @@ class Position:
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
         """
+        p1 = self.copy()
 
         def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
@@ -488,15 +482,14 @@ class Position:
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-        p1 = self
-        for p in p1.self_and_parents(copy=False):
+        for p in p1.copy().self_and_parents(copy=False):
             if the_predicate(p):
                 yield p.copy() if copy else p
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
         after = p1.nodeAfterTree()
-        p = p1
+        p = p1.copy()
         while p and p != after:
             if the_predicate(p):
                 if p.v not in seen:
@@ -833,7 +826,7 @@ class Position:
             parent_v = p._parentVnode()
                 # Returns None if p.v is None.
             return p.v and parent_v and p._childIndex + 1 < len(parent_v.children)  # type:ignore
-        except Exception:
+        except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
             g.es_exception()
             return None
@@ -846,7 +839,7 @@ class Position:
         p = self
         return bool(p.hasParent() or p.hasBack())
             # Much cheaper than computing the actual value.
-    #@+node:ekr.20080416161551.193: *5* hasThreadNext (the only complex hasX method)
+    #@+node:ekr.20080416161551.193: *5* p.hasThreadNext (the only complex hasX method)
     def hasThreadNext(self) -> bool:
         p = self
         if not p.v:
@@ -1099,7 +1092,7 @@ class Position:
         p = self
         v, v2 = p.v, p2.v
         parent_v = p._parentVnode()
-        if not parent_v:
+        if not parent_v:  # pragma: no cover
             g.internalError('no parent_v', p)
             return
         if parent_v.children[p._childIndex] == v:
@@ -1107,7 +1100,7 @@ class Position:
             v2.parents.append(parent_v)
             # p.v no longer truly exists.
             # p.v = p2.v
-        else:
+        else:  # pragma: no cover
             g.internalError(
                 'parent_v.children[childIndex] != v',
                 p, parent_v.children, p._childIndex, v)
@@ -1128,9 +1121,9 @@ class Position:
             # This is the only call to v._cutlink.
             child._cutLink(n, parent_v)
         else:
-            self.badUnlink(parent_v, n, child)
+            self.badUnlink(parent_v, n, child)  # pragma: no cover
     #@+node:ekr.20090706171333.6226: *5* p.badUnlink
-    def badUnlink(self, parent_v: "VNode", n: int, child: "VNode") -> None:
+    def badUnlink(self, parent_v: "VNode", n: int, child: "VNode") -> None:  # pragma: no cover
 
         if 0 <= n < len(parent_v.children):
             g.trace(f"**can not happen: children[{n}] != p.v")
@@ -1197,7 +1190,7 @@ class Position:
             p.v = p.v.children[n - 1]
             p._childIndex = n - 1
         else:
-            p.v = None
+            p.v = None  # pragma: no cover
         return p
     #@+node:ekr.20080416161551.203: *4* p.moveToLastNode
     def moveToLastNode(self) -> "Position":
@@ -1217,7 +1210,7 @@ class Position:
         parent_v = p._parentVnode()
             # Returns None if p.v is None.
         if p and not p.v:
-            g.trace('no p.v:', p, g.callers())
+            g.trace('no p.v:', p, g.callers())  # pragma: no cover
         if p.v and parent_v and len(parent_v.children) > n + 1:
             p._childIndex = n + 1
             p.v = parent_v.children[n + 1]
@@ -1244,7 +1237,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type:ignore
+            p.v = None  # type:ignore   # pragma: no cover
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
     def moveToParent(self) -> "Position":
@@ -1911,7 +1904,7 @@ class Position:
 
 position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
-class PosList(list):
+class PosList(list):  # pragma: no cover
 
     __slots__: List[str] = []
 
@@ -2050,14 +2043,14 @@ class VNode:
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self) -> str:
-        return f"<VNode {self.gnx} {self.headString()}>"
+        return f"<VNode {self.gnx} {self.headString()}>"  # pragma: no cover
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
-    def dumpLink(self, link: Optional[str]) -> str:
+    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str="") -> None:
+    def dump(self, label: str="") -> None:  # pragma: no cover
         v = self
         s = '-' * 10
         print(f"{s} {label} {v}")
@@ -2244,11 +2237,13 @@ class VNode:
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
-        # This message should never be printed and we want to avoid crashing here!
+        # pylint: disable=no-else-return
         if isinstance(self._bodyString, str):
             return self._bodyString
-        g.internalError(f"body not unicode: {self._bodyString!r}")
-        return g.toUnicode(self._bodyString)
+        else:  # pragma: no cover
+            # This message should never be printed and we want to avoid crashing here!
+            g.internalError(f"body not unicode: {self._bodyString!r}") 
+            return g.toUnicode(self._bodyString)
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild(self) -> Optional["VNode"]:
@@ -2291,11 +2286,13 @@ class VNode:
     #@+node:ekr.20031218072017.1581: *4* v.headString
     def headString(self) -> str:
         """Return the headline string."""
-        # This message should never be printed and we want to avoid crashing here!
+        # pylint: disable=no-else-return
         if isinstance(self._headString, str):
             return self._headString
-        g.internalError(f"headline not unicode: {self._headString!r}")
-        return g.toUnicode(self._headString)
+        else:  # pragma: no cover
+            # This message should never be printed and we want to avoid crashing here!
+            g.internalError(f"headline not unicode: {self._headString!r}")
+            return g.toUnicode(self._headString)
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n: int, parent_v: "VNode") -> bool:
         """Return True if v is the n'th child of parent_v."""
@@ -2421,7 +2418,7 @@ class VNode:
     def childrenModified(self) -> None:
         g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
-    def computeIcon(self) -> int:
+    def computeIcon(self) -> int:  # pragma: no cover
         v = self
         val = 0
         if v.hasBody():
@@ -2434,7 +2431,7 @@ class VNode:
             val += 8
         return val
 
-    def setIcon(self) -> None:
+    def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
     #@+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self) -> None:
@@ -2444,7 +2441,6 @@ class VNode:
 
     def restoreCursorAndScroll(self) -> None:
         """Restore the cursor position and scroll so it is visible."""
-        traceTime = False and not g.unitTesting
         v = self
         ins = v.insertSpot
         # start, n = v.selectionStart, v.selectionLength
@@ -2455,22 +2451,16 @@ class VNode:
         if ins is None:
             ins = 0
         # This is very expensive for large text.
-        if traceTime:
-            t1 = time.time()
         if hasattr(body.wrapper, 'setInsertPoint'):
             w.setInsertPoint(ins)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                g.trace(f"{delta_t:2.3f} sec")
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
-        if spot is not None:
+        if spot is not None:  # pragma: no cover
             w.setYScrollPosition(spot)
             v.scrollBarSpot = spot
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
-    def saveCursorAndScroll(self) -> None:
+    def saveCursorAndScroll(self) -> None:  # pragma: no cover
 
         v = self
         c = v.context
@@ -2507,24 +2497,28 @@ class VNode:
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s: Any) -> None:
+        # pylint: disable=no-else-return
         v = self
         if isinstance(s, str):
             v._bodyString = s
             return
-        v._bodyString = g.toUnicode(s, reportErrors=True)
-        self.contentModified()  # #1413.
-        signal_manager.emit(self.context, 'body_changed', self)
+        else:  # pragma: no cover
+            v._bodyString = g.toUnicode(s, reportErrors=True)
+            self.contentModified()  # #1413.
+            signal_manager.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s: Any) -> None:
+        # pylint: disable=no-else-return
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
             return
-        s = g.toUnicode(s, reportErrors=True)
-        v._headString = s.replace('\n', '')  # type:ignore
-        self.contentModified()  # #1413.
+        else:  # pragma: no cover
+            s = g.toUnicode(s, reportErrors=True)
+            v._headString = s.replace('\n', '')  # type:ignore
+            self.contentModified()  # #1413.
 
     initBodyString = setBodyString
     initHeadString = setHeadString
@@ -2609,7 +2603,7 @@ class VNode:
         if parent_v in v.parents:
             try:
                 v.parents.remove(parent_v)
-            except ValueError:
+            except ValueError:  # pragma: no cover
                 g.internalError(f"{parent_v} not in parents of {v}")
                 g.trace('v.parents:')
                 g.printObj(v.parents)
@@ -2641,7 +2635,7 @@ class VNode:
         for v2 in v.children:
             try:
                 v2.parents.remove(v)
-            except ValueError:
+            except ValueError:  # pragma: no cover
                 g.internalError(f"{v} not in parents of {v2}")
                 g.trace('v2.parents:')
                 g.printObj(v2.parents)
@@ -2693,7 +2687,7 @@ class VNode:
         elif isinstance(val, dict):
             v.unknownAttributes = val  # type:ignore
         else:
-            raise ValueError
+            raise ValueError  # pragma: no cover
 
     u = property(
         __get_u, __set_u,

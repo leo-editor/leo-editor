@@ -61,9 +61,6 @@ class TestFileCommands(LeoUnitTest):
         # Tests...
         val = p.archivedPosition(root_p=p)
         self.assertEqual(val, [0])
-        for i, z in enumerate(list(p.parent().children_iter())):
-            val = z.archivedPosition(root_p=p.parent())
-            self.assertEqual(val, [0, i])
         for i, z in enumerate(list(p.children_iter())):
             val = z.archivedPosition(root_p=p)
             self.assertEqual(val, [0, i])
