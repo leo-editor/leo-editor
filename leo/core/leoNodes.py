@@ -336,6 +336,7 @@ class Position:
         return '.'.join(result)
 
     def sort_key(self, p: "Position") -> List[int]:
+        """Used as a sort function, which explains "redundant" argument."""
         return [int(s.split(':')[1]) for s in p.key().split('.')]
 
     # Positions should *not* be hashable.

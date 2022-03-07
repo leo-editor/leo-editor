@@ -51,7 +51,87 @@ class TestNodes(LeoUnitTest):
         aList1 = list(c.all_positions())
         aList2 = list(c.safe_all_positions())
         self.assertEqual(len(aList1), len(aList2))
-    #@+node:ekr.20220306072710.1: *4* TestNodes: Consistency tests
+    #@+node:ekr.20220306073547.1: *4* TestNodes: File operations
+    #@+node:ekr.20210830095545.58: *5* TestNodes.test_at_others_directive
+    def test_at_others_directive(self):
+        p = self.c.p
+        p1 = p.insertAsLastChild()
+        p1.setHeadString('@file zzz')
+        body = '''     %s
+        ''' % (chr(64) + 'others')  # ugly hack
+        p1.setBodyString(body)
+        p2 = p1.insertAsLastChild()
+        self.assertEqual(p1.textOffset(), 0)
+        self.assertEqual(p2.textOffset(), 5)
+    #@+node:ekr.20210830095545.54: *5* TestNodes.test_insert_node_that_does_not_belong_to_a_derived_file
+    def test_insert_node_that_does_not_belong_to_a_derived_file(self):
+        # Change @file activeUnitTests.txt to @@file activeUnitTests.txt
+        p = self.c.p
+        p1 = p.insertAsLastChild()
+        self.assertFalse(p1.textOffset())
+
+    #@+node:ekr.20210830095545.56: *5* TestNodes.test_organizer_node
+    def test_organizer_node(self):
+        p = self.c.p
+        p1 = p.insertAsLastChild()
+        p1.setHeadString('@file zzz')
+        p2 = p1.insertAsLastChild()
+        self.assertEqual(p1.textOffset(), 0)
+        self.assertEqual(p2.textOffset(), 0)
+
+    #@+node:ekr.20210830095545.55: *5* TestNodes.test_root_of_a_derived_file
+    def test_root_of_a_derived_file(self):
+        p = self.c.p
+        p1 = p.insertAsLastChild()
+        p1.setHeadString('@file zzz')
+        self.assertEqual(p1.textOffset(), 0)
+    #@+node:ekr.20210830095545.57: *5* TestNodes.test_section_node
+    def test_section_node(self):
+        p = self.c.p
+        p1 = p.insertAsLastChild()
+        p1.setHeadString('@file zzz')
+        body = '''   %s
+        ''' % (g.angleBrackets(' section '))
+        p1.setBodyString(body)
+        p2 = p1.insertAsLastChild()
+        head = g.angleBrackets(' section ')
+        p2.setHeadString(head)
+        self.assertEqual(p1.textOffset(), 0)
+        self.assertEqual(p2.textOffset(), 3)
+            # Section nodes can appear in with @others nodes,
+            # so they don't get special treatment.
+    #@+node:ekr.20220307042702.1: *4* TestNodes: Generators
+    #@+node:ekr.20210830095545.3: *5* TestNodes.test_all_generators_return_unique_positions
+    def test_all_generators_return_unique_positions(self):
+        # This tests a major bug in *all* generators returning positions.
+        c, p = self.c, self.c.p
+        root = p.next()
+        table = (
+            ('all_positions', c.all_positions),
+            ('all_unique_positions', c.all_unique_positions),
+            ('children', root.children),
+            ('self_and_siblings', root.self_and_siblings),
+            ('self_and_parents', root.firstChild().self_and_parents),
+            ('self_and_subtree', root.self_and_subtree),
+            ('following_siblings', root.following_siblings),
+            ('parents', root.firstChild().firstChild().parents),
+            ('unique_subtree', root.unique_subtree),
+        )
+        for kind, generator in table:
+            aList = []
+            for p in generator():
+                self.assertFalse(p in aList, msg=f"{kind} {p.gnx} {p.h}")
+                aList.append(p)
+    #@+node:ekr.20210828075915.1: *5* TestNodes.test_all_nodes_coverage
+    def test_all_nodes_coverage(self):
+        # @test c iters: <coverage tests>
+        c = self.c
+        v1 = [p.v for p in c.all_positions()]
+        v2 = [v for v in c.all_nodes()]
+        for v in v2:
+            self.assertTrue(v in v1)
+        for v in v1:
+            self.assertTrue(v in v2)
     #@+node:ekr.20210830095545.9: *5* TestNodes.test_check_all_gnx_s_exist_and_are_unique
     def test_check_all_gnx_s_exist_and_are_unique(self):
         c, p = self.c, self.c.p
@@ -148,77 +228,58 @@ class TestNodes(LeoUnitTest):
                 self.assertEqual(p, threadBack.getThreadNext())
             if threadNext:
                 self.assertEqual(p, threadNext.getThreadBack())
-    #@+node:ekr.20210830095545.3: *5* TestNodes.test_all_generators_return_unique_positions
-    def test_all_generators_return_unique_positions(self):
-        # This tests a major bug in *all* generators returning positions.
-        c, p = self.c, self.c.p
-        root = p.next()
-        table = (
-            ('all_positions', c.all_positions),
-            ('all_unique_positions', c.all_unique_positions),
-            ('children', root.children),
-            ('self_and_siblings', root.self_and_siblings),
-            ('self_and_parents', root.firstChild().self_and_parents),
-            ('self_and_subtree', root.self_and_subtree),
-            ('following_siblings', root.following_siblings),
-            ('parents', root.firstChild().firstChild().parents),
-            ('unique_subtree', root.unique_subtree),
-        )
-        for kind, generator in table:
-            aList = []
-            for p in generator():
-                self.assertFalse(p in aList, msg=f"{kind} {p.gnx} {p.h}")
-                aList.append(p)
-    #@+node:ekr.20210828075915.1: *5* TestNodes.test_all_nodes_coverage
-    def test_all_nodes_coverage(self):
-        # @test c iters: <coverage tests>
-        c = self.c
-        v1 = [p.v for p in c.all_positions()]
-        v2 = [v for v in c.all_nodes()]
-        for v in v2:
-            self.assertTrue(v in v1)
-        for v in v1:
-            self.assertTrue(v in v2)
-    #@+node:ekr.20220306073547.1: *4* TestNodes: File operations
-    #@+node:ekr.20210830095545.58: *5* TestNodes.test_at_others_directive
-    def test_at_others_directive(self):
-        p = self.c.p
-        p1 = p.insertAsLastChild()
-        p1.setHeadString('@file zzz')
-        body = '''     %s
-        ''' % (chr(64) + 'others')  # ugly hack
-        p1.setBodyString(body)
-        p2 = p1.insertAsLastChild()
-        self.assertEqual(p1.textOffset(), 0)
-        self.assertEqual(p2.textOffset(), 5)
-    #@+node:ekr.20210830095545.54: *5* TestNodes.test_insert_node_that_does_not_belong_to_a_derived_file
-    def test_insert_node_that_does_not_belong_to_a_derived_file(self):
-        # Change @file activeUnitTests.txt to @@file activeUnitTests.txt
-        p = self.c.p
-        p1 = p.insertAsLastChild()
-        self.assertFalse(p1.textOffset())
+    #@+node:ekr.20220306100004.1: *5* TestNodes.test_p_following_siblings
+    def test_p_following_siblings(self):
+        
+        p = self.c.rootPosition()
+        while p:
+            for sib in p.following_siblings():
+                self.assertTrue(p != sib)
+                self.assertTrue(p < sib)
+            p.moveToThreadNext()
+    #@+node:ekr.20220306101100.1: *5* TestNodes.test_p_nearest
+    def test_p_nearest(self):
 
-    #@+node:ekr.20210830095545.55: *5* TestNodes.test_root_of_a_derived_file
-    def test_root_of_a_derived_file(self):
-        p = self.c.p
-        p1 = p.insertAsLastChild()
-        p1.setHeadString('@file zzz')
-        self.assertEqual(p1.textOffset(), 0)
-    #@+node:ekr.20210830095545.57: *5* TestNodes.test_section_node
-    def test_section_node(self):
-        p = self.c.p
-        p1 = p.insertAsLastChild()
-        p1.setHeadString('@file zzz')
-        body = '''   %s
-        ''' % (g.angleBrackets(' section '))
-        p1.setBodyString(body)
-        p2 = p1.insertAsLastChild()
-        head = g.angleBrackets(' section ')
-        p2.setHeadString(head)
-        self.assertEqual(p1.textOffset(), 0)
-        self.assertEqual(p2.textOffset(), 3)
-            # Section nodes can appear in with @others nodes,
-            # so they don't get special treatment.
+        c = self.c
+
+        def p_true(p):
+            return True
+        
+        def p_false(p):
+            return False
+
+        # Create top-level @file node..
+        root1 = c.rootPosition().insertAfter()
+        root1.h = '@file root1.py'
+        # Create a third-level @file node, *not* a child of the top-level node.
+        child = root1.next().insertAsLastChild()
+        child.h = 'target child'
+        root2 = child.insertAsLastChild()
+        root2.h = '@file root2.py'
+        for pred in (p_true, p_false, None):
+            for p in c.all_positions():
+                for root in p.nearest_roots(predicate=pred):
+                    pass
+                for root in p.nearest_unique_roots(predicate=pred):
+                    pass
+    #@+node:ekr.20220307042327.1: *5* TestNodes.test_p_nodes
+    def test_p_nodes(self):
+
+        c = self.c
+        for p in c.p.nodes():
+            pass
+    #@+node:ekr.20210830095545.38: *5* TestNodes.test_p_unique_nodes
+    def test_p_unique_nodes(self):
+
+        self.assertEqual(len(list(self.root_p.unique_nodes())), 5)
+    #@+node:ekr.20220306100527.1: *5* TestNodes.test_p_unique_subtree
+    def test_p_unique_subtree(self):
+
+        p = self.c.rootPosition()
+        while p:
+            for descendant in p.unique_subtree():
+                self.assertTrue(p <= descendant)
+            p.moveToThreadNext()
     #@+node:ekr.20220306072631.1: *4* TestNodes: Outline operations
     #@+node:ekr.20210830095545.42: *5* TestNodes.test_clone_and_move_the_clone_to_the_root
     def test_clone_and_move_the_clone_to_the_root(self):
@@ -571,7 +632,7 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
     #@+node:ekr.20220306072850.1: *4* TestNodes: Positions methods
-    #@+node:ekr.20210830095545.17: *5* TestNodes.test_convertTreeToString_and_allies
+    #@+node:ekr.20210830095545.17: *5* TestNodes.test_p_convertTreeToString_and_allies
     def test_convertTreeToString_and_allies(self):
         p = self.c.p
         sib = p.next()
@@ -579,52 +640,6 @@ class TestNodes(LeoUnitTest):
         s = sib.convertTreeToString()
         for p2 in sib.self_and_subtree():
             self.assertTrue(p2.h in s)
-    #@+node:ekr.20210830095545.18: *5* TestNodes.test_leoNodes_properties
-    def test_leoNodes_properties(self):
-        c, p = self.c, self.c.p
-        v = p.v
-        b = p.b
-        p.b = b
-        self.assertEqual(p.b, b)
-        v.b = b
-        self.assertEqual(v.b, b)
-        h = p.h
-        p.h = h
-        self.assertEqual(p.h, h)
-        v.h = h
-        self.assertEqual(v.h, h)
-        for p in c.all_positions():
-            self.assertEqual(p.b, p.bodyString())
-            self.assertEqual(p.v.b, p.v.bodyString())
-            self.assertEqual(p.h, p.headString())
-            self.assertEqual(p.v.h, p.v.headString())
-    #@+node:ekr.20210830095545.19: *5* TestNodes.test_new_vnodes_methods
-    def test_new_vnodes_methods(self):
-        c, p = self.c, self.c.p
-        parent_v = p.parent().v or c.hiddenRootNode
-        p.v.cloneAsNthChild(parent_v, p.childIndex())
-        v2 = p.v.insertAsFirstChild()
-        v2.h = 'insertAsFirstChild'
-        v2 = p.v.insertAsLastChild()
-        v2.h = 'insertAsLastChild'
-        v2 = p.v.insertAsNthChild(1)
-        v2.h = 'insertAsNthChild(1)'
-    #@+node:ekr.20210830095545.20: *5* TestNodes.test_newlines_in_headlines
-    def test_newlines_in_headlines(self):
-        # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
-        p = self.c.p
-        p.h = '\nab\nxy\n'
-        self.assertEqual(p.h, 'abxy')
-
-    #@+node:ekr.20210830095545.56: *5* TestNodes.test_organizer_node
-    def test_organizer_node(self):
-        p = self.c.p
-        p1 = p.insertAsLastChild()
-        p1.setHeadString('@file zzz')
-        p2 = p1.insertAsLastChild()
-        self.assertEqual(p1.textOffset(), 0)
-        self.assertEqual(p2.textOffset(), 0)
-
     #@+node:ekr.20210830095545.21: *5* TestNodes.test_p__eq_
     def test_p__eq_(self):
         c, p = self.c, self.c.p
@@ -657,48 +672,13 @@ class TestNodes(LeoUnitTest):
                 self.assertTrue(p < next)
                 next.moveToThreadNext()
             p.moveToThreadNext()
-    #@+node:ekr.20220306100004.1: *5* TestNodes.test_p_following_siblings
-    def test_p_following_siblings(self):
-        
-        p = self.c.rootPosition()
-        while p:
-            for sib in p.following_siblings():
-                self.assertTrue(p != sib)
-                self.assertTrue(p < sib)
-            p.moveToThreadNext()
-    #@+node:ekr.20220306101100.1: *5* TestNodes.test_p_nearest
-    def test_p_nearest(self):
+    #@+node:ekr.20220307045746.1: *5* TestNodes.test_p_key
+    def test_p__key__(self):
 
         c = self.c
-
-        def p_true(p):
-            return True
-        
-        def p_false(p):
-            return False
-
-        # Create top-level @file node..
-        root1 = c.rootPosition().insertAfter()
-        root1.h = '@file root1.py'
-        # Create a third-level @file node, *not* a child of the top-level node.
-        child = root1.next().insertAsLastChild()
-        child.h = 'target child'
-        root2 = child.insertAsLastChild()
-        root2.h = '@file root2.py'
-        for pred in (p_true, p_false, None):
-            for p in c.all_positions():
-                for root in p.nearest_roots(predicate=pred):
-                    pass
-                for root in p.nearest_unique_roots(predicate=pred):
-                    pass
-    #@+node:ekr.20220306100527.1: *5* TestNodes.test_p_unique_subtree
-    def test_p_unique_subtree(self):
-
-        p = self.c.rootPosition()
-        while p:
-            for descendant in p.unique_subtree():
-                self.assertTrue(p <= descendant)
-            p.moveToThreadNext()
+        child = c.p.firstChild()
+        child.key()
+        child.sort_key(child)
     #@+node:ekr.20210830095545.24: *5* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
         
@@ -757,6 +737,51 @@ class TestNodes(LeoUnitTest):
         c.deletePositionsInList(aList)
         c.redraw()
 
+    #@+node:ekr.20220307043449.1: *5* TestNodes.test_p_getters
+    def test_p_getters(self):
+
+        p = self.c.p
+      
+        table1 = (
+            p.anyAtFileNodeName,
+            p.atAutoNodeName,
+            p.atCleanNodeName,
+            p.atEditNodeName,
+            p.atFileNodeName,
+            p.atNoSentinelsFileNodeName,
+            p.atShadowFileNodeName,
+            p.atSilentFileNodeName,
+            p.atThinFileNodeName,
+            p.isAnyAtFileNode,
+            p.isAtAllNode,
+            p.isAtAutoNode,
+            p.isAtAutoRstNode,
+            p.isAtCleanNode,
+            p.isAtEditNode,
+            p.isAtFileNode,
+            p.isAtIgnoreNode,
+            p.isAtNoSentinelsFileNode,
+            p.isAtOthersNode,
+            p.isAtRstFileNode,
+            p.isAtShadowFileNode,
+            p.isAtSilentFileNode,
+            p.isAtThinFileNode,
+            p.isMarked,
+            p.isOrphan,
+            p.isTopBitSet,
+            p.isVisited,
+        )
+        for func in table1:
+            self.assertFalse(func(), msg=func.__name__)
+        table2 = (
+            p.bodyString,
+            p.headString,    
+            p.isDirty,
+            p.isSelected,
+            p.status,
+        )
+        for func in table2:
+            func()  # Don't care about result.
     #@+node:ekr.20210830095545.26: *5* TestNodes.test_p_hasNextBack
     def test_p_hasNextBack(self):
         c, p = self.c, self.c.p
@@ -906,6 +931,42 @@ class TestNodes(LeoUnitTest):
         c.selectPosition(next)
         s = w.get("1.0", "end")
         self.assertEqual(s.rstrip(), "after")
+    #@+node:ekr.20210830095545.4: *5* TestNodes.test_position_not_hashable
+    def test_position_not_hashable(self):
+        p = self.c.p
+        try:
+            a = set()
+            a.add(p)
+            assert False, 'Adding position to set should throw exception'  # pragma: no cover
+        except TypeError:
+            pass
+    #@+node:ekr.20220307043258.1: *4* TestNodes: Position properties
+    #@+node:ekr.20210830095545.20: *5* TestNodes.test_p_h_with_newlines
+    def test_p_h_with_newlines(self):
+        # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
+        p = self.c.p
+        p.h = '\nab\nxy\n'
+        self.assertEqual(p.h, 'abxy')
+
+    #@+node:ekr.20210830095545.18: *5* TestNodes.test_p_properties
+    def test_leoNodes_properties(self):
+        c, p = self.c, self.c.p
+        v = p.v
+        b = p.b
+        p.b = b
+        self.assertEqual(p.b, b)
+        v.b = b
+        self.assertEqual(v.b, b)
+        h = p.h
+        p.h = h
+        self.assertEqual(p.h, h)
+        v.h = h
+        self.assertEqual(v.h, h)
+        for p in c.all_positions():
+            self.assertEqual(p.b, p.bodyString())
+            self.assertEqual(p.v.b, p.v.bodyString())
+            self.assertEqual(p.h, p.headString())
+            self.assertEqual(p.v.h, p.v.headString())
     #@+node:ekr.20210830095545.37: *5* TestNodes.test_p_u
     def test_p_u(self):
         p = self.c.p
@@ -917,19 +978,6 @@ class TestNodes(LeoUnitTest):
         p.u = d
         self.assertEqual(p.u, d)
         self.assertEqual(p.v.u, d)
-    #@+node:ekr.20210830095545.38: *5* TestNodes.test_p_unique_nodes
-    def test_p_unique_nodes(self):
-
-        self.assertEqual(len(list(self.root_p.unique_nodes())), 5)
-    #@+node:ekr.20210830095545.4: *5* TestNodes.test_position_not_hashable
-    def test_position_not_hashable(self):
-        p = self.c.p
-        try:
-            a = set()
-            a.add(p)
-            assert False, 'Adding position to set should throw exception'  # pragma: no cover
-        except TypeError:
-            pass
     #@+node:ekr.20220306073301.1: *4* TestNodes: VNode methods
     #@+node:ekr.20210830095545.39: *5* TestNodes.test_v_atAutoNodeName_and_v_atAutoRstNodeName
     def test_v_atAutoNodeName_and_v_atAutoRstNodeName(self):
@@ -944,6 +992,17 @@ class TestNodes(LeoUnitTest):
             result2 = p.v.atAutoRstNodeName(h=s)
             self.assertEqual(result1, expected1, msg=s)
             self.assertEqual(result2, expected2, msg=s)
+    #@+node:ekr.20210830095545.19: *5* TestNodes.test_new_vnodes_methods
+    def test_new_vnodes_methods(self):
+        c, p = self.c, self.c.p
+        parent_v = p.parent().v or c.hiddenRootNode
+        p.v.cloneAsNthChild(parent_v, p.childIndex())
+        v2 = p.v.insertAsFirstChild()
+        v2.h = 'insertAsFirstChild'
+        v2 = p.v.insertAsLastChild()
+        v2.h = 'insertAsLastChild'
+        v2 = p.v.insertAsNthChild(1)
+        v2.h = 'insertAsNthChild(1)'
     #@-others
 #@+node:ekr.20220306054624.1: ** class TestNodeIndices(LeoUnitTest)
 class TestNodeIndices(LeoUnitTest):
