@@ -1913,7 +1913,7 @@ class StyleSheetManager:
             if deltas[delta] and (val is not None):
                 size = ''.join(i for i in val if i in '01234567890.')
                 units = ''.join(i for i in val if i not in '01234567890.')
-                size = max(1, int(size) + deltas[delta])
+                size = max(1, float(size) + deltas[delta])
                 constants['@' + delta] = f"{size}{units}"
         return constants, deltas
     #@+node:ekr.20180316093159.1: *5* ssm.do_pass
