@@ -1092,7 +1092,7 @@ class Position:
         p = self
         v, v2 = p.v, p2.v
         parent_v = p._parentVnode()
-        if not parent_v:
+        if not parent_v:  # pragma: no cover
             g.internalError('no parent_v', p)
             return
         if parent_v.children[p._childIndex] == v:
@@ -1100,7 +1100,7 @@ class Position:
             v2.parents.append(parent_v)
             # p.v no longer truly exists.
             # p.v = p2.v
-        else:
+        else:  # pragma: no cover
             g.internalError(
                 'parent_v.children[childIndex] != v',
                 p, parent_v.children, p._childIndex, v)
@@ -1121,9 +1121,9 @@ class Position:
             # This is the only call to v._cutlink.
             child._cutLink(n, parent_v)
         else:
-            self.badUnlink(parent_v, n, child)
+            self.badUnlink(parent_v, n, child)  # pragma: no cover
     #@+node:ekr.20090706171333.6226: *5* p.badUnlink
-    def badUnlink(self, parent_v: "VNode", n: int, child: "VNode") -> None:
+    def badUnlink(self, parent_v: "VNode", n: int, child: "VNode") -> None:  # pragma: no cover
 
         if 0 <= n < len(parent_v.children):
             g.trace(f"**can not happen: children[{n}] != p.v")
@@ -1190,7 +1190,7 @@ class Position:
             p.v = p.v.children[n - 1]
             p._childIndex = n - 1
         else:
-            p.v = None
+            p.v = None  # pragma: no cover
         return p
     #@+node:ekr.20080416161551.203: *4* p.moveToLastNode
     def moveToLastNode(self) -> "Position":
@@ -1210,7 +1210,7 @@ class Position:
         parent_v = p._parentVnode()
             # Returns None if p.v is None.
         if p and not p.v:
-            g.trace('no p.v:', p, g.callers())
+            g.trace('no p.v:', p, g.callers())  # pragma: no cover
         if p.v and parent_v and len(parent_v.children) > n + 1:
             p._childIndex = n + 1
             p.v = parent_v.children[n + 1]
@@ -1237,7 +1237,7 @@ class Position:
         else:
             # mypy rightly doesn't like setting p.v to None.
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None  # type:ignore
+            p.v = None  # type:ignore   # pragma: no cover
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
     def moveToParent(self) -> "Position":
@@ -2043,14 +2043,14 @@ class VNode:
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self) -> str:
-        return f"<VNode {self.gnx} {self.headString()}>"
+        return f"<VNode {self.gnx} {self.headString()}>"  # pragma: no cover
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
-    def dumpLink(self, link: Optional[str]) -> str:
+    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str="") -> None:
+    def dump(self, label: str="") -> None:  # pragma: no cover
         v = self
         s = '-' * 10
         print(f"{s} {label} {v}")
@@ -2237,11 +2237,13 @@ class VNode:
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
-        # This message should never be printed and we want to avoid crashing here!
+        # pylint: disable=no-else-return
         if isinstance(self._bodyString, str):
             return self._bodyString
-        g.internalError(f"body not unicode: {self._bodyString!r}")
-        return g.toUnicode(self._bodyString)
+        else:  # pragma: no cover
+            # This message should never be printed and we want to avoid crashing here!
+            g.internalError(f"body not unicode: {self._bodyString!r}") 
+            return g.toUnicode(self._bodyString)
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
     def firstChild(self) -> Optional["VNode"]:
@@ -2284,11 +2286,13 @@ class VNode:
     #@+node:ekr.20031218072017.1581: *4* v.headString
     def headString(self) -> str:
         """Return the headline string."""
-        # This message should never be printed and we want to avoid crashing here!
+        # pylint: disable=no-else-return
         if isinstance(self._headString, str):
             return self._headString
-        g.internalError(f"headline not unicode: {self._headString!r}")
-        return g.toUnicode(self._headString)
+        else:  # pragma: no cover
+            # This message should never be printed and we want to avoid crashing here!
+            g.internalError(f"headline not unicode: {self._headString!r}")
+            return g.toUnicode(self._headString)
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
     def isNthChildOf(self, n: int, parent_v: "VNode") -> bool:
         """Return True if v is the n'th child of parent_v."""
@@ -2414,7 +2418,7 @@ class VNode:
     def childrenModified(self) -> None:
         g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
-    def computeIcon(self) -> int:
+    def computeIcon(self) -> int:  # pragma: no cover
         v = self
         val = 0
         if v.hasBody():
@@ -2427,7 +2431,7 @@ class VNode:
             val += 8
         return val
 
-    def setIcon(self) -> None:
+    def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
     #@+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self) -> None:
@@ -2437,7 +2441,6 @@ class VNode:
 
     def restoreCursorAndScroll(self) -> None:
         """Restore the cursor position and scroll so it is visible."""
-        traceTime = False and not g.unitTesting
         v = self
         ins = v.insertSpot
         # start, n = v.selectionStart, v.selectionLength
@@ -2448,22 +2451,16 @@ class VNode:
         if ins is None:
             ins = 0
         # This is very expensive for large text.
-        if traceTime:
-            t1 = time.time()
         if hasattr(body.wrapper, 'setInsertPoint'):
             w.setInsertPoint(ins)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                g.trace(f"{delta_t:2.3f} sec")
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
-        if spot is not None:
+        if spot is not None:  # pragma: no cover
             w.setYScrollPosition(spot)
             v.scrollBarSpot = spot
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
-    def saveCursorAndScroll(self) -> None:
+    def saveCursorAndScroll(self) -> None:  # pragma: no cover
 
         v = self
         c = v.context
@@ -2500,24 +2497,28 @@ class VNode:
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s: Any) -> None:
+        # pylint: disable=no-else-return
         v = self
         if isinstance(s, str):
             v._bodyString = s
             return
-        v._bodyString = g.toUnicode(s, reportErrors=True)
-        self.contentModified()  # #1413.
-        signal_manager.emit(self.context, 'body_changed', self)
+        else:  # pragma: no cover
+            v._bodyString = g.toUnicode(s, reportErrors=True)
+            self.contentModified()  # #1413.
+            signal_manager.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s: Any) -> None:
+        # pylint: disable=no-else-return
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
             return
-        s = g.toUnicode(s, reportErrors=True)
-        v._headString = s.replace('\n', '')  # type:ignore
-        self.contentModified()  # #1413.
+        else:  # pragma: no cover
+            s = g.toUnicode(s, reportErrors=True)
+            v._headString = s.replace('\n', '')  # type:ignore
+            self.contentModified()  # #1413.
 
     initBodyString = setBodyString
     initHeadString = setHeadString
@@ -2602,7 +2603,7 @@ class VNode:
         if parent_v in v.parents:
             try:
                 v.parents.remove(parent_v)
-            except ValueError:
+            except ValueError:  # pragma: no cover
                 g.internalError(f"{parent_v} not in parents of {v}")
                 g.trace('v.parents:')
                 g.printObj(v.parents)
@@ -2634,7 +2635,7 @@ class VNode:
         for v2 in v.children:
             try:
                 v2.parents.remove(v)
-            except ValueError:
+            except ValueError:  # pragma: no cover
                 g.internalError(f"{v} not in parents of {v2}")
                 g.trace('v2.parents:')
                 g.printObj(v2.parents)
@@ -2686,7 +2687,7 @@ class VNode:
         elif isinstance(val, dict):
             v.unknownAttributes = val  # type:ignore
         else:
-            raise ValueError
+            raise ValueError  # pragma: no cover
 
     u = property(
         __get_u, __set_u,

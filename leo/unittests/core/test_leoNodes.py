@@ -1003,6 +1003,51 @@ class TestNodes(LeoUnitTest):
         v2.h = 'insertAsLastChild'
         v2 = p.v.insertAsNthChild(1)
         v2.h = 'insertAsNthChild(1)'
+    #@+node:ekr.20220307051855.1: *5* TestNodes.test_v_getters
+    def test_v_getters(self):
+
+        v = self.c.p.v
+      
+        table1 = (
+            v.anyAtFileNodeName,
+            v.atAutoNodeName,
+            v.atCleanNodeName,
+            v.atEditNodeName,
+            v.atFileNodeName,
+            v.atNoSentinelsFileNodeName,
+            v.atShadowFileNodeName,
+            v.atSilentFileNodeName,
+            v.atThinFileNodeName,
+            v.isAnyAtFileNode,
+            v.isAtAllNode,
+            v.isAtAutoNode,
+            v.isAtAutoRstNode,
+            v.isAtCleanNode,
+            v.isAtEditNode,
+            v.isAtFileNode,
+            v.isAtIgnoreNode,
+            v.isAtNoSentinelsFileNode,
+            v.isAtOthersNode,
+            v.isAtRstFileNode,
+            v.isAtShadowFileNode,
+            v.isAtSilentFileNode,
+            v.isAtThinFileNode,
+            v.isMarked,
+            v.isOrphan,
+            v.isTopBitSet,
+            v.isVisited,
+        )
+        for func in table1:
+            self.assertFalse(func(), msg=func.__name__)
+        table2 = (
+            v.bodyString,
+            v.headString,    
+            v.isDirty,
+            v.isSelected,
+            v.status,
+        )
+        for func in table2:
+            func()  # Don't care about result.
     #@-others
 #@+node:ekr.20220306054624.1: ** class TestNodeIndices(LeoUnitTest)
 class TestNodeIndices(LeoUnitTest):
