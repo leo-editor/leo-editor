@@ -666,6 +666,31 @@ class TestNodes(LeoUnitTest):
                 self.assertTrue(p != sib)
                 self.assertTrue(p < sib)
             p.moveToThreadNext()
+    #@+node:ekr.20220306101100.1: *5* TestNodes.test_p_nearest
+    def test_p_nearest(self):
+
+        c = self.c
+
+        def p_true(p):
+            return True
+        
+        def p_false(p):
+            return False
+
+        # Create top-level @file node..
+        root1 = c.rootPosition().insertAfter()
+        root1.h = '@file root1.py'
+        # Create a third-level @file node, *not* a child of the top-level node.
+        child = root1.next().insertAsLastChild()
+        child.h = 'target child'
+        root2 = child.insertAsLastChild()
+        root2.h = '@file root2.py'
+        for pred in (p_true, p_false, None):
+            for p in c.all_positions():
+                for root in p.nearest_roots(predicate=pred):
+                    pass
+                for root in p.nearest_unique_roots(predicate=pred):
+                    pass
     #@+node:ekr.20220306100527.1: *5* TestNodes.test_p_unique_subtree
     def test_p_unique_subtree(self):
 
