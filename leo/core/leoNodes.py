@@ -438,20 +438,21 @@ class Position:
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         """
+        p1 = self.copy()
+
         def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
 
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-        p1 = self
-        for p in p1.self_and_parents(copy=False):
+        for p in p1.copy().self_and_parents(copy=False):
             if the_predicate(p):
                 yield p.copy() if copy else p
                 return
-        # Next, look for all .md files in the tree.
+        # Next, look for all root's in p's subtree.
         after = p1.nodeAfterTree()
-        p = p1
+        p = p1.copy()
         while p and p != after:
             if the_predicate(p):
                 yield p.copy() if copy else p
@@ -472,6 +473,7 @@ class Position:
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
         """
+        p1 = self.copy()
 
         def default_predicate(p: "Position") -> bool:
             return p.isAnyAtFileNode()
@@ -479,15 +481,14 @@ class Position:
         the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-        p1 = self
-        for p in p1.self_and_parents(copy=False):
+        for p in p1.copy().self_and_parents(copy=False):
             if the_predicate(p):
                 yield p.copy() if copy else p
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
         after = p1.nodeAfterTree()
-        p = p1
+        p = p1.copy()
         while p and p != after:
             if the_predicate(p):
                 if p.v not in seen:
