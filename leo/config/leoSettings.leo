@@ -2039,7 +2039,7 @@
 </v>
 <v t="ekr.20201021105344.1"><vh>viewrendered3 plugin</vh>
 <v t="ekr.20220224094744.1"><vh>@bool vr3-md-style-auto  = True</vh></v>
-<v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = False</vh></v>
+<v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = True</vh></v>
 <v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
 <v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
 <v t="ekr.20201021110503.1"><vh>@bool vr3-prefer-asciidoc3 = False</vh></v>
