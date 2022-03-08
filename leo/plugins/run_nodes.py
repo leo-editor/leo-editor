@@ -167,7 +167,7 @@ def OnIdle(tag, keywords):
     else:
         OwnIdleHook = False
         g.disableIdleTimeHook()
-#@+node:ekr.20040910070811.15: *3* OnQuit
+#@+node:ekr.20040910070811.15: *3* OnQuit (run_nodes.py)
 def OnQuit(tag, keywords=None):
 
     global RunNode, RunList

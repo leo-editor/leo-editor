@@ -30,7 +30,7 @@ def onCreate(tag, key):
     c = key.get('c')
 
     geotag_Controller(c)
-#@+node:tbrown.20101103145611.5658: ** onQuit
+#@+node:tbrown.20101103145611.5658: ** onQuit (geotag.py)
 def onQuit(tag, key):
     g.pygeotag.stop_server()
 #@+node:tbrown.20091214233510.5353: ** class geotag_Controller
