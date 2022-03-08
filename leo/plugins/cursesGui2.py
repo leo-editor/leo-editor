@@ -707,7 +707,14 @@ class QuitButton(npyscreen.MiniButtonPress):
     """Override the "Quit Leo" button so it prompts for save if needed."""
 
     def whenPressed(self):
-        g.app.onQuit()
+        
+        # #2467.
+        # Similar to qt_gui.close_event.
+        for c in g.app.commanders():
+            allow = c.exists and g.app.closeLeoWindow(c.frame)
+            if not allow:
+                return
+        sys.exit(0)
 #@-others
 #@-<< forward reference classes >>
 #@+others
