@@ -350,12 +350,12 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
                 self.scon.freeze(False)
                 self.scon.clear()
             return
-        if len(t) < 3:
-            return
         if self.scon.frozen:
             return
         if t == 'm':
             self.scon.doShowMarked()
+            return
+        if len(t) < 3:  # #2466.
             return
         self.scon.worker.set_input(t)
     #@+node:ekr.20190210152123.1: *3* quick_w.selectAndDismiss
