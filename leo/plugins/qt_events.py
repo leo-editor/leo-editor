@@ -122,7 +122,7 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
         try:
             binding, ch, lossage = self.toBinding(event)
             if not binding:
-                return False  # Not the correct event type.
+                return False  # Let Qt handle the key.
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
