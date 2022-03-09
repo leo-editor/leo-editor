@@ -131,6 +131,12 @@ def stickynoter_f(event):
     c = event['c']
     p = c.p
     v = p.v
+    # #2471: Just show the node if it already exists.
+    nf = g.app.stickynotes.get(p.gnx)
+    if nf:
+        nf.show()
+        nf.raise_()
+        return
 
     def stickynoter_focusin():
         if v is c.p.v:
@@ -504,6 +510,7 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     nf =  g.app.stickynotes.get(p.gnx)
     if nf:
         nf.show()
+        nf.raise_()
         return nf
     nf = FocusingPlaintextEdit(
         focusin=mknote_focusin,
