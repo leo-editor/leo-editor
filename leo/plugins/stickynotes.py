@@ -131,14 +131,20 @@ def stickynoter_f(event):
     c = event['c']
     p = c.p
     v = p.v
+    # #2471: Just show the node if it already exists.
+    nf = g.app.stickynotes.get(p.gnx)
+    if nf:
+        nf.show()
+        nf.raise_()
+        return
 
-    def focusin():
+    def stickynoter_focusin():
         if v is c.p.v:
             nf.setHtml(v.b)
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
-    def focusout():
+    def stickynoter_focusout():
         if nf.dirty:
             v.b = nf.toHtml()
             v.setDirty()
@@ -150,7 +156,8 @@ def stickynoter_f(event):
             c.setChanged()
             c.redraw()
 
-    nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
+    # not LessSimpleRichText
+    nf = SimpleRichText(stickynoter_focusin, stickynoter_focusout)
     nf.dirty = False
     decorate_window(c, nf)
     nf.setWindowTitle(p.h)
@@ -185,7 +192,7 @@ if encOK:
         p = c.p
         v = p.v
 
-        def focusin():
+        def stickynoteenc_focusin():
             if v is c.p.v:
                 decoded = sn_decode(v.b)
                 if decoded is None:
@@ -196,7 +203,7 @@ if encOK:
                 nf.setWindowTitle(p.h)
                 nf.dirty = False
 
-        def focusout():
+        def stickynoteenc_focusout():
             if not nf.dirty:
                 return
             enc = sn_encode(str(nf.toPlainText()))
@@ -225,7 +232,9 @@ if encOK:
                 return
         else:
             decoded = v.b
-        nf = mknote(c, p, focusin=focusin, focusout=focusout)
+        nf = mknote(c, p,
+            focusin=stickynoteenc_focusin,
+            focusout=stickynoteenc_focusout)
         nf.setPlainText(decoded)
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
@@ -466,21 +475,20 @@ def get_workbook():
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c, p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
-    # pylint: disable=function-redefined
-    # focusin and focusout are redefined elsewhere.
     v = p.v
-
     if focusin is None:
-        def focusin():
+        def mknote_focusin():
             if v is c.p.v:
                 if v.b.encode('utf-8') != nf.toPlainText():
                     # only when needed to avoid scroll jumping
                     nf.setPlainText(v.b)
                 nf.setWindowTitle(v.h)
                 nf.dirty = False
+    else:
+        mknote_focusin = focusin
 
     if focusout is None:
-        def focusout():
+        def mknote_focusout():
             if nf.dirty:
                 if v.b.encode('utf-8') != nf.toPlainText():
                     v.b = nf.toPlainText()
@@ -492,11 +500,23 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
                 if p.v is v:
                     c.selectPosition(c.p)
                 c.redraw()
+    else:
+        mknote_focusout = focusout
 
     def closeevent():
         pass
-
-    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent=parent)
+        
+    # #2471: Create a new editor only if it doesn't already exist.
+    nf =  g.app.stickynotes.get(p.gnx)
+    if nf:
+        nf.show()
+        nf.raise_()
+        return nf
+    nf = FocusingPlaintextEdit(
+        focusin=mknote_focusin,
+        focusout=mknote_focusout,
+        closed=closeevent,
+        parent=parent)
     decorate_window(c, nf)
     nf.dirty = False
     nf.resize(600, 300)
