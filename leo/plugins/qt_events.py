@@ -35,6 +35,7 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
+import sys
 from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -190,6 +191,13 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             return t != Type.KeyRelease
                 # QLineEdit: ignore all key events except keyRelease events.
         if t == Type.KeyPress:
+            # Hack Alert!
+            # On some Linux systems (Kubuntu, Debian, the Win or SHIFT-Win keys
+            # insert garbage symbols into editing areas.  Filter out these
+            # key events.  NOTE - this is a *magic number* - who knows if
+            # it could change in the future?
+            if event.key() == 0x1000053 and sys.platform == 'linux':
+                return True
             return False  # Never ignore KeyPress events.
         # This doesn't work. Two shortcut-override events are generated!
             # if t == ev.ShortcutOverride and event.text():
