@@ -670,6 +670,21 @@ def save_as_xml(self, event=None):
     # Leo 6.4: Using save-to instead of save-as allows two versions of the file.
     c.saveTo(fileName=fileName)
     c.fileCommands.putSavedMessage(fileName)
+#@+node:tom.20220310092720.1: *3* c_file.save-node-as-xml
+@g.commander_command('save-node-as-xml')
+def save_node_as_xml_outline(self, event = None):
+    """Save a node with its subtree as a Leo outline file."""
+    c = event.c
+    xml = c.fileCommands.outline_to_clipboard_string()
+
+    fileName = g.app.gui.runSaveFileDialog(c,
+                title="Save To",
+                filetypes=[("Leo files", "*.leo"),],
+                defaultextension=g.defaultLeoFileExtension(c))
+
+    if fileName:
+        with open(fileName, 'w', encoding='utf-8') as f:
+            f.write(xml)
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')
