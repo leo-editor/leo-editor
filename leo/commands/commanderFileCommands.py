@@ -674,12 +674,8 @@ def save_as_xml(self, event=None):
 @g.commander_command('save-node-as-xml')
 def save_node_as_xml_outline(self, event = None):
     """Save a node with its subtree as a Leo outline file."""
-    c = self
-
-    c.k.simulateCommand('copy-node')
-
-    xml = g.app.gui.getTextFromClipboard()
-    c.usingClipboard = True
+    c = event.c
+    xml = c.fileCommands.outline_to_clipboard_string()
 
     fileName = g.app.gui.runSaveFileDialog(c,
                 title="Save To",
@@ -689,8 +685,6 @@ def save_node_as_xml_outline(self, event = None):
     if fileName:
         with open(fileName, 'w', encoding='utf-8') as f:
             f.write(xml)
-
-    c.usingClipboard = False
 #@+node:ekr.20031218072017.2849: ** Export
 #@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')
