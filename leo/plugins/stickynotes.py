@@ -116,7 +116,7 @@ def onCloseFrame(tag, kwargs):
     for gnx in d:
         w = d.get(gnx)
         w.close()
-    outer_dict [c.hash()] = []
+    outer_dict [c.hash()] = {}
 #@+node:ekr.20160403065412.1: ** commands
 #@+node:vivainio2.20091008133028.5825: *3* g.command('stickynote')
 @g.command('stickynote')
