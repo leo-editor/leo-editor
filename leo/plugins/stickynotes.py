@@ -87,6 +87,9 @@ QTextCharFormat = QtGui.QTextCharFormat
 QTextEdit = QtWidgets.QTextEdit
 QTimer = QtCore.QTimer
 #@-<< imports >>
+
+# Keys are commanders. Values are inner dicts: keys are gnx's; values are widgets.
+outer_dict = {}  # #2471
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
@@ -100,8 +103,20 @@ def init():
     ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.plugin_signon(__name__)
-    g.app.stickynotes = {}
+        g.registerHandler('close-frame',onCloseFrame)
     return ok
+#@+node:ekr.20220310040820.1: ** onCloseFrame
+def onCloseFrame(tag, kwargs):
+    """Close all stickynotes in c's outline."""
+    global outer_dict
+    c = kwargs.get('c')
+    if not c:
+        return
+    d = outer_dict.get(c.hash(), {})
+    for gnx in d:
+        w = d.get(gnx)
+        w.close()
+    outer_dict [c.hash()] = {}
 #@+node:ekr.20160403065412.1: ** commands
 #@+node:vivainio2.20091008133028.5825: *3* g.command('stickynote')
 @g.command('stickynote')
@@ -128,11 +143,13 @@ def stickynoter_f(event):
     Launch editable 'sticky note' for the node.
     The result is saved as rich text, that is, html...
     """
+    global outer_dict
     c = event['c']
     p = c.p
     v = p.v
     # #2471: Just show the node if it already exists.
-    nf = g.app.stickynotes.get(p.gnx)
+    d = outer_dict.get(c.hash(), {})
+    nf = d.get(p.gnx)
     if nf:
         nf.show()
         nf.raise_()
@@ -173,7 +190,9 @@ def stickynoter_f(event):
 
     nf.textChanged.connect(textchanged_cb)
     nf.show()
-    g.app.stickynotes[p.gnx] = nf
+    d = outer_dict.get(c.hash(), {})
+    d [p.gnx] = nf
+    outer_dict [c.hash()] = d
 #@+node:tbrown.20100120100336.7829: *3* g.command('stickynoteenc')
 if encOK:
     @g.command('stickynoterekey')
@@ -475,6 +494,7 @@ def get_workbook():
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c, p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
+    global outer_dict
     v = p.v
     if focusin is None:
         def mknote_focusin():
@@ -507,7 +527,8 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
         pass
         
     # #2471: Create a new editor only if it doesn't already exist.
-    nf =  g.app.stickynotes.get(p.gnx)
+    d = outer_dict.get(c.hash(), {})
+    nf = d.get(p.gnx)
     if nf:
         nf.show()
         nf.raise_()
@@ -531,7 +552,9 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
 
     nf.textChanged.connect(textchanged_cb)
     nf.show()
-    g.app.stickynotes[p.gnx] = nf
+    d = outer_dict.get(c.hash(), {})
+    d [p.gnx] = nf
+    outer_dict [c.hash()] = d
     return nf
 #@+node:ville.20100703234124.9976: ** Tabula
 #@+node:ville.20100704010850.5589: *3* def tabula_show
