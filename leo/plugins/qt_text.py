@@ -856,15 +856,13 @@ if QtWidgets:
                 fg = f'#{fg_hex:x}'
                 bg = f'#{bg_hex:x}'
 
-                if (params['last_fg'] != fg or params['last_bg'] != bg) \
-                    or config_setting_changed:
-                    if not config_setting:
-                        bg_color = QColor(bg) if bg else self.assign_bg(fg)
-                        hl_color = self.calc_hl(bg_color)
-                        #g.trace(f'fg: {fg}, bg: {bg}, hl_color: {hl_color.name()}')
-                        params['last_hl_color'] = hl_color
-                        params['last_fg'] = fg
-                        params['last_bg'] = bg
+                if (params['last_fg'] != fg or params['last_bg'] != bg):
+                    bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    hl_color = self.calc_hl(bg_color)
+                    #g.trace(f'fg: {fg}, bg: {bg}, hl_color: {hl_color.name()}')
+                    params['last_hl_color'] = hl_color
+                    params['last_fg'] = fg
+                    params['last_bg'] = bg
             #@-<< Recalculate Color >>
             #@+<< Apply Highlight >>
             #@+node:tom.20210909124551.1: *5* << Apply Highlight >>
