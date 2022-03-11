@@ -515,6 +515,7 @@ if QtWidgets:
             self.hiliter_params = {
                     'lastblock': -2, 'last_style_hash': 0,
                     'last_color_setting': hl_color_setting,
+                    'last_fg': '', 'last_bg': '',
                     'last_hl_color': hl_color
                     }
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
@@ -846,18 +847,22 @@ if QtWidgets:
                 else:
                     hl_color = params['last_hl_color']
             else:
-                c1 = g.app.commanders()[-1]
-                ssm = c1.styleSheetManager
-                sheet = ssm.expand_css_constants(c1.active_stylesheet)
-                h = hash(sheet)
-                params['last_color_setting'] = ''
-                if params['last_style_hash'] != h or config_setting_changed:
-                    fg, bg = self.parse_css(sheet, 'QTextEdit')
+                # Get current colors from the body editor widget
+                wrapper = c.frame.body.wrapper
+                w = wrapper.widget
+                pallete = w.viewport().palette()
+                fg_hex = pallete.text().color().rgb()
+                bg_hex = pallete.window().color().rgb()
+                fg = f'#{fg_hex:x}'
+                bg = f'#{bg_hex:x}'
+
+                if (params['last_fg'] != fg or params['last_bg'] != bg):
                     bg_color = QColor(bg) if bg else self.assign_bg(fg)
                     hl_color = self.calc_hl(bg_color)
-                    # g.trace('fg', fg, 'bg', bg, 'hl_color', hl_color.name())
+                    #g.trace(f'fg: {fg}, bg: {bg}, hl_color: {hl_color.name()}')
                     params['last_hl_color'] = hl_color
-                    params['last_style_hash'] = h
+                    params['last_fg'] = fg
+                    params['last_bg'] = bg
             #@-<< Recalculate Color >>
             #@+<< Apply Highlight >>
             #@+node:tom.20210909124551.1: *5* << Apply Highlight >>
