@@ -2110,6 +2110,57 @@ class StyleSheetManager:
             for s in g.splitLines(stylesheet)])
         return s.rstrip()
             # Don't care about ending newline.
+    #@+node:tom.20220310224019.1: *4* ssm.rescale_sizes
+    def rescale_sizes(self, sheet, factor):
+        """
+        #@+<< docstring >>
+        #@+node:tom.20220310224918.1: *5* << docstring >>
+        Rescale all pt or px sizes in CSS stylesheet or Leo theme.
+
+        Sheets can have either "logical" or "actual" sizes.    
+        "Logical" sizes are ones like "@font-family-base = 10.6pt".
+        "Actual" sizes are the ones in the "qt-gui-plugin-style-sheet" subtree.
+        They look like "font-size: 11pt;"
+
+        In Qt stylesheets, only sizes in pt or px are honored, so
+        those are the only ones changed by this method.  Padding,
+        margin, etc. sizes will be changed as well as font sizes.
+
+        Sizes do not have to be integers (e.g., 10.5 pt).  Qt honors
+        non-integer point sizes, with at least a 0.5pt granularity.
+        It's currently unknown how non-integer px sizes are handled.
+
+        No size will be scaled down to less than 1.
+
+        ARGUMENTS
+        sheet -- a CSS stylesheet or a Leo theme as a string.  The Leo
+                 theme file should be read as a string before being passed
+                 to this method.  If a Leo theme, the output will be a
+                 well-formed Leo outline.
+
+        scale -- the scaling factor as a float or integer.  For example,
+                 a scale of 1.5 will increase all the sizes by a factor of 1.5.
+
+        RETURNS
+        the modified sheet as a string.
+
+        #@-<< docstring >>
+        """
+        RE = r'([=:])[ ]*([.1234567890]+)(p[tx])'
+
+        def scale(matchobj, scale = factor):
+            prefix = matchobj.group(1)
+            sz = matchobj.group(2)
+            units = matchobj.group(3)
+            try:
+                scaled = max(float(sz) * factor, 1)
+            except Exception as e:
+                g.es('ssm.rescale_fonts:', e)
+                return None
+            return f'{prefix} {scaled:.1f}{units}'
+
+        newsheet = re.sub(RE, scale, sheet)
+        return newsheet
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
     def get_master_widget(self, top=None):
