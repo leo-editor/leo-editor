@@ -19,6 +19,59 @@ def copyOutline(self, event=None):
     s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
+#@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
+@g.commander_command('copy-node-as-json')
+def copyOutlineAsJSON(self, event=None):
+    """Copy the selected outline to the clipboard in json format."""
+    # Copying an outline has no undo consequences.
+    import json
+    #@+others  # Define helper functions
+    #@+node:ekr.20220314072801.1: *4* function: json_globals
+    def json_globals(c):
+        """Put json representation of Leo's cached globals."""
+        width, height, left, top = c.frame.get_window_info()
+        return {
+            'body_outline_ratio': c.frame.ratio,
+            'body_secondary_ratio': c.frame.secondary_ratio,
+            'globalWindowPosition': {
+                'height': height,
+                'left': left,
+                'top': top,
+                'width': width,
+            },
+        }
+    #@+node:ekr.20220314073155.1: *4* function: json_vnode
+    def json_vnode(v):
+        return {
+            'gnx': v.fileIndex,
+            'vh': v._headString,
+            'status': v.statusBits,
+            'children': [json_vnode(child) for child in v.children]
+        }
+    #@+node:ekr.20220314071805.1: *4* function: outline_to_json
+    def outline_to_json(c):
+        """Return the JSON representation of c."""
+        positions = list(c.p.self_and_subtree())
+        d = {
+            'leoHeader': {'fileFormat': 2},
+            'globals': json_globals(c),
+            'tnodes': {
+                p.v.gnx: p.v._bodyString for p in positions
+            },
+            'uas': {
+                p.v.gnx: json.dumps(p.u, skipkeys=True) for p in positions if p.u
+            },
+            'vnodes': [
+                json_vnode(c.p.v)
+            ],
+        }
+        return json.dumps(d, indent=2, sort_keys=False)
+    #@-others
+    c = self
+    c.endEditing()
+    s = outline_to_json(c)
+    g.app.paste_c = c
+    g.app.gui.replaceClipboardWith(s)
 #@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')
 def cutOutline(self, event=None):
