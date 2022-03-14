@@ -1682,12 +1682,6 @@ class FileCommands:
             'leoHeader': {'fileFormat': 2},
             'globals': self.leojs_globals(),
             'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes()},
-            # 'tnodes': [
-                # {
-                    # 'tx': v.fileIndex,
-                    # 'body': v._bodyString,
-                # } for v in c.all_unique_nodes()
-            # ],
             'vnodes': [
                 self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
             ],
