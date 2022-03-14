@@ -97,7 +97,7 @@ def restartLeo(self, event=None):
     # 6. Complete the shutdown.
     g.app.finishQuit()
     # 7. Restart, restoring the original command line.
-    args = ['-c'] + [z for z in lm.old_argv]
+    args = ['-c'] + lm.old_argv
     if trace:
         g.trace('restarting with args', args)
     sys.stdout.flush()
