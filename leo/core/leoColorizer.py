@@ -1055,7 +1055,7 @@ class BaseJEditColorizer(BaseColorizer):
             kind_s = f"{self.language}.{tag}"
             kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
             print(
-                f"setTag: {kind_s:25} {i:3} {j:3} {s2:>20} "
+                f"setTag: {kind_s:32} {i:3} {j:3} {s2:>22} "
                 f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
             )
         self.highlighter.setFormat(i, j - i, format)
@@ -2616,7 +2616,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+others
     #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
     def __init__(self, c, widget, wrapper):
-        """Ctor for JEditColorizer class."""
+        """Ctor for PygmentsColorizer class."""
         super().__init__(c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
@@ -2640,11 +2640,8 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324043722.1: *4* pyg_c.init
     def init(self, p=None):
         """Init the colorizer. p is for tracing only."""
-        #
-        # Like jedit.init, but no need to init state.
-        self.init_mode(self.language)
-        self.prev = None
-            # Used by setTag.
+        self.prev = None  # Used by setTag.
+        self.rulesetName = ""  # Used by trace in setTag.
         self.configure_tags()
 
     def addLeoRules(self, theDict):
@@ -2675,8 +2672,6 @@ class PygmentsColorizer(BaseJEditColorizer):
     def getLegacyDefaultFormat(self):
         return None
 
-    traced_dict: Dict[str, str] = {}
-
     def getLegacyFormat(self, token, text):
         """Return a jEdit tag for the given pygments token."""
         r = repr(token).lstrip('Token.').lstrip('Literal.').lower()
@@ -2684,10 +2679,6 @@ class PygmentsColorizer(BaseJEditColorizer):
         if r == 'name':
             # Avoid a colision with existing Leo tag.
             r = 'name.pygments'
-        if 0:
-            if r not in self.traced_dict:
-                self.traced_dict[r] = r
-                g.trace(r)
         return r
 
     def getPygmentsFormat(self, token, text):
@@ -2729,18 +2720,15 @@ class PygmentsColorizer(BaseJEditColorizer):
             if self.language != prev_data.leo_language:
                 # Change the language and the lexer!
                 self.language = prev_data.leo_language
-                # g.trace('RESTORE:', self.language)
                 lexer = self.set_lexer()
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
         elif hasattr(lexer, stack_ivar):
             delattr(lexer, stack_ivar)
-        # g.trace(self.color_enabled, self.language, repr(s))
         #
         # The main loop. Warning: this can change self.language.
         index = 0
         for token, text in lexer.get_tokens(s):
             length = len(text)
-            # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
             if self.color_enabled:
                 format = self.getFormat(token, text)
             else:
@@ -2782,31 +2770,32 @@ class PygmentsColorizer(BaseJEditColorizer):
     def at_language_callback(self, lexer, match):
         from pygments.token import Name
         language = match.group(2)
-        ok = self.init_mode(language)
-        if ok:
+        # #2484.  The language is known if there is a lexer for it.
+        lexer = self.get_lexer(language)
+        if lexer:
             self.language = language
             yield match.start(), Name.Decorator, match.group(0)
         else:
+            # Color only the @language, indicating an unknown language.
             yield match.start(), Name.Decorator, match.group(1)
-                # Color only the @language, indicating an unknown language.
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
+    unknown_languages: List[str] = []
+
     def get_lexer(self, language):
         """Return the lexer for self.language, creating it if necessary."""
         import pygments.lexers as lexers  # type: ignore
-        tag = 'get_lexer'
         trace = 'coloring' in g.app.debug
         try:
             # #1520: always define lexer_language.
             lexer_name = 'python3' if language == 'python' else language
             lexer = lexers.get_lexer_by_name(lexer_name)
         except Exception:
+            # One of the lexer's will not exist.
             # pylint: disable=no-member
-                # One of the lexer's will not exist.
-            if trace:
-                g.trace(f"{tag}: no lexer for {language!r}")
+            if trace and language not in self.unknown_languages:
+                self.unknown_languages.append(language)
+                g.trace(f"\nno lexer for {language!r}. Using python 3 lexer\n")
             lexer = lexers.Python3Lexer()
-            if trace and 'python' not in self.lexers_dict:
-                g.trace(f"{tag}: default lexer for python: {lexer!r}")
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
