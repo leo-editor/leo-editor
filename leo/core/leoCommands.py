@@ -337,8 +337,14 @@ class Commands:
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
         c.db = g.app.commander_cacher.get_wrapper(c)
-        from leo.plugins import free_layout
-        self.free_layout = free_layout.FreeLayoutController(c)
+        # #2485: Load the free_layout plugin in the proper context.
+        #        g.app.pluginsController.loadOnePlugin won't work here.
+        try:
+            g.app.pluginsController.loadingModuleNameStack.append('leo.plugins.free_layout')
+            from leo.plugins import free_layout
+            c.free_layout = free_layout.FreeLayoutController(c)
+        finally:
+            g.app.pluginsController.loadingModuleNameStack.pop()
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
             self.subCommanders.append(self.styleSheetManager)
@@ -377,7 +383,12 @@ class Commands:
         k.finishCreate()
         c.findCommands.finishCreate()
         if not c.gui.isNullGui:
-            g.registerHandler('idle', c.idle_focus_helper)
+            # #2485: register idle_focus_helper in the proper context.
+            try:
+                g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
+                g.registerHandler('idle', c.idle_focus_helper)
+            finally:
+                g.app.pluginsController.loadingModuleNameStack.pop() 
         if getattr(c.frame, 'menu', None):
             c.frame.menu.finishCreate()
         if getattr(c.frame, 'log', None):

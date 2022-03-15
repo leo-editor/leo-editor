@@ -356,30 +356,32 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6021: *4* plugins.isLoaded
     def isLoaded(self, fn):
         return self.regularizeName(fn) in self.loadedModules
-    #@+node:ekr.20100908125007.6025: *4* plugins.printHandlers ***
+    #@+node:ekr.20100908125007.6025: *4* plugins.printHandlers
     def printHandlers(self, c):
         """Print the handlers for each plugin."""
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
         g.es_print('all plugin handlers...\n', tabName=tabName)
         data = []
-        modules: dict[str, List[str]] = {}
+        # keys are module names: values are lists of tags.
+        modules_d: dict[str, List[str]] = {}
         for tag in self.handlers:
             bunches = self.handlers.get(tag)
             for bunch in bunches:
+                fn = bunch.fn
                 name = bunch.moduleName
-                tags = modules.get(name, [])
+                tags = modules_d.get(name, [])
                 tags.append(tag)
-                modules[name] = tags
+                key = f"{name}.{fn.__name__}"
+                modules_d[key] = tags
         n = 4
-        for key in sorted(modules):
-            # The free_layout pseudo plugin is a special case.
-            if key != '<no module>':  #2485: ignore free_layout.
-                tags = modules.get(key)
-                for tag in tags:
-                    n = max(n, len(tag))
-                    data.append((tag, key),)
-        lines = sorted(["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data])
+        for module in sorted(modules_d):
+            tags = modules_d.get(module)
+            for tag in tags:
+                n = max(n, len(tag))
+                data.append((tag, module),)
+        lines = sorted(list(set(
+            ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data])))
         g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
