@@ -2672,8 +2672,6 @@ class PygmentsColorizer(BaseJEditColorizer):
     def getLegacyDefaultFormat(self):
         return None
 
-    traced_dict: Dict[str, str] = {}
-
     def getLegacyFormat(self, token, text):
         """Return a jEdit tag for the given pygments token."""
         r = repr(token).lstrip('Token.').lstrip('Literal.').lower()
@@ -2681,10 +2679,6 @@ class PygmentsColorizer(BaseJEditColorizer):
         if r == 'name':
             # Avoid a colision with existing Leo tag.
             r = 'name.pygments'
-        if 0:
-            if r not in self.traced_dict:
-                self.traced_dict[r] = r
-                g.trace(r)
         return r
 
     def getPygmentsFormat(self, token, text):
@@ -2785,7 +2779,7 @@ class PygmentsColorizer(BaseJEditColorizer):
             # Color only the @language, indicating an unknown language.
             yield match.start(), Name.Decorator, match.group(1)
     #@+node:ekr.20190322082533.1: *4* pyg_c.get_lexer
-    unknown_languages = []
+    unknown_languages: List[str] = []
 
     def get_lexer(self, language):
         """Return the lexer for self.language, creating it if necessary."""
