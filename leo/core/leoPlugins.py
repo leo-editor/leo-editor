@@ -252,19 +252,18 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
     def __init__(self):
 
+        # Keys are tags, values are lists of bunches.
         self.handlers = {}
+        # Keys are regularized module names, values are the names of .leo files
+        # containing @enabled-plugins nodes that caused the plugin to be loaded
         self.loadedModulesFilesDict = {}
-            # Keys are regularized module names, values are the names of .leo files
-            # containing @enabled-plugins nodes that caused the plugin to be loaded
+        # Keys are regularized module names, values are modules.
         self.loadedModules = {}
-            # Keys are regularized module names, values are modules.
+        # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack = []
-            # The stack of module names.
-            # The top is the module being loaded.
         self.signonModule = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
-        assert g
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
@@ -347,8 +346,7 @@ class LeoPluginsController:
         return self.getHandlersForOneTag(tags)
 
     def getHandlersForOneTag(self, tag):
-        aList = self.handlers.get(tag, [])
-        return aList
+        return self.handlers.get(tag, [])
     #@+node:ekr.20100910075900.10204: *4* plugins.getLoadedPlugins
     def getLoadedPlugins(self):
         return list(self.loadedModules.keys())
@@ -358,16 +356,12 @@ class LeoPluginsController:
     #@+node:ekr.20100908125007.6021: *4* plugins.isLoaded
     def isLoaded(self, fn):
         return self.regularizeName(fn) in self.loadedModules
-    #@+node:ekr.20100908125007.6025: *4* plugins.printHandlers
-    def printHandlers(self, c, moduleName=None):
+    #@+node:ekr.20100908125007.6025: *4* plugins.printHandlers ***
+    def printHandlers(self, c):
         """Print the handlers for each plugin."""
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
-        if moduleName:
-            s = 'handlers for {moduleName}...\n'
-        else:
-            s = 'all plugin handlers...\n'
-        g.es(s + '\n', tabName=tabName)
+        g.es('all plugin handlers...\n\n', tabName=tabName)
         data = []
         modules: dict[str, List[str]] = {}
         for tag in self.handlers:
@@ -379,13 +373,16 @@ class LeoPluginsController:
                 modules[name] = tags
         n = 4
         for key in sorted(modules):
-            tags = modules.get(key)
-            if moduleName in (None, key):
+            # #2485. The free_layout plugin is a weird special case.
+            #        Don't report it's handlers.
+            if key != '<no module>':  #2485
+                tags = modules.get(key)
                 for tag in tags:
                     n = max(n, len(tag))
                     data.append((tag, key),)
-        lines = ["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data]
+        lines = sorted(["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data])
         g.es('', ''.join(lines), tabName=tabName)
+        print(''.join(lines))
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
         """Print all enabled plugins."""
@@ -626,7 +623,9 @@ class LeoPluginsController:
             g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
-            self.handlers[tag] = [bunch]  # Vitalije
+            aList = self.handlers.get(tag, [])
+            aList.append(bunch)
+            self.handlers [tag] = aList
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""
