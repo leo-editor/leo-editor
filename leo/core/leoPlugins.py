@@ -361,7 +361,7 @@ class LeoPluginsController:
         """Print the handlers for each plugin."""
         tabName = 'Plugins'
         c.frame.log.selectTab(tabName)
-        g.es('all plugin handlers...\n\n', tabName=tabName)
+        g.es_print('all plugin handlers...\n', tabName=tabName)
         data = []
         modules: dict[str, List[str]] = {}
         for tag in self.handlers:
@@ -380,8 +380,7 @@ class LeoPluginsController:
                     n = max(n, len(tag))
                     data.append((tag, key),)
         lines = sorted(["%*s %s\n" % (-n, s1, s2) for (s1, s2) in data])
-        g.es('', ''.join(lines), tabName=tabName)
-        print(''.join(lines))
+        g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
         """Print all enabled plugins."""
