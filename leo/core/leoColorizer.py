@@ -2616,7 +2616,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+others
     #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
     def __init__(self, c, widget, wrapper):
-        """Ctor for JEditColorizer class."""
+        """Ctor for PygmentsColorizer class."""
         super().__init__(c, widget, wrapper)
         #
         # Create the highlighter. The default is NullObject.
@@ -2640,9 +2640,6 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324043722.1: *4* pyg_c.init
     def init(self, p=None):
         """Init the colorizer. p is for tracing only."""
-        #
-        # Like jedit.init, but no need to init state.
-        self.init_mode(self.language)
         self.prev = None
             # Used by setTag.
         self.configure_tags()
@@ -2734,13 +2731,11 @@ class PygmentsColorizer(BaseJEditColorizer):
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
         elif hasattr(lexer, stack_ivar):
             delattr(lexer, stack_ivar)
-        # g.trace(self.color_enabled, self.language, repr(s))
         #
         # The main loop. Warning: this can change self.language.
         index = 0
         for token, text in lexer.get_tokens(s):
             length = len(text)
-            # print('%5s %25r %r' % (self.color_enabled, repr(token).lstrip('Token.'), text))
             if self.color_enabled:
                 format = self.getFormat(token, text)
             else:
