@@ -373,9 +373,8 @@ class LeoPluginsController:
                 modules[name] = tags
         n = 4
         for key in sorted(modules):
-            # #2485. The free_layout plugin is a weird special case.
-            #        Don't report it's handlers.
-            if key != '<no module>':  #2485
+            # The free_layout pseudo plugin is a special case.
+            if key != '<no module>':  #2485: ignore free_layout.
                 tags = modules.get(key)
                 for tag in tags:
                     n = max(n, len(tag))
