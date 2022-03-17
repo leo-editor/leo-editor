@@ -13,6 +13,7 @@ import re
 import string
 import time
 from typing import Any, Callable, Dict, List, Tuple
+from typing import TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -32,6 +33,14 @@ try:  # #1973
 except Exception:
     Qsci = QtGui = QtWidgets = None
     UnderlineStyle = Weight = None
+#
+# Define mypy types.
+if TYPE_CHECKING:  # Always False at runtime.
+    ### from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import VNode
+else:
+    Pos = VNode = Any
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
@@ -2630,6 +2639,9 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.color_enabled = self.enabled
         self.old_v = None
         #
+        # Monkey-patch g.isValidLanguage
+        self.monkey_patch()
+        #
         # Init common data...
             # self.init_style_ivars()
             # self.defineLeoKeywordsDict()
@@ -2646,6 +2658,26 @@ class PygmentsColorizer(BaseJEditColorizer):
 
     def addLeoRules(self, theDict):
         pass
+    #@+node:ekr.20220316193955.1: *4* pyg_c.monkey_patch
+    def monkey_patch(self):
+        """
+        A hack: monkey-patch g.isValidLanguage.
+        
+        Without this hack this class would have to define it's own
+        version of the (complex!) g.getLanguageFromAncestorAtFileNode function.
+        """
+        
+        def pygments_isValidLanguage(language: str) -> bool:
+            """Local version of g.isValidLanguage."""
+            lexer_name = 'python3' if language == 'python' else language
+            try:
+                import pygments.lexers as lexers  # type: ignore
+                lexers.get_lexer_by_name(lexer_name)
+                return True
+            except Exception:
+                return False
+                
+        g.isValidLanguage = pygments_isValidLanguage
     #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
     def reloadSettings(self):
         """Reload the base settings, plus pygments settings."""
@@ -2695,6 +2727,10 @@ class PygmentsColorizer(BaseJEditColorizer):
     def setPygmentsFormat(self, index, length, format, s):
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
+    #@+node:ekr.20220316172109.1: *3* pyg_c.init_mode (override)
+    def init_mode(self, name):
+        """PygmentsColorizer.init_mode."""
+        return True
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     format_dict: Dict[str, str] = {}  # Keys are repr(Token), values are formats.
     lexers_dict: Dict[str, Callable] = {}  # Keys are language names, values are instantiated, patched lexers.
