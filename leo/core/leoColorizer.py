@@ -2630,8 +2630,8 @@ class PygmentsColorizer(BaseJEditColorizer):
         self.color_enabled = self.enabled
         self.old_v = None
         #
-        # Monkey-patch g.isValidLanguage
-        self.monkey_patch()
+        # Monkey-patch g.isValidLanguage.
+        g.isValidLanguage = self.pygments_isValidLanguage
         #
         # Init common data...
             # self.init_style_ivars()
@@ -2649,26 +2649,21 @@ class PygmentsColorizer(BaseJEditColorizer):
 
     def addLeoRules(self, theDict):
         pass
-    #@+node:ekr.20220316193955.1: *4* pyg_c.monkey_patch
-    def monkey_patch(self):
+    #@+node:ekr.20220316200022.1: *4* pyg_c.pygments_isValidLanguage
+    def pygments_isValidLanguage(self, language: str) -> bool:
         """
-        A hack: monkey-patch g.isValidLanguage.
+        A hack: we will monkey-patch g.isValidLanguage to be this method.
         
         Without this hack this class would have to define its own copy of the
         (complex!) g.getLanguageFromAncestorAtFileNode function.
         """
-        
-        def pygments_isValidLanguage(language: str) -> bool:
-            """Local version of g.isValidLanguage."""
-            lexer_name = 'python3' if language == 'python' else language
-            try:
-                import pygments.lexers as lexers  # type: ignore
-                lexers.get_lexer_by_name(lexer_name)
-                return True
-            except Exception:
-                return False
-                
-        g.isValidLanguage = pygments_isValidLanguage
+        lexer_name = 'python3' if language == 'python' else language
+        try:
+            import pygments.lexers as lexers  # type: ignore
+            lexers.get_lexer_by_name(lexer_name)
+            return True
+        except Exception:
+            return False
     #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
     def reloadSettings(self):
         """Reload the base settings, plus pygments settings."""
@@ -2795,11 +2790,11 @@ class PygmentsColorizer(BaseJEditColorizer):
             yield match.start(), Text, kind
     #@+node:ekr.20190323045735.1: *4* pyg_c.at_language_callback
     def at_language_callback(self, lexer, match):
+        """Colorize the name only if the language has a lexer."""
         from pygments.token import Name
         language = match.group(2)
-        # #2484.  The language is known if there is a lexer for it.
-        lexer = self.get_lexer(language)
-        if lexer:
+        # #2484:  The language is known if there is a lexer for it.
+        if self.pygments_isValidLanguage(language):
             self.language = language
             yield match.start(), Name.Decorator, match.group(0)
         else:
