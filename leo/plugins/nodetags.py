@@ -116,7 +116,7 @@ def onCreate(tag, keys):
 #@+node:ekr.20201030095215.1: ** show-all-tags
 @g.command('show-all-tags')
 def show_all_tags(event):
-    """Simulate a control-click at the cursor."""
+    """Show all tags, organized by node."""
     c = event.get('c')
     if not c:
         return
