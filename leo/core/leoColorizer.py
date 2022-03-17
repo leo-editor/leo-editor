@@ -13,7 +13,6 @@ import re
 import string
 import time
 from typing import Any, Callable, Dict, List, Tuple
-from typing import TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -33,14 +32,6 @@ try:  # #1973
 except Exception:
     Qsci = QtGui = QtWidgets = None
     UnderlineStyle = Weight = None
-#
-# Define mypy types.
-if TYPE_CHECKING:  # Always False at runtime.
-    ### from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position as Pos
-    from leo.core.leoNodes import VNode
-else:
-    Pos = VNode = Any
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
