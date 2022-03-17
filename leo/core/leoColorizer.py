@@ -63,6 +63,7 @@ class BaseColorizer:
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
+        self.prev = None  # Used by setTag.
         self.showInvisibles = False
         #
         # Statistics....
@@ -78,8 +79,8 @@ class BaseColorizer:
     def init(self):
         """May be over-ridden in subclasses."""
         pass
-    #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configure_tags & helpers
-    def configure_tags(self):
+    #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configureTags & helpers
+    def configureTags(self):
         """Configure all tags."""
         wrapper = self.wrapper
         if wrapper and hasattr(wrapper, 'start_tag_configure'):
@@ -530,6 +531,7 @@ class BaseColorizer:
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
+        self.configureTags()
         self.init()
     #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
     prev_use_pygments = None
@@ -829,7 +831,6 @@ class JEditColorizer(BaseColorizer):
         # Used by matchers.
         self.prev = None
         # Must be done to support per-language @font/@color settings.
-        self.configure_tags()
         self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
     def init_all_state(self, v):
@@ -2611,15 +2612,6 @@ class PygmentsColorizer(BaseColorizer):
         g.isValidLanguage = self.pygments_isValidLanguage
         # Init common data...
         self.reloadSettings()
-    #@+node:ekr.20190324043722.1: *4* pyg_c.init
-    def init(self):
-        """Init the colorizer."""
-        self.prev = None  # Used by setTag.
-        self.rulesetName = ""  # Used by trace in setTag.
-        self.configure_tags()
-
-    def addLeoRules(self, theDict):
-        pass
     #@+node:ekr.20190324063349.1: *4* pyg_c.format getters
     def getLegacyDefaultFormat(self):
         return None
