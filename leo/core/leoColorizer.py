@@ -2654,8 +2654,8 @@ class PygmentsColorizer(BaseJEditColorizer):
         """
         A hack: monkey-patch g.isValidLanguage.
         
-        Without this hack this class would have to define it's own
-        version of the (complex!) g.getLanguageFromAncestorAtFileNode function.
+        Without this hack this class would have to define its own copy of the
+        (complex!) g.getLanguageFromAncestorAtFileNode function.
         """
         
         def pygments_isValidLanguage(language: str) -> bool:
