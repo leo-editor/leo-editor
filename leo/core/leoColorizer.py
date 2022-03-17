@@ -2587,7 +2587,7 @@ if Qsci:
             font = QtGui.QFont("DejaVu Sans Mono", 14)
             lexer.setFont(font)
 #@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseColorizer)
-class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
+class PygmentsColorizer(BaseColorizer):
     """
     This class adapts pygments tokens to QSyntaxHighlighter.
     """
