@@ -1162,22 +1162,18 @@ class JEditColorizer(BaseColorizer):
                     d[ch] = aList
         self.rulesDict = d
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
-    ### last_v = None
+    last_v = None
     tot_time = 0.0
 
     def mainLoop(self, n, s):
         """Colorize a *single* line s, starting in state n."""
-        ### trace = 'coloring' in g.app.debug
-        t1 = time.process_time()
         f = self.restartDict.get(n)
-        ###
-            # if trace:
-                # p = self.c and self.c.p
-                # if p and p.v != self.last_v:
-                    # self.last_v = p.v
-                    # f_name = f.__name__ if f else 'None'
-                    # print('')
-                    # g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
+        if 'coloring' in g.app.debug:
+            p = self.c and self.c.p
+            if p and p.v != self.last_v:
+                self.last_v = p.v
+                g.trace(f"\nNEW NODE: {p.h}\n")
+        t1 = time.process_time()
         i = f(s) if f else 0
         while i < len(s):
             progress = i
@@ -2696,10 +2692,17 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
     state_s_dict: Dict[str, int] = {}  # Keys are strings, values are ints.
     state_n_dict: Dict[int, str] = {}  # # Keys are ints, values are strings.
     state_index = 1  # Index of state number to be allocated.
+    # For traces.
+    last_v = None
     tot_time = 0.0
 
     def mainLoop(self, s):
         """Colorize a *single* line s"""
+        if 'coloring' in g.app.debug:
+            p = self.c and self.c.p
+            if p and p.v != self.last_v:
+                self.last_v = p.v
+                g.trace(f"\nNEW NODE: {p.h}\n")
         t1 = time.process_time()
         highlighter = self.highlighter
         #
