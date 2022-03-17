@@ -267,29 +267,29 @@ class BridgeController:
         g = self.g
         g.app.silentMode = self.silentMode
         useLog = False
-        if self.isOpen():
-            if self.useCaches:
-                self.reopen_cachers()
-            else:
-                g.app.db = g.NullObject()
-            fileName = self.completeFileName(fileName)
-            c = self.createFrame(fileName)
-            # Leo 6.3: support leoInteg.
-            g.app.windowList.append(c.frame)
-            if not self.useCaches:
-                c.db = g.NullObject()
-            g.app.nodeIndices.compute_last_index(c)
-                # New in Leo 5.1. An alternate fix for bug #130.
-                # When using a bridge Leo might open a file, modify it,
-                # close it, reopen it and change it all within one second.
-                # In that case, this code must properly compute the next
-                # available gnx by scanning the entire outline.
-            if useLog:
-                g.app.gui.log = log = c.frame.log
-                log.isNull = False
-                log.enabled = True
-            return c
-        return None
+        if not self.isOpen():
+            return None
+        if self.useCaches:
+            self.reopen_cachers()
+        else:
+            g.app.db = g.NullObject()
+        fileName = self.completeFileName(fileName)
+        c = g.openWithFileName(fileName)  # #2489.
+        # Leo 6.3: support leoInteg.
+        g.app.windowList.append(c.frame)
+        if not self.useCaches:
+            c.db = g.NullObject()
+        # New in Leo 5.1. An alternate fix for bug #130.
+        # When using a bridge Leo might open a file, modify it,
+        # close it, reopen it and change it all within one second.
+        # In that case, this code must properly compute the next
+        # available gnx by scanning the entire outline.
+        g.app.nodeIndices.compute_last_index(c)
+        if useLog:
+            g.app.gui.log = log = c.frame.log
+            log.isNull = False
+            log.enabled = True
+        return c
     #@+node:ekr.20070227093629.5: *4* bridge.completeFileName
     def completeFileName(self, fileName):
         g = self.g
@@ -300,30 +300,6 @@ class BridgeController:
         if not ext:
             fileName = fileName + ".leo"
         return fileName
-    #@+node:ekr.20070227093629.6: *4* bridge.createFrame
-    def createFrame(self, fileName):
-        """Create a commander and frame for the given file.
-        Create a new frame if the fileName is empty or non-exisent."""
-        g = self.g
-        if fileName.strip():
-            if g.os_path_exists(fileName):
-                # This takes a long time due to imports in c.__init__
-                c = g.openWithFileName(fileName)
-                if c:
-                    return c
-            elif not self.silentMode:
-                print(f"file not found: {fileName}. creating new outline")
-        # Create a new frame. Unlike leo.run, this is not a startup window.
-        c = g.app.newCommander(fileName)
-        frame = c.frame
-        frame.createFirstTreeNode()  # 2013/09/27: bug fix.
-        assert c.rootPosition()
-        frame.setInitialWindowGeometry()
-        frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-        # Call the 'new' hook for compatibility with plugins.
-        # 2011/11/07: Do this only if plugins have been loaded.
-        g.doHook("new", old_c=None, c=c, new_c=c)
-        return c
     #@+node:vitalije.20190923081235.1: *4* reopen_cachers
     def reopen_cachers(self):
         from leo.core import leoCache

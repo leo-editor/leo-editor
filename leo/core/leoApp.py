@@ -2986,8 +2986,8 @@ class LoadManager:
         """
         lm = self
         # Step 1: Return if the file is already open.
-        fn = g.os_path_finalize(fn)
         if fn:
+            fn = g.os_path_finalize(fn)  # #2489.
             c = lm.findOpenFile(fn)
             if c:
                 return c
@@ -3021,8 +3021,8 @@ class LoadManager:
         # Important.  The settings don't matter for pre-reads!
         # For second read, the settings for the file are *exactly* previousSettings.
         c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
-        # Open the file, if possible.
         g.doHook('open0')
+        # Open the file, if possible.
         theFile = lm.openAnyLeoFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # this commander is associated with sqlite db
@@ -3032,6 +3032,7 @@ class LoadManager:
         c.frame.log.enable(True)
         # Phase 2: Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
+        old_c = None  # #2489
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
             # The log is not set properly here.
@@ -3043,8 +3044,9 @@ class LoadManager:
             # Create a wrapper .leo file if:
             # a) fn is a .leo file that does not exist or
             # b) fn is an external file, existing or not.
-            lm.initWrapperLeoFile(c, fn)
-        g.doHook("open2", old_c=None, c=c, new_c=c, fileName=fn)
+            old_c = None  # #2489
+            c = lm.initWrapperLeoFile(c, fn)  # #2489
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
         # Phase 3: Complete the initialization.
         g.app.writeWaitingLog(c)
         c.setLog()
@@ -3136,7 +3138,8 @@ class LoadManager:
             # Create an @<file> node.
             p = c.rootPosition()
             if p:
-                load_type = self.options['load_type']
+                # The 'load_type' key may not exist when run from the bridge.
+                load_type = self.options.get('load_type', '@edit')  # #2489.
                 p.setHeadString(f"{load_type} {fn}")
                 c.refreshFromDisk()
                 c.selectPosition(p)
