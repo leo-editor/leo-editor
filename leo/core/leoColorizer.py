@@ -525,6 +525,13 @@ class BaseColorizer:
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
+            
+        # Init everything else.
+        self.init_style_ivars()
+        self.defineLeoKeywordsDict()
+        self.defineDefaultColorsDict()
+        self.defineDefaultFontDict()
+        self.init(c.p)
     #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
     prev_use_pygments = None
     prev_use_styles = None
@@ -771,7 +778,7 @@ class BaseColorizer:
 # This is c.frame.body.colorizer
 
 
-class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
+class JEditColorizer(BaseColorizer):
     """
     The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
     For full documentation, see:
@@ -855,20 +862,6 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
         else:
             self.section_delim1 = '<<'
             self.section_delim2 = '>>'
-    #@+node:ekr.20190326183005.1: *5* jedit.reloadSettings
-    def reloadSettings(self):
-        """Complete the initialization of all settings."""
-        ###
-            # if 'coloring' in g.app.debug and not g.unitTesting:
-                # print('jedit.reloadSettings.')
-        # Do the basic inits.
-        super().reloadSettings()
-        # Init everything else.
-        self.init_style_ivars()
-        self.defineLeoKeywordsDict()
-        self.defineDefaultColorsDict()
-        self.defineDefaultFontDict()
-        self.init()
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
     def addImportedRules(self, mode, rulesDict, rulesetName):
         """Append any imported rules at the end of the rulesets specified in mode.importDict"""
@@ -2605,7 +2598,8 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
     """
     # This is c.frame.body.colorizer
     #@+others
-    #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
+    #@+node:ekr.20220317053040.1: *3*  pyg_c: Birth
+    #@+node:ekr.20190319151826.3: *4* pyg_c.__init__
     def __init__(self, c, widget, wrapper):
         """Ctor for PygmentsColorizer class."""
         super().__init__(c, widget, wrapper)
@@ -2640,45 +2634,7 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
 
     def addLeoRules(self, theDict):
         pass
-    #@+node:ekr.20220316200022.1: *4* pyg_c.pygments_isValidLanguage
-    def pygments_isValidLanguage(self, language: str) -> bool:
-        """
-        A hack: we will monkey-patch g.isValidLanguage to be this method.
-        
-        Without this hack this class would have to define its own copy of the
-        (complex!) g.getLanguageFromAncestorAtFileNode function.
-        """
-        lexer_name = 'python3' if language == 'python' else language
-        try:
-            import pygments.lexers as lexers  # type: ignore
-            lexers.get_lexer_by_name(lexer_name)
-            return True
-        except Exception:
-            return False
-    #@+node:ekr.20190324051704.1: *3* pyg_c.reloadSettings
-    def reloadSettings(self):
-        """Reload the base settings, plus pygments settings."""
-        if 'coloring' in g.app.debug and not g.unitTesting:
-            print('reloading pygments settings.')
-        # Do basic inits.
-        ### BaseJEditColorizer.reloadSettings(self)
-        super().reloadSettings()
-        # Bind methods.
-        if self.use_pygments_styles:
-            self.getDefaultFormat = QtGui.QTextCharFormat
-            self.getFormat = self.getPygmentsFormat
-            self.setFormat = self.setPygmentsFormat
-        else:
-            self.getDefaultFormat = self.getLegacyDefaultFormat
-            self.getFormat = self.getLegacyFormat
-            self.setFormat = self.setLegacyFormat
-        # Init everything else.
-        self.init_style_ivars()
-        self.defineLeoKeywordsDict()
-        self.defineDefaultColorsDict()
-        self.defineDefaultFontDict()
-        self.init()
-    #@+node:ekr.20190324063349.1: *3* pyg_c.format getters
+    #@+node:ekr.20190324063349.1: *4* pyg_c.format getters
     def getLegacyDefaultFormat(self):
         return None
 
@@ -2697,7 +2653,7 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
         if not format:
             format = self.highlighter._get_format(token)
         return format
-    #@+node:ekr.20190324064341.1: *3* pyg_c.format setters
+    #@+node:ekr.20190324064341.1: *4* pyg_c.format setters
     def setLegacyFormat(self, index, length, format, s):
         """Call the jEdit style setTag."""
         super().setTag(format, s, index, index + length)
@@ -2705,10 +2661,35 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
     def setPygmentsFormat(self, index, length, format, s):
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
-    #@+node:ekr.20220316172109.1: *3* pyg_c.init_mode (override)
-    def init_mode(self, name):
-        """PygmentsColorizer.init_mode."""
-        return True
+    #@+node:ekr.20220316200022.1: *3* pyg_c.pygments_isValidLanguage
+    def pygments_isValidLanguage(self, language: str) -> bool:
+        """
+        A hack: we will monkey-patch g.isValidLanguage to be this method.
+        
+        Without this hack this class would have to define its own copy of the
+        (complex!) g.getLanguageFromAncestorAtFileNode function.
+        """
+        lexer_name = 'python3' if language == 'python' else language
+        try:
+            import pygments.lexers as lexers  # type: ignore
+            lexers.get_lexer_by_name(lexer_name)
+            return True
+        except Exception:
+            return False
+    #@+node:ekr.20190324051704.1: *3* pyg_c.reloadSettings
+    def reloadSettings(self):
+        """Reload the base settings, plus pygments settings."""
+        # Do basic inits.
+        super().reloadSettings()
+        # Bind methods.
+        if self.use_pygments_styles:
+            self.getDefaultFormat = QtGui.QTextCharFormat
+            self.getFormat = self.getPygmentsFormat
+            self.setFormat = self.setPygmentsFormat
+        else:
+            self.getDefaultFormat = self.getLegacyDefaultFormat
+            self.getFormat = self.getLegacyFormat
+            self.setFormat = self.setLegacyFormat
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     format_dict: Dict[str, str] = {}  # Keys are repr(Token), values are formats.
     lexers_dict: Dict[str, Callable] = {}  # Keys are language names, values are instantiated, patched lexers.
