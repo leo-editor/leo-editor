@@ -52,31 +52,26 @@ class BaseColorizer:
         # Copy args...
         self.c = c
         self.widget = widget
-        if widget:
-            # #503: widget may be None during unit tests.
+        if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
         self.wrapper = wrapper
-            # This assert is not true when using multiple body editors
+        # This assert is not true when using multiple body editors
             # assert(wrapper == self.c.frame.body.wrapper)
         #
         # Common state ivars...
-        self.enabled = False
-            # Per-node enable/disable flag.
-            # Set by updateSyntaxColorer.
-        self.highlighter = g.NullObject()
-            # May be overridden in subclass...
-        self.language = 'python'
-            # set by scanLanguageDirectives.
+        self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
+        self.highlighter = g.NullObject()  # May be overridden in subclass...
+        self.language = 'python'  # set by scanLanguageDirectives.
         self.showInvisibles = False
         #
         # Statistics....
         self.count = 0
-        self.full_recolor_count = 0
-            # For unit tests.
+        self.full_recolor_count = 0  # For unit tests.
         self.recolorCount = 0
         #
         # For traces...
         self.matcher_name = ''
+        self.rulesetName = ''
         self.delegate_name = ''
     #@+node:ekr.20190324045134.1: *3* bc.init
     def init(self, p):
@@ -139,105 +134,6 @@ class BaseColorizer:
             word = m.group(0)[1:]
             d[word] = word
         return d
-    #@-others
-#@+node:ekr.20190324115354.1: ** class BaseJEditColorizer (BaseColorizer)
-class BaseJEditColorizer(BaseColorizer):
-    """A class containing common JEdit tags machinery."""
-    # No need for a ctor.
-    #@+others
-    #@+node:ekr.20110605121601.18576: *3* bjc.addImportedRules
-    def addImportedRules(self, mode, rulesDict, rulesetName):
-        """Append any imported rules at the end of the rulesets specified in mode.importDict"""
-        if self.importedRulesets.get(rulesetName):
-            return
-        self.importedRulesets[rulesetName] = True
-        names = mode.importDict.get(
-            rulesetName, []) if hasattr(mode, 'importDict') else []
-        for name in names:
-            savedBunch = self.modeBunch
-            ok = self.init_mode(name)
-            if ok:
-                rulesDict2 = self.rulesDict
-                for key in rulesDict2.keys():
-                    aList = self.rulesDict.get(key, [])
-                    aList2 = rulesDict2.get(key)
-                    if aList2:
-                        # Don't add the standard rules again.
-                        rules = [z for z in aList2 if z not in aList]
-                        if rules:
-                            aList.extend(rules)
-                            self.rulesDict[key] = aList
-            self.initModeFromBunch(savedBunch)
-    #@+node:ekr.20110605121601.18577: *3* bjc.addLeoRules
-    def addLeoRules(self, theDict):
-        """Put Leo-specific rules to theList."""
-        # pylint: disable=no-member
-        table = [
-            # Rules added at front are added in **reverse** order.
-            ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
-                # Debatable: Leo keywords override langauge keywords.
-            ('@', self.match_at_color, True),
-            ('@', self.match_at_killcolor, True),
-            ('@', self.match_at_language, True),  # 2011/01/17
-            ('@', self.match_at_nocolor, True),
-            ('@', self.match_at_nocolor_node, True),
-            ('@', self.match_at_wrap, True),  # 2015/06/22
-            ('@', self.match_doc_part, True),
-            ('f', self.match_url_f, True),
-            ('g', self.match_url_g, True),
-            ('h', self.match_url_h, True),
-            ('m', self.match_url_m, True),
-            ('n', self.match_url_n, True),
-            ('p', self.match_url_p, True),
-            ('t', self.match_url_t, True),
-            ('u', self.match_unl, True),
-            ('w', self.match_url_w, True),
-            # ('<', self.match_image, True),
-            ('<', self.match_section_ref, True),  # Called **first**.
-            # Rules added at back are added in normal order.
-            (' ', self.match_blanks, False),
-            ('\t', self.match_tabs, False),
-        ]
-        if self.c.config.getBool("color-trailing-whitespace"):
-            table += [
-                (' ', self.match_trailing_ws, True),
-                ('\t', self.match_trailing_ws, True),
-            ]
-        for ch, rule, atFront, in table:
-            # Replace the bound method by an unbound method.
-            rule = rule.__func__
-            theList = theDict.get(ch, [])
-            if rule not in theList:
-                if atFront:
-                    theList.insert(0, rule)
-                else:
-                    theList.append(rule)
-                theDict[ch] = theList
-    #@+node:ekr.20111024091133.16702: *3* bjc.configure_hard_tab_width
-    def configure_hard_tab_width(self, font):
-        """
-        Set the width of a hard tab.
-
-        Qt does not appear to have the required methods. Indeed,
-        https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
-        assumes that QTextEdit's have only a single font(!).
-
-        This method probabably only works probably if the body text contains
-        a single @language directive, and it may not work properly even then.
-        """
-        c, widget = self.c, self.widget
-        if isinstance(widget, QtWidgets.QTextEdit):
-            # #1919: https://forum.qt.io/topic/99371/how-to-set-tab-stop-width-and-space-width
-            fm = QtGui.QFontMetrics(font)
-            try:  # fm.horizontalAdvance
-                width = fm.horizontalAdvance(' ') * abs(c.tab_width)
-                widget.setTabStopDistance(width)
-            except Exception:
-                width = fm.width(' ') * abs(c.tab_width)
-                widget.setTabStopWidth(width)  # Obsolete.
-        else:
-            # To do: configure the QScintilla widget.
-            pass
     #@+node:ekr.20110605121601.18578: *3* bjc.configure_tags & helpers
     def configure_tags(self):
         """Configure all tags."""
@@ -367,6 +263,31 @@ class BaseJEditColorizer(BaseColorizer):
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
+    #@+node:ekr.20111024091133.16702: *4* bjc.configure_hard_tab_width
+    def configure_hard_tab_width(self, font):
+        """
+        Set the width of a hard tab.
+
+        Qt does not appear to have the required methods. Indeed,
+        https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
+        assumes that QTextEdit's have only a single font(!).
+
+        This method probabably only works probably if the body text contains
+        a single @language directive, and it may not work properly even then.
+        """
+        c, widget = self.c, self.widget
+        if isinstance(widget, QtWidgets.QTextEdit):
+            # #1919: https://forum.qt.io/topic/99371/how-to-set-tab-stop-width-and-space-width
+            fm = QtGui.QFontMetrics(font)
+            try:  # fm.horizontalAdvance
+                width = fm.horizontalAdvance(' ') * abs(c.tab_width)
+                widget.setTabStopDistance(width)
+            except Exception:
+                width = fm.width(' ') * abs(c.tab_width)
+                widget.setTabStopWidth(width)  # Obsolete.
+        else:
+            # To do: configure the QScintilla widget.
+            pass
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
@@ -631,6 +552,300 @@ class BaseJEditColorizer(BaseColorizer):
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
+    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings & helpers
+    #@@nobeautify
+    def reloadSettings(self):
+        c, getBool = self.c, self.c.config.getBool
+        #
+        # Init all settings ivars.
+        self.color_tags_list = []
+        self.showInvisibles      = getBool("show-invisibles-by-default")
+        self.underline_undefined = getBool("underline-undefined-section-names")
+        self.use_hyperlinks      = getBool("use-hyperlinks")
+        self.use_pygments        = None # Set in report_changes.
+        self.use_pygments_styles = getBool('use-pygments-styles', default=True)
+        #
+        # Report changes to pygments settings.
+        self.report_changes()
+        #
+        # Init the default fonts.
+        self.bold_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.italic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.bolditalic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+    #@+node:ekr.20190327053604.1: *4* bjc.report_changes
+    prev_use_pygments = None
+    prev_use_styles = None
+    prev_style = None
+
+    def report_changes(self):
+        """Report changes to pygments settings"""
+        c = self.c
+        use_pygments = c.config.getBool('use-pygments', default=False)
+        if not use_pygments:  # 1696.
+            return
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+        if trace:
+            g.es_print('\nreport changes...')
+
+        def show(setting, val):
+            if trace:
+                g.es_print(f"{setting:35}: {val}")
+
+        #
+        # Set self.use_pygments only once: it can't be changed later.
+        # There is no easy way to re-instantiate classes created by make_colorizer.
+        if self.prev_use_pygments is None:
+            self.use_pygments = self.prev_use_pygments = use_pygments
+            show('@bool use-pygments', use_pygments)
+        elif use_pygments == self.prev_use_pygments:
+            show('@bool use-pygments', use_pygments)
+        else:
+            g.es_print(
+                f"{'Can not change @bool use-pygments':35}: "
+                f"{self.prev_use_pygments}",
+                color='red')
+        #
+        # Report everything if we are tracing.
+        style_name = c.config.getString('pygments-style-name') or 'default'
+            # Don't set an ivar. It's not used in this class.
+            # This setting is used only in the LeoHighlighter class
+        show('@bool use-pytments-styles', self.use_pygments_styles)
+        show('@string pygments-style-name', style_name)
+        #
+        # Report changes to @bool use-pygments-style
+        if self.prev_use_styles is None:
+            self.prev_use_styles = self.use_pygments_styles
+        elif self.use_pygments_styles != self.prev_use_styles:
+            g.es_print(f"using pygments styles: {self.use_pygments_styles}")
+        #
+        # Report @string pygments-style-name only if we are using styles.
+        if not self.use_pygments_styles:
+            return
+        #
+        # Report changes to @string pygments-style-name
+        if self.prev_style is None:
+            self.prev_style = style_name
+        elif style_name != self.prev_style:
+            g.es_print(f"New pygments style: {style_name}")
+            self.prev_style = style_name
+    #@+node:ekr.20190324050727.1: *4* bjc.init_style_ivars
+    def init_style_ivars(self):
+        """Init Style data common to JEdit and Pygments colorizers."""
+        # init() properly sets these for each language.
+        self.actualColorDict = {}  # Used only by setTag.
+        self.hyperCount = 0
+        # Attributes dict ivars: defaults are as shown...
+        self.default = 'null'
+        self.digit_re = ''
+        self.escape = ''
+        self.highlight_digits = True
+        self.ignore_case = True
+        self.no_word_sep = ''
+        # Debugging...
+        self.allow_mark_prev = True
+        self.n_setTag = 0
+        self.tagCount = 0
+        self.trace_leo_matches = False
+        self.trace_match_flag = False
+        # Profiling...
+        self.recolorCount = 0  # Total calls to recolor
+        self.stateCount = 0  # Total calls to setCurrentState
+        self.totalStates = 0
+        self.maxStateNumber = 0
+        self.totalKeywordsCalls = 0
+        self.totalLeoKeywordsCalls = 0
+        # Mode data...
+        self.defaultRulesList = []
+        self.importedRulesets = {}
+        self.initLanguage = None
+        self.prev = None  # The previous token.
+        self.fonts = {}  # Keys are config names.  Values are actual fonts.
+        self.keywords = {}  # Keys are keywords, values are 0..5.
+            # Keys are state ints, values are language names.
+        self.modes = {}  # Keys are languages, values are modes.
+        self.mode = None  # The mode object for the present language.
+        self.modeBunch = None  # A bunch fully describing a mode.
+        self.modeStack = []
+        self.rulesDict = {}
+        # self.defineAndExtendForthWords()
+        self.word_chars = {}  # Inited by init_keywords().
+        self.tags = [
+            # 8 Leo-specific tags.
+            "blank",  # show_invisibles_space_color
+            "docpart",
+            "leokeyword",
+            "link",
+            "name",
+            "namebrackets",
+            "tab",  # show_invisibles_space_color
+            "url",
+            # jEdit tags.
+            'comment1', 'comment2', 'comment3', 'comment4',
+            # default, # exists, but never generated.
+            'function',
+            'keyword1', 'keyword2', 'keyword3', 'keyword4',
+            'label', 'literal1', 'literal2', 'literal3', 'literal4',
+            'markup', 'operator',
+            'trailing_whitespace',
+        ]
+    #@+node:ekr.20110605121601.18641: *3* bjc.setTag
+    def setTag(self, tag, s, i, j):
+        """Set the tag in the highlighter."""
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+        self.n_setTag += 1
+        if i == j:
+            return
+        wrapper = self.wrapper  # A QTextEditWrapper
+        if not tag.strip():
+            return
+        tag = tag.lower().strip()
+        # A hack to allow continuation dots on any tag.
+        dots = tag.startswith('dots')
+        if dots:
+            tag = tag[len('dots') :]
+        colorName = wrapper.configDict.get(tag)
+            # This color name should already be valid.
+        if not colorName:
+            return
+        #
+        # New in Leo 5.8.1: allow symbolic color names here.
+        # This now works because all keys in leo_color_database are normalized.
+        colorName = colorName.replace(
+            ' ', '').replace('-', '').replace('_', '').lower().strip()
+        colorName = leo_color_database.get(colorName, colorName)
+        # Get the actual color.
+        color = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                g.trace('unknown color name', colorName, g.callers())
+                return
+        underline = wrapper.configUnderlineDict.get(tag)
+        format = QtGui.QTextCharFormat()
+        font = self.fonts.get(tag)
+        if font:
+            format.setFont(font)
+            self.configure_hard_tab_width(font)  # #1919.
+        if tag in ('blank', 'tab'):
+            if tag == 'tab' or colorName == 'black':
+                format.setFontUnderline(True)
+            if colorName != 'black':
+                format.setBackground(color)
+        elif underline:
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
+            format.setFontUnderline(True)
+        elif dots or tag == 'trailing_whitespace':
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.DotLine)
+        else:
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
+        self.tagCount += 1
+        if trace:
+            # A superb trace.
+            if len(repr(s[i:j])) <= 20:
+                s2 = repr(s[i:j])
+            else:
+                s2 = repr(s[i : i + 17 - 2] + '...')
+            kind_s = f"{self.language}.{tag}"
+            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
+            print(
+                f"setTag: {kind_s:32} {i:3} {j:3} {s2:>22} "
+                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
+            )
+        self.highlighter.setFormat(i, j - i, format)
+    #@-others
+#@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
+# This is c.frame.body.colorizer
+
+
+class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
+    """
+    The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
+    For full documentation, see:
+    https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
+    """
+    #@+others
+    #@+node:ekr.20110605121601.18576: *3* bjc.addImportedRules
+    def addImportedRules(self, mode, rulesDict, rulesetName):
+        """Append any imported rules at the end of the rulesets specified in mode.importDict"""
+        if self.importedRulesets.get(rulesetName):
+            return
+        self.importedRulesets[rulesetName] = True
+        names = mode.importDict.get(
+            rulesetName, []) if hasattr(mode, 'importDict') else []
+        for name in names:
+            savedBunch = self.modeBunch
+            ok = self.init_mode(name)
+            if ok:
+                rulesDict2 = self.rulesDict
+                for key in rulesDict2.keys():
+                    aList = self.rulesDict.get(key, [])
+                    aList2 = rulesDict2.get(key)
+                    if aList2:
+                        # Don't add the standard rules again.
+                        rules = [z for z in aList2 if z not in aList]
+                        if rules:
+                            aList.extend(rules)
+                            self.rulesDict[key] = aList
+            self.initModeFromBunch(savedBunch)
+    #@+node:ekr.20110605121601.18577: *3* bjc.addLeoRules
+    def addLeoRules(self, theDict):
+        """Put Leo-specific rules to theList."""
+        # pylint: disable=no-member
+        table = [
+            # Rules added at front are added in **reverse** order.
+            ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
+                # Debatable: Leo keywords override langauge keywords.
+            ('@', self.match_at_color, True),
+            ('@', self.match_at_killcolor, True),
+            ('@', self.match_at_language, True),  # 2011/01/17
+            ('@', self.match_at_nocolor, True),
+            ('@', self.match_at_nocolor_node, True),
+            ('@', self.match_at_wrap, True),  # 2015/06/22
+            ('@', self.match_doc_part, True),
+            ('f', self.match_url_f, True),
+            ('g', self.match_url_g, True),
+            ('h', self.match_url_h, True),
+            ('m', self.match_url_m, True),
+            ('n', self.match_url_n, True),
+            ('p', self.match_url_p, True),
+            ('t', self.match_url_t, True),
+            ('u', self.match_unl, True),
+            ('w', self.match_url_w, True),
+            # ('<', self.match_image, True),
+            ('<', self.match_section_ref, True),  # Called **first**.
+            # Rules added at back are added in normal order.
+            (' ', self.match_blanks, False),
+            ('\t', self.match_tabs, False),
+        ]
+        if self.c.config.getBool("color-trailing-whitespace"):
+            table += [
+                (' ', self.match_trailing_ws, True),
+                ('\t', self.match_trailing_ws, True),
+            ]
+        for ch, rule, atFront, in table:
+            # Replace the bound method by an unbound method.
+            rule = rule.__func__
+            theList = theDict.get(ch, [])
+            if rule not in theList:
+                if atFront:
+                    theList.insert(0, rule)
+                else:
+                    theList.append(rule)
+                theDict[ch] = theList
     #@+node:ekr.20170514054524.1: *3* bjc.getFontFromParams
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return None
@@ -646,8 +861,8 @@ class BaseJEditColorizer(BaseColorizer):
             name = 'tex'
                 # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        if 'coloring' in g.app.debug and not g.unitTesting:
-            print(f"language: {language!r}, rulesetName: {rulesetName!r}")
+        # if 'coloring' in g.app.debug and not g.unitTesting:
+        #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
@@ -838,239 +1053,11 @@ class BaseJEditColorizer(BaseColorizer):
             d = g.app.language_delims_dict
             if not d.get(self.language):
                 d[self.language] = delims
-    #@+node:ekr.20190324050727.1: *3* bjc.init_style_ivars
-    def init_style_ivars(self):
-        """Init Style data common to JEdit and Pygments colorizers."""
-        # init() properly sets these for each language.
-        self.actualColorDict = {}  # Used only by setTag.
-        self.hyperCount = 0
-        # Attributes dict ivars: defaults are as shown...
-        self.default = 'null'
-        self.digit_re = ''
-        self.escape = ''
-        self.highlight_digits = True
-        self.ignore_case = True
-        self.no_word_sep = ''
-        # Debugging...
-        self.allow_mark_prev = True
-        self.n_setTag = 0
-        self.tagCount = 0
-        self.trace_leo_matches = False
-        self.trace_match_flag = False
-        # Profiling...
-        self.recolorCount = 0  # Total calls to recolor
-        self.stateCount = 0  # Total calls to setCurrentState
-        self.totalStates = 0
-        self.maxStateNumber = 0
-        self.totalKeywordsCalls = 0
-        self.totalLeoKeywordsCalls = 0
-        # Mode data...
-        self.defaultRulesList = []
-        self.importedRulesets = {}
-        self.initLanguage = None
-        self.prev = None  # The previous token.
-        self.fonts = {}  # Keys are config names.  Values are actual fonts.
-        self.keywords = {}  # Keys are keywords, values are 0..5.
-            # Keys are state ints, values are language names.
-        self.modes = {}  # Keys are languages, values are modes.
-        self.mode = None  # The mode object for the present language.
-        self.modeBunch = None  # A bunch fully describing a mode.
-        self.modeStack = []
-        self.rulesDict = {}
-        # self.defineAndExtendForthWords()
-        self.word_chars = {}  # Inited by init_keywords().
-        self.tags = [
-            # 8 Leo-specific tags.
-            "blank",  # show_invisibles_space_color
-            "docpart",
-            "leokeyword",
-            "link",
-            "name",
-            "namebrackets",
-            "tab",  # show_invisibles_space_color
-            "url",
-            # jEdit tags.
-            'comment1', 'comment2', 'comment3', 'comment4',
-            # default, # exists, but never generated.
-            'function',
-            'keyword1', 'keyword2', 'keyword3', 'keyword4',
-            'label', 'literal1', 'literal2', 'literal3', 'literal4',
-            'markup', 'operator',
-            'trailing_whitespace',
-        ]
     #@+node:ekr.20110605121601.18587: *3* bjc.munge
     def munge(self, s):
         """Munge a mode name so that it is a valid python id."""
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings & helper
-    #@@nobeautify
-    def reloadSettings(self):
-        c, getBool = self.c, self.c.config.getBool
-        #
-        # Init all settings ivars.
-        self.color_tags_list = []
-        self.showInvisibles      = getBool("show-invisibles-by-default")
-        self.underline_undefined = getBool("underline-undefined-section-names")
-        self.use_hyperlinks      = getBool("use-hyperlinks")
-        self.use_pygments        = None # Set in report_changes.
-        self.use_pygments_styles = getBool('use-pygments-styles', default=True)
-        #
-        # Report changes to pygments settings.
-        self.report_changes()
-        #
-        # Init the default fonts.
-        self.bold_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.italic_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.bolditalic_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-    #@+node:ekr.20190327053604.1: *4* bjc.report_changes
-    prev_use_pygments = None
-    prev_use_styles = None
-    prev_style = None
-
-    def report_changes(self):
-        """Report changes to pygments settings"""
-        c = self.c
-        use_pygments = c.config.getBool('use-pygments', default=False)
-        if not use_pygments:  # 1696.
-            return
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-        if trace:
-            g.es_print('\nreport changes...')
-
-        def show(setting, val):
-            if trace:
-                g.es_print(f"{setting:35}: {val}")
-
-        #
-        # Set self.use_pygments only once: it can't be changed later.
-        # There is no easy way to re-instantiate classes created by make_colorizer.
-        if self.prev_use_pygments is None:
-            self.use_pygments = self.prev_use_pygments = use_pygments
-            show('@bool use-pygments', use_pygments)
-        elif use_pygments == self.prev_use_pygments:
-            show('@bool use-pygments', use_pygments)
-        else:
-            g.es_print(
-                f"{'Can not change @bool use-pygments':35}: "
-                f"{self.prev_use_pygments}",
-                color='red')
-        #
-        # Report everything if we are tracing.
-        style_name = c.config.getString('pygments-style-name') or 'default'
-            # Don't set an ivar. It's not used in this class.
-            # This setting is used only in the LeoHighlighter class
-        show('@bool use-pytments-styles', self.use_pygments_styles)
-        show('@string pygments-style-name', style_name)
-        #
-        # Report changes to @bool use-pygments-style
-        if self.prev_use_styles is None:
-            self.prev_use_styles = self.use_pygments_styles
-        elif self.use_pygments_styles != self.prev_use_styles:
-            g.es_print(f"using pygments styles: {self.use_pygments_styles}")
-        #
-        # Report @string pygments-style-name only if we are using styles.
-        if not self.use_pygments_styles:
-            return
-        #
-        # Report changes to @string pygments-style-name
-        if self.prev_style is None:
-            self.prev_style = style_name
-        elif style_name != self.prev_style:
-            g.es_print(f"New pygments style: {style_name}")
-            self.prev_style = style_name
-    #@+node:ekr.20110605121601.18641: *3* bjc.setTag
-    last_v = None
-
-    def setTag(self, tag, s, i, j):
-        """Set the tag in the highlighter."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-        self.n_setTag += 1
-        if i == j:
-            return
-        wrapper = self.wrapper  # A QTextEditWrapper
-        if not tag.strip():
-            return
-        tag = tag.lower().strip()
-        # A hack to allow continuation dots on any tag.
-        dots = tag.startswith('dots')
-        if dots:
-            tag = tag[len('dots') :]
-        colorName = wrapper.configDict.get(tag)
-            # This color name should already be valid.
-        if not colorName:
-            return
-        #
-        # New in Leo 5.8.1: allow symbolic color names here.
-        # This now works because all keys in leo_color_database are normalized.
-        colorName = colorName.replace(
-            ' ', '').replace('-', '').replace('_', '').lower().strip()
-        colorName = leo_color_database.get(colorName, colorName)
-        # Get the actual color.
-        color = self.actualColorDict.get(colorName)
-        if not color:
-            color = QtGui.QColor(colorName)
-            if color.isValid():
-                self.actualColorDict[colorName] = color
-            else:
-                g.trace('unknown color name', colorName, g.callers())
-                return
-        underline = wrapper.configUnderlineDict.get(tag)
-        format = QtGui.QTextCharFormat()
-        font = self.fonts.get(tag)
-        if font:
-            format.setFont(font)
-            self.configure_hard_tab_width(font)  # #1919.
-        if tag in ('blank', 'tab'):
-            if tag == 'tab' or colorName == 'black':
-                format.setFontUnderline(True)
-            if colorName != 'black':
-                format.setBackground(color)
-        elif underline:
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
-            format.setFontUnderline(True)
-        elif dots or tag == 'trailing_whitespace':
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.DotLine)
-        else:
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
-        self.tagCount += 1
-        if trace:
-            # A superb trace.
-            if len(repr(s[i:j])) <= 20:
-                s2 = repr(s[i:j])
-            else:
-                s2 = repr(s[i : i + 17 - 2] + '...')
-            kind_s = f"{self.language}.{tag}"
-            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
-            print(
-                f"setTag: {kind_s:32} {i:3} {j:3} {s2:>22} "
-                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
-            )
-        self.highlighter.setFormat(i, j - i, format)
-    #@-others
-#@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
-# This is c.frame.body.colorizer
-
-
-class JEditColorizer(BaseJEditColorizer):
-    """
-    The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
-    For full documentation, see:
-    https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
-    """
-    #@+others
     #@+node:ekr.20110605121601.18572: *3* jedit.__init__ & helpers
     def __init__(self, c, widget, wrapper):
         """Ctor for JEditColorizer class."""
@@ -1150,10 +1137,11 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
     def reloadSettings(self):
         """Complete the initialization of all settings."""
-        if 'coloring' in g.app.debug and not g.unitTesting:
-            print('jedit.reloadSettings.')
+        ###
+            # if 'coloring' in g.app.debug and not g.unitTesting:
+                # print('jedit.reloadSettings.')
         # Do the basic inits.
-        BaseJEditColorizer.reloadSettings(self)
+        super().reloadSettings()
         # Init everything else.
         self.init_style_ivars()
         self.defineLeoKeywordsDict()
@@ -2286,20 +2274,22 @@ class JEditColorizer(BaseJEditColorizer):
                 else:
                     i += 1
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
+    ### last_v = None
     tot_time = 0.0
 
     def mainLoop(self, n, s):
         """Colorize a *single* line s, starting in state n."""
-        trace = 'coloring' in g.app.debug
+        ### trace = 'coloring' in g.app.debug
         t1 = time.process_time()
         f = self.restartDict.get(n)
-        if trace:
-            p = self.c and self.c.p
-            if p and p.v != self.last_v:
-                self.last_v = p.v
-                f_name = f.__name__ if f else 'None'
-                print('')
-                g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
+        ###
+            # if trace:
+                # p = self.c and self.c.p
+                # if p and p.v != self.last_v:
+                    # self.last_v = p.v
+                    # f_name = f.__name__ if f else 'None'
+                    # print('')
+                    # g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
         i = f(s) if f else 0
         while i < len(s):
             progress = i
@@ -2607,8 +2597,8 @@ if Qsci:
             # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono", 14)
             lexer.setFont(font)
-#@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseJEditColorizer)
-class PygmentsColorizer(BaseJEditColorizer):
+#@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseColorizer)
+class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
     """
     This class adapts pygments tokens to QSyntaxHighlighter.
     """
@@ -2664,13 +2654,14 @@ class PygmentsColorizer(BaseJEditColorizer):
             return True
         except Exception:
             return False
-    #@+node:ekr.20190324051704.1: *4* pyg_c.reloadSettings
+    #@+node:ekr.20190324051704.1: *3* pyg_c.reloadSettings
     def reloadSettings(self):
         """Reload the base settings, plus pygments settings."""
         if 'coloring' in g.app.debug and not g.unitTesting:
             print('reloading pygments settings.')
         # Do basic inits.
-        BaseJEditColorizer.reloadSettings(self)
+        ### BaseJEditColorizer.reloadSettings(self)
+        super().reloadSettings()
         # Bind methods.
         if self.use_pygments_styles:
             self.getDefaultFormat = QtGui.QTextCharFormat
@@ -2708,7 +2699,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190324064341.1: *3* pyg_c.format setters
     def setLegacyFormat(self, index, length, format, s):
         """Call the jEdit style setTag."""
-        BaseJEditColorizer.setTag(self, format, s, index, index + length)
+        super().setTag(format, s, index, index + length)
 
     def setPygmentsFormat(self, index, length, format, s):
         """Call the base setTag to set the Qt format."""
