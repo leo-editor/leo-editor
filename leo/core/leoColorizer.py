@@ -75,7 +75,7 @@ class BaseColorizer:
         self.rulesetName = ''
         self.delegate_name = ''
     #@+node:ekr.20190324045134.1: *4* BaseColorizer.init
-    def init(self, p):
+    def init(self):
         """May be over-ridden in subclasses."""
         pass
     #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configure_tags & helpers
@@ -525,13 +525,12 @@ class BaseColorizer:
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
-            
         # Init everything else.
         self.init_style_ivars()
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
-        self.init(c.p)
+        self.init()
     #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
     prev_use_pygments = None
     prev_use_styles = None
@@ -814,7 +813,7 @@ class JEditColorizer(BaseColorizer):
         # Init common data...
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *5* jedit.init
-    def init(self, p=None):
+    def init(self):
         """Init the colorizer, but *not* state."""
         #
         # These *must* be recomputed.
@@ -1211,12 +1210,12 @@ class JEditColorizer(BaseColorizer):
             new_language = self.n2languageDict.get(n)
             if new_language != self.language:
                 self.language = new_language
-                self.init(p)
+                self.init()
         else:
             self.updateSyntaxColorer(p)  # Force a full recolor
             assert self.language
             self.init_all_state(p.v)
-            self.init(p)
+            self.init()
         if block_n == 0:
             n = self.initBlock0()
         n = self.setState(n)  # Required.
@@ -1488,7 +1487,7 @@ class JEditColorizer(BaseColorizer):
             self.after_doc_language = self.language
             self.language = 'rest'
             self.clearState()
-            self.init(c.p)
+            self.init()
             # Restart.
             self.setRestart(self.restartDocPart)
             # Do *not* color the text here!
@@ -1512,7 +1511,7 @@ class JEditColorizer(BaseColorizer):
                 # Switch languages.
                 self.language = self.after_doc_language
                 self.clearState()
-                self.init(self.c.p)
+                self.init()
                 self.after_doc_language = None
                 return j
         # Color the next line.
@@ -2599,31 +2598,22 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
     def __init__(self, c, widget, wrapper):
         """Ctor for PygmentsColorizer class."""
         super().__init__(c, widget, wrapper)
-        #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
                 colorizer=self,
                 document=widget.document(),
             )
-        #
         # State unique to this class...
         self.color_enabled = self.enabled
         self.old_v = None
-        #
         # Monkey-patch g.isValidLanguage.
         g.isValidLanguage = self.pygments_isValidLanguage
-        #
         # Init common data...
-            # self.init_style_ivars()
-            # self.defineLeoKeywordsDict()
-            # self.defineDefaultColorsDict()
-            # self.defineDefaultFontDict()
         self.reloadSettings()
-            # self.init()
     #@+node:ekr.20190324043722.1: *4* pyg_c.init
-    def init(self, p=None):
-        """Init the colorizer. p is for tracing only."""
+    def init(self):
+        """Init the colorizer."""
         self.prev = None  # Used by setTag.
         self.rulesetName = ""  # Used by trace in setTag.
         self.configure_tags()
@@ -2859,10 +2849,8 @@ class PygmentsColorizer(BaseColorizer): ### BaseJEditColorizer):
                 # Force a full recolor
                 # sets self.language and self.enabled.
             self.color_enabled = self.enabled
-            self.old_v = p.v
-                # Fix a major performance bug.
-            self.init(p)
-                # Support
+            self.old_v = p.v  # Fix a major performance bug.
+            self.init()
             assert self.language
         if s is not None:
             # For pygments, we *must* call for all lines.
@@ -2987,9 +2975,9 @@ class QScintillaColorizer(BaseColorizer):
                 # Not an error. Not all lexers have all styles.
                     # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
     #@+node:ekr.20170128031840.1: *3* qsc.init
-    def init(self, p):
+    def init(self):
         """QScintillaColorizer.init"""
-        self.updateSyntaxColorer(p)
+        self.updateSyntaxColorer(self.c.p)
         self.changeLexer(self.language)
     #@+node:ekr.20170128133525.1: *3* qsc.makeLexersDict
     def makeLexersDict(self):
