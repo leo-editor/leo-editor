@@ -45,7 +45,8 @@ def make_colorizer(c, widget, wrapper):
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
-    #@+node:ekr.20190324044744.1: *3* bc.__init__
+    #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
+    #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
     def __init__(self, c, widget=None, wrapper=None):
         """ctor for BaseColorizer class."""
         #
@@ -73,68 +74,11 @@ class BaseColorizer:
         self.matcher_name = ''
         self.rulesetName = ''
         self.delegate_name = ''
-    #@+node:ekr.20190324045134.1: *3* bc.init
+    #@+node:ekr.20190324045134.1: *4* BaseColorizer.init
     def init(self, p):
         """May be over-ridden in subclasses."""
         pass
-    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
-    # Note: these are used by unit tests.
-
-    def updateSyntaxColorer(self, p):
-        """
-        Scan for color directives in p and its ancestors.
-        Return True unless an coloring is unambiguously disabled.
-        Called from Leo's node-selection logic and from the colorizer.
-        """
-        if p:  # This guard is required.
-            try:
-                self.enabled = self.useSyntaxColoring(p)
-                self.language = self.scanLanguageDirectives(p)
-            except Exception:
-                g.es_print('unexpected exception in updateSyntaxColorer')
-                g.es_exception()
-    #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives
-    def scanLanguageDirectives(self, p):
-        """Return language based on the directives in p's ancestors."""
-        c = self.c
-        language = g.getLanguageFromAncestorAtFileNode(p)
-        return language or c.target_language
-    #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
-    def useSyntaxColoring(self, p):
-        """True if p's parents enable coloring in p."""
-        # Special cases for the selected node.
-        d = self.findColorDirectives(p)
-        if 'killcolor' in d:
-            return False
-        if 'nocolor-node' in d:
-            return False
-        # Now look at the parents.
-        for p in p.parents():
-            d = self.findColorDirectives(p)
-            # @killcolor anywhere disables coloring.
-            if 'killcolor' in d:
-                return False
-            # unambiguous @color enables coloring.
-            if 'color' in d and 'nocolor' not in d:
-                return True
-            # Unambiguous @nocolor disables coloring.
-            if 'nocolor' in d and 'color' not in d:
-                return False
-        return True
-    #@+node:ekr.20170127142001.8: *5* bjc.findColorDirectives
-    # Order is important: put longest matches first.
-    color_directives_pat = re.compile(
-        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
-        , re.MULTILINE)
-
-    def findColorDirectives(self, p):
-        """Return a dict with each color directive in p.b, without the leading '@'."""
-        d = {}
-        for m in self.color_directives_pat.finditer(p.b):
-            word = m.group(0)[1:]
-            d[word] = word
-        return d
-    #@+node:ekr.20110605121601.18578: *3* bjc.configure_tags & helpers
+    #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configure_tags & helpers
     def configure_tags(self):
         """Configure all tags."""
         wrapper = self.wrapper
@@ -145,7 +89,7 @@ class BaseColorizer:
         self.configure_variable_tags()
         if wrapper and hasattr(wrapper, 'end_tag_configure'):
             wrapper.end_tag_configure()
-    #@+node:ekr.20190324172632.1: *4* bjc.configure_colors
+    #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
     def configure_colors(self):
         """Configure all colors in the default colors dict."""
         c, wrapper = self.c, self.wrapper
@@ -165,7 +109,7 @@ class BaseColorizer:
             except Exception:  # Recover after a user settings error.
                 g.es_exception()
                 wrapper.tag_configure(key, foreground=default_color)
-    #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts & helper
+    #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
     def configure_fonts(self):
         """Configure all fonts in the default fonts dict."""
         c = self.c
@@ -206,7 +150,7 @@ class BaseColorizer:
                 # Neither setting exists.
                 self.fonts[key] = None  # Essential
                 wrapper.tag_configure(key, font=defaultBodyfont)
-    #@+node:ekr.20190326034006.1: *5* bjc.find_font
+    #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
     zoom_dict: Dict[str, int] = {}
         # Keys are key::settings_names, values are cumulative font size.
 
@@ -263,7 +207,7 @@ class BaseColorizer:
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
-    #@+node:ekr.20111024091133.16702: *4* bjc.configure_hard_tab_width
+    #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font):
         """
         Set the width of a hard tab.
@@ -288,7 +232,7 @@ class BaseColorizer:
         else:
             # To do: configure the QScintilla widget.
             pass
-    #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
+    #@+node:ekr.20110605121601.18579: *5* BaseColorizer.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
         wrapper = self.wrapper
@@ -315,7 +259,7 @@ class BaseColorizer:
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
-    #@+node:ekr.20110605121601.18574: *3* bjc.defineDefaultColorsDict
+    #@+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     #@@nobeautify
 
     def defineDefaultColorsDict (self):
@@ -461,7 +405,7 @@ class BaseColorizer:
             'operator'  :('operator_color', 'black'),
             'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
-    #@+node:ekr.20110605121601.18575: *3* bjc.defineDefaultFontDict
+    #@+node:ekr.20110605121601.18575: *4* BaseColorizer.defineDefaultFontDict
     #@@nobeautify
 
     def defineDefaultFontDict (self):
@@ -547,12 +491,12 @@ class BaseColorizer:
             'operator'      :'operator_font',
             'trailing_whitespace' :'trailing_whitespace_font',
         }
-    #@+node:ekr.20110605121601.18573: *3* bjc.defineLeoKeywordsDict
+    #@+node:ekr.20110605121601.18573: *4* BaseColorizer.defineLeoKeywordsDict
     def defineLeoKeywordsDict(self):
         self.leoKeywordsDict = {}
         for key in g.globalDirectiveList:
             self.leoKeywordsDict[key] = 'leokeyword'
-    #@+node:ekr.20171114041307.1: *3* bjc.reloadSettings & helpers
+    #@+node:ekr.20171114041307.1: *3* BaseColorizer.reloadSettings
     #@@nobeautify
     def reloadSettings(self):
         c, getBool = self.c, self.c.config.getBool
@@ -581,7 +525,7 @@ class BaseColorizer:
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant", "body_text_font_weight",
             c.config.defaultBodyFontSize)
-    #@+node:ekr.20190327053604.1: *4* bjc.report_changes
+    #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
     prev_use_pygments = None
     prev_use_styles = None
     prev_style = None
@@ -637,7 +581,7 @@ class BaseColorizer:
         elif style_name != self.prev_style:
             g.es_print(f"New pygments style: {style_name}")
             self.prev_style = style_name
-    #@+node:ekr.20190324050727.1: *4* bjc.init_style_ivars
+    #@+node:ekr.20190324050727.1: *4* BaseColorizer.init_style_ivars
     def init_style_ivars(self):
         """Init Style data common to JEdit and Pygments colorizers."""
         # init() properly sets these for each language.
@@ -670,7 +614,6 @@ class BaseColorizer:
         self.prev = None  # The previous token.
         self.fonts = {}  # Keys are config names.  Values are actual fonts.
         self.keywords = {}  # Keys are keywords, values are 0..5.
-            # Keys are state ints, values are language names.
         self.modes = {}  # Keys are languages, values are modes.
         self.mode = None  # The mode object for the present language.
         self.modeBunch = None  # A bunch fully describing a mode.
@@ -697,7 +640,7 @@ class BaseColorizer:
             'markup', 'operator',
             'trailing_whitespace',
         ]
-    #@+node:ekr.20110605121601.18641: *3* bjc.setTag
+    #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
     def setTag(self, tag, s, i, j):
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
@@ -766,6 +709,63 @@ class BaseColorizer:
                 f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
             )
         self.highlighter.setFormat(i, j - i, format)
+    #@+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
+    # Note: these are used by unit tests.
+
+    def updateSyntaxColorer(self, p):
+        """
+        Scan for color directives in p and its ancestors.
+        Return True unless an coloring is unambiguously disabled.
+        Called from Leo's node-selection logic and from the colorizer.
+        """
+        if p:  # This guard is required.
+            try:
+                self.enabled = self.useSyntaxColoring(p)
+                self.language = self.scanLanguageDirectives(p)
+            except Exception:
+                g.es_print('unexpected exception in updateSyntaxColorer')
+                g.es_exception()
+    #@+node:ekr.20170127142001.2: *4* BaseColorizer.scanLanguageDirectives
+    def scanLanguageDirectives(self, p):
+        """Return language based on the directives in p's ancestors."""
+        c = self.c
+        language = g.getLanguageFromAncestorAtFileNode(p)
+        return language or c.target_language
+    #@+node:ekr.20170127142001.7: *4* BaseColorizer.useSyntaxColoring & helper
+    def useSyntaxColoring(self, p):
+        """True if p's parents enable coloring in p."""
+        # Special cases for the selected node.
+        d = self.findColorDirectives(p)
+        if 'killcolor' in d:
+            return False
+        if 'nocolor-node' in d:
+            return False
+        # Now look at the parents.
+        for p in p.parents():
+            d = self.findColorDirectives(p)
+            # @killcolor anywhere disables coloring.
+            if 'killcolor' in d:
+                return False
+            # unambiguous @color enables coloring.
+            if 'color' in d and 'nocolor' not in d:
+                return True
+            # Unambiguous @nocolor disables coloring.
+            if 'nocolor' in d and 'color' not in d:
+                return False
+        return True
+    #@+node:ekr.20170127142001.8: *5* BaseColorizer.findColorDirectives
+    # Order is important: put longest matches first.
+    color_directives_pat = re.compile(
+        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+        , re.MULTILINE)
+
+    def findColorDirectives(self, p):
+        """Return a dict with each color directive in p.b, without the leading '@'."""
+        d = {}
+        for m in self.color_directives_pat.finditer(p.b):
+            word = m.group(0)[1:]
+            d[word] = word
+        return d
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
@@ -778,7 +778,98 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
     https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
     """
     #@+others
-    #@+node:ekr.20110605121601.18576: *3* bjc.addImportedRules
+    #@+node:ekr.20220317050804.1: *3*  jedit: Birth
+    #@+node:ekr.20110605121601.18572: *4* jedit.__init__ & helpers
+    def __init__(self, c, widget, wrapper):
+        """Ctor for JEditColorizer class."""
+        super().__init__(c, widget, wrapper)
+        #
+        # Create the highlighter. The default is NullObject.
+        if isinstance(widget, QtWidgets.QTextEdit):
+            self.highlighter = LeoHighlighter(c,
+                colorizer=self,
+                document=widget.document(),
+            )
+        #
+        # State data used only by this class...
+        self.after_doc_language = None
+        self.initialStateNumber = -1
+        self.old_v = None
+        self.nextState = 1  # Dont use 0.
+        self.n2languageDict = {-1: c.target_language}
+        self.restartDict = {}  # Keys are state numbers, values are restart functions.
+        self.stateDict = {}  # Keys are state numbers, values state names.
+        self.stateNameDict = {}  # Keys are state names, values are state numbers.
+        # #2276: Set by init_section_delims.
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
+        #
+        # Init common data...
+        self.reloadSettings()
+    #@+node:ekr.20110605121601.18580: *5* jedit.init
+    def init(self, p=None):
+        """Init the colorizer, but *not* state."""
+        #
+        # These *must* be recomputed.
+        self.initialStateNumber = self.setInitialStateNumber()
+        #
+        # Fix #389. Do *not* change these.
+            # self.nextState = 1 # Dont use 0.
+            # self.stateDict = {}
+            # self.stateNameDict = {}
+            # self.restartDict = {}
+        self.init_mode(self.language)
+        self.clearState()
+        # Used by matchers.
+        self.prev = None
+        # Must be done to support per-language @font/@color settings.
+        self.configure_tags()
+        self.init_section_delims()  # #2276
+    #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
+    def init_all_state(self, v):
+        """Completely init all state data."""
+        assert self.language, g.callers(8)
+        self.old_v = v
+        self.n2languageDict = {-1: self.language}
+        self.nextState = 1  # Dont use 0.
+        self.restartDict = {}
+        self.stateDict = {}
+        self.stateNameDict = {}
+    #@+node:ekr.20211029073553.1: *5* jedit.init_section_delims
+    def init_section_delims(self):
+
+        p = self.c.p
+
+        def find_delims(v):
+            for s in g.splitLines(v.b):
+                m = g.g_section_delims_pat.match(s)
+                if m:
+                    return m
+            return None
+
+        v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
+        if v:
+            m = find_delims(v)
+            self.section_delim1 = m.group(1)
+            self.section_delim2 = m.group(2)
+        else:
+            self.section_delim1 = '<<'
+            self.section_delim2 = '>>'
+    #@+node:ekr.20190326183005.1: *5* jedit.reloadSettings
+    def reloadSettings(self):
+        """Complete the initialization of all settings."""
+        ###
+            # if 'coloring' in g.app.debug and not g.unitTesting:
+                # print('jedit.reloadSettings.')
+        # Do the basic inits.
+        super().reloadSettings()
+        # Init everything else.
+        self.init_style_ivars()
+        self.defineLeoKeywordsDict()
+        self.defineDefaultColorsDict()
+        self.defineDefaultFontDict()
+        self.init()
+    #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
     def addImportedRules(self, mode, rulesDict, rulesetName):
         """Append any imported rules at the end of the rulesets specified in mode.importDict"""
         if self.importedRulesets.get(rulesetName):
@@ -801,7 +892,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
                             aList.extend(rules)
                             self.rulesDict[key] = aList
             self.initModeFromBunch(savedBunch)
-    #@+node:ekr.20110605121601.18577: *3* bjc.addLeoRules
+    #@+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict):
         """Put Leo-specific rules to theList."""
         # pylint: disable=no-member
@@ -846,13 +937,13 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-    #@+node:ekr.20170514054524.1: *3* bjc.getFontFromParams
+    #@+node:ekr.20170514054524.1: *4* jedit.getFontFromParams
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return None
 
     # def setFontFromConfig(self):
         # pass
-    #@+node:ekr.20110605121601.18581: *3* bjc.init_mode & helpers
+    #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name):
         """Name may be a language name or a delegate name."""
         if not name:
@@ -878,7 +969,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
-    #@+node:btheado.20131124162237.16303: *4* bjc.init_mode_from_module
+    #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
     def init_mode_from_module(self, name, mode):
         """
         Name may be a language name or a delegate name.
@@ -947,7 +1038,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
         else:
             self.language = language  # 2017/01/31
         return True
-    #@+node:ekr.20110605121601.18582: *4* bjc.nameToRulesetName
+    #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
     def nameToRulesetName(self, name):
         """
         Compute language and rulesetName from name, which is either a language
@@ -968,7 +1059,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
             delegate = name[i + 2 :]
             rulesetName = self.munge(f"{language}_{delegate}")
         return language, rulesetName
-    #@+node:ekr.20110605121601.18583: *4* bjc.setKeywords
+    #@+node:ekr.20110605121601.18583: *5* jedit.setKeywords
     def setKeywords(self):
         """
         Initialize the keywords for the present language.
@@ -999,7 +1090,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
         self.word_chars: Dict[str, str] = {}
         for z in chars:
             self.word_chars[z] = z
-    #@+node:ekr.20110605121601.18584: *4* bjc.setModeAttributes
+    #@+node:ekr.20110605121601.18584: *5* jedit.setModeAttributes
     def setModeAttributes(self):
         """
         Set the ivars from self.attributesDict,
@@ -1021,7 +1112,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
             if val in ('false', 'False'):
                 val = False
             setattr(self, key, val)
-    #@+node:ekr.20110605121601.18585: *4* bjc.initModeFromBunch
+    #@+node:ekr.20110605121601.18585: *5* jedit.initModeFromBunch
     def initModeFromBunch(self, bunch):
         self.modeBunch = bunch
         self.attributesDict = bunch.attributesDict
@@ -1034,7 +1125,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
         self.rulesDict = bunch.rulesDict
         self.rulesetName = bunch.rulesetName
         self.word_chars = bunch.word_chars  # 2011/05/21
-    #@+node:ekr.20110605121601.18586: *4* bjc.updateDelimsTables
+    #@+node:ekr.20110605121601.18586: *5* jedit.updateDelimsTables
     def updateDelimsTables(self):
         """Update g.app.language_delims_dict if no entry for the language exists."""
         d = self.properties
@@ -1053,102 +1144,137 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
             d = g.app.language_delims_dict
             if not d.get(self.language):
                 d[self.language] = delims
-    #@+node:ekr.20110605121601.18587: *3* bjc.munge
+    #@+node:ekr.20110605121601.18587: *4* jedit.munge
     def munge(self, s):
         """Munge a mode name so that it is a valid python id."""
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20110605121601.18572: *3* jedit.__init__ & helpers
-    def __init__(self, c, widget, wrapper):
-        """Ctor for JEditColorizer class."""
-        super().__init__(c, widget, wrapper)
-        #
-        # Create the highlighter. The default is NullObject.
-        if isinstance(widget, QtWidgets.QTextEdit):
-            self.highlighter = LeoHighlighter(c,
-                colorizer=self,
-                document=widget.document(),
-            )
-        #
-        # State data used only by this class...
-        self.after_doc_language = None
-        self.initialStateNumber = -1
-        self.old_v = None
-        self.nextState = 1  # Dont use 0.
-        self.n2languageDict = {-1: c.target_language}
-        self.restartDict = {}  # Keys are state numbers, values are restart functions.
-        self.stateDict = {}  # Keys are state numbers, values state names.
-        self.stateNameDict = {}  # Keys are state names, values are state numbers.
-        # #2276: Set by init_section_delims.
-        self.section_delim1 = '<<'
-        self.section_delim2 = '>>'
-        #
-        # Init common data...
-        self.reloadSettings()
-    #@+node:ekr.20110605121601.18580: *4* jedit.init
-    def init(self, p=None):
-        """Init the colorizer, but *not* state."""
-        #
-        # These *must* be recomputed.
-        self.initialStateNumber = self.setInitialStateNumber()
-        #
-        # Fix #389. Do *not* change these.
-            # self.nextState = 1 # Dont use 0.
-            # self.stateDict = {}
-            # self.stateNameDict = {}
-            # self.restartDict = {}
-        self.init_mode(self.language)
-        self.clearState()
-        # Used by matchers.
-        self.prev = None
-        # Must be done to support per-language @font/@color settings.
-        self.configure_tags()
-        self.init_section_delims()  # #2276
-    #@+node:ekr.20170201082248.1: *4* jedit.init_all_state
-    def init_all_state(self, v):
-        """Completely init all state data."""
-        assert self.language, g.callers(8)
-        self.old_v = v
-        self.n2languageDict = {-1: self.language}
-        self.nextState = 1  # Dont use 0.
-        self.restartDict = {}
-        self.stateDict = {}
-        self.stateNameDict = {}
-    #@+node:ekr.20211029073553.1: *4* jedit.init_section_delims
-    def init_section_delims(self):
+    #@+node:ekr.20170205055743.1: *4* jedit.set_wikiview_patterns
+    def set_wikiview_patterns(self, leadins, patterns):
+        """
+        Init the colorizer so it will *skip* all patterns.
+        The wikiview plugin calls this method.
+        """
+        d = self.rulesDict
+        for leadins_list, pattern in zip(leadins, patterns):
+            for ch in leadins_list:
 
-        p = self.c.p
+                def wiki_rule(self, s, i, pattern=pattern):
+                    """Bind pattern and leadin for jedit.match_wiki_pattern."""
+                    return self.match_wiki_pattern(s, i, pattern)
 
-        def find_delims(v):
-            for s in g.splitLines(v.b):
-                m = g.g_section_delims_pat.match(s)
-                if m:
-                    return m
-            return None
+                aList = d.get(ch, [])
+                if wiki_rule not in aList:
+                    aList.insert(0, wiki_rule)
+                    d[ch] = aList
+        self.rulesDict = d
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
+    ### last_v = None
+    tot_time = 0.0
 
-        v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
-        if v:
-            m = find_delims(v)
-            self.section_delim1 = m.group(1)
-            self.section_delim2 = m.group(2)
-        else:
-            self.section_delim1 = '<<'
-            self.section_delim2 = '>>'
-    #@+node:ekr.20190326183005.1: *4* jedit.reloadSettings
-    def reloadSettings(self):
-        """Complete the initialization of all settings."""
+    def mainLoop(self, n, s):
+        """Colorize a *single* line s, starting in state n."""
+        ### trace = 'coloring' in g.app.debug
+        t1 = time.process_time()
+        f = self.restartDict.get(n)
         ###
-            # if 'coloring' in g.app.debug and not g.unitTesting:
-                # print('jedit.reloadSettings.')
-        # Do the basic inits.
-        super().reloadSettings()
-        # Init everything else.
-        self.init_style_ivars()
-        self.defineLeoKeywordsDict()
-        self.defineDefaultColorsDict()
-        self.defineDefaultFontDict()
-        self.init()
-    #@+node:ekr.20110605121601.18589: *3*  jedit.Pattern matchers
+            # if trace:
+                # p = self.c and self.c.p
+                # if p and p.v != self.last_v:
+                    # self.last_v = p.v
+                    # f_name = f.__name__ if f else 'None'
+                    # print('')
+                    # g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
+        i = f(s) if f else 0
+        while i < len(s):
+            progress = i
+            functions = self.rulesDict.get(s[i], [])
+            for f in functions:
+                n = f(self, s, i)
+                if n is None:
+                    g.trace('Can not happen: n is None', repr(f))
+                    break
+                elif n > 0:  # Success. The match has already been colored.
+                    self.matcher_name = f.__name__  # For traces.
+                    i += n
+                    break
+                elif n < 0:  # Total failure.
+                    i += -n
+                    break
+                else:  # Partial failure: Do not break or change i!
+                    pass
+            else:
+                i += 1
+            assert i > progress
+        # Don't even *think* about changing state here.
+        self.tot_time += time.process_time() - t1
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
+    def recolor(self, s):
+        """
+        jEdit.recolor: Recolor a *single* line, s.
+        QSyntaxHighligher calls this method repeatedly and automatically.
+        """
+        p = self.c.p
+        self.recolorCount += 1
+        block_n = self.currentBlockNumber()
+        n = self.prevState()
+        if p.v == self.old_v:
+            new_language = self.n2languageDict.get(n)
+            if new_language != self.language:
+                self.language = new_language
+                self.init(p)
+        else:
+            self.updateSyntaxColorer(p)  # Force a full recolor
+            assert self.language
+            self.init_all_state(p.v)
+            self.init(p)
+        if block_n == 0:
+            n = self.initBlock0()
+        n = self.setState(n)  # Required.
+        # Always color the line, even if colorizing is disabled.
+        if s:
+            self.mainLoop(n, s)
+    #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
+    def initBlock0(self):
+        """
+        Init *local* ivars when handling block 0.
+        This prevents endless recalculation of the proper default state.
+        """
+        if self.enabled:
+            n = self.setInitialStateNumber()
+        else:
+            n = self.setRestart(self.restartNoColor)
+        return n
+    #@+node:ekr.20170126101049.1: *4* jedit.setInitialStateNumber
+    def setInitialStateNumber(self):
+        """
+        Init the initialStateNumber ivar for clearState()
+        This saves a lot of work.
+
+        Called from init() and initBlock0.
+        """
+        state = self.languageTag(self.language)
+        n = self.stateNameToStateNumber(None, state)
+        self.initialStateNumber = n
+        self.blankStateNumber = self.stateNameToStateNumber(None, state + ';blank')
+        return n
+    #@+node:ekr.20170126103925.1: *4* jedit.languageTag
+    def languageTag(self, name):
+        """
+        Return the standardized form of the language name.
+        Doing this consistently prevents subtle bugs.
+        """
+        if name:
+            table = (
+                ('markdown', 'md'),
+                ('python', 'py'),
+                ('javascript', 'js'),
+            )
+            for pattern, s in table:
+                name = name.replace(pattern, s)
+            return name
+        return 'no-language'
+    #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
     #@+at
@@ -1173,6 +1299,68 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
     #                         by the indicated ruleset.
     # - exclude_match         If True, the actual text that matched will not be colored.
     # - kind                  The color tag to be applied to colored text.
+    #@+node:ekr.20110605121601.18637: *4* jedit.colorRangeWithTag
+    def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
+        """
+        Actually colorize the selected range.
+
+        This is called whenever a pattern matcher succeed.
+        """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+            # setTag does most tracing.
+        if not self.inColorState():
+            # Do *not* check x.flag here. It won't work.
+            if trace:
+                g.trace('not in color state')
+            return
+        self.delegate_name = delegate
+        if delegate:
+            if trace:
+                if len(repr(s[i:j])) <= 20:
+                    s2 = repr(s[i:j])
+                else:
+                    s2 = repr(s[i : i + 17 - 2] + '...')
+                kind_s = f"{delegate}:{tag}"
+                print(
+                    f"\ncolorRangeWithTag: {kind_s:25} {i:3} {j:3} "
+                    f"{s2:>20} {self.matcher_name}\n")
+            self.modeStack.append(self.modeBunch)
+            self.init_mode(delegate)
+            while 0 <= i < j and i < len(s):
+                progress = i
+                assert j >= 0, j
+                for f in self.rulesDict.get(s[i], []):
+                    n = f(self, s, i)
+                    if n is None:
+                        g.trace('Can not happen: delegate matcher returns None')
+                    elif n > 0:
+                        self.matcher_name = f.__name__
+                        i += n
+                        break
+                else:
+                    # Use the default chars for everything else.
+                    # Use the *delegate's* default characters if possible.
+                    default_tag = self.attributesDict.get('default')
+                    self.setTag(default_tag or tag, s, i, i + 1)
+                    i += 1
+                assert i > progress
+            bunch = self.modeStack.pop()
+            self.initModeFromBunch(bunch)
+        elif not exclude_match:
+            self.setTag(tag, s, i, j)
+        if tag != 'url':
+            # Allow UNL's and URL's *everywhere*.
+            j = min(j, len(s))
+            while i < j:
+                ch = s[i].lower()
+                if ch == 'u':
+                    n = self.match_unl(s, i)
+                    i += max(1, n)
+                elif ch in 'fh':  # file|ftp|http|https
+                    n = self.match_any_url(s, i)
+                    i += max(1, n)
+                else:
+                    i += 1
     #@+node:ekr.20110605121601.18591: *4* jedit.dump
     def dump(self, s):
         if s.find('\n') == -1:
@@ -2100,7 +2288,7 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
 
         if j != i and self.trace_match_flag:
             g.trace(kind, i, j, g.callers(2), self.dump(s[i:j]))
-    #@+node:ekr.20110605121601.18629: *3*  jedit.State methods
+    #@+node:ekr.20110605121601.18629: *3* jedit:State methods
     #@+node:ekr.20110605121601.18630: *4* jedit.clearState
     def clearState(self):
         """
@@ -2211,193 +2399,6 @@ class JEditColorizer(BaseColorizer):  ### BaseJEditColorizer
             self.nextState += 1
             self.n2languageDict[n] = self.language
         return n
-    #@+node:ekr.20110605121601.18637: *3* jedit.colorRangeWithTag
-    def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
-        """
-        Actually colorize the selected range.
-
-        This is called whenever a pattern matcher succeed.
-        """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-            # setTag does most tracing.
-        if not self.inColorState():
-            # Do *not* check x.flag here. It won't work.
-            if trace:
-                g.trace('not in color state')
-            return
-        self.delegate_name = delegate
-        if delegate:
-            if trace:
-                if len(repr(s[i:j])) <= 20:
-                    s2 = repr(s[i:j])
-                else:
-                    s2 = repr(s[i : i + 17 - 2] + '...')
-                kind_s = f"{delegate}:{tag}"
-                print(
-                    f"\ncolorRangeWithTag: {kind_s:25} {i:3} {j:3} "
-                    f"{s2:>20} {self.matcher_name}\n")
-            self.modeStack.append(self.modeBunch)
-            self.init_mode(delegate)
-            while 0 <= i < j and i < len(s):
-                progress = i
-                assert j >= 0, j
-                for f in self.rulesDict.get(s[i], []):
-                    n = f(self, s, i)
-                    if n is None:
-                        g.trace('Can not happen: delegate matcher returns None')
-                    elif n > 0:
-                        self.matcher_name = f.__name__
-                        i += n
-                        break
-                else:
-                    # Use the default chars for everything else.
-                    # Use the *delegate's* default characters if possible.
-                    default_tag = self.attributesDict.get('default')
-                    self.setTag(default_tag or tag, s, i, i + 1)
-                    i += 1
-                assert i > progress
-            bunch = self.modeStack.pop()
-            self.initModeFromBunch(bunch)
-        elif not exclude_match:
-            self.setTag(tag, s, i, j)
-        if tag != 'url':
-            # Allow UNL's and URL's *everywhere*.
-            j = min(j, len(s))
-            while i < j:
-                ch = s[i].lower()
-                if ch == 'u':
-                    n = self.match_unl(s, i)
-                    i += max(1, n)
-                elif ch in 'fh':  # file|ftp|http|https
-                    n = self.match_any_url(s, i)
-                    i += max(1, n)
-                else:
-                    i += 1
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
-    ### last_v = None
-    tot_time = 0.0
-
-    def mainLoop(self, n, s):
-        """Colorize a *single* line s, starting in state n."""
-        ### trace = 'coloring' in g.app.debug
-        t1 = time.process_time()
-        f = self.restartDict.get(n)
-        ###
-            # if trace:
-                # p = self.c and self.c.p
-                # if p and p.v != self.last_v:
-                    # self.last_v = p.v
-                    # f_name = f.__name__ if f else 'None'
-                    # print('')
-                    # g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
-        i = f(s) if f else 0
-        while i < len(s):
-            progress = i
-            functions = self.rulesDict.get(s[i], [])
-            for f in functions:
-                n = f(self, s, i)
-                if n is None:
-                    g.trace('Can not happen: n is None', repr(f))
-                    break
-                elif n > 0:  # Success. The match has already been colored.
-                    self.matcher_name = f.__name__  # For traces.
-                    i += n
-                    break
-                elif n < 0:  # Total failure.
-                    i += -n
-                    break
-                else:  # Partial failure: Do not break or change i!
-                    pass
-            else:
-                i += 1
-            assert i > progress
-        # Don't even *think* about changing state here.
-        self.tot_time += time.process_time() - t1
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
-    def recolor(self, s):
-        """
-        jEdit.recolor: Recolor a *single* line, s.
-        QSyntaxHighligher calls this method repeatedly and automatically.
-        """
-        p = self.c.p
-        self.recolorCount += 1
-        block_n = self.currentBlockNumber()
-        n = self.prevState()
-        if p.v == self.old_v:
-            new_language = self.n2languageDict.get(n)
-            if new_language != self.language:
-                self.language = new_language
-                self.init(p)
-        else:
-            self.updateSyntaxColorer(p)  # Force a full recolor
-            assert self.language
-            self.init_all_state(p.v)
-            self.init(p)
-        if block_n == 0:
-            n = self.initBlock0()
-        n = self.setState(n)  # Required.
-        # Always color the line, even if colorizing is disabled.
-        if s:
-            self.mainLoop(n, s)
-    #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
-    def initBlock0(self):
-        """
-        Init *local* ivars when handling block 0.
-        This prevents endless recalculation of the proper default state.
-        """
-        if self.enabled:
-            n = self.setInitialStateNumber()
-        else:
-            n = self.setRestart(self.restartNoColor)
-        return n
-    #@+node:ekr.20170126101049.1: *4* jedit.setInitialStateNumber
-    def setInitialStateNumber(self):
-        """
-        Init the initialStateNumber ivar for clearState()
-        This saves a lot of work.
-
-        Called from init() and initBlock0.
-        """
-        state = self.languageTag(self.language)
-        n = self.stateNameToStateNumber(None, state)
-        self.initialStateNumber = n
-        self.blankStateNumber = self.stateNameToStateNumber(None, state + ';blank')
-        return n
-    #@+node:ekr.20170126103925.1: *4* jedit.languageTag
-    def languageTag(self, name):
-        """
-        Return the standardized form of the language name.
-        Doing this consistently prevents subtle bugs.
-        """
-        if name:
-            table = (
-                ('markdown', 'md'),
-                ('python', 'py'),
-                ('javascript', 'js'),
-            )
-            for pattern, s in table:
-                name = name.replace(pattern, s)
-            return name
-        return 'no-language'
-    #@+node:ekr.20170205055743.1: *3* jedit.set_wikiview_patterns
-    def set_wikiview_patterns(self, leadins, patterns):
-        """
-        Init the colorizer so it will *skip* all patterns.
-        The wikiview plugin calls this method.
-        """
-        d = self.rulesDict
-        for leadins_list, pattern in zip(leadins, patterns):
-            for ch in leadins_list:
-
-                def wiki_rule(self, s, i, pattern=pattern):
-                    """Bind pattern and leadin for jedit.match_wiki_pattern."""
-                    return self.match_wiki_pattern(s, i, pattern)
-
-                aList = d.get(ch, [])
-                if wiki_rule not in aList:
-                    aList.insert(0, wiki_rule)
-                    d[ch] = aList
-        self.rulesDict = d
     #@-others
 #@+node:ekr.20110605121601.18565: ** class LeoHighlighter (QSyntaxHighlighter)
 # Careful: we may be running from the bridge.
