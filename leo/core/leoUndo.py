@@ -544,16 +544,16 @@ class Undoer:
         u = self
         if u.redoing or u.undoing:
             return
+        # createCommonBunch sets:
+        #   oldDirty = p.isDirty()
+        #   oldMarked = p.isMarked()
+        #   oldSel = w and w.getSelectionRange() or None
+        #   p = p.copy()
         bunch = u.createCommonBunch(p)
-            # Sets
-            # oldDirty = p.isDirty(),
-            # oldMarked = p.isMarked(),
-            # oldSel = w and w.getSelectionRange() or None,
-            # p = p.copy(),
-        # Set types & helpers
+        # Set types.
         bunch.kind = 'clone-marked-nodes'
         bunch.undoType = 'clone-marked-nodes'
-        # Set helpers
+        # Set helpers.
         bunch.undoHelper = u.undoCloneMarkedNodes
         bunch.redoHelper = u.redoCloneMarkedNodes
         bunch.newP = p.next()
@@ -564,16 +564,16 @@ class Undoer:
         u = self
         if u.redoing or u.undoing:
             return
+        # createCommonBunch sets:
+        #   oldDirty = p.isDirty()
+        #   oldMarked = p.isMarked()
+        #   oldSel = w and w.getSelectionRange() or None
+        #   p = p.copy()
         bunch = u.createCommonBunch(p)
-            # Sets
-            # oldDirty = p.isDirty(),
-            # oldMarked = p.isMarked(),
-            # oldSel = w and w.getSelectionRange() or None,
-            # p = p.copy(),
-        # Set types & helpers
+        # Set types.
         bunch.kind = 'copy-marked-nodes'
         bunch.undoType = 'copy-marked-nodes'
-        # Set helpers
+        # Set helpers.
         bunch.undoHelper = u.undoCopyMarkedNodes
         bunch.redoHelper = u.redoCopyMarkedNodes
         bunch.newP = p.next()
@@ -749,8 +749,7 @@ class Undoer:
     def beforeChangeBody(self, p):
         """Return data that gets passed to afterChangeBody."""
         w = self.c.frame.body.wrapper
-        bunch = self.createCommonBunch(p)
-            # Sets u.oldMarked, u.oldSel, u.p
+        bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
         bunch.oldBody = p.b
         bunch.oldHead = p.h
         bunch.oldIns = w.getInsertPoint()
@@ -1530,12 +1529,12 @@ class Undoer:
         # Add the children to parent_v's children.
         n = u.p.childIndex() + 1
         old_children = parent_v.children[:]
+        # Add children up to the promoted nodes.
         parent_v.children = old_children[:n]
-            # Add children up to the promoted nodes.
+        # Add the promoted nodes.
         parent_v.children.extend(u.children)
-            # Add the promoted nodes.
+        # Add the children up to the promoted nodes.
         parent_v.children.extend(old_children[n:])
-            # Add the children up to the promoted nodes.
         # Remove the old children.
         u.p.v.children = []
         # Adjust the parent links in the moved children.
@@ -1878,10 +1877,10 @@ class Undoer:
         n = u.p.childIndex() + 1
         # Adjust the old parents children
         old_children = parent_v.children
+        # Add the nodes before the promoted nodes.
         parent_v.children = old_children[:n]
-            # Add the nodes before the promoted nodes.
+        # Add the nodes after the promoted nodes.
         parent_v.children.extend(old_children[n + len(u.children) :])
-            # Add the nodes after the promoted nodes.
         # Add the demoted nodes to v's children.
         u.p.v.children = u.children[:]
         # Adjust the parent links.

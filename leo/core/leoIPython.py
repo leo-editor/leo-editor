@@ -83,32 +83,21 @@ class InternalIPKernel:
     #@+node:ekr.20130930062914.15994: *3* ileo.__init__
     def __init__(self, backend='qt'):
         """Ctor for InternalIPKernal class."""
-        #
         # Part 1: create the ivars.
-        self.consoles = []
-            # List of Qt consoles.
-        self.kernelApp = None
-            # The IPKernelApp instance, a subclass of
-            # BaseIPythonApplication, InteractiveShellApp, ConnectionFileMixin
-        self.namespace = None
-            # Inited below.
+        self.consoles = []  # List of Qt consoles.
+        self.kernelApp = None  # The IPKernelApp instance.
+        self.namespace = None  # Inited below.
+        # Keys present at startup so we don't print the entire pylab/numpy
+        # namespace when the user clicks the 'namespace' button
         self._init_keys = None
-            # Keys present at startup so we don't print the entire pylab/numpy
-            # namespace when the user clicks the 'namespace' button
-        #
-        # Part 2: Init the kernel and init the ivars.
-        kernelApp = self.pylab_kernel(backend)
+        # Start IPython kernel with GUI event loop and pylab support.
+        kernelApp = self.pylab_kernel(backend)  # Sets self.kernelApp.
         assert kernelApp == self.kernelApp
-            # Sets self.kernelApp.
-            # Start IPython kernel with GUI event loop and pylab support
-        self.namespace = kernelApp.shell.user_ns
-            # Import the shell namespace.
+        self.namespace = kernelApp.shell.user_ns  # Import the shell namespace.
         self._init_keys = set(self.namespace.keys())
         if 'ipython' in g.app.debug:
             self.namespace['kernelApp'] = kernelApp
             self.namespace['app_counter'] = 0
-            # Example: a variable that will be seen by the user in the shell, and
-            # that the GUI modifies (the 'Counter++' button increments it)
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
     def cleanup_consoles(self, event=None):
         """Kill all ipython consoles.  Called from app.finishQuit."""
@@ -138,12 +127,10 @@ class InternalIPKernel:
             self.put_log('new_qt_console: connecting...')
             self.put_log(self.kernelApp.connection_file, raw=True)
         try:
-            # #213: leo --ipython fails to connect with python3.5 and jupyter
-            #
+            # #213: leo --ipython fails to connect with python3.5 and jupyter.
             # The connection file has the form kernel-nnn.json.
             # Using the defaults lets connect_qtconsole find the .json file.
-            console = connect_qtconsole()
-                # ipykernel.connect.connect_qtconsole
+            console = connect_qtconsole()  # ipykernel.connect.connect_qtconsole
             if console:
                 if trace:
                     g.trace('console:', console)
@@ -204,35 +191,34 @@ class InternalIPKernel:
     #@+node:ekr.20130930062914.15992: *3* ileo.pylab_kernel
     def pylab_kernel(self, gui):
         """Launch an IPython kernel with pylab support for the gui."""
-        trace = False and not g.unitTesting
-            # Increased logging.
+        trace = False and not g.unitTesting  # Increased logging.
+        # IPKernalApp is a singleton class.
+        # Return the singleton instance, creating it if necessary.
         self.kernelApp = kernelApp = IPKernelApp.instance()
-            # IPKernalApp is a singleton class.
-            # Return the singleton instance, creating it if necessary.
-        if kernelApp:
-            # --pylab is no longer needed to create a qt console.
-            # --pylab=qt now generates:
-                # RuntimeError: Cannot activate multiple GUI eventloops
-                # GUI event loop or pylab initialization failed
-            args = ['python', '--pylab']
-                # Fails
-                # args = ['python', '--pylab=%s' % (gui)]
-            if trace:
-                args.append('--log-level=20')
-                    # Higher is *quieter*
-                # args.append('--debug')
-                # Produces a verbose IPython log.
-                #'--log-level=10'
-                # '--pdb', # User-level debugging
-            try:
-                # self.pdb()
-                kernelApp.initialize(args)
-            except Exception:
-                sys.stdout = sys.__stdout__
-                print('kernelApp.initialize failed!')
-                raise
-        else:
+        if not kernelApp:
             g.trace('IPKernelApp.instance failed!')
+            return None
+
+        # --pylab is no longer needed to create a qt console.
+        # --pylab=qt now generates:
+            # RuntimeError: Cannot activate multiple GUI eventloops
+            # GUI event loop or pylab initialization failed
+
+        # Fails: args = ['python', '--pylab=%s' % (gui)]
+        args = ['python', '--pylab']
+        if trace:
+            args.append('--log-level=20')  # Higher is *quieter*
+            # args.append('--debug')
+            # Produces a verbose IPython log.
+            #'--log-level=10'
+            # '--pdb', # User-level debugging
+        try:
+            # self.pdb()
+            kernelApp.initialize(args)
+        except Exception:
+            sys.stdout = sys.__stdout__
+            print('kernelApp.initialize failed!')
+            raise
         return kernelApp
     #@+node:ekr.20190927100624.1: *3* ileo.run
     def run(self):
@@ -248,9 +234,9 @@ class InternalIPKernel:
         """
         # https://ipython.org/ipython-doc/dev/interactive/qtconsole.html
         # https://github.com/ipython/ipython/blob/master/IPython/core/interactiveshell.py
+        # A ZMQInteractiveShell, defined in ipkernel.zmqshell.py,
+        # a subclass of InteractiveShell, defined in ipython.core.interactiveshell.py.
         shell = self.kernelApp.shell
-            # A ZMQInteractiveShell, defined in ipkernel.zmqshell.py,
-            # a subclass of InteractiveShell, defined in ipython.core.interactiveshell.py.
         try:
             code = compile(script, file_name, 'exec')
             exec(code, shell.user_global_ns, shell.user_ns)
@@ -279,10 +265,8 @@ class LeoNameSpace:
 
     def __init__(self):
         """LeoNameSpace ctor."""
-        self.commander = None
-            # The commander returned by the c property.
-        self.commanders_list = []
-            # The list of commanders returned by the commanders property.
+        self.commander = None  # The commander returned by the c property.
+        self.commanders_list = []  # The list of commanders returned by the commanders property.
         self.g = g
         self.update()
     #@+others

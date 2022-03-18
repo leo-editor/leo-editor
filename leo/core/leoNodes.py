@@ -72,8 +72,7 @@ class NodeIndices:
     #@+node:ekr.20200528131303.1: *3* ni.computeNewIndex
     def computeNewIndex(self) -> str:
         """Return a new gnx."""
-        t_s = self.update()
-            # Updates self.lastTime and self.lastIndex.
+        t_s = self.update()  # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
@@ -87,8 +86,7 @@ class NodeIndices:
             return ''
         c = v.context
         fc = c.fileCommands
-        t_s = self.update()
-            # Updates self.lastTime and self.lastIndex.
+        t_s = self.update()  # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         v.fileIndex = gnx
         self.check_gnx(c, gnx, v)
@@ -823,8 +821,7 @@ class Position:
     def hasNext(self) -> bool:
         p = self
         try:
-            parent_v = p._parentVnode()
-                # Returns None if p.v is None.
+            parent_v = p._parentVnode()  # Returns None if p.v is None.
             return p.v and parent_v and p._childIndex + 1 < len(parent_v.children)  # type:ignore
         except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
@@ -837,8 +834,8 @@ class Position:
 
     def hasThreadBack(self) -> bool:
         p = self
+        # Much cheaper than computing the actual value.
         return bool(p.hasParent() or p.hasBack())
-            # Much cheaper than computing the actual value.
     #@+node:ekr.20080416161551.193: *5* p.hasThreadNext (the only complex hasX method)
     def hasThreadNext(self) -> bool:
         p = self
@@ -1109,8 +1106,7 @@ class Position:
         """Unlink the receiver p from the tree."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()
-            # returns None if p.v is None
+        parent_v = p._parentVnode()  # returns None if p.v is None
         child = p.v
         assert p.v
         assert parent_v
@@ -1160,8 +1156,7 @@ class Position:
         """Move self to its previous sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()
-            # Returns None if p.v is None.
+        parent_v = p._parentVnode()  # Returns None if p.v is None.
         # Do not assume n is in range: this is used by positionExists.
         if parent_v and p.v and 0 < n <= len(parent_v.children):
             p._childIndex -= 1
@@ -1207,8 +1202,7 @@ class Position:
         """Move a position to its next sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()
-            # Returns None if p.v is None.
+        parent_v = p._parentVnode()  # Returns None if p.v is None.
         if p and not p.v:
             g.trace('no p.v:', p, g.callers())  # pragma: no cover
         if p.v and parent_v and len(parent_v.children) > n + 1:
@@ -1998,41 +1992,31 @@ class VNode:
         To support ZODB, the code must set v._p_changed = True whenever
         v.unknownAttributes or any mutable VNode object changes.
         """
-        # The primary data: headline and body text.
-        self._headString = 'newHeadline'
-        self._bodyString = ''
-        # For zodb.
-        self._p_changed = False
-        # Structure data...
-        self.children: List["VNode"] = []
-            # Ordered list of all children of this node.
-        self.parents: List["VNode"] = []
-            # Unordered list of all parents of this node.
-        # Other essential data...
+        self._headString = 'newHeadline'  # Headline.
+        self._bodyString = ''  # Body Text.
+        self._p_changed = False  # For zodb.
+        self.children: List["VNode"] = []  # Ordered list of all children of this node.
+        self.parents: List["VNode"] = []  # Unordered list of all parents of this node.
+        # The immutable fileIndex (gnx) for this node. Set below.
         self.fileIndex: Optional[str] = None
-            # The immutable fileIndex (gnx) for this node. Set below.
-        self.iconVal = 0
-            # The present value of the node's icon.
-        self.statusBits = 0
-            # status bits
+        self.iconVal = 0  # The present value of the node's icon.
+        self.statusBits = 0  # status bits
+
         # Information that is never written to any file...
-        self.context: Cmdr = context  # The context containing context.hiddenRootNode.
-            # Required so we can compute top-level siblings.
-            # It is named .context rather than .c to emphasize its limited usage.
-        self.expandedPositions: List[Position] = []
-            # Positions that should be expanded.
-        self.insertSpot: Optional[int] = None
-            # Location of previous insert point.
-        self.scrollBarSpot: Optional[int] = None
-            # Previous value of scrollbar position.
-        self.selectionLength = 0
-            # The length of the selected body text.
-        self.selectionStart = 0
-            # The start of the selected body text.
-        #
+
+        # The context containing context.hiddenRootNode.
+        # Required so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+        self.context: Cmdr = context
+        self.expandedPositions: List[Position] = []  # Positions that should be expanded.
+        self.insertSpot: Optional[int] = None  # Location of previous insert point.
+        self.scrollBarSpot: Optional[int] = None  # Previous value of scrollbar position.
+        self.selectionLength = 0  # The length of the selected body text.
+        self.selectionStart = 0  # The start of the selected body text.
+
         # For at.read logic.
         self.at_read: Dict[str, set] = {}
-        #
+
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
         #

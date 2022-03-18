@@ -474,8 +474,8 @@ class LeoPluginsController:
             """True to call the top-level init function."""
             try:
                 # Indicate success only if init_result is True.
+                # Careful: this may throw an exception.
                 init_result = result.init()
-                    # Careful: this may throw an exception.
                 if init_result not in (True, False):
                     report(f"{moduleName}.init() did not return a bool")
                 if init_result:
