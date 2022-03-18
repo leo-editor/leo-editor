@@ -2988,7 +2988,7 @@ class LoadManager:
         # #2489: If fn is empty, open an empty, untitled .leo file.
         if not fn:
             return lm.openEmptyLeoFile(gui, old_c)
-        # Return if the file is already open.
+        # Return the commander if the file is an already open outline.
         fn = g.os_path_finalize(fn)  # #2489.
         c = lm.findOpenFile(fn)
         if c:
@@ -2997,7 +2997,7 @@ class LoadManager:
         previousSettings = lm.getPreviousSettings(fn)
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
-    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile (new)
+    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
     def openEmptyLeoFile(self, gui, old_c):
         """Open an empty, untitled, new Leo file."""
         lm = self
@@ -3038,7 +3038,8 @@ class LoadManager:
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
-        """Read the local file whose full path is fn using the given gui.
+        """
+        Read the local file whose full path is fn using the given gui.
         fn may be a Leo file (including .leo or zipped file) or an external file.
 
         This is not a pre-read: the previousSettings always exist and
@@ -3065,9 +3066,8 @@ class LoadManager:
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=fn)
         # Phase 2: Create the outline.
-        g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
-        old_c = None  # #2489
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
             # The log is not set properly here.
@@ -3079,7 +3079,6 @@ class LoadManager:
             # Create a wrapper .leo file if:
             # a) fn is a .leo file that does not exist or
             # b) fn is an external file, existing or not.
-            old_c = None  # #2489
             c = lm.initWrapperLeoFile(c, fn)  # #2489
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
         # Phase 3: Complete the initialization.
