@@ -467,8 +467,7 @@ class LeoImportCommands:
         self.setEncoding()
         firstLevel = p.level()
         try:
-            theFile = open(fileName, 'wb')
-                # Fix crasher: open in 'wb' mode.
+            theFile = open(fileName, 'wb')  # Fix crasher: open in 'wb' mode.
         except IOError:
             g.warning("can not open", fileName)
             return
@@ -639,8 +638,7 @@ class LeoImportCommands:
         """
         c = self.c
         p = parent.copy()
-        self.treeType = '@file'
-            # Fix #352.
+        self.treeType = '@file'  # Fix #352.
         fileName = g.fullPath(c, parent)
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
@@ -652,9 +650,8 @@ class LeoImportCommands:
         ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
-        # Get the so-called scanning func.
+        # The so-called scanning func is a callback. It must have a c argument.
         func = self.dispatch(ext, p)
-            # Func is a callback. It must have a c argument.
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
@@ -1769,8 +1766,7 @@ class RecursiveImportController:
             verbose=self.verbose,  # Leo 6.6.
         )
         p = parent.lastChild()
-        p.h = self.kind + p.h[5:]
-            # Bug fix 2017/10/27: honor the requested kind.
+        p.h = self.kind + p.h[5:]  # Honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
@@ -1974,8 +1970,7 @@ class TabImporter:
         c = self.c
         # Self.root can be None if we are called from a script or unit test.
         if not self.root:
-            last = root if root else c.lastTopLevel()
-                # For unit testing.
+            last = root if root else c.lastTopLevel()  # For unit testing.
             self.root = last.insertAfter()
             if fn:
                 self.root.h = fn

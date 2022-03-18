@@ -34,8 +34,7 @@ class LeoGui:
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
-        self.plainTextWidget = None
-            # For SpellTabHandler class only.
+        self.plainTextWidget = None  # For SpellTabHandler class only.
         self.root = None
         self.script = None
         self.splashScreen = None
@@ -44,12 +43,9 @@ class LeoGui:
         self.ScriptingControllerClass = NullScriptingControllerClass
         #
         # Define special keys that may be overridden is subclasses.
-        self.ignoreChars = []
-            # Keys that are always to be ignore.
-        self.FKeys = []
-            # The representation of F-keys.
-        self.specialChars = []
-            # A list of characters/keys to be handle specially.
+        self.ignoreChars = []  # Keys that should always be ignored.
+        self.FKeys = []  # The representation of F-keys.
+        self.specialChars = []  # A list of characters/keys to be handle specially.
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
     def create_key_event(self, c,
@@ -306,8 +302,7 @@ class NullGui(LeoGui):
         self.clipboardContents = ''
         self.focusWidget = None
         self.script = None
-        self.lastFrame = None
-            # The outer frame, used only to set the g.app.log in runMainLoop.
+        self.lastFrame = None  # The outer frame, to set g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass = g.NullObject
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs

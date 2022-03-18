@@ -114,8 +114,7 @@ class SettingsFinder:
         path, unl = unl.split('#', 1)
         # Undo the replacements made in p.getUNL.
         path = path.replace("file://", "")
-        path = path.replace("unl://", "")
-            # Fix #434: Potential bug in settings
+        path = path.replace("unl://", "")  # #434: Potential bug in settings
         unl = unl.replace('%20', ' ').split("-->")
         tail = []
         if which > 1:  # copying parent or grandparent but select leaf later

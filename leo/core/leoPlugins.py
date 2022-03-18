@@ -474,8 +474,8 @@ class LeoPluginsController:
             """True to call the top-level init function."""
             try:
                 # Indicate success only if init_result is True.
+                # Careful: this may throw an exception.
                 init_result = result.init()
-                    # Careful: this may throw an exception.
                 if init_result not in (True, False):
                     report(f"{moduleName}.init() did not return a bool")
                 if init_result:
@@ -625,7 +625,7 @@ class LeoPluginsController:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             aList = self.handlers.get(tag, [])
             aList.append(bunch)
-            self.handlers [tag] = aList
+            self.handlers[tag] = aList
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""

@@ -46,8 +46,8 @@ class LeoQtTree(leoFrame.LeoTree):
         # Components.
         self.canvas = self  # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper  # This is a class.
+        # w is a LeoQTreeWidget, a subclass of QTreeWidget.
         self.treeWidget = w = frame.top.treeWidget  # An internal ivar.
-            # w is a LeoQTreeWidget, a subclass of QTreeWidget.
         #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
@@ -523,7 +523,6 @@ class LeoQtTree(leoFrame.LeoTree):
         v = p.v
         # Allocate the QTreeWidgetItem.
         item = self.createTreeItem(p, parent_item)
-        #
         # Update the data structures.
         itemHash = self.itemHash(item)
         self.position2itemDict[p.key()] = item
@@ -545,8 +544,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return item
         # Draw the icon.
         v.iconVal = v.computeIcon()
+        # **Slow**, but allows per-vnode icons.
         icon = self.getCompositeIconImage(p, v.iconVal)
-            # **Slow**, but allows per-vnode icons.
         if icon:
             item.setIcon(0, icon)
         return item
@@ -630,8 +629,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount += 1  # To keep a unit test happy.
         c = self.c
         try:
-            self.busy = True
-                # Suppress call to setHeadString in onItemChanged!
+            self.busy = True  # Suppress call to setHeadString in onItemChanged!
             self.getCurrentItem()
             for p in c.rootPosition().self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
@@ -748,8 +746,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.busy = True
             p = self.item2position(item)
             if p:
-                auto_edit = self.prev_v == p.v
-                    # Fix #1049.
+                auto_edit = self.prev_v == p.v  # #1049.
                 self.prev_v = p.v
                 event = None
                 #

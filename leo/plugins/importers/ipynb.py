@@ -19,13 +19,9 @@ class Import_IPYNB:
 
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
-            # Commander of present outline.
-        self.cell_n = 0
-            # The number of untitled cells.
-        self.parent = None
-            # The parent for the next created node.
-        self.root = None
-            # The root of the to-be-created outline.
+        self.cell_n = 0  # The number of untitled cells.
+        self.parent = None  # The parent for the next created node.
+        self.root = None  # The root of the to-be-created outline.
 
     #@+others
     #@+node:ekr.20180408112531.1: *3* ipynb.Entries & helpers
@@ -165,8 +161,8 @@ class Import_IPYNB:
         # Handle the body text.
         val = cell.get('source')
         if val and val.strip():
+            # add_markup will add directives later.
             cell_p.b = val.strip() + '\n'
-                # add_markup will add directives later.
         del cell['source']
         self.set_ua(cell_p, 'cell', cell)
     #@+node:ekr.20160412101537.13: *4* ipynb.do_prefix
@@ -211,8 +207,6 @@ class Import_IPYNB:
                 payload = f.read()
             try:
                 nb = nbformat.reads(payload, as_version=4)
-                    # nbformat.NO_CONVERT: no conversion
-                    # as_version=4: Require IPython 4.
                 return nb
             except Exception:
                 g.es_exception()

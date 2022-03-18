@@ -53,9 +53,7 @@ else:
 # Abbreviations...
 StringIO = io.StringIO
 #@-<< imports >>
-in_bridge = False
-    # Set to True in leoBridge.py just before importing leo.core.leoApp.
-    # This tells leoApp to load a null Gui.
+in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.6'  # #1215.
 isPython3 = sys.version_info >= (3, 0, 0)
@@ -149,8 +147,8 @@ def check_cmd_instance_dict(c: Cmdr, g: Any) -> None:
     d = cmd_instance_dict
     for key in d:
         ivars = d.get(key)
+        # Produces warnings.
         obj = ivars2instance(c, g, ivars)  # type:ignore
-            # Produces warnings.
         if obj:
             name = obj.__class__.__name__
             if name != key:
@@ -313,8 +311,7 @@ g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
-user_dict: Dict[Any, Any] = {}
-    # Non-persistent dictionary for free use by scripts and plugins.
+user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
 app: Any = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
@@ -384,8 +381,7 @@ class BindingInfo:
         self.func = func
         self.nextMode = nextMode
         self.pane = pane
-        self.stroke = stroke
-            # The *caller* must canonicalize the shortcut.
+        self.stroke = stroke  # The *caller* must canonicalize the shortcut.
     #@+node:ekr.20120203153754.10031: *4* bi.__hash__
     def __hash__(self) -> Any:
         return self.stroke.__hash__() if self.stroke else 0
@@ -485,9 +481,8 @@ class EmergencyDialog:
         self.title = title
         self.message = message
         self.buttonsFrame = None  # Frame to hold typical dialog buttons.
+        # Command to call when user click's the window's close box.
         self.defaultButtonCommand = None
-            # Command to call when user closes the window
-            # by clicking the close box.
         self.frame = None  # The outermost frame.
         self.root = None  # Created in createTopFrame.
         self.top = None  # The toplevel Tk widget.
@@ -664,12 +659,11 @@ class KeyStroke:
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding: str) -> str:
 
+        # This trace is good for devs only.
         trace = False and 'keys' in g.app.debug
-            # This trace is good for devs only.
         self.mods = self.find_mods(binding)
         s = self.strip_mods(binding)
-        s = self.finalize_char(s)
-            # May change self.mods.
+        s = self.finalize_char(s)  # May change self.mods.
         mods = ''.join([f"{z.capitalize()}+" for z in self.mods])
         if trace and 'meta' in self.mods:
             g.trace(f"{binding:20}:{self.mods:>20} ==> {mods+s}")
@@ -1425,22 +1419,22 @@ class PosList(list):
 
         This is deprecated, use leoNodes.PosList instead!
 
+        # Creates a PosList containing all positions in c.
         aList = g.PosList(c)
-            # Creates a PosList containing all positions in c.
 
+        # Creates a PosList from aList2.
         aList = g.PosList(c,aList2)
-            # Creates a PosList from aList2.
 
+        # Creates a PosList containing all positions p in aList
+        # such that p.h matches the pattern.
+        # The pattern is a regular expression if regex is True.
+        # if removeClones is True, all positions p2 are removed
+        # if a position p is already in the list and p2.v == p.v.
         aList2 = aList.select(pattern,regex=False,removeClones=True)
-            # Creates a PosList containing all positions p in aList
-            # such that p.h matches the pattern.
-            # The pattern is a regular expression if regex is True.
-            # if removeClones is True, all positions p2 are removed
-            # if a position p is already in the list and p2.v == p.v.
 
+        # Prints all positions in aList, sorted if sort is True.
+        # Prints p.h, or repr(p) if verbose is True.
         aList.dump(sort=False,verbose=False)
-            # Prints all positions in aList, sorted if sort is True.
-            # Prints p.h, or repr(p) if verbose is True.
     """
     #@-<< docstring for PosList >>
     #@+others
@@ -2086,8 +2080,7 @@ class TkIDDialog(EmergencyDialog):
     #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
     def okButton(self) -> None:
         """Do default click action in ok button."""
-        self.val = self.entry.get()
-            # Return is not possible.
+        self.val = self.entry.get()  # Return is not possible.
         self.top.destroy()
         self.top = None
     #@-others
@@ -3385,8 +3378,8 @@ def get_directives_dict_list(p: Pos) -> List[Dict]:
     result = []
     p1 = p.copy()
     for p in p1.self_and_parents(copy=False):
+        # No copy necessary: g.get_directives_dict does not change p.
         root = None if p.hasParent() else [p]
-            # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
@@ -3881,8 +3874,7 @@ def fullPath(c: Cmdr, p: Pos, simulate: bool=False) -> str:
     for p in p.self_and_parents(copy=False):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
-        fn = p.h if simulate else p.anyAtFileNodeName()
-            # Use p.h for unit tests.
+        fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
         if fn:
             # Fix #102: expand path expressions.
             fn = c.expand_path_expression(fn)  # #1341.
@@ -4682,8 +4674,8 @@ def find_on_line(s: str, i: int, pattern: str) -> int:
 def is_special(s: str, directive: str) -> Tuple[bool, int]:
     """Return True if the body text contains the @ directive."""
     assert(directive and directive[0] == '@')
+    # Most directives must start the line.
     lws = directive in ("@others", "@all")
-        # Most directives must start the line.
     pattern_s = r'^\s*(%s\b)' if lws else r'^(%s\b)'
     pattern = re.compile(pattern_s % directive, re.MULTILINE)
     m = re.search(pattern, s)
@@ -5169,10 +5161,10 @@ def gitDescribe(path: str=None) -> Tuple[str, str, str]:
     This function returns ('x-leo-v5.6', '55', 'e1129da')
     """
     describe = g.execGitCommand('git describe --tags --long', path)
+    # rsplit not split, as '-' might be in tag name.
     tag, distance, commit = describe[0].rsplit('-', 2)
-        # rsplit not split, as '-' might be in tag name
     if 'g' in commit[0:]:
-        # leading 'g' isn't part of the commit hash
+        # leading 'g' isn't part of the commit hash.
         commit = commit[1:]
     commit = commit.rstrip()
     return tag, distance, commit
@@ -5423,8 +5415,8 @@ def import_module(name: str, package: str=None) -> Any:
         if trace:
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
+            # In case v is empty, we'll at least have the execption type
             v = v or str(t)  # type:ignore
-                # # in case v is empty, we'll at least have the execption type
             if v not in exceptions:
                 exceptions.append(v)
                 g.trace(f"Can not import {name}: {e}")
@@ -6183,8 +6175,8 @@ def es_print(*args: Any, **keys: Any) -> None:
 #@+node:ekr.20111107181638.9741: *3* g.print_exception
 def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
     """Print exception info about the last exception."""
+    # val is the second argument to the raise statement.
     typ, val, tb = sys.exc_info()
-        # val is the second argument to the raise statement.
     if full:
         lines = traceback.format_exception(typ, val, tb)
     else:
@@ -6226,15 +6218,14 @@ def goto_last_exception(c: Cmdr) -> None:
     typ, val, tb = sys.exc_info()
     if tb:
         file_name, line_number = g.getLastTracebackFileAndLineNumber()
-        line_number = max(0, line_number - 1)
-            # Convert to zero-based.
+        line_number = max(0, line_number - 1)  # Convert to zero-based.
         if file_name.endswith('scriptFile.py'):
             # A script.
             c.goToScriptLineNumber(line_number, c.p)
         else:
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
-                    c.goToLineNumber(line_number)  # 2021/07/28: fixed by mypy.
+                    c.goToLineNumber(line_number)
                     return
     else:
         g.trace('No previous exception')
@@ -6273,8 +6264,8 @@ def pr(*args: Any, **keys: Any) -> None:
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = doKeywordArgs(keys, d)
     newline = d.get('newline')
+    # Unit tests require sys.stdout.
     stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
-        # Unit tests require sys.stdout.
     if not stdout:
         # #541.
         return
@@ -6285,12 +6276,10 @@ def pr(*args: Any, **keys: Any) -> None:
         encoding = stdout.encoding
     else:
         encoding = 'utf-8'
-    s = translateArgs(args, d)
-        # Translates everything to unicode.
+    s = translateArgs(args, d)  # Translates everything to unicode.
     s = g.toUnicode(s, encoding=encoding, reportErrors=False)
     if newline:
         s += '\n'
-    #
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
     try:
@@ -7028,8 +7017,7 @@ def getDocStringForFunction(func: Any) -> str:
             s = func.__doc__
     if not s and name(func) == 'commonCommandCallback':
         script = get_defaults(func, 1)
-        s = g.getDocString(script)
-            # Do a text scan for the function.
+        s = g.getDocString(script)  # Do a text scan for the function.
     # Now the general cases.  Prefer __doc__ to docstring()
     if not s and hasattr(func, '__doc__'):
         s = func.__doc__
@@ -7326,8 +7314,8 @@ def composeScript(
         script = at.stringToString(p.copy(), s,
             forcePythonSentinels=forcePythonSentinels,
             sentinels=useSentinels)
+        # Important, the script is an **encoded string**, not a unicode string.
         script = script.replace("\r\n", "\n")  # Use brute force.
-            # Important, the script is an **encoded string**, not a unicode string.
         g.app.scriptDict["script2"] = script
     finally:
         g.app.inScript = g.inScript = old_in_script
@@ -7886,8 +7874,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
                     return None
     elif not isinstance(url, str):
         url = url.toString()
-        url = g.toUnicode(url)
-            # Fix #571
+        url = g.toUnicode(url)  # #571
     if url and g.isValidUrl(url):
         # Part 2: handle the url
         p = c.p

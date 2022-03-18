@@ -242,13 +242,12 @@ class PlugIn:
         # g.pr(self.version,g.shortFileName(filename))
         # Configuration...
         self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
+        # True if this can be configured.
         self.hasconfig = os.path.isfile(self.configfilename)
-            # True if this can be configured.
+        # Look for an applyConfiguration function in the module.
+        # This is used to apply changes in configuration from the properties window
         self.hasapply = hasattr(plgMod, "applyConfiguration")
-            # Look for an applyConfiguration function in the module.
-            # This is used to apply changes in configuration from the properties window
-        self.create_menu()
-            # Create menu items from cmd_* functions.
+        self.create_menu()  # Create menu items from cmd_* functions.
         # Use a toplevel menu item instead of the default About.
         try:
             self.hastoplevel = self.mod.__dict__["topLevelMenu"]

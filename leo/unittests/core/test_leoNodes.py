@@ -230,7 +230,7 @@ class TestNodes(LeoUnitTest):
                 self.assertEqual(p, threadNext.getThreadBack())
     #@+node:ekr.20220306100004.1: *5* TestNodes.test_p_following_siblings
     def test_p_following_siblings(self):
-        
+
         p = self.c.rootPosition()
         while p:
             for sib in p.following_siblings():
@@ -244,7 +244,7 @@ class TestNodes(LeoUnitTest):
 
         def p_true(p):
             return True
-        
+
         def p_false(p):
             return False
 
@@ -651,7 +651,7 @@ class TestNodes(LeoUnitTest):
         self.assertFalse(p.__ne__(root))
     #@+node:ekr.20220306092728.1: *5* TestNodes.test_p__gt__
     def test_p__gt__(self):
-        
+
         # p.__gt__ is the foundation for >, <, >=, <=.
         p = self.c.rootPosition()
         n = 0
@@ -681,7 +681,7 @@ class TestNodes(LeoUnitTest):
         child.sort_key(child)
     #@+node:ekr.20210830095545.24: *5* TestNodes.test_p_comparisons
     def test_p_comparisons(self):
-        
+
         c, p = self.c, self.c.p
         root = c.rootPosition()
         self.assertEqual(root, p)
@@ -741,7 +741,7 @@ class TestNodes(LeoUnitTest):
     def test_p_getters(self):
 
         p = self.c.p
-      
+
         table1 = (
             p.anyAtFileNodeName,
             p.atAutoNodeName,
@@ -775,7 +775,7 @@ class TestNodes(LeoUnitTest):
             self.assertFalse(func(), msg=func.__name__)
         table2 = (
             p.bodyString,
-            p.headString,    
+            p.headString,
             p.isDirty,
             p.isSelected,
             p.status,
@@ -1007,7 +1007,7 @@ class TestNodes(LeoUnitTest):
     def test_v_getters(self):
 
         v = self.c.p.v
-      
+
         table1 = (
             v.anyAtFileNodeName,
             v.atAutoNodeName,
@@ -1041,7 +1041,7 @@ class TestNodes(LeoUnitTest):
             self.assertFalse(func(), msg=func.__name__)
         table2 = (
             v.bodyString,
-            v.headString,    
+            v.headString,
             v.isDirty,
             v.isSelected,
             v.status,
@@ -1104,7 +1104,7 @@ class TestNodeIndices(LeoUnitTest):
             self.assertEqual(s, s1)
     #@+node:ekr.20220306070213.1: *3* TestNodeIndices.test_updateLastIndex
     def test_updateLastIndex(self):
-        
+
         ni = g.app.nodeIndices
         old_last = ni.lastIndex
         for gnx, new_last in (

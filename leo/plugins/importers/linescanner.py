@@ -110,22 +110,20 @@ class Importer:
         self.c = c = ic and ic.c
         self.encoding = ic and ic.encoding or 'utf-8'
         self.gen_refs = gen_refs
-        self.language = language or name
-            # For the @language directive.
+        self.language = language or name  # For the @language directive.
         self.name = name or language
         language = self.language
         name = self.name
         assert language and name
         assert self.language and self.name
         self.state_class = state_class
-        self.strict = strict
-            # True: leading whitespace is significant.
-        #
+        self.strict = strict  # True: leading whitespace is significant.
+
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
-        #
+
         # Constants...
         if ic:
             data = g.set_delims_from_language(self.name)
@@ -137,20 +135,20 @@ class Importer:
             self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
             # m.group(1) is the unindent value.
             self.escape_pattern = re.compile(self.escape_string)
-        self.ScanState = ScanState
-            # Must be set by subclasses that use general_scan_line.
+        self.ScanState = ScanState  # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0  # Must be set in run, using self.root.
         self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
-        #
+
         # Settings...
         self.reloadSettings()
-        #
+
         # State vars.
         self.errors = 0
         if ic:
             ic.errors = 0  # Required.
         self.parse_body = False
-        self.refs_dict: Dict[str, int] = {}  # Keys are headlines. Values are disambiguating number.
+        # Keys are headlines. Values are disambiguating number.
+        self.refs_dict: Dict[str, int] = {}
         self.root = None
         self.skip = 0  # A skip count for x.gen_lines & its helpers.
         self.vnode_info: Dict[str, Any] = {}
@@ -443,21 +441,20 @@ class Importer:
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
-        #lines = g.splitLines(s)
         count, result, tab_width = 0, [], self.tab_width
         self.ws_error = False  # 2016/11/23
         if tab_width < 0:  # Convert tabs to blanks.
             for n, line in enumerate(lines):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                # Use negative width.
                 s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
-                    # Use negative width.
                 if s != line:
                     count += 1
                 result.append(s)
         elif tab_width > 0:  # Convert blanks to tabs.
             for n, line in enumerate(lines):
+                # Use positive width.
                 s = g.optimizeLeadingWhitespace(line, abs(tab_width))
-                    # Use positive width.
                 if s != line:
                     count += 1
                 result.append(s)
@@ -647,8 +644,7 @@ class Importer:
             else:
                 ref = '%s@others\n' % indent_ws
                 target.at_others_flag = True
-            target.ref_flag = True
-                # Don't generate another @others in this target.
+            target.ref_flag = True  # Don't generate another @others in this target.
             headline = h
         if ref:
             self.add_line(parent, ref)
@@ -1046,8 +1042,8 @@ class Importer:
     #@+node:ekr.20161108131153.12: *4* i.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
+        # Do *not* update the screen by setting p.b.
         parent.v.b = parent.v.b.rstrip() + '\n@ignore\n'
-            # Do *not* update the screen by setting p.b.
         if g.unitTesting:
             pass
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
@@ -1276,14 +1272,10 @@ class Target:
 
     def __init__(self, p, state):
         """Target ctor."""
-        self.at_others_flag = False
-            # True: @others has been generated for this target.
+        self.at_others_flag = False  # True: @others has been generated for this target.
         self.p = p
-        self.gen_refs = False
-            # Can be forced True.
-        self.ref_flag = False
-            # True: @others or section reference should be generated.
-            # It's always True when gen_refs is True.
+        self.gen_refs = False  # Can be forced True.
+        self.ref_flag = False  # True: @others or section reference should be generated.
         self.state = state
 
     def __repr__(self):

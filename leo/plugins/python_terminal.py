@@ -54,16 +54,16 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
 
+# A workaround for #1212: segfaults at startup when importing this file.
+# True: enable tab completion, at the risk of segfaults.
 use_rlcompleter = False
-    # A workaround for #1212: segfaults at startup when importing this file.
-    # True: enable tab completion, at the risk of segfaults.
 
 # Third-party imports.
 if use_rlcompleter:
     from rlcompleter import Completer
 else:
     Completer = None
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>

@@ -53,12 +53,9 @@ class BackgroundProcessManager:
     #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self):
         """Ctor for the base BackgroundProcessManager class."""
-        self.data = None
-            # a ProcessData instance.
-        self.process_queue = []
-            # List of g.Bunches.
-        self.pid = None
-            # The process id of the running process.
+        self.data = None  # a ProcessData instance.
+        self.process_queue = []  # List of g.Bunches.
+        self.pid = None  # The process id of the running process.
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20161028090624.1: *3* class BPM.ProcessData
     class ProcessData:

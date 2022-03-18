@@ -139,8 +139,8 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
     #@+node:vitalije.20170726110242.1: *3* write patterns
     section_pat = re.compile(r'^(\s*)(<{2}[^>]+>>)(.*)$')
 
+    # Important: re.M used also in others_iterator
     others_pat = re.compile(r'^(\s*)@others\b', re.M)
-        # !important re.M used also in others_iterator
 
     doc_pattern = re.compile('^(@doc|@)(?:\\s(.*?)\n|\n)$')
 

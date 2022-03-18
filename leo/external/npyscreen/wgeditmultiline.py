@@ -127,9 +127,9 @@ class MultiLineEdit(widget.Widget):
                     break
                 if place_in_string >= len(line_to_display):
                     break
+                # change this when actually have a function to do this
+                # self.find_width_of_char(string_to_print[place_in_string])
                 width_of_char_to_print = 1
-                    # self.find_width_of_char(string_to_print[place_in_string])
-                    # change this when actually have a function to do this
                 if column - 1 + width_of_char_to_print > display_width:
                     break
                 if self.do_colors():

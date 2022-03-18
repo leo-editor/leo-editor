@@ -806,17 +806,14 @@ class GitDiffController:
         """The main line of the git diff command."""
         if not self.get_directory():
             return
-        #
         # Diff the given revs.
         ok = self.diff_revs(rev1, rev2)
         if ok:
             return
-        #
         # Go back at most 5 revs...
         n1, n2 = 1, 0
         while n1 <= 5:
             ok = self.diff_revs(
-                # Clearer w/o f-strings.
                 rev1=f"HEAD@{{{n1}}}",
                 rev2=f"HEAD@{{{n2}}}")
             if ok:

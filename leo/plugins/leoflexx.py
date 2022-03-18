@@ -95,8 +95,8 @@ def get_root():
 
     This is the same as self.root for any flx.Component.
     """
+    # Only called at startup, so this will never be None.
     root = flx.loop.get_active_component().root
-        # Only called at startup, so this will never be None.
     assert isinstance(root, LeoBrowserApp), repr(root)
     return root
 #@+node:ekr.20181112165240.1: *3* info (deprecated)
@@ -335,12 +335,9 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181216042806.1: *5* app.init
     def init(self):
         # Set the ivars.
-        global g
-            # Always use the imported g.
-        self.inited = False
-            # Set in finish_create
+        global g  # Always use the imported g.
+        self.inited = False  # Set in finish_create
         self.tag = 'py.app.wrap'
-        #
         # Open or get the first file.
         if not g.app:
             print('app.init: no g.app. g:', repr(g))
@@ -352,29 +349,23 @@ class LeoBrowserApp(flx.PyComponent):
             # This can happen in strange situations.
             # print('app.init: ===== Ctrl-H ===== ?')
             return
-        #
         # We are running with --gui=browser.
         c = g.app.log.c
-        #
         # self.gui must be a synonym for g.app.gui.
         self.c = c
         self.gui = gui = g.app.gui
         # Make sure everything is as expected.
         assert self.c and c == self.c
         assert g.app.gui.guiName() == 'browser'
-        #
         # When running from Leo's core, we must wait until now to set LeoBrowserGui.root.
         gui.root = get_root()
-        #
         # Check g.app.ivars.
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        #
         # Instantiate all wrappers here, not in app.finish_create.
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
-        #
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
@@ -398,8 +389,8 @@ class LeoBrowserApp(flx.PyComponent):
         if 'keys' in g.app.debug:
             g.trace(ev, ivar)
         c = self.c
+        # Essential: there is no way to pass the actual wrapper.
         browser_wrapper = getattr(c.frame, ivar)
-            # Essential: there is no way to pass the actual wrapper.
         #@+<< check browser_wrapper >>
         #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
         assert isinstance(browser_wrapper, (
@@ -410,9 +401,9 @@ class LeoBrowserApp(flx.PyComponent):
             LeoBrowserTree,
         )), repr(browser_wrapper)
         #@-<< check browser_wrapper >>
+        # ev is a dict, keys are type, source, key, modifiers
+        # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
         key, mods = ev['key'], ev['modifiers']
-            # ev is a dict, keys are type, source, key, modifiers
-            # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
         # Special case Ctrl-H and Ctrl-F.
         if mods == ['Ctrl'] and key in 'fh':
             command = 'find' if key == 'f' else 'head'
@@ -509,16 +500,16 @@ class LeoBrowserApp(flx.PyComponent):
         t1 = time.process_time()
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
+        # Needed to compare generations, even if there are no changes.
         redraw_dict = self.make_redraw_dict(p)
-            # Needed to compare generations, even if there are no changes.
         new_flattened_outline = redrawer.flatten_outline(c)
         redraw_instructions = redrawer.make_redraw_list(
             self.old_flattened_outline,
             new_flattened_outline,
         )
+        # At present, this does a full redraw using redraw_dict.
+        # The redraw instructions are not used.
         w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
-            # At present, this does a full redraw using redraw_dict.
-            # The redraw instructions are not used.
         #
         # Do not call c.setChanged() here.
         if trace:
@@ -1207,11 +1198,11 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         self.menu = LeoBrowserMenu(frame)
         self.miniBufferWidget = LeoBrowserMinibuffer(c, frame)
         self.iconBar = LeoBrowserIconBar(c, frame)
+        # NullFrame does this in createStatusLine.
         self.statusLine = LeoBrowserStatusLine(c, frame)
-            # NullFrame does this in createStatusLine.
+        # This is the DynamicWindow object.
+        # There is no need to implement its methods now.
         self.top = g.NullObject()
-            # This is the DynamicWindow object.
-            # There is no need to implement its methods now.
 
     def finishCreate(self):
         """Override NullFrame.finishCreate."""
@@ -1762,16 +1753,14 @@ class JS_Editor(flx.Widget):
     @flx.emitter  # New
     def key_up(self, e):
         trace = False and 'keys' in g.app.debug
-        self.last_down = None
-            # Enable key downs.
+        self.last_down = None  # Enable key downs.
         ev = self._create_key_event(e)
         if self.ignore_up:
             if trace:
                 print('IGNORE jse.key_up: %s %r' % (self.name, ev))
             e.preventDefault()
             return ev
-        self.ignore_up = True
-            # Ignore all further key ups, until the next key down
+        self.ignore_up = True  # Ignore all further key ups, until the next key down.
         should_be_leo = bool(self.should_be_leo_key(ev))
         if trace:
             print('       jse.key_up: %s %r Leo: %s' % (self.name, ev, should_be_leo))
@@ -2089,8 +2078,8 @@ class LeoFlexxMainWindow(flx.Widget):
 class MinibufferEditor(flx.Widget):
 
     def init(self):
+        # Unlike in components, this call happens immediately.
         self.editor = make_editor_function('minibuffer', self.node)
-            # Unlike in components, this call happens immediately.
 
 class LeoFlexxMiniBuffer(JS_Editor):
 
@@ -2259,17 +2248,12 @@ class LeoFlexxTree(flx.Widget):
         self.wrapper = self
         self.tag = 'flx.tree'
         # Init local ivars...
-        self.populated_items_dict = {}
-            # Keys are ap **keys**, values are True.
-        self.populating_tree_item = None
-            # The LeoTreeItem whose children are to be populated.
-        self.selected_ap = {}
-            # The ap of the presently selected node.
-        self.tree_items_dict = {}
-            # Keys are ap's. Values are LeoTreeItems.
-        # Init the widget.
+        self.populated_items_dict = {}  # Keys are ap **keys**, values are True.
+        self.populating_tree_item = None  # The LeoTreeItem whose children are to be populated.
+        self.selected_ap = {}  # The ap of the presently selected node.
+        self.tree_items_dict = {}  # Keys are ap's. Values are LeoTreeItems.
+        # Init the widget. The max_selected property does not seem to work.
         self.tree = flx.TreeWidget(flex=1, max_selected=1)
-            # The max_selected property does not seem to work.
 
     def assert_exists(self, obj):
         # pylint: disable=undefined-variable
@@ -2543,8 +2527,7 @@ class LeoFlexxTree(flx.Widget):
         item = self.tree_items_dict.get(key)
         if item:
             item.set_selected(True)
-            self.selected_ap = ap
-                # Set the item's selected property.
+            self.selected_ap = ap  # Set the item's selected property.
         else:
             pass  # We may be in the middle of a redraw.
     #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
@@ -2584,8 +2567,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
 
     def init(self, leo_ap):
         # pylint: disable=arguments-differ
-        self.leo_ap = leo_ap
-            # Immutable: Gives access to cloned, marked, expanded fields.
+        self.leo_ap = leo_ap  # Immutable: Gives access to cloned, marked, expanded fields.
         self.leo_children = []
 
     def getName(self):

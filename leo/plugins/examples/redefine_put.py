@@ -8,8 +8,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20111104210837.9690: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = not g.unitTesting
-        # Not for unit testing: overrides core methods.
+    ok = not g.unitTesting  # Not for unit testing: overrides core methods.
     if ok:
         g.registerHandler("start2", onStart)
         g.plugin_signon(__name__)

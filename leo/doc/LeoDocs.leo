@@ -1177,7 +1177,6 @@
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
-<v t="ekr.20150328073917.1"><vh>Example: running unit tests from leoBridge</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
@@ -19654,47 +19653,6 @@ There has been some discussion of @auto v. @clean. Preference is obviously a mat
 
 The ability to work on projects with people who don't have Leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with Leo sentinels (unless the potential cloner is a Leo loyalist). The one downside to no sentinels--there is no evidence that Leo is being used but I think that raises the broader question of marketing Leo, which I certainly believe will be aided significantly by being able to take advantage of Leo without sentinels in external files.--- Steve Zatz
 </t>
-<t tx="ekr.20150328073917.1">Here is a python program that will run unitTest.leo using the leoBridge module. Change the path as required::
-    
-    import leo.core.leoBridge as leoBridge
-    import leo.core.leoTest as leoTest
-    path = &lt;path to unitTest.leo&gt;/unitTest.leo'
-    
-    def main ():
-        tag = 'leoTestBridge'
-    
-        # Setting verbose=True prints messages that would be sent to the log pane.
-        bridge = leoBridge.controller(
-            gui='nullGui',
-            loadPlugins=False,
-            readSettings=False,
-            silent=True,
-            verbose=False) 
-        if bridge.isOpen():
-            g = bridge.globals()
-            c = bridge.openLeoFile(path)
-            runUnitTests(c,g)
-        print('done: %s' % tag)
-    
-    def runUnitTests (c,g):
-        nodeName = 'Active unit tests' # The tests to run.
-        try:
-            u = leoTest.TestManager(c)
-            p = u.findNodeAnywhere(nodeName)
-            if p:
-                print('running unit tests in %s...' % nodeName)
-                c.selectPosition(p)
-                c.debugCommands.runSelectedUnitTestsLocally()
-                print('unit tests complete')
-            else:
-                print('===== node not found: %s' % nodeName)
-        except Exception:
-            print('unexpected exception')
-            g.es_print_exception()
-            raise
-    
-    if __name__ == '__main__':
-        main()</t>
 <t tx="ekr.20150415105956.1">clone-find-all-flattened often includes clones of nodes whose location is unclear.  No problem! Just select the mysterious node and do Alt-N (goto-next-clone). Leo will select the next clone of that node, wrapping the search as necessary.  One or two Alt-N takes me to the "real" node, the node having an ancestor @&lt;file&gt; node.
 
 Ideally, the meaning of all nodes would be clear from their headlines.  I typically use the following conventions. For section definitions, the headline should contain file or class name.  Examples::

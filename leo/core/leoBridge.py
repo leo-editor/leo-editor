@@ -117,9 +117,9 @@ class BridgeController:
         #
         # Create the application object.
         try:
+            # Tell leoApp.createDefaultGui not to create a gui.
+            # This module will create the gui later.
             g.in_bridge = self.vs_code_flag  # #2098.
-                # Tell leoApp.createDefaultGui not to create a gui.
-                # This module will create the gui later.
             g.in_vs_code = True  # 2098.
             from leo.core import leoApp
             g.app = leoApp.LeoApp()

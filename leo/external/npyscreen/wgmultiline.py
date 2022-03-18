@@ -83,8 +83,7 @@ class MultiLine(widget.Widget):
         self.exit_right = exit_right
         self.allow_filtering = allow_filtering
         self.widgets_inherit_color = widgets_inherit_color
-        super(MultiLine, self).__init__(screen, **keywords)
-            # Call the base class.
+        super(MultiLine, self).__init__(screen, **keywords)  # Call the base class.
         if self.height < self.__class__._MINIMUM_HEIGHT:
             raise widget.NotEnoughSpaceForWidget(
                 "Height of %s allocated. Not enough space allowed for %s" % (

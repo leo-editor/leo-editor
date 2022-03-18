@@ -333,22 +333,14 @@ class AtButtonCallback:
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self, controller, b, c, buttonText, docstring, gnx, script):
         """AtButtonCallback.__init__."""
-        self.b = b
-            # A QButton.
-        self.buttonText = buttonText
-            # The text of the button.
-        self.c = c
-            # A Commander.
-        self.controller = controller
-            # A ScriptingController instance.
-        self.gnx = gnx
-            # Set if the script is defined in the local .leo file.
-        self.script = script
-            # Set if the script is found defined in myLeoSettings.leo or leoSettings.leo
-        self.source_c = c
-            # For GetArgs.command_source.
-        self.__doc__ = docstring
-            # The docstring for this callback for g.getDocStringForFunction.
+        self.b = b  # A QButton.
+        self.buttonText = buttonText  # The text of the button.
+        self.c = c  # A Commander.
+        self.controller = controller  # A ScriptingController instance.
+        self.gnx = gnx  # Set if the script is defined in the local .leo file.
+        self.script = script  # The script defined in myLeoSettings.leo or leoSettings.leo
+        self.source_c = c  # For GetArgs.command_source.
+        self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event=None):
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
@@ -414,17 +406,16 @@ class ScriptingController:
         kind = c.config.getString('debugger-kind') or 'idle'
         self.buttonsDict = {}  # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
+        # True: adds a button for every @button node.
         self.atButtonNodes = getBool('scripting-at-button-nodes')
-            # True: adds a button for every @button node.
+        # True: define a minibuffer command for every @command node.
         self.atCommandsNodes = getBool('scripting-at-commands-nodes')
-            # True: define a minibuffer command for every @command node.
+        # True: define a minibuffer command for every @rclick node.
         self.atRclickNodes = getBool('scripting-at-rclick-nodes')
-            # True: define a minibuffer command for every @rclick node.
+        # True: dynamically loads plugins in @plugin nodes when a window is created.
         self.atPluginNodes = getBool('scripting-at-plugin-nodes')
-            # True: dynamically loads plugins in @plugin nodes when a window is created.
+        # # DANGEROUS! True: dynamically executes script in @script nodes when a window is created.
         self.atScriptNodes = getBool('scripting-at-script-nodes')
-            # True: dynamically executes script in @script nodes when a window is created.
-            # DANGEROUS!
         # Do not allow this setting to be changed in local (non-settings) .leo files.
         if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes', 'bool'):
             g.issueSecurityWarning('@bool scripting-at-script-nodes')
@@ -434,21 +425,20 @@ class ScriptingController:
                 val = False
             g.es('Restoring value to', val, color='red')
             self.atScriptNodes = val
+        # True: create Debug Script button.
         self.createDebugButton = getBool('scripting-create-debug-button')
-            # True: create Debug Script button.
+        # True: create Run Script button.
         self.createRunScriptButton = getBool('scripting-create-run-script-button')
-            # True: create Run Script button.
+        # True: create Script Button button.
         self.createScriptButtonButton = getBool('scripting-create-script-button-button')
-            # True: create Script Button button.
+        # Maximum length of button names.
         self.maxButtonSize = c.config.getInt('scripting-max-button-size') or 18
-            # Maximum length of button names.
         if not iconBar:
             self.iconBar = c.frame.getIconBarObject()
         else:
             self.iconBar = iconBar
-        self.seen = set()
-            # Fix bug 74: problems with @button if defined in myLeoSettings.leo
-            # Set of gnx's (not vnodes!) that created buttons or commands.
+        # #74: problems with @button if defined in myLeoSettings.leo
+        self.seen = set()  # Set of gnx's (not vnodes!) that created buttons or commands.
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
@@ -762,8 +752,7 @@ class ScriptingController:
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
         docstring = g.getDocString(p.b).strip()
         statusLine = docstring or 'Global script button'
-        shortcut = self.getShortcut(p.h)
-            # Get the shortcut from the @key field in the headline.
+        shortcut = self.getShortcut(p.h)  # Get the shortcut from the @key field in the headline.
         if shortcut:
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
         # We must define the callback *after* defining b,
@@ -788,16 +777,16 @@ class ScriptingController:
             c=c,
             controller=self,
             docstring=docstring,
+            # #367: the gnx is needed for the Goto Script command.
+            #       Use gnx to search myLeoSettings.leo if it is open.
             gnx=gnx,
-                # tag:#367: the gnx is needed for the Goto Script command.
-                # 2018/03/13: Use gnx to search myLeoSettings.leo if it is open.
             script=script,
         )
         # Now patch the button.
         self.iconBar.setCommandForButton(
             button=b,
             command=cb,  # This encapsulates the script.
-            command_p=p and p.copy(),  # tag:#567
+            command_p=p and p.copy(),  # #567
             controller=self,
             gnx=gnx,  # For the find-button function.
             script=script,

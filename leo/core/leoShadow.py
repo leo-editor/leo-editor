@@ -391,8 +391,7 @@ class ShadowController:
         x, at = self, self.c.atFileCommands
         at.errors = 0
         self.encoding = at.encoding
-        s = at.readFileToUnicode(old_private_file)
-            # Sets at.encoding and inits at.readLines.
+        s = at.readFileToUnicode(old_private_file)  # Sets at.encoding and inits at.readLines.
         old_private_lines = g.splitLines(s or '')  # #1466.
         s = at.readFileToUnicode(old_public_file)
         if at.encoding != self.encoding:
@@ -409,7 +408,7 @@ class ShadowController:
         marker = x.markerFromFileLines(old_private_lines, old_private_file)
         new_private_lines = x.propagate_changed_lines(
             old_public_lines, old_private_lines, marker)
-        # Important bug fix: Never create the private file here!
+        # Never create the private file here!
         fn = old_private_file
         exists = g.os_path_exists(fn)
         different = new_private_lines != old_private_lines

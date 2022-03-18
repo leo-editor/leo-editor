@@ -426,8 +426,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     def reloadSettings(self):
         """SpellCommandsClass.reloadSettings."""
         c = self.c
-        self.page_width = c.config.getInt("page-width")
-            # for wrapping
+        self.page_width = c.config.getInt("page-width")  # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
     def openSpellTab(self, event=None):
@@ -669,17 +668,13 @@ class SpellTabHandler:
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
-        self.re_word = re.compile(
-            # Don't include underscores in words. It just complicates things.
-            # [^\W\d_] means any unicode char except underscore or digit.
-            r"([^\W\d_]+)(['`][^\W\d_]+)?",
-            flags=re.UNICODE)
+        # Don't include underscores in words. It just complicates things.
+        # [^\W\d_] means any unicode char except underscore or digit.
+        self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
-        self.seen = set()
-            # Adding a word to seen will ignore it until restart.
+        self.seen = set()  # Adding a word to seen will ignore it until restart.
+        # A text widget for scanning. Must have a parent frame.
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
-            # A text widget for scanning.
-            # Must have a parent frame even though it is not packed.
         if enchant:
             self.spellController = EnchantWrapper(c)
             self.tab = g.app.gui.createSpellTab(c, self, tabName)

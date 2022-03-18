@@ -3079,9 +3079,9 @@ def main(files):
 #@+node:ekr.20160517222900.1: *5* get_home
 def get_home():
     """Returns the user's home directory."""
+    # Windows searches the HOME, HOMEPATH and HOMEDRIVE
+    # environment vars, then gives up.
     home = g.os_path_expanduser("~")
-        # Windows searches the HOME, HOMEPATH and HOMEDRIVE
-        # environment vars, then gives up.
     if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
         # Get the indirect reference to the true home.
         home = os.getenv(home[1:-1], default=None)
@@ -3467,8 +3467,8 @@ def runMainLoop(self, fileName=None):
         path = g.os_path_finalize_join(
             g.app.loadDir, '..', 'test', 'unittest.leo')
         c = g.openWithFileName(path, gui=self)
+        # A hack. Maybe the NullGui should do this.
         c.findCommands.ftm = g.NullObject()
-            # A hack. Maybe the NullGui should do this.
         c.debugCommands.runAllUnitTestsLocally()
     print('calling sys.exit(0)')
     sys.exit(0)
@@ -3570,10 +3570,10 @@ class LeoLog(flx.Widget):
         global window
         # https://ace.c9.io/#nav=api
         self.ace = window.ace.edit(self.node, "editor")
-            # self.ace.setValue("import os\n\ndirs = os.walk")
+        # self.ace.setValue("import os\n\ndirs = os.walk")
         self.ace.navigateFileEnd()  # otherwise all lines highlighted
         self.ace.setTheme("ace/theme/solarized_dark")
-            # self.ace.getSession().setMode("ace/mode/python")
+        # self.ace.getSession().setMode("ace/mode/python")
         print('window', window)
 
     @flx.reaction('size')
@@ -4123,8 +4123,9 @@ class OrganizerData:
         self.organized_nodes = [] # The list of positions organized by this od node.
         self.parent_od = None # The parent od node of this od node. (None is valid.)
         self.p = None # The position of this od node.
-        self.parent = None # The original parent position of all nodes organized by this od node.
-            # If parent_od is None, this will be the parent position of the od node.
+        # The original parent position of all nodes organized by this od node.
+        # If parent_od is None, this will be the parent position of the od node.
+        self.parent = None
         self.source_unl = None # The unl of self.parent.
         self.unl = unl # The unl of this od node.
         self.unls = unls # The unls contained in this od node.

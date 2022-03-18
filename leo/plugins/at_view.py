@@ -26,8 +26,7 @@ win32clipboard = g.import_module('win32clipboard')
 #@+node:ekr.20111104210837.9693: ** init
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = path and win32clipboard
-        # Ok for unit testing.
+    ok = path and win32clipboard  # Ok for unit testing.
     if ok:
         g.registerHandler("after-create-leo-frame", onCreate)
     elif not g.unitTesting:
