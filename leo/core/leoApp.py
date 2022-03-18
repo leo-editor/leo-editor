@@ -3186,7 +3186,7 @@ class LoadManager:
     def isLeoFile(self, fn):
         """
         Return True if fn is any kind of Leo file,
-        including a zipped, filr or .leo, .db, or .leojs file.
+        including a zipped file or .leo, .db, or .leojs file.
         """
         if not fn:
             return False
