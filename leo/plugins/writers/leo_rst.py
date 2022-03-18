@@ -10,8 +10,8 @@ This module must **not** be named rst, so as not to conflict with docutils.
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 import leo.plugins.importers.leo_rst as rst_importer
+# Make *sure* that reader's underlines match the writer's.
 underlines = rst_importer.underlines
-    # Make *sure* that reader's underlines match the writer's.
 #@+others
 #@+node:ekr.20140726091031.18092: ** class RstWriter
 class RstWriter(basewriter.BaseWriter):

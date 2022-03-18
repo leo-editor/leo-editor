@@ -53,9 +53,7 @@ else:
 # Abbreviations...
 StringIO = io.StringIO
 #@-<< imports >>
-in_bridge = False
-    # Set to True in leoBridge.py just before importing leo.core.leoApp.
-    # This tells leoApp to load a null Gui.
+in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.6'  # #1215.
 isPython3 = sys.version_info >= (3, 0, 0)

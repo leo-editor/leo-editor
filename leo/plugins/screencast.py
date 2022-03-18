@@ -482,8 +482,8 @@ class ScreenCastController:
         """Activate the indicated *top-level* menu."""
         m = self
         c = m.c
+        # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
             if 0:  # None of this works.

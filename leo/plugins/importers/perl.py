@@ -29,8 +29,7 @@ class Perl_Importer(Importer):
         """Clean nodes as part of the perl post pass."""
         # Move trailing comments into following def nodes.
         for p in parent.subtree():
-            next = p.threadNext()
-                # This can be a node *outside* parent's tree!
+            next = p.threadNext()  # This can be a node *outside* parent's tree!
             if next and self.has_lines(next):
                 lines = self.get_lines(p)
                 if lines:

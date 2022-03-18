@@ -48,8 +48,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp)
     def __init__(self):
         """Ctor for LeoQtGui class."""
-        super().__init__('qt')
-             # Initialize the base class.
+        super().__init__('qt')  # Initialize the base class.
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages = {}
@@ -67,7 +66,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.reloadSettings()
         self.appIcon = self.getIconImage('leoapp32.png')
-        #
+
         # Define various classes key stokes.
         #@+<< define FKeys >>
         #@+node:ekr.20180419110303.1: *4* << define FKeys >>
@@ -592,13 +591,13 @@ class LeoQtGui(leoGui.LeoGui):
         # pylint: disable=arguments-differ
         if g.unitTesting:
             return ''
-        #
+
         # 2018/03/14: Bug fixes:
         # - Use init_dialog_folder only if a path is not given
         # - *Never* Use os.curdir by default!
         if not startpath:
+            # Returns c.last_dir or os.curdir
             startpath = g.init_dialog_folder(c, c and c.p, use_at_path=True)
-                # Returns c.last_dir or os.curdir
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
         if c:
@@ -613,7 +612,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.in_qt_dialog = False
         else:
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
-        if isQt5 or isQt6:  # this is a *Py*Qt change rather than a Qt change
+        if isQt5 or isQt6:  # This is a *Py*Qt change rather than a Qt change
             val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
@@ -766,15 +765,12 @@ class LeoQtGui(leoGui.LeoGui):
         w_name = w and w.objectName()
         if 'focus' in g.app.debug:
             g.trace(repr(w_name))
-        self.active = False
-            # Used only by c.idle_focus_helper.
-        #
+        self.active = False  # Used only by c.idle_focus_helper.
         # Careful: never save headline widgets.
         if w_name == 'headline':
             self.deactivated_widget = c.frame.tree.treeWidget
         else:
             self.deactivated_widget = w if w_name else None
-        #
         # Causes problems elsewhere...
             # if c.exists and not self.deactivated_name:
                 # self.deactivated_name = self.widget_name(self.get_focus())
@@ -798,8 +794,7 @@ class LeoQtGui(leoGui.LeoGui):
         # #1273: add teest on c.vim_mode.
         if c.exists and c.vim_mode and c.vimCommands and not self.active and not g.app.killed:
             c.vimCommands.on_activate()
-        self.active = True
-            # Used only by c.idle_focus_helper.
+        self.active = True  # Used only by c.idle_focus_helper.
         if g.isMac:
             pass  # Fix #757: MacOS: replace-then-find does not work in headlines.
         else:
@@ -827,20 +822,17 @@ class LeoQtGui(leoGui.LeoGui):
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
-    # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
-    # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
-
     def setFilter(self, c, obj, w, tag):
         """
         Create an event filter in obj.
         w is a wrapper object, not necessarily a QWidget.
         """
-        # gui = self
+        # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
+        # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
         assert isinstance(obj, QtWidgets.QWidget), obj
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)
-        w.ev_filter = theFilter
-            # Set the official ivar in w.
+        w.ev_filter = theFilter  # Set the official ivar in w.
     #@+node:ekr.20110605121601.18508: *3* qt_gui.Focus
     #@+node:ekr.20190601055031.1: *4* qt_gui.ensure_commander_visible
     def ensure_commander_visible(self, c1):
@@ -1085,10 +1077,8 @@ class LeoQtGui(leoGui.LeoGui):
         # Calling window.show() here causes flash.
         self.attachLeoIcon(window)
         # Monkey-patch
-        window.closeEvent = self.close_event
-            # Use self: g.app.gui does not exist yet.
-        self.runAtIdle(self.set_main_window_style_sheet)
-            # No StyleSheetManager exists yet.
+        window.closeEvent = self.close_event  # Use self: g.app.gui does not exist yet.
+        self.runAtIdle(self.set_main_window_style_sheet)  # No StyleSheetManager exists yet.
         return window
 
     def set_main_window_style_sheet(self):
@@ -1831,8 +1821,8 @@ class StyleSheetManager:
             selectors.append('qt-gui-user-style-sheet')
         sheets = []
         for name in selectors:
+            # don't strip `#selector_name { ...` type syntax
             sheet = c.config.getData(name, strip_comments=False)
-                # don't strip `#selector_name { ...` type syntax
             if sheet:
                 if '\n' in sheet[0]:
                     sheet = ''.join(sheet)
@@ -1927,8 +1917,8 @@ class StyleSheetManager:
                     g.es_print(f"'{const}' from style-sheet comment definition, ")
                     g.es_print("please use regular @string / @color type @settings.")
             else:
+                # lowercase, without '@','-','_', etc.
                 key = g.app.config.canonicalizeSettingName(const[1:])
-                    # lowercase, without '@','-','_', etc.
                 value = settingsDict.get(key)
                 if value is not None:
                     # New in Leo 5.5: Do NOT add comments here.

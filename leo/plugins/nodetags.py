@@ -232,15 +232,15 @@ class TagController:
     def remove_tag(self, p, tag):
         """ removes 'tag' from the taglist of position p. """
         v = p.v
+        # In case JSON storage (leo_cloud plugin) converted to list.
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
-            # in case JSON storage (leo_cloud plugin) converted to list.
         if tag in tags:
             tags.remove(tag)
         if tags:
             v.u[self.TAG_LIST_KEY] = tags
         else:
-            del v.u[self.TAG_LIST_KEY]
             # prevent a few corner cases, and conserve disk space
+            del v.u[self.TAG_LIST_KEY]
         self.c.setChanged()
         self.update_taglist(tag)
     #@-others

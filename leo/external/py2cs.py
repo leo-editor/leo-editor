@@ -1383,9 +1383,9 @@ class MakeCoffeeScriptController:
                 print('output directory not found: %s\n' % output_dir)
                 self.output_directory = None  # inhibit run().
         if 'prefix_lines' in parser.options('Global'):
+            # The parser does not preserve leading whitespace.
             prefix = parser.get('Global', 'prefix_lines')
             self.prefix_lines = prefix.split('\n')
-                # The parser does not preserve leading whitespace.
         #
         # self.def_patterns = self.scan_patterns('Def Name Patterns')
         # self.general_patterns = self.scan_patterns('General Patterns')

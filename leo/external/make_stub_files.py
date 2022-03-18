@@ -1596,8 +1596,7 @@ class StandAloneMakeStubFile:
         self.files = []  # May also be set in the config file.
         # Ivars set in the config file...
         self.output_fn = None
-        self.output_directory = self.finalize('.')
-            # self.finalize('~/stubs')
+        self.output_directory = self.finalize('.')  # self.finalize('~/stubs')
         self.overwrite = False
         self.prefix_lines = []
         self.trace_matches = False

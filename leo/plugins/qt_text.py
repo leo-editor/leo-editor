@@ -95,8 +95,8 @@ class QTextMixin:
         self.c = c
         self.changingText = False  # A lockout for onTextChanged.
         self.enabled = True
+        # A flag for k.masterKeyHandler and isTextWrapper.
         self.supportsHighLevelInterface = True
-            # A flag for k.masterKeyHandler and isTextWrapper.
         self.tags = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.configDict = {}  # Keys are tags, values are colors (names or values).
@@ -533,8 +533,8 @@ if QtWidgets:
                 super().__init__()
                 self.setWindowFlags(WindowType.Popup | self.windowFlags())
                 # Inject the ivars
+                # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
                 self.leo_w = c.frame.body.wrapper.widget
-                    # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
                 self.leo_c = c
                 # A weird hack.
                 self.leo_geom_set = False  # When true, self.geom returns global coords!
@@ -1034,17 +1034,13 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         """Ctor for NumberBar class."""
         super().__init__(*args)
         self.c = c
-        self.edit = e
-            # A QTextEdit.
-        self.d = e.document()
-            # A QTextDocument.
-        self.fm = self.fontMetrics()
-            # A QFontMetrics
+        self.edit = e  # A QTextEdit.
+        self.d = e.document()  # A QTextDocument.
+        self.fm = self.fontMetrics()  # A QFontMetrics
         self.image = QtGui.QImage(g.app.gui.getImageImage(
             g.os_path_finalize_join(g.app.loadDir,
                 '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
-        self.highest_line = 0
-            # The highest line that is currently visibile.
+        self.highest_line = 0  # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
         self.offsets = []
         self.setObjectName('gutter')
@@ -1053,10 +1049,10 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
+        # Extra width for column.
         self.w_adjust = c.config.getInt('gutter-w-adjust') or 12
-            # Extra width for column.
+        # The y offset of the first line of the gutter.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
-            # The y offset of the first line of the gutter.
     #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
     def mousePressEvent(self, event):
 

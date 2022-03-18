@@ -52,24 +52,16 @@ class IdleTime:
     def __init__(self, handler, delay=500, tag=None):
         """ctor for IdleTime class."""
         # For use by handlers...
-        self.count = 0
-            # The number of times handler has been called.
-        self.starting_time = None
-            # Time that the timer started.
-        self.time = None
-            # Time that the handle is called.
-        self.tag = tag
-            # An arbitrary string/object for use during debugging.
+        self.count = 0  # The number of times handler has been called.
+        self.starting_time = None  # Time that the timer started.
+        self.time = None  # Time that the handle is called.
+        self.tag = tag  # An arbitrary string/object for use during debugging.
         # For use by the IdleTime class...
+        # The argument to self.timer.start: 0 for idle time, otherwise a delay in msec.
         self.delay = delay
-            # The argument to self.timer.start:
-            # 0 for idle time, otherwise a delay in msec.
-        self.enabled = False
-            # True: run the timer continuously.
-        self.handler = handler
-            # The user-provided idle-time handler.
-        self.waiting_for_idle = False
-            # True if we have already waited for the minimum delay\
+        self.enabled = False  # True: run the timer continuously.
+        self.handler = handler  # The user-provided idle-time handler.
+        self.waiting_for_idle = False  # True if we have already waited for the minimum delay.
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.at_idle_time)

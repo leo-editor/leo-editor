@@ -68,8 +68,8 @@ def global_search_f(event):
     """
     c = event['c']
     if hasattr(g.app, '_global_search'):
+        # Use the per-commander setting.
         g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
-            # Use the per-commander setting.
         g.app._global_search.show()
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init():
@@ -193,8 +193,8 @@ class GlobalSearch:
     #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
     def __init__(self):
         """Ctor for GlobalSearch class."""
+        # A default: will be overridden by the global-search command.
         self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
-            # A default: will be overridden by the global-search command.
         self.bd = BigDash()
         self.gnxcache = GnxCache()
         #self.bd.show()

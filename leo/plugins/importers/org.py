@@ -97,9 +97,9 @@ class Org_Importer(Importer):
         if line:
             self.add_line(child, line)
         assert isinstance(headline, str), repr(headline)
+        # #1037: do rstrip, not strip.
+        # #1087: do not strip at all!
         child.h = headline
-            # #1037: do rstrip, not strip.
-            # #1087: do not strip at all!
         return child
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):

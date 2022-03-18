@@ -2273,8 +2273,7 @@ class LoadManager:
         g.app.disable_redraw = False
         if not c1:
             try:  # #1403.
-                c1 = lm.openEmptyWorkBook()
-                    # Calls LM.loadLocalFile.
+                c1 = lm.openEmptyWorkBook()  # Calls LM.loadLocalFile.
             except Exception:
                 g.es_print('Can not create empty workbook')
                 g.es_exception()
@@ -2810,8 +2809,7 @@ class LoadManager:
         #
         # These are not bool args.
         # --trace-binding
-        g.app.trace_binding = args.trace_binding
-            # g.app.config does not exist yet.
+        g.app.trace_binding = args.trace_binding  # g.app.config does not exist yet.
         #
         # --trace-setting=setting
         g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
@@ -2989,18 +2987,17 @@ class LoadManager:
         g.doHook('open0')
         theFile = lm.openAnyLeoFile(fn)
         if isinstance(theFile, sqlite3.Connection):
-            # this commander is associated with sqlite db
+            # This commander is associated with sqlite db.
             c.sqlite_connection = theFile
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
-        # Phase 2: Create the outline.
+        # Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         if theFile:
             readAtFileNodesFlag = bool(previousSettings)
-            # The log is not set properly here.
+            # Read the Leo file.
             ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
-                # Call c.fileCommands.openLeoFile to read the .leo file.
             if not ok:
                 return None
         else:

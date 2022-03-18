@@ -68,43 +68,37 @@ class Demo:
         self.c = c
         # pylint: disable=import-self
         from leo.plugins import demo as module
-        #
+        # True: start calls next until finished.
         self.auto_run = False
-            # True: start calls next until finished.
+        # True: Exceptions call self.end(). Good for debugging.
         self.end_on_exception = False
-            # True: Exceptions call self.end(). Good for debugging.
+        # For converting arguments to demo.key...
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
-            # For converting arguments to demo.key...
+        # The original size of the top-level Leo window. Restored in demo.end()
         self.initial_geometry = None
-            # The original size of the top-level Leo window.
-            # Restored in demo.end()
+        # Speed multiplier for simulated typing.
         self.key_speed = 1.0
-            # Speed multiplier for simulated typing.
+        # The leo.plugins.demo module.
         self.module = module
-            # The leo.plugins.demo module.
+        # Default minimal typing delay, in seconds.
         self.n1 = 0.02
-            # Default minimal typing delay, in seconds.
+        # Default maximum typing delay, in seconds.
         self.n2 = 0.175
-            # Default maximum typing delay, in seconds.
+        # The namespace for all demo script.
+        # Set in init_namespace, which subclasses may override.
         self.namespace = {}
-            # The namespace for all demo script.
-            # Set in init_namespace, which subclasses may override.
+        # List of widgets *not* to be deleted by delete_widgets.
         self.retained_widgets = []
-            # List of widgets *not* to be deleted by delete_widgets.
+        # For find_node: The outline to be searched for nodes.
         self.root = None
-            # For find_node: The outline to be searched for nodes.
+        # The root of the script tree.
         self.script_root = None
-            # The root of the script tree.
+        # Index into self.script_list.
         self.script_i = 0
-            # Index into self.script_list.
+        # A list of strings (scripts). Scripts are removed when executed.
         self.script_list = []
-            # A list of strings (scripts).
-            # Scripts are removed when executed.
-        self.user_dict = {}
-            # For use by scripts.
-        self.widgets = []
-            # References to all widgets created by this class.
-        #
+        self.user_dict = {}  # For use by scripts.
+        self.widgets = []  # References to all widgets created by this class.
         # Init...
         self.init()
         self.init_namespace()
@@ -260,8 +254,7 @@ class Demo:
         self.script_root = script_tree and script_tree.copy()
         self.delete_widgets()
         self.auto_run = auto_run
-        self.initial_geometry = self.get_top_geometry()
-            # Setup may change this.
+        self.initial_geometry = self.get_top_geometry()  # Setup may change this.
         if isinstance(p, leoNodes.Position):
             if p:
                 self.script_list = self.create_script_list(p, delim)
@@ -273,8 +266,8 @@ class Demo:
                         self.end()
                     if auto_run:
                         while self.script_i < len(self.script_list):
+                            # Helps, but widgets are not deleted.
                             g.app.gui.qtApp.processEvents()
-                                # Helps, but widgets are not deleted.
                             self.next()
                     else:
                         self.next()
@@ -490,8 +483,8 @@ class Demo:
     def open_menu(self, menu_name):
         """Activate the indicated *top-level* menu."""
         c = self.c
+        # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
         return menu

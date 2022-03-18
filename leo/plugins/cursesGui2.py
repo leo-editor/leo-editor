@@ -2060,8 +2060,7 @@ class LeoCursesGui(leoGui.LeoGui):
         fc = c.findCommands
         ftm = c.frame.ftm
         c.inCommand = False
-        c.inFindCommand = True
-            # A new flag.
+        c.inFindCommand = True  # A new flag.
         fc.minibuffer_mode = True
         if 0:  # Allow hard settings, for tests.
             table = (

@@ -668,11 +668,9 @@ class SpellTabHandler:
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
-        self.re_word = re.compile(
-            # Don't include underscores in words. It just complicates things.
-            # [^\W\d_] means any unicode char except underscore or digit.
-            r"([^\W\d_]+)(['`][^\W\d_]+)?",
-            flags=re.UNICODE)
+        # Don't include underscores in words. It just complicates things.
+        # [^\W\d_] means any unicode char except underscore or digit.
+        self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
         self.seen = set()  # Adding a word to seen will ignore it until restart.
         # A text widget for scanning. # Must have a parent frame.

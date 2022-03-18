@@ -331,8 +331,8 @@ class Commands:
             self.undoer,
         ]
         # Other objects
+        # A list of other classes that have a reloadSettings method
         c.configurables = c.subCommanders[:]
-            # A list of other classes that have a reloadSettings method
         c.db = g.app.commander_cacher.get_wrapper(c)
         # #2485: Load the free_layout plugin in the proper context.
         #        g.app.pluginsController.loadOnePlugin won't work here.

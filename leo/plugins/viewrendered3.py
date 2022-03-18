@@ -1092,8 +1092,7 @@ asciidoc_processors = []
 #@-<< Misc Globals >>
 #@-<< declarations >>
 
-trace = False
-    # This global trace is convenient.
+trace = False  # This global trace is convenient.
 
 #@+<< define html templates >>
 #@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
@@ -1120,10 +1119,10 @@ latex_template = f'''\
 </html>
 '''
 #@-<< define html templates >>
+# Keys are c.hash(): values are PluginControllers (QWidget's).
 controllers = {}
-    # Keys are c.hash(): values are PluginControllers (QWidget's).
+# Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 layouts = {}
-    # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -3237,8 +3236,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         template = image_template % (fname)
         # Only works in Python 3.x.
+        # Sensitive to leading blank lines.
         template = textwrap.dedent(template).strip()
-            # Sensitive to leading blank lines.
 
         w = pc.ensure_web_widget()
         pc.set_html(template, w)
@@ -3577,8 +3576,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         with open(i_path, 'w') as f:
             f.write(s)
         # Call pandoc to write the output file.
+        # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
-            # --quiet does no harm.
         g.execute_shell_commands(command)
         # Read the output file and return it.
         with open(o_path, 'r') as f:
@@ -3613,8 +3612,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Embedding already works without this!
             # self.embed_pyplot_widget()
         self.pyplot_imported = True
+        # pyplot will throw RuntimeError if we close the pane.
         self.pyplot_active = True
-            # pyplot will throw RuntimeError if we close the pane.
         c.executeScript(
             event=None,
             args=None, p=None,
@@ -4205,8 +4204,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
+            # Sensitive to leading blank lines.
             s = textwrap.dedent(s).strip()
-                # Sensitive to leading blank lines.
             bytes = g.toEncodedString(s)
             pc.show()
             w.load(QtCore.QByteArray(bytes))

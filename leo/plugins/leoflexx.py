@@ -336,10 +336,8 @@ class LeoBrowserApp(flx.PyComponent):
     def init(self):
         # Set the ivars.
         global g  # Always use the imported g.
-        self.inited = False
-            # Set in finish_create
+        self.inited = False  # Set in finish_create
         self.tag = 'py.app.wrap'
-        #
         # Open or get the first file.
         if not g.app:
             print('app.init: no g.app. g:', repr(g))
@@ -351,29 +349,23 @@ class LeoBrowserApp(flx.PyComponent):
             # This can happen in strange situations.
             # print('app.init: ===== Ctrl-H ===== ?')
             return
-        #
         # We are running with --gui=browser.
         c = g.app.log.c
-        #
         # self.gui must be a synonym for g.app.gui.
         self.c = c
         self.gui = gui = g.app.gui
         # Make sure everything is as expected.
         assert self.c and c == self.c
         assert g.app.gui.guiName() == 'browser'
-        #
         # When running from Leo's core, we must wait until now to set LeoBrowserGui.root.
         gui.root = get_root()
-        #
         # Check g.app.ivars.
         assert g.app.windowList
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
-        #
         # Instantiate all wrappers here, not in app.finish_create.
         title = c.computeWindowTitle(c.mFileName)
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
-        #
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
@@ -397,8 +389,8 @@ class LeoBrowserApp(flx.PyComponent):
         if 'keys' in g.app.debug:
             g.trace(ev, ivar)
         c = self.c
+        # Essential: there is no way to pass the actual wrapper.
         browser_wrapper = getattr(c.frame, ivar)
-            # Essential: there is no way to pass the actual wrapper.
         #@+<< check browser_wrapper >>
         #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
         assert isinstance(browser_wrapper, (

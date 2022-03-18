@@ -10902,21 +10902,22 @@ keys.sort()
 aList = ['%3d %s' % (words.get(key),str(key)) for key in keys]
 print g.listToString(aList)
 g.es('searched %s' % p1.h)
-#@+node:ekr.20190911074705.1: *3* script: Find trailing comments
-"""Find all comments of the form:
+#@+node:ekr.20220318132328.1: *3* script: Find trailing comments
+"""
+Find and mark all nodes containing underindented trailing comments in c's outline.
+
+Such comments have the form:
     
     .. some code ..
-        A trailing, overindented comment
-        
-    Write the summary to the given file.
+        A trailing, overindented comment.
 """
 g.cls()
 import re
-file_name = 'c:/test/trailing_comments.txt'
 count = 0
 pattern = re.compile(r'\w+\s*=\s\w+')
 
-def do_node(f, p):
+def do_node(p):
+    global count
     prev_assign = False
     old_lws = 0
     lines = g.splitLines(p.b)
@@ -10925,23 +10926,20 @@ def do_node(f, p):
         if line.strip().startswith('#'):
             if prev_assign and lws > old_lws:
                 # Found a likely trailing comment.
-                f.write(f"\n{i} {p.h}")
-                f.write(g.objToString(
-                    [f"{i+i2:3} {z}" for i2, z in enumerate(lines[i-1:i+1])],
-                    tag=f"line {i} {p.h}"),
-                )
+                p.setMarked()
+                count += 1
                 return True
             prev_assign = False
         else:
             old_lws = lws
             prev_assign = pattern.search(line)
     return False
+    
+c.clearAllMarked()
+for p in c.all_unique_positions():
+    do_node(p)
 
-with open(file_name, 'w') as f:
-    for p in c.all_unique_positions():
-        if do_node(f, p):
-            count += 1
-print(f"found {count} nodes. wrote results to {file_name}")
+print(f"found {count} nodes.")
 #@+node:ekr.20190106073221.1: *3* script: Find-chains (EKR)
 '''To be run in leoPy.leo: find Leo's important chains.'''
 g.cls()

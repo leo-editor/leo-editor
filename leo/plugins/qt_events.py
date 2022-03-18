@@ -536,8 +536,7 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         """Show unexpected events in unusual widgets."""
-        verbose = False
-            # Not good for --trace-events
+        verbose = False  # Not good for --trace-events
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
