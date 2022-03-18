@@ -58,8 +58,7 @@ class Commands:
         self.frame = None
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
-        self.ipythonController = None
-            # Set only by the ipython plugin.
+        self.ipythonController = None  # Set only by the ipython plugin.
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -68,8 +67,8 @@ class Commands:
         c.initFileIvars(fileName, relativeFileName)
         c.initOptionsIvars()
         c.initObjectIvars()
+        # Init the settings *before* initing the objects.
         c.initSettings(previousSettings)
-            # Init the settings *before* initing the objects.
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
         assert c.frame
@@ -223,21 +222,19 @@ class Commands:
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
+        
         # Break circular import dependencies by doing imports here.
-        # These imports take almost 3/4 sec in the leoBridge.
+        # All these imports take almost 3/4 sec in the leoBridge.
+
         from leo.core import leoAtFile
         from leo.core import leoBeautify  # So decorators are executed.
         assert leoBeautify  # for pyflakes.
         from leo.core import leoChapters
-        # from leo.core import leoTest2  # So decorators are executed.
-        # assert leoTest2  # For pyflakes.
         # User commands...
         from leo.commands import abbrevCommands
         from leo.commands import bufferCommands
-        from leo.commands import checkerCommands
-        assert checkerCommands
-            # To suppress a pyflakes warning.
-            # The import *is* required to define commands.
+        from leo.commands import checkerCommands  # The import *is* required to define commands.
+        assert checkerCommands  # To suppress a pyflakes warning.
         from leo.commands import controlCommands
         from leo.commands import convertCommands
         from leo.commands import debugCommands
@@ -374,8 +371,7 @@ class Commands:
         t1 = time.process_time()
         c.frame.finishCreate()  # Slightly slow.
         t2 = time.process_time()
-        c.miniBufferWidget = c.frame.miniBufferWidget
-            # Will be None for nullGui.
+        c.miniBufferWidget = c.frame.miniBufferWidget  # Will be None for nullGui.
         # Only c.abbrevCommands needs a finishCreate method.
         c.abbrevCommands.finishCreate()
         # Finish other objects...
@@ -388,15 +384,14 @@ class Commands:
                 g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
                 g.registerHandler('idle', c.idle_focus_helper)
             finally:
-                g.app.pluginsController.loadingModuleNameStack.pop() 
+                g.app.pluginsController.loadingModuleNameStack.pop()
         if getattr(c.frame, 'menu', None):
             c.frame.menu.finishCreate()
         if getattr(c.frame, 'log', None):
             c.frame.log.finishCreate()
         c.undoer.clearUndoState()
         if c.vimCommands and c.vim_mode:
-            c.vimCommands.finishCreate()
-            # Menus must exist at this point.
+            c.vimCommands.finishCreate()  # Menus must exist at this point.
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
         g.check_cmd_instance_dict(c, g)
@@ -708,12 +703,10 @@ class Commands:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
-        script_p = p or c.p
-            # Only for error reporting below.
+        script_p = p or c.p  # Only for error reporting below.
         # #532: check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
             from leo.commands import checkerCommands as cc
-            # at = c.atFileCommands
             prefix = ('c,g,p,script_gnx=None,None,None,None;'
                       'assert c and g and p and script_gnx;\n')
             cc.PyflakesCommand(c).check_script(script_p, prefix + script)
@@ -762,14 +755,12 @@ class Commands:
         d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace:
             d.update(namespace)
-        #
         # A kludge: reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
         # This does not prevent zombie windows if the script puts up a dialog...
         try:
             c.inCommand = False
-            g.inScript = g.app.inScript = True
-                # g.inScript is a synonym for g.app.inScript.
+            g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
                 exec(compile(script, scriptFile, 'exec'), d)
@@ -2098,14 +2089,14 @@ class Commands:
         if g.unitTesting:
             return
         if stroke and (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1):
+            # Alas, Alt and Ctrl bindings must *retain* the char field,
+            # so there is no way to know what char field to expect.
             expected = event.char
-                # Alas, Alt and Ctrl bindings must *retain* the char field,
-                # so there is no way to know what char field to expect.
         else:
+            # disable the test.
+            # We will use the (weird) key value for, say, Ctrl-s,
+            # if there is no binding for Ctrl-s.
             expected = event.char
-                # disable the test.
-                # We will use the (weird) key value for, say, Ctrl-s,
-                # if there is no binding for Ctrl-s.
         if not isinstance(event, leoGui.LeoKeyEvent):
             if g.app.gui.guiName() not in ('browser', 'console', 'curses'):  # #1839.
                 g.trace(f"not leo event: {event!r}, callers: {g.callers(8)}")
@@ -2482,14 +2473,11 @@ class Commands:
                     cm.mb_keywords = None
                     cm.mb_retval = retval
 
-        minibufferCallback.__doc__ = function.__doc__
-            # For g.getDocStringForFunction
-        minibufferCallback.source_c = source_c
-            # For GetArgs.command_source
+        minibufferCallback.__doc__ = function.__doc__  # For g.getDocStringForFunction
+        minibufferCallback.source_c = source_c  # For GetArgs.command_source
         return minibufferCallback
 
-    #fix bobjack's spelling error
-
+    # fix bobjack's spelling error.
     universallCallback = universalCallback
     #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
     def writeScriptFile(self, script):
@@ -2868,10 +2856,8 @@ class Commands:
         if g.unitTesting:
             c.init_error_dialogs()
             return
-        #
         # Issue one or two dialogs or messages.
-        saved_body = c.rootPosition().b
-            # Save the root's body. Somehow the dialog destroys it!
+        saved_body = c.rootPosition().b  # Save the root's body. The dialog destroys it!
         if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
             g.app.gui.dismiss_splash_screen()
         else:
@@ -2903,7 +2889,6 @@ class Commands:
                     ignored_dialog_message = f"{ignored_message}\n{files}"
                     g.app.gui.runAskOkDialog(c,
                         message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
-        #
         # #1050: always raise a dialog for orphan @<file> nodes.
         if c.orphan_at_file_nodes:
             message = '\n'.join([
@@ -2922,8 +2907,7 @@ class Commands:
             c.setChanged()
             c.redraw()
         # Restore the root position's body.
-        c.rootPosition().v.b = saved_body
-            # #1007: just set v.b.
+        c.rootPosition().v.b = saved_body  # #1007: just set v.b.
         c.init_error_dialogs()
     #@+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
     def syntaxErrorDialog(self):
@@ -4208,8 +4192,8 @@ class Commands:
         for obj in table:
             if obj:
                 c.registerReloadSettings(obj)
+        # Useful now that instances add themselves to c.configurables.
         c.configurables = list(set(c.configurables))
-            # Useful now that instances add themselves to c.configurables.
         c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
         for obj in c.configurables:
             func = getattr(obj, 'reloadSettings', None)
