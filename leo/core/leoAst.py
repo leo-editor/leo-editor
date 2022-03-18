@@ -2902,7 +2902,14 @@ class Orange:
         val = self.val
         if val == '.':
             self.clean('blank')
-            self.add_token('op-no-blanks', val)
+            prev = self.code_list[-1]
+            # #2495: Special case for 'from .'
+            if prev.kind == 'word' and prev.value == 'from':
+                self.blank()
+                self.add_token('op', val)
+                self.blank()
+            else:
+                self.add_token('op-no-blanks', val)
         elif val == '@':
             if self.black_mode:  # pragma: no cover (black)
                 if not self.decorator_seen:
