@@ -166,42 +166,24 @@ class LeoApp:
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
-        # Most of these are defined in initApp.
-        self.backgroundProcessManager = None
-            # The singleton BackgroundProcessManager instance.
-        self.commander_cacher = None
-            # The singleton leoCacher.CommanderCacher instance.
-        self.commander_db = None
-            # The singleton db, managed by g.app.commander_cacher.
-        self.config = None
-            # The singleton leoConfig instance.
-        self.db = None
-            # The singleton global db, managed by g.app.global_cacher.
-        self.externalFilesController = None
-            # The singleton ExternalFilesController instance.
-        self.global_cacher = None
-            # The singleton leoCacher.GlobalCacher instance.
-        self.idleTimeManager = None
-            # The singleton IdleTimeManager instance.
-        self.ipk = None
-            # python kernel instance
-        self.loadManager = None
-            # The singleton LoadManager instance.
-        # self.logManager = None
-            # The singleton LogManager instance.
-        # self.openWithManager = None
-            # The singleton OpenWithManager instance.
-        self.nodeIndices = None
-            # The singleton nodeIndices instance.
-        self.pluginsController = None
-            # The singleton PluginsManager instance.
-        self.sessionManager = None
-            # The singleton SessionManager instance.
-        # The Commands class...
-        self.commandName = None
-            # The name of the command being executed.
-        self.commandInterruptFlag = False
-            # True: command within a command.
+        # Singleton applications objects...
+        self.backgroundProcessManager = None  # A BackgroundProcessManager.
+        self.commander_cacher = None  # A leoCacher.CommanderCacher.
+        self.commander_db = None  # Managed by g.app.commander_cacher.
+        self.config = None  # g.app.config.
+        self.db = None  # A global db, managed by g.app.global_cacher.
+        self.externalFilesController = None  # An ExternalFilesController.
+        self.global_cacher = None  # A leoCacher.GlobalCacher.
+        self.idleTimeManager = None  # An IdleTimeManager.
+        self.ipk = None  # A python kernel.
+        self.loadManager = None  # A LoadManager.
+        self.nodeIndices = None  # A NodeIndices.
+        self.pluginsController = None  # A PluginsManager.
+        self.sessionManager = None  # A SessionManager.
+
+        # Global status vars for the Commands class...
+        self.commandName = None  # The name of the command being executed.
+        self.commandInterruptFlag = False  # True: command within a command.
         #@-<< LeoApp: global controller/manager objects >>
         #@+<< LeoApp: global reader/writer data >>
         #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
@@ -233,17 +215,11 @@ class LeoApp:
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
         #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
-        # To be moved to the LogManager.
-        self.log = None
-            # The LeoFrame containing the present log.
-        self.logInited = False
-            # False: all log message go to logWaiting list.
-        self.logIsLocked = False
-            # True: no changes to log are allowed.
-        self.logWaiting = []
-            # List of tuples (s, color, newline) waiting to go to a log.
-        self.printWaiting = []
-            # Queue of messages to be sent to the printer.
+        self.log = None  # The LeoFrame containing the present log.
+        self.logInited = False  # False: all log message go to logWaiting list.
+        self.logIsLocked = False  # True: no changes to log are allowed.
+        self.logWaiting = []  # List of tuples (s, color, newline) waiting to go to a log.
+        self.printWaiting = []  # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon1 = ''
         self.signon2 = ''
@@ -1076,8 +1052,8 @@ class LeoApp:
         id_ = getattr(sys, "leoID", None)
         if id_:
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
+            # cleanLeoID raises a warning dialog.
             id_ = self.cleanLeoID(id_, 'sys.leoID')
-                # cleanLeoID raises a warning dialog.
             if len(id_) > 2:
                 self.leoID = id_
                 if verbose:
@@ -1096,8 +1072,8 @@ class LeoApp:
                 if not s:
                     continue
                 # #1404: Ensure valid ID.
+                # cleanLeoID raises a warning dialog.
                 id_ = self.cleanLeoID(s, tag)
-                    # cleanLeoID raises a warning dialog.
                 if len(id_) > 2:
                     self.leoID = id_
                     return
@@ -1115,8 +1091,8 @@ class LeoApp:
                 if verbose:
                     g.blue("setting leoID from os.getenv('USER'):", repr(id_))
                 # Careful: periods in the gnx would corrupt the .leo file!
+                # cleanLeoID raises a warning dialog.
                 id_ = self.cleanLeoID(id_, "os.getenv('USER')")
-                    # cleanLeoID raises a warning dialog.
                 if len(id_) > 2:
                     self.leoID = id_
         except Exception:
@@ -1300,13 +1276,12 @@ class LeoApp:
         if hasattr(g.app, 'pyzo_close_handler'):
             # pylint: disable=no-member
             g.app.pyzo_close_handler()
+        # Disable all further hooks and events.
+        # Alas, "idle" events can still be called
+        # even after the following code.
         g.app.killed = True
-            # Disable all further hooks and events.
-            # Alas, "idle" events can still be called
-            # even after the following code.
         if g.app.gui:
-            g.app.gui.destroySelf()
-                # Calls qtApp.quit()
+            g.app.gui.destroySelf()  # Calls qtApp.quit()
     #@+node:ekr.20031218072017.2616: *4* app.forceShutdown
     def forceShutdown(self):
         """
@@ -1522,37 +1497,33 @@ class LoadManager:
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
     def __init__(self):
 
-        #
         # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
-        #
+
+        # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
         self.globalSettingsDict = None
-            # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
+        # A g.TypedDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
         self.globalBindingsDict = None
-            # A g.TypedDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
-        #
+
         # LoadManager ivars corresponding to user options...
-        #
-        self.files = []
-            # List of files to be loaded.
-        self.options = {}
-            # Dictionary of user options. Keys are option names.
-        self.old_argv = []
-            # A copy of sys.argv for debugging.
+
+        self.files = []  # List of files to be loaded.
+        self.options = {}  # Keys are option names; values are user options.
+        self.old_argv = []  # A copy of sys.argv for debugging.
+
+        # True when more files remain on the command line to be loaded.
+        # If the user is answering "No" to each file as Leo asks
+        # "file already open, open again".
+        # This must be False for a complete exit to be appropriate
+        # (finish_quit=True param for closeLeoWindow())
         self.more_cmdline_files = False
-            # True when more files remain on the command line to be
-            # loaded.  If the user is answering "No" to each file as Leo asks
-            # "file already open, open again", this must be False for
-            # a complete exit to be appropriate (finish_quit=True param for
-            # closeLeoWindow())
-        #
-        # Themes.
+
+        # Themes...
         self.leo_settings_c = None
         self.leo_settings_path = None
         self.my_settings_c = None
         self.my_settings_path = None
-        self.theme_c = None
-            # #1374.
+        self.theme_c = None  # #1374.
         self.theme_path = None
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
@@ -1646,9 +1617,9 @@ class LoadManager:
     #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
     def computeHomeDir(self):
         """Returns the user's home directory."""
+        # Windows searches the HOME, HOMEPATH and HOMEDRIVE
+        # environment vars, then gives up.
         home = os.path.expanduser("~")
-            # Windows searches the HOME, HOMEPATH and HOMEDRIVE
-            # environment vars, then gives up.
         if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
             # Get the indirect reference to the true home.
             home = os.getenv(home[1:-1], default=None)
@@ -1810,8 +1781,7 @@ class LoadManager:
         if not fn.endswith('.leo'):
             fn += '.leo'
         for directory in self.computeThemeDirectories():
-            path = g.os_path_join(directory, fn)
-                # Normalizes slashes, etc.
+            path = g.os_path_join(directory, fn)  # Normalizes slashes, etc.
             if g.os_path_exists(path):
                 return path
         print(f"theme .leo file not found: {fn}")
@@ -1906,8 +1876,8 @@ class LoadManager:
 
         from leo.core import leoConfig
         if c:
+            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
             parser = leoConfig.SettingsTreeParser(c, localFlag)
-                # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
             shortcutsDict, settingsDict = parser.traverse()
             return shortcutsDict, settingsDict
         return None, None
@@ -2016,12 +1986,10 @@ class LoadManager:
 
         Duplicates happen only if panes conflict.
         """
-        # lm = self
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         for ks in sorted(list(d.keys())):
             duplicates, panes = [], ['all']
-            aList = d.get(ks)
-                # A list of bi objects.
+            aList = d.get(ks)  # A list of bi objects.
             aList2 = [z for z in aList if not z.pane.startswith('mode')]
             if len(aList) > 1:
                 for bi in aList2:
@@ -2151,9 +2119,8 @@ class LoadManager:
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
                     lm.theme_c, settings_d, bindings_d, localFlag=False)
                 lm.globalSettingsDict = settings_d
-                # Set global vars
+                # Set global var used by the StyleSheetManager.
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
-                    # Used by the StyleSheetManager.
                 if trace:
                     g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
@@ -2204,8 +2171,8 @@ class LoadManager:
             return
         if not g.app.gui:
             return
+        # Disable redraw until all files are loaded.
         g.app.disable_redraw = True
-            # Disable redraw until all files are loaded.
         #
         # Phase 2: load plugins: the gui has already been set.
         t2 = time.process_time()
@@ -2279,8 +2246,8 @@ class LoadManager:
             try:  # #1403.
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
+                    # Returns None if the file is open in another instance of Leo.
                     c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                        # Returns None if the file is open in another instance of Leo.
                     if c and not c1:  # #1416:
                         c1 = c
             except Exception:
@@ -2386,8 +2353,7 @@ class LoadManager:
         lm = self
         lm.computeStandardDirectories()
         # Scan the options as early as possible.
-        lm.options = options = lm.scanOptions(fileName, pymacs)
-            # also sets lm.files.
+        lm.options = options = lm.scanOptions(fileName, pymacs)  # also sets lm.files.
         if options.get('version'):
             return
         script = options.get('script')
@@ -2402,10 +2368,10 @@ class LoadManager:
         if g.app.quit_after_load:
             localConfigFile = None
         else:
+            # Read only standard settings files, using a null gui.
+            # uses lm.files[0] to compute the local directory
+            # that might contain myLeoSettings.leo.
             lm.readGlobalSettingsFiles()
-                # reads only standard settings files, using a null gui.
-                # uses lm.files[0] to compute the local directory
-                # that might contain myLeoSettings.leo.
             # Read the recent files file.
             localConfigFile = lm.files[0] if lm.files else None
             g.app.recentFilesManager.readRecentFiles(localConfigFile)
@@ -2481,8 +2447,8 @@ class LoadManager:
     #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper
     def createWritersData(self):
         """Create the data structures describing writer plugins."""
+        # Do *not* remove this trace.
         trace = False and 'createWritersData' not in g.app.debug_dict
-            # Do *not* remove this trace.
         if trace:
             # Suppress multiple traces.
             g.app.debug_dict['createWritersData'] = True
@@ -2508,7 +2474,6 @@ class LoadManager:
             g.printDict(g.app.writersDispatchDict)
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
-        # Creates problems: See #40.
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         """
@@ -2849,8 +2814,7 @@ class LoadManager:
             # g.app.config does not exist yet.
         #
         # --trace-setting=setting
-        g.app.trace_setting = args.trace_setting
-            # g.app.config does not exist yet.
+        g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
     def doWindowSpotOption(self, args):
 
@@ -3265,17 +3229,12 @@ class RecentFilesManager:
     def __init__(self):
 
         self.edit_headline = 'Recent files. Do not change this headline!'
-            # Headline used by
-        self.groupedMenus = []
-            # Set in rf.createRecentFilesMenuItems.
-        self.recentFiles = []
-            # List of g.Bunches describing .leoRecentFiles.txt files.
-        self.recentFilesMenuName = 'Recent Files'
-            # May be changed later.
-        self.recentFileMessageWritten = False
-            # To suppress all but the first message.
-        self.write_recent_files_as_needed = False
-            # Will be set later.
+        self.groupedMenus = []  # Set in rf.createRecentFilesMenuItems.
+        self.recentFiles = []  # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.recentFilesMenuName = 'Recent Files'  # May be changed later.
+        self.recentFileMessageWritten = False  # To suppress all but the first message.
+        self.write_recent_files_as_needed = False  # Will be set later.
+
     #@+others
     #@+node:ekr.20041201080436: *3* rf.appendToRecentFiles
     def appendToRecentFiles(self, files):
