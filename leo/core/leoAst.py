@@ -1237,7 +1237,7 @@ class TokenOrderGenerator:
         # Init all ivars.
         self.file_name = file_name  # For tests.
         self.level = 0  # Python indentation level.
-        self.node = None # The node being visited.
+        self.node = None  # The node being visited.
         self.tokens = tokens  # The immutable list of input tokens.
         self.tree = tree  # The tree of ast.AST nodes.
         #
