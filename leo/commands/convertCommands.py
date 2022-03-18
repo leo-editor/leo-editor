@@ -171,8 +171,7 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.141: *5* removeExessWsFromLine
     def removeExcessWsFromLine(self, aList, i):
         assert(i == 0 or aList[i - 1] == '\n')
-        i = self.skip_ws(aList, i)
-            # Retain the leading whitespace.
+        i = self.skip_ws(aList, i)  # Retain the leading whitespace.
         while i < len(aList):
             if self.is_string_or_comment(aList, i):
                 break  # safe
@@ -1174,8 +1173,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
                 self.msf = msf = g.import_module('make_stub_files')
-                x = msf.StandAloneMakeStubFile()
-                    # x is used *only* to init ivars.
+                x = msf.StandAloneMakeStubFile()  # x is used *only* to init ivars.
                 # Ivars set on the command line...
                 self.config_fn = None
                 self.enable_unit_tests = False
@@ -1270,8 +1268,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return
                 out_fn = out_fn[:-3] + '.pyi'
                 out_fn = g.os_path_normpath(out_fn)
-                self.output_fn = out_fn
-                    # compatibility with stand-alone script
+                self.output_fn = out_fn  # compatibility with stand-alone script
                 s = open(abs_fn).read()
                 node = ast.parse(s, filename=fn, mode='exec')
                 # Make the traverser *after* creating output_fn and output_directory ivars.

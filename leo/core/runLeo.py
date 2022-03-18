@@ -70,8 +70,8 @@ def profile_leo():
     from leo.core import leoGlobals as g
     theDir = os.getcwd()
     # On Windows, name must be a plain string.
+    # This is a binary file.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
-        # This is a binary file.
     print(f"profiling binary stats to {name}")
     profile.run('import leo ; leo.run()', name)
     p = pstats.Stats(name)

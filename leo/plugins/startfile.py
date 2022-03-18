@@ -36,8 +36,7 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20100128073941.5379: ** init (startfile.py)
 def init():
     """Return True if the plugin has loaded successfully."""
-    ok = hasattr(os, "startfile")
-        # Ok for unit testing, but may be icondclick1 conflicts.
+    ok = hasattr(os, "startfile")  # Ok for unit testing, but may be icondclick1 conflicts.
     if ok:
         # Register the handlers...
         g.registerHandler("icondclick1", onIconDoubleClick)

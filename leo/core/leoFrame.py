@@ -307,8 +307,7 @@ class LeoBody:
         # Must be overridden in subclasses...
         self.colorizer = None
         # Init user settings.
-        self.use_chapters = False
-            # May be overridden in subclasses.
+        self.use_chapters = False  # May be overridden in subclasses.
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor(self):
         pass
@@ -724,8 +723,7 @@ class LeoFrame:
         self.es_newlines = 0  # newline count for this log stream
         self.openDirectory = ""
         self.saved = False  # True if ever saved
-        self.splitVerticalFlag = True
-            # Set by initialRatios later.
+        self.splitVerticalFlag = True  # Set by initialRatios later.
         self.startupWindow = False  # True if initially opened window
         self.stylesheet = None  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
@@ -1017,8 +1015,7 @@ class LeoFrame:
         bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
-        i, j = w.getSelectionRange()
-            # Returns insert point if no selection.
+        i, j = w.getSelectionRange()  # Returns insert point if no selection.
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
             s = w.getAllText()
@@ -1194,9 +1191,8 @@ class LeoLog:
         self.isNull = False
         # Official ivars...
         self.canvasCtrl = None  # Set below. Same as self.canvasDict.get(self.tabName)
+        # Important: depending on the log *tab*, logCtrl may be either a wrapper or a widget.
         self.logCtrl = None  # Set below. Same as self.textDict.get(self.tabName)
-            # Important: depeding on the log *tab*,
-            # logCtrl may be either a wrapper or a widget.
         self.tabName = None  # The name of the active tab.
         self.tabFrame = None  # Same as self.frameDict.get(self.tabName)
         self.canvasDict = {}  # Keys are page names.  Values are Tk.Canvas's.
@@ -1297,23 +1293,6 @@ class LeoLog:
 class LeoTree:
     """The base class for the outline pane in Leo windows."""
     #@+others
-    #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
-    def __init__(self, frame):
-        """Ctor for the LeoTree class."""
-        self.frame = frame
-        self.c = frame.c
-        self.edit_text_dict = {}
-            # New in 3.12: keys vnodes, values are edit_widgets.
-            # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        # "public" ivars: correspond to setters & getters.
-        self.drag_p = None
-        self.generation = 0
-            # Leo 5.6: low-level vnode methods increment
-            # this count whenever the tree changes.
-        self.redrawCount = 0  # For traces
-        self.use_chapters = False  # May be overridden in subclasses.
-        # Define these here to keep pylint happy.
-        self.canvas = None
     #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
     # These are new in Leo 4.6.
 
@@ -1386,6 +1365,21 @@ class LeoTree:
         c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+    #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
+    def __init__(self, frame):
+        """Ctor for the LeoTree class."""
+        self.frame = frame
+        self.c = frame.c
+        # New in 3.12: keys vnodes, values are edit_widgets.
+        # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
+        self.edit_text_dict = {}
+        # "public" ivars: correspond to setters & getters.
+        self.drag_p = None
+        self.generation = 0  # low-level vnode methods increment this count.
+        self.redrawCount = 0  # For traces
+        self.use_chapters = False  # May be overridden in subclasses.
+        # Define these here to keep pylint happy.
+        self.canvas = None
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
@@ -1971,9 +1965,9 @@ class NullLog(LeoLog):
 
         super().__init__(frame, parentFrame)
         self.isNull = True
+        # self.logCtrl is now a property of the base LeoLog class.
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
-            # self.logCtrl is now a property of the base LeoLog class.
     #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self):
         pass
@@ -2236,8 +2230,7 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18592: *4* stw.appendText
     def appendText(self, s):
         """StringTextWrapper."""
-        self.s = self.s + g.toUnicode(s)
-            # defensive
+        self.s = self.s + g.toUnicode(s)  # defensive
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete

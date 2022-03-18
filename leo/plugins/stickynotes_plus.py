@@ -69,7 +69,6 @@ def decorate_window(w):
 def init():
     """Return True if the plugin has loaded successfully."""
     ok = markdown is not None and g.app.gui.guiName() == "qt"
-        # Markdown fails on Python 3k at present.
     if ok:
         #g.registerHandler('start2',onStart2)
         g.plugin_signon(__name__)

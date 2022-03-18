@@ -491,10 +491,8 @@ class CoffeeScriptTraverser:
         result.append('{')
         self.level += 1
         for i, key in enumerate(node.keys):
-            head = self.leading_lines(key)
-                # Prevents leading lines from being handled again.
-            head = [z for z in head if z.strip()]
-                # Ignore blank lines.
+            head = self.leading_lines(key)  # Prevents leading lines from being handled again.
+            head = [z for z in head if z.strip()]  # Ignore blank lines.
             if head:
                 items.extend('\n' + ''.join(head))
             tail = self.trailing_comment(node.values[i])
@@ -1096,7 +1094,6 @@ class LeoGlobals:
 
         def __init__(self, s):
             self.lines = s.splitlines(True) if s else []
-                # g.splitLines(s)
             self.i = 0
 
         def next(self):

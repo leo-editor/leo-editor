@@ -163,24 +163,17 @@ class AutoCompleterClass:
         self.c = k.c
         self.k = k
         self.language = None
+        # additional namespaces to search for objects, other code
+        # can append namespaces to this to extend scope of search
         self.namespaces = []
-            # additional namespaces to search for objects, other code
-            # can append namespaces to this to extend scope of search
-        self.qw = None
-            # The object that supports qcompletion methods.
-        self.tabName = None
-            # The name of the main completion tab.
-        self.verbose = False
-            # True: print all members, regardless of how many there are.
-        self.w = None
-            # The widget that gets focus after autocomplete is done.
-        self.warnings = {}
-            # Keys are language names.
+        self.qw = None  # The object that supports qcompletion methods.
+        self.tabName = None  # The name of the main completion tab.
+        self.verbose = False  # True: print all members, regardless of how many there are.
+        self.w = None  # The widget that gets focus after autocomplete is done.
+        self.warnings = {}  # Keys are language names.
         # Codewise pre-computes...
-        self.codewiseSelfList = []
-            # The (global) completions for "self."
-        self.completionsDict = {}
-            # Keys are prefixes, values are completion lists.
+        self.codewiseSelfList = []  # The (global) completions for "self."
+        self.completionsDict = {}  # Keys are prefixes, values are completion lists.
         self.reloadSettings()
 
     def reloadSettings(self):
@@ -188,9 +181,9 @@ class AutoCompleterClass:
         self.auto_tab = c.config.getBool('auto-tab-complete', True)
         self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
         self.use_jedi = c.config.getBool('use-jedi', False)
+        # True: show results in autocompleter tab.
+        # False: show results in a QCompleter widget.
         self.use_qcompleter = c.config.getBool('use-qcompleter', False)
-            # True: show results in autocompleter tab.
-            # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
     #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     @ac_cmd('auto-complete')
@@ -849,8 +842,7 @@ class AutoCompleterClass:
         # Compute the prefix and the list of options.
         prefix = self.get_autocompleter_prefix()
         options = self.get_completions(prefix)
-        w = self.c.frame.body.wrapper.widget
-            # A LeoQTextBrowser.  May be none for unit tests.
+        w = self.c.frame.body.wrapper.widget  # A LeoQTextBrowser.  May be none for unit tests.
         if w and options:
             self.qw = w
             self.qcompleter = w.init_completer(options)
@@ -1364,8 +1356,7 @@ class GetArg:
         handler = c.commandsDict.get(commandName)
         if hasattr(handler, 'tab_callback'):
             self.reset_tab_cycling()
-            k.functionTail = tail
-                # For k.getFileName.
+            k.functionTail = tail  # For k.getFileName.
             handler.tab_callback()
             return True
         return False
@@ -1660,18 +1651,12 @@ class KeyHandlerClass:
         """Create a key handler for c."""
         self.c = c
         self.dispatchEvent = None
-        self.fnc = None
-            # A singleton defined in k.finishCreate.
-        self.getArgInstance = None
-            # A singleton defined in k.finishCreate.
-        self.inited = False
-            # Set at end of finishCreate.
-        self.killedBindings = []
-            # A list of commands whose bindings have been set to None in the local file.
-        self.replace_meta_with_alt = False
-            # True: (Mac only) swap Meta and Alt keys.
-        self.w = None
-            # Note: will be None for NullGui.
+        self.fnc = None  # A singleton defined in k.finishCreate.
+        self.getArgInstance = None  # A singleton defined in k.finishCreate.
+        self.inited = False  # Set at end of finishCreate.
+        self.killedBindings = []  # A list of commands whose bindings have been set to None in the local file.
+        self.replace_meta_with_alt = False  # True: (Mac only) swap Meta and Alt keys.
+        self.w = None  # Will be None for NullGui.
         # Generalize...
         self.x_hasNumeric = ['sort-lines', 'sort-fields']
         self.altX_prompt = 'full-command: '
@@ -1704,23 +1689,18 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self):
         """Define internal ivars of the KeyHandlerClass class."""
-        self.abbreviationsDict = {}
-            # Abbreviations created by @alias nodes.
+        self.abbreviationsDict = {}  # Abbreviations created by @alias nodes.
         # Previously defined bindings...
-        self.bindingsDict = {}
-            # Keys are Tk key names, values are lists of BindingInfo objects.
+        self.bindingsDict = {} # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
-        self.bindtagsDict = {}
-            # Keys are strings (the tag), values are 'True'
+        self.bindtagsDict = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory = []
-        self.commandIndex = 0
-            # List/stack of previously executed commands.
-            # Up arrow will select commandHistory[commandIndex]
+        # Up arrow will select commandHistory[commandIndex]
+        self.commandIndex = 0  # List/stack of previously executed commands.
+        # Keys are scope names: 'all','text',etc. or mode names.
+        # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterBindingsDict = {}
-            # Keys are scope names: 'all','text',etc. or mode names.
-            # Values are dicts: keys are strokes, values are BindingInfo objects.
-        self.masterGuiBindingsDict = {}
-            # Keys are strokes; value is True;
+        self.masterGuiBindingsDict = {}  # Keys are strokes; value is True.
         # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
@@ -1937,15 +1917,12 @@ class KeyHandlerClass:
         c.commandsDict has been created when this is called.
         """
         c, k = self.c, self
-        k.w = c.frame.miniBufferWidget
-            # Will be None for NullGui.
-        k.fnc = FileNameChooser(c)
-            # A singleton. Defined here so that c.k will exist.
-        k.getArgInstance = GetArg(c)
-            # a singleton. Defined here so that c.k will exist.
+        k.w = c.frame.miniBufferWidget  # Will be None for NullGui.
+        k.fnc = FileNameChooser(c)  # A singleton. Defined here so that c.k will exist.
+        k.getArgInstance = GetArg(c)  # A singleton. Defined here so that c.k will exist.
+        # Important: This must be called this now,
+        # even though LM.load calls g.app.makeAllBindings later.
         k.makeAllBindings()
-            # Important: This must be called this now,
-            # even though LM.laod calls g.app.makeAllBindings later.
         k.initCommandHistory()
         k.inited = True
         k.setDefaultInputState()
@@ -2966,13 +2943,11 @@ class KeyHandlerClass:
                     pane = bi.pane  # 2015/05/11.
                     break
         if stroke:
-            k.bindKey(pane, stroke, func, commandName, tag='register-command')
-                # Must be a stroke.
+            k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
-            d = c.config.getAbbrevDict()
-                # Keys are full command names, values are abbreviations.
+            d = c.config.getAbbrevDict()  # Keys are full command names, values are abbreviations.
             if commandName in list(d.values()):
                 for key in d:
                     if d.get(key) == commandName:
@@ -3122,7 +3097,6 @@ class KeyHandlerClass:
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
         """
-        #
         # #1757: Leo's default vim bindings make heavy use of modes.
         #        Retain these traces!
         trace = 'keys' in g.app.debug
@@ -3131,7 +3105,6 @@ class KeyHandlerClass:
         stroke = event.stroke
         if not k.inState():
             return False
-        #
         # First, honor minibuffer bindings for all except user modes.
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
@@ -3145,9 +3118,7 @@ class KeyHandlerClass:
                 if trace:
                     g.trace(state, 'k.handleMiniBindings', stroke)
                 return True
-        #
         # Second, honor general modes.
-        #
         if state == 'getArg':
             # New in Leo 5.8: Only call k.getArg for keys it can handle.
             if k.isPlainKey(stroke):
@@ -3167,18 +3138,15 @@ class KeyHandlerClass:
                 g.trace(state, 'k.getFileName', stroke)
             return True
         if state in ('full-command', 'auto-complete'):
+            # Do the default state action. Calls end-command.
             val = k.callStateFunction(event)
-                # Do the default state action.
-                # Calls end-command.
             if val != 'do-standard-keys':
                 handler = k.state.handler and k.state.handler.__name__ or '<no handler>'
                 if trace:
                     g.trace(state, 'k.callStateFunction:', handler, stroke)
                 return True
             return False
-        #
         # Third, pass keys to user modes.
-        #
         d = k.masterBindingsDict.get(state)
         if d:
             assert g.isStrokeOrNone(stroke)
@@ -3196,9 +3164,7 @@ class KeyHandlerClass:
             # Unbound keys end mode.
             k.endMode()
             return False
-        #
         # Fourth, call the state handler.
-        #
         handler = k.getStateHandler()
         if handler:
             handler(event)
@@ -3910,17 +3876,15 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self):
         k = self
-        d = {}
-            # keys are minibuffer command names, values are shortcuts.
+        d = {}  # keys are minibuffer command names, values are shortcuts.
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
             for bi in aList:
                 shortcutList = k.bindingsDict.get(bi.commandName, [])
-                    # Bug fix: 2017/03/26.
                 bi_list = k.bindingsDict.get(
                     stroke, g.BindingInfo(kind='dummy', pane='all'))
-                    # Important: only bi.pane is required below.
+                # Important: only bi.pane is required below.
                 for bi in bi_list:
                     pane = f"{bi.pane}:"
                     data = (pane, stroke)
@@ -4180,8 +4144,7 @@ class ModeInfo:
     def enterMode(self):
 
         c, k = self.c, self.k
-        c.inCommand = False
-            # Allow inner commands in the mode.
+        c.inCommand = False  # Allow inner commands in the mode.
         event = None
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* mode_i.init

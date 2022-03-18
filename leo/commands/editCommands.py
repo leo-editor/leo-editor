@@ -270,9 +270,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Values are tuples, (i, j, ins)
         self.extendMode = False  # True: all cursor move commands extend the selection.
         self.fillPrefix = ''  # For fill prefix functions.
-        self.fillColumn = 0  # For line centering.
-            # Set by the set-fill-column command.
-            # If zero, @pagewidth value is used.
+        # Set by the set-fill-column command.
+        self.fillColumn = 0  # For line centering. If zero, use @pagewidth value.
         self.moveSpotNode = None  # A VNode.
         self.moveSpot = None  # For retaining preferred column when moving up or down.
         self.moveCol = None  # For retaining preferred column when moving up or down.
@@ -369,10 +368,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.app.batchMode:
             c.notValidInBatchMode("Insert Headline Time")
             return
+        # #131: Do not get w from self.editWidget()!
         w = c.frame.tree.edit_widget(p)
-            # 2015/06/09: Fix bug 131: Insert time in headline now inserts time in body
-            # Get the wrapper from the tree itself.
-            # Do *not* set w = self.editWidget!
         if w:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
             # insert-headline-time should insert at cursor.
@@ -1897,8 +1894,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Pick the correct curly quote.
         s = w.getAllText() or ""
         i2 = g.skip_to_start_of_line(s, max(0, ins - 1))
-        open_curly = ins == i2 or ins > i2 and s[ins - 1] in ' \t'
-            # not s[ins-1].isalnum()
+        open_curly = ins == i2 or ins > i2 and s[ins - 1] in ' \t'  # not s[ins-1].isalnum()
         if open_curly:
             ch = '‘' if ch == "'" else "“"
         else:
@@ -2037,8 +2033,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         Add spaces equivalent to a tab.
         """
         c = self.c
-        i, j = w.getSelectionRange()
-            # Returns insert point if no selection, with i <= j.
+        i, j = w.getSelectionRange()  # Returns insert point if no selection, with i <= j.
         if i != j:
             c.indentBody(event)
             return
@@ -2051,8 +2046,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             after = after[:-1]
         # Only do smart tab at the start of a blank line.
         doSmartTab = (smartTab and c.smart_tab and i == start)
-            # Truly at the start of the line.
-            # and not after # Nothing *at all* after the cursor.
         if doSmartTab:
             self.updateAutoIndent(p, w)
             # Add a tab if otherwise nothing would happen.

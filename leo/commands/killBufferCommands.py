@@ -24,13 +24,13 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.kbiterator = self.iterateKillBuffer()
+        # For interacting with system clipboard.
         self.last_clipboard = None
-            # For interacting with system clipboard.
+        # Position of the last item returned by iterateKillBuffer.
         self.lastYankP = None
-            # Position of the last item returned by iterateKillBuffer.
+        # The index of the next item to be returned in
+        # g.app.globalKillBuffer by iterateKillBuffer.
         self.reset = None
-            # The index of the next item to be returned in
-            # g.app.globalKillBuffer by iterateKillBuffer.
         self.reloadSettings()
 
     def reloadSettings(self):

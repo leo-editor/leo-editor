@@ -665,8 +665,8 @@ class quickMove:
         if c2 is None:
             return
 
-        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
-                                        # invalidating p
+        # in case nd was created in this outline, invalidating p
+        p = self.c.vnode2position(p_v)
 
         self.copy_recursively(p, nd)
 
@@ -706,8 +706,8 @@ class quickMove:
         if c2 is None:
             return
 
-        p = self.c.vnode2position(p_v)  # in case nd was created in this outline,
-                                        # invalidating p
+        # in case nd was created in this outline, invalidating p
+        p = self.c.vnode2position(p_v)
 
         in_bookmarks = False
         for i in nd.parents():

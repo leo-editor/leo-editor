@@ -1293,8 +1293,7 @@ class Pattern:
         Return (found, new s)
         '''
         trace = False or trace
-        caller = g.callers(2).split(',')[0].strip()
-            # The caller of match_all.
+        caller = g.callers(2).split(',')[0].strip()  # The caller of match_all.
         s1 = truncate(s, 40)
         if self.is_balanced():
             j = self.full_balanced_match(s, 0)
@@ -1592,8 +1591,7 @@ class StandAloneMakeStubFile:
         '''Ctor for StandAloneMakeStubFile class.'''
         self.options = {}
         # Ivars set on the command line...
-        self.config_fn = None
-            # self.finalize('~/stubs/make_stub_files.cfg')
+        self.config_fn = None  # self.finalize('~/stubs/make_stub_files.cfg')
         self.enable_unit_tests = False
         self.files = []  # May also be set in the config file.
         # Ivars set in the config file...
@@ -1610,8 +1608,7 @@ class StandAloneMakeStubFile:
         self.verbose = False  # Trace config arguments.
         self.warn = False
         # Pattern lists, set by config sections...
-        self.section_names = (
-            'Global', 'Def Name Patterns', 'General Patterns')
+        self.section_names = ('Global', 'Def Name Patterns', 'General Patterns')
         self.def_patterns = []  # [Def Name Patterns]
         self.general_patterns = []  # [General Patterns]
         self.names_dict = {}
@@ -1769,8 +1766,8 @@ class StandAloneMakeStubFile:
                 self.output_directory = None  # inhibit run().
         if 'prefix_lines' in parser.options('Global'):
             prefix = parser.get('Global', 'prefix_lines')
+            # The parser does not preserve leading whitespace.
             self.prefix_lines = prefix.split('\n')
-                # The parser does not preserve leading whitespace.
             if trace:
                 print('Prefix lines...\n')
                 for z in self.prefix_lines:
@@ -1805,8 +1802,7 @@ class StandAloneMakeStubFile:
     #@+node:ekr.20160317054700.127: *4* msf.create_parser
     def create_parser(self):
         '''Create a RawConfigParser and return it.'''
-        parser = configparser.RawConfigParser(dict_type=OrderedDict)
-            # Requires Python 2.7
+        parser = configparser.RawConfigParser(dict_type=OrderedDict)  # Requires Python 2.7
         parser.optionxform = str
         return parser
     #@+node:ekr.20160317054700.128: *4* msf.find_pattern_ops
@@ -2025,7 +2021,6 @@ class StubFormatter(AstFormatter):
         '''Ctor for StubFormatter class.'''
         self.controller = x = controller
         self.traverser = traverser
-            # 2016/02/07: to give the formatter access to the class_stack.
         self.def_patterns = x.def_patterns
         self.general_patterns = x.general_patterns
         self.names_dict = x.names_dict
@@ -2047,8 +2042,7 @@ class StubFormatter(AstFormatter):
         d = self.matched_d
         name = node.__class__.__name__
         s1 = truncate(s, 40)
-        caller = g.callers(2).split(',')[1].strip()
-            # The direct caller of match_all.
+        caller = g.callers(2).split(',')[1].strip()  # The direct caller of match_all.
         patterns = self.patterns_dict.get(name, []) + self.regex_patterns
         for pattern in patterns:
             found, s = pattern.match(s, trace=False)
@@ -2175,12 +2169,11 @@ class StubFormatter(AstFormatter):
         if op.strip() in ('is', 'is not', 'in', 'not in'):
             s = 'bool'
         elif lhs == rhs:
+            # Perhaps not always right, but it is correct for Tuple, List, Dict.
             s = lhs
-                # Perhaps not always right,
-                # but it is correct for Tuple, List, Dict.
         elif lhs in numbers and rhs in numbers:
+            # reduce_numbers would be wrong: it returns a list.
             s = reduce_types([lhs, rhs], trace=trace)
-                # reduce_numbers would be wrong: it returns a list.
         elif lhs == 'str' and op in '%+*':
             # str + any implies any is a string.
             s = 'str'
@@ -2317,8 +2310,7 @@ class StubTraverser(ast.NodeVisitor):
     #@+node:ekr.20160317054700.163: *3* st.ctor
     def __init__(self, controller):
         '''Ctor for StubTraverser class.'''
-        self.controller = x = controller
-            # A StandAloneMakeStubFile instance.
+        self.controller = x = controller  # A StandAloneMakeStubFile instance.
         # Internal state ivars...
         self.class_name_stack = []
         self.context_stack = []
@@ -2330,8 +2322,7 @@ class StubTraverser(ast.NodeVisitor):
         self.parent_stub = None
         self.raw_format = AstFormatter().format
         self.returns = []
-        self.stubs_dict = {}
-            # Keys are stub.full_name's.  Values are stubs.
+        self.stubs_dict = {}  # Keys are stub.full_name's.  Values are stubs.
         self.warn_list = []
         # Copies of controller ivars...
         self.output_fn = x.output_fn
@@ -2538,13 +2529,11 @@ class StubTraverser(ast.NodeVisitor):
         '''
         trace = False or trace; verbose = False
         # Part 1: Delete old stubs do *not* exist in the *new* tree.
+        # check_delete checks that all ancestors of deleted nodes will be deleted.
         aList = self.check_delete(new_stubs,
-                                  old_root,
-                                  new_root,
-                                  trace and verbose)
-            # Checks that all ancestors of deleted nodes will be deleted.
+            old_root, new_root, trace and verbose)
+        # Sort old stubs so that children are deleted before parents.
         aList = list(reversed(self.sort_stubs_by_hierarchy(aList)))
-            # Sort old stubs so that children are deleted before parents.
         if trace and verbose:
             dump_list('ordered delete list', aList)
         for stub in aList:
@@ -2553,9 +2542,9 @@ class StubTraverser(ast.NodeVisitor):
             parent.children.remove(stub)
             assert not self.find_stub(stub, old_root), stub
         # Part 2: Insert new stubs that *not* exist in the *old* tree.
+        # Sort new stubs so that parents are created before children.
         aList = [z for z in new_stubs if not self.find_stub(z, old_root)]
         aList = self.sort_stubs_by_hierarchy(aList)
-            # Sort new stubs so that parents are created before children.
         for stub in aList:
             if trace: g.trace('inserting %s' % stub)
             parent = self.find_parent_stub(stub, old_root) or old_root

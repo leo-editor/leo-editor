@@ -229,15 +229,17 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         except IOError:
             pass
 
-        self.commands = {}  # associates a command list to breakpoint numbers
-        self.commands_doprompt = {}  # for each bp num, tells if the prompt
-                                    # must be disp. after execing the cmd list
-        self.commands_silent = {}  # for each bp num, tells if the stack trace
-                                    # must be disp. after execing the cmd list
-        self.commands_defining = False  # True while in the process of defining
-                                        # a command list
-        self.commands_bnum = None  # The breakpoint number for which we are
-                                    # defining a list
+        # Associates a command list to breakpoint numbers.
+        # for each bp num, tells if the prompt must be disp. after execing the cmd list
+        self.commands = {}
+        self.commands_doprompt = {}
+        # for each bp num, tells if the stack trace
+        # must be disp. after execing the cmd list
+        self.commands_silent = {}
+        # True while in the process of defining a command list
+        self.commands_defining = False
+        # The breakpoint number for which we are defining a list
+        self.commands_bnum = None
     #@+node:ekr.20110914171443.7252: *3* sigint_handler
     def sigint_handler(self, signum, frame):
         if self.allow_kbdint:
@@ -307,10 +309,9 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         # EKR.
         if filename == '<string>':
+            # EKR: frame keyword argument is new.
             filename = self._getval('__file__', frame=frame)
-                # EKR: frame keyword argument is new.
             filename = self.canonic(filename)
-
         if filename not in self.breaks:
             return False
 

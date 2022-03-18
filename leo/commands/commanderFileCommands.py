@@ -41,19 +41,17 @@ def reloadSettingsHelper(c):
     for c2 in g.app.commanders():
         if c2.isChanged():
             c2.save()
+    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
     lm.readGlobalSettingsFiles()
-        # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
     for c in g.app.commanders():
+        # Read the local file, using a null gui.
         previousSettings = lm.getPreviousSettings(fn=c.mFileName)
-            # Read the local file, using a null gui.
+        # Init the config classes.
         c.initSettings(previousSettings)
-            # Init the config classes.
+        # Init the commander config ivars.
         c.initConfigSettings()
-            # Init the commander config ivars.
+        # Reload settings in all configurable classes
         c.reloadConfigurableSettings()
-            # Reload settings in all configurable classes
-        # c.redraw()
-            # Redraw so a pasted temp node isn't visible
 #@+node:ekr.20200422075655.1: ** c_file.restartLeo
 @g.commander_command('restart-leo')
 def restartLeo(self, event=None):
@@ -457,16 +455,13 @@ def save(self, event=None, fileName=None):
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             c.frame.title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(c.computeWindowTitle(c.mFileName))
-                # 2013/08/04: use c.computeWindowTitle.
             c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
-                # Bug fix in 4.4b2.
             if hasattr(c.frame, 'top'):
                 c.frame.top.leo_master.setTabName(c, c.mFileName)
             c.fileCommands.save(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-    # Done in FileCommands.save.
-    # c.redraw_after_icons_changed()
+    # FileCommands.save calls c.redraw_after_icons_changed()
     c.raise_error_dialogs(kind='write')
     # *Safely* restore focus, without using the old w directly.
     if inBody:
@@ -533,17 +528,14 @@ def saveAs(self, event=None, fileName=None):
         # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
         c.frame.title = title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(title)
-            # 2013/08/04: use c.computeWindowTitle.
         c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
-            # Bug fix in 4.4b2.
         # Calls c.clearChanged() if no error.
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.saveAs(c.mFileName)
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    # Done in FileCommands.saveAs.
-    # c.redraw_after_icons_changed()
+    # FileCommands.saveAs calls c.redraw_after_icons_changed()
     c.raise_error_dialogs(kind='write')
     # *Safely* restore focus, without using the old w directly.
     if inBody:
