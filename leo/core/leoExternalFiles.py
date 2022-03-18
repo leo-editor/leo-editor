@@ -16,11 +16,10 @@ class ExternalFile:
         """Ctor for ExternalFile class."""
         self.c = c
         self.ext = ext
-        self.p = p and p.copy()
-            # The nearest @<file> node.
+        self.p = p and p.copy()  # The nearest @<file> node.
         self.path = path
-        self.time = time  # Used to inhibit endless dialog loop.
-                          # See efc.idle_check_open_with_file.
+        # Inhibit endless dialog loop. See efc.idle_check_open_with_file.
+        self.time = time
 
     def __repr__(self):
         return f"<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>"

@@ -103,7 +103,7 @@ def init():
     ok = g.app.gui.guiName() == 'qt'
     if ok:
         g.plugin_signon(__name__)
-        g.registerHandler('close-frame',onCloseFrame)
+        g.registerHandler('close-frame', onCloseFrame)
     return ok
 #@+node:ekr.20220310040820.1: ** onCloseFrame
 def onCloseFrame(tag, kwargs):
@@ -116,7 +116,7 @@ def onCloseFrame(tag, kwargs):
     for gnx in d:
         w = d.get(gnx)
         w.close()
-    outer_dict [c.hash()] = {}
+    outer_dict[c.hash()] = {}
 #@+node:ekr.20160403065412.1: ** commands
 #@+node:vivainio2.20091008133028.5825: *3* g.command('stickynote')
 @g.command('stickynote')
@@ -191,8 +191,8 @@ def stickynoter_f(event):
     nf.textChanged.connect(textchanged_cb)
     nf.show()
     d = outer_dict.get(c.hash(), {})
-    d [p.gnx] = nf
-    outer_dict [c.hash()] = d
+    d[p.gnx] = nf
+    outer_dict[c.hash()] = d
 #@+node:tbrown.20100120100336.7829: *3* g.command('stickynoteenc')
 if encOK:
     @g.command('stickynoterekey')
@@ -525,7 +525,7 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
 
     def closeevent():
         pass
-        
+
     # #2471: Create a new editor only if it doesn't already exist.
     d = outer_dict.get(c.hash(), {})
     nf = d.get(p.gnx)
@@ -553,8 +553,8 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     nf.textChanged.connect(textchanged_cb)
     nf.show()
     d = outer_dict.get(c.hash(), {})
-    d [p.gnx] = nf
-    outer_dict [c.hash()] = d
+    d[p.gnx] = nf
+    outer_dict[c.hash()] = d
     return nf
 #@+node:ville.20100703234124.9976: ** Tabula
 #@+node:ville.20100704010850.5589: *3* def tabula_show

@@ -64,16 +64,15 @@ class ParserBaseClass:
         """Ctor for the ParserBaseClass class."""
         self.c = c
         self.clipBoard = []
+        # True if this is the .leo file being opened,
+        # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
-            # True if this is the .leo file being opened,
-            # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),
             valType=g.BindingInfo,
         )
-        self.openWithList = []
-            # A list of dicts containing 'name','shortcut','command' keys.
+        self.openWithList = []  # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
         self.dispatchDict = {
             'bool':         self.doBool,
@@ -520,25 +519,20 @@ class ParserBaseClass:
                     if itemName:
                         lines = [z for z in g.splitLines(p.b) if
                             z.strip() and not z.strip().startswith('#')]
+                        # Only the first body line is significant.
+                        # This allows following comment lines.
                         body = lines[0].strip() if lines else ''
-                            # Only the first body line is significant.
-                            # This allows following comment lines.
                         if tag == '@menu':
                             aList2: List[Any] = []  # Huh?
                             kind = f"{tag} {itemName}"
                             self.doItems(p, aList2)  # Huh?
-                            aList.append((kind, aList2, body),)
-                                # #848: Body was None.
+                            aList.append((kind, aList2, body),)  # #848: Body was None.
                             p.moveToNodeAfterTree()
                             break
                         else:
                             kind = tag
                             head = itemName
-                            # Wrong: we must not clean non-unicode characters!
-                                # # Fix #1117: Similar to cleanButtonText in mod_scripting.py.
-                                # s = ''.join([ch if ch in chars else '' for ch in g.toUnicode(head)])
-                                # head2 = s.replace('--', '-').lower()
-                                # aList.append((kind, head2, body),)
+                            # We must not clean non-unicode characters!
                             aList.append((kind, head, body),)
                             p.moveToThreadNext()
                             break
@@ -785,33 +779,25 @@ class ParserBaseClass:
         i = g.skip_ws(s, 0)
         if g.match(s, i, '#'):
             return
-        # try:
-            # s = str(s)
-        # except UnicodeError:
-            # pass
-        if 1:  # new code
-            j = g.skip_c_id(s, i)
-            tag = s[i:j].strip()
-            if not tag:
-                g.es_print(f"@openwith lines must start with a tag: {s}")
-                return
-            i = g.skip_ws(s, j)
-            if not g.match(s, i, ':'):
-                g.es_print(f"colon must follow @openwith tag: {s}")
-                return
-            i += 1
-            val = s[i:].strip() or ''
-                # An empty val is valid.
-            if tag == 'arg':
-                aList = d.get('args', [])
-                aList.append(val)
-                d['args'] = aList
-            elif d.get(tag):
-                g.es_print(f"ignoring duplicate definition of {tag} {s}")
-            else:
-                d[tag] = val
+        j = g.skip_c_id(s, i)
+        tag = s[i:j].strip()
+        if not tag:
+            g.es_print(f"@openwith lines must start with a tag: {s}")
+            return
+        i = g.skip_ws(s, j)
+        if not g.match(s, i, ':'):
+            g.es_print(f"colon must follow @openwith tag: {s}")
+            return
+        i += 1
+        val = s[i:].strip() or ''  # An empty val is valid.
+        if tag == 'arg':
+            aList = d.get('args', [])
+            aList.append(val)
+            d['args'] = aList
+        elif d.get(tag):
+            g.es_print(f"ignoring duplicate definition of {tag} {s}")
         else:
-            d['command'] = s
+            d[tag] = val
     #@+node:ekr.20041120112043: *4* pbc.parseShortcutLine
     def parseShortcutLine(self, kind, s):
         """Parse a shortcut line.  Valid forms:
@@ -822,9 +808,7 @@ class ParserBaseClass:
         command-name --> mode-name = binding
         command-name --> same = binding
         """
-        # c = self.c
-        s = s.replace('\x7f', '')
-            # Can happen on MacOS. Very weird.
+        s = s.replace('\x7f', '')  # Can happen on MacOS. Very weird.
         name = val = nextMode = None
         nextMode = 'none'
         i = g.skip_ws(s, 0)
@@ -1696,8 +1680,7 @@ class GlobalConfigManager:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict.d
-        gs = d.get(self.munge(settingName))
-            # A GeneralSetting object.
+        gs = d.get(self.munge(settingName))  # A GeneralSetting.
         if gs:
             path = gs.path
             if path.find('myLeoSettings.leo') > -1:
@@ -2255,8 +2238,6 @@ class SettingsTreeParser(ParserBaseClass):
     def visitNode(self, p):
         """Init any settings found in node p."""
         p = p.copy()
-            # Bug fix 2011/11/24
-            # Ensure inner traversals don't change callers's p.
         munge = g.app.config.munge
         kind, name, val = self.parseHeadline(p.h)
         kind = munge(kind)

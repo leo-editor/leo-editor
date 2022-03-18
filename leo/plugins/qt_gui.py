@@ -2148,7 +2148,7 @@ class StyleSheetManager:
         """
         RE = r'([=:])[ ]*([.1234567890]+)(p[tx])'
 
-        def scale(matchobj, scale = factor):
+        def scale(matchobj, scale=factor):
             prefix = matchobj.group(1)
             sz = matchobj.group(2)
             units = matchobj.group(3)

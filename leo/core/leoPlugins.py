@@ -625,7 +625,7 @@ class LeoPluginsController:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             aList = self.handlers.get(tag, [])
             aList.append(bunch)
-            self.handlers [tag] = aList
+            self.handlers[tag] = aList
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""

@@ -2242,7 +2242,7 @@ class VNode:
             return self._bodyString
         else:  # pragma: no cover
             # This message should never be printed and we want to avoid crashing here!
-            g.internalError(f"body not unicode: {self._bodyString!r}") 
+            g.internalError(f"body not unicode: {self._bodyString!r}")
             return g.toUnicode(self._bodyString)
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild

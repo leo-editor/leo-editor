@@ -672,7 +672,7 @@ def save_as_xml(self, event=None):
     c.fileCommands.putSavedMessage(fileName)
 #@+node:tom.20220310092720.1: *3* c_file.save-node-as-xml
 @g.commander_command('save-node-as-xml')
-def save_node_as_xml_outline(self, event = None):
+def save_node_as_xml_outline(self, event=None):
     """Save a node with its subtree as a Leo outline file."""
     c = event.c
     xml = c.fileCommands.outline_to_clipboard_string()
