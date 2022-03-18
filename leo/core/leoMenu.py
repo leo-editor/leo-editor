@@ -226,7 +226,7 @@ class LeoMenu:
         if name2.startswith('recentfiles'):
             # Just create the menu.
             # createRecentFilesMenuItems will create the contents later.
-            g.app.recentFilesManager.recentFilesMenuName = alt_name or name # #848
+            g.app.recentFilesManager.recentFilesMenuName = alt_name or name  # #848
             self.createNewMenu(alt_name or name, parentName)
             return True
         if name2 == 'help' and g.isMac:

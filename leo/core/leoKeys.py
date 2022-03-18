@@ -1691,7 +1691,7 @@ class KeyHandlerClass:
         """Define internal ivars of the KeyHandlerClass class."""
         self.abbreviationsDict = {}  # Abbreviations created by @alias nodes.
         # Previously defined bindings...
-        self.bindingsDict = {} # Keys are Tk key names, values are lists of BindingInfo objects.
+        self.bindingsDict = {}  # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
         self.bindtagsDict = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory = []

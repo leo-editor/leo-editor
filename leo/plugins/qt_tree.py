@@ -746,7 +746,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.busy = True
             p = self.item2position(item)
             if p:
-                auto_edit = self.prev_v == p.v # #1049.
+                auto_edit = self.prev_v == p.v  # #1049.
                 self.prev_v = p.v
                 event = None
                 #

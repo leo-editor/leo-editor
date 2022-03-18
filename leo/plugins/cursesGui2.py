@@ -1262,7 +1262,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log = None  # The present log. Used by g.es
         self.log_inited = False  # True: don't use the wait_list.
         self.minibuffer_label = ''  # The label set by k.setLabel.
-        self.wait_list = [] # Queued log messages.
+        self.wait_list = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
         self.top_form = None  # The top-level form. Set in createCursesTop.
@@ -2369,8 +2369,8 @@ class CoreLog(leoFrame.LeoLog):
         self.isNull = False  # Required by Leo's core.
         # The npyscreen log widget. Queue all output until set. Set in CApp.main.
         self.widget = None
-        self.contentsDict = {} # Keys are tab names.  Values are widgets.
-        self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
+        self.contentsDict = {}  # Keys are tab names.  Values are widgets.
+        self.logDict = {}  # Keys are tab names text widgets.  Values are the widgets.
         self.tabWidget = None
     #@+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')

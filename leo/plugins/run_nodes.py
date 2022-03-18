@@ -310,7 +310,7 @@ def OpenProcess(p):
     # Start the threads and open the pipe.
     OutThread = readingThread()
     ErrThread = readingThread()
-   
+
     proc = subprocess.Popen(command, shell=True)
     In = proc.stdin
     OutThread.File = proc.stdout
