@@ -73,7 +73,6 @@ def open_in_emacs_helper(c, p):
     efc = g.app.externalFilesController
     path = efc and efc.find_path_for_node(p)
     emacs_cmd = c.config.getString('xemacs-exe') or _emacs_cmd
-        # 2010/01/18: found by pylint.
     if (
         not path or
         not g.os_path_exists(path) or

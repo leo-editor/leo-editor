@@ -244,8 +244,7 @@ def convertTabs(self, event=None):
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-        s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
-            # use negative width.
+        s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]  # use negative width.
         if s != line:
             changed = True
         result.append(s)

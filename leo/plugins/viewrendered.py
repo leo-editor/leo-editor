@@ -278,8 +278,7 @@ except ImportError:
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 #pylint: disable=no-member
-trace = False
-    # This global trace is convenient.
+trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
@@ -321,10 +320,10 @@ latex_template = '''\
 </html>
 '''
 #@-<< define html templates >>
+# Keys are c.hash(): values are PluginControllers (QWidget's).
 controllers: Dict[int, Any] = {}
-    # Keys are c.hash(): values are PluginControllers (QWidget's).
+# Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 layouts = {}
-    # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
 #@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
@@ -1056,8 +1055,8 @@ if QtWidgets:  # NOQA
                 f.write(s)
             # Call the external program to write the output file.
             prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
+            # The -e option deletes css.
             command = f"{prog} {i_path} -b html5 -o {o_path}"
-                # The -e option deletes css.
             g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
@@ -1128,8 +1127,8 @@ if QtWidgets:  # NOQA
             path = path.replace('\\', '/')
             template = image_template % (path)
             # Only works in Python 3.x.
+            # Sensitive to leading blank lines.
             template = textwrap.dedent(template).strip()
-                # Sensitive to leading blank lines.
             # template = g.toUnicode(template)
             pc.show()
             w.setReadOnly(False)
@@ -1374,8 +1373,8 @@ if QtWidgets:  # NOQA
             with open(i_path, 'w') as f:
                 f.write(s)
             # Call pandoc to write the output file.
+            # --quiet does no harm.
             command = f"pandoc {i_path} -t html5 -o {o_path}"
-                # --quiet does no harm.
             g.execute_shell_commands(command)
             # Read the output file and return it.
             with open(o_path, 'r') as f:
@@ -1414,8 +1413,8 @@ if QtWidgets:  # NOQA
                 namespace = {}
             # Embedding already works without this!
                 # self.embed_pyplot_widget()
+            # pyplot will throw RuntimeError if we close the pane.
             self.pyplot_active = True
-                # pyplot will throw RuntimeError if we close the pane.
             c.executeScript(
                 event=None,
                 args=None, p=None,
@@ -1592,8 +1591,8 @@ if QtWidgets:  # NOQA
                 w = pc.w
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
+                # Sensitive to leading blank lines.
                 s = textwrap.dedent(s).strip()
-                    # Sensitive to leading blank lines.
                 s = g.toEncodedString(s)
                 pc.show()
                 w.load(QtCore.QByteArray(s))

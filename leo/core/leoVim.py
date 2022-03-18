@@ -88,12 +88,12 @@ class VimCommands:
     #@+node:ekr.20140805130800.18162: *5* vc.create_dispatch_dicts
     def create_dispatch_dicts(self):
         """Create all dispatch dicts."""
+        # Dispatch table for normal mode.
         self.normal_mode_dispatch_d = d1 = self.create_normal_dispatch_d()
-            # Dispatch table for normal mode.
+        # Dispatch table for motions.
         self.motion_dispatch_d = d2 = self.create_motion_dispatch_d()
-            # Dispatch table for motions.
+        # Dispatch table for visual mode.
         self.vis_dispatch_d = d3 = self.create_vis_dispatch_d()
-            # Dispatch table for visual mode.
         # Add all entries in arrow dict to the other dicts.
         self.arrow_d = arrow_d = self.create_arrow_d()
         for d, tag in ((d1, 'normal'), (d2, 'motion'), (d3, 'visual')):
@@ -394,92 +394,63 @@ class VimCommands:
     #@+node:ekr.20140803220119.18104: *5* vc.init_dot_ivars
     def init_dot_ivars(self):
         """Init all dot-related ivars."""
-        self.in_dot = False
-            # True if we are executing the dot command.
-        self.dot_list = []
-            # This list is preserved across commands.
-        self.old_dot_list = []
-            # The dot_list saved at the start of visual mode.
+        self.in_dot = False  # True if we are executing the dot command.
+        self.dot_list = []  # This list is preserved across commands.
+        self.old_dot_list = []  # The dot_list saved at the start of visual mode.
     #@+node:ekr.20140803220119.18109: *5* vc.init_constant_ivars
     def init_constant_ivars(self):
         """Init ivars whose values never change."""
+        # List of printable characters
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-            # List of printable characters
+        # List of register names.
         self.register_names = string.ascii_letters
-            # List of register names.
     #@+node:ekr.20140803220119.18106: *5* vc.init_state_ivars
     def init_state_ivars(self):
         """Init all ivars related to command state."""
-        self.ch = None
-            # The incoming character.
-        self.command_i = None
-            # The offset into the text at the start of a command.
-        self.command_list = []
-            # The list of all characters seen in this command.
-        self.command_n = None
-            # The repeat count in effect at the start of a command.
-        self.command_w = None
-            # The widget in effect at the start of a command.
-        self.event = None
-            # The event for the current key.
-        self.extend = False
-            # True: extending selection.
-        self.handler = self.do_normal_mode
-            # Use the handler for normal mode.
-        self.in_command = False
-            # True: we have seen some command characters.
-        self.in_motion = False
-            # True if parsing an *inner* motion, the 2j in d2j.
-        self.motion_func = None
-            # The callback handler to execute after executing an inner motion.
-        self.motion_i = None
-            # The offset into the text at the start of a motion.
-        self.n1 = 1
-            # The first repeat count.
-        self.n = 1
-            # The second repeat count.
-        self.n1_seen = False
-            # True if self.n1 has been set.
-        self.next_func = None
-            # The continuation of a multi-character command.
-        self.old_sel = None
-            # The selection range at the start of a command.
-        self.repeat_list = []
-            # The characters of the current repeat count.
+        self.ch = None  # The incoming character.
+        self.command_i = None  # The offset into the text at the start of a command.
+        self.command_list = []  # The list of all characters seen in this command.
+        self.command_n = None  # The repeat count in effect at the start of a command.
+        self.command_w = None  # The widget in effect at the start of a command.
+        self.event = None  # The event for the current key.
+        self.extend = False  # True: extending selection.
+        self.handler = self.do_normal_mode  # Use the handler for normal mode.
+        self.in_command = False  # True: we have seen some command characters.
+        self.in_motion = False  # True if parsing an *inner* motion, the 2j in d2j.
+        self.motion_func = None  # The callback handler to execute after executing an inner motion.
+        self.motion_i = None  # The offset into the text at the start of a motion.
+        self.n1 = 1  # The first repeat count.
+        self.n = 1  # The second repeat count.
+        self.n1_seen = False  # True if self.n1 has been set.
+        self.next_func = None  # The continuation of a multi-character command.
+        self.old_sel = None  # The selection range at the start of a command.
+        self.repeat_list = []  # The characters of the current repeat count.
+        # The value returned by do_key().
+        # Handlers set this to False to tell k.masterKeyHandler to handle the key.
         self.return_value = True
-            # The value returned by do_key().
-            # Handlers set this to False to tell k.masterKeyHandler to handle the key.
-        self.state = 'normal'
-            # in ('normal','insert','visual',)
-        self.stroke = None
-            # The incoming stroke.
-        self.visual_line_flag = False
-            # True: in visual-line state.
-        self.vis_mode_i = None
-            # The insertion point at the start of visual mode.
-        self.vis_mode_w = None
-            # The widget in effect at the start of visual mode.
+        self.state = 'normal'  # in ('normal','insert','visual',)
+        self.stroke = None  # The incoming stroke.
+        self.visual_line_flag = False  # True: in visual-line state.
+        self.vis_mode_i = None  # The insertion point at the start of visual mode.
+        self.vis_mode_w = None  # The widget in effect at the start of visual mode.
     #@+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(self):
         """Init ivars that are never re-inited."""
         c = self.c
+        # The widget that has focus when a ':' command begins.  May be None.
         self.colon_w = None
-            # The widget that has focus when a ':' command begins.  May be None.
+        # True: allow f,F,h,l,t,T,x to cross line boundaries.
         self.cross_lines = c.config.getBool('vim-crosses-lines', default=True)
-            # True: allow f,F,h,l,t,T,x to cross line boundaries.
-        self.register_d = {}
-            # Keys are letters; values are strings.
+        self.register_d = {}  # Keys are letters; values are strings.
+        # The stroke ('/' or '?') that starts a vim search command.
         self.search_stroke = None
-            # The stroke ('/' or '?') that starts a vim search command.
+        # True: in vim-training mode: Mouse clicks and arrows are disabled.
         self.trainer = False
-            # True: in vim-training mode:
-            # Mouse clicks and arrows are disable.
+        # The present widget. c.frame.body.wrapper is a QTextBrowser.
         self.w = None
-            # The present widget.
-            # c.frame.body.wrapper is a QTextBrowser.
+        # False if the .leo file's change indicator should be
+        # Cleared after doing the j,j abbreviation.
         self.j_changed = True
-            # False if the .leo file's change indicator should be
-            # cleared after doing the j,j abbreviation.
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All key handlers must end with a call to an acceptance method.
     #
@@ -523,8 +494,7 @@ class VimCommands:
         """Complete a command, preserving text and optionally updating the dot."""
         self.do_trace()
         if self.state == 'visual':
-            self.handler = self.do_visual_mode
-                # A major bug fix.
+            self.handler = self.do_visual_mode  # A major bug fix.
             if set_dot:
                 stroke2 = stroke or self.stroke if add_to_dot else None
                 self.compute_dot(stroke2)
@@ -539,8 +509,8 @@ class VimCommands:
             self.save_body()
             # Clear all state, enter normal mode & show the status.
             if self.in_motion:
-                self.next_func = None
                 # Do *not* change in_motion!
+                self.next_func = None
             else:
                 self.init_state_ivars()
             self.show_status()
@@ -759,8 +729,7 @@ class VimCommands:
                 return
             if 1:
                 # This is all we can do until there is a substitution command.
-                self.change_pattern = change_pattern
-                    # Not used at present.
+                self.change_pattern = change_pattern  # Not used at present.
                 add(self.search_stroke)
                 for ch in find_pattern:
                     add(ch)
@@ -1418,15 +1387,14 @@ class VimCommands:
         """Begin a search."""
         if self.is_text_wrapper(self.w):
             fc = self.c.findCommands
-            self.search_stroke = self.stroke
-                # A scratch ivar for update_dot_before_search().
+            self.search_stroke = self.stroke  # A scratch ivar for update_dot_before_search().
             fc.reverse = True
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
+            # This returns immediately, before the actual search.
+            # leoFind.show_success calls update_selection_after_search().
             fc.start_search1(self.event)
-                # This returns immediately, before the actual search.
-                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             self.done(add_to_dot=False, set_dot=False)
         else:
@@ -1458,15 +1426,14 @@ class VimCommands:
         """Begin a search."""
         if self.is_text_wrapper(self.w):
             fc = self.c.findCommands
-            self.search_stroke = self.stroke
-                # A scratch ivar for update_dot_before_search().
+            self.search_stroke = self.stroke  # A scratch ivar for update_dot_before_search().
             fc.reverse = False
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
+            # This returns immediately, before the actual search.
+            # leoFind.show_success calls update_selection_after_search().
             fc.start_search1(self.event)
-                # This returns immediately, before the actual search.
-                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             fc.reverse = False
             self.done(add_to_dot=False, set_dot=False)
@@ -1991,12 +1958,10 @@ class VimCommands:
 
         def __init__(self, vc, all_lines):
             """Ctor for VimCommands.tabnew class."""
-            self.all_lines = all_lines
-                # True: :%s command.  False: :s command.
+            self.all_lines = all_lines  # True: :%s command.  False: :s command.
             self.vc = vc
 
-        __name__ = ':%'
-            # Required.
+        __name__ = ':%'  # Required.
         #@+others
         #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self, event=None):
@@ -2006,16 +1971,14 @@ class VimCommands:
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
-                vc.search_stroke = None
-                    # Tell vc.update_dot_before_search not to update the dot.
+                vc.search_stroke = None  # Tell vc.update_dot_before_search not to update the dot.
                 fc.reverse = False
                 fc.openFindTab(vc.event)
                 fc.ftm.clear_focus()
-                fc.node_only = True
-                    # Doesn't work.
+                fc.node_only = True  # Doesn't work.
+                # This returns immediately, before the actual search.
+                # leoFind.show_success calls vc.update_selection_after_search.
                 fc.start_search1(vc.event)
-                    # This returns immediately, before the actual search.
-                    # leoFind.show_success calls vc.update_selection_after_search.
                 if c.vim_mode:
                     vc.done(add_to_dot=False, set_dot=False)
             elif c.vim_mode:

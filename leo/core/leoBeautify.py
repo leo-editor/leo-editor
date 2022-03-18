@@ -292,16 +292,11 @@ class CPrettyPrinter:
     def __init__(self, c):
         """Ctor for CPrettyPrinter class."""
         self.c = c
-        self.brackets = 0
-            # The brackets indentation level.
-        self.p = None
-            # Set in indent.
-        self.parens = 0
-            # The parenthesis nesting level.
-        self.result = []
-            # The list of tokens that form the final result.
-        self.tab_width = 4
-            # The number of spaces in each unit of leading indentation.
+        self.brackets = 0  # The brackets indentation level.
+        self.p = None  # Set in indent.
+        self.parens = 0  # The parenthesis nesting level.
+        self.result = []  # The list of tokens that form the final result.
+        self.tab_width = 4  # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p):
 

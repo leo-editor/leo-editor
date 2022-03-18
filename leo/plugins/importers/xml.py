@@ -24,16 +24,13 @@ class Xml_Importer(Importer):
         )
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()
-        self.stack = []
-            # Stack of tags.
-            # A closing tag decrements state.tag_level only if the top is an opening tag.
+        # A closing tag decrements state.tag_level only if the top is an opening tag.
+        self.stack = []  # Stack of tags.
         self.void_tags = [
             '<?xml',
             '!doctype',
         ]
-        self.tag_warning_given = False
-            # True: a structure error has been detected.
-            # Only warn once.
+        self.tag_warning_given = False  # True: a structure error has been detected.
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         """Add items to self.class/functionTags and from settings."""

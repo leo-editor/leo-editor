@@ -148,9 +148,9 @@ class LeoMenu:
             if kind.startswith('@menu'):
                 name = kind[len('@menu') :].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
-                    # Fix #528: Don't create duplicate menu items.
+                    # #528: Don't create duplicate menu items.
+                    # Create top-level menu.
                     menu = self.createNewMenu(name)
-                        # Create top-level menu.
                     if menu:
                         self.createMenuFromConfigList(name, val, level=0)
                     else:
@@ -192,8 +192,8 @@ class LeoMenu:
                     alt_name=val2,  #848.
                     table=table,
                 ):
+                    # Create submenu of parent menu.
                     menu = self.createNewMenu(name, parentName)
-                        # Create submenu of parent menu.
                     if menu:
                         # Partial fix for #528.
                         self.createMenuFromConfigList(name, val, level + 1)
@@ -226,8 +226,7 @@ class LeoMenu:
         if name2.startswith('recentfiles'):
             # Just create the menu.
             # createRecentFilesMenuItems will create the contents later.
-            g.app.recentFilesManager.recentFilesMenuName = alt_name or name
-                #848
+            g.app.recentFilesManager.recentFilesMenuName = alt_name or name  # #848
             self.createNewMenu(alt_name or name, parentName)
             return True
         if name2 == 'help' and g.isMac:

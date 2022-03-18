@@ -268,9 +268,8 @@ class OpmlController:
         if not fileName:
             g.trace('no fileName')
             return None
+        # Create the new commander *now*, so that created vnodes will have the proper context.
         c = self.c.new()
-            # Create the new commander *now*
-            # so that created vnodes will have the proper context.
         # Pass one: create the intermediate nodes.
         dummyRoot = self.parse_opml_file(fileName)
         if not dummyRoot:

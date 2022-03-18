@@ -1108,14 +1108,13 @@ class LeoFind:
 
         Return (found, new text)
         """
+        # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if sys.platform.lower().startswith('win'):
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
             s = s.replace('\r', '')
-                # Ignore '\r' characters, which may appear in @edit nodes.
-                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
-                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if not s:
             return False, None
-        #
         # Order matters: regex matches ignore whole-word.
         if self.pattern_match:
             return self._change_all_regex(s)
@@ -1215,14 +1214,13 @@ class LeoFind:
 
         Return (found, new text)
         """
+        # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if sys.platform.lower().startswith('win'):
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
             s = s.replace('\r', '')
-                # Ignore '\r' characters, which may appear in @edit nodes.
-                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
-                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if not s:
             return False, None
-        #
         # Order matters: regex matches ignore whole-word.
         if self.pattern_match:
             return self.batch_regex_replace(s)
@@ -2252,11 +2250,11 @@ class LeoFind:
         """
         index = self.work_sel[2]
         s = self.work_s
+        # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if sys.platform.lower().startswith('win'):
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
             s = s.replace('\r', '')
-                # Ignore '\r' characters, which may appear in @edit nodes.
-                # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
-                # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
         if not s:  # pragma: no cover
             return None, None
         stopindex = 0 if self.reverse else len(s)

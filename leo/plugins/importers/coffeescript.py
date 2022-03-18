@@ -18,14 +18,12 @@ class CS_Importer(Importer):
         super().__init__(
             importCommands,
             language='coffeescript',
-            state_class=CS_ScanState,
-                # Not used: This class overrides i.scan_line.
+            state_class=CS_ScanState,  # Not used: This class overrides i.scan_line.
             strict=True
         )
         self.errors = 0
         self.root = None
-        self.tab_width = None
-            # NOT the same as self.c.tabwidth.  Set in run().
+        self.tab_width = None  # NOT the same as self.c.tabwidth.  Set in run().
     #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict
     #@@nobeautify
 

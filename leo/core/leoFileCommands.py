@@ -167,8 +167,8 @@ class FastRead:
             if isinstance(val, (str, bytes)):
                 return g.toUnicode(val)
         try:
+            # Throws a TypeError if val is not a hex string.
             binString = binascii.unhexlify(val)
-                # Throws a TypeError if val is not a hex string.
         except Exception:
             # Assume that Leo 4.1 or above wrote the attribute.
             if g.unitTesting:
@@ -585,8 +585,8 @@ class FileCommands:
         # Save and clear gnxDict.
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
+        # This encoding must match the encoding used in outline_to_clipboard_string.
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # This encoding must match the encoding used in outline_to_clipboard_string.
         hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents = []
@@ -623,8 +623,8 @@ class FileCommands:
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
+        # This encoding must match the encoding used in outline_to_clipboard_string.
         s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            # This encoding must match the encoding used in outline_to_clipboard_string.
         hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
@@ -692,7 +692,6 @@ class FileCommands:
             if not silent and checkOpenFiles:
                 # Don't check for open file when reverting.
                 g.app.checkForOpenFile(c, fileName)
-            #
             # Read the .leo file and create the outline.
             if fileName.endswith('.db'):
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
@@ -708,20 +707,18 @@ class FileCommands:
                 if readAtFileNodesFlag:
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
+            # lastTopLevel is a better fallback, imo.
             p = recoveryNode or c.p or c.lastTopLevel()
-                # lastTopLevel is a better fallback, imo.
             c.selectPosition(p)
+            # Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
             c.redraw_later()
-                # Delay the second redraw until idle time.
-                # This causes a slight flash, but corrects a hangnail.
-            c.checkOutline()
-                # Must be called *after* ni.end_holding.
-            c.loading = False
-                # reenable c.changed
+            c.checkOutline()  # Must be called *after* ni.end_holding.
+            c.loading = False  # reenable c.changed
             if not isinstance(theFile, sqlite3.Connection):
-                theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
+                theFile.close()
         if c.changed:
             fc.propagateDirtyNodes()
         fc.initReadIvars()
@@ -805,8 +802,8 @@ class FileCommands:
                 child.setBodyString('\n'.join(lines))
             else:
                 line1 = f"{tag} gnx: {gnx} root: {root_v and root.v!r}\nDiff...\n"
+                # 2017/06/19: reverse comparison order.
                 d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
-                    # 2017/06/19: reverse comparison order.
                 diffLines = [z for z in d]
                 lines = [line1]
                 lines.extend(diffLines)
@@ -1169,8 +1166,8 @@ class FileCommands:
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
             s = g.toEncodedString(s)  # 2011/02/22
+            # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s)
-                # Throws a TypeError if val is not a hex string.
             val = pickle.loads(bin)
             return val
         except Exception:
@@ -2004,15 +2001,13 @@ class FileCommands:
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
-        #
         # Precompute constants.
+        # Write the entire @edit tree if it has children.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
-            # Write the entire @edit tree if it has children.
         isFile = p.isAtFileNode()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
-        #
         # Set forcewrite.
         if isIgnore or p.isAtIgnoreNode():
             forceWrite = True
@@ -2020,14 +2015,12 @@ class FileCommands:
             forceWrite = False
         else:
             forceWrite = True
-        #
         # Set the write bit if necessary.
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit()  # 4.2: Indicate we wrote the body text.
 
         attrs = fc.compute_attribute_bits(forceWrite, p)
-        #
         # Write the node.
         v_head = f'<v t="{gnx}"{attrs}>'
         if gnx in fc.vnodesDict:
@@ -2070,14 +2063,12 @@ class FileCommands:
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
-            self.expanded_gnxs, self.marked_gnxs = set(), set()
-                # These will be ignored.
-            self.put_v_element(self.currentPosition)
-                # Write only current tree.
+            self.expanded_gnxs, self.marked_gnxs = set(), set()  # These will be ignored.
+            self.put_v_element(self.currentPosition)  # Write only current tree.
         else:
             for p in c.rootPosition().self_and_siblings():
                 self.put_v_element(p, isIgnore=p.isAtIgnoreNode())
-            # Fix #1018: scan *all* nodes.
+            # #1018: scan *all* nodes.
             self.setCachedBits()
         self.put("</vnodes>\n")
     #@+node:ekr.20190328160622.1: *6* fc.setCachedBits

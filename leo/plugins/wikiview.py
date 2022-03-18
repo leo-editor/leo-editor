@@ -121,8 +121,8 @@ class WikiView:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
+        # This setting is True by default, so the redundancy is harmless.
         self.active = c.config.getBool('wikiview-active')
-            # This setting is True by default, so the redundancy is harmless.
     #@+node:ekr.20170205071315.1: *3* parse_options
     leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
 

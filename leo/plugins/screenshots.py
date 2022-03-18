@@ -430,12 +430,11 @@ class ScreenShotController:
         # Defaults.
         self.default_screenshot_height = 700
         self.default_screenshot_width = 900
+        # Used with a dict whose keys are 'slideshow_name','slide_name','slide_number'
         self.default_slide_pattern = '%(slideshow_name)s:%(slide_number)s'
-            # Used with a dict whose keys are 'slideshow_name','slide_name','slide_number'
         self.default_verbose_flag = True
         # Options that may be set in @settings nodes.
-        self.inkscape_bin = self.get_inkscape_bin()
-            # The path to the Inkscape executable.
+        self.inkscape_bin = self.get_inkscape_bin()  # The path to the Inkscape executable.
         # Options that may be set in children of
         # *either* the @slideshow node or any @slide node.
         self.screenshot_height = None
@@ -637,9 +636,8 @@ class ScreenShotController:
         # Compute simple ivars.
         sc.screenshot_height = sc.get_screenshot_height()
         sc.screenshot_width = sc.get_screenshot_width()
+        # Only an explicit pause now pauses.
         sc.edit_flag = sc.get_edit_flag(p)
-            # Only an explicit pause now pauses.
-            # or bool(sc.callouts or sc.markers)
         sc.pause_flag = sc.get_pause_flag(p)
         return True
     #@+node:ekr.20100908110845.5533: *3* lxml replacements
@@ -943,8 +941,7 @@ class ScreenShotController:
             return p.b
         s = p.h
         assert g.match_word(s, 0, '@callout')
-        i = g.skip_id(s, 0, chars='@')
-            # Match @callout or @callouts, etc.
+        i = g.skip_id(s, 0, chars='@')  # Match @callout or @callouts, etc.
         s = s[i:].strip()
         return s
     #@+node:ekr.20100911044508.5620: *5* get_edit_flag

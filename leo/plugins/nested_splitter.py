@@ -361,10 +361,9 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
 class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
+    # Allow special behavior to be turned of at import stage.
+    # useful if other code must run to set up callbacks, that other code can re-enable.
     enabled = True
-        # allow special behavior to be turned of at import stage
-        # useful if other code must run to set up callbacks, that
-        # other code can re-enable
     other_orientation = {
         Orientation.Vertical: Orientation.Horizontal,
         Orientation.Horizontal: Orientation.Vertical,

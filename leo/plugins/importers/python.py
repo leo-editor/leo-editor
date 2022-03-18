@@ -107,7 +107,7 @@ def split_root(root, lines):
         if tok[0] != token.NAME or tok[1] not in ('async', 'def', 'class'):
             return None
 
-        # the following few values are easy to get
+        # The following few values are easy to get
         if tok[1] == 'async':
             kind = rawtokens[start + 1][1]
             name = rawtokens[start + 2][1]
@@ -123,45 +123,37 @@ def split_root(root, lines):
         # lines. At the end of this logical line, there will be a
         # NEWLINE token
         for i, t in search(start + 1, token.NEWLINE):
-            end_h = t[2][0]  # the last of the `header lines`
-                            # this lines should not be indented
-                            # in the node body as opposed to
-                            # the lines for function/method/class body
-                            # which will be indented
-
-            # in case we have oneliner, let's define end_b here
+            # The last of the `header lines`.
+            # These lines should not be indented in the node body.
+            # The body lines *will* be indented.
+            end_h = t[2][0]
+            # In case we have a oneliner, let's define end_b here
             end_b = end_h
-
             # indented body starts on the next line
             start_b = end_h + 1
             break
 
-        # to check if we have a oneline definition or not
-        # we have to look forward to see which token will come
-        # first INDENT or NEWLINE.
+        # Look ahead to check if we have a oneline definition or not.
+        # That is, see which whether INDENT or NEWLINE will come first.
         oneliner = True
         for (i1, t), (i2, t1) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
             # INDENT comes after the NEWLINE, means the definition is in a single line
             oneliner = i1 > i2
             break
 
-        # finally we can find the end of this definition
+        # Find the end of this definition
         if oneliner:
-            c_ind = col  # the following lines will not be indented
-                        # because the definition was in the same line
-
-            # end of the body is the same as the start of the body
+            # The following lines will not be indented
+            # because the definition was in the same line.
+            c_ind = col
+            # The end of the body is the same as the start of the body
             end_b = start_b
-
         else:
-            # we have some body lines
-            # presumably the next token is INDENT
+            # We have some body lines. Presumably the next token is INDENT.
             i += 1
-
-            # this is the indentation of the first function/method/class body line
+            # This is the indentation of the first function/method/class body line
             c_ind = len(t[1]) + col
-
-            # now we are searching to find the end of this function/method/body
+            # Now search to find the end of this function/method/body
             for i, t in itoks(i + 1):
                 col2 = t[2][1]
                 if col2 > col:
@@ -170,17 +162,15 @@ def split_root(root, lines):
                     end_b = t[2][0]
                     break
 
-
-        # now let's increase end_b to include all following blank lines
+        # Increase end_b to include all following blank lines
         for j in range(end_b, len(lines) + 1):
             if lines[j - 1].isspace():
                 end_b = j + 1
             else:
                 break
 
-        # number of `intro` lines
+        # Compute the number of `intro` lines
         intro = get_intro(a, col)
-
         return col, a - intro, end_h, start_b, kind, name, c_ind, end_b
     #@+node:vitalije.20211208101750.1: *3* body
     def bodyLine(x, ind):

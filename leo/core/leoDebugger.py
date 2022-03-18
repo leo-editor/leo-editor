@@ -203,14 +203,11 @@ class Xdb(pdb.Pdb, threading.Thread):
             else:
                 self.stdout.write(self.prompt)
                 self.stdout.flush()
-                line = self.stdin.readline()
-                    # QueueStdin.readline.
-                    # Get the input from Leo's main thread.
+                # Get the input from Leo's main thread.
+                line = self.stdin.readline()  # QueueStdin.readline:
                 line = line.rstrip('\r\n') if line else 'EOF'
-            line = self.precmd(line)
-                # Pdb.precmd.
-            stop = self.onecmd(line)
-                # Pdb.onecmd.
+            line = self.precmd(line)  # Pdb.precmd.
+            stop = self.onecmd(line)  # Pdb.onecmd.
             # Show the line in Leo.
             if stop:
                 self.select_line(self.saved_frame, self.saved_traceback)

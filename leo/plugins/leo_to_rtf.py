@@ -118,12 +118,12 @@ def export_rtf(c):
         curLevel = p.level() + 1  # Store current level so method doesn't have to be called again
         if curLevel != myLevel:
             if myLevel != -1:
+                # If this is not the 1st level written, close the last before begin
                 f.write("}")
-                    # If this is not the 1st level written, close the last before begin
+            # Generate the pixel indent for the current level
             levelIndent = str(720 * curLevel)
-                # Generate the pixel indent for the current level
+            # Output the generic RTF level info
             f.write(levelHeader)
-                # Output the generic RTF level info
             f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel - 1) + "\\lin" + levelIndent)
             f.write("{")
         myLevel = curLevel

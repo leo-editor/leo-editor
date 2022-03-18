@@ -330,9 +330,9 @@ class MarkupCommands:
         global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         # Call the external program to write the output file.
+        # The -e option deletes css.
         prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
         command = f"{prog} {i_path} -o {o_path} -b html5"
-            # The -e option deletes css.
         g.execute_shell_commands(command)
     #@+node:ekr.20191007043043.1: *4* markup.run_pandoc
     def run_pandoc(self, i_path, o_path):
@@ -342,8 +342,8 @@ class MarkupCommands:
         global pandoc_exec
         assert pandoc_exec, g.callers()
         # Call pandoc to write the output file.
+        # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
-            # --quiet does no harm.
         g.execute_shell_commands(command)
     #@+node:ekr.20191017165427.1: *4* markup.run_sphinx
     def run_sphinx(self, i_path, o_path):

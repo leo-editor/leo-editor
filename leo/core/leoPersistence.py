@@ -39,8 +39,7 @@ class PersistenceDataController:
     def __init__(self, c):
         """Ctor for persistenceController class."""
         self.c = c
-        self.at_persistence = None
-            # The position of the @position node.
+        self.at_persistence = None  # The position of the @position node.
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140718153519.17731: *4* pd.clean
     def clean(self):
@@ -487,8 +486,8 @@ class PersistenceDataController:
     def unpickle(self, s):
         """Unhexlify and unpickle string s into p."""
         try:
+            # Throws TypeError if s is not a hex string.
             bin = binascii.unhexlify(g.toEncodedString(s))
-                # Throws TypeError if s is not a hex string.
             return pickle.loads(bin)
         except Exception:
             g.es_exception()
