@@ -572,16 +572,15 @@ class AtFile:
     def read_at_clean_lines(self, fn):  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
         at = self
+        # Use the standard helper. Better error reporting.
+        # Important: uses 'rb' to open the file.
         s = at.openFileHelper(fn)
-            # Use the standard helper. Better error reporting.
-            # Important: uses 'rb' to open the file.
         # #1798.
         if s is None:
             s = ''
         else:
             s = g.toUnicode(s, encoding=at.encoding)
-            s = s.replace('\r\n', '\n')
-                # Suppress meaningless "node changed" messages.
+            s = s.replace('\r\n', '\n')  # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
     def write_at_clean_sentinels(self, root):  # pragma: no cover
@@ -731,8 +730,7 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
-        s = at.openFileHelper(fileName)
-            # Catches all exceptions.
+        s = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if s is None:
             return None
@@ -851,11 +849,11 @@ class AtFile:
 
         This is a kludgy method used only by the import code."""
         at = self
+        # Set at.encoding, regularize whitespace and call at.initReadLines.
         at.readFileToUnicode(fileName)
-            # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
+        # scanHeader uses at.readline instead of its args.
+        # scanHeader also sets at.encoding.
         junk, junk, isThin = at.scanHeader(None)
-            # scanHeader uses at.readline instead of its args.
-            # scanHeader also sets at.encoding.
         return isThin
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
@@ -3158,8 +3156,8 @@ class FastAtRead:
             if m:
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
+                # m.group(3) is the level number, m.group(4) is the number of stars.
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
-                    # m.group(3) is the level number, m.group(4) is the number of stars.
                 v = gnx2vnode.get(gnx)
                 #
                 # Case 1: The root @file node. Don't change the headline.
@@ -3318,7 +3316,7 @@ class FastAtRead:
                 # Whatever happens, retain the @delims line.
                 body.append(f"@comment {delims}\n")
                 delim1, delim2, delim3 = g.set_delims_from_string(delims)
-                    # delim1 is always the single-line delimiter.
+                # delim1 is always the single-line delimiter.
                 if delim1:
                     comment_delim1, comment_delim2 = delim1, ''
                 else:

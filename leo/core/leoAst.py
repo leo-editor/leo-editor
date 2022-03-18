@@ -403,8 +403,8 @@ if 1:  # pragma: no cover
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
+    # This is the pattern in PEP 263.
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
-        # This is the pattern in PEP 263.
 
     def get_encoding_directive(bb):
         """
@@ -1235,17 +1235,11 @@ class TokenOrderGenerator:
         """
         #
         # Init all ivars.
-        self.file_name = file_name
-            # For tests.
-        self.level = 0
-            # Python indentation level.
-        self.node = None
-            # The node being visited.
-            # The parent of the about-to-be visited node.
-        self.tokens = tokens
-            # The immutable list of input tokens.
-        self.tree = tree
-            # The tree of ast.AST nodes.
+        self.file_name = file_name  # For tests.
+        self.level = 0  # Python indentation level.
+        self.node = None # The node being visited.
+        self.tokens = tokens  # The immutable list of input tokens.
+        self.tree = tree  # The tree of ast.AST nodes.
         #
         # Traverse the tree.
         try:
@@ -3964,12 +3958,12 @@ class Token:
         # Injected by Tokenizer.add_token.
         self.five_tuple = None
         self.index = 0
+        # The entire line containing the token.
+        # Same as five_tuple.line.
         self.line = ''
-            # The entire line containing the token.
-            # Same as five_tuple.line.
+        # The line number, for errors and dumps.
+        # Same as five_tuple.start[0]
         self.line_number = 0
-            # The line number, for errors and dumps.
-            # Same as five_tuple.start[0]
         #
         # Injected by Tokenizer.add_token.
         self.level = 0
