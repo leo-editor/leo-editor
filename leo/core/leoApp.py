@@ -1922,7 +1922,7 @@ class LoadManager:
         shortcutsName = f"shortcuts dict for {g.shortFileName(fn)}"
         # A special case: settings in leoSettings.leo do *not* override
         # the global settings, that is, settings in myLeoSettings.leo.
-        isLeoSettings = g.shortFileName(fn).lower() == 'leosettings.leo'
+        isLeoSettings = fn and g.shortFileName(fn).lower() == 'leosettings.leo'
         exists = g.os_path_exists(fn)
         if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
             # Open the file usinging a null gui.
@@ -2968,7 +2968,7 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return 0
-    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
+    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
     def loadLocalFile(self, fn, gui, old_c):
         """Completely read a file, creating the corresonding outline.
 
@@ -2985,21 +2985,56 @@ class LoadManager:
         or open an empty outline.
         """
         lm = self
-        # Step 1: Return if the file is already open.
-        if fn:
-            fn = g.os_path_finalize(fn)  # #2489.
-            c = lm.findOpenFile(fn)
-            if c:
-                return c
-        #
-        # Step 2: get the previous settings.
-        # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
-        # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
+        # #2489: If fn is empty, open an empty, untitled .leo file.
+        if not fn:
+            return lm.openEmptyLeoFile(gui, old_c)
+        # Return if the file is already open.
+        fn = g.os_path_finalize(fn)  # #2489.
+        c = lm.findOpenFile(fn)
+        if c:
+            return c
+        # Open the file, creating a wrapper .leo file if necessary.
         previousSettings = lm.getPreviousSettings(fn)
-        #
-        # Step 3: open the outline in the requested gui.
-        # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
+        return c
+    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile (new)
+    def openEmptyLeoFile(self, gui, old_c):
+        """Open an empty, untitled, new Leo file."""
+        lm = self
+        # Disable the log.
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Create the commander for the .leo file.
+        c = g.app.newCommander(
+            fileName=None,
+            gui=gui,
+            previousSettings=lm.getPreviousSettings(None),
+        )
+        g.doHook('open0')
+        # Enable the log.
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+        # Init the frame.
+        c.frame.setInitialWindowGeometry()
+        c.frame.deiconify()
+        c.frame.lift()
+        c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
+        c.frame.resizePanesToRatio(r1, r2)
+        c.mFileName = None
+        c.wrappedFileName = None
+        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.frame.setTitle(c.frame.title)
+        # Late inits. Order matters.
+        if c.config.getBool('use-chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+        c.clearChanged()
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
+        g.doHook("new", old_c=old_c, c=c, new_c=c)
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        lm.createMenu(c)
+        lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
