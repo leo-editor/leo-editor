@@ -18,19 +18,12 @@ class ChapterController:
     def __init__(self, c):
         """Ctor for ChapterController class."""
         self.c = c
-        self.chaptersDict = {}
-            # Keys are chapter names, values are chapters.
-            # Important: chapter names never change,
-            # even if their @chapter node changes.
-        self.initing = True
-            # #31
-            # True: suppress undo when creating chapters.
-        self.re_chapter = None
-            # Set where used.
+        # Note: chapter names never change, even if their @chapter node changes.
+        self.chaptersDict = {}  # Keys are chapter names, values are chapters.
+        self.initing = True  # #31: True: suppress undo when creating chapters.
+        self.re_chapter = None  # Set where used.
         self.selectedChapter = None
-        self.selectChapterLockout = False
-            # True: cc.selectChapterForPosition does nothing.
-            # Note: Used in qt_frame.py.
+        self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
         self.tt = None  # May be set in finishCreate.
         self.reloadSettings()
 

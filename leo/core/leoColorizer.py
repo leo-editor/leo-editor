@@ -94,9 +94,9 @@ class BaseColorizer:
     def configure_colors(self):
         """Configure all colors in the default colors dict."""
         c, wrapper = self.c, self.wrapper
+        # getColor puts the color name in standard form:
+        # color = color.replace(' ', '').lower().strip()
         getColor = c.config.getColor
-            # getColor puts the color name in standard form:
-            # color = color.replace(' ', '').lower().strip()
         for key in sorted(self.default_colors_dict.keys()):
             option_name, default_color = self.default_colors_dict[key]
             color = (
@@ -552,7 +552,6 @@ class BaseColorizer:
             if trace:
                 g.es_print(f"{setting:35}: {val}")
 
-        #
         # Set self.use_pygments only once: it can't be changed later.
         # There is no easy way to re-instantiate classes created by make_colorizer.
         if self.prev_use_pygments is None:
@@ -565,24 +564,19 @@ class BaseColorizer:
                 f"{'Can not change @bool use-pygments':35}: "
                 f"{self.prev_use_pygments}",
                 color='red')
-        #
-        # Report everything if we are tracing.
+        # This setting is used only in the LeoHighlighter class
         style_name = c.config.getString('pygments-style-name') or 'default'
-            # Don't set an ivar. It's not used in this class.
-            # This setting is used only in the LeoHighlighter class
+        # Report everything if we are tracing.
         show('@bool use-pytments-styles', self.use_pygments_styles)
         show('@string pygments-style-name', style_name)
-        #
         # Report changes to @bool use-pygments-style
         if self.prev_use_styles is None:
             self.prev_use_styles = self.use_pygments_styles
         elif self.use_pygments_styles != self.prev_use_styles:
             g.es_print(f"using pygments styles: {self.use_pygments_styles}")
-        #
         # Report @string pygments-style-name only if we are using styles.
         if not self.use_pygments_styles:
             return
-        #
         # Report changes to @string pygments-style-name
         if self.prev_style is None:
             self.prev_style = style_name
@@ -663,11 +657,9 @@ class BaseColorizer:
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots') :]
-        colorName = wrapper.configDict.get(tag)
-            # This color name should already be valid.
+        colorName = wrapper.configDict.get(tag)  # This color name should already be valid.
         if not colorName:
             return
-        #
         # New in Leo 5.8.1: allow symbolic color names here.
         # This now works because all keys in leo_color_database are normalized.
         colorName = colorName.replace(
@@ -1039,8 +1031,8 @@ class JEditColorizer(BaseColorizer):
         """
         if not name:
             return ''
+        # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
-            # #1334. Lower-case the name, regardless of the spelling in @language.
         i = name.find('::')
         if i == -1:
             language = name
@@ -2432,19 +2424,17 @@ if QtGui:
                 return
             if not c.config.getBool('use-pygments', default=False):
                 return
-            #
             # Init pygments ivars.
             self._brushes = {}
             self._document = document
             self._formats = {}
             self.colorizer.style_name = 'default'
+            # Style gallery: https://help.farbox.com/pygments.html
+            # Dark styles: fruity, monokai, native, vim
+            # https://github.com/gthank/solarized-dark-pygments
             style_name = c.config.getString('pygments-style-name') or 'default'
-                # Style gallery: https://help.farbox.com/pygments.html
-                # Dark styles: fruity, monokai, native, vim
-                # https://github.com/gthank/solarized-dark-pygments
             if not c.config.getBool('use-pygments-styles', default=True):
                 return
-            #
             # Init pygments style.
             try:
                 self.setStyle(style_name)
@@ -2618,8 +2608,8 @@ class PygmentsColorizer(BaseColorizer):
 
     def getLegacyFormat(self, token, text):
         """Return a jEdit tag for the given pygments token."""
+        # Tables and setTag assume lower-case.
         r = repr(token).lstrip('Token.').lstrip('Literal.').lower()
-            # Tables and setTag assume lower-case.
         if r == 'name':
             # Avoid a colision with existing Leo tag.
             r = 'name.pygments'
