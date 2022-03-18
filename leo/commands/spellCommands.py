@@ -673,7 +673,7 @@ class SpellTabHandler:
         self.re_word = re.compile(r"([^\W\d_]+)(['`][^\W\d_]+)?", flags=re.UNICODE)
         self.outerScrolledFrame = None
         self.seen = set()  # Adding a word to seen will ignore it until restart.
-        # A text widget for scanning. # Must have a parent frame.
+        # A text widget for scanning. Must have a parent frame.
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
         if enchant:
             self.spellController = EnchantWrapper(c)
