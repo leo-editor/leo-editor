@@ -137,8 +137,8 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
+        # qtFrame.finishCreate does all the other work.
         self.frameFactory = qt_frame.TabbedFrameFactory()
-            # qtFrame.finishCreate does all the other work.
 
     def reloadSettings(self):
         pass  # Note: self.c does not exist.
@@ -1929,13 +1929,12 @@ class StyleSheetManager:
                     # New in Leo 5.5: Do NOT add comments here.
                     # They RUIN style sheets if they appear in a nested comment!
                     value = self.color_db.get(key)
-                        # value = '%s /* %s */' % (value, key)
             if value:
                 # Partial fix for #780.
                 try:
+                    # Don't replace shorter constants occuring in larger.
                     sheet = re.sub(
                         const + "(?![-A-Za-z0-9_])",
-                            # don't replace shorter constants occuring in larger
                         value,
                         sheet,
                     )

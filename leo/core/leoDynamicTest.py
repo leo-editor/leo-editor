@@ -16,14 +16,11 @@ cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
 #@-<< imports >>
-g_trace = False
-    # Enables the trace in main.
+g_trace = False  # Enables the trace in main.
+# Enable trace of argv. For debugging this file: it duplicate of the trace in main()
 trace_argv = False
-    # Enable trace of argv. For debugging this file: it duplicate of the trace in main()
-trace_main = False
-    # Enable trace of options in main().
-trace_time = False
-    # Enables tracing of the overhead take to run tests externally.
+trace_main = False  # Enable trace of options in main().
+trace_time = False  # Enables tracing of the overhead take to run tests externally.
 # Do not define g here. Use the g returned by the bridge.
 #@+others
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
