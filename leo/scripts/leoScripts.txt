@@ -18383,6 +18383,113 @@ def zoom_in(self):
 def zoom_out(self):
     self.scale = self.scale * (1.0 / 1.05)
     self.show_slide()
+#@+node:ekr.20220319160408.1: ** script: diff-two-revs-wo-comments
+g.cls()
+
+# Monkey-patched git-diff-pr command.
+import leo.commands.editFileCommands as efc
+
+rev1 = '7fe2cc486153'  # Preveious commit of devel'
+rev2 = 'c4d109012028'  # Last commit of ekr-clean-comments
+x = efc.GitDiffController(c)
+
+@others
+
+# Monkey-patch, with x bound.
+x.make_diff_outlines = make_diff_outlines_ignoring_comments
+x.diff_file = diff_file_ignoring_comments
+x.diff_two_revs(rev1, rev2)
+#@+node:ekr.20220319160408.2: *3* function: diff_file_ignoring_comments
+def diff_file_ignoring_comments(fn, rev1='HEAD', rev2=''):
+    """
+    Create an outline describing the git diffs for fn.
+    """
+    import difflib
+    self = x  ###
+    # Common code.
+    c = self.c
+    # #1781, #2143
+    directory = self.get_directory()
+    if not directory:
+        return
+    s1 = self.get_file_from_rev(rev1, fn)
+    s2 = self.get_file_from_rev(rev2, fn)
+    ### s1, s2 = strip_comments(s1), strip_comments(s2)  ####
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+    diff_list = list(difflib.unified_diff(
+        lines1,
+        lines2,
+        rev1 or 'uncommitted',
+        rev2 or 'uncommitted',
+    ))
+    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+    self.file_node = self.create_file_node(diff_list, fn)
+    # #1777: The file node will contain the entire added/deleted file.
+    if not s1:
+        self.file_node.h = f"Added: {self.file_node.h}"
+        return
+    if not s2:
+        self.file_node.h = f"Deleted: {self.file_node.h}"
+        return
+    # Finish.
+    path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
+    c1 = c2 = None
+    if fn.endswith('.leo'):
+        c1 = self.make_leo_outline(fn, path, s1, rev1)
+        c2 = self.make_leo_outline(fn, path, s2, rev2)
+    else:
+        root = self.find_file(fn)
+        if c.looksLikeDerivedFile(path):
+            c1 = self.make_at_file_outline(fn, s1, rev1)
+            c2 = self.make_at_file_outline(fn, s2, rev2)
+        elif root:
+            c1 = self.make_at_clean_outline(fn, root, s1, rev1)
+            c2 = self.make_at_clean_outline(fn, root, s2, rev2)
+    if c1 and c2:
+        self.make_diff_outlines(c1, c2, fn, rev1, rev2)
+        self.file_node.b = (
+            f"{self.file_node.b.rstrip()}\n"
+            f"@language {c2.target_language}\n")
+#@+node:ekr.20220319160408.3: *3* function: make_diff_outlines_ignoring_comments
+def make_diff_outlines_ignoring_comments(c1, c2, fn, rev1='', rev2=''):
+    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+    self = x
+    added, deleted, changed = self.compute_dicts(c1, c2)
+    table = (
+        (added, 'Added'),
+        (deleted, 'Deleted'),
+        (changed, 'Changed'))
+        
+    for d, kind in table:
+        if kind.lower() == 'changed':
+            for key in d:
+                v1, v2 = d.get(key)
+                v1.b = strip_comments(v1.b)
+                v2.b = strip_comments(v2.b)
+        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+#@+node:ekr.20220319160408.4: *3* function: strip_comments
+def strip_comments(aString):
+    """
+    Strip everything that looks like a comment from aString.
+    It's fine, for now, to ignore strings and docstrings.
+    """
+    result = []
+    lines = g.splitLines(aString)
+    for s in lines:
+        if s.strip().startswith('#@'):
+            # Retain everything that looks like a sentinel.
+            result.append(s)
+        else:
+            # Strip the comment, ignoring the end of the line.
+            i = s.find('#')
+            if i == -1:
+                result.append(s)
+            else:
+                tail = s[:i]
+                if tail.strip():
+                    result.append(tail.rstrip() + '\n')
+    return ''.join(result)
 #@-all
 #@@language python
 #@@tabwidth -4
