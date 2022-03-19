@@ -1892,7 +1892,7 @@ class LoadManager:
         shortcutsName = f"shortcuts dict for {g.shortFileName(fn)}"
         # A special case: settings in leoSettings.leo do *not* override
         # the global settings, that is, settings in myLeoSettings.leo.
-        isLeoSettings = g.shortFileName(fn).lower() == 'leosettings.leo'
+        isLeoSettings = fn and g.shortFileName(fn).lower() == 'leosettings.leo'
         exists = g.os_path_exists(fn)
         if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
             # Open the file usinging a null gui.
@@ -2930,7 +2930,7 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return 0
-    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
+    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
     def loadLocalFile(self, fn, gui, old_c):
         """Completely read a file, creating the corresonding outline.
 
@@ -2947,66 +2947,101 @@ class LoadManager:
         or open an empty outline.
         """
         lm = self
-        # Step 1: Return if the file is already open.
-        fn = g.os_path_finalize(fn)
-        if fn:
-            c = lm.findOpenFile(fn)
-            if c:
-                return c
-        #
-        # Step 2: get the previous settings.
-        # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
-        # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
+        # #2489: If fn is empty, open an empty, untitled .leo file.
+        if not fn:
+            return lm.openEmptyLeoFile(gui, old_c)
+        # Return the commander if the file is an already open outline.
+        fn = g.os_path_finalize(fn)  # #2489.
+        c = lm.findOpenFile(fn)
+        if c:
+            return c
+        # Open the file, creating a wrapper .leo file if necessary.
         previousSettings = lm.getPreviousSettings(fn)
-        #
-        # Step 3: open the outline in the requested gui.
-        # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
+        return c
+    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
+    def openEmptyLeoFile(self, gui, old_c):
+        """Open an empty, untitled, new Leo file."""
+        lm = self
+        # Disable the log.
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Create the commander for the .leo file.
+        c = g.app.newCommander(
+            fileName=None,
+            gui=gui,
+            previousSettings=lm.getPreviousSettings(None),
+        )
+        g.doHook('open0')
+        # Enable the log.
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+        # Init the frame.
+        c.frame.setInitialWindowGeometry()
+        c.frame.deiconify()
+        c.frame.lift()
+        c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
+        c.frame.resizePanesToRatio(r1, r2)
+        c.mFileName = None
+        c.wrappedFileName = None
+        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.frame.setTitle(c.frame.title)
+        # Late inits. Order matters.
+        if c.config.getBool('use-chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+        c.clearChanged()
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
+        g.doHook("new", old_c=old_c, c=c, new_c=c)
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        lm.createMenu(c)
+        lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
-        """Read the local file whose full path is fn using the given gui.
-        fn may be a Leo file (including .leo or zipped file) or an external file.
-
-        This is not a pre-read: the previousSettings always exist and
-        the commander created here persists until the user closes the outline.
-
-        Reads the entire outline if fn exists and is a .leo file or zipped file.
-        Creates an empty outline if fn is a non-existent Leo file.
-        Creates an wrapper outline if fn is an external file, existing or not.
+        """
+        Create an outline (Commander) for either:
+        - a Leo file (including .leo or zipped file),
+        - an external file.
+        
+        Note: The settings don't matter for pre-reads!
+        For second read, the settings for the file are *exactly* previousSettings.
         """
         lm = self
         # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
         # Create the a commander for the .leo file.
-        # Important.  The settings don't matter for pre-reads!
-        # For second read, the settings for the file are *exactly* previousSettings.
-        c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
-        # Open the file, if possible.
+        c = g.app.newCommander(
+            fileName=fn,
+            gui=gui,
+            previousSettings=previousSettings,
+        )
         g.doHook('open0')
+        # Open the file before the open1 hook.
         theFile = lm.openAnyLeoFile(fn)
         if isinstance(theFile, sqlite3.Connection):
             # This commander is associated with sqlite db.
             c.sqlite_connection = theFile
-        # Enable the log.
+        # Enable the log and do the open1 hook.
         g.app.unlockLog()
         c.frame.log.enable(True)
         # Create the outline.
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         if theFile:
+            # Some kind of existing Leo file.
             readAtFileNodesFlag = bool(previousSettings)
             # Read the Leo file.
             ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
             if not ok:
                 return None
         else:
-            # Create a wrapper .leo file if:
-            # a) fn is a .leo file that does not exist or
-            # b) fn is an external file, existing or not.
-            lm.initWrapperLeoFile(c, fn)
-        g.doHook("open2", old_c=None, c=c, new_c=c, fileName=fn)
-        # Phase 3: Complete the initialization.
+            # Not a any kind of Leo file. Create a wrapper .leo file.
+            c = lm.initWrapperLeoFile(c, fn)  # #2489
+            g.doHook("new", old_c=old_c, c=c, new_c=c)  # #2489.
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+        # Complete the inits.
         g.app.writeWaitingLog(c)
         c.setLog()
         lm.createMenu(c, fn)
@@ -3060,8 +3095,7 @@ class LoadManager:
         if k:
             k.showStateAndMode()
         c.frame.initCompleteHint()
-        c.outerUpdate()
-            # #181: Honor focus requests.
+        c.outerUpdate()  # #181: Honor focus requests.
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
     def initWrapperLeoFile(self, c, fn):
         """
@@ -3097,32 +3131,33 @@ class LoadManager:
             # Create an @<file> node.
             p = c.rootPosition()
             if p:
-                load_type = self.options['load_type']
+                # The 'load_type' key may not exist when run from the bridge.
+                load_type = self.options.get('load_type', '@edit')  # #2489.
                 p.setHeadString(f"{load_type} {fn}")
                 c.refreshFromDisk()
                 c.selectPosition(p)
-
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
         c.wrappedFileName = fn
         c.frame.title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(c.frame.title)
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         frame.c.clearChanged()
-            # Mark the outline clean.
-            # This makes it easy to open non-Leo files for quick study.
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
+        """
+        Return True if fn is any kind of Leo file,
+        including a zipped file or .leo, .db, or .leojs file.
+        """
         if not fn:
             return False
         return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
 
     def isZippedFile(self, fn):
+        """Return True if fn is a zipped file."""
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
     def openAnyLeoFile(self, fn):
@@ -3140,7 +3175,7 @@ class LoadManager:
         return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
     def openLeoFile(self, fn):
-        # lm = self
+        """Open the file for reading."""
         try:
             theFile = open(fn, 'rb')
             return theFile
@@ -3151,7 +3186,10 @@ class LoadManager:
             return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
     def openZipFile(self, fn):
-        # lm = self
+        """
+        Open a zipped file for reading.
+        Return a StringIO file if successful.
+        """
         try:
             theFile = zipfile.ZipFile(fn, 'r')
             if not theFile:
@@ -3171,19 +3209,25 @@ class LoadManager:
             return None
     #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
     def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
+        """
+        Call c.fileCommands.openLeoFile to open some kind of Leo file.
+        
+        the_file: An open file, which is a StringIO file for zipped files.
+
+        Note: g.app.log is not inited here.
+        """
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
-        # lm = self
-        ok = c.fileCommands.openLeoFile(theFile, fn,
-            readAtFileNodesFlag=readAtFileNodesFlag)
-                # closes file.
+        # Read and close the file.
+        ok = c.fileCommands.openLeoFile(
+            theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
         if ok:
             if not c.openDirectory:
                 theDir = g.os_path_finalize(g.os_path_dirname(fn))  # 1341
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
+            # #970: Never close Leo here.
             g.app.closeLeoWindow(c.frame, finish_quit=False)
-                # #970: Never close Leo here.
         return ok
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c):
