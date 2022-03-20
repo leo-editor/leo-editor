@@ -1352,7 +1352,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        count = self.do_clone_find_all(settings)
+        count = self.do_clone_find_all_flattened(settings)
         if count:
             c.redraw()
             c.treeWantsFocus()
