@@ -2030,8 +2030,7 @@ class TestPython(BaseTestImporter):
                           '        pass\n'
                           '\n'
             ),
-            (1, 'a = 2', ### '...some declarations',
-                    'a = 2\n\n'),
+            (1, 'a = 2', 'a = 2\n\n'),
             (1, 'f2', 'def f2():\n'
                       '    pass\n'
                       '\n'
