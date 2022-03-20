@@ -2030,7 +2030,8 @@ class TestPython(BaseTestImporter):
                           '        pass\n'
                           '\n'
             ),
-            (1, '...some declarations', 'a = 2\n\n'),
+            (1, 'a = 2', ### '...some declarations',
+                    'a = 2\n\n'),
             (1, 'f2', 'def f2():\n'
                       '    pass\n'
                       '\n'
@@ -2066,6 +2067,8 @@ class TestPython(BaseTestImporter):
               '    def method12():\n'
               '        pass\n'
               '        \n'
+              '#\n'
+              '# Define a = 2\n'
               'a = 2\n'
               '\n'
               'def f2():\n'
@@ -2125,7 +2128,9 @@ class TestPython(BaseTestImporter):
                                    '        pass\n'
                                    '\n'
                         ),
-                        (1, '...some declarations',
+                        (1, 'Define a = 2',  # #2500
+                                   '#\n'
+                                   '# Define a = 2\n'
                                    'a = 2\n'
                                    '\n'
                         ),
@@ -2214,7 +2219,7 @@ class TestPython(BaseTestImporter):
                     (1, 'Class1',
                                'class Class1:pass\n'
                     ),
-                    (1, '...some declarations',
+                    (1, 'a = 2',
                                'a = 2\n'
                     ),
                     (1, 'f2',
