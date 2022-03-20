@@ -235,10 +235,11 @@ def split_root(root, lines):
         last = h1
         for col, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
             if h1 > last:
+                new_body = body(last, h1, col)  # #2500.
                 # there are some declaration lines in between two inner definitions
                 p1 = p.insertAsLastChild()
-                p1.h = '...some declarations'
-                p1.b = body(last, h1, col)
+                p1.h = declaration_headline(new_body) # #2500
+                p1.b = new_body
                 last = h1
             p1 = p.insertAsLastChild()
             p1.h = name
@@ -265,6 +266,20 @@ def split_root(root, lines):
                 p1.b = body(h1, end_b, col)
 
             last = end_b
+    #@+node:ekr.20220320055103.1: *3* declaration_headline
+    def declaration_headline(body_string):  # #2500
+        """
+        Return an informative headline for s, a group of declarations.
+        """
+        for s1 in g.splitLines(body_string):
+            s = s1.strip()
+            if s.startswith('#') and len(s.replace('#','').strip()) > 1:
+                # A non-trivial comment: Return the comment w/o the leading '#'.
+                return s[1:].strip()
+            if s and not s.startswith('#'):
+                # A non-trivial non-comment.
+                return s
+        return "...some declarations"  # Return legacy headline.
     #@-others
     # rawtokens is a list of all tokens found in input lines
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
