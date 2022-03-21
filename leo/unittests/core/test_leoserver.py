@@ -42,10 +42,12 @@ class TestLeoServer(LeoUnitTest):
 
     def setUp(self):
         global g_server
+        super().setUp()
         self.server = g_server
         g.unitTesting = True
 
     def tearDown(self):
+        super().tearDown()
         g.unitTesting = False
 
     #@+node:felix.20210621233316.100: *3* TestLeoServer._request
@@ -111,10 +113,13 @@ class TestLeoServer(LeoUnitTest):
             "set_headline": {"name": "new headline"},
             "get_all_server_commands": {"log": False},
             "get_all_leo_commands": {"log": False},
+            "tag_node": {"tag": "unit-test-tag"},
+            "remove_tag": {"tag": "unit-test-tag"}
             # "paste_node": {"name", "paste-node-name"},
             # "paste_as_clone_node": {"name", "paste-node-name"},
         }
         # First open a test file & performa all tests.
+        # Note: this call injects a QuickSearchController into the new commander.
         server.open_file({"filename": test_dot_leo})  # A real file.
         try:
             id_ = 0

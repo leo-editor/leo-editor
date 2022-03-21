@@ -852,8 +852,9 @@ class QuickSearchController:
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("no target" + str(it))
-            print("its:  "+ str(self.its))
+            if not g.unitTesting:
+                print("no target: " + str(it))
+                print("its:  "+ str(self.its))
             return
 
         # if Ctrl key is down, delete item and
