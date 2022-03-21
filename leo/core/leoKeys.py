@@ -2606,14 +2606,10 @@ class KeyHandlerClass:
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:tom.20220320235059.1: *4* k.printCommandsWithDocs
-    @g.command('show-commands-with-docs')
-    def printCommandsWithDocs(event=None):
+    @cmd('show-commands-with-docs')
+    def printCommandsWithDocs(self, event=None):
         """Show all the known commands and their bindings, if any."""
-        import textwrap
-        c = event.c or None
-        if not c:
-            return
-        k = c.k
+        c, k = self.c, self
         tabName = 'List'
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
