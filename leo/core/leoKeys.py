@@ -2605,6 +2605,49 @@ class KeyHandlerClass:
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es_print('', ''.join(lines), tabName=tabName)
+    #@+node:tom.20220320235059.1: *4* k.printCommandsWithDocs
+    @g.command('show-commands-with-docs')
+    def printCommandsWithDocs(event=None):
+        """Show all the known commands and their bindings, if any."""
+        import textwrap
+        c = event.c or None
+        if not c:
+            return
+        k = c.k
+        tabName = 'List'
+        c.frame.log.clearTab(tabName)
+        inverseBindingDict = k.computeInverseBindingDict()
+        data = []
+        for commandName in sorted(c.commandsDict):
+            dataList = inverseBindingDict.get(commandName, [('', ''),])
+            for pane, key in dataList:
+                key = k.prettyPrintKey(key)
+                binding = pane + key
+                cmd = commandName.strip()
+                doc = f'{c.commandsDict.get(commandName).__doc__}' or ''
+                if doc == 'None':
+                    doc = ''
+                # Formatting for multi-line docstring
+                if doc.count('\n') > 0:
+                    doc = f'\n{doc}\n'
+                else:
+                    doc = f'   {doc}'
+                if doc.startswith('\n'):
+                    doc.replace('\n', '', 1)
+                toolong = doc.count('\n') > 5
+                manylines = False
+                if toolong:
+                    lines = doc.split('\n')[:4]
+                    lines[-1] += ' ...\n'
+                    doc = '\n'.join(lines)
+                    manylines = True
+                n = min(2, len(binding))
+                if manylines:
+                    doc = textwrap.fill(doc, width = 50, initial_indent = ' '*4,
+                            subsequent_indent = ' '*4)
+                data.append((binding, cmd, doc))
+        lines = ['[%*s] %s%s\n' % (-n, binding, cmd, doc) for binding, cmd, doc in data]
+        g.es(''.join(lines), tabName = tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):
