@@ -12,9 +12,13 @@ Written by Félix Malboeuf and Edward K. Ream.
 #@+node:felix.20210621233316.2: ** << imports >>
 import argparse
 import asyncio
+import fnmatch
 import inspect
+import itertools
 import json
 import os
+from collections import OrderedDict
+import re
 import sys
 import socket
 import textwrap
@@ -34,7 +38,7 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.append(leo_path)
 # Leo
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, PosList
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
@@ -50,7 +54,7 @@ connectionsPool = set()  # type:ignore
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List = []
+traces: List = [] # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -353,6 +357,550 @@ class ServerExternalFilesController(ExternalFilesController):
 
         g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
+    #@-others
+#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
+class OrderedDefaultDict(OrderedDict):
+    """
+    Credit:  http://stackoverflow.com/questions/4126348/
+    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
+    """
+    def __init__(self, *args, **kwargs):
+        if not args:
+            self.default_factory = None
+        else:
+            if not (args[0] is None or callable(args[0])):
+                raise TypeError('first argument must be callable or None')
+            self.default_factory = args[0]
+            args = args[1:]
+        super().__init__(*args, **kwargs)
+
+    def __missing__(self, key):
+        if self.default_factory is None:
+            raise KeyError(key)
+        self[key] = default = self.default_factory()
+        return default
+
+    def __reduce__(self):  # optional, for pickle support
+        args = (self.default_factory,) if self.default_factory else ()
+        return self.__class__, args, None, None, self.items()
+#@+node:felix.20220225003906.1: ** class QuickSearchController
+class QuickSearchController:
+
+    #@+others
+    #@+node:felix.20220225003906.2: *3* __init__
+    def __init__(self, c):
+        self.c = c
+        self.lw = [] # empty list
+
+        # Keys are id(w),values are either tuples in tuples (w (p,pos)) or tuples (w, f)
+        # (function f is when built from addGeneric)
+        self.its = {}
+
+        # self.worker = threadutil.UnitWorker()
+        # self.widgetUI = ui
+        self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
+                               "@auto", "@auto-md", "@auto-org",
+                               "@auto-otl", "@auto-rst"]
+
+        self._search_patterns = []
+
+        self.navText = ''
+        self.showParents = True
+        self.isTag = False # added concept to combine tag pane functionality
+        self.searchOptions = 0
+        self.searchOptionsStrings = ["All", "Subtree", "File",
+                                     "Chapter", "Node"]
+
+        def searcher(inp):
+            # Todo: maybe re-use original QuickSearchController threadutil behavior
+            exp = inp.replace(" ", "*")
+            res = self.bgSearch(exp)
+            return res
+
+        def dumper():
+            # Todo: maybe re-use original QuickSearchController threadutil behavior
+            # always run on ui thread
+            pass
+            # out = self.worker.output
+            # self.throttler.add(out)
+
+        def throttledDump(lst):
+            """ dumps the last output """
+            # Todo: maybe re-use original QuickSearchController threadutil behavior
+            # we do get called with empty list on occasion
+            if not lst:
+                return
+            hm, bm = lst[-1]
+            self.clear()
+            self.addHeadlineMatches(hm)
+            self.addBodyMatches(bm)
+
+        # ***** below is original QuickSearchController threadutil behavior *****
+        # ? self.throttler = threadutil.NowOrLater(throttledDump)
+        # ? self.worker.set_worker(searcher)
+        # ? self.worker.set_output_f(dumper)
+        # ? self.worker.resultReady.connect(dumper)
+        # ? self.worker.start()
+        # we want both single-clicks and activations (press enter)
+        # ? w.itemActivated.connect(self.onActivated)
+        # ? w.itemPressed.connect(self.onSelectItem)
+        # ? w.currentItemChanged.connect(self.onSelectItem)
+
+    #@+node:felix.20220225224130.1: *3* matchlines
+    def matchlines(self, b, miter):
+        res = []
+        for m in miter:
+            st, en = g.getLine(b, m.start())
+            li = b[st:en].strip()
+            res.append((li, (m.start(), m.end())))
+        return res
+
+    #@+node:felix.20220225003906.4: *3* addItem
+    def addItem(self, it, val):
+        self.its[id(it)] = (it, val)
+        # changed to 999 from 3000 to replace old threadutil behavior
+        return len(self.its) > 999 # Limit to 999 for now
+    #@+node:felix.20220225003906.5: *3* addBodyMatches
+    def addBodyMatches(self, poslist):
+        lineMatchHits = 0
+        for p in poslist:
+            it = {"type": "headline", "label": p.h}
+            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
+            # f = it.font()
+            # f.setBold(True)
+            # it.setFont(f)
+            if self.addItem(it, (p, None)):
+                return lineMatchHits
+            ms = self.matchlines(p.b, p.matchiter)
+            for ml, pos in ms:
+                lineMatchHits += 1
+                # it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
+                it = {"type": "body", "label": ml}
+                if self.addItem(it, (p, pos)):
+                    return lineMatchHits
+        return lineMatchHits
+    #@+node:felix.20220225003906.6: *3* addParentMatches
+    def addParentMatches(self, parent_list):
+        lineMatchHits = 0
+        for parent_key, parent_value in parent_list.items():
+            if isinstance(parent_key, str):
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                # it = QtWidgets.QListWidgetItem(h, self.lw)
+                it = {"type": "parent", "label": h}
+            else:
+                # it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
+                it = {"type": "parent", "label": parent_key.h}
+            # f = it.font()
+            # f.setItalic(True)
+            # it.setFont(f)
+            if self.addItem(it, (parent_key, None)):
+                return lineMatchHits
+            for p in parent_value:
+                # it = QtWidgets.QListWidgetItem("    " + p.h, self.lw)
+                it = {"type": "headline", "label": p.h}
+                # f = it.font()
+                # f.setBold(True)
+                # it.setFont(f)
+                if self.addItem(it, (p, None)):
+                    return lineMatchHits
+                if hasattr(p, "matchiter"):  #p might be not have body matches
+                    ms = self.matchlines(p.b, p.matchiter)
+                    for ml, pos in ms:
+                        lineMatchHits += 1
+                        # it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
+                        it = {"type": "body", "label": ml}
+                        if self.addItem(it, (p, pos)):
+                            return lineMatchHits
+        return lineMatchHits
+
+    #@+node:felix.20220225003906.7: *3* addGeneric
+    def addGeneric(self, text, f):
+        """ Add generic callback """
+        # it = QtWidgets.QListWidgetItem(text, self.lw)
+        it = {"type": "generic", "label": text}
+        self.its[id(it)] = (it, f)
+        return it
+
+    #@+node:felix.20220318222437.1: *3* addTag
+    def addTag(self, text):
+        """ add Tag label """
+        it = {"type": "tag", "label": text}
+        self.its[id(it)] = (it, None)
+        return it
+
+    #@+node:felix.20220225003906.8: *3* addHeadlineMatches
+    def addHeadlineMatches(self, poslist):
+        for p in poslist:
+            it = {"type": "headline", "label": p.h}
+            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
+            # f = it.font()
+            # f.setBold(True)
+            # it.setFont(f)
+            if self.addItem(it, (p, None)):
+                return
+    #@+node:felix.20220225003906.9: *3* clear
+    def clear(self):
+        self.its = {}
+        self.lw.clear()
+
+    #@+node:felix.20220225003906.10: *3* doNodeHistory
+    def doNodeHistory(self):
+        nh = PosList(po[0] for po in self.c.nodeHistory.beadList)
+        nh.reverse()
+        self.clear()
+        self.addHeadlineMatches(nh)
+
+    #@+node:felix.20220225003906.11: *3* doSearchHistory
+    def doSearchHistory(self):
+        self.clear()
+        def sHistSelect(x):
+            def _f():
+                # self.widgetUI.lineEdit.setText(x)
+                self.c.scon.navText = x
+                self.doSearch(x)
+            return _f
+        for pat in self._search_patterns:
+            self.addGeneric(pat, sHistSelect(pat))
+
+
+    def pushSearchHistory(self, pat):
+        if pat in self._search_patterns:
+            return
+        self._search_patterns = ([pat] + self._search_patterns)[:30]
+
+    #@+node:felix.20220225003906.12: *3* doTimeline
+    def doTimeline(self):
+        c = self.c
+        timeline = [p.copy() for p in c.all_unique_positions()]
+        timeline.sort(key=lambda x: x.gnx, reverse=True)
+        self.clear()
+        self.addHeadlineMatches(timeline)
+    #@+node:felix.20220225003906.13: *3* doChanged
+    def doChanged(self):
+        c = self.c
+        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
+        self.clear()
+        self.addHeadlineMatches(changed)
+    #@+node:felix.20220225003906.14: *3* doSearch
+    def doSearch(self, pat):
+        hitBase = False
+        self.clear()
+        self.pushSearchHistory(pat)
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+            # in python 3.6 there is no (?ms) at the end
+            # only \Z
+            bpat = bpat.replace(r'\Z', '')
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            bpat = pat[2:]
+            flags = 0
+        combo = self.searchOptionsStrings[self.searchOptions]
+        if combo == "All":
+            hNodes = self.c.all_positions()
+            bNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+            bNodes = self.c.p.self_and_subtree()
+        elif combo == "File":
+            found = False
+            node = self.c.p
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h in self.fileDirectives:
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            hNodes = node.self_and_subtree()
+            bNodes = node.self_and_subtree()
+        elif combo == "Chapter":
+            found = False
+            node = self.c.p
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h == "@chapter":
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            if hitBase:
+                # If I hit the base then revert to all positions
+                # this is basically the "main" chapter
+                hitBase = False  #reset
+                hNodes = self.c.all_positions()
+                bNodes = self.c.all_positions()
+            else:
+                hNodes = node.self_and_subtree()
+                bNodes = node.self_and_subtree()
+
+        else:
+            hNodes = [self.c.p]
+            bNodes = [self.c.p]
+
+        if not hitBase:
+            hm = self.find_h(hpat, hNodes, flags)
+            bm = self.find_b(bpat, bNodes, flags)
+            bm_keys = [match.key() for match in bm]
+            numOfHm = len(hm)  #do this before trim to get accurate count
+            hm = [match for match in hm if match.key() not in bm_keys]
+            if self.showParents:
+                parents = OrderedDefaultDict(list)
+                for nodeList in [hm, bm]:
+                    for node in nodeList:
+                        if node.level() == 0:
+                            parents["Root"].append(node)
+                        else:
+                            parents[node.parent().gnx].append(node)
+                lineMatchHits = self.addParentMatches(parents)
+            else:
+                self.addHeadlineMatches(hm)
+                lineMatchHits = self.addBodyMatches(bm)
+
+            hits = numOfHm + lineMatchHits
+            self.lw.insert(0, "{} hits".format(hits))
+
+        else:
+            if combo == "File":
+                self.lw.insert(0, "External file directive not found " +
+                                      "during search")
+    #@+node:felix.20220313183922.1: *3* doTag
+    def doTag(self, pat):
+        """
+        Search for tags: outputs position list
+        If empty pattern, list tags *strings* instead
+        """
+        if not pat:
+            # No pattern! list all tags as string
+            c = self.c
+            self.clear()
+            d = {}
+            for p in c.all_unique_positions():
+                u = p.v.u
+                tags = set(u.get('__node_tags', set([])))
+                for tag in tags:
+                    aList = d.get(tag, [])
+                    aList.append(p.h)
+                    d[tag] = aList
+            if d:
+                for key in sorted(d):
+                    # key is unique tag
+                    self.addTag(key)
+                    #
+                    # aList = d.get(key)
+                    # for h in sorted(aList):
+                    #     self.lw.push(key)
+                    #     print(f"{key:>8} {h}")
+                return
+            else:
+                return
+                # if not g.unitTesting:
+                #     print(f"no tags in {c.shortFileName()}")
+
+        # else: non empty pattern, so find tag!
+        hm = self.find_tag(pat)
+
+        self.clear() # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+
+        # bm = self.c.find_b(bpat, flags)
+        # self.addBodyMatches(bm)
+        return hm, [] # unused
+        # self.lw.insertItem(0, "%d hits"%self.lw.count())
+    #@+node:felix.20220225003906.15: *3* bgSearch
+    def bgSearch(self, pat):
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            # bpat = pat[2:]
+            flags = 0
+        combo =  self.searchOptionsStrings[self.searchOptions]
+        if combo == "All":
+            hNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+        else:
+            hNodes = [self.c.p]
+        hm = self.find_h(hpat, hNodes, flags)
+
+        self.clear() # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+
+        # bm = self.c.find_b(bpat, flags)
+        # self.addBodyMatches(bm)
+        return hm, []
+        # self.lw.insertItem(0, "%d hits"%self.lw.count())
+    #@+node:felix.20220225003906.16: *3* find_h
+    def find_h(self, regex, nodes, flags=re.IGNORECASE):
+        """
+        Return list (a PosList) of all nodes where zero or more characters at
+        the beginning of the headline match regex
+        """
+        res = PosList()
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return res
+        for p in nodes:
+            m = re.match(pat, p.h)
+            if m:
+                # #2012: Don't inject pc.mo.
+                pc = p.copy()
+                res.append(pc)
+        return res
+    #@+node:felix.20220313185430.1: *3* find_tag
+    def find_tag(self, pat):
+        """
+        Return list (a PosList) of all nodes that have matching tags
+        """
+        #  USE update_list(self) from @file ../plugins/nodetags.py
+        c = self.c
+
+        res = PosList()
+
+        tc = getattr(c, 'theTagController', None)
+        gnxDict = c.fileCommands.gnxDict
+        key = pat.strip()
+
+        query = re.split(r'(&|\||-|\^)', key)
+        tags = []
+        operations = []
+        for i, s in enumerate(query):
+            if i % 2 == 0:
+                tags.append(s.strip())
+            else:
+                operations.append(s.strip())
+        tags.reverse()
+        operations.reverse()
+
+        resultset = set(tc.get_tagged_gnxes(tags.pop()))
+        while operations:
+            op = operations.pop()
+            nodes = set(tc.get_tagged_gnxes(tags.pop()))
+            if op == '&':
+                resultset &= nodes
+            elif op == '|':
+                resultset |= nodes
+            elif op == '-':
+                resultset -= nodes
+            elif op == '^':
+                resultset ^= nodes
+
+        for gnx in resultset:
+            n = gnxDict.get(gnx)
+            if n is not None:
+                p = c.vnode2position(n)
+                pc = p.copy()
+                res.append(pc)
+        #         item = QtWidgets.QListWidgetItem(n.h)
+        #         self.listWidget.addItem(item)
+        #         self.mapping[id(item)] = n
+        # count = self.listWidget.count()
+        # self.label.clear()
+        # self.label.setText("Total: %s nodes" % count)
+        return res
+    #@+node:felix.20220225003906.17: *3* find_b
+    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE):
+        """
+        Return list (a PosList) of all nodes whose body matches regex
+        one or more times.
+
+        """
+        res = PosList()
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return res
+        for p in nodes:
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                t1.__next__()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        return res
+    #@+node:felix.20220225003906.18: *3* doShowMarked
+    def doShowMarked(self):
+        self.clear()
+        c = self.c
+        pl = PosList()
+        for p in c.all_positions():
+            if p.isMarked():
+                pl.append(p.copy())
+        self.addHeadlineMatches(pl)
+    #@+node:felix.20220225003906.19: *3* Event handlers
+    #@+node:felix.20220225003906.20: *4* onSelectItem (quicksearch.py)
+    def onSelectItem(self, it, it_prev=None):
+
+        c = self.c
+        tgt = self.its.get(it)
+        if not tgt:
+            print("no target" + str(it))
+            print("its:  "+ str(self.its))
+            return
+
+        # if Ctrl key is down, delete item and
+        # children (based on indent) and return
+        #
+        # modifiers = QtWidgets.QApplication.keyboardModifiers()
+        # if modifiers == KeyboardModifier.ControlModifier:
+        #     row = self.lw.row(it)
+        #     init_indent = len(it.text()) - len(str(it.text()).lstrip())
+        #     self.lw.blockSignals(True)
+        #     while row < self.lw.count():
+        #         self.lw.item(row).setHidden(True)
+        #         row += 1
+        #         cur = self.lw.item(row)
+        #         # #1751.
+        #         if not cur:
+        #             break
+        #         s = cur.text() or ''
+        #         indent = len(s) - len(str(s).lstrip())
+        #         if indent <= init_indent:
+        #             break
+        #     self.lw.setCurrentRow(row)
+        #     self.lw.blockSignals(False)
+        #     return
+
+        # generic callable
+        if callable(tgt[1]):
+            tgt()
+        elif len(tgt[1]) == 2:
+            p, pos = tgt[1]
+            if hasattr(p, 'v'):  #p might be "Root"
+                if not c.positionExists(p):
+                    g.es("Node moved or deleted.\nMaybe re-do search.",
+                        color='red')
+                    return
+                c.selectPosition(p)
+                if pos is not None:
+                    st, en = pos
+                    w = c.frame.body.wrapper
+                    w.setSelectionRange(st, en)
+                    w.seeInsertPoint()
+                # self.lw.setFocus() # don't set focus on sidepanel
+    #@+node:felix.20220225003906.21: *4* onActivated
+    def onActivated(self, event):
+        # Todo: Remove this method if Not used in leoserver
+        c = self.c
+        c.bodyWantsFocusNow()
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
@@ -696,6 +1244,8 @@ class LeoServer:
             c = self.bridge.openLeoFile(filename)
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
+            cc = QuickSearchController(c)
+            setattr(c, 'scon', cc) # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -767,7 +1317,8 @@ class LeoServer:
                 # c.close() # Stops too much if last file closed
                 g.app.closeLeoWindow(c.frame, finish_quit=False)
             else:
-                # Cannot close, return empty response without 'total' (ask to save, ignore or cancel)
+                # Cannot close, return empty response without 'total'
+                # (ask to save, ignore or cancel)
                 return self._make_response()
         # New 'c': Select the first open outline, if any.
         commanders = g.app.commanders()
@@ -846,6 +1397,107 @@ class LeoServer:
                     # Experimental: attempt to use permissive section ref logic.
                 )
         return self._make_response()  # Just send empty as 'ok'
+    #@+node:felix.20220309010334.1: *4* server.nav commands
+    #@+node:felix.20220305211743.1: *5* server.nav_headline_search
+    def nav_headline_search(self, param):
+        """
+        Performs nav 'headline only' search and fills results of go to panel
+        Triggered by just typing in nav input box
+        """
+        tag = 'nav_headline_search'
+        c = self._check_c()
+        # Tag search override!
+        try:
+            inp = c.scon.navText
+            if c.scon.isTag:
+                c.scon.doTag(inp)
+            else:
+                exp = inp.replace(" ", "*")
+                c.scon.bgSearch(exp)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav headline search: {e}")
+        return  self._make_response()
+
+
+    #@+node:felix.20220305211828.1: *5* server.nav_search
+    def nav_search(self, param):
+        """
+        Performs nav search and fills results of go to panel
+        Triggered by pressing 'Enter' in the nav input box
+        """
+        tag = 'nav_search'
+        c = self._check_c()
+        # Tag search override!
+        try:
+            inp = c.scon.navText
+            if c.scon.isTag:
+                c.scon.doTag(inp)
+            else:
+                c.scon.doSearch(inp)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav search: {e}")
+        return  self._make_response()
+
+
+    #@+node:felix.20220305215239.1: *5* server.get_goto_panel
+    def get_goto_panel(self, param):
+        """
+        Gets the content of the goto panel
+        """
+        tag = 'get_goto_panel'
+        c = self._check_c()
+        try:
+            result = {}
+            navlist = [ {"key": k, "h": c.scon.its[k][0]["label"], "t": c.scon.its[k][0]["type"] } for k in c.scon.its.keys()]
+            result["navList"] = navlist
+            result["messages"]= c.scon.lw
+            result["navText"] = c.scon.navText
+            result["navOptions"] = {"isTag":c.scon.isTag, "showParents": c.scon.showParents}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav search: {e}")
+        return self._make_response(result)
+
+
+    #@+node:felix.20220309010558.1: *5* server.find_quick_timeline
+    def find_quick_timeline(self, param):
+        # fill with timeline order gnx nodes
+        c = self._check_c()
+        c.scon.doTimeline()
+        return  self._make_response()
+
+    #@+node:felix.20220309010607.1: *5* server.find_quick_changed
+    def find_quick_changed(self, param):
+        # fill with list of all dirty nodes
+        c = self._check_c()
+        c.scon.doChanged()
+        return  self._make_response()
+
+    #@+node:felix.20220309010647.1: *5* server.find_quick_history
+    def find_quick_history(self, param):
+        # fill with list from history
+        c = self._check_c()
+        c.scon.doNodeHistory()
+        return  self._make_response()
+
+    #@+node:felix.20220309010704.1: *5* server.find_quick_marked
+    def find_quick_marked(self, param):
+        # fill with list of marked nodes
+        c = self._check_c()
+        c.scon.doShowMarked()
+        return  self._make_response()
+
+    #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
+    def goto_nav_entry(self, param):
+        pass
+        # activate entry in c.scon.its
+        c = self._check_c()
+        # c.scon.doTimeline()
+        it = param.get('key')
+        c.scon.onSelectItem(it)
+        focus = self._get_focus()
+        result = {"focus": focus}
+        return self._make_response(result)
+
     #@+node:felix.20210621233316.19: *4* server.search commands
     #@+node:felix.20210621233316.20: *5* server.get_search_settings
     def get_search_settings(self, param):
@@ -858,6 +1510,10 @@ class LeoServer:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
             result = {"searchSettings": settings.__dict__}
+            result["searchSettings"]["nav_text"] = c.scon.navText
+            result["searchSettings"]["show_parents"] = c.scon.showParents
+            result["searchSettings"]["is_tag"] = c.scon.isTag
+            result["searchSettings"]["search_options"] = c.scon.searchOptions
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
@@ -875,6 +1531,12 @@ class LeoServer:
             raise ServerError(f"{tag}: searchSettings object is missing")
         # Try to set the search settings
         try:
+            # nav settings
+            c.scon.navText = searchSettings.get('nav_text')
+            c.scon.showParents = searchSettings.get('show_parents')
+            c.scon.isTag = searchSettings.get('is_tag')
+            c.scon.searchOptions = searchSettings.get('search_options')
+
             # Find/change text boxes.
             table = (
                 ('find_findbox', 'find_text', ''),
@@ -917,7 +1579,9 @@ class LeoServer:
                         w.toggle()
             # Ensure one radio button is set.
             w = ftm.radio_button_entire_outline
-            if not searchSettings.get('node_only', False) and not searchSettings.get('suboutline_only', False):
+            nodeOnly = searchSettings.get('node_only', False)
+            suboutlineOnly = searchSettings.get('suboutline_only', False)
+            if not nodeOnly and not suboutlineOnly:
                 setattr(find, 'entire_outline', True)
                 if not w.isChecked():
                     w.toggle()
@@ -1182,6 +1846,56 @@ class LeoServer:
         # Unlike find commands, do_tag_children does not use a settings dict.
         fc.do_tag_children(c.p, tag_param)
         return self._make_response()
+    #@+node:felix.20220313215348.1: *5* server.tag_node
+    def tag_node(self, param):
+        """Set tag on selected node"""
+        # This is not a find command!
+        tag = 'tag_node'
+        c = self._check_c()
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        try:
+            p = self._get_p(param)
+            tc = getattr(c, 'theTagController', None)
+            tc.add_tag(p, tag_param)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
+        return self._make_response()
+    #@+node:felix.20220313215353.1: *5* server.remove_tag
+    def remove_tag(self, param):
+        """Remove specific tag on selected node"""
+        # This is not a find command!
+        tag = 'remove_tag'
+        c = self._check_c()
+        tag_param = param.get("tag")
+        if tag_param is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        try:
+            p = self._get_p(param)
+            v = p.v
+            tc = getattr(c, 'theTagController', None)
+            if v.u and '__node_tags' in v.u:
+                tc.remove_tag(p, tag_param)
+        except Exception as e:
+            raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
+        return self._make_response()
+    #@+node:felix.20220313220807.1: *5* server.remove_tags
+    def remove_tags(self, param):
+        """Remove all tags on selected node"""
+        # This is not a find command!
+        tag = 'remove_tags'
+        c = self._check_c()
+        try:
+            p = self._get_p(param)
+            v = p.v
+            if v.u and '__node_tags' in v.u:
+                del v.u['__node_tags']
+                tc = getattr(c, 'theTagController', None)
+                tc.initialize_taglist() # reset tag list: some may have been removed
+        except Exception as e:
+            raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
+        return self._make_response()
     #@+node:felix.20210621233316.35: *4* server:getter commands
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param):
@@ -1347,7 +2061,10 @@ class LeoServer:
         return self._make_minimal_response({"focus": self._get_focus()})
     #@+node:felix.20210621233316.44: *5* server.get_parent
     def get_parent(self, param):
-        """Return the node data for the parent of position p, where p is c.p if param["ap"] is missing."""
+        """
+        Return the node data for the parent of position p,
+        where p is c.p if param["ap"] is missing.
+        """
         self._check_c()
         p = self._get_p(param)
         parent = p.parent()
@@ -1725,7 +2442,6 @@ class LeoServer:
         h = param.get('name', '')
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
-        c.setChanged()
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:felix.20210621233316.63: *5* server.set_selection
@@ -3883,7 +4599,8 @@ def main():  # pragma: no cover (tested in client)
             "  - leo.core.leoclient is an example client written in python.\n",
             "  - leoInteg (https://github.com/boltex/leointeg) is written in typescript.\n"
         ])
-        # usage = 'leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]'
+        # Usage:
+        # leoserver.py [-a <address>] [-p <port>] [-l <limit>] [-f <file>] [--dirty] [--persist]
         usage = 'python leo.core.leoserver [options...]'
         trace_s = 'request,response,verbose'
         valid_traces = [z.strip() for z in trace_s.split(',')]
