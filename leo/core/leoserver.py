@@ -2442,7 +2442,7 @@ class LeoServer:
         h: str = param.get('name', '')
         oldH: str = p.h
         if h == oldH:
-            self._make_response()
+            return self._make_response()
         bunch = u.beforeChangeNodeContents(p)
         p.setDirty()
         c.setChanged()
