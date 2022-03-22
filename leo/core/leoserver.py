@@ -1487,7 +1487,6 @@ class LeoServer:
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param):
-        pass
         # activate entry in c.scon.its
         c = self._check_c()
         # c.scon.doTimeline()
