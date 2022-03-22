@@ -702,7 +702,7 @@ class QuickSearchController:
                     # for h in sorted(aList):
                     #     self.lw.push(key)
                     #     print(f"{key:>8} {h}")
-            
+
             # elif not g.unitTesting:
             #     print(f"no tags in {c.shortFileName()}")
             return
@@ -2266,6 +2266,7 @@ class LeoServer:
         # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
+        c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
@@ -2287,6 +2288,7 @@ class LeoServer:
         # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
+        c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
@@ -2438,8 +2440,13 @@ class LeoServer:
         c = self._check_c()
         p = self._get_p(param)
         u = c.undoer
-        h = param.get('name', '')
+        h: str = param.get('name', '')
+        oldH: str = p.h
+        if h == oldH:
+            self._make_response()
         bunch = u.beforeChangeNodeContents(p)
+        p.setDirty()
+        c.setChanged()
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
