@@ -860,10 +860,14 @@ class QuickSearchController:
                         return
                     c.selectPosition(p)
                     if pos is not None:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, False, 0, p)
                         st, en = pos
                         w = c.frame.body.wrapper
                         w.setSelectionRange(st, en)
                         w.seeInsertPoint()
+                        c.bodyWantsFocus()
+                        c.bodyWantsFocusNow()
                     else:
                         if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
                             g.app.gui.show_find_success(c, True, 0, p)
