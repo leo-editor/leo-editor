@@ -848,36 +848,29 @@ class QuickSearchController:
             return
 
         # generic callable
-        if callable(tgt[1]):
-            tgt()
-        elif len(tgt[1]) == 2:
-            p, pos = tgt[1]
-            if hasattr(p, 'v'):  #p might be "Root"
-                if not c.positionExists(p):
-                    g.es("Node moved or deleted.\nMaybe re-do search.",
-                        color='red')
-                    return
-                c.selectPosition(p)
-                if pos is not None:
-                    st, en = pos
-                    w = c.frame.body.wrapper
-                    w.setSelectionRange(st, en)
-                    w.seeInsertPoint()
-                else:
-                    c.endEditing()
-                    c.redraw(p)
-                    c.frame.tree.editLabel(p)
-                    w = c.edit_widget(p)  # #2220
-                    if w:
-                        w.setSelectionRange(0, 0)
-                    c.endEditing()
+        try:
+            if callable(tgt[1]):
+                tgt()
+            elif len(tgt[1]) == 2:
+                p, pos = tgt[1]
+                if hasattr(p, 'v'):  #p might be "Root"
+                    if not c.positionExists(p):
+                        g.es("Node moved or deleted.\nMaybe re-do search.",
+                            color='red')
+                        return
+                    c.selectPosition(p)
+                    if pos is not None:
+                        st, en = pos
+                        w = c.frame.body.wrapper
+                        w.setSelectionRange(st, en)
+                        w.seeInsertPoint()
+                    else:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, True, 0, p)
+        except Exception:
+            raise ServerError("QuickSearchController onSelectItem error")
 
-                # self.lw.setFocus() # don't set focus on sidepanel
-    #@+node:felix.20220225003906.21: *4* onActivated
-    def onActivated(self, event):
-        # Todo: Remove this method if Not used in leoserver
-        c = self.c
-        c.bodyWantsFocusNow()
+
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
@@ -1472,12 +1465,16 @@ class LeoServer:
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param):
         # activate entry in c.scon.its
+        tag = 'goto_nav_entry'
         c = self._check_c()
         # c.scon.doTimeline()
-        it = param.get('key')
-        c.scon.onSelectItem(it)
-        focus = self._get_focus()
-        result = {"focus": focus}
+        try:
+            it = param.get('key')
+            c.scon.onSelectItem(it)
+            focus = self._get_focus()
+            result = {"focus": focus}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a nav entry: {e}")
         return self._make_response(result)
 
     #@+node:felix.20210621233316.19: *4* server.search commands
