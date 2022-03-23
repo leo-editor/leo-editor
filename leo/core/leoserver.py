@@ -411,41 +411,6 @@ class QuickSearchController:
         self.searchOptionsStrings = ["All", "Subtree", "File",
                                      "Chapter", "Node"]
 
-        def searcher(inp):
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            exp = inp.replace(" ", "*")
-            res = self.bgSearch(exp)
-            return res
-
-        def dumper():
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            # always run on ui thread
-            pass
-            # out = self.worker.output
-            # self.throttler.add(out)
-
-        def throttledDump(lst):
-            """ dumps the last output """
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            # we do get called with empty list on occasion
-            if not lst:
-                return
-            hm, bm = lst[-1]
-            self.clear()
-            self.addHeadlineMatches(hm)
-            self.addBodyMatches(bm)
-
-        # ***** below is original QuickSearchController threadutil behavior *****
-        # ? self.throttler = threadutil.NowOrLater(throttledDump)
-        # ? self.worker.set_worker(searcher)
-        # ? self.worker.set_output_f(dumper)
-        # ? self.worker.resultReady.connect(dumper)
-        # ? self.worker.start()
-        # we want both single-clicks and activations (press enter)
-        # ? w.itemActivated.connect(self.onActivated)
-        # ? w.itemPressed.connect(self.onSelectItem)
-        # ? w.currentItemChanged.connect(self.onSelectItem)
-
     #@+node:felix.20220225224130.1: *3* matchlines
     def matchlines(self, b, miter):
         res = []
@@ -562,7 +527,6 @@ class QuickSearchController:
             return _f
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
-
 
     def pushSearchHistory(self, pat):
         if pat in self._search_patterns:
@@ -697,16 +661,7 @@ class QuickSearchController:
                 for key in sorted(d):
                     # key is unique tag
                     self.addTag(key)
-                    #
-                    # aList = d.get(key)
-                    # for h in sorted(aList):
-                    #     self.lw.push(key)
-                    #     print(f"{key:>8} {h}")
-            
-            # elif not g.unitTesting:
-            #     print(f"no tags in {c.shortFileName()}")
             return
-
         # else: non empty pattern, so find tag!
         hm = self.find_tag(pat)
         self.clear() # needed for external client ui replacement: fills self.its
@@ -841,59 +796,40 @@ class QuickSearchController:
     #@+node:felix.20220225003906.19: *3* Event handlers
     #@+node:felix.20220225003906.20: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
-
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("no target" + str(it))
-            print("its:  "+ str(self.its))
+            print("onSelectItem: no target found for 'it' as key:" + str(it))
             return
 
-        # if Ctrl key is down, delete item and
-        # children (based on indent) and return
-        #
-        # modifiers = QtWidgets.QApplication.keyboardModifiers()
-        # if modifiers == KeyboardModifier.ControlModifier:
-        #     row = self.lw.row(it)
-        #     init_indent = len(it.text()) - len(str(it.text()).lstrip())
-        #     self.lw.blockSignals(True)
-        #     while row < self.lw.count():
-        #         self.lw.item(row).setHidden(True)
-        #         row += 1
-        #         cur = self.lw.item(row)
-        #         # #1751.
-        #         if not cur:
-        #             break
-        #         s = cur.text() or ''
-        #         indent = len(s) - len(str(s).lstrip())
-        #         if indent <= init_indent:
-        #             break
-        #     self.lw.setCurrentRow(row)
-        #     self.lw.blockSignals(False)
-        #     return
-
         # generic callable
-        if callable(tgt[1]):
-            tgt()
-        elif len(tgt[1]) == 2:
-            p, pos = tgt[1]
-            if hasattr(p, 'v'):  #p might be "Root"
-                if not c.positionExists(p):
-                    g.es("Node moved or deleted.\nMaybe re-do search.",
-                        color='red')
-                    return
-                c.selectPosition(p)
-                if pos is not None:
-                    st, en = pos
-                    w = c.frame.body.wrapper
-                    w.setSelectionRange(st, en)
-                    w.seeInsertPoint()
-                # self.lw.setFocus() # don't set focus on sidepanel
-    #@+node:felix.20220225003906.21: *4* onActivated
-    def onActivated(self, event):
-        # Todo: Remove this method if Not used in leoserver
-        c = self.c
-        c.bodyWantsFocusNow()
+        try:
+            if callable(tgt[1]):
+                tgt()
+            elif len(tgt[1]) == 2:
+                p, pos = tgt[1]
+                if hasattr(p, 'v'):  #p might be "Root"
+                    if not c.positionExists(p):
+                        g.es("Node moved or deleted.\nMaybe re-do search.",
+                            color='red')
+                        return
+                    c.selectPosition(p)
+                    if pos is not None:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, False, 0, p)
+                        st, en = pos
+                        w = c.frame.body.wrapper
+                        w.setSelectionRange(st, en)
+                        w.seeInsertPoint()
+                        c.bodyWantsFocus()
+                        c.bodyWantsFocusNow()
+                    else:
+                        if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+                            g.app.gui.show_find_success(c, True, 0, p)
+        except Exception:
+            raise ServerError("QuickSearchController onSelectItem error")
+
+
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
@@ -1487,14 +1423,17 @@ class LeoServer:
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param):
-        pass
         # activate entry in c.scon.its
+        tag = 'goto_nav_entry'
         c = self._check_c()
         # c.scon.doTimeline()
-        it = param.get('key')
-        c.scon.onSelectItem(it)
-        focus = self._get_focus()
-        result = {"focus": focus}
+        try:
+            it = param.get('key')
+            c.scon.onSelectItem(it)
+            focus = self._get_focus()
+            result = {"focus": focus}
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a nav entry: {e}")
         return self._make_response(result)
 
     #@+node:felix.20210621233316.19: *4* server.search commands
@@ -1629,7 +1568,6 @@ class LeoServer:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
-            # w = c.frame.body.wrapper
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
@@ -1857,7 +1795,8 @@ class LeoServer:
         try:
             p = self._get_p(param)
             tc = getattr(c, 'theTagController', None)
-            tc.add_tag(p, tag_param)
+            if hasattr(tc, 'add_tag'):
+                tc.add_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
@@ -2266,6 +2205,7 @@ class LeoServer:
         # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
+        c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
@@ -2287,6 +2227,7 @@ class LeoServer:
         # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
+        c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
@@ -2438,8 +2379,13 @@ class LeoServer:
         c = self._check_c()
         p = self._get_p(param)
         u = c.undoer
-        h = param.get('name', '')
+        h: str = param.get('name', '')
+        oldH: str = p.h
+        if h == oldH:
+            return self._make_response()
         bunch = u.beforeChangeNodeContents(p)
+        p.setDirty()
+        c.setChanged()
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
