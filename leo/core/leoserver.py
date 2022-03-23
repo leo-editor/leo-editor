@@ -23,7 +23,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import List, Union
+from typing import Any, Dict, List, Union
 # Third-party.
 # #2300
 try:
@@ -560,7 +560,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -648,7 +648,7 @@ class QuickSearchController:
             # No pattern! list all tags as string
             c = self.c
             self.clear()
-            d = {}
+            d: Dict[str, Any] = {}
             for p in c.all_unique_positions():
                 u = p.v.u
                 tags = set(u.get('__node_tags', set([])))
@@ -674,7 +674,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             # bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo =  self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -1376,7 +1376,7 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
-            result = {}
+            result: Dict[str, Any] = {}
             navlist = [
                 {
                     "key": k,
