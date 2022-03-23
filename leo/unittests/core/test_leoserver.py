@@ -105,6 +105,8 @@ class TestLeoServer(LeoUnitTest):
         ]
         expected = ['error']
         param_d = {
+            "remove_tag": {"tag": "testTag"},
+            "tag_node": {"tag": "testTag"},
             # "apply_config": {"config": {"whatever": True}},
             "get_focus": {"log": False},
             "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},

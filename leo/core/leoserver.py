@@ -841,36 +841,11 @@ class QuickSearchController:
     #@+node:felix.20220225003906.19: *3* Event handlers
     #@+node:felix.20220225003906.20: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
-
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("no target" + str(it))
-            print("its:  "+ str(self.its))
+            print("onSelectItem: no target found for 'it' as key:" + str(it))
             return
-
-        # if Ctrl key is down, delete item and
-        # children (based on indent) and return
-        #
-        # modifiers = QtWidgets.QApplication.keyboardModifiers()
-        # if modifiers == KeyboardModifier.ControlModifier:
-        #     row = self.lw.row(it)
-        #     init_indent = len(it.text()) - len(str(it.text()).lstrip())
-        #     self.lw.blockSignals(True)
-        #     while row < self.lw.count():
-        #         self.lw.item(row).setHidden(True)
-        #         row += 1
-        #         cur = self.lw.item(row)
-        #         # #1751.
-        #         if not cur:
-        #             break
-        #         s = cur.text() or ''
-        #         indent = len(s) - len(str(s).lstrip())
-        #         if indent <= init_indent:
-        #             break
-        #     self.lw.setCurrentRow(row)
-        #     self.lw.blockSignals(False)
-        #     return
 
         # generic callable
         if callable(tgt[1]):
@@ -888,6 +863,15 @@ class QuickSearchController:
                     w = c.frame.body.wrapper
                     w.setSelectionRange(st, en)
                     w.seeInsertPoint()
+                else:
+                    c.endEditing()
+                    c.redraw(p)
+                    c.frame.tree.editLabel(p)
+                    w = c.edit_widget(p)  # #2220
+                    if w:
+                        w.setSelectionRange(0, 0)
+                    c.endEditing()
+
                 # self.lw.setFocus() # don't set focus on sidepanel
     #@+node:felix.20220225003906.21: *4* onActivated
     def onActivated(self, event):
