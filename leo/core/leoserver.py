@@ -23,7 +23,6 @@ import sys
 import socket
 import textwrap
 import time
-import tkinter as Tk
 from typing import List, Union
 # Third-party.
 # #2300
@@ -799,7 +798,8 @@ class QuickSearchController:
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("onSelectItem: no target found for 'it' as key:" + str(it))
+            if not g.unitTesting:
+                print("onSelectItem: no target found for 'it' as key:" + str(it))
             return
 
         # generic callable
@@ -4414,6 +4414,10 @@ def main():  # pragma: no cover (tested in client)
             """
             if g.unitTesting:
                 return None
+            try:
+                import tkinter as Tk
+            except Exception:
+                return 'yes'  # An extreme emergency.
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
@@ -4508,15 +4512,14 @@ def main():  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            if 1:  # Prefer Qt.
-                from leo.core.leoQt import isQt6, QtGui, QtWidgets
-                from leo.core.leoQt import ButtonRole, Information
-                if QtGui and QtWidgets:
-                    app = QtWidgets.QApplication([])
-                    assert app
-                    val = qt_runAskYesNoCancelDialog(c)
-                    assert val in ('yes', 'no')
-                    return val
+            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import ButtonRole, Information
+            if QtGui and QtWidgets:
+                app = QtWidgets.QApplication([])
+                assert app
+                val = qt_runAskYesNoCancelDialog(c)
+                assert val in ('yes', 'no')
+                return val
         except Exception:
             pass
         return tk_runAskYesNoCancelDialog(c)
