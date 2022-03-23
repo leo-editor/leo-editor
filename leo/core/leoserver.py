@@ -411,41 +411,6 @@ class QuickSearchController:
         self.searchOptionsStrings = ["All", "Subtree", "File",
                                      "Chapter", "Node"]
 
-        def searcher(inp):
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            exp = inp.replace(" ", "*")
-            res = self.bgSearch(exp)
-            return res
-
-        def dumper():
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            # always run on ui thread
-            pass
-            # out = self.worker.output
-            # self.throttler.add(out)
-
-        def throttledDump(lst):
-            """ dumps the last output """
-            # Todo: maybe re-use original QuickSearchController threadutil behavior
-            # we do get called with empty list on occasion
-            if not lst:
-                return
-            hm, bm = lst[-1]
-            self.clear()
-            self.addHeadlineMatches(hm)
-            self.addBodyMatches(bm)
-
-        # ***** below is original QuickSearchController threadutil behavior *****
-        # ? self.throttler = threadutil.NowOrLater(throttledDump)
-        # ? self.worker.set_worker(searcher)
-        # ? self.worker.set_output_f(dumper)
-        # ? self.worker.resultReady.connect(dumper)
-        # ? self.worker.start()
-        # we want both single-clicks and activations (press enter)
-        # ? w.itemActivated.connect(self.onActivated)
-        # ? w.itemPressed.connect(self.onSelectItem)
-        # ? w.currentItemChanged.connect(self.onSelectItem)
-
     #@+node:felix.20220225224130.1: *3* matchlines
     def matchlines(self, b, miter):
         res = []
@@ -562,7 +527,6 @@ class QuickSearchController:
             return _f
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
-
 
     def pushSearchHistory(self, pat):
         if pat in self._search_patterns:
@@ -697,16 +661,7 @@ class QuickSearchController:
                 for key in sorted(d):
                     # key is unique tag
                     self.addTag(key)
-                    #
-                    # aList = d.get(key)
-                    # for h in sorted(aList):
-                    #     self.lw.push(key)
-                    #     print(f"{key:>8} {h}")
-
-            # elif not g.unitTesting:
-            #     print(f"no tags in {c.shortFileName()}")
             return
-
         # else: non empty pattern, so find tag!
         hm = self.find_tag(pat)
         self.clear() # needed for external client ui replacement: fills self.its
@@ -1613,7 +1568,6 @@ class LeoServer:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
-            # w = c.frame.body.wrapper
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
         #
