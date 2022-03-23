@@ -1837,7 +1837,8 @@ class LeoServer:
         try:
             p = self._get_p(param)
             tc = getattr(c, 'theTagController', None)
-            tc.add_tag(p, tag_param)
+            if hasattr(tc, 'add_tag'):
+                tc.add_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
