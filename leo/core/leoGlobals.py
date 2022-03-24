@@ -41,6 +41,10 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 #
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
@@ -472,7 +476,13 @@ class Bunch:
 bunch = Bunch
 #@+node:ekr.20120219154958.10492: *3* class g.EmergencyDialog
 class EmergencyDialog:
-    """A class that creates an tkinter dialog with a single OK button."""
+    """
+    A class that creates an tkinter dialog with a single OK button.
+    
+    If tkinter doesn't exist (#2512), this class just prints the message
+    passed to the ctor.
+    
+    """
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
     def __init__(self, title: str, message: str) -> None:
@@ -486,14 +496,17 @@ class EmergencyDialog:
         self.frame = None  # The outermost frame.
         self.root = None  # Created in createTopFrame.
         self.top = None  # The toplevel Tk widget.
-        self.createTopFrame()
-        buttons = [{
-            "text": "OK",
-            "command": self.okButton,
-            "default": True,
-        }]
-        self.createButtons(buttons)
-        self.top.bind("<Key>", self.onKey)
+        if Tk:  # #2512.
+            self.createTopFrame()
+            buttons = [{
+                "text": "OK",
+                "command": self.okButton,
+                "default": True,
+            }]
+            self.createButtons(buttons)
+            self.top.bind("<Key>", self.onKey)
+        else:
+            print(message.rstrip() + '\n')
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
     def createButtons(self, buttons: List[Dict[str, Any]]) -> List[Any]:
         """Create a row of buttons.
@@ -501,7 +514,6 @@ class EmergencyDialog:
         buttons is a list of dictionaries containing
         the properties of each button.
         """
-        import tkinter as Tk
         assert self.frame
         self.buttonsFrame = f = Tk.Frame(self.top)
         f.pack(side="top", padx=30)
@@ -524,7 +536,6 @@ class EmergencyDialog:
     #@+node:ekr.20120219154958.10495: *4* emergencyDialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        import tkinter as Tk
         self.root = Tk.Tk()  # type:ignore
         self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
@@ -2065,7 +2076,6 @@ class TkIDDialog(EmergencyDialog):
     #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        import tkinter as Tk
         self.root = Tk.Tk()  # type:ignore
         self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
