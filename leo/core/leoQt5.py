@@ -19,15 +19,14 @@ assert QCloseEvent and QUrl and Signal  # For pyflakes.
 #
 # Optional imports.
 # Must import this before creating the GUI
-has_WebEngineWidgets = False
 try:
     # pylint: disable=ungrouped-imports
     from PyQt5 import QtWebEngineWidgets
     assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
-    print('No Qt5 QtWebEngineWidgets')
-
+    # print('No Qt5 QtWebEngineWidgets')
+    has_WebEngineWidgets = False
 try:
     import PyQt5.QtDeclarative as QtDeclarative
 except ImportError:

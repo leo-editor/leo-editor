@@ -799,7 +799,8 @@ class QuickSearchController:
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("onSelectItem: no target found for 'it' as key:" + str(it))
+            if not g.unitTesting:
+                print("onSelectItem: no target found for 'it' as key:" + str(it))
             return
 
         # generic callable
