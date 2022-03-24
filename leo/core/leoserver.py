@@ -23,8 +23,7 @@ import sys
 import socket
 import textwrap
 import time
-import tkinter as Tk
-from typing import List, Union
+from typing import Any, Dict, List, Union
 # Third-party.
 # #2300
 try:
@@ -561,7 +560,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -649,7 +648,7 @@ class QuickSearchController:
             # No pattern! list all tags as string
             c = self.c
             self.clear()
-            d = {}
+            d: Dict[str, Any] = {}
             for p in c.all_unique_positions():
                 u = p.v.u
                 tags = set(u.get('__node_tags', set([])))
@@ -675,7 +674,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             # bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo =  self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -1377,7 +1376,7 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
-            result = {}
+            result: Dict[str, Any] = {}
             navlist = [
                 {
                     "key": k,
@@ -4415,6 +4414,10 @@ def main():  # pragma: no cover (tested in client)
             """
             if g.unitTesting:
                 return None
+            try:
+                import tkinter as Tk
+            except Exception:
+                return 'yes'  # An extreme emergency.
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
@@ -4509,15 +4512,14 @@ def main():  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            if 1:  # Prefer Qt.
-                from leo.core.leoQt import isQt6, QtGui, QtWidgets
-                from leo.core.leoQt import ButtonRole, Information
-                if QtGui and QtWidgets:
-                    app = QtWidgets.QApplication([])
-                    assert app
-                    val = qt_runAskYesNoCancelDialog(c)
-                    assert val in ('yes', 'no')
-                    return val
+            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import ButtonRole, Information
+            if QtGui and QtWidgets:
+                app = QtWidgets.QApplication([])
+                assert app
+                val = qt_runAskYesNoCancelDialog(c)
+                assert val in ('yes', 'no')
+                return val
         except Exception:
             pass
         return tk_runAskYesNoCancelDialog(c)
