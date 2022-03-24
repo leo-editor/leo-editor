@@ -25,6 +25,10 @@ import textwrap
 import time
 from typing import Any, Dict, List, Union
 # Third-party.
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 # #2300
 try:
     import websockets
@@ -4414,10 +4418,6 @@ def main():  # pragma: no cover (tested in client)
             """
             if g.unitTesting:
                 return None
-            try:
-                import tkinter as Tk
-            except Exception:
-                return 'yes'  # An extreme emergency.
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
@@ -4522,7 +4522,11 @@ def main():  # pragma: no cover (tested in client)
                 return val
         except Exception:
             pass
-        return tk_runAskYesNoCancelDialog(c)
+        if Tk:
+            return tk_runAskYesNoCancelDialog(c)
+        # #2512: There is no way to raise a dialog.
+        return 'yes'  # Just save the file!
+        
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
