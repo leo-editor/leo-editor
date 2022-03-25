@@ -1352,7 +1352,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        count = self.do_clone_find_all_flattened(settings)
+        count = self.do_clone_find_all(settings)
         if count:
             c.redraw()
             c.treeWantsFocus()
@@ -1409,7 +1409,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        count = self.do_clone_find_all(settings)
+        count = self.do_clone_find_all_flattened(settings)
         if count:
             c.redraw()
             c.treeWantsFocus()
@@ -1983,23 +1983,26 @@ class LeoFind:
         clones, skip = [], set()
         while p and p != after:
             progress = p.copy()
-            if p.v in skip:  # pragma: no cover (minor)
-                p.moveToThreadNext()
-            elif g.inAtNosearch(p):
+            if g.inAtNosearch(p):
                 p.moveToNodeAfterTree()
-            elif self._cfa_find_next_match(p):
-                count += 1
-                if p not in clones:
+            elif flatten:
+                if self._cfa_find_next_match(p):
+                    count += 1
                     clones.append(p.copy())
-                if flatten:
+                p.moveToThreadNext()
+            else:
+                if p.v in skip:  # pragma: no cover (minor)
                     p.moveToThreadNext()
-                else:
+                elif self._cfa_find_next_match(p):
+                    count += 1
+                    if p not in clones:
+                        clones.append(p.copy())
                     # Don't look at the node or it's descendants.
                     for p2 in p.self_and_subtree(copy=False):
                         skip.add(p2.v)
-                    p.moveToNodeAfterTree()
-            else:  # pragma: no cover (minor)
-                p.moveToThreadNext()
+                        p.moveToNodeAfterTree()
+                else:  # pragma: no cover (minor)
+                    p.moveToThreadNext()
             assert p != progress
         self.ftm.set_radio_button('entire-outline')
         # suboutline-only is a one-shot for batch commands.
