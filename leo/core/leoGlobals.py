@@ -539,7 +539,7 @@ class EmergencyDialog:
         self.root = Tk.Tk()  # type:ignore
         self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
-        self.root.withdraw()
+        self.root.withdraw()  # This root window should *never* be shown.
         self.frame = Tk.Frame(self.top)  # type:ignore
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')

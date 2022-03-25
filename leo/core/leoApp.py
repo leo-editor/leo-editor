@@ -1105,15 +1105,23 @@ class LeoApp:
         self.use_splash_screen = False
         #
         # Get the id, making sure it is at least three characters long.
-        while True:
+        attempt = 0
+        id_ = None
+        while attempt < 2:
+            attempt += 1
             dialog = g.TkIDDialog()
             dialog.run()
             # #1404: Make sure the id will not corrupt the .leo file.
+            #        cleanLeoID raises a warning dialog.
             id_ = self.cleanLeoID(dialog.val, "")
             if id_ and len(id_) > 2:
                 break
         #
         # Put result in g.app.leoID.
+        if not id_ and not g.inBridge:
+            print('Leo can not start without an id.')
+            print('Leo will now exit')
+            sys.exit(1)
         self.leoID = id_
         g.blue('leoID=', repr(self.leoID), spaces=False)
     #@+node:ekr.20031218072017.1982: *5* app.setIDFile
