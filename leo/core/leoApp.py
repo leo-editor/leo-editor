@@ -1118,7 +1118,7 @@ class LeoApp:
                 break
         #
         # Put result in g.app.leoID.
-        if not id_ and not g.inBridge:
+        if not id_ and not g.app.inBridge:
             print('Leo can not start without an id.')
             print('Leo will now exit')
             sys.exit(1)
