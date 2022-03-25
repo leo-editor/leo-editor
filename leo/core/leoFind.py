@@ -1985,24 +1985,23 @@ class LeoFind:
             progress = p.copy()
             if g.inAtNosearch(p):
                 p.moveToNodeAfterTree()
-            elif flatten:
-                if self._cfa_find_next_match(p):
-                    count += 1
-                    clones.append(p.copy())
+            elif p.v in skip:  # pragma: no cover (minor)
                 p.moveToThreadNext()
-            else:
-                if p.v in skip:  # pragma: no cover (minor)
+            elif self._cfa_find_next_match(p):
+                count += 1
+                if flatten:
+                    skip.add(p.v)
+                    clones.append(p.copy())
                     p.moveToThreadNext()
-                elif self._cfa_find_next_match(p):
-                    count += 1
+                else:
                     if p not in clones:
                         clones.append(p.copy())
                     # Don't look at the node or it's descendants.
                     for p2 in p.self_and_subtree(copy=False):
                         skip.add(p2.v)
-                        p.moveToNodeAfterTree()
-                else:  # pragma: no cover (minor)
-                    p.moveToThreadNext()
+                    p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
             assert p != progress
         self.ftm.set_radio_button('entire-outline')
         # suboutline-only is a one-shot for batch commands.
