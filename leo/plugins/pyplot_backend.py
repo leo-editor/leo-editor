@@ -21,6 +21,8 @@ try:
     from matplotlib import pyplot as plt
 except ImportError:
     g.es_exception()
+
+import matplotlib
 #@-<< pyplot_backend imports >>
 #@+others
 #@+node:ekr.20160928073605.1: ** init
@@ -119,9 +121,8 @@ class LeoFigureManagerQT(FigureManager):
 
         self.canvas.figure.add_axobserver(notify_axes_change)
 
-        # close the figure so that we don't create too many figure instances
+        # Close the figure so that we don't create too many figure instances
         plt.close(canvas.figure)
-
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
         # Causes problems.
