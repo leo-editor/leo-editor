@@ -1118,7 +1118,8 @@ class LeoApp:
                 break
         #
         # Put result in g.app.leoID.
-        if not id_ and not g.app.inBridge:
+        # Note: For unit tests, leoTest2.py: create_app sets g.app.leoID.
+        if not id_:
             print('Leo can not start without an id.')
             print('Leo will now exit')
             sys.exit(1)
