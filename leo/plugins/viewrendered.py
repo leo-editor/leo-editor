@@ -210,6 +210,7 @@ Jacob Peck added markdown support to this plugin.
 #@-<< to do >>
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
+# pylint: disable = c-extension-no-member
 import json
 import os
 from pathlib import Path
@@ -273,6 +274,14 @@ try:
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
+
+got_pyplot = False
+try:
+    # pylint: disable=import-error
+    from matplotlib import pyplot
+    got_pyplot = True
+except ImportError:
+    pass
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -673,7 +682,8 @@ class ViewRenderedProvider:
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 if QtWidgets:  # NOQA
-    #pylint: disable = import-outside-toplevel
+    # pylint: disable = import-outside-toplevel
+    # pylint: disable = too-many-public-methods
     class ViewRenderedController(QtWidgets.QWidget):
         """A class to control rendering in a rendering pane."""
         #@+others
@@ -691,7 +701,6 @@ if QtWidgets:  # NOQA
             self.gnx = None
             self.graphics_class = QtWidgets.QGraphicsWidget
             self.pyplot_canvas = None
-            self.pyplot_imported = False
             self.gs = None  # For @graphics-script: a QGraphicsScene
             self.gv = None  # For @graphics-script: a QGraphicsView
             self.inited = False
@@ -966,6 +975,7 @@ if QtWidgets:  # NOQA
         #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             """Set the background color of the vr pane."""
+            # pylint: disable = using-constant-test
             if 0:  # Do not do this! It interferes with themes.
                 pc = self
                 if not colorName:
@@ -1382,12 +1392,13 @@ if QtWidgets:  # NOQA
         #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
         def update_pyplot(self, s, keywords):
             """Get the pyplot script at c.p.b and show it."""
-            from matplotlib import pyplot
+            if not got_pyplot:
+                g.es(('==== Viewrendered: MISSING matplotlib.  Cannot process @pyplot node'))
+                return
+
             c = self.c
 
-            #if not self.pyplot_imported:
             if pyplot.get_backend() != 'module://leo.plugins.pyplot_backend':
-                self.pyplot_imported = True
                 backend = g.os_path_finalize_join(
                     g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
                 if g.os_path_exists(backend):
@@ -1403,7 +1414,7 @@ if QtWidgets:  # NOQA
                 import matplotlib  # Make *sure* this is imported.
                 import matplotlib.pyplot as plt
                 import numpy as np
-                import matplotlib.animation as animation
+                from matplotlib import animation
                 plt.ion()  # Automatically set interactive mode.
                 namespace = {
                     'animation': animation,
