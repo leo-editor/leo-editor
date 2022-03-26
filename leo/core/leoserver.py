@@ -2531,6 +2531,35 @@ class LeoServer:
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         result = {"version": __version__, "major": v1, "minor": v2, "patch": v3}
         return self._make_minimal_response(result)
+    #@+node:felix.20220326190000.1: *5* server.get_leoid
+    def get_leoid(self, param):
+        """
+        returns g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        result = {"leoID": g.app.leoID}
+        return self._make_minimal_response(result)
+    #@+node:felix.20220326190008.1: *5* server.set_leoid
+    def set_leoid(self, param):
+        """
+        sets g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        leoID = param.get('leoID', '')
+        # Same test/fix as in Leo
+        if leoID:
+            try:
+                leoID = leoID.replace('.', '').replace(',', '').replace('"', '').replace("'", '')
+                # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
+                leoID = ''.join(leoID.split())
+            except Exception:
+                g.es_exception()
+                leoID = 'None'
+            if len(leoID) > 2:
+                g.app.leoID = leoID;
+                g.app.nodeIndices.defaultId = leoID;
+                g.app.nodeIndices.userId = leoID;
+        return self._make_response()
     #@+node:felix.20210818012827.1: *5* server.do_nothing
     def do_nothing(self, param):
         """Simply return states from _make_response"""
@@ -4526,7 +4555,7 @@ def main():  # pragma: no cover (tested in client)
             return tk_runAskYesNoCancelDialog(c)
         # #2512: There is no way to raise a dialog.
         return 'yes'  # Just save the file!
-        
+
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
@@ -4667,7 +4696,7 @@ def main():  # pragma: no cover (tested in client)
             await register_client(websocket)
             # Start by sending empty as 'ok'.
             n = 0
-            await websocket.send(controller._make_response())
+            await websocket.send(controller._make_response({"leoID": g.app.leoID}))
             controller._emit_signon()
 
             # Websocket connection message handling loop
