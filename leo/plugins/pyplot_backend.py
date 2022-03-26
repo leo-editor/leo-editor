@@ -8,23 +8,21 @@
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
 from leo.core import leoGlobals as g
 from leo.plugins import viewrendered as vr
-from leo.core.leoQt import isQt5, isQt6, QtWidgets
 from leo.core.leoQt import FocusPolicy
 try:
-    if isQt5 or isQt6:
-        import matplotlib.backends.backend_qt5agg as backend_qt5agg
-        FigureCanvasQTAgg = backend_qt5agg.FigureCanvasQTAgg
-    else:
-        import matplotlib.backends.backend_qt4agg as backend_qt4agg
-        FigureCanvasQTAgg = backend_qt4agg.FigureCanvasQTAgg
-    # Common imports
-    import matplotlib.backends.backend_qt5 as backend_qt5
     import matplotlib.backend_bases as backend_bases
-    from matplotlib.figure import Figure
     FigureManagerBase = backend_bases.FigureManagerBase
 
+    from matplotlib.backends.qt_compat import QtWidgets
+    from matplotlib.backends.backend_qtagg import (
+        FigureCanvas, FigureManager)
+    from matplotlib.figure import Figure
+
+    from matplotlib import pyplot as plt
 except ImportError:
     g.es_exception()
+
+import matplotlib
 #@-<< pyplot_backend imports >>
 #@+others
 #@+node:ekr.20160928073605.1: ** init
@@ -46,7 +44,7 @@ def new_figure_manager_given_figure(num, figure):
     """
     Create a new figure manager instance for the given figure.
     """
-    canvas = FigureCanvasQTAgg(figure)
+    canvas = FigureCanvas(figure)
     return LeoFigureManagerQT(canvas, num)
 #@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT
 # From backend_qt5.py
@@ -55,7 +53,7 @@ def new_figure_manager_given_figure(num, figure):
     # matplotlib.backends.backend_qt5.FigureManager probably does exist. See:
     # https://github.com/matplotlib/matplotlib/blob/master/lib/matplotlib/backends/backend_qt5.py
 
-class LeoFigureManagerQT(backend_qt5.FigureManager):
+class LeoFigureManagerQT(FigureManager):
     """
     Public attributes
 
@@ -95,7 +93,10 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             def windowTitle(self):
                 return self.c.p.h
 
-        self.window = DummyWindow(c)
+            def show(self):
+                pass
+
+        self.window = None  #DummyWindow(c)
 
         # See comments in the base class ctor, in backend_qt5.py.
         self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
@@ -104,17 +105,12 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
 
         self.toolbar = self._get_toolbar(self.canvas, self.frame)
         if self.toolbar is not None:
-            # The toolbar is a backend_qt5.NavigationToolbar2QT.
+            # The toolbar is a matplotlib.backends.backend_qt.NavigationToolbar2QT.
             layout = self.frame.layout()
             layout.addWidget(self.toolbar)
             # add text label to status bar
             self.statusbar_label = QtWidgets.QLabel()
             layout.addWidget(self.statusbar_label)
-            # pylint: disable=no-member
-            if isQt5 or isQt6:
-                pass  # The status bar doesn't work yet.
-            else:
-                self.toolbar.message.connect(self._show_message)
 
         self.canvas.draw_idle()
 
@@ -124,6 +120,9 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
                 self.toolbar.update()
 
         self.canvas.figure.add_axobserver(notify_axes_change)
+
+        # Close the figure so that we don't create too many figure instances
+        plt.close(canvas.figure)
     #@+node:ekr.20160929083114.1: *4* destroy
     def destroy(self, *args):
         # Causes problems.
