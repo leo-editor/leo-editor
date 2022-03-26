@@ -22,7 +22,7 @@ try:
 except ImportError:
     g.es_exception()
 
-import matplotlib
+# import matplotlib
 #@-<< pyplot_backend imports >>
 #@+others
 #@+node:ekr.20160928073605.1: ** init

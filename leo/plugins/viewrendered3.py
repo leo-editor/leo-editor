@@ -3586,10 +3586,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
         g.es('@pyplot nodes not implemented', color='gray')
-        return
-
-        if not True:
-            # Keep old code here for possible resurrection
+        if 0:  # Keep old code here for possible resurrection
             c = self.c
             if not self.pyplot_imported:
                 self.pyplot_imported = True
