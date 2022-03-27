@@ -2556,9 +2556,9 @@ class LeoServer:
                 g.es_exception()
                 leoID = 'None'
             if len(leoID) > 2:
-                g.app.leoID = leoID;
-                g.app.nodeIndices.defaultId = leoID;
-                g.app.nodeIndices.userId = leoID;
+                g.app.leoID = leoID
+                g.app.nodeIndices.defaultId = leoID
+                g.app.nodeIndices.userId = leoID
         return self._make_response()
     #@+node:felix.20210818012827.1: *5* server.do_nothing
     def do_nothing(self, param):
