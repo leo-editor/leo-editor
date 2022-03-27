@@ -168,9 +168,9 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
-<v t="ekr.20180828095843.1"><vh>Update versions.py in devel</vh></v>
-<v t="ekr.20190618104430.1"><vh>Merge devel into master</vh></v>
-<v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
+<v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
+<v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
@@ -1466,25 +1466,25 @@ g.es_print('done')
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
-<t tx="ekr.20180405171433.1">@language rest
+<t tx="ekr.20180405171433.1">Overview
 
-Overview
-
-(Done) Create a 6.6 branch:
+Create a release branch:
 - This branch hold the proper version for the release.
 - This branch will be deleted after the release.
 
 Update and test all files (in devel):
-- (Done) Beautify all files before running tests.
+- Beautify all files before running tests.
 - Update all release files.
 - Update web docs.
-- (Done) Run all checks in devel.
-- (skip) Fix any late bugs, possibly in a separate branch.
-- Merge devel into 6.6.
+- Run all checks in devel.
+- Fix any late bugs, possibly in a separate branch.
+
+Merge devel into 6.6.
 
 Merge 6.6 into master
 
 Update leoVersion.py in devel after the release.
+@language rest
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
 - Run beautify-files.
@@ -1529,7 +1529,7 @@ LeoPyRef.leo:
 - Copy leo/doc/html/index.html to web (FileZilla)
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run all unit tests.
+- Run test-all command.
 - Run pylint on all files.
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
@@ -1542,10 +1542,15 @@ git checkout master
 git tag -a v6.NNN -m "Added v6.NNN tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout 6.6
+git merge devel
+
+leoVersion.py:
 - Update version constant.
 - Update static date.
-- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.</t>
+- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
+
+git push</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches the static version added to leoversion.py earlier.
 
 git checkout devel
@@ -2009,14 +2014,12 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.NNN branch:
-    
-- Push any changes to devel.
-- gco devel
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6 branch:
+
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge devel</t>
+- git merge 6.6</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -2041,7 +2044,9 @@ Public announcements, after creating a package.
 - My blog: http://edreamleo.blogspot.com/
   **Paste GitHub announcement**.
 </t>
-<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
+<t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout master
+
+- Run all unit tests.
 - Run pylint on all files.
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
