@@ -1208,7 +1208,7 @@ class TestOrange(BaseTest):
     """)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
@@ -1385,16 +1385,20 @@ class TestOrange(BaseTest):
             from . module2 import x
             from ..module1 import y
             from .. module2 import z
+            from . import a
+            from.import b
     """
         expected = textwrap.dedent("""\
             from .module1 import w
             from .module2 import x
             from ..module1 import y
-            from . module2 import z
+            from ..module2 import z
+            from . import a
+            from . import b
     """)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 

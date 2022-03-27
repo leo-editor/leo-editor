@@ -2906,14 +2906,20 @@ class Orange:
     def do_op(self):
         """Handle an op token."""
         val = self.val
+        node = self.token.node
         if val == '.':
             self.clean('blank')
-            prev = self.code_list[-1]
+            ###
+                # prev = self.code_list[-1]
+                # if prev.kind == 'word' and prev.value == 'from':
+                    # self.blank()
+                    # self.add_token('op', val)
+                    # self.blank()
             # #2495: Special case for 'from .'
-            if prev.kind == 'word' and prev.value == 'from':
+            if isinstance(node, ast.ImportFrom):
                 self.blank()
-                self.add_token('op', val)
-                self.blank()
+                self.add_token('op-no-blanks', val)
+                # Don't add a trailing blank here.
             else:
                 self.add_token('op-no-blanks', val)
         elif val == '@':
@@ -3246,7 +3252,12 @@ class Orange:
     def word(self, s):
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        if self.square_brackets_stack:
+        node = self.token.node
+        if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+            self.clean('blank')
+            self.add_token('blank', ' ')
+            self.add_token('word', s)
+        elif self.square_brackets_stack:
             # A previous 'op-no-blanks' token may cancel this blank.
             self.blank()
             self.add_token('word', s)
