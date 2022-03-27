@@ -1387,6 +1387,8 @@ class TestOrange(BaseTest):
             from .. module2 import z
             from . import a
             from.import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
     """
         expected = textwrap.dedent("""\
             from .module1 import w
@@ -1395,9 +1397,12 @@ class TestOrange(BaseTest):
             from ..module2 import z
             from . import a
             from . import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
     """)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
+        ### g.printObj(results)
         self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):

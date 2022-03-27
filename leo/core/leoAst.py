@@ -2909,15 +2909,16 @@ class Orange:
         node = self.token.node
         if val == '.':
             self.clean('blank')
-            ###
-                # prev = self.code_list[-1]
-                # if prev.kind == 'word' and prev.value == 'from':
-                    # self.blank()
-                    # self.add_token('op', val)
-                    # self.blank()
-            # #2495: Special case for 'from .'
-            if isinstance(node, ast.ImportFrom):
+            prev = self.code_list[-1]
+            if prev.kind == 'word' and prev.value == 'from':
                 self.blank()
+                ### self.add_token('op', val)
+                ### self.blank()
+                self.add_token('op-no-blanks', val)
+                # Don't add a trailing blank here.
+            # #2495: Special case for 'from .'
+            elif isinstance(node, ast.ImportFrom):
+                ### self.blank()
                 self.add_token('op-no-blanks', val)
                 # Don't add a trailing blank here.
             else:
