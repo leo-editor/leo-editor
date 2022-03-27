@@ -147,8 +147,8 @@ class BridgeController:
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
         lm.computeStandardDirectories()
-        if not g.app.setLeoID(useDialog=False, verbose=True):
-            raise ValueError("unable to set LeoID.")
+        # #2519: Call sys.exit if leoID does not exist.
+        g.app.setLeoID(useDialog=False, verbose=True)
         lm.createAllImporterData()  # #1965.
             # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         g.app.inBridge = True  # Support for g.getScript.
