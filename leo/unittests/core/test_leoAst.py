@@ -1470,6 +1470,25 @@ class TestOrange(BaseTest):
             fails += 1
             print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
+    #@+node:ekr.20220327131225.1: *4* TestOrange.test_leading_stars
+    def test_leading_stars(self):
+
+        # #2533.
+        contents = """\
+            def f(
+                arg1,
+                *args,
+                **kwargs
+            ):
+                pass
+    """
+        expected = textwrap.dedent("""\
+            def f(arg1, *args, **kwargs):
+                pass
+    """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(results, expected)
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
 
