@@ -1402,7 +1402,6 @@ class TestOrange(BaseTest):
     """)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        ### g.printObj(results)
         self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):

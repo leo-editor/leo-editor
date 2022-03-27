@@ -2906,21 +2906,16 @@ class Orange:
     def do_op(self):
         """Handle an op token."""
         val = self.val
-        node = self.token.node
+        ### node = self.token.node
         if val == '.':
             self.clean('blank')
             prev = self.code_list[-1]
+            # #2495 & #2533: Special case for 'from .'
             if prev.kind == 'word' and prev.value == 'from':
                 self.blank()
-                ### self.add_token('op', val)
-                ### self.blank()
                 self.add_token('op-no-blanks', val)
-                # Don't add a trailing blank here.
-            # #2495: Special case for 'from .'
-            elif isinstance(node, ast.ImportFrom):
-                ### self.blank()
-                self.add_token('op-no-blanks', val)
-                # Don't add a trailing blank here.
+            ### elif isinstance(node, ast.ImportFrom):
+                ### self.add_token('op-no-blanks', val)
             else:
                 self.add_token('op-no-blanks', val)
         elif val == '@':
