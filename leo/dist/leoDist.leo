@@ -228,7 +228,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6b2
+Version: 6.6
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -247,19 +247,22 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6 final is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6b2/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6**
 
-- Replace @raw and @end_raw with @section-delims.
+- Replaced `@raw` and `@end_raw` with `@section-delims`.
 - Leo recognizes section references only when they appear on an otherwise blank line.
-- Many improvements to python-to-typescript command.
+- Many improvements to the python-to-typescript command.
 - Improved python importer.
-- Add plugins/picture_viewer.py, a stand-alone app that displays images.
-- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
+- Added plugins/picture_viewer.py, a stand-alone app that displays images.
+- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
+- Improved leoserver.py to support leointeg.
 - Many bug fixes.
 
 **6.6 Links**
@@ -1467,14 +1470,20 @@ g.es_print('done')
 
 Overview
 
-To do (in devel) first:
-- Beautify all files before running tests.
-- Update web docs.
-- Run all checks in devel.
-- Fix any late bugs, possibly in a separate branch.
+(Done) Create a 6.6 branch:
+- This branch hold the proper version for the release.
+- This branch will be deleted after the release.
 
-Create a 6.6 branch.  This branch will be deleted after the release.
-   
+Update and test all files (in devel):
+- (Done) Beautify all files before running tests.
+- Update all release files.
+- Update web docs.
+- (Done) Run all checks in devel.
+- (skip) Fix any late bugs, possibly in a separate branch.
+- Merge devel into 6.6.
+
+Merge 6.6 into master
+
 Update leoVersion.py in devel after the release.
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
@@ -2083,7 +2092,7 @@ Production
 python -m twine upload -r pypi dist/*
 
 username:  __token__
-password:  EKR: Copy contents ofleo_pypi_token.txt
+password:  EKR: Copy contents of leo_pypi_token.txt
            Then paste using "Paste" from console Edit menu.
            
 File names must be unique.
@@ -2102,7 +2111,7 @@ python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6-rc
 cd ~  # Anywhere except leo-editor folder!
 python -m leo.core.runLeo
 
-**uninstall after testint**
+**uninstall after testing**
 
 python -m pip uninstall leo</t>
 <t tx="maphew.20180128212042.1">@language md

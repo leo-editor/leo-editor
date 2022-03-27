@@ -1,16 +1,19 @@
-Leo http://leoeditor.com 6.6b2 is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo http://leoeditor.com 6.6 final is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6b2/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6**
 
-- Replace @raw and @end_raw with @section-delims.
+- Replaced `@raw` and `@end_raw` with `@section-delims`.
 - Leo recognizes section references only when they appear on an otherwise blank line.
-- Many improvements to python-to-typescript command.
+- Many improvements to the python-to-typescript command.
 - Improved python importer.
-- Add plugins/picture_viewer.py, a stand-alone app that displays images.
-- Add plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
+- Added plugins/picture_viewer.py, a stand-alone app that displays images.
+- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
 - The user may choose *other* commands after starting repeat-complex-command.
+- Improved leoserver.py to support leointeg.
 - Many bug fixes.
 
 **6.6 Links**
