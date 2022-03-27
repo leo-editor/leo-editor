@@ -2639,11 +2639,11 @@ class KeyHandlerClass:
                     manylines = True
                 n = min(2, len(binding))
                 if manylines:
-                    doc = textwrap.fill(doc, width = 50, initial_indent = ' '*4,
-                            subsequent_indent = ' '*4)
+                    doc = textwrap.fill(doc, width=50, initial_indent=' ' * 4,
+                            subsequent_indent=' ' * 4)
                 data.append((binding, cmd, doc))
         lines = ['[%*s] %s%s\n' % (-n, binding, cmd, doc) for binding, cmd, doc in data]
-        g.es(''.join(lines), tabName = tabName)
+        g.es(''.join(lines), tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):

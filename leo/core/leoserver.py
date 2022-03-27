@@ -57,7 +57,7 @@ connectionsPool = set()  # type:ignore
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List = [] # list of traces names, to be used as flags to output traces
+traces: List = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -393,7 +393,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.2: *3* __init__
     def __init__(self, c):
         self.c = c
-        self.lw = [] # empty list
+        self.lw = []  # empty list
 
         # Keys are id(w),values are either tuples in tuples (w (p,pos)) or tuples (w, f)
         # (function f is when built from addGeneric)
@@ -409,7 +409,7 @@ class QuickSearchController:
 
         self.navText = ''
         self.showParents = True
-        self.isTag = False # added concept to combine tag pane functionality
+        self.isTag = False  # added concept to combine tag pane functionality
         self.searchOptions = 0
         self.searchOptionsStrings = ["All", "Subtree", "File",
                                      "Chapter", "Node"]
@@ -427,7 +427,7 @@ class QuickSearchController:
     def addItem(self, it, val):
         self.its[id(it)] = (it, val)
         # changed to 999 from 3000 to replace old threadutil behavior
-        return len(self.its) > 999 # Limit to 999 for now
+        return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.5: *3* addBodyMatches
     def addBodyMatches(self, poslist):
         lineMatchHits = 0
@@ -667,8 +667,8 @@ class QuickSearchController:
             return
         # else: non empty pattern, so find tag!
         hm = self.find_tag(pat)
-        self.clear() # needed for external client ui replacement: fills self.its
-        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+        self.clear()  # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
     #@+node:felix.20220225003906.15: *3* bgSearch
     def bgSearch(self, pat):
         if not pat.startswith('r:'):
@@ -679,7 +679,7 @@ class QuickSearchController:
             hpat = pat[2:]
             # bpat = pat[2:]
             flags = 0  # type:ignore
-        combo =  self.searchOptionsStrings[self.searchOptions]
+        combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
@@ -688,8 +688,8 @@ class QuickSearchController:
             hNodes = [self.c.p]
         hm = self.find_h(hpat, hNodes, flags)
 
-        self.clear() # needed for external client ui replacement: fills self.its
-        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+        self.clear()  # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
 
         # bm = self.c.find_b(bpat, flags)
         # self.addBodyMatches(bm)
@@ -1178,7 +1178,7 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'scon', cc) # Patch up quick-search controller to the commander
+            setattr(c, 'scon', cc)  # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1349,7 +1349,7 @@ class LeoServer:
                 c.scon.bgSearch(exp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav headline search: {e}")
-        return  self._make_response()
+        return self._make_response()
 
 
     #@+node:felix.20220305211828.1: *5* server.nav_search
@@ -1369,7 +1369,7 @@ class LeoServer:
                 c.scon.doSearch(inp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
-        return  self._make_response()
+        return self._make_response()
 
 
     #@+node:felix.20220305215239.1: *5* server.get_goto_panel
@@ -1389,9 +1389,9 @@ class LeoServer:
                 } for k in c.scon.its.keys()
             ]
             result["navList"] = navlist
-            result["messages"]= c.scon.lw
+            result["messages"] = c.scon.lw
             result["navText"] = c.scon.navText
-            result["navOptions"] = {"isTag":c.scon.isTag, "showParents": c.scon.showParents}
+            result["navOptions"] = {"isTag": c.scon.isTag, "showParents": c.scon.showParents}
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
         return self._make_response(result)
@@ -1402,28 +1402,28 @@ class LeoServer:
         # fill with timeline order gnx nodes
         c = self._check_c()
         c.scon.doTimeline()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010607.1: *5* server.find_quick_changed
     def find_quick_changed(self, param):
         # fill with list of all dirty nodes
         c = self._check_c()
         c.scon.doChanged()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
     def find_quick_history(self, param):
         # fill with list from history
         c = self._check_c()
         c.scon.doNodeHistory()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
     def find_quick_marked(self, param):
         # fill with list of marked nodes
         c = self._check_c()
         c.scon.doShowMarked()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param):
@@ -1834,7 +1834,7 @@ class LeoServer:
             if v.u and '__node_tags' in v.u:
                 del v.u['__node_tags']
                 tc = getattr(c, 'theTagController', None)
-                tc.initialize_taglist() # reset tag list: some may have been removed
+                tc.initialize_taglist()  # reset tag list: some may have been removed
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
