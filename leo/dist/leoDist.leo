@@ -1467,15 +1467,15 @@ g.es_print('done')
 
 Overview
 
-There is no need for a release branch. devel will suffice.
-
 To do (in devel) first:
 - Beautify all files before running tests.
 - Update web docs.
 - Run all checks in devel.
 - Fix any late bugs, possibly in a separate branch.
+
+Create a 6.6 branch.  This branch will be deleted after the release.
    
-Update leoVersion.py in devel after merging the devel into master.
+Update leoVersion.py in devel after the release.
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
 - Run beautify-files.
