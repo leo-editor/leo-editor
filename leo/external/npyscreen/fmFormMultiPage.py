@@ -6,9 +6,9 @@ assert g
 #@+others
 #@+node:ekr.20170428084207.224: ** Declarations
 import curses
-from .         import fmForm
-from .wgwidget import NotEnoughSpaceForWidget
-from .         import wgNMenuDisplay
+from . import fmForm
+from . wgwidget import NotEnoughSpaceForWidget
+from . import wgNMenuDisplay
 
 
 #@+node:ekr.20170428084207.225: ** class FormMultiPage
@@ -16,7 +16,7 @@ class FormMultiPage(fmForm.FormBaseNew):
     page_info_pre_pages_display = '[ '
     page_info_post_pages_display = ' ]'
     page_info_pages_name = 'Page'
-    page_info_out_of     = 'of'
+    page_info_out_of = 'of'
     #@+others
     #@+node:ekr.20170428084207.226: *3* __init__
     def __init__(self, display_pages=True, pages_label_color='NORMAL', *args, **keywords):
@@ -64,9 +64,9 @@ class FormMultiPage(fmForm.FormBaseNew):
             if isinstance(display_text, bytes):
                 display_text = display_text.decode('utf-8', 'replace')
 
-            maxy,maxx = self.curses_pad.getmaxyx()
+            maxy, maxx = self.curses_pad.getmaxyx()
 
-            if (maxx-5) <= len(display_text):
+            if (maxx - 5) <= len(display_text):
                 # then give up.
                 return False
 
@@ -93,7 +93,7 @@ class FormMultiPage(fmForm.FormBaseNew):
     #@+node:ekr.20170428084207.231: *3* _clear_all_widgets
     def _clear_all_widgets(self,):
         super(FormMultiPage, self)._clear_all_widgets()
-        self._pages__     = [ [],]
+        self._pages__ = [[],]
         self._active_page = 0
         self.switch_page(self._active_page, display=False)
 
@@ -108,7 +108,7 @@ class FormMultiPage(fmForm.FormBaseNew):
     #@+node:ekr.20170428084207.233: *3* add_page
     def add_page(self):
         self._pages__.append([])
-        page_number   = len(self._pages__)-1
+        page_number = len(self._pages__) - 1
         self.nextrely = self.DEFAULT_NEXTRELY
         self.nextrelx = self.DEFAULT_X_OFFSET
         self.switch_page(page_number, display=False)
@@ -121,16 +121,16 @@ class FormMultiPage(fmForm.FormBaseNew):
         if not self.editw == len(self._widgets__):
             value_changed = False
             if not self.cycle_widgets:
-                r = list(range(self.editw+1, len(self._widgets__)))
+                r = list(range(self.editw + 1, len(self._widgets__)))
             else:
-                r = list(range(self.editw+1, len(self._widgets__))) + list(range(0, self.editw))
+                r = list(range(self.editw + 1, len(self._widgets__))) + list(range(0, self.editw))
             for n in r:
                 if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     value_changed = True
                     break
             if not value_changed:
-                if self._active_page < len(self._pages__)-1:
+                if self._active_page < len(self._pages__) - 1:
                     self.switch_page(self._active_page + 1)
         self.display()
 
@@ -139,12 +139,12 @@ class FormMultiPage(fmForm.FormBaseNew):
     def find_previous_editable(self, *args):
         if self.editw == 0:
             if self._active_page > 0:
-                self.switch_page(self._active_page-1)
+                self.switch_page(self._active_page - 1)
 
         if not self.editw == 0:
             # remember that xrange does not return the 'last' value,
             # so go to -1, not 0! (fence post error in reverse)
-            for n in range(self.editw-1, -1, -1 ):
+            for n in range(self.editw - 1, -1, -1):
                 if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     break
@@ -154,8 +154,8 @@ class FormMultiPage(fmForm.FormBaseNew):
 #@+node:ekr.20170428084207.236: ** class FormMultiPageAction
 class FormMultiPageAction(FormMultiPage):
     CANCEL_BUTTON_BR_OFFSET = (2, 12)
-    OK_BUTTON_TEXT          = "OK"
-    CANCEL_BUTTON_TEXT      = "Cancel"
+    OK_BUTTON_TEXT = "OK"
+    CANCEL_BUTTON_TEXT = "Cancel"
 
     #@+others
     #@+node:ekr.20170428084207.237: *3* FormMultiPageAction.on_ok
@@ -168,7 +168,7 @@ class FormMultiPageAction(FormMultiPage):
 
     #@+node:ekr.20170428084207.239: *3* FormMultiPageAction.pre_edit_loop
     def pre_edit_loop(self):
-        self._page_for_buttons = len(self._pages__)-1
+        self._page_for_buttons = len(self._pages__) - 1
         self.switch_page(self._page_for_buttons)
 
         # Add ok and cancel buttons. Will remove later
@@ -177,17 +177,17 @@ class FormMultiPageAction(FormMultiPage):
         c_button_text = self.CANCEL_BUTTON_TEXT
         cmy, cmx = self.curses_pad.getmaxyx()
         cmy -= self.__class__.CANCEL_BUTTON_BR_OFFSET[0]
-        cmx -= len(c_button_text)+self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
+        cmx -= len(c_button_text) + self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
         self.c_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=c_button_text, rely=cmy, relx=cmx, use_max_space=True)
-        self._c_button_postion = len(self._widgets__)-1
+        self._c_button_postion = len(self._widgets__) - 1
         self.c_button.update()
 
         my, mx = self.curses_pad.getmaxyx()
         ok_button_text = self.OK_BUTTON_TEXT
         my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
-        mx -= len(ok_button_text)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+        mx -= len(ok_button_text) + self.__class__.OK_BUTTON_BR_OFFSET[1]
         self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
-        self._ok_button_postion = len(self._widgets__)-1
+        self._ok_button_postion = len(self._widgets__) - 1
         # End add buttons
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.switch_page(0)
@@ -214,14 +214,14 @@ class FormMultiPageAction(FormMultiPage):
         if hasattr(self, 'ok_button'):
             my, mx = self.curses_pad.getmaxyx()
             my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
-            mx -= len(self.__class__.OK_BUTTON_TEXT)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+            mx -= len(self.__class__.OK_BUTTON_TEXT) + self.__class__.OK_BUTTON_BR_OFFSET[1]
             self.ok_button.relx = mx
             self.ok_button.rely = my
         if hasattr(self, 'c_button'):
             c_button_text = self.CANCEL_BUTTON_TEXT
             cmy, cmx = self.curses_pad.getmaxyx()
             cmy -= self.__class__.CANCEL_BUTTON_BR_OFFSET[0]
-            cmx -= len(c_button_text)+self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
+            cmx -= len(c_button_text) + self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
             self.c_button.rely = cmy
             self.c_button.relx = cmx
 

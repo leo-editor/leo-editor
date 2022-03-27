@@ -6,8 +6,8 @@ class NPSFilteredDataBase:
     #@+others
     #@+node:ekr.20170428084207.355: *3* __init__
     def __init__(self, values=None):
-        self._values  = None
-        self._filter  = None
+        self._values = None
+        self._filter = None
         self._filtered_values = None
         self.set_values(values)
 

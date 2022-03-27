@@ -11,7 +11,7 @@ def view_help(message, title="Message", form_color="STANDOUT", scroll_exit=False
     from . import wgmultiline
     F = fmForm.Form(name=title, color=form_color)
     mlw = F.add(wgmultiline.Pager, scroll_exit=True, autowrap=autowrap)
-    mlw_width = mlw.width-1
+    mlw_width = mlw.width - 1
 
     message_lines = []
     for line in message.splitlines():

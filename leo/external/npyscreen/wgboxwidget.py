@@ -2,8 +2,8 @@
 #@+node:ekr.20170428084207.503: * @file ../external/npyscreen/wgboxwidget.py
 import curses
 import weakref
-from .wgwidget import Widget
-from .wgmultiline import MultiLine
+from . wgwidget import Widget
+from . wgmultiline import MultiLine
 from leo.core import leoGlobals as g
 assert g
 # pylint: disable=no-member
@@ -27,18 +27,18 @@ class BoxBasic(Widget):
             self.clear()
             return False
         HEIGHT = self.height - 1
-        WIDTH  = self.width - 1
+        WIDTH = self.width - 1
         # draw box.
         self.parent.curses_pad.hline(self.rely, self.relx, curses.ACS_HLINE, WIDTH)
         self.parent.curses_pad.hline(self.rely + HEIGHT, self.relx, curses.ACS_HLINE, WIDTH)
         self.parent.curses_pad.vline(self.rely, self.relx, curses.ACS_VLINE, self.height)
-        self.parent.curses_pad.vline(self.rely, self.relx+WIDTH, curses.ACS_VLINE, HEIGHT)
+        self.parent.curses_pad.vline(self.rely, self.relx + WIDTH, curses.ACS_VLINE, HEIGHT)
 
         # draw corners
-        self.parent.curses_pad.addch(self.rely, self.relx, curses.ACS_ULCORNER, )
-        self.parent.curses_pad.addch(self.rely, self.relx+WIDTH, curses.ACS_URCORNER, )
-        self.parent.curses_pad.addch(self.rely+HEIGHT, self.relx, curses.ACS_LLCORNER, )
-        self.parent.curses_pad.addch(self.rely+HEIGHT, self.relx+WIDTH, curses.ACS_LRCORNER, )
+        self.parent.curses_pad.addch(self.rely, self.relx, curses.ACS_ULCORNER,)
+        self.parent.curses_pad.addch(self.rely, self.relx + WIDTH, curses.ACS_URCORNER,)
+        self.parent.curses_pad.addch(self.rely + HEIGHT, self.relx, curses.ACS_LLCORNER,)
+        self.parent.curses_pad.addch(self.rely + HEIGHT, self.relx + WIDTH, curses.ACS_LRCORNER,)
 
         # draw title
         if self.name:
@@ -52,18 +52,18 @@ class BoxBasic(Widget):
                 name = name.decode(self.encoding, 'replace')
             name_attributes = curses.A_NORMAL
             if self.do_colors() and not self.editing:
-                name_attributes = name_attributes | self.parent.theme_manager.findPair(self, self.color) #| curses.A_BOLD
+                name_attributes = name_attributes | self.parent.theme_manager.findPair(self, self.color)  #| curses.A_BOLD
             elif self.editing:
                 name_attributes = name_attributes | self.parent.theme_manager.findPair(self, 'HILIGHT')
             else:
-                name_attributes = name_attributes #| curses.A_BOLD
+                name_attributes = name_attributes  #| curses.A_BOLD
 
             if self.editing:
                 name_attributes = name_attributes | curses.A_BOLD
 
-            self.add_line(self.rely, self.relx+4, name,
+            self.add_line(self.rely, self.relx + 4, name,
                 self.make_attributes_list(name, name_attributes),
-                self.width-8)
+                self.width - 8)
             # end draw title
 
             # draw footer
@@ -82,9 +82,9 @@ class BoxBasic(Widget):
             else:
                 placing = 4
 
-            self.add_line(self.rely+HEIGHT, self.relx+placing, footer_text,
+            self.add_line(self.rely + HEIGHT, self.relx + placing, footer_text,
                 footer_attributes,
-                self.width-placing-2)
+                self.width - placing - 2)
 
 
 
@@ -92,11 +92,11 @@ class BoxBasic(Widget):
     def get_footer_attributes(self, footer_text):
         footer_attributes = curses.A_NORMAL
         if self.do_colors() and not self.editing:
-            footer_attributes = footer_attributes | self.parent.theme_manager.findPair(self, self.color) #| curses.A_BOLD
+            footer_attributes = footer_attributes | self.parent.theme_manager.findPair(self, self.color)  #| curses.A_BOLD
         elif self.editing:
             footer_attributes = footer_attributes | self.parent.theme_manager.findPair(self, 'HILIGHT')
         else:
-            footer_attributes = footer_attributes #| curses.A_BOLD
+            footer_attributes = footer_attributes  #| curses.A_BOLD
 
         if self.editing:
             footer_attributes = footer_attributes | curses.A_BOLD
@@ -117,7 +117,7 @@ class BoxTitle(BoxBasic):
         else:
             self.make_contained_widget()
         if 'editable' in keywords:
-            self.entry_widget.editable=keywords['editable']
+            self.entry_widget.editable = keywords['editable']
         if 'value' in keywords:
             self.value = keywords['value']
         if 'values' in keywords:
@@ -136,20 +136,20 @@ class BoxTitle(BoxBasic):
             self._my_widgets.append(
                 self._contained_widget(
                     self.parent,
-                    rely=self.rely+1,
-                    relx = self.relx+2,
-                    max_width=self.width-4,
-                    max_height=self.height-2,
-                    **contained_widget_arguments
+                    rely=self.rely + 1,
+                    relx=self.relx + 2,
+                    max_width=self.width - 4,
+                    max_height=self.height - 2,
+                    ** contained_widget_arguments
             ))
         else:
             self._my_widgets.append(
                 self._contained_widget(
                     self.parent,
-                    rely=self.rely+1,
-                    relx = self.relx+2,
-                    max_width=self.width-4,
-                    max_height=self.height-2,
+                    rely=self.rely + 1,
+                    relx=self.relx + 2,
+                    max_width=self.width - 4,
+                    max_height=self.height - 2,
             ))
         self.entry_widget = weakref.proxy(self._my_widgets[0])
         self.entry_widget.parent_widget = weakref.proxy(self)
@@ -174,12 +174,12 @@ class BoxTitle(BoxBasic):
 
         # g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
             # self.__class__.__name__, self.entry_widget.__class__.__name__))
-        self.editing=True
+        self.editing = True
         self.display()
         self.entry_widget.edit()
         #self.value = self.textarea.value
         self.how_exited = self.entry_widget.how_exited
-        self.editing=False
+        self.editing = False
         self.display()
     #@+node:ekr.20170428084207.515: *3* BoxTitle.get_value
     def get_value(self):

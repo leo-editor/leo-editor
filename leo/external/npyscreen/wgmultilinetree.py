@@ -6,10 +6,10 @@
 import curses
 import weakref
 
-from . import wgmultiline    as multiline
-from . import wgtextbox      as textbox
+from . import wgmultiline as multiline
+from . import wgtextbox as textbox
 from . compatibility_code import npysNPSTree as NPSTree
-from .npysTree import TreeData
+from . npysTree import TreeData
 
 from leo.core import leoGlobals as g
 assert g
@@ -21,16 +21,16 @@ class TreeLine(textbox.TextfieldBase):
     #@+others
     #@+node:ekr.20170428084208.176: *3* TreeLine.__init__
     def __init__(self, *args, **keywords):
-        self._tree_real_value   = None
-        self._tree_ignore_root  = None
-        self._tree_depth        = False
+        self._tree_real_value = None
+        self._tree_ignore_root = None
+        self._tree_depth = False
         self._tree_sibling_next = False
         self._tree_has_children = False
-        self._tree_expanded     = True
-        self._tree_last_line    = False
-        self._tree_depth_next   = False
+        self._tree_expanded = True
+        self._tree_last_line = False
+        self._tree_depth_next = False
         self.safe_depth_display = False
-        self.show_v_lines       = True
+        self.show_v_lines = True
         super(TreeLine, self).__init__(*args, **keywords)
     #@+node:ekr.20170428084208.177: *3* TreeLine._get_content_for_display
     # Compatibility
@@ -43,10 +43,10 @@ class TreeLine(textbox.TextfieldBase):
     #@+node:ekr.20170428084208.178: *3* TreeLine._print
     def _print(self, left_margin=0):
         self.left_margin = left_margin
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.bkgdset(' ', curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         if self.highlight:
-            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+            self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         super(TreeLine, self)._print()
     #@+node:ekr.20170428084208.179: *3* TreeLine._print_tree
     def _print_tree(self, real_x):
@@ -65,9 +65,9 @@ class TreeLine(textbox.TextfieldBase):
         dp = self._tree_depth
         if self._tree_ignore_root:
             dp -= 1
-        if dp: # > 0:
+        if dp:  # > 0:
             if dp < this_safe_depth_display:
-                for i in range(dp-1):
+                for i in range(dp - 1):
                     if (i < _tree_depth_next) and (not self._tree_last_line):
                             # was i+1 < # and not (_tree_depth_next==1):
                         if self.show_v_lines:
@@ -77,9 +77,9 @@ class TreeLine(textbox.TextfieldBase):
                                 curses.ACS_VLINE,
                                 curses.A_NORMAL)
                             if self.height > 1:
-                                for h in range(self.height-1):
+                                for h in range(self.height - 1):
                                     self.parent.curses_pad.addch(
-                                        self.rely+h+1,
+                                        self.rely + h + 1,
                                         real_x,
                                         curses.ACS_VLINE,
                                         curses.A_NORMAL)
@@ -103,13 +103,13 @@ class TreeLine(textbox.TextfieldBase):
                                 real_x,
                                 ' ',
                                 curses.A_NORMAL)
-                    real_x +=1
+                    real_x += 1
                     self.parent.curses_pad.addch(
                         self.rely,
                         real_x,
                         ord(' '),
                         curses.A_NORMAL)
-                    real_x +=1
+                    real_x += 1
 
                 if self._tree_sibling_next or _tree_depth_next > self._tree_depth:
                     self.parent.curses_pad.addch(
@@ -118,9 +118,9 @@ class TreeLine(textbox.TextfieldBase):
                         curses.ACS_LTEE,
                         curses.A_NORMAL)
                     if self.height > 1:
-                        for h in range(self.height-1):
+                        for h in range(self.height - 1):
                             self.parent.curses_pad.addch(
-                                self.rely+h+1,
+                                self.rely + h + 1,
                                 real_x,
                                 curses.ACS_VLINE,
                                 curses.A_NORMAL)
@@ -137,7 +137,7 @@ class TreeLine(textbox.TextfieldBase):
                     curses.ACS_HLINE,
                     curses.A_NORMAL)
                 real_x += 1
-            else: # dp >= this_safe_depth_display
+            else:  # dp >= this_safe_depth_display
                 self.parent.curses_pad.addch(
                     self.rely,
                     real_x,
@@ -164,20 +164,20 @@ class TreeLine(textbox.TextfieldBase):
                     curses.ACS_TTEE,
                     curses.A_NORMAL)
                 if self.height > 1:
-                    for h in range(self.height-1):
+                    for h in range(self.height - 1):
                         self.parent.curses_pad.addch(
-                            self.rely+h+1,
+                            self.rely + h + 1,
                             real_x,
                             curses.ACS_VLINE,
                             curses.A_NORMAL)
-            else: # not expanded
+            else:  # not expanded
                 self.parent.curses_pad.addch(
                     self.rely,
                     real_x,
                     curses.ACS_RARROW,
                     curses.A_NORMAL)
 
-        real_x +=1 # whether or not the tree has children
+        real_x += 1  # whether or not the tree has children
         control_chars_added += real_x - self.relx
         margin_needed = control_chars_added + 1
         return margin_needed
@@ -229,14 +229,14 @@ class TreeLineAnnotated(TreeLine):
     #@+node:ekr.20170428084208.186: *3* _print
     def _print(self):
         self.left_margin = 0
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.bkgdset(' ', curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         if self.do_colors():
-            self.left_margin += self.annotationColor(self.left_margin+self.relx)
+            self.left_margin += self.annotationColor(self.left_margin + self.relx)
         else:
-            self.left_margin += self.annotationNoColor(self.left_margin+self.relx)
+            self.left_margin += self.annotationNoColor(self.left_margin + self.relx)
         if self.highlight:
-            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+            self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         super(TreeLine, self)._print()
 
 
@@ -288,28 +288,28 @@ class MLTree(multiline.MultiLine):
             return vl.hasChildren()
     #@+node:ekr.20170428084208.205: *3* MLTree._set_line_values
     def _set_line_values(self, line, value_indexer):
-        line._tree_real_value   = None
-        line._tree_depth        = False
+        line._tree_real_value = None
+        line._tree_depth = False
         line._tree_sibling_next = False
         line._tree_has_children = False
-        line._tree_expanded     = False
-        line._tree_last_line    = False
-        line._tree_depth_next   = False
-        line._tree_ignore_root  = None
+        line._tree_expanded = False
+        line._tree_last_line = False
+        line._tree_depth_next = False
+        line._tree_ignore_root = None
         try:
             line.value = self.display_value(self.values[value_indexer])
             line._tree_real_value = self.values[value_indexer]
             line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
             try:
-                line._tree_depth        = self._find_depth(self.values[value_indexer])
+                line._tree_depth = self._find_depth(self.values[value_indexer])
                 line._tree_has_children = self._has_children(self.values[value_indexer])
-                line._tree_expanded     = self.values[value_indexer].expanded
+                line._tree_expanded = self.values[value_indexer].expanded
             except Exception:
-                line._tree_depth        = False
+                line._tree_depth = False
                 line._tree_has_children = False
-                line._tree_expanded     = False
+                line._tree_expanded = False
             try:
-                if line._tree_depth == self._find_depth(self.values[value_indexer+1]):
+                if line._tree_depth == self._find_depth(self.values[value_indexer + 1]):
                     line._tree_sibling_next = True
                 else:
                     line._tree_sibling_next = False
@@ -317,7 +317,7 @@ class MLTree(multiline.MultiLine):
                 line._sibling_next = False
                 line._tree_last_line = True
             try:
-                line._tree_depth_next = self._find_depth(self.values[value_indexer+1])
+                line._tree_depth_next = self._find_depth(self.values[value_indexer + 1])
             except Exception:
                 line._tree_depth_next = False
             line.hidden = False
@@ -389,7 +389,7 @@ class MLTree(multiline.MultiLine):
     def _setMyValues(self, tree):
 
         if tree == [] or tree == None:
-            self._myFullValues = TreeData() #NPSTree.NPSTreeData()
+            self._myFullValues = TreeData()  #NPSTree.NPSTreeData()
         elif not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
             tree = self.convertToTree(tree)
             self._myFullValues = tree
@@ -443,9 +443,9 @@ class MLTree(multiline.MultiLine):
     #@+node:ekr.20170428084208.209: *4* MLTree.h_expand_all
     def h_expand_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=False):
-            v.expanded    = True
+            v.expanded = True
         self._cached_tree = None
-        self.cursor_line  = 0
+        self.cursor_line = 0
         self.display()
     #@+node:ekr.20170428084208.203: *4* MLTree.set_up_handlers
     def set_up_handlers(self):

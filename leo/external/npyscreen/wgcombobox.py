@@ -5,18 +5,18 @@
 #@+node:ekr.20170428084207.562: ** Declarations
 import curses
 
-from . import wgtextbox     as textbox
-from . import wgmultiline   as multiline
+from . import wgtextbox as textbox
+from . import wgmultiline as multiline
 # from . import fmForm        as Form
-from . import fmPopup       as Popup
-from . import wgtitlefield  as titlefield
+from . import fmPopup as Popup
+from . import wgtitlefield as titlefield
 
 #@+node:ekr.20170428084207.563: ** class ComboBox
 class ComboBox(textbox.Textfield):
     ENSURE_STRING_VALUE = False
     #@+others
     #@+node:ekr.20170428084207.564: *3* ComboBox.__init__
-    def __init__(self, screen, value = None, values=None,**keywords):
+    def __init__(self, screen, value=None, values=None, **keywords):
         self.values = values or []
         self.value = value or None
         if value == 0:
@@ -59,23 +59,23 @@ class ComboBox(textbox.Textfield):
         '''ComboBox.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.SP:  self.h_change_value,
+            curses.ascii.SP: self.h_change_value,
             #curses.ascii.TAB: self.h_change_value,
-            curses.ascii.NL:  self.h_change_value,
-            curses.ascii.CR:  self.h_change_value,
-            ord('x'):         self.h_change_value,
-            ord('k'):         self.h_exit_up,
-            ord('j'):         self.h_exit_down,
-            ord('h'):         self.h_exit_left,
-            ord('l'):         self.h_exit_right,
+            curses.ascii.NL: self.h_change_value,
+            curses.ascii.CR: self.h_change_value,
+            ord('x'): self.h_change_value,
+            ord('k'): self.h_exit_up,
+            ord('j'): self.h_exit_down,
+            ord('h'): self.h_exit_left,
+            ord('l'): self.h_exit_right,
         })
 
     #@+node:ekr.20170428084207.570: *3* ComboBox.h_change_value
     def h_change_value(self, input):
         "Pop up a window in which to select the values for the field"
-        F = Popup.Popup(name = self.name)
+        F = Popup.Popup(name=self.name)
         l = F.add(multiline.MultiLine,
-            values = [self.display_value(x) for x in self.values],
+            values=[self.display_value(x) for x in self.values],
             return_exit=True, select_exit=True,
             value=self.value)
         F.display()

@@ -21,7 +21,7 @@ class FormBaseNewWithMenus(fmForm.FormBaseNew, wgNMenuDisplay.HasMenus):
 
     #@+node:ekr.20170428084207.289: *3* display_menu_advert_at
     def display_menu_advert_at(self):
-        return self.lines-1, 1
+        return self.lines - 1, 1
 
     #@+node:ekr.20170428084207.290: *3* draw_form
     def draw_form(self):
@@ -49,7 +49,7 @@ class FormWithMenus(fmForm.Form, wgNMenuDisplay.HasMenus):
 
     #@+node:ekr.20170428084207.293: *3* display_menu_advert_at
     def display_menu_advert_at(self):
-        return self.lines-1, 1
+        return self.lines - 1, 1
 
     #@+node:ekr.20170428084207.294: *3* draw_form
     def draw_form(self):
@@ -77,7 +77,7 @@ class ActionFormWithMenus(fmActionForm.ActionForm, wgNMenuDisplay.HasMenus):
 
     #@+node:ekr.20170428084207.297: *3* display_menu_advert_at
     def display_menu_advert_at(self):
-        return self.lines-1, 1
+        return self.lines - 1, 1
 
     #@+node:ekr.20170428084207.298: *3* draw_form
     def draw_form(self):

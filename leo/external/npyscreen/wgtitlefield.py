@@ -7,8 +7,8 @@ assert g
 #@+node:ekr.20170428084208.382: ** Declarations
 # import curses
 import weakref
-from . import wgtextbox  as textbox
-from . import wgwidget   as widget
+from . import wgtextbox as textbox
+from . import wgwidget as widget
 
 #@+node:ekr.20170428084208.383: ** class TitleText
 class TitleText(widget.Widget):
@@ -17,14 +17,14 @@ class TitleText(widget.Widget):
     #@+others
     #@+node:ekr.20170428084208.384: *3* TitleText.__init__
     def __init__(self, screen,
-        begin_entry_at = 16,
-        field_width = None,
-        value = None,
-        use_two_lines = None,
+        begin_entry_at=16,
+        field_width=None,
+        value=None,
+        use_two_lines=None,
         hidden=False,
         labelColor='LABEL',
         allow_override_begin_entry_at=True,
-        **keywords):
+        ** keywords):
 
         self.text_field_begin_at = begin_entry_at
         self.field_width_request = field_width
@@ -35,7 +35,7 @@ class TitleText(widget.Widget):
         if self.name is None: self.name = 'NoName'
 
         if use_two_lines is None:
-            if len(self.name)+2 >= begin_entry_at:
+            if len(self.name) + 2 >= begin_entry_at:
                 self.use_two_lines = True
             else:
                 self.use_two_lines = False
@@ -43,7 +43,7 @@ class TitleText(widget.Widget):
             self.use_two_lines = use_two_lines
 
         self._passon = keywords.copy()
-        for dangerous in ('relx', 'rely','value',):# 'width','max_width'):
+        for dangerous in ('relx', 'rely', 'value',):  # 'width','max_width'):
             try:
                 self._passon.pop(dangerous)
             except Exception:
@@ -57,13 +57,13 @@ class TitleText(widget.Widget):
                     if self._passon['max_width'] < self.text_field_begin_at:
                         raise ValueError("The maximum width specified is less than the text_field_begin_at value.")
                     else:
-                        self._passon['max_width'] -= self.text_field_begin_at+1
+                        self._passon['max_width'] -= self.text_field_begin_at + 1
 
         if 'width' in self._passon:
             #if 0 < self._passon['width'] < self.text_field_begin_at:
             #    raise ValueError("The maximum width specified %s is less than the text_field_begin_at value %s." % (self._passon['width'], self.text_field_begin_at))
             if self._passon['width'] > 0:
-                self._passon['width'] -= self.text_field_begin_at+1
+                self._passon['width'] -= self.text_field_begin_at + 1
 
         if self.use_two_lines:
             if 'max_height' in self._passon and self._passon['max_height']:
@@ -94,7 +94,7 @@ class TitleText(widget.Widget):
 
     #@+node:ekr.20170428084208.386: *3* TitleText.make_contained_widgets
     def make_contained_widgets(self):
-        self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=len(self.name)+1, value=self.name, color=self.labelColor)
+        self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=len(self.name) + 1, value=self.name, color=self.labelColor)
         if self.label_widget.on_last_line and self.use_two_lines:
             # we're in trouble here.
             if len(self.name) > 12:
@@ -102,7 +102,7 @@ class TitleText(widget.Widget):
             else:
                 ab_label = len(self.name)
             self.use_two_lines = False
-            self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=ab_label+1, value=self.name)
+            self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=ab_label + 1, value=self.name)
             if self.allow_override_begin_entry_at:
                 self.text_field_begin_at = ab_label + 1
         if self.use_two_lines:
@@ -112,8 +112,8 @@ class TitleText(widget.Widget):
 
         self.entry_widget = self.__class__._entry_type(self.parent,
                                 relx=(self.relx + self.text_field_begin_at),
-                                rely=(self.rely+self._contained_rely_offset), value = self.value,
-                                **self._passon)
+                                rely=(self.rely + self._contained_rely_offset), value=self.value,
+                                ** self._passon)
         self.entry_widget.parent_widget = weakref.proxy(self)
         self.recalculate_size()
 
@@ -129,16 +129,16 @@ class TitleText(widget.Widget):
     def edit(self):
 
         # g.trace('===== (TitleText)')
-        self.editing=True
+        self.editing = True
         self.display()
         self.entry_widget.edit()
         #self.value = self.textarea.value
         self.how_exited = self.entry_widget.how_exited
-        self.editing=False
+        self.editing = False
         self.display()
 
     #@+node:ekr.20170428084208.389: *3* TitleText.update
-    def update(self, clear = True):
+    def update(self, clear=True):
         if clear: self.clear()
         if self.hidden: return False
         if self.editing:

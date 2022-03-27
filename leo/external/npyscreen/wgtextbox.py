@@ -22,7 +22,7 @@ class TextfieldBase(widget.Widget):
         highlight_color='CURSOR',
         highlight_whole_widget=False,
         invert_highlight_color=True,
-        **keywords
+        ** keywords
     ):
         # For Leo, called from MultiLine.make_contained_widgets.
         # g.trace('TextfieldBase: value', repr(value), g.callers())
@@ -47,10 +47,10 @@ class TextfieldBase(widget.Widget):
         self.important = False
 
         self.syntax_highlighting = False
-        self._highlightingdata   = None
+        self._highlightingdata = None
         self.left_margin = 0
 
-        self.begin_at = 0   # Where does the display string begin?
+        self.begin_at = 0  # Where does the display string begin?
         self.set_text_widths()
         self.update()
 
@@ -66,7 +66,7 @@ class TextfieldBase(widget.Widget):
     #@+node:ekr.20170428084208.324: *3* calculate_area_needed
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
-        return 1,0
+        return 1, 0
 
     #@+node:ekr.20170428084208.325: *3* TextfieldBase.update (LeoTreeLine USED TO override this)
     update_count = 0
@@ -116,23 +116,23 @@ class TextfieldBase(widget.Widget):
                 if self.cursor_position < self.begin_at:
                     self.begin_at = self.cursor_position
 
-                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
+                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin:  # -1:
                     self.begin_at += 1
             else:
                 if self.do_colors():
                     self.parent.curses_pad.bkgdset(' ', self.parent.theme_manager.findPair(self, self.highlight_color) | curses.A_STANDOUT)
                 else:
-                    self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         # Do this twice so that the _print method can ignore it if needed.
         if self.highlight:
             if self.do_colors():
                 if self.invert_highlight_color:
-                    attributes=self.parent.theme_manager.findPair(self, self.highlight_color) | curses.A_STANDOUT
+                    attributes = self.parent.theme_manager.findPair(self, self.highlight_color) | curses.A_STANDOUT
                 else:
-                    attributes=self.parent.theme_manager.findPair(self, self.highlight_color)
+                    attributes = self.parent.theme_manager.findPair(self, self.highlight_color)
                 self.parent.curses_pad.bkgdset(' ', attributes)
             else:
-                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+                self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         if self.show_bold:
             self.parent.curses_pad.attron(curses.A_BOLD)
         if self.important and not self.do_colors():
@@ -141,7 +141,7 @@ class TextfieldBase(widget.Widget):
         # reset everything to normal
         self.parent.curses_pad.attroff(curses.A_BOLD)
         self.parent.curses_pad.attroff(curses.A_UNDERLINE)
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.bkgdset(' ', curses.A_NORMAL)
         self.parent.curses_pad.attrset(0)
         if self.editing and cursor:
             self.print_cursor()
@@ -226,52 +226,52 @@ class TextfieldBase(widget.Widget):
         if not string_to_print:
             return None
         string_to_print = string_to_print[
-            self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+            self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
 
         if sys.version_info[0] >= 3:
             string_to_print = self.display_value(self.value)[
-                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+                self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
         else:
             # ensure unicode only here encoding here.
             dv = self.display_value(self.value)
             if isinstance(dv, bytes):
                 dv = dv.decode(self.encoding, 'replace')
             string_to_print = dv[
-                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+                self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
         return string_to_print
     #@+node:ekr.20170428084208.332: *3* TextfieldBase._print
     def _print(self):
         string_to_print = self._get_string_to_print()
         if not string_to_print:
             return None
-        string_to_print = string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        string_to_print = string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
 
         if sys.version_info[0] >= 3:
-            string_to_print = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+            string_to_print = self.display_value(self.value)[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
         else:
             # ensure unicode only here encoding here.
             dv = self.display_value(self.value)
             if isinstance(dv, bytes):
                 dv = dv.decode(self.encoding, 'replace')
-            string_to_print = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+            string_to_print = dv[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin]
 
         column = 0
         place_in_string = 0
         if self.syntax_highlighting:
-            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length+self.begin_at-self.left_margin)
+            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length + self.begin_at - self.left_margin)
             while column <= (self.maximum_string_length - self.left_margin):
-                if not string_to_print or place_in_string > len(string_to_print)-1:
+                if not string_to_print or place_in_string > len(string_to_print) - 1:
                     break
                 width_of_char_to_print = self.find_width_of_char(string_to_print[place_in_string])
                 if column - 1 + width_of_char_to_print > self.maximum_string_length:
                     break
                 try:
-                    highlight = self._highlightingdata[self.begin_at+place_in_string]
+                    highlight = self._highlightingdata[self.begin_at + place_in_string]
                 except Exception:
                     highlight = curses.A_NORMAL
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+column+self.left_margin,
+                    self.relx + column + self.left_margin,
                     self._print_unicode_char(string_to_print[place_in_string]),
                     highlight
                 )
@@ -293,11 +293,11 @@ class TextfieldBase(widget.Widget):
                 else:
                     color = curses.A_NORMAL
             while column <= (self.maximum_string_length - self.left_margin):
-                if not string_to_print or place_in_string > len(string_to_print)-1:
+                if not string_to_print or place_in_string > len(string_to_print) - 1:
                     if self.highlight_whole_widget:
                         self.parent.curses_pad.addstr(
                             self.rely,
-                            self.relx+column+self.left_margin,
+                            self.relx + column + self.left_margin,
                             ' ',
                             color,
                         )
@@ -311,7 +311,7 @@ class TextfieldBase(widget.Widget):
                     break
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+column+self.left_margin,
+                    self.relx + column + self.left_margin,
                     self._print_unicode_char(string_to_print[place_in_string]),
                     color,
                 )
@@ -325,15 +325,15 @@ class TextfieldBase(widget.Widget):
         if string_to_print == None: return
 
         if self.syntax_highlighting:
-            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length+self.begin_at-self.left_margin)
-            for i in range(len(string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])):
+            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length + self.begin_at - self.left_margin)
+            for i in range(len(string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin])):
                 try:
-                    highlight = self._highlightingdata[self.begin_at+i]
+                    highlight = self._highlightingdata[self.begin_at + i]
                 except Exception:
                     highlight = curses.A_NORMAL
                 self.parent.curses_pad.addstr(
-                    self.rely,self.relx+i+self.left_margin,
-                    string_to_print[self.begin_at+i],
+                    self.rely, self.relx + i + self.left_margin,
+                    string_to_print[self.begin_at + i],
                     highlight
                 )
         elif self.do_colors():
@@ -343,40 +343,40 @@ class TextfieldBase(widget.Widget):
             if self.show_bold:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin],
                     self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             elif self.important:
                 coltofind = 'IMPORTANT'
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin],
                     self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             else:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin],
                     self.parent.theme_manager.findPair(self))
         else:
             if self.important:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin],
                     curses.A_BOLD)
             elif self.show_bold:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin],
                     curses.A_BOLD)
             else:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])
+                    self.relx + self.left_margin,
+                    string_to_print[self.begin_at : self.maximum_string_length + self.begin_at - self.left_margin])
     #@+node:ekr.20170428084208.334: *3* update_highlighting
     def update_highlighting(self, start=None, end=None, clear=False):
         if clear or (self._highlightingdata == None):
@@ -393,10 +393,10 @@ class Textfield(TextfieldBase):
         curses.beep()
         keep_for_a_moment = self.value
         self.value = message
-        self.editing=False
+        self.editing = False
         self.display()
         curses.napms(1200)
-        self.editing=True
+        self.editing = True
         self.value = keep_for_a_moment
 
 
@@ -473,7 +473,7 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.343: *4* Textfield.h_delete_left
     def h_delete_left(self, input):
         if self.editable and self.cursor_position > 0:
-            self.value = self.value[:self.cursor_position-1] + self.value[self.cursor_position:]
+            self.value = self.value[: self.cursor_position - 1] + self.value[self.cursor_position:]
 
         self.cursor_position -= 1
         self.begin_at -= 1
@@ -482,13 +482,13 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.344: *4* Textfield.h_delete_right
     def h_delete_right(self, input):
         if self.editable:
-            self.value = self.value[:self.cursor_position] + self.value[self.cursor_position+1:]
+            self.value = self.value[:self.cursor_position] + self.value[self.cursor_position + 1 :]
 
     #@+node:ekr.20170428084208.345: *4* Textfield.h_erase_left
     def h_erase_left(self, input):
         if self.editable:
             self.value = self.value[self.cursor_position:]
-            self.cursor_position=0
+            self.cursor_position = 0
 
     #@+node:ekr.20170428084208.346: *4* Textfield.h_erase_right
     def h_erase_right(self, input):
@@ -513,16 +513,16 @@ class Textfield(TextfieldBase):
         # For OS X
         # del_key = curses.ascii.alt('~')
         self.handlers.update({
-            curses.KEY_LEFT:    self.h_cursor_left,
-            curses.KEY_RIGHT:   self.h_cursor_right,
-            curses.KEY_DC:      self.h_delete_right,
-            curses.ascii.DEL:   self.h_delete_left,
-            curses.ascii.BS:    self.h_delete_left,
+            curses.KEY_LEFT: self.h_cursor_left,
+            curses.KEY_RIGHT: self.h_cursor_right,
+            curses.KEY_DC: self.h_delete_right,
+            curses.ascii.DEL: self.h_delete_left,
+            curses.ascii.BS: self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
             # mac os x curses reports DEL as escape oddly
             # no solution yet
-            "^K":           self.h_erase_right,
-            "^U":           self.h_erase_left,
+            "^K": self.h_erase_right,
+            "^U": self.h_erase_left,
         })
         self.complex_handlers.extend((
             (self.t_input_isprint, self.h_addch),
@@ -539,10 +539,10 @@ class FixedText(TextfieldBase):
         '''FixedText.set_up_handlers.'''
         super(FixedText, self).set_up_handlers()
         self.handlers.update({
-            curses.KEY_LEFT:    self.h_cursor_left,
-            curses.KEY_RIGHT:   self.h_cursor_right,
-            ord('k'):    self.h_exit_up,
-            ord('j'):    self.h_exit_down,
+            curses.KEY_LEFT: self.h_cursor_left,
+            curses.KEY_RIGHT: self.h_cursor_right,
+            ord('k'): self.h_exit_up,
+            ord('j'): self.h_exit_down,
         })
 
 

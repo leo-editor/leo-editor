@@ -14,22 +14,22 @@ import weakref
 from . import npysGlobalOptions as GlobalOptions
 from . import wgwidget_proto
 import locale
-from .globals import DEBUG
+from . globals import DEBUG
 # experimental
-from .eveventhandler import EventHandler
+from . eveventhandler import EventHandler
 from leo.core import leoGlobals as g
 assert g
 #@-<< wgwidget imports >>
 #@+<< wgwidgets data >>
 #@+node:ekr.20170429213125.1: ** << wgwidgets data >>
-EXITED_DOWN  =  1
-EXITED_UP    = -1
-EXITED_LEFT  = -2
-EXITED_RIGHT =  2
-EXITED_ESCAPE= 127
+EXITED_DOWN = 1
+EXITED_UP = -1
+EXITED_LEFT = -2
+EXITED_RIGHT = 2
+EXITED_ESCAPE = 127
 EXITED_MOUSE = 130
-SETMAX       = 'SETMAX'
-RAISEERROR   = 'RAISEERROR'
+SETMAX = 'SETMAX'
+RAISEERROR = 'RAISEERROR'
 ALLOW_NEW_INPUT = True
 
 TEST_SETTINGS = {
@@ -117,7 +117,7 @@ class InputHandler:
             f(i)
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
-            if test(i): # was is not False.
+            if test(i):  # was is not False.
                 if trace: g.trace('complex: %3s %s' % (i, tell(handler)))
                 return handler(i)
         if parent_widget and hasattr(parent_widget, 'handle_input'):
@@ -148,18 +148,18 @@ class InputHandler:
         """
         #called in __init__
         self.handlers = {
-            curses.ascii.NL:     self.h_exit_down,
-            curses.ascii.CR:     self.h_exit_down,
-            curses.ascii.TAB:    self.h_exit_down,
-            curses.KEY_BTAB:     self.h_exit_up,
-            curses.KEY_DOWN:     self.h_exit_down,
-            curses.KEY_UP:       self.h_exit_up,
-            curses.KEY_LEFT:     self.h_exit_left,
-            curses.KEY_RIGHT:    self.h_exit_right,
-            "^P":                self.h_exit_up,
-            "^N":                self.h_exit_down,
-            curses.ascii.ESC:    self.h_exit_escape,
-            curses.KEY_MOUSE:    self.h_exit_mouse,
+            curses.ascii.NL: self.h_exit_down,
+            curses.ascii.CR: self.h_exit_down,
+            curses.ascii.TAB: self.h_exit_down,
+            curses.KEY_BTAB: self.h_exit_up,
+            curses.KEY_DOWN: self.h_exit_down,
+            curses.KEY_UP: self.h_exit_up,
+            curses.KEY_LEFT: self.h_exit_left,
+            curses.KEY_RIGHT: self.h_exit_right,
+            "^P": self.h_exit_up,
+            "^N": self.h_exit_down,
+            curses.ascii.ESC: self.h_exit_escape,
+            curses.KEY_MOUSE: self.h_exit_mouse,
         }
         self.complex_handlers = []
 
@@ -247,8 +247,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170428084208.412: *3* Widget.__init__
     def __init__(self, screen,
             relx=0, rely=0, name=None, value=None,
-            width = False, height = False,
-            max_height = False, max_width=False,
+            width=False, height=False,
+            max_height=False, max_width=False,
             editable=True,
             hidden=False,
             color='DEFAULT',
@@ -256,7 +256,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             check_value_change=True,
             check_cursor_move=True,
             value_changed_callback=None,
-            **keywords):
+            ** keywords):
         """The following named arguments may be supplied:
         name= set the name of the widget.
         width= set the width of the widget.
@@ -270,8 +270,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         value_changed_callback - should be None or a Function.  If it is a function, it will have be called when the value changes
                                and passed the keyword argument widget=self.
         """
-        self.check_value_change=check_value_change
-        self.check_cursor_move =check_cursor_move
+        self.check_value_change = check_value_change
+        self.check_cursor_move = check_cursor_move
         self.hidden = hidden
         self.interested_in_mouse_even_when_not_editable = False
             # used only for rare widgets to allow user to click
@@ -286,7 +286,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         #self.relx = relx
         #self.rely = rely
         self.color = color
-        self.encoding = 'utf-8'#locale.getpreferredencoding()
+        self.encoding = 'utf-8'  #locale.getpreferredencoding()
         if GlobalOptions.ASCII_ONLY or locale.getpreferredencoding() == 'US-ASCII':
             self._force_ascii = True
         else:
@@ -305,20 +305,20 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         try:
             self.name
         except Exception:
-            self.name=name
+            self.name = name
 
-        self.request_width =  width     # widgets should honour if possible
-        self.request_height = height    # widgets should honour if possible
+        self.request_width = width  # widgets should honour if possible
+        self.request_height = height  # widgets should honour if possible
 
         self.max_height = max_height
         self.max_width = max_width
 
         self.set_size()
 
-        self.editing = False        # Change to true during an edit
+        self.editing = False  # Change to true during an edit
 
         self.editable = editable
-        if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
+        if self.parent.curses_pad.getmaxyx()[0] - 1 == self.rely: self.on_last_line = True
         else: self.on_last_line = False
 
         if value_changed_callback:
@@ -333,7 +333,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if trace: g.trace('BEGIN')
         if not self.parent.editing:
             _i_set_parent_editing = True
-            self.parent.editing   = True
+            self.parent.editing = True
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
@@ -344,7 +344,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent.editing = False
         if trace: g.trace('END')
         if self.editing:
-            self.editing    = False
+            self.editing = False
             self.how_exited = True
     #@+node:ekr.20170429213619.5: *3* Widget._get_ch
     def _get_ch(self):
@@ -358,7 +358,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         # but everything that follows could be in the except clause above.
 
             # Try to read utf-8 if possible.
-        _stored_bytes =[]
+        _stored_bytes = []
         self._last_get_ch_was_unicode = True
         global ALLOW_NEW_INPUT
         if ALLOW_NEW_INPUT == True and locale.getpreferredencoding() == 'UTF-8':
@@ -431,7 +431,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         "Internal Method. This will be the method called when the terminal resizes."
         self._move_widget_on_terminal_resize()
         self._recalculate_size()
-        if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
+        if self.parent.curses_pad.getmaxyx()[0] - 1 == self.rely: self.on_last_line = True
         else: self.on_last_line = False
         self.resize()
         self.when_resized()
@@ -452,7 +452,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         calculate the screen area they need, returning either y,x, or 0,0 if
         they want all the screen they can.  However, do not use this to say how
         big a given widget is ... use .height and .width instead"""
-        return 0,0
+        return 0, 0
     #@+node:ekr.20170428084208.427: *3* Widget.clear
     def clear(self, usechar=' '):
         """Blank the screen area used by this widget, ready for redrawing"""
@@ -469,10 +469,10 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             if self.do_colors():
                 color = self.parent.theme_manager.findPair(self, self.parent.color)
                 for y in range(self.height):
-                    pad.addstr(self.rely+y, self.relx, s, color)
+                    pad.addstr(self.rely + y, self.relx, s, color)
             else:
                 for y in range(self.height):
-                    pad.addstr(self.rely+y, self.relx, s)
+                    pad.addstr(self.rely + y, self.relx, s)
             # Old code
             # if self.do_colors():
                 # self.parent.curses_pad.addstr(
@@ -546,7 +546,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 ch2 = self.parent.curses_pad.getch()
                 if ch2 != -1:
                     ch = curses.ascii.alt(ch2)
-                self.parent.curses_pad.timeout(-1) # back to blocking mode
+                self.parent.curses_pad.timeout(-1)  # back to blocking mode
                 #curses.flushinp()
         elif (TEST_SETTINGS['INPUT_GENERATOR']):
             self._last_get_ch_was_unicode = True
@@ -580,7 +580,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.try_adjust_widgets()
     #@+node:ekr.20170428084208.426: *3* Widget.get_editable
     def get_editable(self):
-        return(self._is_editable)
+        return (self._is_editable)
     #@+node:ekr.20170429213619.10: *3* Widget.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # mouse_id, x, y, z, bstate = mouse_event
@@ -590,7 +590,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         mouse_id, x, y, z, bstate = mouse_event
         x += self.parent.show_from_x
         y += self.parent.show_from_y
-        rel_y       = y - self.rely - self.parent.show_aty
+        rel_y = y - self.rely - self.parent.show_aty
         rel_x = x - self.relx - self.parent.show_atx
         return (mouse_id, rel_x, rel_y, z, bstate)
 
@@ -604,8 +604,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         mouse_id, x, y, z, bstate = mouse_event
         x += self.parent.show_from_x
         y += self.parent.show_from_y
-        if self.relx <= x <= self.relx + self.width-1 + self.parent.show_atx:
-            if self.rely  <= y <= self.rely + self.height-1 + self.parent.show_aty:
+        if self.relx <= x <= self.relx + self.width - 1 + self.parent.show_atx:
+            if self.rely <= y <= self.rely + self.height - 1 + self.parent.show_aty:
                 return True
         return False
     #@+node:ekr.20170428084208.416: *3* Widget.resize
@@ -753,7 +753,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         ny, nx = self.calculate_area_needed()
 
         max_height = self.max_height
-        max_width  = self.max_width
+        max_width = self.max_width
         # What to do if max_height or max_width is negative
         if max_height not in (None, False) and max_height < 0:
             max_height = my + max_height
@@ -782,12 +782,12 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         #    raise Exception("Not enough space for widget")
 
 
-        if nx > 0:                 # if a minimum space is specified....
-            if mx >= nx:           # if max width is greater than needed space
-                self.width = nx    # width is needed space
+        if nx > 0:  # if a minimum space is specified....
+            if mx >= nx:  # if max width is greater than needed space
+                self.width = nx  # width is needed space
             else:
-                self.width = RAISEERROR    # else raise an error
-        elif self.max_width:       # otherwise if a max width is speciied
+                self.width = RAISEERROR  # else raise an error
+        elif self.max_width:  # otherwise if a max width is speciied
             if max_width <= mx:
                 self.width = max_width
             else:
@@ -796,7 +796,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.width = self.request_width or mx
         if self.height == RAISEERROR or self.width == RAISEERROR:
             # Not enough space for widget
-            raise NotEnoughSpaceForWidget("Not enough space: max y and x = %s , %s. Height and Width = %s , %s " % (my, mx, self.height, self.width) ) # unsafe. Need to add error here.
+            raise NotEnoughSpaceForWidget("Not enough space: max y and x = %s , %s. Height and Width = %s , %s " % (my, mx, self.height, self.width))  # unsafe. Need to add error here.
     #@+node:ekr.20170428084208.420: *3* Widget.space_available
     def space_available(self):
         """The space available left on the screen, returned as rows, columns"""
@@ -804,7 +804,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             y, x = self.parent.useable_space(self.rely, self.relx)
         else:
             y, x = self.parent.widget_useable_space(self.rely, self.relx)
-        return y,x
+        return y, x
     #@+node:ekr.20170429213619.6: *3* Widget.try_adjust_widgets
     def try_adjust_widgets(self):
         if hasattr(self.parent, "adjust_widgets"):
@@ -912,13 +912,13 @@ class DummyWidget(Widget):
         else: self._is_editable = False
     #@+node:ekr.20170428084208.433: *3* DummyWidget.get_editable
     def get_editable(self):
-        return(self._is_editable)
+        return (self._is_editable)
     #@+node:ekr.20170428084208.434: *3* DummyWidget.clear
     def clear(self, usechar=' '):
         pass
     #@+node:ekr.20170428084208.435: *3* DummyWidget.calculate_area_needed
     def calculate_area_needed(self):
-        return 0,0
+        return 0, 0
 
 
     #@-others

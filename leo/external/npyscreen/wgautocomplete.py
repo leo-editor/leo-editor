@@ -4,8 +4,8 @@
 #@+others
 #@+node:ekr.20170428084207.495: ** Declarations
 import curses
-from . import wgtextbox    as textbox
-from . import wgmultiline  as multiline
+from . import wgtextbox as textbox
+from . import wgmultiline as multiline
 from . import wgtitlefield as titlefield
 import os
 # from . import fmForm as Form
@@ -39,7 +39,7 @@ class Autocomplete(textbox.Textfield):
                 return_exit=True, select_exit=True)
         #sel = multiline.MultiLine(tmp_window, values=values, value=self.value)
         tmp_window.display()
-        sel.value=0
+        sel.value = 0
         sel.edit()
         return sel.value
 
@@ -59,7 +59,7 @@ class Filename(Autocomplete):
             dir = os.path.abspath(dir)
 
             if self.value == '':
-                self.value=dir
+                self.value = dir
                 break
 
             try:
@@ -92,7 +92,7 @@ class Filename(Autocomplete):
             if len(possibilities) > 1:
                 filelist = possibilities
             else:
-                filelist = flist #os.listdir(os.path.dirname(self.value))
+                filelist = flist  #os.listdir(os.path.dirname(self.value))
 
             filelist = list(map((lambda x: os.path.normpath(os.path.join(self.value, x))), filelist))
             files_only = []
@@ -124,7 +124,7 @@ class Filename(Autocomplete):
             curses.beep()
         #os.path.normpath(self.value)
         os.path.normcase(self.value)
-        self.cursor_position=len(self.value)
+        self.cursor_position = len(self.value)
 
     #@-others
 #@+node:ekr.20170428084207.502: ** class TitleFilename
