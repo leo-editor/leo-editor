@@ -263,6 +263,10 @@ class LeoGlobals:  # pragma: no cover
     def printObj(self, obj, tag=None):
         """Simplified version of g.printObj."""
         print(self.objToString(obj, tag))
+    #@+node:ekr.20220327120618.1: *3* LeoGlobals.shortFileName
+    def shortFileName(self, fileName) -> str:
+        """Return the base name of a path."""
+        return os.path.basename(fileName) if fileName else ''
     #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
     def splitLines(self, s):
         """Split s into lines, preserving the number of lines and
@@ -2675,24 +2679,20 @@ class Orange:
 
         Return True if the file was changed.
         """
-        tag = 'beautify-file'
         self.filename = filename
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
-            print(f"{tag}: Can not beautify: {filename}")
-            return False
+            return False  # #2529: Not an error.
         # Beautify.
         results = self.beautify(contents, filename, tokens, tree)
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
-            print(f"{tag}: Unchanged: {filename}")
             return False
         if 0:  # This obscures more import error messages.
-            # Show the diffs.
             show_diffs(contents, results, filename=filename)
         # Write the results
-        print(f"{tag}: Wrote {filename}")
+        print(f"Beautified: {g.shortFileName(filename)}")
         write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
