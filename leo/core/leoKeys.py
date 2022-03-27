@@ -2916,7 +2916,7 @@ class KeyHandlerClass:
         allowBinding=False,
         pane='all',
         shortcut=None,  # Must be None unless allowBindings is True.
-        ** kwargs
+        **kwargs
     ):
         """
         Make the function available as a minibuffer command.
