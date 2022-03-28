@@ -58,7 +58,6 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
-        ### g.app.idleTimeManager.add_callback(self.on_idle)
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         self.timer_started = False
@@ -101,13 +100,16 @@ class BackgroundProcessManager:
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
         """Check the running process, and switch if necessary."""
+        # #2428: Handle all output only after the process has completed.
+        #        There should be no danger of a deadlock because
+        #        there is only one running subprocess.
         if self.pid:
-            if self.pid.poll() is None:
-                # Unblock the process by reading immediately.
+            if self.pid.poll() is None:  # The process is still running.
+                pass  
+            else:  # The process has completed.
                 for s in self.pid.stdout:
                     self.data.number_of_lines += 1
                     self.put_log(s)
-            else:
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
         elif self.process_queue:
@@ -139,7 +141,6 @@ class BackgroundProcessManager:
             g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
-            g.trace('*** end timer ***')  ###
             self.timer.stop()  # #2528
     #@+node:ekr.20161026193609.3: *3* bpm.kill (** changed)
     def kill(self, kind=None):
@@ -160,18 +161,12 @@ class BackgroundProcessManager:
         self.put_log(f"{kind} finished")
         self.timer.stop()  # #2528
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
-    idle_count = 0  ###
-
     def on_idle(self):
         """The idle-time callback for leo.commands.checkerCommands."""
         try:
-            g.app.gui.qtApp.processEvents()
+            g.app.gui.qtApp.processEvents()  # #2528.
         except Exception:
-            g.es_exception()  ###
             pass
-        if 1:  ###
-            self.idle_count += 1
-            g.trace(self.idle_count)
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
