@@ -91,7 +91,7 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+others
     #@+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self):
-        """Ctor for ExternalFiles class."""
+        """Ctor for ServerExternalFiles class."""
         super().__init__()
 
         self.on_idle_count = 0
