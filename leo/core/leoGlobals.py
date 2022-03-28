@@ -309,6 +309,13 @@ g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 # #2267: Support for @section-delims.
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
+
+# Regex to find GNX
+USERCHAR = r"""[^.,"'\s]"""      # from LeoApp.cleanLeoID()
+USERID = f'{USERCHAR}{{2}}{USERCHAR}+'  # At least three USERCHARs
+GNXre = re.compile(rf"""{USERID}\.
+    [0-9]+\.                     # timestamp
+    [0-9]+""", re.VERBOSE)       # NodeIndices.lastIndex
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
@@ -7844,6 +7851,33 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         i, j = g.getLine(s, ins)
         line = s[i:j]
 
+        # Navigation target types:
+        #@+<< gnx >>
+        #@+node:tom.20220328142302.1: *5* << gnx >>
+        match = target = None
+        for match in GNXre.finditer(line):
+            # Don't open if we click after the gnx.
+            if match.start() <= col < match.end():
+                target = match.group()
+                break
+
+        if target:
+            found_gnx = target_is_self = False
+            if c.p.gnx == target:
+                found_gnx = target_is_self = True
+            else:
+                for p in c.all_unique_positions():
+                    if p.v.gnx == target:
+                        found_gnx = True
+                        break
+            if found_gnx:
+                if not target_is_self:
+                    c.selectPosition(p)
+                    c.redraw()
+            return target
+        #@-<< gnx >>
+        #@+<< section ref >>
+        #@+node:tom.20220328141455.1: *5* << section ref >>
         # Navigate to section reference if one was clickedon
         l_ = line.strip()
         if l_.startswith('<<') and l_.endswith('>>'):
@@ -7856,7 +7890,9 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
             if px:
                 c.selectPosition(px)
                 c.redraw()
-
+        #@-<< section ref >>
+        #@+<< url or unl >>
+        #@+node:tom.20220328141544.1: *5* << url or unl >>
         # Find the url on the line.
         for match in g.url_regex.finditer(line):
             # Don't open if we click after the url.
@@ -7872,6 +7908,8 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
                     unl = match.group()
                     g.handleUnl(unl, c)
                     return None
+        #@-<< url or unl >>
+
     elif not isinstance(url, str):
         url = url.toString()
         url = g.toUnicode(url)  # #571
