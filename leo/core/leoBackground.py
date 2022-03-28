@@ -52,7 +52,7 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
     #@+others
-    #@+node:ekr.20180522085807.1: *3* bpm.__init__ (changed)
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self):
         """Ctor for the base BackgroundProcessManager class."""
         self.data = None  # a ProcessData instance.
@@ -131,7 +131,7 @@ class BackgroundProcessManager:
         except OSError:
             pass
         self.pid = None
-    #@+node:ekr.20161028063800.1: *4* bpm.start_next (changed)
+    #@+node:ekr.20161028063800.1: *4* bpm.start_next
     def start_next(self):
         """The previous process has finished. Start the next one."""
         if self.process_queue:
@@ -248,7 +248,7 @@ class BackgroundProcessManager:
         # Put a clickable link.
         unl = link_root.get_UNL()
         log.put(s + '\n', nodeLink=f"{unl}::{-line}")  # Global line.
-    #@+node:ekr.20161026193609.5: *3* bpm.start_process (changed)
+    #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind,
         fn=None,
         link_pattern=None,  # None, string, or re.pattern.
@@ -272,7 +272,6 @@ class BackgroundProcessManager:
 
         if not self.timer_started:
             # #2528: Start the free-running timer.
-            g.trace('*** start timer ***')  ###
             self.timer.start(100)
             self.timer_started = True
 
