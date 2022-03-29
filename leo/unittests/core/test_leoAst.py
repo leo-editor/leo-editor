@@ -1308,7 +1308,7 @@ class TestOrange(BaseTest):
                 """a[1:2:3]""",
                 # * and **, inside and outside function calls.
                 """a = b * c""",
-                """a = b ** c""",
+                # """a = b ** c""",  # Black: 3.9: b ** c, 3.10: b**c.
                 """f(*args)""",
                 """f(**kwargs)""",
                 """f(*args, **kwargs)""",
@@ -1342,21 +1342,18 @@ class TestOrange(BaseTest):
                 # Returns...
                 """return -1""",
             )
-        fails = 0
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens, tree = self.make_data(contents, description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, tree, filename=description)
-            message = (
-                f"\n"
-                f"  contents: {contents.rstrip()}\n"
-                f"     black: {expected.rstrip()}\n"
-                f"    orange: {results.rstrip()}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        self.assertEqual(fails, 0)
+            if results != expected:
+                print(
+                    f"\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip()}")
+                self.fail()
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 
