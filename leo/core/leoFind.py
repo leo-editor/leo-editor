@@ -501,7 +501,7 @@ class LeoFind:
         # Check.
         word = self._compute_find_def_word(event)
         if not word:
-            return
+            return None, None, None
         # Settings...
         prefix = 'class' if word[0].isupper() else 'def'
         find_pattern = prefix + ' ' + word
@@ -511,11 +511,11 @@ class LeoFind:
         self.update_change_list(self.change_text)  # Optional. An edge case.
         # Do the command!
         settings = self._compute_find_def_settings(find_pattern)
-        self.do_find_def(settings, word, strict)
+        return self.do_find_def(settings, word, strict)
 
     def find_def_strict(self, event=None):  #pragma: no cover (cmd)
         """Same as find_def, but don't call _switch_style."""
-        self.find_def(event=event, strict=True)
+        return self.find_def(event=event, strict=True)
 
     def do_find_def(self, settings, word, strict):
         """A standalone helper for unit tests."""
