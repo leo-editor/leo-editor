@@ -1239,7 +1239,7 @@ def poll(timeout=0.0):
         for s in sockets_to_close:
             s.close()
         sockets_to_close = []
-    if [] == r == w == e:  # pylint: disable=use-implicit-booleaness-not-comparison
+    if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
         time.sleep(timeout)
     else:
         #@+<< try r, w, e = select.select >>
