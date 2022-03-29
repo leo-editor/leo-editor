@@ -199,8 +199,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.fileCommands.leo_file_encoding = 'utf-8'
             #
             # As part of #427, disable all redraws.
+            old_disable = g.app.disable_redraw
             try:
-                old_disable = g.app.disable_redraw
                 g.app.disable_redraw = True
                 self.init_tree_abbrev_helper(d, tree_s)
             finally:
