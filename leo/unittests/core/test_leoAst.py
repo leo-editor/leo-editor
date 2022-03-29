@@ -2296,6 +2296,18 @@ class TestTOG(BaseTest):
         # Coverage test for spaces
         contents = """f = lambda x: x"""
         self.make_data(contents)
+    #@+node:ekr.20220329095904.1: *5* test_Match
+    def test_match(self):
+
+        contents = r"""\
+    import ast
+    BinOp = ast.BinOp
+    node = BinOp()
+    match node:
+        case BinOp("+", a, BinOp("*", b, c)):
+            pass # Handle a + b*c
+    """
+        self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
