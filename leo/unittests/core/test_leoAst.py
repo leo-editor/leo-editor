@@ -2299,14 +2299,18 @@ class TestTOG(BaseTest):
     #@+node:ekr.20220329095904.1: *5* test_Match
     def test_match(self):
 
+    # import ast
+    # BinOp = ast.BinOp
+    # node = BinOp()
+    # case BinOp("+", a, BinOp("*", b, c)):
+        # pass # Handle a + b*c
         contents = r"""\
-    import ast
-    BinOp = ast.BinOp
-    node = BinOp()
     match node:
-        case BinOp("+", a, BinOp("*", b, c)):
-            pass # Handle a + b*c
+        case 1:
+            pass
     """
+        self.debug_list.append('tree')
+        # self.debug_list.append('full-traceback')
         self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):

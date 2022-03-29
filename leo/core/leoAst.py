@@ -2382,26 +2382,15 @@ class TokenOrderGenerator:
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
 
-    # pattern = 
-    #      MatchValue(expr value)
-    #    | MatchSingleton(constant value)
-    #    | MatchSequence(pattern* patterns)
-    #    | MatchMapping(expr* keys, pattern* patterns, identifier? rest)
-    #    | MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
-    #    | MatchStar(identifier? name)
-    #
-    # -- The optional "rest" MatchMapping parameter handles capturing extra mapping keys
-    #
-    #   | MatchAs(pattern? pattern, identifier? name)
-    #   | MatchOr(pattern* patterns)
-
     def do_Match(self, node):
 
-        # nonlocal %s\n' % ','.join(node.names))
-        # No need to put commas.
+        cases = getattr(node, 'cases', [])
         yield from self.gen_name('match')
-        yield from self.gen(node.pattern)
-        yield from self.gen(node.body)
+        yield from self.gen(node.subject)
+        for case in cases:
+            g.trace(case)
+            yield from self.gen_name('case')
+            yield from self.gen_op(':')
     #@+node:ekr.20220329093455.3: *7* tog.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
