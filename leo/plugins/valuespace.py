@@ -393,7 +393,7 @@ class ValueSpaceController:
                 #print "set to yaml", `val`
                 sio = BytesIO(val)
                 try:
-                    d = yaml.load(sio)
+                    d = yaml.load(sio)  # pylint: disable=no-value-for-parameter
                 except Exception:
                     g.es_exception()
                     g.es("yaml error for: " + var)
