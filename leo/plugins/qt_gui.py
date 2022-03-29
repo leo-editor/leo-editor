@@ -9,7 +9,7 @@ import functools
 import re
 import sys
 import textwrap
-from typing import Dict, List
+from typing import List
 
 from leo.core import leoColor
 from leo.core import leoGlobals as g
@@ -1884,7 +1884,7 @@ class StyleSheetManager:
     def adjust_sizes(self, settingsDict):
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
-        constants = {}  # old: self.find_constants_defined(sheet)
+        constants = {}
         deltas = c._style_deltas
         for delta in c._style_deltas:
             # adjust @font-size-body by font_size_delta
@@ -1965,50 +1965,6 @@ class StyleSheetManager:
             if s in aList:
                 aList.remove(s)
         return aList
-    #@+node:tbrown.20130411121812.28335: *5* ssm.find_constants_defined (no longer used)
-    def find_constants_defined(self, text):
-        r"""find_constants - Return a dict of constants defined in the supplied text.
-
-        NOTE: this supports a legacy way of specifying @<identifiers>, regular
-        @string and @color settings should be used instead, so calling this
-        wouldn't be needed.  expand_css_constants() issues a warning when
-        @<identifiers> are found in the output of this method.
-
-        Constants match::
-
-            ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
-            i.e.
-            @foo_1-5=a
-                @foo_1-5 = a more here
-
-        :Parameters:
-        - `text`: text to search
-        """
-        pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
-        ans: Dict[str, str] = {}
-        text = text.replace('\\\n', '')  # merge lines ending in \
-        for line in text.split('\n'):
-            test = pattern.match(line)
-            if test:
-                ans.update([test.groups()])  # type:ignore  # Mysterious
-        # constants may refer to other constants, de-reference here
-        change = True
-        level = 0
-        while change and level < 10:
-            level += 1
-            change = False
-            for k in ans:
-                # pylint: disable=unnecessary-lambda
-                # process longest first so @solarized-base0 is not replaced
-                # when it's part of @solarized-base03
-                for o in sorted(ans, key=lambda x: len(x), reverse=True):
-                    if o in ans[k]:
-                        change = True
-                        ans[k] = ans[k].replace(o, ans[o])
-        if level == 10:
-            print("Ten levels of recursion processing styles, abandoned.")
-            g.es("Ten levels of recursion processing styles, abandoned.")
-        return ans
     #@+node:ekr.20150617090104.1: *5* ssm.replace_indicator_constants
     def replace_indicator_constants(self, sheet):
         """
