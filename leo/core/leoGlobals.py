@@ -6928,6 +6928,7 @@ def os_startfile(fname: str) -> None:
             stderr2log(g, ree, fname)
             ree.close()
     #@-others
+    # pylint: disable=used-before-assignment
     if fname.find('"') > -1:
         quoted_fname = f"'{fname}'"
     else:
