@@ -2377,6 +2377,72 @@ class TokenOrderGenerator:
             if alias.asname:
                 yield from self.gen_name('as')
                 yield from self.gen_name(alias.asname)
+    #@+node:ekr.20220329091825.1: *6* tog.Match* (Python 3.10+)
+    # Match(expr subject, match_case* cases)
+
+    # match_case = (pattern pattern, expr? guard, stmt* body)
+
+    # pattern = 
+    #      MatchValue(expr value)
+    #    | MatchSingleton(constant value)
+    #    | MatchSequence(pattern* patterns)
+    #    | MatchMapping(expr* keys, pattern* patterns, identifier? rest)
+    #    | MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
+    #    | MatchStar(identifier? name)
+    #
+    # -- The optional "rest" MatchMapping parameter handles capturing extra mapping keys
+    #
+    #   | MatchAs(pattern? pattern, identifier? name)
+    #   | MatchOr(pattern* patterns)
+
+    def do_Match(self, node):
+
+        # nonlocal %s\n' % ','.join(node.names))
+        # No need to put commas.
+        yield from self.gen_name('match')
+        yield from self.gen(node.pattern)
+        yield from self.gen(node.body)
+    #@+node:ekr.20220329093455.3: *7* tog.MatchAs
+    # MatchAs(pattern? pattern, identifier? name)
+
+    def do_MatchAs(self, node):
+        pass  ###
+    #@+node:ekr.20220329093455.1: *7* tog.MatchClass
+    # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
+
+    def do_MatchClass(self, node):
+        pass  ###
+    #@+node:ekr.20220329093454.3: *7* tog.MatchMapping
+    # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
+
+    def do_MatchMapping(self, node):
+        pass  ###
+    #@+node:ekr.20220329093455.4: *7* tog.MatchOr
+    # MatchOr(pattern* patterns)
+
+    def do_MatchOr(self, node):
+        pass
+    #@+node:ekr.20220329093454.2: *7* tog.MatchSequence
+    # MatchSequence(pattern* patterns)
+
+    def do_MatchSequence(self, node):
+        pass  ###
+
+    #@+node:ekr.20220329093454.1: *7* tog.MatchSingleton
+    # MatchSingleton(constant value)
+
+    def do_MatchSingleton(self, node):
+        pass  ###
+    #@+node:ekr.20220329093455.2: *7* tog.MatchStar
+    # MatchStar(identifier? name)
+
+    def do_MatchStar(self, node):
+        pass  ###
+    #@+node:ekr.20220329093443.1: *7* tog.MatchValue
+    # MatchValue(expr value)
+
+    def do_MatchValue(self, node):
+        pass  ###
     #@+node:ekr.20191113063144.78: *6* tog.Nonlocal
     # Nonlocal(identifier* names)
 
