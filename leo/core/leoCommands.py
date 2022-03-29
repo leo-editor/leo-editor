@@ -711,8 +711,8 @@ class Commands:
                       'assert c and g and p and script_gnx;\n')
             cc.PyflakesCommand(c).check_script(script_p, prefix + script)
         self.redirectScriptOutput()
+        oldLog = g.app.log
         try:
-            oldLog = g.app.log
             log = c.frame.log
             g.app.log = log
             if script.strip():
