@@ -260,7 +260,7 @@ class quickMove:
         # build callables for imp list
 
         for name, first_last, long, short in quickMove.flavors:
-
+            # pylint: disable=undefined-loop-variable
             self.txts[name] = short
 
             if first_last:
