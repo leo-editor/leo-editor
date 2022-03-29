@@ -19,7 +19,7 @@ https://flexx.readthedocs.io/en/stable/
 Start Leo using the --gui=browser option. Like this::
 
     leo --gui=browser
-    leo --gui=browser-firefox-browser​
+    leo --gui=browser-firefox
 
 This file is the main line of the LeoWapp project.
 https://github.com/leo-editor/leo-editor/issues/1005.
