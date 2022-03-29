@@ -1373,6 +1373,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
             self.beginCommand(w, undoType='Typing')
+            # pylint: disable=used-before-assignment
             try:
                 tab_width = c.getTabWidth(c.p)
                 changed = True

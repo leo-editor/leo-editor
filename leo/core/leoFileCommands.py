@@ -1591,6 +1591,7 @@ class FileCommands:
         """
         Return a string suitable for pasting to the clipboard.
         """
+        # pylint: disable=used-before-assignment
         try:
             # Save
             tua = self.descendentTnodeUaDictList
