@@ -865,8 +865,8 @@ class LeoApp:
         # Compute g.app.signon1.
         app.signon1 = f"Python {n1}.{n2}.{n3}{guiVersion}\n{sysVersion}"
 
-    def printSignon(self, verbose=False):
-        """Print a minimal sigon to the log."""
+    def printSignon(self):
+        """Print the signon to the log."""
         app = self
         if app.silentMode:
             return
@@ -876,8 +876,7 @@ class LeoApp:
             print('See: https://stackoverflow.com/questions/14109024')
             print('')
         print(app.signon)
-        if verbose:
-            print(app.signon1)
+        print(app.signon1)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
