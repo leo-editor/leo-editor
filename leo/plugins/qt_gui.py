@@ -941,7 +941,7 @@ class LeoQtGui(leoGui.LeoGui):
     def getFullVersion(self, c=None):
         """Return the PyQt version (for signon)"""
         try:
-            qtLevel = f"version {QtCore.QT_VERSION_STR}"
+            qtLevel = f"version {QtCore.qVersion()}"
         except Exception:
             # g.es_exception()
             qtLevel = '<qtLevel>'
