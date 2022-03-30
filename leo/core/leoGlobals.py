@@ -7855,7 +7855,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         i, j = g.getLine(s, ins)
         line = s[i:j]
 
-        # Navigate to section reference if one was clickedon
+        # Navigate to section reference if one was clicked.
         l_ = line.strip()
         if l_.startswith('<<') and l_.endswith('>>'):
             p = c.p
@@ -7897,8 +7897,26 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     if not w.hasSelection():
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
-    if word:
-        c.findCommands.find_def_strict(event)
+    if not word:
+        return None
+    p, pos, newpos = c.findCommands.find_def_strict(event)
+    if p:
+        return None
+    # Part 4: #2546: look for a file name.
+    s = w.getAllText()
+    i, j = w.getSelectionRange()
+    m = re.match(r'(\w+)\.(\w){1,4}\b', s[i:])
+    if not m:
+        return None
+    # Find the first node whose headline ends with the filename.
+    filename = m.group(0)
+    for p in c.all_unique_positions():
+        if p.h.strip().endswith(filename):
+            # Set the find text.
+            c.findCommands.ftm.set_find_text(filename)
+            # Select.
+            c.redraw(p)
+            break
     return None
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
 def unquoteUrl(url: str) -> str:
