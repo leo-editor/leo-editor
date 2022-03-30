@@ -805,42 +805,6 @@ class TestOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
-    def test_bug_1429(self):
-
-        contents = r'''\
-    def get_semver(tag):
-        """bug 1429 docstring"""
-        try:
-            import semantic_version
-            version = str(semantic_version.Version.coerce(tag, partial=True))
-                # tuple of major, minor, build, pre-release, patch
-                # 5.6b2 --> 5.6-b2
-        except(ImportError, ValueError) as err:
-            print('\n', err)
-            print("""*** Failed to parse Semantic Version from git tag '{0}'.
-            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-            This version can't be uploaded to PyPi.org.""".format(tag))
-            version = tag
-        return version
-    '''
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree,
-            max_join_line_length=0, max_split_line_length=0)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20210318055702.1: *4* TestOrange.test_bug_1851
-    def test_bug_1851(self):
-
-        contents = r'''\
-    def foo(a1):
-        pass
-    '''
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree,
-            max_join_line_length=0, max_split_line_length=0)
-        self.assertEqual(results, expected)
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -930,6 +894,42 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
+    def test_bug_1429(self):
+
+        contents = r'''\
+    def get_semver(tag):
+        """bug 1429 docstring"""
+        try:
+            import semantic_version
+            version = str(semantic_version.Version.coerce(tag, partial=True))
+                # tuple of major, minor, build, pre-release, patch
+                # 5.6b2 --> 5.6-b2
+        except(ImportError, ValueError) as err:
+            print('\n', err)
+            print("""*** Failed to parse Semantic Version from git tag '{0}'.
+            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+            This version can't be uploaded to PyPi.org.""".format(tag))
+            version = tag
+        return version
+    '''
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=0, max_split_line_length=0)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20210318055702.1: *4* TestOrange.test_bug_1851
+    def test_bug_1851(self):
+
+        contents = r'''\
+    def foo(a1):
+        pass
+    '''
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=0, max_split_line_length=0)
         self.assertEqual(results, expected)
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
@@ -1190,6 +1190,25 @@ class TestOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
+    #@+node:ekr.20220327131225.1: *4* TestOrange.test_leading_stars
+    def test_leading_stars(self):
+
+        # #2533.
+        contents = """\
+            def f(
+                arg1,
+                *args,
+                **kwargs
+            ):
+                pass
+    """
+        expected = textwrap.dedent("""\
+            def f(arg1, *args, **kwargs):
+                pass
+    """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
@@ -1357,6 +1376,33 @@ class TestOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
+    #@+node:ekr.20220327135448.1: *4* TestOrange.test_relative_imports
+    def test_relative_imports(self):
+
+        # #2533.
+        contents = """\
+            from .module1 import w
+            from . module2 import x
+            from ..module1 import y
+            from .. module2 import z
+            from . import a
+            from.import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
+    """
+        expected = textwrap.dedent("""\
+            from .module1 import w
+            from .module2 import x
+            from ..module1 import y
+            from ..module2 import z
+            from . import a
+            from . import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
+    """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 
@@ -1524,21 +1570,6 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected, msg=contents)
-    #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
-    def test_verbatim2(self):
-
-        contents = """\
-    #@@beautify
-    #@@nobeautify
-    #@+at Starts doc part
-    # More doc part.
-    # The @c ends the doc part.
-    #@@c
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents
-        results = self.beautify(contents, tokens, tree)
-        self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
@@ -1570,6 +1601,21 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
+        self.assertEqual(results, expected, msg=contents)
+    #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
+    def test_verbatim2(self):
+
+        contents = """\
+    #@@beautify
+    #@@nobeautify
+    #@+at Starts doc part
+    # More doc part.
+    # The @c ends the doc part.
+    #@@c
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree)
         self.assertEqual(results, expected, msg=contents)
     #@-others
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)

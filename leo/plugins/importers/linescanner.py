@@ -100,7 +100,7 @@ class Importer:
         name=None,  # The kind of importer, usually the same as language
         state_class=None,  # For i.scan_line
         strict=False,
-        ** kwargs
+        **kwargs
     ):
         """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.

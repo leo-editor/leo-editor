@@ -251,6 +251,11 @@ class LeoGlobals:  # pragma: no cover
             result.append(repr(obj))
         result.append('')
         return '\n'.join(result)
+    #@+node:ekr.20220327132500.1: *3* LeoGlobals.pdb
+    def pdb(self):
+        import pdb as _pdb
+        # pylint: disable=forgotten-debug-statement
+        _pdb.set_trace()
     #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
     def plural(self, obj):
         """Return "s" or "" depending on n."""
@@ -2634,7 +2639,9 @@ class Orange:
     def oops(self):  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
-    def beautify(self, contents, filename, tokens, tree, max_join_line_length=None, max_split_line_length=None):
+    def beautify(self, contents, filename, tokens, tree,
+        max_join_line_length=None, max_split_line_length=None,
+    ):
         """
         The main line. Create output tokens and return the result as a string.
         """
@@ -2903,13 +2910,10 @@ class Orange:
         if val == '.':
             self.clean('blank')
             prev = self.code_list[-1]
-            # #2495: Special case for 'from .'
+            # #2495 & #2533: Special case for 'from .'
             if prev.kind == 'word' and prev.value == 'from':
                 self.blank()
-                self.add_token('op', val)
-                self.blank()
-            else:
-                self.add_token('op-no-blanks', val)
+            self.add_token('op-no-blanks', val)
         elif val == '@':
             if self.black_mode:  # pragma: no cover (black)
                 if not self.decorator_seen:
@@ -3092,8 +3096,10 @@ class Orange:
             """True if node is any expression other than += number."""
             if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
                 return True
-            return isinstance(
-                node, ast.UnaryOp) and not isinstance(node.operand, ast.Num)
+            return (
+                isinstance(node, ast.UnaryOp)
+                and not isinstance(node.operand, ast.Num)
+            )
 
         node = self.token.node
         self.clean('blank')
@@ -3200,7 +3206,12 @@ class Orange:
     def star_op(self):
         """Put a '*' op, with special cases for *args."""
         val = '*'
+        node = self.token.node
         self.clean('blank')
+        if isinstance(node, ast.arguments):
+            self.blank()
+            self.add_token('op', val)
+            return  # #2533
         if self.paren_level > 0:
             prev = self.code_list[-1]
             if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
@@ -3214,7 +3225,12 @@ class Orange:
     def star_star_op(self):
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
+        node = self.token.node
         self.clean('blank')
+        if isinstance(node, ast.arguments):
+            self.blank()
+            self.add_token('op', val)
+            return  # #2533
         if self.paren_level > 0:
             prev = self.code_list[-1]
             if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
@@ -3228,7 +3244,12 @@ class Orange:
     def word(self, s):
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        if self.square_brackets_stack:
+        node = self.token.node
+        if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+            self.clean('blank')
+            self.add_token('blank', ' ')
+            self.add_token('word', s)
+        elif self.square_brackets_stack:
             # A previous 'op-no-blanks' token may cancel this blank.
             self.blank()
             self.add_token('word', s)
