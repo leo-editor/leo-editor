@@ -448,19 +448,16 @@ class AtFile:
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
             return p
         # Remember that we have seen the @auto node.
-        # Fix bug 889175: Remember the full fileName.
+        # #889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
-        # if not g.unitTesting: g.es("reading:", p.h)
+        old_p = p.copy()
         try:
-            # For #451: return p.
-            old_p = p.copy()
             at.scanAllDirectives(p)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
-            # Do *not* select a position here.
+            # Do *not* call c.selectPosition(p) here.
             # That would improperly expand nodes.
-                # c.selectPosition(p)
         except Exception:
             p = old_p
             ic.errors += 1
@@ -475,7 +472,7 @@ class AtFile:
             p.clearDirty()
         else:
             g.doHook('after-auto', c=c, p=p)
-        return p
+        return p  # For #451: return p.
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
     def readOneAtEditNode(self, fn, p):  # pragma: no cover
         at = self
@@ -1533,6 +1530,7 @@ class AtFile:
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root):  # pragma: no cover
         """Write the @asis node to a string."""
+        # pylint: disable=used-before-assignment
         at, c = self, self.c
         try:
             c.endEditing()

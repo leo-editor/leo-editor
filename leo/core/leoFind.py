@@ -601,9 +601,9 @@ class LeoFind:
         c.redraw()
         c.bodyWantsFocusNow()
         # #1592.  Ignore hits under control of @nosearch
+        old_reverse = self.reverse
         try:
             # #2161:
-            old_reverse = self.reverse
             self.reverse = self.reverse_find_defs
             # # 2288:
             self.work_s = p.b

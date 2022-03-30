@@ -1591,13 +1591,12 @@ class FileCommands:
         """
         Return a string suitable for pasting to the clipboard.
         """
+        # Save
+        tua = self.descendentTnodeUaDictList
+        vua = self.descendentVnodeUaDictList
+        gnxDict = self.gnxDict
+        vnodesDict = self.vnodesDict
         try:
-            # Save
-            tua = self.descendentTnodeUaDictList
-            vua = self.descendentVnodeUaDictList
-            gnxDict = self.gnxDict
-            vnodesDict = self.vnodesDict
-            # Paste.
             self.outputFile = io.StringIO()
             self.usingClipboard = True
             self.putProlog()
@@ -1607,8 +1606,7 @@ class FileCommands:
             self.putPostlog()
             s = self.outputFile.getvalue()
             self.outputFile = None
-        finally:
-            # Restore
+        finally: # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
             self.gnxDict = gnxDict

@@ -4370,6 +4370,7 @@ class LeoServer:
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
+    # pylint: disable=used-before-assignment
     global websockets
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
     if not websockets:

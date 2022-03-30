@@ -1794,7 +1794,7 @@ class LeoCursesGui(leoGui.LeoGui):
             if trace:
                 g.trace('(CursesGui) no editw')
             return None
-        widget = self.curses_form._widgets__[editw]
+        widget = self.curses_form._widgets__[editw]  # pylint: disable=invalid-sequence-index
         if hasattr(widget, 'leo_wrapper'):
             if trace:
                 g.trace('(CursesGui)', widget.leo_wrapper.__class__.__name__)
