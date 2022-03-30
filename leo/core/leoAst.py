@@ -2399,48 +2399,79 @@ class TokenOrderGenerator:
         for case in cases:
             g.trace(case)
             yield from self.gen_name('case')
+            yield from self.gen(case.match_case)
             yield from self.gen_op(':')
-    #@+node:ekr.20220329093455.3: *7* tog.MatchAs
+    #@+node:ekr.20220329093455.3: *7* tog.MatchAs (test)
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node):
-        pass  ###
-    #@+node:ekr.20220329093455.1: *7* tog.MatchClass
+        pattern = getattr(node, 'pattern', None)
+        name = getattr(node, 'name', None)
+        g.trace(pattern, name)
+        if pattern:
+            yield from self.gen(pattern)
+        if name:
+            yield from self.gen_name(name)
+
+        
+    #@+node:ekr.20220329093455.1: *7* tog.MatchClass (to do)
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
     def do_MatchClass(self, node):
-        pass  ###
-    #@+node:ekr.20220329093454.3: *7* tog.MatchMapping
+        cls = node.cls
+        patterns = getattr(node, 'patterns', [])
+        kwd_attrs = getattr(node, 'kwd_attrs', [])
+        kwd_patterns = getattr(node, 'kwd_patterns', [])
+        g.trace(node, cls, patterns, kwd_attrs, kwd_patterns)
+        ### To do ###
+    #@+node:ekr.20220329093454.3: *7* tog.MatchMapping (to do)
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
     def do_MatchMapping(self, node):
-        pass  ###
-    #@+node:ekr.20220329093455.4: *7* tog.MatchOr
+        keys = getattr(node, 'keys', [])
+        patterns = getattr(node, 'patterns', [])
+        rest = getattr(node, 'rest', None)
+        g.trace(node, keys, patterns, rest)
+        ### To do ###
+    #@+node:ekr.20220329093455.4: *7* tog.MatchOr (test)
     # MatchOr(pattern* patterns)
 
     def do_MatchOr(self, node):
-        pass
-    #@+node:ekr.20220329093454.2: *7* tog.MatchSequence
+        patterns = getattr(node, 'patterns', [])
+        g.trace(node, patterns)
+        for pattern in patterns:
+            yield from self.gen(pattern)
+
+
+    #@+node:ekr.20220329093454.2: *7* tog.MatchSequence (test)
     # MatchSequence(pattern* patterns)
 
     def do_MatchSequence(self, node):
-        pass  ###
+        patterns = getattr(node, 'patterns', [])
+        g.trace(node, patterns)
+        for pattern in patterns:
+            yield from self.gen(pattern)
 
-    #@+node:ekr.20220329093454.1: *7* tog.MatchSingleton
+    #@+node:ekr.20220329093454.1: *7* tog.MatchSingleton (test)
     # MatchSingleton(constant value)
 
     def do_MatchSingleton(self, node):
-        pass  ###
-    #@+node:ekr.20220329093455.2: *7* tog.MatchStar
+        g.trace(node, node.value)
+        yield from self.gen(node.value)
+    #@+node:ekr.20220329093455.2: *7* tog.MatchStar (test)
     # MatchStar(identifier? name)
 
     def do_MatchStar(self, node):
-        pass  ###
-    #@+node:ekr.20220329093443.1: *7* tog.MatchValue
+        name = getattr(node, 'name', None)
+        g.trace(node, repr(name))
+        if name:
+            yield from self.gen_name(name)
+    #@+node:ekr.20220329093443.1: *7* tog.MatchValue (test)
     # MatchValue(expr value)
 
     def do_MatchValue(self, node):
-        pass  ###
+        g.trace(node, node.value)
+        yield from self.gen(node.value)
     #@+node:ekr.20191113063144.78: *6* tog.Nonlocal
     # Nonlocal(identifier* names)
 
