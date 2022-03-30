@@ -15,7 +15,7 @@ class FilenameCombo(wgcombobox.ComboBox):
     must_exist=False,  #Selected File must already exist
     confirm_if_exists=False,
     sort_by_extension=True,
-    * args, **keywords):
+    *args, **keywords):
         self.select_dir = select_dir
         self.must_exist = must_exist
         self.confirm_if_exists = confirm_if_exists

@@ -54,7 +54,7 @@ class ScreenArea:
             minimum_columns=80,
             show_atx=0,
             show_aty=0,
-             ** keywords):
+             **keywords):
 
 
     # Putting a default in here will override the system in _create_screen. For testing?

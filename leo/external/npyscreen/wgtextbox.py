@@ -22,7 +22,7 @@ class TextfieldBase(widget.Widget):
         highlight_color='CURSOR',
         highlight_whole_widget=False,
         invert_highlight_color=True,
-        ** keywords
+        **keywords
     ):
         # For Leo, called from MultiLine.make_contained_widgets.
         # g.trace('TextfieldBase: value', repr(value), g.callers())

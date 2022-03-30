@@ -3,7 +3,7 @@
 #@+others
 #@+node:ekr.20170428084207.481: ** Declarations
 from . import wgwidget
-from . wgtextbox import Textfield
+from .wgtextbox import Textfield
 
 
 

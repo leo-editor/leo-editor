@@ -76,7 +76,7 @@ class MultiLine(widget.Widget):
         widgets_inherit_color=False,
         always_show_cursor=False,
         allow_filtering=True,
-        ** keywords
+        **keywords
     ):
         self.never_cache = False
         self.exit_left = exit_left

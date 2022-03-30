@@ -8,8 +8,8 @@ import weakref
 
 from . import wgmultiline as multiline
 from . import wgtextbox as textbox
-from . compatibility_code import npysNPSTree as NPSTree
-from . npysTree import TreeData
+from .compatibility_code import npysNPSTree as NPSTree
+from .npysTree import TreeData
 
 from leo.core import leoGlobals as g
 assert g

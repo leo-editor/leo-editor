@@ -23,7 +23,7 @@ class SimpleGrid(widget.Widget):
             always_show_cursor=False,
             select_whole_line=False,
             on_select_callback=None,
-            ** keywords):
+            **keywords):
         super(SimpleGrid, self).__init__(screen, **keywords)
         self.col_margin = col_margin
         self.always_show_cursor = always_show_cursor

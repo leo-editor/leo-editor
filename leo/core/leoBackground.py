@@ -105,7 +105,7 @@ class BackgroundProcessManager:
         #        there is only one running subprocess.
         if self.pid:
             if self.pid.poll() is None:  # The process is still running.
-                pass  
+                pass
             else:  # The process has completed.
                 for s in self.pid.stdout:
                     self.data.number_of_lines += 1
@@ -276,7 +276,7 @@ class BackgroundProcessManager:
             self.timer_started = True
 
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
-        
+
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().

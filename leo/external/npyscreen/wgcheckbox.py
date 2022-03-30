@@ -4,8 +4,8 @@
 
 #@+others
 #@+node:ekr.20170428084207.537: ** Declarations
-from . wgtextbox import Textfield
-from . wgwidget import Widget
+from .wgtextbox import Textfield
+from .wgwidget import Widget
 #from .wgmultiline import MultiLine
 from . import wgwidget as widget
 import curses

@@ -7,7 +7,7 @@ assert g
 #@+node:ekr.20170428084207.224: ** Declarations
 import curses
 from . import fmForm
-from . wgwidget import NotEnoughSpaceForWidget
+from .wgwidget import NotEnoughSpaceForWidget
 from . import wgNMenuDisplay
 
 

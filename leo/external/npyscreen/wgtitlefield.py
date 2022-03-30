@@ -24,7 +24,7 @@ class TitleText(widget.Widget):
         hidden=False,
         labelColor='LABEL',
         allow_override_begin_entry_at=True,
-        ** keywords):
+        **keywords):
 
         self.text_field_begin_at = begin_entry_at
         self.field_width_request = field_width

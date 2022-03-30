@@ -160,7 +160,7 @@ class FileSelector(fmFormMutt.FormMutt):
     must_exist=False,  #Selected File must already exist
     confirm_if_exists=True,
     sort_by_extension=True,
-    * args, **keywords):
+    *args, **keywords):
 
         self.select_dir = select_dir
         self.must_exist = must_exist

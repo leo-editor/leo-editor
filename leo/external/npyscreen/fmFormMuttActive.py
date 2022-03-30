@@ -70,7 +70,7 @@ class TextCommandBox(wgtextbox.Textfield):
                     history=False,
                     history_max=100,
                     set_up_history_keys=False,
-                    * args, **keywords):
+                    *args, **keywords):
         super(TextCommandBox, self).__init__(screen, *args, **keywords)
         self.history = history
         self._history_store = collections.deque(maxlen=history_max)
@@ -165,7 +165,7 @@ class TextCommandBoxTraditional(TextCommandBox):
                     history=True,
                     history_max=100,
                     set_up_history_keys=True,
-                    * args, **keywords):
+                    *args, **keywords):
         super(TextCommandBoxTraditional, self).__init__(screen,
          history=history,
          history_max=history_max,

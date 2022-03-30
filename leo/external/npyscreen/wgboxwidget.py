@@ -2,8 +2,8 @@
 #@+node:ekr.20170428084207.503: * @file ../external/npyscreen/wgboxwidget.py
 import curses
 import weakref
-from . wgwidget import Widget
-from . wgmultiline import MultiLine
+from .wgwidget import Widget
+from .wgmultiline import MultiLine
 from leo.core import leoGlobals as g
 assert g
 # pylint: disable=no-member

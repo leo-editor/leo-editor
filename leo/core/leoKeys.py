@@ -2567,7 +2567,7 @@ class KeyHandlerClass:
         data = []
         for aList in [c.config.getButtons(), c.config.getCommands()]:
             for z in aList:
-                try: # #2536.
+                try:  # #2536.
                     p, script = z  # getCommands created the tuple.
                 except ValueError:
                     p, script, rclicks = z  # getButtons created the tuple.

@@ -14,9 +14,9 @@ import weakref
 from . import npysGlobalOptions as GlobalOptions
 from . import wgwidget_proto
 import locale
-from . globals import DEBUG
+from .globals import DEBUG
 # experimental
-from . eveventhandler import EventHandler
+from .eveventhandler import EventHandler
 from leo.core import leoGlobals as g
 assert g
 #@-<< wgwidget imports >>
@@ -256,7 +256,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             check_value_change=True,
             check_cursor_move=True,
             value_changed_callback=None,
-            ** keywords):
+            **keywords):
         """The following named arguments may be supplied:
         name= set the name of the widget.
         width= set the width of the widget.

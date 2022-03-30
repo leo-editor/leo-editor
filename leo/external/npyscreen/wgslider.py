@@ -16,7 +16,7 @@ class Slider(widget.Widget):
                 out_of=100, step=1, lowest=0,
                 label=True,
                 block_color=None,
-                ** keywords):
+                **keywords):
         self.out_of = out_of
         self.value = value
         self.step = step

@@ -19,8 +19,8 @@ from . import wgwidget_proto
 from . import fm_form_edit_loop as form_edit_loop
 from . import util_viewhelp
 from . import npysGlobalOptions as GlobalOptions
-from . eveventhandler import EventHandler
-from . globals import DISABLE_RESIZE_SYSTEM
+from .eveventhandler import EventHandler
+from .globals import DISABLE_RESIZE_SYSTEM
 
 #@+node:ekr.20170428084207.176: ** class _FormBase
 class _FormBase(proto_fm_screen_area.ScreenArea,

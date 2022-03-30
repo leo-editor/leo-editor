@@ -1606,7 +1606,7 @@ class FileCommands:
             self.putPostlog()
             s = self.outputFile.getvalue()
             self.outputFile = None
-        finally: # Restore
+        finally:  # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
             self.gnxDict = gnxDict
