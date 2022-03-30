@@ -121,7 +121,7 @@
 </v>
 <v t="tom.20220329091429.1"><vh>Fonts &amp; text sizes</vh>
 <v t="tom.20220329091429.2"><vh>@string font-family = Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="tom.20220329091429.3"><vh>@string font-family-ui = "Segoe UI", Verdana, sans-serif</vh></v>
+<v t="tom.20220329091429.3"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
 <v t="tom.20220329091429.4"><vh>@string font-size-text = 10.5pt</vh></v>
 <v t="tom.20220329091429.5"><vh>@string font-size-ui = 9.5pt</vh></v>
 <v t="tom.20220329091429.6"><vh>@string font-size-gutter = 9pt</vh></v>
