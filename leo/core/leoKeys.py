@@ -2567,7 +2567,10 @@ class KeyHandlerClass:
         data = []
         for aList in [c.config.getButtons(), c.config.getCommands()]:
             for z in aList:
-                p, script = z
+                try: # #2536.
+                    p, script = z  # getCommands created the tuple.
+                except ValueError:
+                    p, script, rclicks = z  # getButtons created the tuple.
                 c = p.v.context
                 tag = 'M' if c.shortFileName().endswith('myLeoSettings.leo') else 'G'
                 data.append((p.h, tag),)
