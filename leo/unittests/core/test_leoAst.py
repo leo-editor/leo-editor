@@ -2296,7 +2296,7 @@ class TestTOG(BaseTest):
         # Coverage test for spaces
         contents = """f = lambda x: x"""
         self.make_data(contents)
-    #@+node:ekr.20220329095904.1: *5* test_Match
+    #@+node:ekr.20220329095904.1: *5* test_match
     def test_match(self):
 
     # import ast
