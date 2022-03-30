@@ -2309,6 +2309,7 @@ class TestTOG(BaseTest):
         case 1:
             pass
     """
+        self.debug_list.append('contents')
         self.debug_list.append('tree')
         # self.debug_list.append('full-traceback')
         self.make_data(contents)

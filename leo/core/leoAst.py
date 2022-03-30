@@ -2396,11 +2396,25 @@ class TokenOrderGenerator:
         cases = getattr(node, 'cases', [])
         yield from self.gen_name('match')
         yield from self.gen(node.subject)
+        yield from self.gen_op(':')
         for case in cases:
-            g.trace(case)
-            yield from self.gen_name('case')
-            yield from self.gen(case.match_case)
-            yield from self.gen_op(':')
+            yield from self.gen(case)
+    #@+node:ekr.20220330104104.1: *7* tog.match_case
+    #  match_case = (pattern pattern, expr? guard, stmt* body)
+
+    def do_match_case(self, node):
+        
+        g.trace(node)
+        guard = getattr(node, 'guard', None)
+        body = getattr(node, 'body', [])
+        yield from self.gen_name('case')
+        yield from self.gen(node.pattern)
+        if guard:
+            yield from self.gen(guard)
+        yield from self.gen_op(':')
+        for statement in body:
+            yield from self.gen(statement)
+        
     #@+node:ekr.20220329093455.3: *7* tog.MatchAs (test)
     # MatchAs(pattern? pattern, identifier? name)
 
