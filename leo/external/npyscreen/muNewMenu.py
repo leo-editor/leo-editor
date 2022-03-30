@@ -13,13 +13,13 @@ class NewMenu:
     #@+others
     #@+node:ekr.20170428084207.335: *3* __init__
     def __init__(self, name=None, shortcut=None, preDisplayFunction=None, pdfuncArguments=None, pdfuncKeywords=None):
-        self.name      = name
+        self.name = name
         self._menuList = []
-        self.enabled   = True
-        self.shortcut  = shortcut
+        self.enabled = True
+        self.shortcut = shortcut
         self.pre_display_function = preDisplayFunction
-        self.pdfunc_arguments= pdfuncArguments or ()
-        self.pdfunc_keywords = pdfuncKeywords  or {}
+        self.pdfunc_arguments = pdfuncArguments or ()
+        self.pdfunc_keywords = pdfuncKeywords or {}
 
     #@+node:ekr.20170428084207.336: *3* addItemsFromList
     def addItemsFromList(self, item_list):

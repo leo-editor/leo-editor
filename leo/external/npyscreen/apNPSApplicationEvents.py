@@ -4,8 +4,8 @@
 #@+node:ekr.20170428084207.16: ** Declarations
 import collections
 import weakref
-from .apNPSApplicationManaged import NPSAppManaged
-from .eveventhandler import EventHandler
+from . apNPSApplicationManaged import NPSAppManaged
+from . eveventhandler import EventHandler
 
 #@+node:ekr.20170428084207.17: ** class NPSEventQueue
 class NPSEventQueue:

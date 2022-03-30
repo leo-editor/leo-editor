@@ -11,11 +11,11 @@ class FilenameCombo(wgcombobox.ComboBox):
     #@+node:ekr.20170428084207.614: *3* __init__
     def __init__(self, screen,
     # The following are all options taken from the FileSelector
-    select_dir=False, #Select a dir, not a file
-    must_exist=False, #Selected File must already exist
+    select_dir=False,  #Select a dir, not a file
+    must_exist=False,  #Selected File must already exist
     confirm_if_exists=False,
     sort_by_extension=True,
-    *args, **keywords):
+    * args, **keywords):
         self.select_dir = select_dir
         self.must_exist = must_exist
         self.confirm_if_exists = confirm_if_exists
@@ -42,11 +42,11 @@ class FilenameCombo(wgcombobox.ComboBox):
     #@+node:ekr.20170428084207.616: *3* h_change_value
     def h_change_value(self, *args, **keywords):
         self.value = fmFileSelector.selectFile(
-            starting_value = self.value,
-            select_dir = self.select_dir,
-            must_exist = self.must_exist,
-            confirm_if_exists = self.confirm_if_exists,
-            sort_by_extension = self.sort_by_extension
+            starting_value=self.value,
+            select_dir=self.select_dir,
+            must_exist=self.must_exist,
+            confirm_if_exists=self.confirm_if_exists,
+            sort_by_extension=self.sort_by_extension
         )
         if self.value == '':
             self.value = None

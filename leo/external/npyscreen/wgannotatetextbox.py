@@ -3,7 +3,7 @@
 #@+others
 #@+node:ekr.20170428084207.481: ** Declarations
 from . import wgwidget
-from .wgtextbox import Textfield
+from . wgtextbox import Textfield
 
 
 
@@ -15,7 +15,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
 
     #@+others
     #@+node:ekr.20170428084207.483: *3* __init__
-    def __init__(self, screen, value = False, annotation_color='CONTROL', **keywords):
+    def __init__(self, screen, value=False, annotation_color='CONTROL', **keywords):
         self.value = value
         self.annotation_color = annotation_color
         super(AnnotateTextboxBase, self).__init__(screen, **keywords)
@@ -27,12 +27,12 @@ class AnnotateTextboxBase(wgwidget.Widget):
         self.show_bold = False
         self.highlight = False
         self.important = False
-        self.hide      = False
+        self.hide = False
 
     #@+node:ekr.20170428084207.484: *3* _init_text_area
     def _init_text_area(self, screen):
-        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx+self.ANNOTATE_WIDTH,
-                      width=self.width-self.ANNOTATE_WIDTH, value=self.name)
+        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx + self.ANNOTATE_WIDTH,
+                      width=self.width - self.ANNOTATE_WIDTH, value=self.name)
 
     #@+node:ekr.20170428084207.485: *3* _display_annotation_at
     def _display_annotation_at(self):
@@ -97,7 +97,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
 
     #@+node:ekr.20170428084207.490: *3* calculate_area_needed
     def calculate_area_needed(self):
-        return 1,0
+        return 1, 0
 
     #@-others
 #@+node:ekr.20170428084207.491: ** class AnnotateTextboxBaseRight
@@ -106,11 +106,11 @@ class AnnotateTextboxBaseRight(AnnotateTextboxBase):
     #@+node:ekr.20170428084207.492: *3* _init_text_area
     def _init_text_area(self, screen):
         self.text_area = Textfield(screen, rely=self.rely, relx=self.relx,
-                      width=self.width-self.ANNOTATE_WIDTH, value=self.name)
+                      width=self.width - self.ANNOTATE_WIDTH, value=self.name)
 
     #@+node:ekr.20170428084207.493: *3* _display_annotation_at
     def _display_annotation_at(self):
-        return (self.rely, self.relx+self.width-self.ANNOTATE_WIDTH)
+        return (self.rely, self.relx + self.width - self.ANNOTATE_WIDTH)
 
 
 

@@ -29,7 +29,7 @@ class YesNoPopup(ConfirmCancelPopup):
 #@+node:ekr.20170428084207.470: ** _prepare_message
 def _prepare_message(message):
     if isinstance(message, (list, tuple)):
-        return "\n".join([ s.rstrip() for s in message])
+        return "\n".join([s.rstrip() for s in message])
         #return "\n".join(message)
     else:
         return message
@@ -49,10 +49,10 @@ def notify(message, title="Message", form_color='STANDOUT',
     if wide:
         F = fmPopup.PopupWide(name=title, color=form_color)
     else:
-        F   = fmPopup.Popup(name=title, color=form_color)
+        F = fmPopup.Popup(name=title, color=form_color)
     F.preserve_selected_widget = True
     mlw = F.add(wgmultiline.Pager,)
-    mlw_width = mlw.width-1
+    mlw_width = mlw.width - 1
     if wrap:
         message = _wrap_message_lines(message, mlw_width)
     mlw.values = message
@@ -60,15 +60,15 @@ def notify(message, title="Message", form_color='STANDOUT',
 
 #@+node:ekr.20170428084207.473: ** notify_confirm (utilNotify.py)
 def notify_confirm(message, title="Message", form_color='STANDOUT', wrap=True, wide=False,
-                    editw = 0,):
+                    editw=0,):
     message = _prepare_message(message)
     if wide:
         F = fmPopup.PopupWide(name=title, color=form_color)
     else:
-        F   = fmPopup.Popup(name=title, color=form_color)
+        F = fmPopup.Popup(name=title, color=form_color)
     F.preserve_selected_widget = True
     mlw = F.add(wgmultiline.Pager,)
-    mlw_width = mlw.width-1
+    mlw_width = mlw.width - 1
     if wrap:
         message = _wrap_message_lines(message, mlw_width)
     else:
@@ -85,12 +85,12 @@ def notify_wait(*args, **keywords):
 
 
 #@+node:ekr.20170428084207.475: ** notify_ok_cancel (utilNotify.py)
-def notify_ok_cancel(message, title="Message", form_color='STANDOUT', wrap=True, editw = 0,):
+def notify_ok_cancel(message, title="Message", form_color='STANDOUT', wrap=True, editw=0,):
     message = _prepare_message(message)
-    F   = ConfirmCancelPopup(name=title, color=form_color)
+    F = ConfirmCancelPopup(name=title, color=form_color)
     F.preserve_selected_widget = True
     mlw = F.add(wgmultiline.Pager,)
-    mlw_width = mlw.width-1
+    mlw_width = mlw.width - 1
     if wrap:
         message = _wrap_message_lines(message, mlw_width)
     mlw.values = message
@@ -99,12 +99,12 @@ def notify_ok_cancel(message, title="Message", form_color='STANDOUT', wrap=True,
     return F.value
 
 #@+node:ekr.20170428084207.476: ** notify_yes_no (utilNotify.py)
-def notify_yes_no(message, title="Message", form_color='STANDOUT', wrap=True, editw = 0,):
+def notify_yes_no(message, title="Message", form_color='STANDOUT', wrap=True, editw=0,):
     message = _prepare_message(message)
-    F   = YesNoPopup(name=title, color=form_color)
+    F = YesNoPopup(name=title, color=form_color)
     F.preserve_selected_widget = True
     mlw = F.add(wgmultiline.Pager,)
-    mlw_width = mlw.width-1
+    mlw_width = mlw.width - 1
     if wrap:
         message = _wrap_message_lines(message, mlw_width)
     mlw.values = message

@@ -14,11 +14,11 @@ class DateEntryBase(widget.Widget):
     #@+others
     #@+node:ekr.20170428084208.46: *3* __init__
     def __init__(self, screen, allowPastDate=True, allowTodaysDate=True, firstWeekDay=6,
-                    use_datetime = False, allowClear=False, **keywords):
+                    use_datetime=False, allowClear=False, **keywords):
         super(DateEntryBase, self).__init__(screen, **keywords)
         self.allow_date_in_past = allowPastDate
-        self.allow_todays_date  = allowTodaysDate
-        self.allow_clear        = allowClear
+        self.allow_todays_date = allowTodaysDate
+        self.allow_clear = allowClear
         self.use_datetime = use_datetime
         self._max = datetime.date.max
         self._min = datetime.date.min
@@ -63,17 +63,17 @@ class DateEntryBase(widget.Widget):
         '''DataEntryBase.set_up_handlers.'''
         super(DateEntryBase, self).set_up_handlers()
         self.handlers.update({
-            "D":    self.h_day_less,
-            "d":    self.h_day_more,
-            "W":    self.h_week_less,
-            "w":    self.h_week_more,
-            "M":    self.h_month_less,
-            "m":    self.h_month_more,
-            "Y":    self.h_year_less,
-            "y":    self.h_year_more,
-            "t":    self.h_find_today,
-            "q":    self.h_clear,
-            "c":    self.h_clear,
+            "D": self.h_day_less,
+            "d": self.h_day_more,
+            "W": self.h_week_less,
+            "w": self.h_week_more,
+            "M": self.h_month_less,
+            "m": self.h_month_more,
+            "Y": self.h_year_less,
+            "y": self.h_year_more,
+            "t": self.h_find_today,
+            "q": self.h_clear,
+            "c": self.h_clear,
         })
     #@+node:ekr.20170428084208.51: *3* _reduce_value_by_delta
     def _reduce_value_by_delta(self, delta):
@@ -133,22 +133,22 @@ class DateEntryBase(widget.Widget):
         old_value = self.value
         try:
             if self.value.month == 2 and self.value.day == 29:
-                self.value = self.value.replace(year=self.value.year-1, day=self.value.day-1)
+                self.value = self.value.replace(year=self.value.year - 1, day=self.value.day - 1)
             else:
-                self.value = self.value.replace(year=self.value.year-1)
+                self.value = self.value.replace(year=self.value.year - 1)
             self._check_date()
             self._check_today_validity(onErrorHigher=False)
         except Exception:
-            self.value=old_value
+            self.value = old_value
 
     #@+node:ekr.20170428084208.60: *3* h_year_more
     def h_year_more(self, *args):
         old_value = self.value
         try:
             if self.value.month == 2 and self.value.day == 29:
-                self.value = self.value.replace(year=self.value.year+1, day=self.value.day-1)
+                self.value = self.value.replace(year=self.value.year + 1, day=self.value.day - 1)
             else:
-                self.value = self.value.replace(year=self.value.year+1)
+                self.value = self.value.replace(year=self.value.year + 1)
             self._check_date()
             self._check_today_validity(onErrorHigher=True)
         except Exception:
@@ -163,7 +163,7 @@ class DateEntryBase(widget.Widget):
     #@+node:ekr.20170428084208.62: *3* .DateEntryBase.h_clear
     def h_clear(self, *args):
         if self.allow_clear:
-            self.value   = None
+            self.value = None
             self.editing = None
 
     #@-others
@@ -194,13 +194,13 @@ class MonthBox(DateEntryBase):
         if not self.value:
             _title_line = "No Value Set"
         else:
-            year  = self.value.year
+            year = self.value.year
             month = self.value.month
             try:
                 monthname = self.value.strftime('%B')
             except ValueError:
                 monthname = "Month: %s" % self.value.month
-            day   = self.value.day
+            day = self.value.day
 
             _title_line = "%s, %s" % (monthname, year)
 
@@ -215,7 +215,7 @@ class MonthBox(DateEntryBase):
         self.add_line(self.rely, self.relx,
             _title_line,
             self.make_attributes_list(_title_line, title_attribute),
-            self.width-1
+            self.width - 1
         )
 
 
@@ -226,8 +226,8 @@ class MonthBox(DateEntryBase):
                 do_cal_print = True
             except OverflowError:
                 do_cal_print = False
-                self.parent.curses_pad.addstr(self.rely+1, self.relx, "Unable to display")
-                self.parent.curses_pad.addstr(self.rely+2, self.relx, "calendar for date.")
+                self.parent.curses_pad.addstr(self.rely + 1, self.relx, "Unable to display")
+                self.parent.curses_pad.addstr(self.rely + 2, self.relx, "calendar for date.")
             if do_cal_print:
                 # Print the day names
                 # weekheader puts an extra space at the end of each name
@@ -240,13 +240,13 @@ class MonthBox(DateEntryBase):
                     cal_title_attribute = self.parent.theme_manager.findPair(self, 'LABEL')
                 else:
                     cal_title_attribute = curses.A_NORMAL
-                self.add_line(self.rely+1, self.relx,
+                self.add_line(self.rely + 1, self.relx,
                     cal_header,
                     self.make_attributes_list(cal_header, cal_title_attribute),
                     self.width,
                     )
 
-                print_line = self.rely+2
+                print_line = self.rely + 2
 
                 for calrow in cal_data:
                     print_column = self.relx
@@ -275,9 +275,9 @@ class MonthBox(DateEntryBase):
                 key_help = "keys: dwmyDWMY t"
 
             if self.do_colors():
-                self.parent.curses_pad.addstr(self.rely+9, self.relx, key_help, self.parent.theme_manager.findPair(self, 'LABEL'))
+                self.parent.curses_pad.addstr(self.rely + 9, self.relx, key_help, self.parent.theme_manager.findPair(self, 'LABEL'))
             else:
-                self.parent.curses_pad.addstr(self.rely+9, self.relx, key_help)
+                self.parent.curses_pad.addstr(self.rely + 9, self.relx, key_help)
 
 
     #@+node:ekr.20170428084208.67: *3* MonthBox.set_up_handlers
@@ -285,12 +285,12 @@ class MonthBox(DateEntryBase):
         '''MonthBox.set_up_handlers.'''
         super(MonthBox, self).set_up_handlers()
         self.handlers.update({
-            curses.KEY_LEFT:    self.h_day_less,
-            curses.KEY_RIGHT:   self.h_day_more,
-            curses.KEY_UP:      self.h_week_less,
-            curses.KEY_DOWN:    self.h_week_more,
-            curses.ascii.SP:    self.h_exit_down,
-            "^T":               self.h_find_today,
+            curses.KEY_LEFT: self.h_day_less,
+            curses.KEY_RIGHT: self.h_day_more,
+            curses.KEY_UP: self.h_week_less,
+            curses.KEY_DOWN: self.h_week_more,
+            curses.ascii.SP: self.h_exit_down,
+            "^T": self.h_find_today,
         })
 
     #@-others

@@ -4,8 +4,8 @@
 
 #@+others
 #@+node:ekr.20170428084207.537: ** Declarations
-from .wgtextbox   import Textfield
-from .wgwidget    import Widget
+from . wgtextbox import Textfield
+from . wgwidget import Widget
 #from .wgmultiline import MultiLine
 from . import wgwidget as widget
 import curses
@@ -19,13 +19,13 @@ class _ToggleControl(Widget):
         super(_ToggleControl, self).set_up_handlers()
         self.handlers.update({
             curses.ascii.SP: self.h_toggle,
-            ord('x'):        self.h_toggle,
+            ord('x'): self.h_toggle,
             curses.ascii.NL: self.h_select_exit,
             curses.ascii.CR: self.h_select_exit,
-            ord('j'):        self.h_exit_down,
-            ord('k'):        self.h_exit_up,
-            ord('h'):        self.h_exit_left,
-            ord('l'):        self.h_exit_right,
+            ord('j'): self.h_exit_down,
+            ord('k'): self.h_exit_up,
+            ord('h'): self.h_exit_left,
+            ord('l'): self.h_exit_right,
         })
 
     #@+node:ekr.20170428084207.540: *3* h_toggle
@@ -52,14 +52,14 @@ class _ToggleControl(Widget):
 #@+node:ekr.20170428084207.543: ** class CheckboxBare
 class CheckboxBare(_ToggleControl):
     False_box = '[ ]'
-    True_box  = '[X]'
+    True_box = '[X]'
 
     #@+others
     #@+node:ekr.20170428084207.544: *3* __init__
-    def __init__(self, screen, value = False, **keywords):
+    def __init__(self, screen, value=False, **keywords):
         super(CheckboxBare, self).__init__(screen, **keywords)
         self.value = value
-        self.hide  = False
+        self.hide = False
 
     #@+node:ekr.20170428084207.545: *3* calculate_area_needed
     def calculate_area_needed(self):
@@ -91,7 +91,7 @@ class CheckboxBare(_ToggleControl):
             if self.do_colors():
                 self.parent.curses_pad.addstr(self.rely, self.relx + 1, char_under_cur, self.parent.theme_manager.findPair(self) | curses.A_STANDOUT)
             else:
-                self.parent.curses_pad.addstr(self.rely,  self.relx + 1, curses.A_STANDOUT)
+                self.parent.curses_pad.addstr(self.rely, self.relx + 1, curses.A_STANDOUT)
 
 
 
@@ -102,11 +102,11 @@ class CheckboxBare(_ToggleControl):
 #@+node:ekr.20170428084207.547: ** class Checkbox
 class Checkbox(_ToggleControl):
     False_box = '[ ]'
-    True_box  = '[X]'
+    True_box = '[X]'
 
     #@+others
     #@+node:ekr.20170428084207.548: *3* __init__
-    def __init__(self, screen, value = False, **keywords):
+    def __init__(self, screen, value=False, **keywords):
         self.value = value
         super(Checkbox, self).__init__(screen, **keywords)
 
@@ -116,7 +116,7 @@ class Checkbox(_ToggleControl):
         self.show_bold = False
         self.highlight = False
         self.important = False
-        self.hide      = False
+        self.hide = False
 
     #@+node:ekr.20170428084207.549: *3* _create_label_area
     def _create_label_area(self, screen):
@@ -125,8 +125,8 @@ class Checkbox(_ToggleControl):
         if l_a_width < 1:
              raise ValueError("Width of checkbox + label must be at least 6")
 
-        self.label_area = Textfield(screen, rely=self.rely, relx=self.relx+5,
-                      width=self.width-5, value=self.name)
+        self.label_area = Textfield(screen, rely=self.rely, relx=self.relx + 5,
+                      width=self.width - 5, value=self.name)
 
 
     #@+node:ekr.20170428084207.550: *3* CheckBox.update
@@ -180,7 +180,7 @@ class Checkbox(_ToggleControl):
 
     #@+node:ekr.20170428084207.553: *3* calculate_area_needed
     def calculate_area_needed(self):
-        return 1,0
+        return 1, 0
 
     #@-others
 #@+node:ekr.20170428084207.554: ** class CheckBox
@@ -191,7 +191,7 @@ class CheckBox(Checkbox):
 #@+node:ekr.20170428084207.555: ** class RoundCheckBox
 class RoundCheckBox(Checkbox):
     False_box = '( )'
-    True_box  = '(X)'
+    True_box = '(X)'
 
 #@+node:ekr.20170428084207.556: ** class CheckBoxMultiline
 class CheckBoxMultiline(Checkbox):
@@ -201,9 +201,9 @@ class CheckBoxMultiline(Checkbox):
         self.label_area = []
         for y in range(self.height):
             self.label_area.append(
-               Textfield(screen, rely=self.rely+y,
-                           relx=self.relx+5,
-                           width=self.width-5,
+               Textfield(screen, rely=self.rely + y,
+                           relx=self.relx + 5,
+                           width=self.width - 5,
                            value=None)
             )
 
@@ -220,13 +220,13 @@ class CheckBoxMultiline(Checkbox):
 
     #@+node:ekr.20170428084207.559: *3* calculate_area_needed
     def calculate_area_needed(self):
-        return 0,0
+        return 0, 0
 
     #@-others
 #@+node:ekr.20170428084207.560: ** class RoundCheckBoxMultiline
 class RoundCheckBoxMultiline(CheckBoxMultiline):
     False_box = '( )'
-    True_box  = '(X)'
+    True_box = '(X)'
 
 
 #@-others

@@ -3,9 +3,9 @@
 #!/usr/bin/python
 #@+others
 #@+node:ekr.20170428084208.226: ** Declarations
-from . import wgmultiline    as multiline
-from . import wgselectone    as selectone
-from . import wgcheckbox     as checkbox
+from . import wgmultiline as multiline
+from . import wgselectone as selectone
+from . import wgcheckbox as checkbox
 import curses
 
 #@+node:ekr.20170428084208.227: ** class MultiSelect
@@ -18,10 +18,10 @@ class MultiSelect(selectone.SelectOne):
         '''MultiSelect.set_up_handlers.'''
         super(MultiSelect, self).set_up_handlers()
         self.handlers.update({
-            ord("x"):           self.h_select_toggle,
-            curses.ascii.SP:    self.h_select_toggle,
-            ord("X"):           self.h_select,
-            "^U":               self.h_select_none,
+            ord("x"): self.h_select_toggle,
+            curses.ascii.SP: self.h_select_toggle,
+            ord("X"): self.h_select,
+            "^U": self.h_select_none,
         })
 
     #@+node:ekr.20170428084208.229: *3* MultiSelect.h_select_none
@@ -45,7 +45,7 @@ class MultiSelect(selectone.SelectOne):
             self.value.append(self.cursor_line)
         if self.return_exit:
             self.editing = False
-            self.how_exited=True
+            self.how_exited = True
 
     #@+node:ekr.20170428084208.233: *3* MultiSelect.get_selected_objects
     def get_selected_objects(self):
@@ -73,12 +73,12 @@ class MultiSelectAction(MultiSelect):
     def set_up_handlers(self):
         '''MultiSelectAction.set_up_handlers.'''
         super(MultiSelectAction, self).set_up_handlers()
-        self.handlers.update ( {
-            curses.ascii.NL:    self.h_act_on_highlighted,
-            curses.ascii.CR:    self.h_act_on_highlighted,
-            ord(';'):           self.h_act_on_selected,
+        self.handlers.update({
+            curses.ascii.NL: self.h_act_on_highlighted,
+            curses.ascii.CR: self.h_act_on_highlighted,
+            ord(';'): self.h_act_on_selected,
             # "^L":             self.h_set_filtered_to_selected,
-            curses.ascii.SP:    self.h_act_on_highlighted,
+            curses.ascii.SP: self.h_act_on_highlighted,
         })
 
     #@+node:ekr.20170428084208.238: *3* MultiSelectAction.h_act_on_highlighted
@@ -109,12 +109,12 @@ class MultiSelectFixed(MultiSelect):
         '''MultiSelectFixed.set_up_handlers.'''
         super(MultiSelectFixed, self).set_up_handlers()
         self.handlers.update({
-            ord("x"):           self.user_set_value,
-            ord("X"):           self.user_set_value,
-            curses.ascii.SP:    self.user_set_value,
-            "^U":               self.user_set_value,
-            curses.ascii.NL:    self.h_exit_down,
-            curses.ascii.CR:    self.h_exit_down,
+            ord("x"): self.user_set_value,
+            ord("X"): self.user_set_value,
+            curses.ascii.SP: self.user_set_value,
+            "^U": self.user_set_value,
+            curses.ascii.NL: self.h_exit_down,
+            curses.ascii.CR: self.h_exit_down,
         })
     #@-others
 #@+node:ekr.20170428084208.243: ** class TitleMultiSelect

@@ -5,9 +5,9 @@
 
 #@+others
 #@+node:ekr.20170428084208.254: ** Declarations
-from . import muNewMenu    as NewMenu
-from . import fmForm       as Form
-from . import wgmultiline  as multiline
+from . import muNewMenu as NewMenu
+from . import fmForm as Form
+from . import wgmultiline as multiline
 from . import wgannotatetextbox
 # from . import utilNotify
 import weakref
@@ -73,7 +73,7 @@ class MenuViewerController:
             if len(self._menuStack) > 0:
                 _menulines.append(PreviousMenu())
                 # _returnToPreviousSet = True
-                _actionsToTake.append((self._returnToPrevious, ))
+                _actionsToTake.append((self._returnToPrevious,))
             # else:
                 # _returnToPreviousSet = False
 
@@ -176,7 +176,7 @@ class wgMenuListWithSortCuts(multiline.MultiLineActionWithShortcuts):
     _contained_widgets = wgMenuLine
     #@+others
     #@+node:ekr.20170428084208.273: *3* __init__
-    def __init__(self, screen,  allow_filtering=False, *args, **keywords):
+    def __init__(self, screen, allow_filtering=False, *args, **keywords):
         return super(wgMenuListWithSortCuts, self).__init__(screen, allow_filtering=allow_filtering, *args, **keywords)
 
     #def actionHighlighted(self, act_on_this, key_press):
@@ -202,18 +202,18 @@ class MenuDisplayScreen(Form.Form):
         #self._menuListWidget = self.add(multiline.MultiLine, return_exit=True)
         self._menuListWidget = self.add(wgMenuListWithSortCuts, return_exit=True)
         self._menuListWidget.add_handlers({
-            ord('q'):       self._menuListWidget.h_exit_down,
-            ord('Q'):       self._menuListWidget.h_exit_down,
-            ord('x'):       self._menuListWidget.h_select_exit,
-            curses.ascii.SP:    self._menuListWidget.h_select_exit,
+            ord('q'): self._menuListWidget.h_exit_down,
+            ord('Q'): self._menuListWidget.h_exit_down,
+            ord('x'): self._menuListWidget.h_select_exit,
+            curses.ascii.SP: self._menuListWidget.h_select_exit,
         })
 
     #@-others
 #@+node:ekr.20170428084208.278: ** class HasMenus
 class HasMenus:
-    MENU_KEY          = "^X"
+    MENU_KEY = "^X"
     MENU_DISPLAY_TYPE = MenuDisplay
-    MENU_WIDTH        = None
+    MENU_WIDTH = None
     #@+others
     #@+node:ekr.20170428084208.279: *3* initialize_menus
     def initialize_menus(self):
@@ -223,7 +223,7 @@ class HasMenus:
             self._NMDisplay = self.MENU_DISPLAY_TYPE()
         if not hasattr(self, '_NMenuList'):
             self._NMenuList = []
-        self._MainMenu  = NewMenu.NewMenu
+        self._MainMenu = NewMenu.NewMenu
         self.add_handlers({self.__class__.MENU_KEY: self.root_menu})
 
     #@+node:ekr.20170428084208.280: *3* new_menu
