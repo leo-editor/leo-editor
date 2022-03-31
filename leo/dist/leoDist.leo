@@ -2082,7 +2082,7 @@ include leo/doc/html/index.html
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
-- git checkout devel
+- git checkout master
 - Delete files in leoeditor/dist
 - python -m build
 
