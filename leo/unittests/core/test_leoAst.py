@@ -2299,11 +2299,15 @@ class TestTOG(BaseTest):
     #@+node:ekr.20220329095904.1: *5* test_match
     def test_match(self):
 
+        if py_version < (3, 10):
+            self.skipTest('Require python 3.10')
+
     # import ast
     # BinOp = ast.BinOp
     # node = BinOp()
     # case BinOp("+", a, BinOp("*", b, c)):
         # pass # Handle a + b*c
+        
         contents = r"""\
     match node:
         case 1:
