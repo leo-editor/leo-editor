@@ -2312,11 +2312,16 @@ class TestTOG(BaseTest):
     match node:
         case 1:
             pass
+        case BinOp("+", a, BinOp("*", b, c)):
+            pass # Handle a + b*c
     """
-        self.debug_list.append('contents')
-        self.debug_list.append('tree')
-        # self.debug_list.append('full-traceback')
-        self.make_data(contents)
+        try:
+            # self.debug_list.append('contents')
+            # self.debug_list.append('tree')
+            # self.debug_list.append('full-traceback')
+            self.make_data(contents)
+        finally:
+            self.debug_list = []
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""

@@ -2403,8 +2403,7 @@ class TokenOrderGenerator:
     #  match_case = (pattern pattern, expr? guard, stmt* body)
 
     def do_match_case(self, node):
-        
-        g.trace(node)
+
         guard = getattr(node, 'guard', None)
         body = getattr(node, 'body', [])
         yield from self.gen_name('case')
@@ -2414,29 +2413,36 @@ class TokenOrderGenerator:
         yield from self.gen_op(':')
         for statement in body:
             yield from self.gen(statement)
-        
-    #@+node:ekr.20220329093455.3: *7* tog.MatchAs (test)
+    #@+node:ekr.20220329093455.3: *7* tog.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node):
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
-        g.trace(pattern, name)
         if pattern:
             yield from self.gen(pattern)
         if name:
             yield from self.gen_name(name)
-
-        
     #@+node:ekr.20220329093455.1: *7* tog.MatchClass (to do)
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
     def do_MatchClass(self, node):
+
+        if 0:  ###
+            print('')
+            g.trace(node.cls.id)
+            dump_ast(node.patterns, tag='node.patterns')
+            # dump_ast(node.kwd_attrs, tag='node.kwd_attrs')
+            # dump_ast(node.kwd_patterns, tag='node.kwd_patterns')
         cls = node.cls
         patterns = getattr(node, 'patterns', [])
         kwd_attrs = getattr(node, 'kwd_attrs', [])
         kwd_patterns = getattr(node, 'kwd_patterns', [])
-        g.trace(node, cls, patterns, kwd_attrs, kwd_patterns)
+        yield from self.gen(node.cls)
+        yield from self.gen_op('(')
+        for pattern in patterns:
+            yield from self.gen(pattern)
+        yield from self.gen_op(')')
         ### To do ###
     #@+node:ekr.20220329093454.3: *7* tog.MatchMapping (to do)
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
@@ -2480,11 +2486,11 @@ class TokenOrderGenerator:
         g.trace(node, repr(name))
         if name:
             yield from self.gen_name(name)
-    #@+node:ekr.20220329093443.1: *7* tog.MatchValue (test)
+    #@+node:ekr.20220329093443.1: *7* tog.MatchValue
     # MatchValue(expr value)
 
     def do_MatchValue(self, node):
-        g.trace(node, node.value)
+
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.78: *6* tog.Nonlocal
     # Nonlocal(identifier* names)
