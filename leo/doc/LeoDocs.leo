@@ -31079,7 +31079,7 @@ unl: History and change log
 </t>
 <t tx="ekr.20211105051031.1">Leo http://leoeditor.com 6.6 final is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/6.6b2/).
+[pypi](https://pypi.org/project/leo/6.6/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
