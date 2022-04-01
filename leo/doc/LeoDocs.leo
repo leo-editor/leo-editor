@@ -29897,7 +29897,7 @@ between tokens and parse tree nodes::
             return None, None, None, None
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
+        self.create_links(tokens, tree)
         self.reassign_tokens(tokens, tree)
         return contents, encoding, tokens, tree
 </t>

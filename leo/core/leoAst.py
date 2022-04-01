@@ -2600,7 +2600,7 @@ class TokenOrderGenerator:
 class TokenOrderTraverser:
     """
     Traverse an ast tree using the parent/child links created by the
-    TokenOrderInjector class.
+    TokenOrderGenerator class.
     """
     #@+others
     #@+node:ekr.20191226200154.1: *4* TOT.traverse
