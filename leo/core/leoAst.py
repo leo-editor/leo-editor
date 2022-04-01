@@ -1287,7 +1287,7 @@ class TokenOrderGenerator:
         self.level = 0
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
+        self.create_links(tokens, tree)
         return tokens, tree
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.enter_node
