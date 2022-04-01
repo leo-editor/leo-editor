@@ -261,8 +261,9 @@ class BaseTest(unittest.TestCase):
         tog = self.tog
         try:
             t1 = get_time()
-            # Yes, list *is* required here.
-            list(tog.create_links(tokens, tree))
+            ### Yes, list *is* required here.
+            ### list(tog.create_links(tokens, tree))
+            tog.create_links(tokens, tree)
             t2 = get_time()
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
@@ -2288,6 +2289,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20200111200424.1: *5* test_ImportFrom
     def test_ImportFrom(self):
         contents = r"""from a import b as c"""
+        self.debug_list.append('full-traceback') ###
         self.make_data(contents)
     #@+node:ekr.20210318174705.1: *5* test_ImportFromStar
     def test_ImportFromStar(self):
