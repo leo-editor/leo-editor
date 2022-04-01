@@ -2318,6 +2318,7 @@ class TestTOG(BaseTest):
         case (4, 5, *rest): pass
         case [6, 5, *rest]: pass
         case ['a'|'b' as ab, c]: pass
+        case True: pass
     """
         try:
             # self.debug_list.append('contents')

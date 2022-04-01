@@ -2494,8 +2494,8 @@ class TokenOrderGenerator:
     # MatchSingleton(constant value)
 
     def do_MatchSingleton(self, node):
-        g.trace(node, node.value)
-        self.visit(node.value)
+        """Match True, False or None."""
+        self.token('name', repr(node.value))
     #@+node:ekr.20220401034726.9: *7* tog.MatchStar
     # MatchStar(identifier? name)
 
