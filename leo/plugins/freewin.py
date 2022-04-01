@@ -293,6 +293,7 @@ QStackedWidget = QtWidgets.QStackedWidget
 QTextEdit = QtWidgets.QTextEdit
 QVBoxLayout = QtWidgets.QVBoxLayout
 QWidget = QtWidgets.QWidget
+QColor = QtGui.QColor
 
 #@-<< imports >>
 #@+<< declarations >>
@@ -577,6 +578,45 @@ def gotoHostGnx(c, target):
 def copy2clip(text):
     #cb = QApplication.clipboard()
     clipboard.setText(text)
+#@+node:tom.20220329145952.1: ** change_css_prop
+def change_css_prop(css, prop, newval):
+    """Change the value of a named property in a css stylesheet fragment.
+
+    If there is more than one instance of prop, only
+    the first one will be changed.
+
+    The previous property value is replace with the new.
+    """
+    if prop not in css: return
+    start = css.find(prop)
+    colon = css[start:].find(':')
+    frag = css[start + colon + 1:]
+    end = frag.find(';')
+    val = frag[:end].strip()
+
+    return css.replace(val, newval, 1)
+
+#@+node:tom.20220329150105.1: ** get_body_colors
+# Get current colors from the body editor widget
+def get_body_colors(c):
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    pallete = w.viewport().palette()
+    fg_hex = pallete.text().color().rgb()
+    bg_hex = pallete.window().color().rgb()
+    fg = f'#{fg_hex:x}'
+    bg = f'#{bg_hex:x}'
+
+    return fg, bg
+#@+node:tom.20220329231604.1: ** is_body_dark
+def is_body_dark(c):
+    """Return True if host's body appears to have a dark theme."""
+    fg, bg = get_body_colors(c)
+    # hsv =  hue, saturation, value
+    # We assess the background to be dark if its value is < 90
+    bg_color = QColor(bg)
+    h, s, vbg, a = bg_color.getHsv()
+    return vbg < 90
 #@+node:tom.20210527153906.1: ** class ZEditorWin
 class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
@@ -619,9 +659,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         home = g.app.loadManager.computeHomeDir()
         cssdir = osp_join(home, '.leo', 'css')
-        dict_ = g.app.loadManager.globalSettingsDict
+        #dict_ = g.app.loadManager.globalSettingsDict
 
-        is_dark = dict_.get_setting('color-theme-is-dark')
+        #is_dark = dict_.get_setting('color-theme-is-dark')
+        is_dark = is_body_dark(self.c)
         if is_dark:
             self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
@@ -660,7 +701,13 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
-        self.editor.setStyleSheet(self.editor_style)
+
+        # Adjust editor stylesheet color to match body fg, bg
+        fg, bg = get_body_colors(self.c)
+        css = change_css_prop(self.editor_style, 'color', fg)
+        css = change_css_prop(css, 'background', bg)
+        self.editor_style = css
+        self.editor.setStyleSheet(css)
 
         # Try to get tab width from the host's body
         # Used when writing edits back to host
