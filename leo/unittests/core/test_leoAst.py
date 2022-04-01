@@ -2289,7 +2289,6 @@ class TestTOG(BaseTest):
     #@+node:ekr.20200111200424.1: *5* test_ImportFrom
     def test_ImportFrom(self):
         contents = r"""from a import b as c"""
-        self.debug_list.append('full-traceback') ###
         self.make_data(contents)
     #@+node:ekr.20210318174705.1: *5* test_ImportFromStar
     def test_ImportFromStar(self):
