@@ -18,6 +18,7 @@
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
 <v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh></v>
 <v t="ekr.20211020091540.1"><vh>@command b</vh></v>
+<v t="ekr.20220306092217.1"><vh>@command test-one</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
@@ -166,6 +167,11 @@
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20201208114843.1"><vh>script: diff-pr</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
+<v t="ekr.20220319145807.1"><vh>script: diff-two-revs-wo-comments</vh>
+<v t="ekr.20220319151900.1"><vh>function: make_diff_outlines_ignoring_comments</vh></v>
+<v t="ekr.20220319152417.1"><vh>function: strip_comments</vh></v>
+</v>
+<v t="ekr.20220318085657.1"><vh>script: find trailing comments</vh></v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
 <v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
 <v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
@@ -173,11 +179,11 @@
 </v>
 <v t="ekr.20210630103405.1"><vh>script: restore gnxs in leoserver.py (simple version)</vh></v>
 <v t="ekr.20200222083959.1"><vh>script: start loggin</vh></v>
-<v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
 <v t="ekr.20211014103433.1"><vh>script: web-to-outline</vh>
 <v t="ekr.20211014112513.1"><vh>Handlers</vh></v>
 <v t="ekr.20211014120710.1"><vh>new_node</vh></v>
 </v>
+<v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -258,6 +264,115 @@
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
+</v>
+<v t="ekr.20180225010644.1"><vh>Other files</vh>
+<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
+<v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
+<v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
+<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
+<v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
+<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
+</v>
+<v t="ekr.20180225010913.1"><vh>In leo/core</vh>
+<v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
+<v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
+<v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
+</v>
+<v t="ekr.20180225010743.1"><vh>In leo/external</vh>
+<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
+<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
+<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
+<v t="ekr.20180708152000.1"><vh>The problem</vh></v>
+<v t="ekr.20180708152018.1"><vh>Design</vh></v>
+<v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
+<v t="ekr.20180708145905.7"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
+<v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
+<v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
+<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
+<v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
+<v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
+<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
+<v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
+<v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
+<v t="ekr.20170428085201.1"><vh>npyscreen</vh>
+<v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
+<v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
+<v t="ekr.20170428084207.15"><vh>@file ../external/npyscreen/apNPSApplicationEvents.py</vh></v>
+<v t="ekr.20170428084207.29"><vh>@file ../external/npyscreen/apNPSApplicationManaged.py</vh></v>
+<v t="ekr.20170428084207.50"><vh>@file ../external/npyscreen/apOptions.py</vh></v>
+<v t="ekr.20170428084207.111"><vh>@file ../external/npyscreen/eveventhandler.py</vh></v>
+<v t="ekr.20170428084207.121"><vh>@file ../external/npyscreen/fmActionForm.py</vh></v>
+<v t="ekr.20170428084207.131"><vh>@file ../external/npyscreen/fmActionFormV2.py</vh></v>
+<v t="ekr.20170428084207.153"><vh>@file ../external/npyscreen/fmFileSelector.py</vh></v>
+<v t="ekr.20170428084207.174"><vh>@file ../external/npyscreen/fmForm.py</vh></v>
+<v t="ekr.20170428084207.223"><vh>@file ../external/npyscreen/fmFormMultiPage.py</vh></v>
+<v t="ekr.20170428084207.248"><vh>@file ../external/npyscreen/fmFormMutt.py</vh></v>
+<v t="ekr.20170428084207.258"><vh>@file ../external/npyscreen/fmFormMuttActive.py</vh></v>
+<v t="ekr.20170428084207.285"><vh>@file ../external/npyscreen/fmFormWithMenus.py</vh></v>
+<v t="ekr.20170428084207.303"><vh>@file ../external/npyscreen/fmPopup.py</vh></v>
+<v t="ekr.20170428084207.311"><vh>@file ../external/npyscreen/fm_form_edit_loop.py</vh></v>
+<v t="ekr.20170428084207.322"><vh>@file ../external/npyscreen/globals.py</vh></v>
+<v t="ekr.20170428084207.324"><vh>@file ../external/npyscreen/muMenu.py</vh></v>
+<v t="ekr.20170428084207.332"><vh>@file ../external/npyscreen/muNewMenu.py</vh></v>
+<v t="ekr.20170428084207.351"><vh>@file ../external/npyscreen/npysGlobalOptions.py</vh></v>
+<v t="ekr.20170428084207.353"><vh>@file ../external/npyscreen/npysNPSFilteredData.py</vh></v>
+<v t="ekr.20170428084207.364"><vh>@file ../external/npyscreen/npyspmfuncs.py</vh></v>
+<v t="ekr.20170428084207.370"><vh>@file ../external/npyscreen/npyssafewrapper.py</vh></v>
+<v t="ekr.20170428084207.377"><vh>@file ../external/npyscreen/npysThemeManagers.py</vh></v>
+<v t="ekr.20170428084207.390"><vh>@file ../external/npyscreen/npysThemes.py</vh></v>
+<v t="ekr.20170428084207.399"><vh>@file ../external/npyscreen/npysTree.py</vh></v>
+<v t="ekr.20170428084207.422"><vh>@file ../external/npyscreen/proto_fm_screen_area.py</vh></v>
+<v t="ekr.20170428084207.434"><vh>@file ../external/npyscreen/stdfmemail.py</vh></v>
+<v t="ekr.20170428084207.464"><vh>@file ../external/npyscreen/utilNotify.py</vh></v>
+<v t="ekr.20170428084207.477"><vh>@file ../external/npyscreen/util_viewhelp.py</vh></v>
+<v t="ekr.20170428084207.480"><vh>@file ../external/npyscreen/wgannotatetextbox.py</vh></v>
+<v t="ekr.20170428084207.494"><vh>@file ../external/npyscreen/wgautocomplete.py</vh></v>
+<v t="ekr.20170428084207.503"><vh>@file ../external/npyscreen/wgboxwidget.py</vh></v>
+<v t="ekr.20170428084207.524"><vh>@file ../external/npyscreen/wgbutton.py</vh></v>
+<v t="ekr.20170428084207.536"><vh>@file ../external/npyscreen/wgcheckbox.py</vh></v>
+<v t="ekr.20170428084207.561"><vh>@file ../external/npyscreen/wgcombobox.py</vh></v>
+<v t="ekr.20170428084207.575"><vh>@file ../external/npyscreen/wgdatecombo.py</vh></v>
+<v t="ekr.20170428084207.586"><vh>@file ../external/npyscreen/wgeditmultiline.py</vh></v>
+<v t="ekr.20170428084207.611"><vh>@file ../external/npyscreen/wgfilenamecombo.py</vh></v>
+<v t="ekr.20170428084207.618"><vh>@file ../external/npyscreen/wgFormControlCheckbox.py</vh></v>
+<v t="ekr.20170428084208.1"><vh>@file ../external/npyscreen/wggrid.py</vh></v>
+<v t="ekr.20170428084208.36"><vh>@file ../external/npyscreen/wggridcoltitles.py</vh></v>
+<v t="ekr.20170428084208.43"><vh>@file ../external/npyscreen/wgmonthbox.py</vh></v>
+<v t="ekr.20170428084208.68"><vh>@file ../external/npyscreen/wgmultiline.py</vh></v>
+<v t="ekr.20170428084208.157"><vh>@file ../external/npyscreen/wgmultilineeditable.py</vh></v>
+<v t="ekr.20170428084208.173"><vh>@file ../external/npyscreen/wgmultilinetree.py</vh></v>
+<v t="ekr.20170428084208.213"><vh>@file ../external/npyscreen/wgmultilinetreeselectable.py</vh></v>
+<v t="ekr.20170428084208.225"><vh>@file ../external/npyscreen/wgmultiselect.py</vh></v>
+<v t="ekr.20170428084208.245"><vh>@file ../external/npyscreen/wgmultiselecttree.py</vh></v>
+<v t="ekr.20170428084208.253"><vh>@file ../external/npyscreen/wgNMenuDisplay.py</vh></v>
+<v t="ekr.20170428084208.285"><vh>@file ../external/npyscreen/wgpassword.py</vh></v>
+<v t="ekr.20170428084208.290"><vh>@file ../external/npyscreen/wgselectone.py</vh></v>
+<v t="ekr.20170428084208.297"><vh>@file ../external/npyscreen/wgslider.py</vh></v>
+<v t="ekr.20170428084208.318"><vh>@file ../external/npyscreen/wgtextbox.py</vh></v>
+<v t="ekr.20170428084208.354"><vh>@file ../external/npyscreen/wgtextboxunicode.py</vh></v>
+<v t="ekr.20170428084208.359"><vh>@file ../external/npyscreen/wgtextbox_controlchrs.py</vh></v>
+<v t="ekr.20170428084208.366"><vh>@file ../external/npyscreen/wgtexttokens.py</vh></v>
+<v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
+<v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
+<v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
+<v t="ekr.20170428084208.443"><vh>@@file ../external/npyscreen/__init__.py</vh>
+<v t="ekr.20170428084208.444"><vh>Declarations</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
+<v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
+<v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
+<v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
+</v>
+<v t="ekr.20210710031237.1"><vh>In leo/scripts</vh>
+<v t="ekr.20210709045755.1"><vh>@file ../scripts/wax_off.py</vh></v>
+</v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
@@ -565,115 +680,6 @@
 <v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
-<v t="ekr.20180225010644.1"><vh>Other files</vh>
-<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
-<v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
-<v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
-<v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
-<v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
-</v>
-<v t="ekr.20180225010913.1"><vh>In leo/core</vh>
-<v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
-<v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
-</v>
-<v t="ekr.20180225010743.1"><vh>In leo/external</vh>
-<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
-<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
-<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
-<v t="ekr.20180708152000.1"><vh>The problem</vh></v>
-<v t="ekr.20180708152018.1"><vh>Design</vh></v>
-<v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
-<v t="ekr.20180708145905.7"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
-<v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
-<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
-<v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
-<v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
-<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
-<v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
-<v t="ekr.20170428085201.1"><vh>npyscreen</vh>
-<v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
-<v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
-<v t="ekr.20170428084207.15"><vh>@file ../external/npyscreen/apNPSApplicationEvents.py</vh></v>
-<v t="ekr.20170428084207.29"><vh>@file ../external/npyscreen/apNPSApplicationManaged.py</vh></v>
-<v t="ekr.20170428084207.50"><vh>@file ../external/npyscreen/apOptions.py</vh></v>
-<v t="ekr.20170428084207.111"><vh>@file ../external/npyscreen/eveventhandler.py</vh></v>
-<v t="ekr.20170428084207.121"><vh>@file ../external/npyscreen/fmActionForm.py</vh></v>
-<v t="ekr.20170428084207.131"><vh>@file ../external/npyscreen/fmActionFormV2.py</vh></v>
-<v t="ekr.20170428084207.153"><vh>@file ../external/npyscreen/fmFileSelector.py</vh></v>
-<v t="ekr.20170428084207.174"><vh>@file ../external/npyscreen/fmForm.py</vh></v>
-<v t="ekr.20170428084207.223"><vh>@file ../external/npyscreen/fmFormMultiPage.py</vh></v>
-<v t="ekr.20170428084207.248"><vh>@file ../external/npyscreen/fmFormMutt.py</vh></v>
-<v t="ekr.20170428084207.258"><vh>@file ../external/npyscreen/fmFormMuttActive.py</vh></v>
-<v t="ekr.20170428084207.285"><vh>@file ../external/npyscreen/fmFormWithMenus.py</vh></v>
-<v t="ekr.20170428084207.303"><vh>@file ../external/npyscreen/fmPopup.py</vh></v>
-<v t="ekr.20170428084207.311"><vh>@file ../external/npyscreen/fm_form_edit_loop.py</vh></v>
-<v t="ekr.20170428084207.322"><vh>@file ../external/npyscreen/globals.py</vh></v>
-<v t="ekr.20170428084207.324"><vh>@file ../external/npyscreen/muMenu.py</vh></v>
-<v t="ekr.20170428084207.332"><vh>@file ../external/npyscreen/muNewMenu.py</vh></v>
-<v t="ekr.20170428084207.351"><vh>@file ../external/npyscreen/npysGlobalOptions.py</vh></v>
-<v t="ekr.20170428084207.353"><vh>@file ../external/npyscreen/npysNPSFilteredData.py</vh></v>
-<v t="ekr.20170428084207.364"><vh>@file ../external/npyscreen/npyspmfuncs.py</vh></v>
-<v t="ekr.20170428084207.370"><vh>@file ../external/npyscreen/npyssafewrapper.py</vh></v>
-<v t="ekr.20170428084207.377"><vh>@file ../external/npyscreen/npysThemeManagers.py</vh></v>
-<v t="ekr.20170428084207.390"><vh>@file ../external/npyscreen/npysThemes.py</vh></v>
-<v t="ekr.20170428084207.399"><vh>@file ../external/npyscreen/npysTree.py</vh></v>
-<v t="ekr.20170428084207.422"><vh>@file ../external/npyscreen/proto_fm_screen_area.py</vh></v>
-<v t="ekr.20170428084207.434"><vh>@file ../external/npyscreen/stdfmemail.py</vh></v>
-<v t="ekr.20170428084207.464"><vh>@file ../external/npyscreen/utilNotify.py</vh></v>
-<v t="ekr.20170428084207.477"><vh>@file ../external/npyscreen/util_viewhelp.py</vh></v>
-<v t="ekr.20170428084207.480"><vh>@file ../external/npyscreen/wgannotatetextbox.py</vh></v>
-<v t="ekr.20170428084207.494"><vh>@file ../external/npyscreen/wgautocomplete.py</vh></v>
-<v t="ekr.20170428084207.503"><vh>@file ../external/npyscreen/wgboxwidget.py</vh></v>
-<v t="ekr.20170428084207.524"><vh>@file ../external/npyscreen/wgbutton.py</vh></v>
-<v t="ekr.20170428084207.536"><vh>@file ../external/npyscreen/wgcheckbox.py</vh></v>
-<v t="ekr.20170428084207.561"><vh>@file ../external/npyscreen/wgcombobox.py</vh></v>
-<v t="ekr.20170428084207.575"><vh>@file ../external/npyscreen/wgdatecombo.py</vh></v>
-<v t="ekr.20170428084207.586"><vh>@file ../external/npyscreen/wgeditmultiline.py</vh></v>
-<v t="ekr.20170428084207.611"><vh>@file ../external/npyscreen/wgfilenamecombo.py</vh></v>
-<v t="ekr.20170428084207.618"><vh>@file ../external/npyscreen/wgFormControlCheckbox.py</vh></v>
-<v t="ekr.20170428084208.1"><vh>@file ../external/npyscreen/wggrid.py</vh></v>
-<v t="ekr.20170428084208.36"><vh>@file ../external/npyscreen/wggridcoltitles.py</vh></v>
-<v t="ekr.20170428084208.43"><vh>@file ../external/npyscreen/wgmonthbox.py</vh></v>
-<v t="ekr.20170428084208.68"><vh>@file ../external/npyscreen/wgmultiline.py</vh></v>
-<v t="ekr.20170428084208.157"><vh>@file ../external/npyscreen/wgmultilineeditable.py</vh></v>
-<v t="ekr.20170428084208.173"><vh>@file ../external/npyscreen/wgmultilinetree.py</vh></v>
-<v t="ekr.20170428084208.213"><vh>@file ../external/npyscreen/wgmultilinetreeselectable.py</vh></v>
-<v t="ekr.20170428084208.225"><vh>@file ../external/npyscreen/wgmultiselect.py</vh></v>
-<v t="ekr.20170428084208.245"><vh>@file ../external/npyscreen/wgmultiselecttree.py</vh></v>
-<v t="ekr.20170428084208.253"><vh>@file ../external/npyscreen/wgNMenuDisplay.py</vh></v>
-<v t="ekr.20170428084208.285"><vh>@file ../external/npyscreen/wgpassword.py</vh></v>
-<v t="ekr.20170428084208.290"><vh>@file ../external/npyscreen/wgselectone.py</vh></v>
-<v t="ekr.20170428084208.297"><vh>@file ../external/npyscreen/wgslider.py</vh></v>
-<v t="ekr.20170428084208.318"><vh>@file ../external/npyscreen/wgtextbox.py</vh></v>
-<v t="ekr.20170428084208.354"><vh>@file ../external/npyscreen/wgtextboxunicode.py</vh></v>
-<v t="ekr.20170428084208.359"><vh>@file ../external/npyscreen/wgtextbox_controlchrs.py</vh></v>
-<v t="ekr.20170428084208.366"><vh>@file ../external/npyscreen/wgtexttokens.py</vh></v>
-<v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
-<v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
-<v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
-<v t="ekr.20170428084208.443"><vh>@@file ../external/npyscreen/__init__.py</vh>
-<v t="ekr.20170428084208.444"><vh>Declarations</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
-<v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
-<v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
-</v>
-<v t="ekr.20210710031237.1"><vh>In leo/scripts</vh>
-<v t="ekr.20210709045755.1"><vh>@file ../scripts/wax_off.py</vh></v>
-</v>
-</v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
@@ -725,7 +731,8 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">test-one
+<t tx="ekr.20150425145248.1">restart-leo
+test-one
 test-import
 pylint
 backup</t>
@@ -759,7 +766,7 @@ rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 
 # Essential...
 plugins_menu.py
-free_layout.py
+# free_layout.py
     # Now loaded automatically.
     # Disabled for testing bug 882824.
 mod_scripting.py
@@ -826,6 +833,8 @@ print('done')
 </t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
+<t tx="ekr.20220306092217.1">command = 'python -m unittest leo.unittests.core.test_leoNodes.TestNodes.test_p_nearest'
+g.execute_shell_commands(command, trace=False)</t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20170811173924.1">@language python
@@ -2126,9 +2135,99 @@ x.diff_pull_request()
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='fc48ebca97ea430', # Before.
-    rev2='HEAD',   # After.
+    rev1='f85969ae8cb', # Before.
+    rev2='dd0fadf7b15', # After.
 )
+</t>
+<t tx="ekr.20220319145807.1">g.cls()
+
+# Monkey-patched git-diff-pr command.
+import leo.commands.editFileCommands as efc
+
+rev1 = '7fe2cc486153'  # Preveious commit ofdevel'
+rev2 = 'c4d109012028'  # Last commit of ekr-clean-comments
+x = efc.GitDiffController(c)
+
+@others
+
+# Monkey-patch, with x bound.
+x.make_diff_outlines = make_diff_outlines_ignoring_comments
+x.diff_two_revs(rev1, rev2)
+</t>
+<t tx="ekr.20220319151900.1">def make_diff_outlines_ignoring_comments(c1, c2, fn, rev1='', rev2=''):
+    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+    self = x
+    added, deleted, changed = self.compute_dicts(c1, c2)
+    table = (
+        (added, 'Added'),
+        (deleted, 'Deleted'),
+        (changed, 'Changed'))
+    for d, kind in table:
+        if kind.lower() == 'changed':
+            for key in d:
+                v1, v2 = d.get(key)
+                v1.b = strip_comments(v1.b)
+                v2.b = strip_comments(v2.b)
+        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+</t>
+<t tx="ekr.20220319152417.1">def strip_comments(aString):
+    """
+    Strip everything that looks like a comment from aString.
+    It's fine, for now, to ignore strings and docstrings.
+    """
+    result = []
+    lines = g.splitLines(aString)
+    for s in lines:
+        if s.strip().startswith('#@'):
+            # Retain everything that looks like a sentinel.
+            result.append(s)
+        else:
+            # Strip the comment, ignoring the end of the line.
+            i = s.find('#')
+            if i == -1:
+                result.append(s)
+            else:
+                tail = s[:i]
+                if tail.strip():
+                    result.append(tail.rstrip() + '\n')
+    return ''.join(result)
+</t>
+<t tx="ekr.20220318085657.1">"""
+Find and mark all nodes containing underindented trailing comments in c's outline.
+
+Such comments have the form:
+    
+    .. some code ..
+        A trailing, overindented comment.
+"""
+g.cls()
+import re
+pattern = re.compile(r'\w+\s*=\s\w+')
+
+def do_node(p):
+    global count
+    prev_assign = False
+    old_lws = 0
+    lines = g.splitLines(p.b)
+    for i, line in enumerate(lines):
+        lws = g.computeLeadingWhitespaceWidth(line, tab_width=-4)
+        if line.strip().startswith('#'):
+            if prev_assign and lws &gt; old_lws:
+                # Found a likely trailing comment.
+                p.setMarked()
+                count += 1
+                return True
+            prev_assign = False
+        else:
+            old_lws = lws
+            prev_assign = pattern.search(line)
+    return False
+    
+count = 0
+c.clearAllMarked()
+for p in c.all_unique_positions():
+    do_node(p)
+print(f"found {count} nodes.")
 </t>
 <t tx="ekr.20201015145257.1">import leo.core.leoImport as leoImport
 import importlib
@@ -2289,22 +2388,6 @@ socketHandler = logging.handlers.SocketHandler(
 rootLogger.addHandler(socketHandler)
 logging.info('-' * 20)
 </t>
-<t tx="ekr.20200222151754.1">import yoton
-
-# Create another context and a sub channel
-ct2 = yoton.Context()
-sub = yoton.SubChannel(ct2, 'chat')
-
-# Connect
-ct2.connect('publichost:test')
-
-# Receive
-while True:
-    i = int(sub.recv())
-    print(i)
-    if i == 10:
-        break
-</t>
 <t tx="ekr.20211014103433.1">"""
 Convert the TeX sources, assumed to be in ~/tex.web, to an outline.
 
@@ -2386,6 +2469,22 @@ def do_sec(i, m, s):
     child = parent.insertAsLastChild()
     child.h = h.strip()
     parents.append(('@ ', child))
+</t>
+<t tx="ekr.20200222151754.1">import yoton
+
+# Create another context and a sub channel
+ct2 = yoton.Context()
+sub = yoton.SubChannel(ct2, 'chat')
+
+# Connect
+ct2.connect('publichost:test')
+
+# Receive
+while True:
+    i = int(sub.recv())
+    print(i)
+    if i == 10:
+        break
 </t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
@@ -2552,6 +2651,333 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
+<t tx="ekr.20180225010644.1">@nobeautify</t>
+<t tx="ekr.20180225010707.1"></t>
+<t tx="ekr.20150304130753.4">@language xml
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+
+&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
+
+&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
+  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
+
+&lt;xsl:template match ='leo_file'&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;&lt;style&gt;&gt;
+    &lt;&lt;scripts&gt;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;xsl:apply-templates select='tnodes'/&gt;
+    &lt;div class="outlinepane"&gt;
+      &lt;xsl:apply-templates select='vnodes'/&gt;
+    &lt;/div&gt;
+    &lt;div class="bodypane"&gt;
+      &lt;h1&gt;Body Pane&lt;/h1&gt;
+      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'tnodes'&gt;
+&lt;div class="tnodes"&gt;
+  &lt;xsl:for-each select = 't'&gt;
+    &lt;div class="tnode"&gt;
+      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
+      &lt;xsl:value-of select='.'/&gt;
+    &lt;/div&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'vnodes'&gt;
+  &lt;xsl:for-each select = 'v'&gt;
+    &lt;xsl:apply-templates select ='.'/&gt;
+  &lt;/xsl:for-each&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match='v'&gt;
+  &lt;div class="node"&gt;
+    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
+    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+    &lt;xsl:if test ='./v' &gt;
+      &lt;xsl:apply-templates select = 'v'/&gt;
+    &lt;/xsl:if&gt;
+  &lt;/div&gt;
+&lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+</t>
+<t tx="ekr.20180225010913.1"></t>
+<t tx="ekr.20180225010743.1">@nosearch</t>
+<t tx="ekr.20190607124533.1"></t>
+<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
+# By default, this is ~/stubs/make_stub_files.cfg.
+# Can be changed using the --config=path command-line option.
+
+[Global]
+
+files:
+
+    # Files to be used *only* if no files are given on the command line.
+    # glob.glob wildcards are supported.
+
+    # c:/leo.repo/leo-editor/leo/core/leoAst.py
+    # c:/leo.repo/leo-editor/leo/core/*.py
+    # c:/leo.repo/leo-editor/plugins/*.py
+
+output_directory: ~/stubs
+
+prefix_lines:
+    # Lines to be inserted at the start of each stub file.
+    from typing import TypeVar, Iterable, Tuple
+    T = TypeVar('T', int, float, complex)
+
+[Def Name Patterns]
+
+[General Patterns]
+</t>
+<t tx="ekr.20180708145905.1">@language rest
+@wrap
+
+This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
+
+@others
+</t>
+<t tx="ekr.20180708152000.1">
+### The problem
+
+The initial version of py2cs.py (the script) used only tokens. This solved all token-related problems, but made parsing difficult. Alas, it is [difficult](http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) to associate tokens with ast nodes.
+
+The script needs the following token-related data:
+
+- The **ignored lines** (comment lines and blank lines) that precede any statement.
+
+- The **trailing comment** strings that might follow any line.
+
+- Optionally, the **line breaks** occurring within lines. At present, this script does not preserve such breaks, and it's probably not worth doing. Indeed, automatically breaking long lines seems more useful, especially considering that coffeescript lines may be substantially shorter than the corresponding python lines.
+
+- The **exact spelling** of all strings.
+
+The [ast_utils module](
+https://bitbucket.org/plas/thonny/src/3b71fda7ac0b66d5c475f7a668ffbdc7ae48c2b5/thonny/ast_utils.py?at=master) purports to solve this problem with convoluted adjustments to the col_offset field. This approach is subject to subtle Python bugs, and subtle differences between Python 2 and Python 3. There is a better way...
+</t>
+<t tx="ekr.20180708152018.1">
+### Design
+
+The main idea is to use *only* the ast.lineno fields and the tokenizer module to recreate token data. The design assumes only that both the ast.lineno field and Python's tokenizer module are solid. This is a much more reasonable assumption than assuming that the col_offset field always tells the truth. In short, this design *ignores* the ast.col_offset field.
+
+At startup, the TokenSync ctor assigns all the incoming tokens to various lists.  These lists are indexed by lineno:
+
+    ts.line_tokens[i]: all the tokens on line i
+    ts.string_tokens[i]: all string tokens on line i
+    st.ignored_lines: the blank or comment line on line i
+
+It is very easy to create these lists. The code does not depend on any arcane details.
+
+#### Recovering the exact spelling of stings.
+
+ts.synch_string returns the *next* string on the line. Here it is, stripped of defensive code:
+
+    def sync_string(self, node):
+        '''Return the spelling of the string at the given node.'''
+        tokens = self.string_tokens[node.lineno-1]
+        token = tokens.pop(0)
+        self.string_tokens[node.lineno-1] = tokens
+        return self.token_val(token)
+
+Stripped of defensive code, the do_Str visitor is just:
+
+    def do_Str(self, node):
+        '''A string constant, including docstrings.'''
+        return self.sync_string(node)
+
+#### Recovering otherwise ignored nodes
+
+**ts.leading_lines(node)** returns a list of otherwise ignored lines that
+precede the node's line that have not already been returned.
+**ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
+</t>
+<t tx="ekr.20180708145905.6">
+### Using the TokenSync class
+
+The present code is driven by ast trees, but each visitor of the CoffeeScriptTraverser class takes care to preserve **otherwise-ignored tokens**. These are tokens that would otherwise be ignored: namely blank lines and comments, both entire-line comments and trailing comments.
+
+The visitor for each statement intersperses otherwise ignored tokens using calls to the TokenSync class.  The simplest cases are like this:
+
+    def do_Break(self, node):
+        head = self.leading_string(node)
+        tail = self.trailing_comment(node)
+        return head + self.indent('break') + tail
+
+The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
+
+    def do_If(self, node):
+
+        result = self.leading_lines(node)
+        tail = self.trailing_comment(node)
+        s = 'if %s:%s' % (self.visit(node.test), tail)
+        result.append(self.indent(s))
+        for z in node.body:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+        if node.orelse:
+            tail = self.tail_after_body(node.body, node.orelse, result)
+            result.append(self.indent('else:' + tail))
+            for z in node.orelse:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
+        return ''.join(result)
+
+The line:
+
+        tail = self.tail_after_body(node.body, node.orelse, result)
+
+is a hack needed to compensate for the lack of an actual ast.Else node.
+</t>
+<t tx="ekr.20180708145905.7">
+### Summary
+
+The TokenSync class is, a new, elegant, unexpected and happy development. It is a relatively easy-to-use helper that allows parser-based code to preserve data that is not easily accessible in parse trees.
+
+The TokenSync class avoids [problems with the col_offset field](
+http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
+
+Edward K. Ream
+February 20 to 25, 2016
+
+
+
+</t>
+<t tx="ekr.20170428085201.1">@nosearch
+@nobeautify</t>
+<t tx="ekr.20170428084208.443">#!/usr/bin/python
+# This file generates pyflakes warnings for *all* imported symbols.
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20170428084208.444">from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
+
+from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
+
+from .npyssafewrapper           import wrapper, wrapper_basic
+
+from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
+from   . import npysThemes      as     Themes
+from   .apNPSApplication        import NPSApp
+from   .apNPSApplicationManaged import NPSAppManaged
+from   .proto_fm_screen_area    import setTheme
+from   .fmForm                  import FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm, FormExpanded, FormBaseNewExpanded, blank_terminal
+from   .fmActionForm            import ActionForm, ActionFormExpanded
+from   .fmActionFormV2          import ActionFormV2, ActionFormExpandedV2, ActionFormMinimal
+from   .fmFormWithMenus         import FormWithMenus, ActionFormWithMenus, \
+                                       FormBaseNewWithMenus, SplitFormWithMenus, \
+                                       ActionFormV2WithMenus
+from   .fmPopup                 import Popup, MessagePopup, ActionPopup, PopupWide, ActionPopupWide
+from   .fmFormMutt              import FormMutt, FormMuttWithMenus
+from   .fmFileSelector          import FileSelector, selectFile
+
+from .fmFormMuttActive          import ActionControllerSimple, TextCommandBox, \
+                                       FormMuttActive, FormMuttActiveWithMenus
+from .fmFormMuttActive          import FormMuttActiveTraditional, FormMuttActiveTraditionalWithMenus
+
+
+from .fmFormMultiPage           import FormMultiPage, FormMultiPageAction,\
+                                       FormMultiPageActionWithMenus, FormMultiPageWithMenus
+
+from .npysNPSFilteredData       import NPSFilteredDataBase, NPSFilteredDataList
+
+from .wgbutton                  import MiniButton
+from .wgbutton                  import MiniButtonPress
+from .wgbutton                  import MiniButton      as Button
+from .wgbutton                  import MiniButtonPress as ButtonPress
+
+from .wgtextbox                 import Textfield, FixedText
+from .wgtitlefield              import TitleText, TitleFixedText
+from .wgpassword                import PasswordEntry, TitlePassword
+from .wgannotatetextbox         import AnnotateTextboxBase
+from .wgannotatetextbox         import AnnotateTextboxBaseRight
+
+from .wgslider                  import Slider, TitleSlider
+from .wgslider                  import SliderNoLabel, TitleSliderNoLabel
+from .wgslider                  import SliderPercent, TitleSliderPercent
+
+from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
+from . import wgwidget as widget
+
+from .wgmultiline               import MultiLine, Pager, TitleMultiLine, TitlePager, MultiLineAction, BufferPager, TitleBufferPager
+from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
+                                       TitleMultiSelectFixed, MultiSelectAction
+from .wgeditmultiline           import MultiLineEdit
+from .wgcombobox                import ComboBox, TitleCombo
+from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox, CheckboxBare
+from .wgFormControlCheckbox     import FormControlCheckbox
+from .wgautocomplete            import TitleFilename, Filename, Autocomplete
+from .muMenu                    import Menu
+from .wgselectone               import SelectOne, TitleSelectOne
+from .wgdatecombo               import DateCombo, TitleDateCombo
+
+from .npysTree import TreeData
+from .wgmultilinetree           import MLTree, MLTreeAnnotated, MLTreeAction, MLTreeAnnotatedAction
+from .wgmultilinetreeselectable import MLTreeMultiSelect, TreeLineSelectable
+from .wgmultilinetreeselectable import MLTreeMultiSelectAnnotated, TreeLineSelectableAnnotated
+
+
+# The following are maintained for compatibility with old code only. ##########################################
+
+from .compatibility_code.oldtreeclasses import MultiLineTree, SelectOneTree
+from .compatibility_code.oldtreeclasses import MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated # Experimental
+from .compatibility_code.oldtreeclasses import MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated # Experimental
+from .compatibility_code.npysNPSTree import NPSTreeData
+
+# End compatibility. ###########################################################################################
+
+from .wgfilenamecombo           import FilenameCombo, TitleFilenameCombo
+from .wgboxwidget               import BoxBasic, BoxTitle
+from .wgmultiline               import MultiLineActionWithShortcuts
+from .wgmultilineeditable       import MultiLineEditable, MultiLineEditableTitle, MultiLineEditableBoxed
+
+from .wgmonthbox                import MonthBox
+from .wggrid                    import SimpleGrid
+from .wggridcoltitles           import GridColTitles
+
+from .muNewMenu                 import NewMenu, MenuItem
+from .wgNMenuDisplay            import MenuDisplay, MenuDisplayScreen
+
+from .npyspmfuncs               import CallSubShell
+
+from .utilNotify                 import notify, notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no
+
+# Base classes for overriding:
+
+# Standard Forms:
+from . import stdfmemail
+
+# Experimental Only
+from .wgtextboxunicode import TextfieldUnicode
+from .wgtexttokens     import TextTokens, TitleTextTokens
+
+# Very experimental. Don't use for anything serious
+from .apOptions import SimpleOptionForm
+from .apOptions import OptionListDisplay, OptionChanger, OptionList, OptionLimitedChoices, OptionListDisplayLine
+from .apOptions import OptionFreeText, OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, \
+                       OptionBoolean, OptionFilename, OptionDate, OptionMultiFreeText
+
+
+# This really is about as experimental as it gets
+from .apNPSApplicationEvents import StandardApp
+from .eveventhandler import Event
+
+
+</t>
+<t tx="ekr.20180225010850.1"></t>
+<t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20201012111545.1">@language python
 @tabwidth -4
 @pagewidth 80
@@ -2874,332 +3300,6 @@ affect Leo's panes and windows in various ways.
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
 </t>
 <t tx="ekr.20171031111403.1"></t>
-<t tx="ekr.20180225010644.1">@nobeautify</t>
-<t tx="ekr.20180225010707.1"></t>
-<t tx="ekr.20150304130753.4">@language xml
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
-
-&lt;xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/&gt;
-
-&lt;!-- The default setting. Not needed unless there is a strip-space element. --&gt;
-  &lt;!-- &lt;xsl:preserve-space elements='leo_file nodes t'/&gt; --&gt;
-
-&lt;xsl:template match ='leo_file'&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;&lt;style&gt;&gt;
-    &lt;&lt;scripts&gt;&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;xsl:apply-templates select='tnodes'/&gt;
-    &lt;div class="outlinepane"&gt;
-      &lt;xsl:apply-templates select='vnodes'/&gt;
-    &lt;/div&gt;
-    &lt;div class="bodypane"&gt;
-      &lt;h1&gt;Body Pane&lt;/h1&gt;
-      &lt;pre class="body-text"&gt;body&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'tnodes'&gt;
-&lt;div class="tnodes"&gt;
-  &lt;xsl:for-each select = 't'&gt;
-    &lt;div class="tnode"&gt;
-      &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@tx'/&gt;&lt;/xsl:attribute&gt;
-      &lt;xsl:value-of select='.'/&gt;
-    &lt;/div&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match = 'vnodes'&gt;
-  &lt;xsl:for-each select = 'v'&gt;
-    &lt;xsl:apply-templates select ='.'/&gt;
-  &lt;/xsl:for-each&gt;
-&lt;/xsl:template&gt;
-
-&lt;xsl:template match='v'&gt;
-  &lt;div class="node"&gt;
-    &lt;xsl:attribute name="id"&gt;&lt;xsl:value-of select='@t'/&gt;&lt;/xsl:attribute&gt;
-    &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
-    &lt;xsl:if test ='./v' &gt;
-      &lt;xsl:apply-templates select = 'v'/&gt;
-    &lt;/xsl:if&gt;
-  &lt;/div&gt;
-&lt;/xsl:template&gt;
-
-&lt;/xsl:stylesheet&gt;
-</t>
-<t tx="ekr.20180225010913.1"></t>
-<t tx="ekr.20180225010743.1">@nosearch</t>
-<t tx="ekr.20190607124533.1"></t>
-<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
-# By default, this is ~/stubs/make_stub_files.cfg.
-# Can be changed using the --config=path command-line option.
-
-[Global]
-
-files:
-
-    # Files to be used *only* if no files are given on the command line.
-    # glob.glob wildcards are supported.
-
-    # c:/leo.repo/leo-editor/leo/core/leoAst.py
-    # c:/leo.repo/leo-editor/leo/core/*.py
-    # c:/leo.repo/leo-editor/plugins/*.py
-
-output_directory: ~/stubs
-
-prefix_lines:
-    # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable, Tuple
-    T = TypeVar('T', int, float, complex)
-
-[Def Name Patterns]
-
-[General Patterns]
-</t>
-<t tx="ekr.20180708145905.1">@language rest
-@wrap
-
-This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
-
-@others
-</t>
-<t tx="ekr.20180708152000.1">
-### The problem
-
-The initial version of py2cs.py (the script) used only tokens. This solved all token-related problems, but made parsing difficult. Alas, it is [difficult](http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) to associate tokens with ast nodes.
-
-The script needs the following token-related data:
-
-- The **ignored lines** (comment lines and blank lines) that precede any statement.
-
-- The **trailing comment** strings that might follow any line.
-
-- Optionally, the **line breaks** occurring within lines. At present, this script does not preserve such breaks, and it's probably not worth doing. Indeed, automatically breaking long lines seems more useful, especially considering that coffeescript lines may be substantially shorter than the corresponding python lines.
-
-- The **exact spelling** of all strings.
-
-The [ast_utils module](
-https://bitbucket.org/plas/thonny/src/3b71fda7ac0b66d5c475f7a668ffbdc7ae48c2b5/thonny/ast_utils.py?at=master) purports to solve this problem with convoluted adjustments to the col_offset field. This approach is subject to subtle Python bugs, and subtle differences between Python 2 and Python 3. There is a better way...
-</t>
-<t tx="ekr.20180708152018.1">
-### Design
-
-The main idea is to use *only* the ast.lineno fields and the tokenizer module to recreate token data. The design assumes only that both the ast.lineno field and Python's tokenizer module are solid. This is a much more reasonable assumption than assuming that the col_offset field always tells the truth. In short, this design *ignores* the ast.col_offset field.
-
-At startup, the TokenSync ctor assigns all the incoming tokens to various lists.  These lists are indexed by lineno:
-
-    ts.line_tokens[i]: all the tokens on line i
-    ts.string_tokens[i]: all string tokens on line i
-    st.ignored_lines: the blank or comment line on line i
-
-It is very easy to create these lists. The code does not depend on any arcane details.
-
-#### Recovering the exact spelling of stings.
-
-ts.synch_string returns the *next* string on the line. Here it is, stripped of defensive code:
-
-    def sync_string(self, node):
-        '''Return the spelling of the string at the given node.'''
-        tokens = self.string_tokens[node.lineno-1]
-        token = tokens.pop(0)
-        self.string_tokens[node.lineno-1] = tokens
-        return self.token_val(token)
-
-Stripped of defensive code, the do_Str visitor is just:
-
-    def do_Str(self, node):
-        '''A string constant, including docstrings.'''
-        return self.sync_string(node)
-
-#### Recovering otherwise ignored nodes
-
-**ts.leading_lines(node)** returns a list of otherwise ignored lines that
-precede the node's line that have not already been returned.
-**ts.leading_string(node)** is a convenience method that returns ''.join(ts.leading_lines(node)). The visitors of the CoffeeScriptTraverser class show how to use these methods.
-</t>
-<t tx="ekr.20180708145905.6">
-### Using the TokenSync class
-
-The present code is driven by ast trees, but each visitor of the CoffeeScriptTraverser class takes care to preserve **otherwise-ignored tokens**. These are tokens that would otherwise be ignored: namely blank lines and comments, both entire-line comments and trailing comments.
-
-The visitor for each statement intersperses otherwise ignored tokens using calls to the TokenSync class.  The simplest cases are like this:
-
-    def do_Break(self, node):
-        head = self.leading_string(node)
-        tail = self.trailing_comment(node)
-        return head + self.indent('break') + tail
-
-The leading_string and trailing_comment methods simply redirect to the corresponding methods in the TokenSync class.  Saves a bit of typing. Compound statements are a bit more bother, but not overly so. For example:
-
-    def do_If(self, node):
-
-        result = self.leading_lines(node)
-        tail = self.trailing_comment(node)
-        s = 'if %s:%s' % (self.visit(node.test), tail)
-        result.append(self.indent(s))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
-        if node.orelse:
-            tail = self.tail_after_body(node.body, node.orelse, result)
-            result.append(self.indent('else:' + tail))
-            for z in node.orelse:
-                self.level += 1
-                result.append(self.visit(z))
-                self.level -= 1
-        return ''.join(result)
-
-The line:
-
-        tail = self.tail_after_body(node.body, node.orelse, result)
-
-is a hack needed to compensate for the lack of an actual ast.Else node.
-</t>
-<t tx="ekr.20180708145905.7">
-### Summary
-
-The TokenSync class is, a new, elegant, unexpected and happy development. It is a relatively easy-to-use helper that allows parser-based code to preserve data that is not easily accessible in parse trees.
-
-The TokenSync class avoids [problems with the col_offset field](
-http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
-
-Edward K. Ream
-February 20 to 25, 2016
-
-
-
-</t>
-<t tx="ekr.20170428085201.1">@nosearch</t>
-<t tx="ekr.20170428084208.443">#!/usr/bin/python
-# This file generates pyflakes warnings for *all* imported symbols.
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20170428084208.444">from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
-
-from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
-
-from .npyssafewrapper           import wrapper, wrapper_basic
-
-from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
-from   . import npysThemes      as     Themes
-from   .apNPSApplication        import NPSApp
-from   .apNPSApplicationManaged import NPSAppManaged
-from   .proto_fm_screen_area    import setTheme
-from   .fmForm                  import FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm, FormExpanded, FormBaseNewExpanded, blank_terminal
-from   .fmActionForm            import ActionForm, ActionFormExpanded
-from   .fmActionFormV2          import ActionFormV2, ActionFormExpandedV2, ActionFormMinimal
-from   .fmFormWithMenus         import FormWithMenus, ActionFormWithMenus, \
-                                       FormBaseNewWithMenus, SplitFormWithMenus, \
-                                       ActionFormV2WithMenus
-from   .fmPopup                 import Popup, MessagePopup, ActionPopup, PopupWide, ActionPopupWide
-from   .fmFormMutt              import FormMutt, FormMuttWithMenus
-from   .fmFileSelector          import FileSelector, selectFile
-
-from .fmFormMuttActive          import ActionControllerSimple, TextCommandBox, \
-                                       FormMuttActive, FormMuttActiveWithMenus
-from .fmFormMuttActive          import FormMuttActiveTraditional, FormMuttActiveTraditionalWithMenus
-
-
-from .fmFormMultiPage           import FormMultiPage, FormMultiPageAction,\
-                                       FormMultiPageActionWithMenus, FormMultiPageWithMenus
-
-from .npysNPSFilteredData       import NPSFilteredDataBase, NPSFilteredDataList
-
-from .wgbutton                  import MiniButton
-from .wgbutton                  import MiniButtonPress
-from .wgbutton                  import MiniButton      as Button
-from .wgbutton                  import MiniButtonPress as ButtonPress
-
-from .wgtextbox                 import Textfield, FixedText
-from .wgtitlefield              import TitleText, TitleFixedText
-from .wgpassword                import PasswordEntry, TitlePassword
-from .wgannotatetextbox         import AnnotateTextboxBase
-from .wgannotatetextbox         import AnnotateTextboxBaseRight
-
-from .wgslider                  import Slider, TitleSlider
-from .wgslider                  import SliderNoLabel, TitleSliderNoLabel
-from .wgslider                  import SliderPercent, TitleSliderPercent
-
-from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
-from . import wgwidget as widget
-
-from .wgmultiline               import MultiLine, Pager, TitleMultiLine, TitlePager, MultiLineAction, BufferPager, TitleBufferPager
-from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
-                                       TitleMultiSelectFixed, MultiSelectAction
-from .wgeditmultiline           import MultiLineEdit
-from .wgcombobox                import ComboBox, TitleCombo
-from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox, CheckboxBare
-from .wgFormControlCheckbox     import FormControlCheckbox
-from .wgautocomplete            import TitleFilename, Filename, Autocomplete
-from .muMenu                    import Menu
-from .wgselectone               import SelectOne, TitleSelectOne
-from .wgdatecombo               import DateCombo, TitleDateCombo
-
-from .npysTree import TreeData
-from .wgmultilinetree           import MLTree, MLTreeAnnotated, MLTreeAction, MLTreeAnnotatedAction
-from .wgmultilinetreeselectable import MLTreeMultiSelect, TreeLineSelectable
-from .wgmultilinetreeselectable import MLTreeMultiSelectAnnotated, TreeLineSelectableAnnotated
-
-
-# The following are maintained for compatibility with old code only. ##########################################
-
-from .compatibility_code.oldtreeclasses import MultiLineTree, SelectOneTree
-from .compatibility_code.oldtreeclasses import MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated # Experimental
-from .compatibility_code.oldtreeclasses import MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated # Experimental
-from .compatibility_code.npysNPSTree import NPSTreeData
-
-# End compatibility. ###########################################################################################
-
-from .wgfilenamecombo           import FilenameCombo, TitleFilenameCombo
-from .wgboxwidget               import BoxBasic, BoxTitle
-from .wgmultiline               import MultiLineActionWithShortcuts
-from .wgmultilineeditable       import MultiLineEditable, MultiLineEditableTitle, MultiLineEditableBoxed
-
-from .wgmonthbox                import MonthBox
-from .wggrid                    import SimpleGrid
-from .wggridcoltitles           import GridColTitles
-
-from .muNewMenu                 import NewMenu, MenuItem
-from .wgNMenuDisplay            import MenuDisplay, MenuDisplayScreen
-
-from .npyspmfuncs               import CallSubShell
-
-from .utilNotify                 import notify, notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no
-
-# Base classes for overriding:
-
-# Standard Forms:
-from . import stdfmemail
-
-# Experimental Only
-from .wgtextboxunicode import TextfieldUnicode
-from .wgtexttokens     import TextTokens, TitleTextTokens
-
-# Very experimental. Don't use for anything serious
-from .apOptions import SimpleOptionForm
-from .apOptions import OptionListDisplay, OptionChanger, OptionList, OptionLimitedChoices, OptionListDisplayLine
-from .apOptions import OptionFreeText, OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, \
-                       OptionBoolean, OptionFilename, OptionDate, OptionMultiFreeText
-
-
-# This really is about as experimental as it gets
-from .apNPSApplicationEvents import StandardApp
-from .eveventhandler import Event
-
-
-</t>
-<t tx="ekr.20180225010850.1"></t>
-<t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20201202144529.1"></t>
 <t tx="ekr.20210912064148.1"></t>

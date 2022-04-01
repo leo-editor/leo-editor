@@ -3,7 +3,7 @@
 #@+others
 #@+node:ekr.20170428084207.352: ** Declarations
 DISABLE_ALL_COLORS = False
-ASCII_ONLY         = False # See the safe_string function in wgwidget.  At the moment the encoding is not safe
+ASCII_ONLY = False  # See the safe_string function in wgwidget.  At the moment the encoding is not safe
 #@-others
 #@@language python
 #@@tabwidth -4

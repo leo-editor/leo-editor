@@ -41,6 +41,10 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 #
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
@@ -479,7 +483,13 @@ class Bunch:
 bunch = Bunch
 #@+node:ekr.20120219154958.10492: *3* class g.EmergencyDialog
 class EmergencyDialog:
-    """A class that creates an tkinter dialog with a single OK button."""
+    """
+    A class that creates an tkinter dialog with a single OK button.
+    
+    If tkinter doesn't exist (#2512), this class just prints the message
+    passed to the ctor.
+    
+    """
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
     def __init__(self, title: str, message: str) -> None:
@@ -493,14 +503,17 @@ class EmergencyDialog:
         self.frame = None  # The outermost frame.
         self.root = None  # Created in createTopFrame.
         self.top = None  # The toplevel Tk widget.
-        self.createTopFrame()
-        buttons = [{
-            "text": "OK",
-            "command": self.okButton,
-            "default": True,
-        }]
-        self.createButtons(buttons)
-        self.top.bind("<Key>", self.onKey)
+        if Tk:  # #2512.
+            self.createTopFrame()
+            buttons = [{
+                "text": "OK",
+                "command": self.okButton,
+                "default": True,
+            }]
+            self.createButtons(buttons)
+            self.top.bind("<Key>", self.onKey)
+        else:
+            print(message.rstrip() + '\n')
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
     def createButtons(self, buttons: List[Dict[str, Any]]) -> List[Any]:
         """Create a row of buttons.
@@ -508,7 +521,6 @@ class EmergencyDialog:
         buttons is a list of dictionaries containing
         the properties of each button.
         """
-        import tkinter as Tk
         assert self.frame
         self.buttonsFrame = f = Tk.Frame(self.top)
         f.pack(side="top", padx=30)
@@ -531,11 +543,10 @@ class EmergencyDialog:
     #@+node:ekr.20120219154958.10495: *4* emergencyDialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        import tkinter as Tk
         self.root = Tk.Tk()  # type:ignore
         self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
-        self.root.withdraw()
+        self.root.withdraw()  # This root window should *never* be shown.
         self.frame = Tk.Frame(self.top)  # type:ignore
         self.frame.pack(side="top", expand=1, fill="both")
         label = Tk.Label(self.frame, text=self.message, bg='white')
@@ -2072,7 +2083,6 @@ class TkIDDialog(EmergencyDialog):
     #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
     def createTopFrame(self) -> None:
         """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        import tkinter as Tk
         self.root = Tk.Tk()  # type:ignore
         self.top = Tk.Toplevel(self.root)  # type:ignore
         self.top.title(self.title)
@@ -6925,6 +6935,7 @@ def os_startfile(fname: str) -> None:
             stderr2log(g, ree, fname)
             ree.close()
     #@-others
+    # pylint: disable=used-before-assignment
     if fname.find('"') > -1:
         quoted_fname = f"'{fname}'"
     else:
@@ -7878,7 +7889,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         #@-<< gnx >>
         #@+<< section ref >>
         #@+node:tom.20220328141455.1: *5* << section ref >>
-        # Navigate to section reference if one was clickedon
+        # Navigate to section reference if one was clicked.
         l_ = line.strip()
         if l_.startswith('<<') and l_.endswith('>>'):
             p = c.p
@@ -7924,8 +7935,26 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     if not w.hasSelection():
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
-    if word:
-        c.findCommands.find_def_strict(event)
+    if not word:
+        return None
+    p, pos, newpos = c.findCommands.find_def_strict(event)
+    if p:
+        return None
+    # Part 4: #2546: look for a file name.
+    s = w.getAllText()
+    i, j = w.getSelectionRange()
+    m = re.match(r'(\w+)\.(\w){1,4}\b', s[i:])
+    if not m:
+        return None
+    # Find the first node whose headline ends with the filename.
+    filename = m.group(0)
+    for p in c.all_unique_positions():
+        if p.h.strip().endswith(filename):
+            # Set the find text.
+            c.findCommands.ftm.set_find_text(filename)
+            # Select.
+            c.redraw(p)
+            break
     return None
 #@+node:ekr.20170226093349.1: *3* g.unquoteUrl
 def unquoteUrl(url: str) -> str:

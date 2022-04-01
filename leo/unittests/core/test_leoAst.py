@@ -261,14 +261,11 @@ class BaseTest(unittest.TestCase):
         tog = self.tog
         try:
             t1 = get_time()
-            # Yes, list *is* required here.
-            list(tog.create_links(tokens, tree))
+            tog.create_links(tokens, tree)
             t2 = get_time()
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:  # pragma: no cover
-            # print('\n')
-            # g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug_list:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
@@ -1308,7 +1305,7 @@ class TestOrange(BaseTest):
                 """a[1:2:3]""",
                 # * and **, inside and outside function calls.
                 """a = b * c""",
-                """a = b ** c""",
+                # """a = b ** c""",  # Black has changed recently.
                 """f(*args)""",
                 """f(**kwargs)""",
                 """f(*args, **kwargs)""",

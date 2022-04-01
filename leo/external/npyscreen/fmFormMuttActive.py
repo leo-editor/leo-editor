@@ -47,7 +47,7 @@ class ActionControllerSimple:
     #@+node:ekr.20170428084207.264: *3* process_command_live
     def process_command_live(self, command_line, control_widget_proxy):
         for a in self._action_list:
-            if a['identifier'].match(command_line) and a['live']==True:
+            if a['identifier'].match(command_line) and a['live'] == True:
                 a['function'](command_line, control_widget_proxy, live=True)
 
     #@+node:ekr.20170428084207.265: *3* process_command_complete
@@ -86,16 +86,16 @@ class TextCommandBox(wgtextbox.Textfield):
         '''TextCommandBox.set_up_handlers.'''
         super(TextCommandBox, self).set_up_handlers()
         self.handlers.update({
-           curses.ascii.NL:     self.h_execute_command,
-           curses.ascii.CR:     self.h_execute_command,
+           curses.ascii.NL: self.h_execute_command,
+           curses.ascii.CR: self.h_execute_command,
         })
 
     #@+node:ekr.20170428084207.269: *3* set_up_history_keys
     def set_up_history_keys(self):
         '''ActionControllerSimple.set_up_history_keys'''
         self.handlers.update({
-            "^P":   self.h_get_previous_history,
-            "^N":   self.h_get_next_history,
+            "^P": self.h_get_previous_history,
+            "^N": self.h_get_next_history,
             curses.KEY_UP: self.h_get_previous_history,
             curses.KEY_DOWN: self.h_get_next_history,
         })
@@ -170,7 +170,7 @@ class TextCommandBoxTraditional(TextCommandBox):
          history=history,
          history_max=history_max,
          set_up_history_keys=set_up_history_keys,
-         *args, **keywords
+         * args, **keywords
         )
         self.linked_widget = None
         self.always_pass_to_linked_widget = []
@@ -217,8 +217,8 @@ class TextCommandBoxTraditional(TextCommandBox):
 
 #@+node:ekr.20170428084207.277: ** class FormMuttActive
 class FormMuttActive(fmFormMutt.FormMutt):
-    DATA_CONTROLER    = npysNPSFilteredData.NPSFilteredDataList
-    ACTION_CONTROLLER  = ActionControllerSimple
+    DATA_CONTROLER = npysNPSFilteredData.NPSFilteredDataList
+    ACTION_CONTROLLER = ActionControllerSimple
     COMMAND_WIDGET_CLASS = TextCommandBox
     #@+others
     #@+node:ekr.20170428084207.278: *3* __init__
@@ -243,19 +243,19 @@ class FormMuttActiveWithMenus(FormMuttActive, fmFormWithMenus.FormBaseNewWithMen
     #@-others
 #@+node:ekr.20170428084207.281: ** class FormMuttActiveTraditional
 class FormMuttActiveTraditional(fmFormMutt.FormMutt):
-    DATA_CONTROLER    = npysNPSFilteredData.NPSFilteredDataList
-    ACTION_CONTROLLER  = ActionControllerSimple
+    DATA_CONTROLER = npysNPSFilteredData.NPSFilteredDataList
+    ACTION_CONTROLLER = ActionControllerSimple
     COMMAND_WIDGET_CLASS = TextCommandBoxTraditional
     #@+others
     #@+node:ekr.20170428084207.282: *3* __init__
     def __init__(self, *args, **keywords):
         # First create action_controller so that create methods of forms
         # can use it.
-        self.action_controller        = self.ACTION_CONTROLLER(parent=self)
+        self.action_controller = self.ACTION_CONTROLLER(parent=self)
         super(FormMuttActiveTraditional, self).__init__(*args, **keywords)
         self.set_value(self.DATA_CONTROLER())
-        self.wCommand.linked_widget   = self.wMain
-        self.wMain.editable           = False
+        self.wCommand.linked_widget = self.wMain
+        self.wMain.editable = False
         self.wMain.always_show_cursor = True
 
         # special mouse handling

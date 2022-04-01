@@ -3585,48 +3585,50 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
-        c = self.c
-        if not self.pyplot_imported:
+        g.es('@pyplot nodes not implemented', color='gray')
+        if 0:  # Keep old code here for possible resurrection
+            c = self.c
+            if not self.pyplot_imported:
+                self.pyplot_imported = True
+                backend = g.os_path_finalize_join(
+                    g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+                if g.os_path_exists(backend):
+                    if matplotlib:
+                        try:
+                            matplotlib.use('module://leo.plugins.pyplot_backend')
+                        except ImportError:
+                            g.trace('===== FAIL: pyplot.backend')
+                else:
+                    g.trace('===== MISSING: pyplot.backend')
+            try:
+                plt.ion()  # Automatically set interactive mode.
+                namespace = {
+                    'animation': animation,
+                    'matplotlib': matplotlib,
+                    'numpy': np, 'np': np,
+                    'pyplot': plt, 'plt': plt,
+                }
+            except Exception:
+                g.es_print('matplotlib imports failed')
+                namespace = {}
+            # Embedding already works without this!
+                # self.embed_pyplot_widget()
             self.pyplot_imported = True
-            backend = g.os_path_finalize_join(
-                g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
-            if g.os_path_exists(backend):
-                if matplotlib:
-                    try:
-                        matplotlib.use('module://leo.plugins.pyplot_backend')
-                    except ImportError:
-                        g.trace('===== FAIL: pyplot.backend')
-            else:
-                g.trace('===== MISSING: pyplot.backend')
-        try:
-            plt.ion()  # Automatically set interactive mode.
-            namespace = {
-                'animation': animation,
-                'matplotlib': matplotlib,
-                'numpy': np, 'np': np,
-                'pyplot': plt, 'plt': plt,
-            }
-        except Exception:
-            g.es_print('matplotlib imports failed')
-            namespace = {}
-        # Embedding already works without this!
-            # self.embed_pyplot_widget()
-        self.pyplot_imported = True
-        # pyplot will throw RuntimeError if we close the pane.
-        self.pyplot_active = True
-        c.executeScript(
-            event=None,
-            args=None, p=None,
-            script=c.p.b,  #None,
-            useSelectedText=False,
-            define_g=True,
-            define_name='__main__',
-            silent=False,
-            namespace=namespace,
-            raiseFlag=False,
-            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
-        )
-        c.bodyWantsFocusNow()
+            # pyplot will throw RuntimeError if we close the pane.
+            self.pyplot_active = True
+            c.executeScript(
+                event=None,
+                args=None, p=None,
+                script=c.p.b,  #None,
+                useSelectedText=False,
+                define_g=True,
+                define_name='__main__',
+                silent=False,
+                namespace=namespace,
+                raiseFlag=False,
+                runPyflakes=False,  # Suppress warnings about pre-defined symbols.
+            )
+            c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.73: *4* vr3.update_rst & helpers
     #@@language python
     def update_rst(self, node_list, keywords=None):

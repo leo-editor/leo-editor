@@ -21,10 +21,10 @@ class FileCommand(wgautocomplete.Filename):
     def set_up_handlers(self):
         '''FileCommand.set_up_handlers.'''
         super(FileCommand, self).set_up_handlers()
-        self.handlers.update ({
-            curses.ascii.NL:    self.h_select_file,
-            curses.ascii.CR:    self.h_select_file,
-            "^W":               self.h_up_level,
+        self.handlers.update({
+            curses.ascii.NL: self.h_select_file,
+            curses.ascii.CR: self.h_select_file,
+            "^W": self.h_up_level,
         })
 
     #@+node:ekr.20170428084207.157: *3* h_select_file
@@ -46,7 +46,7 @@ class FileCommand(wgautocomplete.Filename):
         directory = os.path.abspath(directory)
 
         if self.value == '':
-            self.value=directory
+            self.value = directory
 
 
         try:
@@ -101,10 +101,10 @@ class FileGrid(wggrid.SimpleGrid):
     def set_up_handlers(self):
         '''FileGrid.set_up_handlers.'''
         super(FileGrid, self).set_up_handlers()
-        self.handlers.update ({
-            curses.ascii.NL:    self.h_select_file,
-            curses.ascii.CR:    self.h_select_file,
-            curses.ascii.SP:    self.h_select_file,
+        self.handlers.update({
+            curses.ascii.NL: self.h_select_file,
+            curses.ascii.CR: self.h_select_file,
+            curses.ascii.SP: self.h_select_file,
         })
 
     #@+node:ekr.20170428084207.162: *3* FileGrid.change_dir
@@ -129,7 +129,7 @@ class FileGrid(wggrid.SimpleGrid):
         try:
              select_file = os.path.join(self.parent.value, self.values[self.edit_cell[0]][self.edit_cell[1]])
              select_file = os.path.abspath(select_file)
-        except (TypeError, IndexError):
+        except(TypeError, IndexError):
             self.edit_cell = [0, 0]
             return False
 
@@ -150,14 +150,14 @@ class FileGrid(wggrid.SimpleGrid):
     #@-others
 #@+node:ekr.20170428084207.165: ** class FileSelector
 class FileSelector(fmFormMutt.FormMutt):
-    MAIN_WIDGET_CLASS   = FileGrid
-    COMMAND_WIDGET_CLASS= FileCommand
-    BLANK_LINES_BASE     = 0
+    MAIN_WIDGET_CLASS = FileGrid
+    COMMAND_WIDGET_CLASS = FileCommand
+    BLANK_LINES_BASE = 0
     #@+others
     #@+node:ekr.20170428084207.166: *3* __init__
     def __init__(self,
-    select_dir=False, #Select a dir, not a file
-    must_exist=False, #Selected File must already exist
+    select_dir=False,  #Select a dir, not a file
+    must_exist=False,  #Selected File must already exist
     confirm_if_exists=True,
     sort_by_extension=True,
     *args, **keywords):
@@ -177,7 +177,7 @@ class FileSelector(fmFormMutt.FormMutt):
     #@+node:ekr.20170428084207.167: *3* try_exit
     def try_exit(self):
         if not self.wCommand.value:
-            self.value=''
+            self.value = ''
             self.exit_editing()
             return None
 
@@ -235,13 +235,13 @@ class FileSelector(fmFormMutt.FormMutt):
         except OSError:
             utilNotify.notify_wait(title="Error", message="Could not read specified directory.")
         # DOES NOT CURRENTLY WORK - EXCEPT FOR THE WORKING DIRECTORY.  REFACTOR.
-        new_file_list= []
+        new_file_list = []
         for f in file_list:
             f = os.path.normpath(f)
             if os.path.isdir(f):
                 new_file_list.append(f + os.sep)
             else:
-                new_file_list.append(f) # + "*")
+                new_file_list.append(f)  # + "*")
         file_list = new_file_list
         del new_file_list
 

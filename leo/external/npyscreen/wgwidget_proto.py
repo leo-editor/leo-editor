@@ -50,7 +50,7 @@ class _LinePrinter:
             print_on = self.parent.curses_pad
 
 
-        while column <= (max_columns-1):
+        while column <= (max_columns - 1):
             try:
                 width_of_char_to_print = self.find_width_of_char(unicode_string[place_in_string])
             except IndexError:
@@ -58,7 +58,7 @@ class _LinePrinter:
             if column - 1 + width_of_char_to_print > max_columns:
                 break
             try:
-                print_on.addstr(realy,realx+column,
+                print_on.addstr(realy, realx + column,
                     self._print_unicode_char(unicode_string[place_in_string]),
                     attributes_list[place_in_string]
                     )

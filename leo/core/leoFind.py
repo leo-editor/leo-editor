@@ -501,7 +501,7 @@ class LeoFind:
         # Check.
         word = self._compute_find_def_word(event)
         if not word:
-            return
+            return None, None, None
         # Settings...
         prefix = 'class' if word[0].isupper() else 'def'
         find_pattern = prefix + ' ' + word
@@ -511,11 +511,11 @@ class LeoFind:
         self.update_change_list(self.change_text)  # Optional. An edge case.
         # Do the command!
         settings = self._compute_find_def_settings(find_pattern)
-        self.do_find_def(settings, word, strict)
+        return self.do_find_def(settings, word, strict)
 
     def find_def_strict(self, event=None):  #pragma: no cover (cmd)
         """Same as find_def, but don't call _switch_style."""
-        self.find_def(event=event, strict=True)
+        return self.find_def(event=event, strict=True)
 
     def do_find_def(self, settings, word, strict):
         """A standalone helper for unit tests."""
@@ -601,9 +601,9 @@ class LeoFind:
         c.redraw()
         c.bodyWantsFocusNow()
         # #1592.  Ignore hits under control of @nosearch
+        old_reverse = self.reverse
         try:
             # #2161:
-            old_reverse = self.reverse
             self.reverse = self.reverse_find_defs
             # # 2288:
             self.work_s = p.b
@@ -1352,7 +1352,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        count = self.do_clone_find_all_flattened(settings)
+        count = self.do_clone_find_all(settings)
         if count:
             c.redraw()
             c.treeWantsFocus()
@@ -1409,7 +1409,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        count = self.do_clone_find_all(settings)
+        count = self.do_clone_find_all_flattened(settings)
         if count:
             c.redraw()
             c.treeWantsFocus()
@@ -1983,22 +1983,24 @@ class LeoFind:
         clones, skip = [], set()
         while p and p != after:
             progress = p.copy()
-            if p.v in skip:  # pragma: no cover (minor)
-                p.moveToThreadNext()
-            elif g.inAtNosearch(p):
+            if g.inAtNosearch(p):
                 p.moveToNodeAfterTree()
+            elif p.v in skip:  # pragma: no cover (minor)
+                p.moveToThreadNext()
             elif self._cfa_find_next_match(p):
                 count += 1
-                if p not in clones:
-                    clones.append(p.copy())
                 if flatten:
+                    skip.add(p.v)
+                    clones.append(p.copy())
                     p.moveToThreadNext()
                 else:
+                    if p not in clones:
+                        clones.append(p.copy())
                     # Don't look at the node or it's descendants.
                     for p2 in p.self_and_subtree(copy=False):
                         skip.add(p2.v)
                     p.moveToNodeAfterTree()
-            else:  # pragma: no cover (minor)
+            else:
                 p.moveToThreadNext()
             assert p != progress
         self.ftm.set_radio_button('entire-outline')

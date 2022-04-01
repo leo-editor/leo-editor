@@ -4,7 +4,7 @@
 #@+node:ekr.20170428084207.435: ** Declarations
 import curses
 import weakref
-from .. import npyscreen ### Changed
+from .. import npyscreen  ### Changed
 # import email
 import mimetypes
 import os.path
@@ -45,8 +45,8 @@ class EmailTree(npyscreen.MultiLineTreeNew):
             value = [self.values[self.cursor_line],]
         self.parent.when_select_part(value)
         self.editing = False
-        self.how_exited=npyscreen.wgwidget.EXITED_UP
-        self.hidden  = True
+        self.how_exited = npyscreen.wgwidget.EXITED_UP
+        self.hidden = True
 
     #@+node:ekr.20170428084207.441: *3* h_select_exit
     def h_select_exit(self, ch):
@@ -57,7 +57,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         '''EmailTree.set_up_handlers.'''
         super(EmailTree, self).set_up_handlers()
         self.handlers.update({
-            ord('s'):   self.h_save_message_part,
+            ord('s'): self.h_save_message_part,
         })
 
     #@+node:ekr.20170428084207.443: *3* h_save_message_part
@@ -75,16 +75,16 @@ class EmailPager(npyscreen.Pager):
         '''EmailPager.set_up_handlers.'''
         super(EmailPager, self).set_up_handlers()
         self.handlers.update({
-            curses.KEY_LEFT:    self.h_exit_tree,
-            ord('s'):           self.h_save_message_part,
-            ord('x'):           self.h_exit_tree,
-            ord('q'):           self.h_exit_tree,
-            curses.ascii.ESC:   self.h_exit_tree,
+            curses.KEY_LEFT: self.h_exit_tree,
+            ord('s'): self.h_save_message_part,
+            ord('x'): self.h_exit_tree,
+            ord('q'): self.h_exit_tree,
+            curses.ascii.ESC: self.h_exit_tree,
         })
 
     #@+node:ekr.20170428084207.446: *3* EmailPager.h_exit_tree
     def h_exit_tree(self, ch):
-        self.editing    = False
+        self.editing = False
         self.how_exited = True
         self.parent.when_show_tree(ch)
 
@@ -97,7 +97,7 @@ class EmailPager(npyscreen.Pager):
     #@-others
 #@+node:ekr.20170428084207.448: ** class EmailViewFm
 class EmailViewFm(npyscreen.SplitFormWithMenus):
-    BLANK_COLUMNS_RIGHT= 1
+    BLANK_COLUMNS_RIGHT = 1
     SHORT_HEADER_LIST = ('from', 'to', 'cc', 'bcc' 'date', 'subject', 'reply-to')
     DOWNLOAD_DIR = os.path.expanduser("~/Downloads")
 
@@ -105,22 +105,22 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     #@+node:ekr.20170428084207.449: *3* setEmail
     def setEmail(self, this_email):
         #Clear everything
-        self.this_email          = this_email
-        self.wSubject.value      = ""
-        self.wFrom.value         = ""
-        self.wDate.value         = ""
-        self.wEmailBody.values   = []
-        self.wStatusLine.value   = ""
-        self.wEmailBody.hidden   = True
+        self.this_email = this_email
+        self.wSubject.value = ""
+        self.wFrom.value = ""
+        self.wDate.value = ""
+        self.wEmailBody.values = []
+        self.wStatusLine.value = ""
+        self.wEmailBody.hidden = True
         self.wEmailBody.start_display_at = 0
         self.wMessageTree.hidden = False
         self.wMessageTree.cursor_line = 0
 
         self.updateEmailTree()
 
-        self.wSubject.value     = this_email['subject']
-        self.wFrom.value        = this_email['from']
-        self.wDate.value        = this_email['date']
+        self.wSubject.value = this_email['subject']
+        self.wFrom.value = this_email['from']
+        self.wDate.value = this_email['date']
 
 
     #@+node:ekr.20170428084207.450: *3* setValue
@@ -144,28 +144,28 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     def create(self):
         self.m1 = self.add_menu(name="Read Email")
         self.m1.addItemsFromList([
-            ('View Short Headers',              self.viewShortHeaders),
-            ('View Full Headers',               self.viewAllHeaders),
-            ('View Message Tree',              self.viewMessageTree),
-            ('Save this Message Part',          self.saveMessagePart),
-            ('View Message Source',             self.viewMessageSource),
+            ('View Short Headers', self.viewShortHeaders),
+            ('View Full Headers', self.viewAllHeaders),
+            ('View Message Tree', self.viewMessageTree),
+            ('Save this Message Part', self.saveMessagePart),
+            ('View Message Source', self.viewMessageSource),
         ])
         self.nextrely = 1
         self.wSubject = self.add(npyscreen.TitleText, begin_entry_at=10, editable=False,
-                                        use_two_lines=False, name = "Subject:")
-        self.wFrom    = self.add(npyscreen.TitleText, begin_entry_at=10,
-                                        editable=False, name = "From:", ) #max_width=-8)
-        self.wDate    = self.add(npyscreen.TitleText, begin_entry_at=10,
-                                        editable=False, name = "Date:")
+                                        use_two_lines=False, name="Subject:")
+        self.wFrom = self.add(npyscreen.TitleText, begin_entry_at=10,
+                                        editable=False, name="From:",)  #max_width=-8)
+        self.wDate = self.add(npyscreen.TitleText, begin_entry_at=10,
+                                        editable=False, name="Date:")
 
-        self.draw_line_at   = self.nextrely
-        self.nextrely      += 1
-        _body_rely          = self.nextrely
-        self.wEmailBody     = self.add(EmailPager, max_height=-1, scroll_exit=True, hidden=True)
-        self.nextrely       = _body_rely
-        self.wMessageTree   = self.add(EmailTree, max_height=-1, scroll_exit=True, hidden=False)
-        self.nextrely      += 1
-        self.wStatusLine    = self.add(npyscreen.FixedText,
+        self.draw_line_at = self.nextrely
+        self.nextrely += 1
+        _body_rely = self.nextrely
+        self.wEmailBody = self.add(EmailPager, max_height=-1, scroll_exit=True, hidden=True)
+        self.nextrely = _body_rely
+        self.wMessageTree = self.add(EmailTree, max_height=-1, scroll_exit=True, hidden=False)
+        self.nextrely += 1
+        self.wStatusLine = self.add(npyscreen.FixedText,
             editable=False,
             use_max_space=True,
             color='STANDOUT',
@@ -234,12 +234,12 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
         fn = messagePart.get_filename()
         counter = 0
         if not fn:
-            ext = mimetypes.guess_extension(messagePart.get_content_type()) # Bug in python returns .ksh for text/plain.  Wait for python fix?
+            ext = mimetypes.guess_extension(messagePart.get_content_type())  # Bug in python returns .ksh for text/plain.  Wait for python fix?
             if not ext:
                 # generic extension?
                 ext = '.bin'
             fn = 'emailpart%s' % (ext)
-        fn = os.path.basename(fn) # Sanitize Filename.
+        fn = os.path.basename(fn)  # Sanitize Filename.
         attempted_filename = fn
         while os.path.exists(os.path.join(self.DOWNLOAD_DIR, attempted_filename)):
             counter += 1

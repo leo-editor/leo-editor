@@ -11,9 +11,9 @@ assert g
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable (MultiLine)
 class MultiLineEditable(wgmultiline.MultiLine):
-    _contained_widgets      = textbox.Textfield
-    CHECK_VALUE             = True
-    ALLOW_CONTINUE_EDITING  = True
+    _contained_widgets = textbox.Textfield
+    CHECK_VALUE = True
+    ALLOW_CONTINUE_EDITING = True
     CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
 
     #@+others
@@ -34,9 +34,9 @@ class MultiLineEditable(wgmultiline.MultiLine):
             self.insert_line_value()
             return False
         try:
-            active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+            active_line = self._my_widgets[(self.cursor_line - self.start_display_at)]
         except IndexError:
-            self._my_widgets[0] # Huh?
+            self._my_widgets[0]  # Huh?
             self.cursor_line = 0
             self.insert_line_value()
             return True
@@ -78,15 +78,15 @@ class MultiLineEditable(wgmultiline.MultiLine):
     def _continue_editing(self):
 
         # g.trace('(MultiLineEditable)')
-        active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+        active_line = self._my_widgets[(self.cursor_line - self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):
             while active_line.how_exited == wgwidget.EXITED_DOWN and continue_editing:
-                self.values.insert(self.cursor_line+1, self.get_new_value())
+                self.values.insert(self.cursor_line + 1, self.get_new_value())
                 self.cursor_line += 1
                 self.display()
                 continue_editing = self.edit_cursor_line_value()
-                active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+                active_line = self._my_widgets[(self.cursor_line - self.start_display_at)]
     #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
     #@+node:ekr.20170428084208.166: *4* MultiLineEditable.h_insert_next_line
     def h_insert_next_line(self, ch):
@@ -121,15 +121,15 @@ class MultiLineEditable(wgmultiline.MultiLine):
     def set_up_handlers(self):
         '''MultiLineEditable.set_up_handlers.'''
         super(MultiLineEditable, self).set_up_handlers()
-        self.handlers.update ( {
-            ord('i'):               self.h_insert_value,
-            ord('o'):               self.h_insert_next_line,
-            curses.ascii.CR:        self.h_edit_cursor_line_value,
-            curses.ascii.NL:        self.h_edit_cursor_line_value,
-            curses.ascii.SP:        self.h_edit_cursor_line_value,
-            curses.ascii.DEL:       self.h_delete_line_value,
-            curses.ascii.BS:        self.h_delete_line_value,
-            curses.KEY_BACKSPACE:   self.h_delete_line_value,
+        self.handlers.update({
+            ord('i'): self.h_insert_value,
+            ord('o'): self.h_insert_next_line,
+            curses.ascii.CR: self.h_edit_cursor_line_value,
+            curses.ascii.NL: self.h_edit_cursor_line_value,
+            curses.ascii.SP: self.h_edit_cursor_line_value,
+            curses.ascii.DEL: self.h_delete_line_value,
+            curses.ascii.BS: self.h_delete_line_value,
+            curses.KEY_BACKSPACE: self.h_delete_line_value,
         })
     #@-others
 #@+node:ekr.20170428084208.171: ** class MultiLineEditableTitle

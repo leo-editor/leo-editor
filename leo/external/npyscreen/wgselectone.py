@@ -2,8 +2,8 @@
 #@+node:ekr.20170428084208.290: * @file ../external/npyscreen/wgselectone.py
 #@+others
 #@+node:ekr.20170428084208.291: ** Declarations
-from . import wgmultiline  as multiline
-from . import wgcheckbox   as checkbox
+from . import wgmultiline as multiline
+from . import wgcheckbox as checkbox
 
 #@+node:ekr.20170428084208.292: ** class SelectOne
 class SelectOne(multiline.MultiLine):
@@ -18,7 +18,7 @@ class SelectOne(multiline.MultiLine):
         # Make sure that self.value is a list
         if not hasattr(self.value, "append"):
             if self.value is not None:
-                self.value = [self.value, ]
+                self.value = [self.value,]
             else:
                 self.value = []
 
@@ -60,7 +60,7 @@ class SelectOne(multiline.MultiLine):
             line.name = None
             line.hide = True
 
-        line.highlight= False
+        line.highlight = False
 
     #@-others
 #@+node:ekr.20170428084208.296: ** class TitleSelectOne

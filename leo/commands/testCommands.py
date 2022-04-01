@@ -249,7 +249,7 @@ def test_file_commands(event=None):
 @g.command('test-find')
 def test_find(event=None):
     """Run all unit tests for leoFind.py."""
-    g.run_unit_tests('leo.unittests.core.test_leoFind.')
+    g.run_unit_tests('leo.unittests.core.test_leoFind')
 #@+node:ekr.20210907103024.22: *3* test-frame
 @g.command('test-frame')
 def test_frame(event=None):

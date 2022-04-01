@@ -865,8 +865,8 @@ class LeoApp:
         # Compute g.app.signon1.
         app.signon1 = f"Python {n1}.{n2}.{n3}{guiVersion}\n{sysVersion}"
 
-    def printSignon(self, verbose=False):
-        """Print a minimal sigon to the log."""
+    def printSignon(self):
+        """Print the signon to the log."""
         app = self
         if app.silentMode:
             return
@@ -876,8 +876,7 @@ class LeoApp:
             print('See: https://stackoverflow.com/questions/14109024')
             print('')
         print(app.signon)
-        if verbose:
-            print(app.signon1)
+        print(app.signon1)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1105,15 +1104,24 @@ class LeoApp:
         self.use_splash_screen = False
         #
         # Get the id, making sure it is at least three characters long.
-        while True:
+        attempt = 0
+        id_ = None
+        while attempt < 2:
+            attempt += 1
             dialog = g.TkIDDialog()
             dialog.run()
             # #1404: Make sure the id will not corrupt the .leo file.
+            #        cleanLeoID raises a warning dialog.
             id_ = self.cleanLeoID(dialog.val, "")
             if id_ and len(id_) > 2:
                 break
         #
         # Put result in g.app.leoID.
+        # Note: For unit tests, leoTest2.py: create_app sets g.app.leoID.
+        if not id_:
+            print('Leo can not start without an id.')
+            print('Leo will now exit')
+            sys.exit(1)
         self.leoID = id_
         g.blue('leoID=', repr(self.leoID), spaces=False)
     #@+node:ekr.20031218072017.1982: *5* app.setIDFile

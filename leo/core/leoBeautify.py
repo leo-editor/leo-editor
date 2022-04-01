@@ -71,17 +71,11 @@ def orange_files(event):
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
-            print('')
-            print(f"{tag}: {g.shortFileName(filename)}")
             changed = leoAst.Orange(settings=settings).beautify_file(filename)
             if changed:
                 n_changed += 1
-            changed_s = 'changed' if changed else 'unchanged'
-            g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
-            print('')
-            print(f"{tag}: file not found:{filename}")
-            g.es(f"{tag}: file not found:\n{filename}")
+            g.es_print(f"file not found: {filename}")
     t2 = time.process_time()
     print('')
     g.es_print(

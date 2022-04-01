@@ -197,7 +197,7 @@ class TreeData:
         key = _this_sort_function
         if not ignore_root:
             yield self
-        nodes_to_yield = collections.deque() # better memory management than a list for pop(0)
+        nodes_to_yield = collections.deque()  # better memory management than a list for pop(0)
         if self.expanded or not only_expanded:
             if sort:
                 # This and the similar block below could be combined into a nested function

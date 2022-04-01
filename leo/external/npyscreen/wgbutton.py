@@ -9,7 +9,7 @@ import locale
 # import weakref
 from . import npysGlobalOptions as GlobalOptions
 # from . import wgwidget    as widget
-from . import wgcheckbox  as checkbox
+from . import wgcheckbox as checkbox
 
 #@+node:ekr.20170428084207.526: ** class MiniButton
 class MiniButton(checkbox._ToggleControl):
@@ -33,7 +33,7 @@ class MiniButton(checkbox._ToggleControl):
 
     #@+node:ekr.20170428084207.528: *3* calculate_area_needed
     def calculate_area_needed(self):
-        return 1, self.label_width+2
+        return 1, self.label_width + 2
 
     #@+node:ekr.20170428084207.529: *3* MiniButton.update
     def update(self, clear=True):
@@ -45,10 +45,10 @@ class MiniButton(checkbox._ToggleControl):
 
         if self.value and self.do_colors():
             self.parent.curses_pad.addstr(self.rely, self.relx, '>', self.parent.theme_manager.findPair(self))
-            self.parent.curses_pad.addstr(self.rely, self.relx+self.width-1, '<', self.parent.theme_manager.findPair(self))
+            self.parent.curses_pad.addstr(self.rely, self.relx + self.width - 1, '<', self.parent.theme_manager.findPair(self))
         elif self.value:
             self.parent.curses_pad.addstr(self.rely, self.relx, '>')
-            self.parent.curses_pad.addstr(self.rely, self.relx+self.width-1, '<')
+            self.parent.curses_pad.addstr(self.rely, self.relx + self.width - 1, '<')
 
 
         if self.editing:
@@ -66,13 +66,13 @@ class MiniButton(checkbox._ToggleControl):
                 if self.editing:
                     button_attributes = self.parent.theme_manager.findPair(self, self.cursor_color)
                 else:
-                    button_attributes  = self.parent.theme_manager.findPair(self, self.color)
+                    button_attributes = self.parent.theme_manager.findPair(self, self.color)
             else:
                 button_attributes = self.parent.theme_manager.findPair(self, self.color) | button_state
         else:
             button_attributes = button_state
 
-        self.add_line(self.rely, self.relx+1,
+        self.add_line(self.rely, self.relx + 1,
             button_name,
             self.make_attributes_list(button_name, button_attributes),
             self.label_width

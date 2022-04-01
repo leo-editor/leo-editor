@@ -36,13 +36,13 @@ def getTheme():
 
 #@+node:ekr.20170428084207.426: ** class ScreenArea
 class ScreenArea:
-    BLANK_LINES_BASE   =0
-    BLANK_COLUMNS_RIGHT=0
-    DEFAULT_NEXTRELY=2
-    DEFAULT_LINES      = 0
-    DEFAULT_COLUMNS    = 0
-    SHOW_ATX           = 0
-    SHOW_ATY           = 0
+    BLANK_LINES_BASE = 0
+    BLANK_COLUMNS_RIGHT = 0
+    DEFAULT_NEXTRELY = 2
+    DEFAULT_LINES = 0
+    DEFAULT_COLUMNS = 0
+    SHOW_ATX = 0
+    SHOW_ATY = 0
 
     """A screen area that can be safely resized.  But this is a low-level class, not the
     object you are looking for."""
@@ -50,10 +50,10 @@ class ScreenArea:
     #@+others
     #@+node:ekr.20170428084207.427: *3* ScreenArea.__init__
     def __init__(self, lines=0, columns=0,
-            minimum_lines = 24,
-            minimum_columns = 80,
-            show_atx = 0,
-            show_aty = 0,
+            minimum_lines=24,
+            minimum_columns=80,
+            show_atx=0,
+            show_aty=0,
              **keywords):
 
 
@@ -63,11 +63,11 @@ class ScreenArea:
         if not columns:
             columns = self.__class__.DEFAULT_COLUMNS
 
-        if lines:   minimum_lines   = lines
+        if lines: minimum_lines = lines
         if columns: minimum_columns = columns
 
-        self.lines = lines #or 25
-        self.columns = columns #or 80
+        self.lines = lines  #or 25
+        self.columns = columns  #or 80
 
         self.min_l = minimum_lines
         self.min_c = minimum_columns
@@ -102,10 +102,10 @@ class ScreenArea:
 
 
         if not self.lines:
-            self.lines = self._max_physical()[0]+1
+            self.lines = self._max_physical()[0] + 1
             self.lines_were_auto_set = True
         if not self.columns:
-            self.columns = self._max_physical()[1]+1
+            self.columns = self._max_physical()[1] + 1
             self.cols_were_auto_set = True
 
         if self.min_l > self.lines:
@@ -127,32 +127,32 @@ class ScreenArea:
         # and see the size curses makes it.  No good to keep, though
         try:
             mxy, mxx = struct.unpack('hh', fcntl.ioctl(sys.stderr.fileno(), termios.TIOCGWINSZ, 'xxxx'))
-            if (mxy, mxx) == (0,0):
+            if (mxy, mxx) == (0, 0):
                 raise ValueError
-        except (ValueError, NameError):
-            mxy, mxx = curses.newwin(0,0).getmaxyx()
+        except(ValueError, NameError):
+            mxy, mxx = curses.newwin(0, 0).getmaxyx()
 
         # return safe values, i.e. slightly smaller.
-        return (mxy-1, mxx-1)
+        return (mxy - 1, mxx - 1)
 
     #@+node:ekr.20170428084207.430: *3* ScreenArea.useable_space
     def useable_space(self, rely=0, relx=0):
        mxy, mxx = self.lines, self.columns
-       return (mxy-rely, mxx-1-relx) # x - 1 because can't use last line bottom right.
+       return (mxy - rely, mxx - 1 - relx)  # x - 1 because can't use last line bottom right.
 
     #@+node:ekr.20170428084207.431: *3* ScreenArea.widget_useable_space
     def widget_useable_space(self, rely=0, relx=0):
         #Slightly misreports space available.
         #mxy, mxx = self.lines, self.columns-1
         mxy, mxx = self.useable_space(rely=rely, relx=relx)
-        return (mxy-self.BLANK_LINES_BASE, mxx-self.BLANK_COLUMNS_RIGHT)
+        return (mxy - self.BLANK_LINES_BASE, mxx - self.BLANK_COLUMNS_RIGHT)
 
     #@+node:ekr.20170428084207.432: *3* ScreenArea.refresh
     def refresh(self):
 
         pmfuncs.hide_cursor()
         _my, _mx = self._max_physical()
-        self.curses_pad.move(0,0)
+        self.curses_pad.move(0, 0)
         # Since we can have pannels larger than the screen
         # let's allow for scrolling them
 
@@ -164,7 +164,7 @@ class ScreenArea:
                 self.show_from_x,
                 self.show_aty,
                 self.show_atx,
-                _my,_mx)
+                _my, _mx)
         except curses.error:
             pass
         self.ALL_SHOWN = (

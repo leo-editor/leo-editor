@@ -7217,6 +7217,50 @@ def create_test(p, input_lines, expected_lines):
 
 g.cls()
 g.run_unit_tests('leo.unittests.core.test_leoImport.TestPython')
+#@+node:tbrown.20130411121812.28335: ** ssm.find_constants_defined (no longer used)
+def find_constants_defined(self, text):
+    r"""find_constants - Return a dict of constants defined in the supplied text.
+
+    NOTE: this supports a legacy way of specifying @<identifiers>, regular
+    @string and @color settings should be used instead, so calling this
+    wouldn't be needed.  expand_css_constants() issues a warning when
+    @<identifiers> are found in the output of this method.
+
+    Constants match::
+
+        ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+        i.e.
+        @foo_1-5=a
+            @foo_1-5 = a more here
+
+    :Parameters:
+    - `text`: text to search
+    """
+    pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+    ans: Dict[str, str] = {}
+    text = text.replace('\\\n', '')  # merge lines ending in \
+    for line in text.split('\n'):
+        test = pattern.match(line)
+        if test:
+            ans.update([test.groups()])  # type:ignore  # Mysterious
+    # constants may refer to other constants, de-reference here
+    change = True
+    level = 0
+    while change and level < 10:
+        level += 1
+        change = False
+        for k in ans:
+            # pylint: disable=unnecessary-lambda
+            # process longest first so @solarized-base0 is not replaced
+            # when it's part of @solarized-base03
+            for o in sorted(ans, key=lambda x: len(x), reverse=True):
+                if o in ans[k]:
+                    change = True
+                    ans[k] = ans[k].replace(o, ans[o])
+    if level == 10:
+        print("Ten levels of recursion processing styles, abandoned.")
+        g.es("Ten levels of recursion processing styles, abandoned.")
+    return ans
 #@-all
 #@@nosearch
 #@-leo

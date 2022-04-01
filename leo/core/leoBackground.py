@@ -7,6 +7,8 @@ import re
 import subprocess
 from typing import List
 from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore
+
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
@@ -56,7 +58,12 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
-        g.app.idleTimeManager.add_callback(self.on_idle)
+        # #2528: A timer that runs independently of idle time.
+        self.timer = None
+        self.timer_started = False
+        if QtCore:
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(self.on_idle)
     #@+node:ekr.20161028090624.1: *3* class BPM.ProcessData
     class ProcessData:
         """A class to hold data about running or queued processes."""
@@ -93,13 +100,16 @@ class BackgroundProcessManager:
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
         """Check the running process, and switch if necessary."""
+        # #2428: Handle all output only after the process has completed.
+        #        There should be no danger of a deadlock because
+        #        there is only one running subprocess.
         if self.pid:
-            if self.pid.poll() is None:
-                # Unblock the process by reading immediately.
+            if self.pid.poll() is None:  # The process is still running.
+                pass
+            else:  # The process has completed.
                 for s in self.pid.stdout:
                     self.data.number_of_lines += 1
                     self.put_log(s)
-            else:
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
         elif self.process_queue:
@@ -131,7 +141,8 @@ class BackgroundProcessManager:
             g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
-    #@+node:ekr.20161026193609.3: *3* bpm.kill
+            self.timer.stop()  # #2528
+    #@+node:ekr.20161026193609.3: *3* bpm.kill (** changed)
     def kill(self, kind=None):
         """Kill the presently running process, if any."""
         if kind is None:
@@ -148,9 +159,14 @@ class BackgroundProcessManager:
                 pass
             self.pid = None
         self.put_log(f"{kind} finished")
+        self.timer.stop()  # #2528
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         """The idle-time callback for leo.commands.checkerCommands."""
+        try:
+            g.app.gui.qtApp.processEvents()  # #2528.
+        except Exception:
+            pass
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
@@ -244,22 +260,31 @@ class BackgroundProcessManager:
 
         Don't set self.data unless we start the process!
         """
+
+        def open_process():
+            return subprocess.Popen(
+                command,
+                shell=shell,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                universal_newlines=True,
+            )
+
+        if not self.timer_started:
+            # #2528: Start the free-running timer.
+            self.timer.start(100)
+            self.timer_started = True
+
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+
         if self.pid:
-            # A process is already active.  Add a new callback.
-            # This trace is annoying.
-                # g.es_print(f'queue {kind}: {g.shortFileName(fn)}')
+            # A process is already active.
+            # Add a new callback to .process_queue for start_process().
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
-                self.pid = subprocess.Popen(
-                    command,
-                    shell=shell,
-                    stderr=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    universal_newlines=True,
-                )
+                self.pid = open_process()
 
             data.callback = callback
             self.process_queue.append(data)
@@ -268,13 +293,7 @@ class BackgroundProcessManager:
             self.data = data
             self.kind = kind
             g.es_print(f'{kind}: {g.shortFileName(fn)}')
-            self.pid = subprocess.Popen(
-                command,
-                shell=shell,
-                stderr=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-            )
+            self.pid = open_process()
     #@-others
 #@-others
 #@@language python

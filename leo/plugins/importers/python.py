@@ -238,7 +238,7 @@ def split_root(root, lines):
                 new_body = body(last, h1, col)  # #2500.
                 # there are some declaration lines in between two inner definitions
                 p1 = p.insertAsLastChild()
-                p1.h = declaration_headline(new_body) # #2500
+                p1.h = declaration_headline(new_body)  # #2500
                 p1.b = new_body
                 last = h1
             p1 = p.insertAsLastChild()
@@ -273,7 +273,7 @@ def split_root(root, lines):
         """
         for s1 in g.splitLines(body_string):
             s = s1.strip()
-            if s.startswith('#') and len(s.replace('#','').strip()) > 1:
+            if s.startswith('#') and len(s.replace('#', '').strip()) > 1:
                 # A non-trivial comment: Return the comment w/o the leading '#'.
                 return s[1:].strip()
             if s and not s.startswith('#'):

@@ -23,9 +23,12 @@ import sys
 import socket
 import textwrap
 import time
-import tkinter as Tk
-from typing import List, Union
+from typing import Any, Dict, List, Union
 # Third-party.
+try:
+    import tkinter as Tk
+except Exception:
+    Tk = None
 # #2300
 try:
     import websockets
@@ -54,7 +57,7 @@ connectionsPool = set()  # type:ignore
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List = [] # list of traces names, to be used as flags to output traces
+traces: List = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
@@ -88,7 +91,7 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+others
     #@+node:felix.20210626222905.2: *3* sefc.ctor
     def __init__(self):
-        """Ctor for ExternalFiles class."""
+        """Ctor for ServerExternalFiles class."""
         super().__init__()
 
         self.on_idle_count = 0
@@ -390,7 +393,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.2: *3* __init__
     def __init__(self, c):
         self.c = c
-        self.lw = [] # empty list
+        self.lw = []  # empty list
 
         # Keys are id(w),values are either tuples in tuples (w (p,pos)) or tuples (w, f)
         # (function f is when built from addGeneric)
@@ -406,7 +409,7 @@ class QuickSearchController:
 
         self.navText = ''
         self.showParents = True
-        self.isTag = False # added concept to combine tag pane functionality
+        self.isTag = False  # added concept to combine tag pane functionality
         self.searchOptions = 0
         self.searchOptionsStrings = ["All", "Subtree", "File",
                                      "Chapter", "Node"]
@@ -424,7 +427,7 @@ class QuickSearchController:
     def addItem(self, it, val):
         self.its[id(it)] = (it, val)
         # changed to 999 from 3000 to replace old threadutil behavior
-        return len(self.its) > 999 # Limit to 999 for now
+        return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.5: *3* addBodyMatches
     def addBodyMatches(self, poslist):
         lineMatchHits = 0
@@ -561,7 +564,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -649,7 +652,7 @@ class QuickSearchController:
             # No pattern! list all tags as string
             c = self.c
             self.clear()
-            d = {}
+            d: Dict[str, Any] = {}
             for p in c.all_unique_positions():
                 u = p.v.u
                 tags = set(u.get('__node_tags', set([])))
@@ -664,8 +667,8 @@ class QuickSearchController:
             return
         # else: non empty pattern, so find tag!
         hm = self.find_tag(pat)
-        self.clear() # needed for external client ui replacement: fills self.its
-        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+        self.clear()  # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
     #@+node:felix.20220225003906.15: *3* bgSearch
     def bgSearch(self, pat):
         if not pat.startswith('r:'):
@@ -675,8 +678,8 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             # bpat = pat[2:]
-            flags = 0
-        combo =  self.searchOptionsStrings[self.searchOptions]
+            flags = 0  # type:ignore
+        combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
@@ -685,8 +688,8 @@ class QuickSearchController:
             hNodes = [self.c.p]
         hm = self.find_h(hpat, hNodes, flags)
 
-        self.clear() # needed for external client ui replacement: fills self.its
-        self.addHeadlineMatches(hm) # added for external client ui replacement: fills self.its
+        self.clear()  # needed for external client ui replacement: fills self.its
+        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
 
         # bm = self.c.find_b(bpat, flags)
         # self.addBodyMatches(bm)
@@ -799,7 +802,8 @@ class QuickSearchController:
         c = self.c
         tgt = self.its.get(it)
         if not tgt:
-            print("onSelectItem: no target found for 'it' as key:" + str(it))
+            if not g.unitTesting:
+                print("onSelectItem: no target found for 'it' as key:" + str(it))
             return
 
         # generic callable
@@ -1174,7 +1178,7 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'scon', cc) # Patch up quick-search controller to the commander
+            setattr(c, 'scon', cc)  # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1345,7 +1349,7 @@ class LeoServer:
                 c.scon.bgSearch(exp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav headline search: {e}")
-        return  self._make_response()
+        return self._make_response()
 
 
     #@+node:felix.20220305211828.1: *5* server.nav_search
@@ -1365,7 +1369,7 @@ class LeoServer:
                 c.scon.doSearch(inp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
-        return  self._make_response()
+        return self._make_response()
 
 
     #@+node:felix.20220305215239.1: *5* server.get_goto_panel
@@ -1376,7 +1380,7 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
-            result = {}
+            result: Dict[str, Any] = {}
             navlist = [
                 {
                     "key": k,
@@ -1385,9 +1389,9 @@ class LeoServer:
                 } for k in c.scon.its.keys()
             ]
             result["navList"] = navlist
-            result["messages"]= c.scon.lw
+            result["messages"] = c.scon.lw
             result["navText"] = c.scon.navText
-            result["navOptions"] = {"isTag":c.scon.isTag, "showParents": c.scon.showParents}
+            result["navOptions"] = {"isTag": c.scon.isTag, "showParents": c.scon.showParents}
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
         return self._make_response(result)
@@ -1398,28 +1402,28 @@ class LeoServer:
         # fill with timeline order gnx nodes
         c = self._check_c()
         c.scon.doTimeline()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010607.1: *5* server.find_quick_changed
     def find_quick_changed(self, param):
         # fill with list of all dirty nodes
         c = self._check_c()
         c.scon.doChanged()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
     def find_quick_history(self, param):
         # fill with list from history
         c = self._check_c()
         c.scon.doNodeHistory()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
     def find_quick_marked(self, param):
         # fill with list of marked nodes
         c = self._check_c()
         c.scon.doShowMarked()
-        return  self._make_response()
+        return self._make_response()
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param):
@@ -1830,7 +1834,7 @@ class LeoServer:
             if v.u and '__node_tags' in v.u:
                 del v.u['__node_tags']
                 tc = getattr(c, 'theTagController', None)
-                tc.initialize_taglist() # reset tag list: some may have been removed
+                tc.initialize_taglist()  # reset tag list: some may have been removed
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
@@ -2527,6 +2531,35 @@ class LeoServer:
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         result = {"version": __version__, "major": v1, "minor": v2, "patch": v3}
         return self._make_minimal_response(result)
+    #@+node:felix.20220326190000.1: *5* server.get_leoid
+    def get_leoid(self, param):
+        """
+        returns g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        result = {"leoID": g.app.leoID}
+        return self._make_minimal_response(result)
+    #@+node:felix.20220326190008.1: *5* server.set_leoid
+    def set_leoid(self, param):
+        """
+        sets g.app.leoID
+        """
+        # uses the __version__ global constant and the v1, v2, v3 global version numbers
+        leoID = param.get('leoID', '')
+        # Same test/fix as in Leo
+        if leoID:
+            try:
+                leoID = leoID.replace('.', '').replace(',', '').replace('"', '').replace("'", '')
+                # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
+                leoID = ''.join(leoID.split())
+            except Exception:
+                g.es_exception()
+                leoID = 'None'
+            if len(leoID) > 2:
+                g.app.leoID = leoID
+                g.app.nodeIndices.defaultId = leoID
+                g.app.nodeIndices.userId = leoID
+        return self._make_response()
     #@+node:felix.20210818012827.1: *5* server.do_nothing
     def do_nothing(self, param):
         """Simply return states from _make_response"""
@@ -4337,6 +4370,7 @@ class LeoServer:
 #@+node:felix.20210621233316.105: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
+    # pylint: disable=used-before-assignment
     global websockets
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
     if not websockets:
@@ -4508,18 +4542,21 @@ def main():  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            if 1:  # Prefer Qt.
-                from leo.core.leoQt import isQt6, QtGui, QtWidgets
-                from leo.core.leoQt import ButtonRole, Information
-                if QtGui and QtWidgets:
-                    app = QtWidgets.QApplication([])
-                    assert app
-                    val = qt_runAskYesNoCancelDialog(c)
-                    assert val in ('yes', 'no')
-                    return val
+            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import ButtonRole, Information
+            if QtGui and QtWidgets:
+                app = QtWidgets.QApplication([])
+                assert app
+                val = qt_runAskYesNoCancelDialog(c)
+                assert val in ('yes', 'no')
+                return val
         except Exception:
             pass
-        return tk_runAskYesNoCancelDialog(c)
+        if Tk:
+            return tk_runAskYesNoCancelDialog(c)
+        # #2512: There is no way to raise a dialog.
+        return 'yes'  # Just save the file!
+
     #@+node:felix.20210621233316.107: *3* function: get_args
     def get_args():  # pragma: no cover
         """
@@ -4660,7 +4697,7 @@ def main():  # pragma: no cover (tested in client)
             await register_client(websocket)
             # Start by sending empty as 'ok'.
             n = 0
-            await websocket.send(controller._make_response())
+            await websocket.send(controller._make_response({"leoID": g.app.leoID}))
             controller._emit_signon()
 
             # Websocket connection message handling loop
