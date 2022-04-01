@@ -2308,8 +2308,11 @@ class TestTOG(BaseTest):
         case BinOp("+", a, BinOp("*", b, c)): pass
         case {"text": message, "color": c}: pass
         case 401 | 403 | 404: pass
+        case xyzzy if a > 1: pass
         case _: pass
         case {"sound": _, "format": _}: pass
+        case BinOp2("+", a, BinOp("*", d = 2)): pass
+        case BinOp2("-", d, e = 2): pass
     """
         try:
             # self.debug_list.append('contents')

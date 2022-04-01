@@ -2385,6 +2385,8 @@ class TokenOrderGenerator:
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
 
+    # Full syntax diagram: # https://peps.python.org/pep-0634/#appendix-a
+
     def do_Match(self, node):
 
         cases = getattr(node, 'cases', [])
@@ -2405,6 +2407,7 @@ class TokenOrderGenerator:
         self.name('case')
         self.visit(node.pattern)
         if guard:
+            self.name('if')
             self.visit(guard)
         self.op(':')
         for statement in body:
@@ -2420,17 +2423,11 @@ class TokenOrderGenerator:
         if pattern:
             self.visit(pattern)
         self.name(name or '_')
-    #@+node:ekr.20220401034726.4: *7* tog.MatchClass (to do)
+    #@+node:ekr.20220401034726.4: *7* tog.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
     def do_MatchClass(self, node):
 
-        if 0:  ###
-            print('')
-            g.trace(node.cls.id)
-            dump_ast(node.patterns, tag='node.patterns')
-            # dump_ast(node.kwd_attrs, tag='node.kwd_attrs')
-            # dump_ast(node.kwd_patterns, tag='node.kwd_patterns')
         cls = node.cls
         patterns = getattr(node, 'patterns', [])
         kwd_attrs = getattr(node, 'kwd_attrs', [])
@@ -2439,9 +2436,14 @@ class TokenOrderGenerator:
         self.op('(')
         for pattern in patterns:
             self.visit(pattern)
+        for i, kwd_attr in enumerate(kwd_attrs):
+            ### g.trace('--- kwd_attr', kwd_attr)
+            self.name(kwd_attr)  # a String.
+            self.op('=')
+            ### g.trace('--- kwd_pattern', kwd_attr)
+            self.visit(kwd_patterns[i])
         self.op(')')
-        ### To do ###
-    #@+node:ekr.20220401034726.5: *7* tog.MatchMapping (to do)
+    #@+node:ekr.20220401034726.5: *7* tog.MatchMapping (to do: handle rest)
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
     def do_MatchMapping(self, node):
@@ -2476,8 +2478,15 @@ class TokenOrderGenerator:
     def do_MatchSequence(self, node):
         patterns = getattr(node, 'patterns', [])
         g.trace(node, patterns)
-        for pattern in patterns:
+        token = self.find_next_significant_token()  ###
+        g.trace(token)
+        assert token.value in '([', repr(token)
+        self.op(token.value)  
+        for i, pattern in enumerate(patterns):
+            if i > 0:
+                self.op('|')
             self.visit(pattern)
+        self.op(']' if token.value == '[' else ')')
     #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton (test)
     # MatchSingleton(constant value)
 
