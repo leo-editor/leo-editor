@@ -1,0 +1,640 @@
+#@+leo-ver=5-thin
+#@+node:tom.20220302000320.1: * @file bookmark_search_panel.py_0
+#@@language python
+"""A log tab panel for a bookmark manager.
+
+Tries to set the style color according to the theme in use.    
+"""
+
+#@+others
+#@+node:tom.20220302000320.2: ** Imports
+import re
+from os import startfile
+import webbrowser
+import urllib
+
+from leo.core.leoQt import QtWidgets, QtCore
+
+App = QtWidgets.QApplication
+QLineEdit = QtWidgets.QLineEdit
+QMainWindow = QtWidgets.QMainWindow
+QPushButton = QtWidgets.QPushButton
+QRect = QtCore.QRect
+QStackedWidget = QtWidgets.QStackedWidget
+QTextBrowser = QtWidgets.QTextBrowser
+QHBoxLayout = QtWidgets.QHBoxLayout
+QVBoxLayout = QtWidgets.QVBoxLayout
+QUrl = QtCore.QUrl
+QWidget = QtWidgets.QWidget
+#@+node:tom.20220302000320.3: ** color_styles()
+def color_styles(fg, bg, bbg):
+    base_style = f'''* {{
+        color: {fg};
+        background: {bg};
+        font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
+        font-size: 9pt;
+        font-weight: normal;
+        padding-left:2em;
+        padding-right:2em;
+     }}
+     QTextBrowser {{
+        border: 1px solid {fg};
+        padding-left: 1em;
+        padding-right:1em;
+     }}
+'''
+    html_css = f'''<style type='text/css'>
+    a {{
+        color: {fg};
+        text-decoration: none;
+        font-size: 8pt;
+    }}
+    li {{
+        list-style:none;
+        margin-left: -2em;
+    }}
+    hr {{border: 3px solid {fg};}}
+    </style>\n
+    '''
+
+    pb_style_ext = f'''QPushButton {{
+        background: {bbg};
+        padding-bottom: .3em;
+        border: 1px solid {fg};
+    }}
+        QPushButton:hover {{
+        color: {bg};
+        background: {fg};
+        }}
+    '''
+
+    le_style_ext = f'''QLineEdit {{
+        padding-left: .5em;
+        padding-right: 1em;
+        border: 1px solid {fg};
+    }}'''
+
+    return (base_style, html_css, pb_style_ext, le_style_ext)
+
+#@+node:tom.20220302000320.4: ** Declarations
+VERSION = '0.95'
+INDENT = '&nbsp;'*5  # For lists of links
+RES = 0
+SUBJ = 1
+
+HTML_TO_CLIP = False
+
+WORD = r'(\w+)'
+PHRASE = r'"(.*?)"'
+TERM = re.compile(f'{PHRASE}|{WORD}')
+
+# These initial colors are suitable for the tbp_dark_solarized
+# but may be changed depending on the theme in use.
+FG = '#839496;'
+BG = '#002b36'
+BBG = '#073642' # "bright" bg for pushbuttons and line edits
+
+
+#@+node:tom.20220302000320.5: ** class PanelWidget
+class PanelWidget(QWidget):
+    def __init__(self, g, c):
+        """The visible panel for a browser bookmark viewer.
+        
+        ARGUMENTS
+        g -- the Leo Global instance
+        c -- the Leo commander for the current outline.
+        """
+
+        super().__init__()
+
+        self.c = c
+        self.g = g
+        bv = self.baseview = BaseView(g, c)
+        cont = self.controller = Controller(bv, g, c)
+
+        layout = QVBoxLayout()
+        layout.addWidget(bv.widget)
+        self.setLayout(layout)
+
+        bv.search_box.change_connect(cont.search)
+
+        self.simulate_search()
+
+    def simulate_search(self):
+        self.controller.simulate_search()
+#@+node:tom.20220302000320.6: ** Class BaseView
+class BaseView(QWidget):
+    """Provides a "view" that receives a data package and displays it.
+
+    The display consists of two panes, of which only one can be visible
+    at a time, with a button to switch the panes.
+    """
+
+    #@+<< __init__ >>
+    #@+node:tom.20220302000320.7: *3* << __init__ >>
+    def __init__(self, g, c):
+        super().__init__()
+        self.c = c
+        self.g = g
+        rb = self.resbrowser = QTextBrowser()
+        sb = self.subjbrowser = QTextBrowser()
+        self.switch_button  = QPushButton("Resources <--> Subjects")
+        self.search_box = SearchBox(c)
+        self.widget = QWidget()
+        self.model_data = None
+        self.HTML_CSS = ''
+
+        self.subjects = 0
+        self.resources = 0
+
+        #@+<< compute styles >>
+        #@+node:tom.20220302000320.8: *4* << compute styles >>
+        fg, bg, bbg = self.get_colors_from_settings()
+        BASE_STYLE, HTML_CSS, PB_STYLE_EXT,LE_STYLE_EXT = \
+            color_styles(fg, bg, bbg)
+
+        self.HTML_R = f'''<style type='text/css'>{HTML_CSS}</style>
+        <h1>This is the Bookmark App Resource List</h1>
+        <a href = 'local resource link'>Example Resource Link</a>
+        '''
+
+        self.HTML_S = f'''<style type='text/css'>{HTML_CSS}</style>
+        <h1>This is the Bookmark App Subject List</h1>
+        <a href = 'local subject term link'>Example Subject Term Link</a>
+        '''
+
+        self.HTML_CSS = HTML_CSS
+        #@-<< compute styles >>
+        #@+<< set up widgets >>
+        #@+node:tom.20220302000320.9: *4* << set up widgets >>
+        rb.setOpenLinks(False)  # Prevent widget from navigating to links
+        #sb.setOpenLinks(False)  # Prevent widget from navigating to links
+        #rb.setStyleSheet(STYLE)
+        #pb.widget.setStyleSheet(STYLE + PB_STYLE_EXT)
+        #sw.setStyleSheet(BASE_STYLE + PB_STYLE_EXT)
+
+        rb.setOpenLinks(False)  # Prevent widget from navigating to links
+        sb.setOpenLinks(False)  # Prevent widget from navigating to links
+
+        #@-<< set up widgets >>
+        #@+<< build display widget >>
+        #@+node:tom.20220302000320.10: *4* << build display widget >>
+        self.display_widget = QStackedWidget()
+        self.display_widget.insertWidget(RES, rb)
+        self.display_widget.insertWidget(SUBJ, sb)
+
+        #@-<< build display widget >>
+        #@+<< set layout >>
+        #@+node:tom.20220302000320.11: *4* << set layout >>
+        layout = QVBoxLayout()
+        layout.addWidget(self.search_box.widget)
+        layout.addWidget(self.switch_button)
+        layout.addWidget(self.display_widget)
+        #layout.setContentsMargins(0, 0, 0, 0)
+
+        self.widget.setLayout(layout)
+        #@-<< set layout >>
+        #@+<< connect signals >>
+        #@+node:tom.20220302000320.12: *4* << connect signals >>
+        self.resbrowser.anchorClicked.connect(self.handleRbAnchorClick)
+        self.subjbrowser.anchorClicked.connect(self.handleSbAnchorClick)
+        self.switch_button.clicked.connect(self.view_switch)
+        #@-<< connect signals >>
+
+        self.widget.setStyleSheet(BASE_STYLE + PB_STYLE_EXT + LE_STYLE_EXT)
+        self.find_view_kind = RES
+        self.display_widget.setCurrentIndex(RES)
+    #@-<< __init__ >>
+
+    #@+<< def signal handlers >>
+    #@+node:tom.20220302000320.13: *3* << def signal handlers >>
+    def view_switch(self):
+        if self.find_view_kind == RES:
+            self.find_view_kind = SUBJ
+            self.display_widget.setCurrentIndex(SUBJ)
+
+        else:
+            self.find_view_kind = RES
+            self.display_widget.setCurrentIndex(RES)
+
+    def handleRbAnchorClick(self, ref):
+        ref_st = ref.toString()  # ref is a QUrl
+        if ref_st.startswith('url:file://'):
+            url = ref_st.replace('url:file://', '', 1)
+            url = urllib.parse.unquote(url)
+            if self.g.isWindows:
+                url = url.replace('/', '\\')
+            assert url, 'URL should not be empty'
+            startfile(url)
+        elif ref_st.startswith('url:'):
+            webbrowser.open_new_tab(ref_st.replace('url:', '', 1))
+        elif ref_st.startswith('file:'):
+            url = ref_st.replace('"', '')
+            self.g.handleUrl(ref_st, self.c)
+        else:
+            unl = 'unl://#' + ref_st
+            self.g.handleUnl(unl, self.c)
+        # else:
+            # print(ref)
+
+    def handleSbAnchorClick(self, unl):
+        unl = unl.toString()
+        unl = unl.replace('term:', '', 1).replace('--%3E', '/')
+        print('Sb:', unl)
+
+
+    #@-<< def signal handlers >>
+
+    def set_initial_contents(self):
+        self.resbrowser.setHtml(self.HTML_R)
+        self.subjbrowser.setHtml(self.HTML_S)
+
+    def display_html(self, browser, html):
+        browser.setHtml(html)
+
+    #@+others
+    #@+node:tom.20220302000320.14: *3* get_colors_from_settings()
+    def get_colors_from_settings(self):
+        """Get fg, bg, and bbg colors from the Leo theme.
+        
+        RETURNS
+        a tuple (fg, bg, bbg) of CSS colors.
+        """
+        g, c = self.g, self.c
+
+        ssm = g.app.gui.styleSheetManagerClass(c)
+
+        w = ssm.get_master_widget()
+        sheet = w.styleSheet()
+
+        def find_color(text, name):
+            RE = fr'{name}[ ]*:[ ]*([^;]+)'
+            found = re.findall(RE, text)
+            found = found[0] if found else ''
+            return found
+
+        loc = sheet.find('QTextEdit {')
+        frag = sheet[loc:loc + 90]
+        bg = find_color(frag, 'background')
+        fg = find_color(frag, 'color')
+        #g.es(fg, bg)
+
+        return (fg, bg, bg)
+
+    #@+node:tom.20220302000320.15: *3* bv.generate_link_display
+    def generate_link_html(self):
+        """Return an HTML string for the View to use for display.
+
+        The display will show the links data.
+        
+        find_results = [(<searchterm>, <termlist>, <linklist>)*]
+        <termlist> = [(<leaf term>, <unl>)*]
+        <linklist> = [(<page title>, <page url>, <term unl>)*]
+
+        ARGUMENT
+        data -- a list of results with the above structure.
+
+        RETURNS -- an HTML string
+        """
+
+        data = self.model_data
+        if not data:
+            return 'No data'
+        search_phrase = data[0]
+
+        # Collect all entries by term
+        termdict = {}
+        linklist = data[2]
+        html = ''
+
+        # Populate termdict
+        #@+<< Collect by top-level subject term >>
+        #@+node:tom.20220302000320.16: *4* << Collect by top-level subject term >>
+        for title, url, unl in linklist:
+            toplevel = unl.split('#@')
+            toplevel = toplevel[1] if len(toplevel) > 1 else toplevel[0]
+            if toplevel.find('-->') > -1:
+                toplevel = toplevel.split('-->')[1]
+            else:
+                print('---- no split', toplevel)
+            #steps = len(re.findall('-->', toplevel))
+
+            url = url.replace('"', '')  # Might have quotes, especially with Windows
+            if not termdict.get(toplevel):
+                termdict[toplevel] = []
+            termdict[toplevel].append((title, url, unl))
+
+        #@-<< Collect by top-level subject term >>
+
+        results = [' ']  # Better spacing after header
+        # Produce the html string for output
+        #@+<< collect resource results >>
+        #@+node:tom.20220302000320.17: *4* << collect resource results >>
+        for toplevel in sorted(termdict.keys(), key=lambda x: x.lower()):
+            results.append(f'<b><a href="{toplevel}">{toplevel}</a></b>')
+            i = 0
+            for title, url, unl in sorted(termdict[toplevel]):
+                i += 1
+                if i % 7 == 0:
+                    results.append('\n')
+                    continue
+                unl = '@' + unl.split('#@')[1]
+                unl = urllib.parse.quote(unl)
+                results.append((f'{INDENT}<a href="{unl}">(details) </a>'
+                                f'<a href="url:{url}">{title}</a>\n'))
+
+        #@-<< collect resource results >>
+
+        header = f'<h3>Resource Matches for <i>{search_phrase}</i></h3>\n'
+        html = header + '<br>'.join(results)
+        if HTML_TO_CLIP: 
+            self.g.app.gui.replaceClipboardWith(html)
+        return html
+
+    def generate_link_display(self, html):
+        html = self.generate_link_html()
+        if not html: html = '(Nothing found)'
+        countstr = f"<br><br><hr>Subject nodes: {self.subjects}, Resource nodes: {self.resources}"
+
+        return self.HTML_CSS + html + countstr
+    #@+node:tom.20220302000320.18: *3* bv.generate_term_display
+    def generate_term_html(self):
+        """Return an HTML string for the View to use for display.
+
+        The display will show the subject terms data.
+        
+        find_results = [(<searchterm>, <termlist>, <linklist>)*]
+        <termlist> = [(<leaf term>, <unl>)*]
+        <linklist> = [(<page title>, <page url>, <term context>)*]
+
+        The display pane will deduplicate the entries.  The
+        href for each term will be the term's name.  This will
+        be used for searches by the click handling code.
+        
+        ARGUMENT
+        data -- a list of results with the above structure.
+
+        RETURNS -- an HTML string
+        """
+
+        data = self.model_data
+        if not data:
+            return 'No data'
+
+
+        search_phrase = data[0]
+        termlist = data[1]
+        termset = set((t for t, _ in termlist))
+        terms = sorted(termset)
+
+        header = f'<h3>Subject Term Matches for <i>{search_phrase}</i></h3>\n'
+        results = [' ']  # Better spacing after header
+        for leaf in terms:
+            results.append(f'<a href="{leaf}">{leaf}</a>')
+
+        html = header + '<br>'.join(results)
+        #if HTML_TO_CLIP: g.app.gui.replaceClipboardWith(html)
+        return html
+
+    def generate_term_display(self, html):
+        return self.HTML_CSS + html
+    #@+node:tom.20220302000320.19: *3* bv.data_available
+    def data_available(self, data):
+        self.model_data = data
+        html = self.generate_link_html()
+        html = self.generate_link_display(html)
+        self.display_html(self.resbrowser, html)
+
+        html = self.generate_term_html()
+        html = self.generate_term_display(html)
+        self.display_html(self.subjbrowser, html)
+    #@-others
+#@+node:tom.20220302000320.20: ** Class SearchBox
+class SearchBox:
+    """A basic search input having a lineedit input and a pushbutton."""
+
+    def __init__(self, controller = None):
+        self.controller = controller
+        self.widget = QWidget()
+        self.findbox = QLineEdit()
+        self.gobutton = QPushButton("Search")
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.findbox)
+        layout.addWidget(self.gobutton)
+        self.widget.setLayout(layout)
+
+        # These connections should be overridden by the
+        # using widget or window.
+        #self.change_connect(self.controller.search)
+
+    def send_find(self):
+        print(self.findbox.text())
+
+    def change_connect(self, handler):
+        try:
+            self.gobutton.clicked.disconnect()
+            self.findbox.returnPressed.disconnect()
+        except:
+            pass  # Can't disconnect if we've never been connected
+        self.gobutton.clicked.connect(handler)
+        self.findbox.returnPressed.connect(handler)
+#@+node:tom.20220302000320.21: ** class Controller
+class Controller:
+    """Sends data to View panels."""
+
+#@+<< __init__ >>
+#@+node:tom.20220302000320.22: *3* << __init__ >>
+    def __init__(self, baseview, g, c):
+        """Operates on the data and communicates with
+        the "View" and the "Model" (i.e., the Leo tree).
+        
+        ARGUMENTS
+        g -- the Leo Global instance
+        c -- the Leo commander for the current outline.
+        """
+        self.baseview = baseview
+        self.g = g
+        self.c = c
+        self.resources = 0
+        self.subjects = 0
+        self.data = None
+
+    def simulate_search(self, c = None):
+        """Return simulated search results."""
+        self.baseview.data_available(self.FIND_DATA)
+#@-<< __init__ >>
+    #@+others
+    #@+node:tom.20220302000320.23: *3* def search
+    #@@language python
+    def search(self):
+        #@+<< docstring >>
+        #@+node:tom.20220302000320.24: *4* << docstring >>
+        """Find links and organizer nodes containing search words.
+
+        Link nodes contain a line starting with ":ref:".  Organizers
+        do not.
+
+        The outline is searched starting at a top-level node
+        whose headline starts with "@bookmark-collection".
+
+        ARGUMENT
+        phrase -- a string of one or more search terms.
+                  A search term is either a word or a 
+                  double-quoted string.
+
+        RETURNS
+        a "find_results" data structure --
+
+        find_results = [(<search string>, <termlist>, <linklist>)*]
+        <termlist> = [(<leaf term>, <unl>)*]
+        <linklist> = [(<page title>, <page url>, <term unl>)*]
+        """
+        #@-<< docstring >>
+        bv = self.baseview
+        sb = bv.search_box
+        fb = sb.findbox
+
+        termlist = []
+        linklist = []
+        search_terms = []
+        #@+<< get search terms >>
+        #@+node:tom.20220302000320.25: *4* << get search terms >>
+        # Search terms may be phrases in double quotes
+        search_phrase = fb.text()
+        found = TERM.findall(search_phrase.lower())
+        for p in found:
+            t = p[0] if p[0] else p[1]
+            search_terms.append(t)
+        #@-<< get search terms >>
+
+        REF = ':ref:'
+        REF_LEN = len(REF)
+        g, c = self.g, self.c
+
+        bk_root = None
+        #@+<< move to bookmarks start >>
+        #@+node:tom.20220302000320.26: *4* << move to bookmarks start >>
+        p = c.rootPosition()
+        while p:
+            if p.h.startswith('@bookmark-collection'):
+                bk_root = p
+                break
+            p.moveToThreadNext()
+        #@-<< move to bookmarks start >>
+        if not bk_root:
+            g.es('No bookmark tree found')
+            return None
+
+        n_subj = 0
+        n_res = 0
+        for p in p.subtree():
+            title = p.h
+            start = p.b.find(':ref:')
+            if start == -1:  # It's a subject term, not a resource
+                n_subj += 1
+                #@+<< collect matching title >>
+                #@+node:tom.20220302000320.27: *4* << collect matching title >>
+                term = p.h
+                for wd in search_terms:
+                    unl = p.get_UNL()
+                    if wd in title.lower():
+                        termlist.append((term, unl))
+                        break
+                #@-<< collect matching title >>
+            else:
+                n_res += 1
+                #@+<< collect matching resources >>
+                #@+node:tom.20220302000320.28: *4* << collect matching resources >>
+                for wd in search_terms:
+                    if wd in title.lower():
+                        start += REF_LEN
+                        end = p.b[start:].find('\n')
+                        end = start + end if end > -1 else -1
+                        if end == -1:
+                            url = p.b[start:].strip()
+                        else:
+                            url = p.b[start:end].strip()
+                        if self.g.isWindows:
+                            pass#url = url.replace('\\', '/')
+                        unl = p.get_UNL()
+                        linklist.append((title, url, unl))
+                        break
+                #@-<< collect matching resources >>
+
+        self.baseview.resources = n_res
+        self.baseview.subjects = n_subj
+        results = (search_phrase, termlist, linklist)
+        bv.data_available(results)
+    #@+node:tom.20220302000320.29: *3* Declarations
+    #@+others
+    #@+node:tom.20220302000320.30: *4* find_results
+    # Dummy data for testing
+    # find_results = [(<searchterm>, <termlist>, <linklist>)*]
+    # <termdict> = [(<leaf term>, <unl>)*]
+    # <linklist> = [(<page title>, <page url>, <term context>)*]
+
+    # links means all urls with the search word in the title
+    # term means all leaf subject terms that match the search word
+
+    TERM_DATA = [('Languages', 'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#Browser Bookmarks-->Agents-->Languages'),
+                 ('Application Languages', 'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#Browser Bookmarks-->RDF-->Application Languages'),
+                 ('Controlled Natural Language', 'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#Browser Bookmarks-->Language-->Controlled Natural Language')]
+
+    LINK_DATA = [('Controlled Natural Languages - Homepage', 
+            'http://www.ics.mq.edu.au/~rolfs/controlled-natural-languages/',
+            'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#@bookmark-collection Browser Bookmarks-->Language-->Controlled Natural Language-->Controlled Natural Languages - Homepage'),
+            ('FIPA RDF Content Language Specification',
+            'http://www.fipa.org/specs/fipa00011/XC00011B.html','unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#@bookmark-collection Browser Bookmarks-->Agents-->FIPA-->FIPA RDF Content Language Specification'),
+            ('DAML Query Language (April 2003)', 'http://www.daml.org/2003/04/dql/', 'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#@bookmark-collection Browser Bookmarks-->Ontology-->DAML+OIL-->DAML Query Language (April 2003)L'),
+            ('Feature Synopsis of the OWL Ontology Language', 'http://lists.w3.org/Archives/Public/www-archive/2002May/att-0021/01-_owl.html', 'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#@bookmark-collection Browser Bookmarks-->Ontology-->OWL-->Feature Synopsis of the OWL Ontology Language')]
+
+    FIND_DATA = ['language', TERM_DATA, LINK_DATA]
+    #@+node:tom.20220302000320.31: *4* term_results
+    # term_results = \
+    # {'related_terms':
+        # {
+            # 'bycontext': [<context1>*],
+            # 'general': [<context11>*],
+            # 'facets': [<context111>*],
+            # 'co_mentions': [<context1111>*]
+
+        # },
+      # 'links': 
+        # [(<title>, <url>, <context>)*]
+    # }
+
+
+    RELATED_TERMS = \
+    {
+    'bycontext': [
+        'Databases/Products/Relational/Firebird',
+        'Databases/Products/Relational/Java',
+        'Databases/Products/Relational/Postgres'
+        ],
+    'general': ['Databases/Products',],
+    'facets': [
+        'Firebird',
+        'Java',
+        'Postgres'
+        ],
+    'co_mentions':[]
+    }
+
+    SUBJ_LINKS = \
+    [
+        ('Borland InterBase Open Source', 
+         'http://www.borland.com/devsupport/interbase',
+         'unl://c:/tom/devel/leo/browser_bookmarks/browser_bookmarks.leo#@bookmark-collection Browser Bookmarks-->Databases-->Products-->Relational-->Borland InterBase Open Source'),
+    ]
+
+    TERM_RESULTS = \
+    {
+        'related_terms': RELATED_TERMS,
+        'links': SUBJ_LINKS
+    }
+
+    #@-others
+    #@-others
+#@-others
+#@-leo
