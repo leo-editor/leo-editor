@@ -149,8 +149,6 @@ class BackgroundProcessManager:
             self.pid = None
         self.put_log(f"{kind} finished")
         self.timer.stop()  # #2528
-        return  # dead code
-        a = 1
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         """The idle-time callback for leo.commands.checkerCommands."""
