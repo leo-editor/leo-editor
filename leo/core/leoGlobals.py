@@ -7873,6 +7873,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
                 break
 
         if target:
+            # pylint: disable=undefined-loop-variable
             found_gnx = target_is_self = False
             if c.p.gnx == target:
                 found_gnx = target_is_self = True
