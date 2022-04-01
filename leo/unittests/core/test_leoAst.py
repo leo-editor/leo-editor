@@ -261,14 +261,11 @@ class BaseTest(unittest.TestCase):
         tog = self.tog
         try:
             t1 = get_time()
-            # Yes, list *is* required here.
-            list(tog.create_links(tokens, tree))
+            tog.create_links(tokens, tree)
             t2 = get_time()
             self.update_counts('nodes', tog.n_nodes)
             self.update_times('11: create-links', t2 - t1)
         except Exception as e:  # pragma: no cover
-            # print('\n')
-            # g.trace(g.callers(), '\n')
             if 'full-traceback' in self.debug_list:
                 g.es_exception()
             # Weird: calling self.fail creates ugly failures.
@@ -1308,7 +1305,7 @@ class TestOrange(BaseTest):
                 """a[1:2:3]""",
                 # * and **, inside and outside function calls.
                 """a = b * c""",
-                # """a = b ** c""",  # Black: 3.9: b ** c, 3.10: b**c.
+                # """a = b ** c""",  # Black has changed recently.
                 """f(*args)""",
                 """f(**kwargs)""",
                 """f(*args, **kwargs)""",
@@ -1342,18 +1339,21 @@ class TestOrange(BaseTest):
                 # Returns...
                 """return -1""",
             )
+        fails = 0
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens, tree = self.make_data(contents, description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, tree, filename=description)
-            if results != expected:
-                print(
-                    f"\n"
-                    f"  contents: {contents.rstrip()}\n"
-                    f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip()}")
-                self.fail()
+            message = (
+                f"\n"
+                f"  contents: {contents.rstrip()}\n"
+                f"     black: {expected.rstrip()}\n"
+                f"    orange: {results.rstrip()}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+        self.assertEqual(fails, 0)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 
@@ -2295,22 +2295,6 @@ class TestTOG(BaseTest):
 
         # Coverage test for spaces
         contents = """f = lambda x: x"""
-        self.make_data(contents)
-    #@+node:ekr.20220329095904.1: *5* test_Match
-    def test_match(self):
-
-    # import ast
-    # BinOp = ast.BinOp
-    # node = BinOp()
-    # case BinOp("+", a, BinOp("*", b, c)):
-        # pass # Handle a + b*c
-        contents = r"""\
-    match node:
-        case 1:
-            pass
-    """
-        self.debug_list.append('tree')
-        # self.debug_list.append('full-traceback')
         self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
