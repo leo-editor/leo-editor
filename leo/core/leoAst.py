@@ -2443,18 +2443,13 @@ class TokenOrderGenerator:
             ### g.trace('--- kwd_pattern', kwd_attr)
             self.visit(kwd_patterns[i])
         self.op(')')
-    #@+node:ekr.20220401034726.5: *7* tog.MatchMapping (to do: handle rest)
+    #@+node:ekr.20220401034726.5: *7* tog.MatchMapping
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
     def do_MatchMapping(self, node):
         keys = getattr(node, 'keys', [])
         patterns = getattr(node, 'patterns', [])
         rest = getattr(node, 'rest', None)
-        ### g.trace(node, keys, patterns, rest)
-        ### g.printObj(keys, tag=f"MatchMapping:keys")
-        ### g.printObj(patterns, tag=f"MatchMapping:patterns")
-        ### g.trace('rest', repr(rest))
-        # g.pdb()
         self.op('{')
         for i, key in enumerate(keys):
             ### g.trace('    key ---', key)
@@ -2462,6 +2457,9 @@ class TokenOrderGenerator:
             self.op(':')
             ### g.trace('pattern ---', patterns[i])
             self.visit(patterns[i])
+        if rest:
+            self.op('**')
+            self.name(rest)  # A string.
         self.op('}')
     #@+node:ekr.20220401034726.6: *7* tog.MatchOr
     # MatchOr(pattern* patterns)
@@ -2472,19 +2470,19 @@ class TokenOrderGenerator:
             if i > 0:
                 self.op('|')
             self.visit(pattern)
-    #@+node:ekr.20220401034726.7: *7* tog.MatchSequence (test)
+    #@+node:ekr.20220401034726.7: *7* tog.MatchSequence
     # MatchSequence(pattern* patterns)
 
     def do_MatchSequence(self, node):
         patterns = getattr(node, 'patterns', [])
-        g.trace(node, patterns)
-        token = self.find_next_significant_token()  ###
-        g.trace(token)
-        assert token.value in '([', repr(token)
+        # Scan for the next '(' or '[' token.
+        for token in self.tokens[self.px:]:
+            if token.kind == 'op' and token.value in '([':
+                break
+        else:
+            raise AssignLinksError('No ( or [ found')
         self.op(token.value)  
         for i, pattern in enumerate(patterns):
-            if i > 0:
-                self.op('|')
             self.visit(pattern)
         self.op(']' if token.value == '[' else ')')
     #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton (test)
@@ -2493,12 +2491,11 @@ class TokenOrderGenerator:
     def do_MatchSingleton(self, node):
         g.trace(node, node.value)
         self.visit(node.value)
-    #@+node:ekr.20220401034726.9: *7* tog.MatchStar (test)
+    #@+node:ekr.20220401034726.9: *7* tog.MatchStar
     # MatchStar(identifier? name)
 
     def do_MatchStar(self, node):
         name = getattr(node, 'name', None)
-        g.trace(node, repr(name))
         self.op('*')
         if name:
             self.name(name)
