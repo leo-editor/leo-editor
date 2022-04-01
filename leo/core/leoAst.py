@@ -1274,7 +1274,7 @@ class TokenOrderGenerator:
             return None, None, None, None
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
-        list(self.create_links(tokens, tree))
+        self.create_links(tokens, tree)
         return contents, encoding, tokens, tree
     #@+node:ekr.20191229071746.1: *5* tog.init_from_string
     def init_from_string(self, contents, filename):  # pragma: no cover
