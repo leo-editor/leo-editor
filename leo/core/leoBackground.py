@@ -107,9 +107,11 @@ class BackgroundProcessManager:
             if self.pid.poll() is None:  # The process is still running.
                 pass
             else:  # The process has completed.
+                g.trace('--- start put_log loop ---')
                 for s in self.pid.stdout:
                     self.data.number_of_lines += 1
                     self.put_log(s)
+                g.trace('--- end put_log loop ---')
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
         elif self.process_queue:
@@ -118,7 +120,7 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
-        # print('BPM.end:')
+        print('BPM.end:', self.pid)  ###
         n = self.data.number_of_lines
         for s in self.pid.stdout:
             n += 1
@@ -134,6 +136,7 @@ class BackgroundProcessManager:
     #@+node:ekr.20161028063800.1: *4* bpm.start_next
     def start_next(self):
         """The previous process has finished. Start the next one."""
+        g.trace('---')
         if self.process_queue:
             self.data = self.process_queue.pop(0)
             self.data.callback()
@@ -142,7 +145,7 @@ class BackgroundProcessManager:
             self.data = None
             self.pid = None
             self.timer.stop()  # #2528
-    #@+node:ekr.20161026193609.3: *3* bpm.kill (** changed)
+    #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
         """Kill the presently running process, if any."""
         if kind is None:
