@@ -2480,16 +2480,22 @@ class TokenOrderGenerator:
 
     def do_MatchSequence(self, node):
         patterns = getattr(node, 'patterns', [])
-        # Scan for the next '(' or '[' token.
-        for token in self.tokens[self.px:]:
+        # Scan for the next '(' or '[' token, skipping the 'case' token.
+        for token in self.tokens[self.px + 1:]:
             if token.kind == 'op' and token.value in '([':
+                break
+            if is_significant_token(token):
+                # An implicit tuple: there is no '(' or '[' token.
+                token = None
                 break
         else:
             raise AssignLinksError('No ( or [ found')
-        self.op(token.value)  
+        if token:
+            self.op(token.value)  
         for i, pattern in enumerate(patterns):
             self.visit(pattern)
-        self.op(']' if token.value == '[' else ')')
+        if token:
+            self.op(']' if token.value == '[' else ')')
     #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton
     # MatchSingleton(constant value)
 

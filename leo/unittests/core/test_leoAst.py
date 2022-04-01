@@ -2322,6 +2322,7 @@ class TestTOG(BaseTest):
         case False: pass
         case None: pass
         case True | False | None: pass
+        case True, False, None: pass  # A tuple!
     """
         try:
             # self.debug_list.append('contents')
