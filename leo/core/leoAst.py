@@ -2490,11 +2490,12 @@ class TokenOrderGenerator:
         for i, pattern in enumerate(patterns):
             self.visit(pattern)
         self.op(']' if token.value == '[' else ')')
-    #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton (test)
+    #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton
     # MatchSingleton(constant value)
 
     def do_MatchSingleton(self, node):
         """Match True, False or None."""
+        # g.trace(repr(node.value))
         self.token('name', repr(node.value))
     #@+node:ekr.20220401034726.9: *7* tog.MatchStar
     # MatchStar(identifier? name)
