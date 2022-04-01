@@ -1201,7 +1201,11 @@ class TokenOrderGenerator:
     Project history: https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-574145510
     """
 
+    begin_end_stack: List[str] = []
     n_nodes = 0  # The number of nodes that have been visited.
+    node_index = 0  # The index into the node_stack.
+    node_stack: List[ast.AST] = []  # The stack of parent nodes.
+
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
     #@+node:ekr.20191228184647.1: *5* tog.balance_tokens
@@ -1251,12 +1255,6 @@ class TokenOrderGenerator:
         self.tree = tree  # The tree of ast.AST nodes.
         #
         # Traverse the tree.
-        ###
-            # try:
-                # while True:
-                    # next(self.visitor(tree))
-            # except StopIteration:
-                # pass
         self.visit(tree)
         #
         # Ensure that all tokens are patched.
@@ -1292,13 +1290,9 @@ class TokenOrderGenerator:
         list(self.create_links(tokens, tree))
         return tokens, tree
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
-    #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
-    begin_end_stack: List[str] = []
-    node_index = 0  # The index into the node_stack.
-    node_stack: List[ast.AST] = []  # The stack of parent nodes.
-
-    def begin_visitor(self, node):
-        """Enter a visitor."""
+    #@+node:ekr.20191113063144.3: *5* tog.enter_node
+    def enter_node(self, node):
+        """Enter a node."""
         # Update the stats.
         self.n_nodes += 1
         # Do this first, *before* updating self.node.
@@ -1317,8 +1311,8 @@ class TokenOrderGenerator:
         self.node_stack.append(self.node)
         # Update self.node *last*.
         self.node = node
-    #@+node:ekr.20200104032811.1: *5* tog.end_visitor
-    def end_visitor(self, node):
+    #@+node:ekr.20200104032811.1: *5* tog.leave_node
+    def leave_node(self, node):
         """Leave a visitor."""
         # begin_visitor and end_visitor must be paired.
         entry_name = self.begin_end_stack.pop()
@@ -1479,15 +1473,14 @@ class TokenOrderGenerator:
         token list.
         """
         self.sync_token('op', val)
-    #@+node:ekr.20191113081443.1: *5* tog.visit (calls begin/end_visitor)
+    #@+node:ekr.20191113081443.1: *5* tog.visit
     def visit(self, node):
         """Given an ast node, return a *generator* from its visitor."""
         # This saves a lot of tests.
-        trace = False
         if node is None:
             return
-        if trace:  # pragma: no cover
-            # Keep this trace. It's useful.
+        if 0:  # pragma: no cover
+            # Keep this trace!
             cn = node.__class__.__name__ if node else ' '
             caller1, caller2 = g.callers(2).split(',')
             g.trace(f"{caller1:>15} {caller2:<14} {cn}")
@@ -1502,10 +1495,9 @@ class TokenOrderGenerator:
             return
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
-        # Allow begin/end visitor to be generators.
-        self.begin_visitor(node)
+        self.enter_node(node)
         method(node)
-        self.end_visitor(node)
+        self.leave_node(node)
     #@+node:ekr.20191113063144.13: *4* tog: Visitors...
     #@+node:ekr.20191113063144.32: *5*  tog.keyword: not called!
     # keyword arguments supplied to call (NULL identifier for **kwargs)
