@@ -1246,20 +1246,19 @@ class TokenOrderGenerator:
         tree:   the ast tree for the input.
                 Created by parse_ast().
         """
-        #
         # Init all ivars.
         self.file_name = file_name  # For tests.
         self.level = 0  # Python indentation level.
         self.node = None  # The node being visited.
         self.tokens = tokens  # The immutable list of input tokens.
         self.tree = tree  # The tree of ast.AST nodes.
-        #
         # Traverse the tree.
         self.visit(tree)
-        #
         # Ensure that all tokens are patched.
         self.node = tree
         self.token('endmarker', '')
+        # Return [] for compatibility with legacy code: list(tog.create_links).
+        return []
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename):  # pragma: no cover
         """
