@@ -11,8 +11,8 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Version: 1.8
-:Date: 14 Feb 2022
+:Version: 2.0 
+:Date: 1 Apr 2022
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -214,6 +214,9 @@ Leo themes.
 #@+node:tom.20210527153415.1: ** << imports >>
 from os.path import exists, join as osp_join
 import re
+
+from leo.core import leoColorizer
+from leo.plugins import qt_text
 
 try:
     # pylint: disable=import-error
@@ -652,6 +655,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor = QTextEdit()
         browser = self.browser = self.render_widget()
 
+        wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
+        c.k.completeAllBindingsForWidget(wrapper)
+
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
         self.editor_csspath = ''
@@ -708,6 +714,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         css = change_css_prop(css, 'background', bg)
         self.editor_style = css
         self.editor.setStyleSheet(css)
+
+        colorizer = leoColorizer.make_colorizer(c, self.editor, wrapper)
+        colorizer.highlighter.setDocument(self.doc)
 
         # Try to get tab width from the host's body
         # Used when writing edits back to host
