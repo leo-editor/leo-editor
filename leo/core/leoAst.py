@@ -2418,11 +2418,16 @@ class TokenOrderGenerator:
     def do_MatchAs(self, node):
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
-        ### g.trace('--- pattern', pattern)
-        ### g.trace('---    name', name)
-        if pattern:
+        # g.trace('--- pattern', pattern)
+        # g.trace('---    name', name)
+        if pattern and name:
             self.visit(pattern)
-        self.name(name or '_')
+            self.name('as')
+            self.name(name)
+        elif pattern:
+            self.visit(pattern)
+        else:
+            self.name(name or '_')
     #@+node:ekr.20220401034726.4: *7* tog.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
