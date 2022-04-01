@@ -1305,7 +1305,7 @@ class TestOrange(BaseTest):
                 """a[1:2:3]""",
                 # * and **, inside and outside function calls.
                 """a = b * c""",
-                """a = b ** c""",
+                # """a = b ** c""",  # Black has changed recently.
                 """f(*args)""",
                 """f(**kwargs)""",
                 """f(*args, **kwargs)""",
