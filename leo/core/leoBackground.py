@@ -13,7 +13,7 @@ from leo.core.leoQt import QtCore
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
     #@+<< BPM docstring>>
-    #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
+    #@+node:ekr.20161029063227.1: *3*  << BPM docstring>>
     """
     #@@language rest
     #@@wrap
@@ -52,19 +52,7 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
     #@+others
-    #@+node:ekr.20180522085807.1: *3* bpm.__init__
-    def __init__(self):
-        """Ctor for the base BackgroundProcessManager class."""
-        self.data = None  # a ProcessData instance.
-        self.process_queue = []  # List of g.Bunches.
-        self.pid = None  # The process id of the running process.
-        # #2528: A timer that runs independently of idle time.
-        self.timer = None
-        self.timer_started = False
-        if QtCore:
-            self.timer = QtCore.QTimer()
-            self.timer.timeout.connect(self.on_idle)
-    #@+node:ekr.20161028090624.1: *3* class BPM.ProcessData
+    #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
     class ProcessData:
         """A class to hold data about running or queued processes."""
 
@@ -97,7 +85,18 @@ class BackgroundProcessManager:
             )
 
         __str__ = __repr__
-    #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__
+    def __init__(self):
+        """Ctor for the base BackgroundProcessManager class."""
+        self.data = None  # a ProcessData instance.
+        self.process_queue = []  # List of g.Bunches.
+        self.pid = None  # The process id of the running process.
+        # #2528: A timer that runs independently of idle time.
+        self.timer = None
+        if QtCore:
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(self.on_idle)
+    #@+node:ekr.20161026193609.2: *3* bpm.check_process
     def check_process(self):
         """Check the running process, and switch if necessary."""
         # #2428: Handle all output only after the process has completed.
@@ -114,11 +113,11 @@ class BackgroundProcessManager:
                 self.start_next()  # Start the next process.
         elif self.process_queue:
             self.start_next()  # Start the next process.
-    #@+node:ekr.20161028063557.1: *4* bpm.end
+    #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
         # Send the output to the log.
-        # print('BPM.end:')
+        # print('BPM.end:', self.pid)
         n = self.data.number_of_lines
         for s in self.pid.stdout:
             n += 1
@@ -130,19 +129,9 @@ class BackgroundProcessManager:
             self.pid.kill()
         except OSError:
             pass
+        self.timer.stop()  # 2557
         self.pid = None
-    #@+node:ekr.20161028063800.1: *4* bpm.start_next
-    def start_next(self):
-        """The previous process has finished. Start the next one."""
-        if self.process_queue:
-            self.data = self.process_queue.pop(0)
-            self.data.callback()
-        else:
-            g.es_print(f"{self.data.kind} finished")
-            self.data = None
-            self.pid = None
-            self.timer.stop()  # #2528
-    #@+node:ekr.20161026193609.3: *3* bpm.kill (** changed)
+    #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
         """Kill the presently running process, if any."""
         if kind is None:
@@ -248,7 +237,18 @@ class BackgroundProcessManager:
         # Put a clickable link.
         unl = link_root.get_UNL()
         log.put(s + '\n', nodeLink=f"{unl}::{-line}")  # Global line.
-    #@+node:ekr.20161026193609.5: *3* bpm.start_process
+    #@+node:ekr.20161028063800.1: *3* bpm.start_next
+    def start_next(self):
+        """The previous process has finished. Start the next one."""
+        if self.process_queue:
+            self.data = self.process_queue.pop(0)
+            self.data.callback()  # The callback starts the next process.
+        else:
+            g.es_print(f"{self.data.kind} finished")
+            self.data = None
+            self.pid = None
+            self.timer.stop()  # #2528
+    #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
     def start_process(self, c, command, kind,
         fn=None,
         link_pattern=None,  # None, string, or re.pattern.
@@ -269,11 +269,11 @@ class BackgroundProcessManager:
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-
-        if not self.timer_started:
-            # #2528: Start the free-running timer.
-            self.timer.start(100)
-            self.timer_started = True
+            
+        def start_timer():  # #2528 & #2557.
+            if not self.timer.isActive():
+                self.timer.start(100)
+                # assert self.timer.isActive()
 
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
 
@@ -285,6 +285,7 @@ class BackgroundProcessManager:
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
                 self.pid = open_process()
+                start_timer()  # #2557.
 
             data.callback = callback
             self.process_queue.append(data)
@@ -294,6 +295,7 @@ class BackgroundProcessManager:
             self.kind = kind
             g.es_print(f'{kind}: {g.shortFileName(fn)}')
             self.pid = open_process()
+            start_timer()  # #2557.
     #@-others
 #@-others
 #@@language python
