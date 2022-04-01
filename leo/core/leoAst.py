@@ -1541,7 +1541,7 @@ class TokenOrderGenerator:
         kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore
         kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore
         kwarg = getattr(node, 'kwarg', None)
-        if 0:
+        if 0:  #pragma: no cover
             g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
             g.printObj([ast.dump(z) for z in node.args], tag='node.args')
             g.printObj([ast.dump(z) for z in node.defaults], tag='node.defaults')
@@ -1738,7 +1738,6 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.34: *6* tog.Constant
     def do_Constant(self, node):  # pragma: no cover
         """
-
         https://greentreesnakes.readthedocs.io/en/latest/nodes.html
 
         A constant. The value attribute holds the Python object it represents.
@@ -1746,11 +1745,6 @@ class TokenOrderGenerator:
         immutable container types (tuples and frozensets) if all of their
         elements are constant.
         """
-        
-        ### g.trace(repr(node.value))
-        
-        ### py_version = (v1, v2)
-
         # Support Python 3.8.
         if node.value is None or isinstance(node.value, bool):
             # Weird: return a name!
@@ -2198,7 +2192,7 @@ class TokenOrderGenerator:
             line, col, obj = aTuple
             return line * 1000 + col
 
-        if 0:
+        if 0:  # pragma: no cover
             g.printObj([ast.dump(z) for z in args], tag='args')
             g.printObj([ast.dump(z) for z in keywords], tag='keywords')
 
@@ -2402,8 +2396,6 @@ class TokenOrderGenerator:
 
         guard = getattr(node, 'guard', None)
         body = getattr(node, 'body', [])
-        ### g.trace('---   guard', repr(guard))
-        ### g.trace('--- pattern', node.pattern)
         self.name('case')
         self.visit(node.pattern)
         if guard:
@@ -2418,14 +2410,12 @@ class TokenOrderGenerator:
     def do_MatchAs(self, node):
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
-        # g.trace('--- pattern', pattern)
-        # g.trace('---    name', name)
         if pattern and name:
             self.visit(pattern)
             self.name('as')
             self.name(name)
         elif pattern:
-            self.visit(pattern)
+            self.visit(pattern)  # pragma: no cover
         else:
             self.name(name or '_')
     #@+node:ekr.20220401034726.4: *7* tog.MatchClass
@@ -2442,10 +2432,8 @@ class TokenOrderGenerator:
         for pattern in patterns:
             self.visit(pattern)
         for i, kwd_attr in enumerate(kwd_attrs):
-            ### g.trace('--- kwd_attr', kwd_attr)
             self.name(kwd_attr)  # a String.
             self.op('=')
-            ### g.trace('--- kwd_pattern', kwd_attr)
             self.visit(kwd_patterns[i])
         self.op(')')
     #@+node:ekr.20220401034726.5: *7* tog.MatchMapping
@@ -2457,10 +2445,8 @@ class TokenOrderGenerator:
         rest = getattr(node, 'rest', None)
         self.op('{')
         for i, key in enumerate(keys):
-            ### g.trace('    key ---', key)
             self.visit(key)
             self.op(':')
-            ### g.trace('pattern ---', patterns[i])
             self.visit(patterns[i])
         if rest:
             self.op('**')
@@ -2481,6 +2467,7 @@ class TokenOrderGenerator:
     def do_MatchSequence(self, node):
         patterns = getattr(node, 'patterns', [])
         # Scan for the next '(' or '[' token, skipping the 'case' token.
+        token = None
         for token in self.tokens[self.px + 1:]:
             if token.kind == 'op' and token.value in '([':
                 break
@@ -2489,7 +2476,7 @@ class TokenOrderGenerator:
                 token = None
                 break
         else:
-            raise AssignLinksError('No ( or [ found')
+            raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
         if token:
             self.op(token.value)  
         for i, pattern in enumerate(patterns):
