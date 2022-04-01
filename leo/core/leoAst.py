@@ -1746,6 +1746,10 @@ class TokenOrderGenerator:
         immutable container types (tuples and frozensets) if all of their
         elements are constant.
         """
+        
+        ### g.trace(repr(node.value))
+        
+        ### py_version = (v1, v2)
 
         # Support Python 3.8.
         if node.value is None or isinstance(node.value, bool):
@@ -2396,6 +2400,8 @@ class TokenOrderGenerator:
 
         guard = getattr(node, 'guard', None)
         body = getattr(node, 'body', [])
+        ### g.trace('---   guard', repr(guard))
+        ### g.trace('--- pattern', node.pattern)
         self.name('case')
         self.visit(node.pattern)
         if guard:
@@ -2409,10 +2415,11 @@ class TokenOrderGenerator:
     def do_MatchAs(self, node):
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
+        ### g.trace('--- pattern', pattern)
+        ### g.trace('---    name', name)
         if pattern:
             self.visit(pattern)
-        if name:
-            self.name(name)
+        self.name(name or '_')
     #@+node:ekr.20220401034726.4: *7* tog.MatchClass (to do)
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
@@ -2441,18 +2448,28 @@ class TokenOrderGenerator:
         keys = getattr(node, 'keys', [])
         patterns = getattr(node, 'patterns', [])
         rest = getattr(node, 'rest', None)
-        g.trace(node, keys, patterns, rest)
-        ### To do ###
-    #@+node:ekr.20220401034726.6: *7* tog.MatchOr (test)
+        ### g.trace(node, keys, patterns, rest)
+        ### g.printObj(keys, tag=f"MatchMapping:keys")
+        ### g.printObj(patterns, tag=f"MatchMapping:patterns")
+        ### g.trace('rest', repr(rest))
+        # g.pdb()
+        self.op('{')
+        for i, key in enumerate(keys):
+            ### g.trace('    key ---', key)
+            self.visit(key)
+            self.op(':')
+            ### g.trace('pattern ---', patterns[i])
+            self.visit(patterns[i])
+        self.op('}')
+    #@+node:ekr.20220401034726.6: *7* tog.MatchOr
     # MatchOr(pattern* patterns)
 
     def do_MatchOr(self, node):
         patterns = getattr(node, 'patterns', [])
-        g.trace(node, patterns)
-        for pattern in patterns:
+        for i, pattern in enumerate(patterns):
+            if i > 0:
+                self.op('|')
             self.visit(pattern)
-
-
     #@+node:ekr.20220401034726.7: *7* tog.MatchSequence (test)
     # MatchSequence(pattern* patterns)
 
@@ -2461,7 +2478,6 @@ class TokenOrderGenerator:
         g.trace(node, patterns)
         for pattern in patterns:
             self.visit(pattern)
-
     #@+node:ekr.20220401034726.8: *7* tog.MatchSingleton (test)
     # MatchSingleton(constant value)
 
@@ -2474,6 +2490,7 @@ class TokenOrderGenerator:
     def do_MatchStar(self, node):
         name = getattr(node, 'name', None)
         g.trace(node, repr(name))
+        self.op('*')
         if name:
             self.name(name)
     #@+node:ekr.20220401034726.10: *7* tog.MatchValue

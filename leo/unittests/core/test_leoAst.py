@@ -2296,6 +2296,29 @@ class TestTOG(BaseTest):
         # Coverage test for spaces
         contents = """f = lambda x: x"""
         self.make_data(contents)
+    #@+node:ekr.20220329095904.1: *5* test_Match
+    def test_Match(self):
+
+        if py_version < (3, 10):
+            self.skipTest('Require python 3.10')
+        contents = r"""\
+    match node:
+        # Passed...
+        case 1: pass
+        case BinOp("+", a, BinOp("*", b, c)): pass
+        case {"text": message, "color": c}: pass
+        case 401 | 403 | 404: pass
+        case _: pass
+        case {"sound": _, "format": _}: pass
+    """
+        try:
+            # self.debug_list.append('contents')
+            # self.debug_list.append('tokens')
+            # self.debug_list.append('tree')
+            # self.debug_list.append('full-traceback')
+            self.make_data(contents)
+        finally:
+            self.debug_list = []
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
