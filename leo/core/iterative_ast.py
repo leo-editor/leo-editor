@@ -6,7 +6,7 @@
 #@+node:ekr.20220402095728.1: ** << imports >> (iterative_ast.py)
 import ast
 import sys
-from typing import List, Optional, Tuple  # Any, Dict, Generator, Union
+from typing import Any, List, Optional, Tuple  # Dict, Generator, Union
 # Use existing classes.
 from leo.core.leoAst import AssignLinksError
 from leo.core.leoAst import LeoGlobals
@@ -721,62 +721,76 @@ class IterativeTokenGenerator:
                 (self.visit, node.value),
             ])
         return result
-    #@+node:ekr.20220330133336.49: *5* iterative.Assert *** start here
+    #@+node:ekr.20220330133336.49: *5* iterative.Assert
     # Assert(expr test, expr? msg)
 
     def do_Assert(self, node: Node) -> List:
 
-        # Guards...
-        msg = getattr(node, 'msg', None)
         # No need to put parentheses or commas.
-        self.name('assert')
-        self.visit(node.test)
+        msg = getattr(node, 'msg', None)
+        result: List = [
+            (self.name, 'assert'),
+            (self.visit, node.test),
+        ]
         if msg is not None:
-            self.visit(node.msg)
+            result.append((self.visit, node.msg))
+        return result
     #@+node:ekr.20220330133336.50: *5* iterative.Assign
     def do_Assign(self, node: Node) -> List:
 
+        result = []
         for z in node.targets:
-            self.visit(z)
-            self.op('=')
-        self.visit(node.value)
+            result.extend([
+                (self.visit, z),
+                (self.op, '=')
+            ])
+        result.append((self.visit, node.value))
+        return result
     #@+node:ekr.20220330133336.51: *5* iterative.AsyncFor
     def do_AsyncFor(self, node: Node) -> List:
 
         # The def line...
         # Py 3.8 changes the kind of token.
         async_token_type = 'async' if has_async_tokens else 'name'
-        self.token(async_token_type, 'async')
-        self.name('for')
-        self.visit(node.target)
-        self.name('in')
-        self.visit(node.iter)
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
+        result: List = [
+            (self.token, (async_token_type, 'async')),
+            (self.name, 'for'),
+            (self.visit, node.target),
+            (self.name, 'in'),
+            (self.visit, node.iter),
+            (self.op, ':'),
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+        ]
         # Else clause...
         if node.orelse:
-            self.name('else')
-            self.op(':')
-            self.visit(node.orelse)
-        self.level -= 1
+            result.extend([
+                (self.name, 'else'),
+                (self.op, ':'),
+                (self.visit, node.orelse),
+            ])
+        # self.level -= 1
+        return result
     #@+node:ekr.20220330133336.52: *5* iterative.AsyncWith
     def do_AsyncWith(self, node: Node) -> List:
 
         async_token_type = 'async' if has_async_tokens else 'name'
-        self.token(async_token_type, 'async')
-        self.do_With(node)
+        return [
+            (self.token, (async_token_type, 'async')),
+            (self.do_With, node),
+        ]
     #@+node:ekr.20220330133336.53: *5* iterative.AugAssign
     # AugAssign(expr target, operator op, expr value)
 
     def do_AugAssign(self, node: Node) -> List:
 
         # %s%s=%s\n'
-        op_name_ = op_name(node.op)
-        self.visit(node.target)
-        self.op(op_name_ + '=')
-        self.visit(node.value)
+        return [
+            (self.visit, node.target),
+            (self.op, op_name(node.op) + '='),
+            (self.visit, node.value),
+        ]
     #@+node:ekr.20220330133336.54: *5* iterative.Await
     # Await(expr value)
 
@@ -784,12 +798,16 @@ class IterativeTokenGenerator:
 
         #'await %s\n'
         async_token_type = 'await' if has_async_tokens else 'name'
-        self.token(async_token_type, 'await')
-        self.visit(node.value)
+        return [
+            (self.token, (async_token_type, 'await')),
+            (self.visit, node.value),
+        ]
     #@+node:ekr.20220330133336.55: *5* iterative.Break
     def do_Break(self, node: Node) -> List:
 
-        self.name('break')
+        return [
+            (self.name, 'break'),
+        ]
     #@+node:ekr.20220330133336.56: *5* iterative.Call & helpers
     # Call(expr func, expr* args, keyword* keywords)
 
@@ -798,12 +816,14 @@ class IterativeTokenGenerator:
     def do_Call(self, node: Node) -> List:
 
         # The calls to op(')') and op('(') do nothing by default.
-        # Subclasses might handle them in an overridden iterative.set_links.
-        self.visit(node.func)
-        self.op('(')
         # No need to generate any commas.
-        self.handle_call_arguments(node)
-        self.op(')')
+        # Subclasses might handle them in an overridden iterative.set_links.
+        return [
+            (self.visit, node.func),
+            (self.op, '('),
+            (self.handle_call_arguments, node),
+            (self.op, ')'),
+        ]
     #@+node:ekr.20220330133336.57: *6* iterative.arg_helper
     def arg_helper(self, node: Node) -> List:
         """
@@ -904,48 +924,73 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.59: *5* iterative.Continue
     def do_Continue(self, node: Node) -> List:
 
-        self.name('continue')
+        return [
+            (self.name, 'continue'),
+        ]
+    #@+node:ekr.20220330133336.60: *5* iterative.Delete
+    def do_Delete(self, node: Node) -> List:
+
+        # No need to put commas.
+        return [
+            (self.name, 'del'),
+            (self.visit, node.targets),
+        ]
     #@+node:ekr.20220330133336.61: *5* iterative.ExceptHandler
     def do_ExceptHandler(self, node: Node) -> List:
 
         # Except line...
-        self.name('except')
+        result: List = [
+            (self.name, 'except'),
+        ]
         if getattr(node, 'type', None):
-            self.visit(node.type)
+            result.append((self.visit, node.type))
         if getattr(node, 'name', None):
-            self.name('as')
-            self.name(node.name)
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
-        self.level -= 1
+            result.extend([
+                (self.name, 'as'),
+                (self.name, node.name),
+            ])
+        result.extend([
+            (self.op, ':'),
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+            # self.level -= 1
+        ])
+        return result
     #@+node:ekr.20220330133336.62: *5* iterative.For
-    def do_For(self, node: Node) -> List:
+    def do_For(self, node: Node) -> List[Tuple[Any, Any]]:
 
-        # The def line...
-        self.name('for')
-        self.visit(node.target)
-        self.name('in')
-        self.visit(node.iter)
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
+        result = [
+            # The def line...
+            (self.name, 'for'),
+            (self.visit, node.target),
+            (self.name, 'in'),
+            (self.visit, node.iter),
+            (self.op, ':'),
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+        ]
         # Else clause...
         if node.orelse:
-            self.name('else')
-            self.op(':')
-            self.visit(node.orelse)
-        self.level -= 1
+            result.extend([
+                (self.name, 'else'),
+                (self.op, ':'),
+                (self.visit, node.orelse),
+            ])
+        # self.level -= 1
+        return result
     #@+node:ekr.20220330133336.63: *5* iterative.Global
     # Global(identifier* names)
 
     def do_Global(self, node: Node) -> List:
 
-        self.name('global')
+        result = [
+            (self.name, 'global'),
+        ]
         for z in node.names:
-            self.name(z)
+            result.append((self.name, z))
+        return result
     #@+node:ekr.20220330133336.64: *5* iterative.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
@@ -969,62 +1014,70 @@ class IterativeTokenGenerator:
         #@-<< do_If docstring >>
         # Use the next significant token to distinguish between 'if' and 'elif'.
         token = self.find_next_significant_token()
-        self.name(token.value)
-        self.visit(node.test)
-        self.op(':')
-        #
-        # Body...
-        self.level += 1
-        self.visit(node.body)
-        self.level -= 1
+        result: List = [
+            (self.name, token.value),
+            (self.visit, node.test),
+            (self.op, ':'),
+            #
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+            # self.level -= 1
+        ]
         #
         # Else and elif clauses...
         if node.orelse:
-            self.level += 1
+            # self.level += 1
             token = self.find_next_significant_token()
             if token.value == 'else':
-                self.name('else')
-                self.op(':')
-                self.visit(node.orelse)
-            else:
-                self.visit(node.orelse)
-            self.level -= 1
+                result.extend([
+                    (self.name, 'else'),
+                    (self.op, ':'),
+                ])
+            result.append((self.visit, node.orelse))
+            # self.level -= 1
+        return result
+          
     #@+node:ekr.20220330133336.66: *5* iterative.Import & helper
     def do_Import(self, node: Node) -> List:
 
-        self.name('import')
+        result: List = [
+            (self.name, 'import'),
+        ]
         for alias in node.names:
-            self.name(alias.name)
+            result.append((self.name, alias.name))
             if alias.asname:
-                self.name('as')
-                self.name(alias.asname)
+                result.extend([
+                    (self.name, 'as'),
+                    (self.name, alias.asname),
+                ])
+        return result
     #@+node:ekr.20220330133336.67: *5* iterative.ImportFrom
     # ImportFrom(identifier? module, alias* names, int? level)
 
     def do_ImportFrom(self, node: Node) -> List:
 
-        self.name('from')
+        result: List = [
+            (self.name, 'from'),
+        ]
         for i in range(node.level):
-            self.op('.')
+            result.append((self.op, '.'))
         if node.module:
-            self.name(node.module)
-        self.name('import')
+            result.append((self.name, node.module))
+        result.append((self.name, 'import'))
         # No need to put commas.
         for alias in node.names:
             if alias.name == '*':  # #1851.
-                self.op('*')
+                result.append((self.op, '*'))
             else:
-                self.name(alias.name)
+                result.append((self.name, alias.name))
             if alias.asname:
-                self.name('as')
-                self.name(alias.asname)
-    #@+node:ekr.20220330133336.60: *5* iterative.Delete
-    def do_Delete(self, node: Node) -> List:
-
-        # No need to put commas.
-        self.name('del')
-        self.visit(node.targets)
-    #@+node:ekr.20220330133336.68: *5* iterative.Match* (Python 3.10+)
+                result.extend([
+                    (self.name, 'as'),
+                    (self.name, alias.asname),
+                ])
+        return result
+    #@+node:ekr.20220330133336.68: *5* iterative.Match* (Python 3.10+) *** To do ***
     # Match(expr subject, match_case* cases)
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
@@ -1132,9 +1185,12 @@ class IterativeTokenGenerator:
 
         # nonlocal %s\n' % ','.join(node.names))
         # No need to put commas.
-        self.name('nonlocal')
+        result: List = [
+            (self.name, 'nonlocal'),
+        ]
         for z in node.names:
-            self.name(z)
+            result.append((self.name, z))
+        return result
     #@+node:ekr.20220330133336.79: *5* iterative.Pass
     def do_Pass(self, node: Node) -> List:
 
@@ -1147,60 +1203,80 @@ class IterativeTokenGenerator:
     def do_Raise(self, node: Node) -> List:
 
         # No need to put commas.
-        self.name('raise')
         exc = getattr(node, 'exc', None)
         cause = getattr(node, 'cause', None)
         tback = getattr(node, 'tback', None)
-        self.visit(exc)
+        result: List = [
+            (self.name, 'raise'),
+            (self.visit, exc),
+        ]
         if cause:
-            self.name('from')  # #2446.
-            self.visit(cause)
-        self.visit(tback)
+            result.extend([
+                (self.name, 'from'),  # #2446.
+                (self.visit, cause),
+            ])
+        result.append((self.visit, tback))
+        return result
+
     #@+node:ekr.20220330133336.81: *5* iterative.Return
     def do_Return(self, node: Node) -> List:
 
-        self.name('return')
-        self.visit(node.value)
+        return [
+            (self.name, 'return'),
+            (self.visit, node.value),
+        ]
     #@+node:ekr.20220330133336.82: *5* iterative.Try
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
     def do_Try(self, node: Node) -> List:
 
-        # Try line...
-        self.name('try')
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
-        self.visit(node.handlers)
+        result: List = [
+            # Try line...
+            (self.name, 'try'),
+            (self.op, ':'),
+            # Body...
+            # self.level += 1,
+            (self.visit, node.body),
+            (self.visit, node.handlers),
+        ]
         # Else...
         if node.orelse:
-            self.name('else')
-            self.op(':')
-            self.visit(node.orelse)
+            result.extend([
+                (self.name, 'else'),
+                (self.op, ':'),
+                (self.visit, node.orelse),
+            ])
         # Finally...
         if node.finalbody:
-            self.name('finally')
-            self.op(':')
-            self.visit(node.finalbody)
-        self.level -= 1
+            result.extend([
+                (self.name, 'finally'),
+                (self.op, ':'),
+                (self.visit, node.finalbody),
+            ])
+        # self.level -= 1
+        return result
     #@+node:ekr.20220330133336.83: *5* iterative.While
     def do_While(self, node: Node) -> List:
 
         # While line...
             # while %s:\n'
-        self.name('while')
-        self.visit(node.test)
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
+        result: List = [
+            (self.name, 'while'),
+            (self.visit, node.test),
+            (self.op, ':'),
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+        ]
         # Else clause...
         if node.orelse:
-            self.name('else')
-            self.op(':')
-            self.visit(node.orelse)
-        self.level -= 1
+            result.extend([
+                (self.name, 'else'),
+                (self.op, ':'),
+                (self.visit, node.orelse),
+            ])
+        # self.level -= 1
+        return result
     #@+node:ekr.20220330133336.84: *5* iterative.With
     # With(withitem* items, stmt* body)
 
@@ -1210,21 +1286,28 @@ class IterativeTokenGenerator:
 
         expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
         items: List[ast.AST] = getattr(node, 'items', [])
-        self.name('with')
-        self.visit(expr)
+        result: List = [
+            (self.name, 'with'),
+            (self.visit, expr),
+        ]
         # No need to put commas.
         for item in items:
-            self.visit(item.context_expr)  # type:ignore
+            result.append((self.visit, item.context_expr))
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
-                self.name('as')
-                self.visit(item.optional_vars)  # type:ignore
-        # End the line.
-        self.op(':')
-        # Body...
-        self.level += 1
-        self.visit(node.body)
-        self.level -= 1
+                result.extend([
+                    (self.name, 'as'),
+                    (self.visit, item.optional_vars),
+                ])
+        result.extend([
+            # End the line.
+            (self.op, ':'),
+            # Body...
+            # self.level += 1
+            (self.visit, node.body),
+            #self.level -= 1
+        ])
+        return result
     #@+node:ekr.20220330133336.85: *5* iterative.Yield
     def do_Yield(self, node: Node) -> List:
 
