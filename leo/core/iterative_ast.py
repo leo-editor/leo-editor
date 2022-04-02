@@ -94,7 +94,7 @@ class IterativeTokenGenerator:
         self.main_loop(tree) ###
         # Ensure that all tokens are patched.
         self.node = tree
-        self.token('endmarker', '')
+        self.token(('endmarker', ''))
         # Return [] for compatibility with legacy code: list(tog.create_links).
         return []
     #@+node:ekr.20220402095550.4: *4* iterative.init_from_file
@@ -190,10 +190,10 @@ class IterativeTokenGenerator:
     def sync_name(self, val: str) -> None:
         aList = val.split('.')
         if len(aList) == 1:
-            self.sync_token('name', val)
+            self.sync_token(('name', val))
         else:
             for i, part in enumerate(aList):
-                self.sync_token('name', part)
+                self.sync_token(('name', part))
                 if i < len(aList) - 1:
                     self.sync_op('.')
 
@@ -206,13 +206,14 @@ class IterativeTokenGenerator:
         val may be '(' or ')' *only* if the parens *will* actually exist in the
         token list.
         """
-        self.sync_token('op', val)
+        self.sync_token(('op', val))
 
     op = sync_op  # For readability.
     #@+node:ekr.20220402094825.6: *4* iterative.sync_token (aka token)
     px = -1  # Index of the previously synced token.
 
-    def sync_token(self, kind: str, val: str) -> None:
+    ### def sync_token(self, kind: str, val: str) -> None:
+    def sync_token(self, data: Tuple[Any, Any]) -> None:
         """
         Sync to a token whose kind & value are given. The token need not be
         significant, but it must be guaranteed to exist in the token list.
@@ -226,6 +227,7 @@ class IterativeTokenGenerator:
         - Create two-way links between T and self.node.
         - Advance by updating self.px to point to T.
         """
+        kind, val = data  ### New
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         # g.trace(
@@ -320,11 +322,14 @@ class IterativeTokenGenerator:
         exec_list = [(func, node)]
         while exec_list:
             func, arg = exec_list.pop(0)
+            g.trace(func.__name__)
             result = func(arg)
             if result:
                 # Prepend the result, a list of tuples.
                 assert isinstance(result, list), repr(result)
                 exec_list[:0] = result
+                for z in exec_list:  ###
+                    g.printObj(z)
     #@+node:ekr.20220330155314.1: *4* iterative.visit
     def visit(self, node: Node) -> List:
         """Visit an ast node."""
