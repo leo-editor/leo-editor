@@ -269,7 +269,7 @@ class BackgroundProcessManager:
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-            
+
         def start_timer():  # #2528 & #2557.
             if not self.timer.isActive():
                 self.timer.start(100)
