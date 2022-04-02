@@ -4057,21 +4057,18 @@ class ReassignTokens:
         """The main entry point."""
         self.filename = filename
         self.tokens = tokens
+        # For now, just handle Call nodes.
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 self.visit_call(node)
     #@+node:ekr.20191231084853.1: *4* reassign.visit_call
     def visit_call(self, node: Node) -> None:
-        """ReassignTokens.visit"""
-        # For now, just handle call nodes.
-        ### if not isinstance(node, ast.Call):
-        ###    return
+        """ReassignTokens.visit_call"""
         tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
         if not nca:
             return
-        # g.trace(f"{self.filename:20} nca: {nca.__class__.__name__}")
         # Associate () with the call node.
         i = tokens[-1].index
         j = find_paren_token(i + 1, self.tokens)
