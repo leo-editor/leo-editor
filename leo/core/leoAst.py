@@ -3610,7 +3610,7 @@ class Fstringify(TokenOrderTraverser):
 
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
-    def fstringify(self, contents, filename, tokens, tree):
+    def fstringify(self, contents: str, filename: str, tokens: List["Token"], tree: Node) -> str:
         """
         Fstringify.fstringify:
 
@@ -3628,7 +3628,7 @@ class Fstringify(TokenOrderTraverser):
         results = tokens_to_string(self.tokens)
         return results
     #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
-    def fstringify_file(self, filename):  # pragma: no cover
+    def fstringify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         Fstringify.fstringify_file.
 
@@ -3659,7 +3659,7 @@ class Fstringify(TokenOrderTraverser):
             write_file(filename, results, encoding=encoding)
         return changed
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
-    def fstringify_file_diff(self, filename):  # pragma: no cover
+    def fstringify_file_diff(self, filename: str) -> bool:  # pragma: no cover
         """
         Fstringify.fstringify_file_diff.
 
@@ -3689,7 +3689,7 @@ class Fstringify(TokenOrderTraverser):
             print(f"{tag}: Unchanged: {filename}")
         return changed
     #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
-    def fstringify_file_silent(self, filename):  # pragma: no cover
+    def fstringify_file_silent(self, filename: str) -> bool:  # pragma: no cover
         """
         Fstringify.fstringify_file_silent.
 
@@ -3719,7 +3719,7 @@ class Fstringify(TokenOrderTraverser):
             write_file(filename, results, encoding=encoding)
         return changed
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
-    def make_fstring(self, node):
+    def make_fstring(self, node: Node) -> None:
         """
         node is BinOp node representing an '%' operator.
         node.left is an ast.Str node.
@@ -3781,12 +3781,12 @@ class Fstringify(TokenOrderTraverser):
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
     ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
 
-    def clean_ws(self, s):
+    def clean_ws(self, s: str) -> str:
         """Carefully remove whitespace before ! and : specifiers."""
         s = re.sub(self.ws_pat, r'\2', s)
         return s
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, lt_s, tokens):
+    def compute_result(self, lt_s: str, tokens: List["Token"]) -> str:
         """
         Create the final result, with various kinds of munges.
 
@@ -3800,7 +3800,7 @@ class Fstringify(TokenOrderTraverser):
             return None  # pragma: no cover
         return tokens_to_string(tokens)
     #@+node:ekr.20200215074309.1: *6* fs.check_back_slashes
-    def check_back_slashes(self, lt_s, tokens):
+    def check_back_slashes(self, lt_s: str, tokens: List["Token"]) -> bool:
         """
         Return False if any backslash appears with an {} expression.
 
@@ -3821,7 +3821,7 @@ class Fstringify(TokenOrderTraverser):
                 return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, lt_s, aList):
+    def change_quotes(self, lt_s: str, aList: List[Any]) -> bool:
         """
         Carefully check quotes in all "inner" tokens as necessary.
 
@@ -3878,7 +3878,7 @@ class Fstringify(TokenOrderTraverser):
                 f":   conflicting delims:")
         return False
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
-    def munge_spec(self, spec):
+    def munge_spec(self, spec: str) -> Tuple[str, str]:
         """
         Return (head, tail).
 
@@ -3912,12 +3912,12 @@ class Fstringify(TokenOrderTraverser):
 
     format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
-    def scan_format_string(self, s):
+    def scan_format_string(self, s: str) -> List[re.Match]:
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
     #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
-    def scan_rhs(self, node):
+    def scan_rhs(self, node: Node) -> List["Token"]:
         """
         Scan the right-hand side of a potential f-string.
 
@@ -3942,7 +3942,7 @@ class Fstringify(TokenOrderTraverser):
         tokens = tokens_for_node(self.filename, node, self.tokens)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s, specs, values):
+    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List["Token"]) -> List["Token"]:
         """
         Replace specifiers with values in lt_s string.
 
@@ -3975,7 +3975,7 @@ class Fstringify(TokenOrderTraverser):
             results.append(Token('string', tail[-1]))
         return results
     #@+node:ekr.20200214142019.1: *4* fs.message
-    def message(self, message):  # pragma: no cover.
+    def message(self, message: str) -> None:  # pragma: no cover.
         """
         Print one or more message lines aligned on the first colon of the message.
         """
@@ -4015,7 +4015,7 @@ class Fstringify(TokenOrderTraverser):
             f"{ln_n_s}: {self.line_number}\n"
             f"{line_s}: {self.line!r}")
     #@+node:ekr.20191225054848.1: *4* fs.replace
-    def replace(self, node, s, values):
+    def replace(self, node: Node, s: str, values: List["Token"]) -> None:
         """
         Replace node with an ast.Str node for s.
         Replace all tokens in the range of values with a single 'string' node.
@@ -4038,7 +4038,7 @@ class Fstringify(TokenOrderTraverser):
         # Update the token list.
         add_token_to_token_list(token, new_node)
     #@+node:ekr.20191231055008.1: *4* fs.visit
-    def visit(self, node):
+    def visit(self, node: Node) -> None:
         """
         FStringify.visit. (Overrides TOT visit).
 
@@ -4057,14 +4057,14 @@ class ReassignTokens(TokenOrderTraverser):
     """A class that reassigns tokens to more appropriate ast nodes."""
     #@+others
     #@+node:ekr.20191231084640.1: *4* reassign.reassign
-    def reassign(self, filename, tokens, tree):
+    def reassign(self, filename: str, tokens: List["Token"], tree: Node) -> None:
         """The main entry point."""
         self.filename = filename
         self.tokens = tokens
         self.tree = tree
         self.traverse(tree)
     #@+node:ekr.20191231084853.1: *4* reassign.visit
-    def visit(self, node):
+    def visit(self, node: Node) -> None:
         """ReassignTokens.visit"""
         # For now, just handle call nodes.
         if not isinstance(node, ast.Call):
