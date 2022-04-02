@@ -3596,8 +3596,8 @@ class ParseState:
 
     __str__ = __repr__
 #@+node:ekr.20200122033203.1: ** TOT classes...
-#@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
-class Fstringify(TokenOrderTraverser):
+#@+node:ekr.20191222083453.1: *3* class Fstringify
+class Fstringify:
     """A class to fstringify files."""
 
     silent = True  # for pytest. Defined in all entries.
@@ -3620,7 +3620,13 @@ class Fstringify(TokenOrderTraverser):
         # Prepass: reassign tokens.
         ReassignTokens().reassign(filename, tokens, tree)
         # Main pass.
-        self.traverse(self.tree)
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.BinOp)
+                and op_name(node.op) == '%'
+                and isinstance(node.left, ast.Str)
+            ):
+                self.make_fstring(node)
         results = tokens_to_string(self.tokens)
         return results
     #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
@@ -4033,20 +4039,6 @@ class Fstringify(TokenOrderTraverser):
         token.node = new_node  # type:ignore
         # Update the token list.
         add_token_to_token_list(token, new_node)
-    #@+node:ekr.20191231055008.1: *4* fs.visit
-    def visit(self, node: Node) -> None:
-        """
-        FStringify.visit. (Overrides TOT visit).
-
-        Call fs.makes_fstring if node is a BinOp that might be converted to an
-        f-string.
-        """
-        if (
-            isinstance(node, ast.BinOp)
-            and op_name(node.op) == '%'
-            and isinstance(node.left, ast.Str)
-        ):
-            self.make_fstring(node)
     #@-others
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens
 class ReassignTokens:
