@@ -45,6 +45,7 @@ class IterativeTokenGenerator:
     
     #@+others
     #@+node:ekr.20220402095550.1: *3* iterative: Init...
+    # Same as in the TokenOrderGenerator class.
     #@+node:ekr.20220402095550.2: *4* tog.balance_tokens
     def balance_tokens(self, tokens: List["Token"]) -> int:
         """
@@ -126,6 +127,8 @@ class IterativeTokenGenerator:
         self.create_links(tokens, tree)
         return tokens, tree
     #@+node:ekr.20220402094825.1: *3* iterative: Syncronizers...
+    # Same as in the TokenOrderGenerator class.
+
     # The synchronizer sync tokens to nodes.
     #@+node:ekr.20220402094825.2: *4* iterative.find_next_significant_token
     def find_next_significant_token(self) -> Optional["Token"]:
@@ -337,10 +340,9 @@ class IterativeTokenGenerator:
             result = []
             for z in node:
                 if isinstance(z, ast.AST):
-                  
                     result.append((self.visit, z)) ##### Test.
                 else:
-                    # Some fields may contain ints or strings.
+                    # All other fields should contain ints or strings.
                     assert isinstance(z, (int, str)), z.__class__.__name__
             return result
         # We *do* want to crash if the visitor doesn't exist.
