@@ -3014,7 +3014,7 @@ class TokenOrderGenerator:
         # Do this first, *before* updating self.node.
         node.parent = self.node
         if self.node:
-            children = getattr(self.node, 'children', [])  # type:ignore
+            children: List[Node] = getattr(self.node, 'children', [])
             children.append(node)
             self.node.children = children
         # Inject the node_index field.
