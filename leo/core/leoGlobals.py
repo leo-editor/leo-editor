@@ -315,11 +315,11 @@ g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
 
 # Regex to find GNX
-USERCHAR = r"""[^.,"'\s]"""      # from LeoApp.cleanLeoID()
+USERCHAR = r"""[^.,"'\s]"""  # from LeoApp.cleanLeoID()
 USERID = f'{USERCHAR}{{2}}{USERCHAR}+'  # At least three USERCHARs
 GNXre = re.compile(rf"""{USERID}\.
     [0-9]+\.                     # timestamp
-    [0-9]+""", re.VERBOSE)       # NodeIndices.lastIndex
+    [0-9]+""", re.VERBOSE)  # NodeIndices.lastIndex
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.

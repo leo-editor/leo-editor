@@ -593,7 +593,7 @@ def change_css_prop(css, prop, newval):
     if prop not in css: return
     start = css.find(prop)
     colon = css[start:].find(':')
-    frag = css[start + colon + 1:]
+    frag = css[start + colon + 1 :]
     end = frag.find(';')
     val = frag[:end].strip()
 
