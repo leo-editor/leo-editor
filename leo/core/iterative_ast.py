@@ -90,7 +90,8 @@ class IterativeTokenGenerator:
         self.tokens = tokens  # The immutable list of input tokens.
         self.tree = tree  # The tree of ast.AST nodes.
         # Traverse the tree.
-        self.visit(tree)
+        ### self.visit(tree)
+        self.main_loop(tree) ###
         # Ensure that all tokens are patched.
         self.node = tree
         self.token('endmarker', '')
@@ -308,6 +309,8 @@ class IterativeTokenGenerator:
         self.node = self.node_stack.pop()
     #@+node:ekr.20220330120220.1: *4* iterative.main_loop
     def main_loop(self, node: Node) -> None:
+        
+        g.pdb()  ###
 
         func = getattr(self, 'do_' + node.__class__.__name__, None)
         if not func:
@@ -367,7 +370,7 @@ class IterativeTokenGenerator:
             f"file: {filename}\n"
             f"do_keyword should never be called\n"
             f"{g.callers(8)}")
-    #@+node:ekr.20220330133336.3: *4* iterative: Contexts (TEST)
+    #@+node:ekr.20220330133336.3: *4* iterative: Contexts
     #@+node:ekr.20220330133336.4: *5*  iterative.arg
     # arg = (identifier arg, expr? annotation)
 
@@ -590,7 +593,7 @@ class IterativeTokenGenerator:
         return [
             (self.visit, node.body),
         ]
-    #@+node:ekr.20220330133336.12: *4* iterative: Expressions (TEST)
+    #@+node:ekr.20220330133336.12: *4* iterative: Expressions
     #@+node:ekr.20220330133336.13: *5* iterative.Expr
     def do_Expr(self, node: Node) -> List:
         """An outer expression."""
@@ -623,7 +626,7 @@ class IterativeTokenGenerator:
             (self.op, ':='),
             (self.visit, node.value),
         ]
-    #@+node:ekr.20220330133336.40: *4* iterative: Operators (TEST)
+    #@+node:ekr.20220330133336.40: *4* iterative: Operators
     #@+node:ekr.20220330133336.41: *5* iterative.BinOp
     def do_BinOp(self, node: Node) -> List:
 
@@ -695,6 +698,297 @@ class IterativeTokenGenerator:
             (self.visit, node.orelse),
         ]
         
+    #@+node:ekr.20220402155044.1: *4* iterative: Operands
+    #@+node:ekr.20220402155044.2: *5* iterative.Attribute
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self, node: Node) -> List:
+
+        self.visit(node.value)
+        self.op('.')
+        self.name(node.attr)  # A string.
+    #@+node:ekr.20220402155044.3: *5* iterative.Bytes
+    def do_Bytes(self, node: Node) -> List:
+
+        """
+        It's invalid to mix bytes and non-bytes literals, so just
+        advancing to the next 'string' token suffices.
+        """
+        token = self.find_next_significant_token()
+        self.token('string', token.value)
+    #@+node:ekr.20220402155044.4: *5* iterative.comprehension
+    # comprehension = (expr target, expr iter, expr* ifs, int is_async)
+
+    def do_comprehension(self, node: Node) -> List:
+
+        # No need to put parentheses.
+        self.name('for')  # #1858.
+        self.visit(node.target)  # A name
+        self.name('in')
+        self.visit(node.iter)
+        for z in node.ifs or []:
+            self.name('if')
+            self.visit(z)
+    #@+node:ekr.20220402155044.5: *5* iterative.Constant
+    def do_Constant(self, node: Node) -> List:  # pragma: no cover
+        """
+        https://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+        A constant. The value attribute holds the Python object it represents.
+        This can be simple types such as a number, string or None, but also
+        immutable container types (tuples and frozensets) if all of their
+        elements are constant.
+        """
+        # Support Python 3.8.
+        if node.value is None or isinstance(node.value, bool):
+            # Weird: return a name!
+            self.token('name', repr(node.value))
+        elif node.value == Ellipsis:
+            self.op('...')
+        elif isinstance(node.value, str):
+            self.do_Str(node)
+        elif isinstance(node.value, (int, float)):
+            self.token('number', repr(node.value))
+        elif isinstance(node.value, bytes):
+            self.do_Bytes(node)
+        elif isinstance(node.value, tuple):
+            self.do_Tuple(node)
+        elif isinstance(node.value, frozenset):
+            self.do_Set(node)
+        else:
+            # Unknown type.
+            g.trace('----- Oops -----', repr(node.value), g.callers())
+    #@+node:ekr.20220402155044.6: *5* iterative.Dict
+    # Dict(expr* keys, expr* values)
+
+    def do_Dict(self, node: Node) -> List:
+
+        assert len(node.keys) == len(node.values)
+        self.op('{')
+        # No need to put commas.
+        for i, key in enumerate(node.keys):
+            key, value = node.keys[i], node.values[i]
+            self.visit(key)  # a Str node.
+            self.op(':')
+            if value is not None:
+                self.visit(value)
+        self.op('}')
+    #@+node:ekr.20220402155044.7: *5* iterative.DictComp
+    # DictComp(expr key, expr value, comprehension* generators)
+
+    # d2 = {val: key for key, val in d}
+
+    def do_DictComp(self, node: Node) -> List:
+
+        self.token('op', '{')
+        self.visit(node.key)
+        self.op(':')
+        self.visit(node.value)
+        for z in node.generators or []:
+            self.visit(z)
+            self.token('op', '}')
+    #@+node:ekr.20220402155044.8: *5* iterative.Ellipsis
+    def do_Ellipsis(self, node: Node) -> List:  # pragma: no cover (Does not exist for python 3.8+)
+
+        self.op('...')
+    #@+node:ekr.20220402155044.9: *5* iterative.ExtSlice
+    # https://docs.python.org/3/reference/expressions.html#slicings
+
+    # ExtSlice(slice* dims)
+
+    def do_ExtSlice(self, node: Node) -> List:  # pragma: no cover (deprecated)
+
+        # ','.join(node.dims)
+        for i, z in enumerate(node.dims):
+            self.visit(z)
+            if i < len(node.dims) - 1:
+                self.op(',')
+    #@+node:ekr.20220402155044.10: *5* iterative.Index
+    def do_Index(self, node: Node) -> List:  # pragma: no cover (deprecated)
+
+        self.visit(node.value)
+    #@+node:ekr.20220402155044.11: *5* iterative.FormattedValue: not called!
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(self, node: Node) -> List:  # pragma: no cover
+        """
+        This node represents the *components* of a *single* f-string.
+
+        Happily, JoinedStr nodes *also* represent *all* f-strings,
+        so the TOG should *never visit this node!
+        """
+        filename = getattr(self, 'filename', '<no file>')
+        raise AssignLinksError(
+            f"file: {filename}\n"
+            f"do_FormattedValue should never be called")
+
+        # This code has no chance of being useful...
+
+            # conv = node.conversion
+            # spec = node.format_spec
+            # self.visit(node.value)
+            # if conv is not None:
+                # self.token('number', conv)
+            # if spec is not None:
+                # self.visit(node.format_spec)
+    #@+node:ekr.20220402155044.12: *5* iterative.JoinedStr & helpers
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(self, node: Node) -> List:
+        """
+        JoinedStr nodes represent at least one f-string and all other strings
+        concatentated to it.
+
+        Analyzing JoinedStr.values would be extremely tricky, for reasons that
+        need not be explained here.
+
+        Instead, we get the tokens *from the token list itself*!
+        """
+        for z in self.get_concatenated_string_tokens():
+            self.token(z.kind, z.value)
+    #@+node:ekr.20220402155044.13: *5* iterative.List
+    def do_List(self, node: Node) -> List:
+
+        # No need to put commas.
+        self.op('[')
+        self.visit(node.elts)
+        self.op(']')
+    #@+node:ekr.20220402155044.14: *5* iterative.ListComp
+    # ListComp(expr elt, comprehension* generators)
+
+    def do_ListComp(self, node: Node) -> List:
+
+        self.op('[')
+        self.visit(node.elt)
+        for z in node.generators:
+            self.visit(z)
+        self.op(']')
+    #@+node:ekr.20220402155044.15: *5* iterative.Name & NameConstant
+    def do_Name(self, node: Node) -> List:
+
+        self.name(node.id)
+
+    def do_NameConstant(self, node: Node) -> List:  # pragma: no cover (Does not exist in Python 3.8+)
+
+        self.name(repr(node.value))
+
+    #@+node:ekr.20220402155044.16: *5* iterative.Num
+    def do_Num(self, node: Node) -> List:  # pragma: no cover (Does not exist in Python 3.8+)
+
+        self.token('number', node.n)
+    #@+node:ekr.20220402155044.17: *5* iterative.Set
+    # Set(expr* elts)
+
+    def do_Set(self, node: Node) -> List:
+
+        self.op('{')
+        self.visit(node.elts)
+        self.op('}')
+    #@+node:ekr.20220402155044.18: *5* iterative.SetComp
+    # SetComp(expr elt, comprehension* generators)
+
+    def do_SetComp(self, node: Node) -> List:
+
+        self.op('{')
+        self.visit(node.elt)
+        for z in node.generators or []:
+            self.visit(z)
+        self.op('}')
+    #@+node:ekr.20220402155044.19: *5* iterative.Slice
+    # slice = Slice(expr? lower, expr? upper, expr? step)
+
+    def do_Slice(self, node: Node) -> List:
+
+        lower = getattr(node, 'lower', None)
+        upper = getattr(node, 'upper', None)
+        step = getattr(node, 'step', None)
+        if lower is not None:
+            self.visit(lower)
+        # Always put the colon between upper and lower.
+        self.op(':')
+        if upper is not None:
+            self.visit(upper)
+        # Put the second colon if it exists in the token list.
+        if step is None:
+            token = self.find_next_significant_token()
+            if token and token.value == ':':
+                self.op(':')
+        else:
+            self.op(':')
+            self.visit(step)
+    #@+node:ekr.20220402155044.20: *5* iterative.Str & helper
+    def do_Str(self, node: Node) -> List:
+        """This node represents a string constant."""
+        # This loop is necessary to handle string concatenation.
+        for z in self.get_concatenated_string_tokens():
+            self.token(z.kind, z.value)
+    #@+node:ekr.20220402155044.21: *6* iterative.get_concatenated_tokens
+    def get_concatenated_string_tokens(self) -> List["Token"]:
+        """
+        Return the next 'string' token and all 'string' tokens concatenated to
+        it. *Never* update self.px here.
+        """
+        trace = False
+        tag = 'iterative.get_concatenated_string_tokens'
+        i = self.px
+        # First, find the next significant token.  It should be a string.
+        i, token = i + 1, None
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                # Rescan the string.
+                i -= 1
+                break
+            # An error.
+            if is_significant_token(token):  # pragma: no cover
+                break
+        # Raise an error if we didn't find the expected 'string' token.
+        if not token or token.kind != 'string':  # pragma: no cover
+            if not token:
+                token = self.tokens[-1]
+            filename = getattr(self, 'filename', '<no filename>')
+            raise AssignLinksError(
+                f"\n"
+                f"{tag}...\n"
+                f"file: {filename}\n"
+                f"line: {token.line_number}\n"
+                f"   i: {i}\n"
+                f"expected 'string' token, got {token!s}")
+        # Accumulate string tokens.
+        assert self.tokens[i].kind == 'string'
+        results = []
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                results.append(token)
+            elif token.kind == 'op' or is_significant_token(token):
+                # Any significant token *or* any op will halt string concatenation.
+                break
+            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        # The (significant) 'endmarker' token ensures we will have result.
+        assert results
+        if trace:  # pragma: no cover
+            g.printObj(results, tag=f"{tag}: Results")
+        return results
+    #@+node:ekr.20220402155044.22: *5* iterative.Subscript
+    # Subscript(expr value, slice slice, expr_context ctx)
+
+    def do_Subscript(self, node: Node) -> List:
+
+        self.visit(node.value)
+        self.op('[')
+        self.visit(node.slice)
+        self.op(']')
+    #@+node:ekr.20220402155044.23: *5* iterative.Tuple
+    # Tuple(expr* elts, expr_context ctx)
+
+    def do_Tuple(self, node: Node) -> List:
+
+        # Do not call op for parens or commas here.
+        # They do not necessarily exist in the token list!
+        self.visit(node.elts)
     #@+node:ekr.20220330133336.46: *4* iterative: Statements
     #@+node:ekr.20220330133336.47: *5*  iterative.Starred
     # Starred(expr value, expr_context ctx)

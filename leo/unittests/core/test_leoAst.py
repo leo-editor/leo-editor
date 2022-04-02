@@ -2276,9 +2276,15 @@ class TestTOG(BaseTest):
     #@+node:ekr.20191227052446.43: *4* TestTOG.Statements...
     #@+node:ekr.20200112075707.1: *5* test_AnnAssign
     def test_AnnAssign(self):
-        g.pdb()
         contents = """x: int = 0"""
-        self.make_data(contents)
+        try:
+            # self.debug_list.append('contents')
+            self.debug_list.append('tokens')
+            self.debug_list.append('tree')
+            self.debug_list.append('full-traceback')
+            self.make_data(contents)
+        finally:
+            self.debug_list = []
     #@+node:ekr.20200112071833.1: *5* test_AsyncFor
     def test_AsyncFor(self):
         # This may require Python 3.7.
