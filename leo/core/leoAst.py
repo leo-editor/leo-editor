@@ -4048,8 +4048,8 @@ class Fstringify(TokenOrderTraverser):
         ):
             self.make_fstring(node)
     #@-others
-#@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
-class ReassignTokens(TokenOrderTraverser):
+#@+node:ekr.20191231084514.1: *3* class ReassignTokens
+class ReassignTokens:
     """A class that reassigns tokens to more appropriate ast nodes."""
     #@+others
     #@+node:ekr.20191231084640.1: *4* reassign.reassign
@@ -4057,14 +4057,15 @@ class ReassignTokens(TokenOrderTraverser):
         """The main entry point."""
         self.filename = filename
         self.tokens = tokens
-        self.tree = tree
-        self.traverse(tree)
-    #@+node:ekr.20191231084853.1: *4* reassign.visit
-    def visit(self, node: Node) -> None:
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                self.visit_call(node)
+    #@+node:ekr.20191231084853.1: *4* reassign.visit_call
+    def visit_call(self, node: Node) -> None:
         """ReassignTokens.visit"""
         # For now, just handle call nodes.
-        if not isinstance(node, ast.Call):
-            return
+        ### if not isinstance(node, ast.Call):
+        ###    return
         tokens = tokens_for_node(self.filename, node, self.tokens)
         node0, node9 = tokens[0].node, tokens[-1].node
         nca = nearest_common_ancestor(node0, node9)
