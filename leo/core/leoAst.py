@@ -2563,8 +2563,8 @@ class ReassignTokens:
         k = find_paren_token(j + 1, self.tokens)
         if k is None:
             return  # pragma: no cover
-        self.tokens[j].node = nca  # type:ignore
-        self.tokens[k].node = nca  # type:ignore
+        self.tokens[j].node = nca
+        self.tokens[k].node = nca
         add_token_to_token_list(self.tokens[j], nca)
         add_token_to_token_list(self.tokens[k], nca)
     #@-others
@@ -2893,7 +2893,7 @@ class TokenOrderGenerator:
         # *Always* remember the last statement.
         statement = find_statement_node(node)
         if statement:
-            self.last_statement_node = statement  # ty--pe:ignore
+            self.last_statement_node = statement
             assert not isinstance(self.last_statement_node, ast.Module)
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
