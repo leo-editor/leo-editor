@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple  # Any, Dict, Generator, Union
 # Use existing classes.
 from leo.core.leoAst import AssignLinksError
 from leo.core.leoAst import LeoGlobals
-from leo.core.leoAst import Token
+from leo.core.leoAst import Token  # pylint: disable=unused-import
 # Use existing functions.
 from leo.core.leoAst import add_token_to_token_list
 from leo.core.leoAst import find_statement_node
