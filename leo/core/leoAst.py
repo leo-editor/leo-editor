@@ -1852,7 +1852,7 @@ class Orange:
                     self.state_stack.pop()
                     self.handle_dedent_after_class_or_def(state.kind)
 
-    def do_indent(self) -> None:  # type:ignore
+    def do_indent(self) -> None:
         """Handle indent token."""
         new_indent = self.val
         old_indent = self.level * self.tab_width * ' '
