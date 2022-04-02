@@ -332,16 +332,14 @@ class IterativeTokenGenerator:
                     g.printObj(z)
     #@+node:ekr.20220330155314.1: *4* iterative.visit
     def visit(self, node: Node) -> List:
-        """Visit an ast node."""
-        trace = False
-        # This saves a lot of tests.
-        if node is None:
-            return []
-        if trace:  # pragma: no cover
-            # Keep this trace.
+        """'Visit' an ast node by return a new list of tuples."""
+        # Keep this trace.
+        if True:  # pragma: no cover
             cn = node.__class__.__name__ if node else ' '
             caller1, caller2 = g.callers(2).split(',')
             g.trace(f"{caller1:>15} {caller2:<14} {cn}")
+        if node is None:
+            return []
         # More general, more convenient.
         if isinstance(node, (list, tuple)):
             result = []
@@ -355,11 +353,12 @@ class IterativeTokenGenerator:
         # We *do* want to crash if the visitor doesn't exist.
         assert isinstance(node, ast.AST), repr(node)
         method = getattr(self, 'do_' + node.__class__.__name__)
-        self.enter_node(node)
-        # Visit the node.
-        result = method(node)
-        self.leave_node(node)
-        return result
+        # Don't call *anything* here. Just return a new list of tuples.
+        return [
+            (self.enter_node, node),
+            (method, node),
+            (self.leave_node, node),
+        ]
     #@+node:ekr.20220330133336.1: *3* iterative: Visitors
     #@+node:ekr.20220330133336.2: *4*  iterative.keyword: not called!
     # keyword arguments supplied to call (NULL identifier for **kwargs)
@@ -725,7 +724,7 @@ class IterativeTokenGenerator:
             ])
             if value is not None:
                 result.append((self.visit, value))
-        result.apped((self.op, '}'))
+        result.append((self.op, '}'))
         return result
     #@+node:ekr.20220402160128.7: *5* iterative.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
