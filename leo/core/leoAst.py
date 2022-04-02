@@ -2883,7 +2883,7 @@ class TokenOrderGenerator:
         # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
         if token.kind == 'comment':
             # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])  # type:ignore
+            comment_list: List["Token"] = getattr(node, 'comment_list', [])
             node.comment_list = comment_list + [token]
             return
         if token.kind in ('endmarker', 'ws'):
@@ -2893,7 +2893,7 @@ class TokenOrderGenerator:
         # *Always* remember the last statement.
         statement = find_statement_node(node)
         if statement:
-            self.last_statement_node = statement  # type:ignore
+            self.last_statement_node = statement  # ty--pe:ignore
             assert not isinstance(self.last_statement_node, ast.Module)
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
