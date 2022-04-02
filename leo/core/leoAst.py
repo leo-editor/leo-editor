@@ -222,7 +222,7 @@ class LeoGlobals:  # pragma: no cover
         if typ == SyntaxError:
             # IndentationError is a subclass of SyntaxError.
             # SyntaxError *does* have 'filename' and 'lineno' attributes.
-            return val.filename, val.lineno  # type:ignore
+            return val.filename, val.lineno  # ty--pe:ignore
         #
         # Data is a list of tuples, one per stack entry.
         # The tuples have the form (filename, lineNumber, functionName, text).
