@@ -3058,6 +3058,8 @@ class TokenOrderGenerator:
             return
         # We *do* want to crash if the visitor doesn't exist.
         method = getattr(self, 'do_' + node.__class__.__name__)
+        # Don't even *think* about removing the parent/child links.
+        # The nearest_common_ancestor function depends upon them.
         self.enter_node(node)
         method(node)
         self.leave_node(node)
