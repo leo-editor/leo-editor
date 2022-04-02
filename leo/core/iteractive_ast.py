@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20220402094143.1: * @file iterative_ast.py
+#@+node:ekr.20220402094143.1: * @file iteractive_ast.py
 #@@first
 #@+<< imports >>
 #@+node:ekr.20220402095728.1: ** << imports >> (iterative_ast.py)
