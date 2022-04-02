@@ -983,18 +983,19 @@ class AstNotEqual(Exception):
 
 class FailFast(Exception):
     """Abort tests in TestRunner class."""
-#@+node:ekr.20141012064706.18390: ** class AstDumper
+#@+node:ekr.20220402062255.1: ** Classes
+#@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:  # pragma: no cover
     """A class supporting various kinds of dumps of ast nodes."""
     #@+others
-    #@+node:ekr.20191112033445.1: *3* dumper.dump_tree & helper
+    #@+node:ekr.20191112033445.1: *4* dumper.dump_tree & helper
     def dump_tree(self, tokens: List["Token"], tree: Node) -> str:
         """Briefly show a tree, properly indented."""
         self.tokens = tokens
         result = [self.show_header()]
         self.dump_tree_and_links_helper(tree, 0, result)
         return ''.join(result)
-    #@+node:ekr.20191125035321.1: *4* dumper.dump_tree_and_links_helper
+    #@+node:ekr.20191125035321.1: *5* dumper.dump_tree_and_links_helper
     def dump_tree_and_links_helper(self, node: Node, level: int, result: List[str]) -> None:
         """Return the list of lines in result."""
         if node is None:
@@ -1017,7 +1018,7 @@ class AstDumper:  # pragma: no cover
                 self.dump_tree_and_links_helper(z, level + 1, result)
         else:
             result.append(node_s)
-    #@+node:ekr.20191125035600.1: *3* dumper.compute_node_string & helpers
+    #@+node:ekr.20191125035600.1: *4* dumper.compute_node_string & helpers
     def compute_node_string(self, node: Node, level: int) -> str:
         """Return a string summarizing the node."""
         indent = ' ' * 2 * level
@@ -1033,7 +1034,7 @@ class AstDumper:  # pragma: no cover
         full_s1 = f"{parent_s:<16} {lines:<10} {indent}{descriptor_s} "
         node_s = f"{full_s1:<62} {tokens_s}\n"
         return node_s
-    #@+node:ekr.20191113223424.1: *4* dumper.show_fields
+    #@+node:ekr.20191113223424.1: *5* dumper.show_fields
     def show_fields(self, class_name: str, node: Node, truncate_n: int) -> str:
         """Return a string showing interesting fields of the node."""
         val = ''
@@ -1083,7 +1084,7 @@ class AstDumper:  # pragma: no cover
         else:
             val = ''
         return g.truncate(val, truncate_n)
-    #@+node:ekr.20191114054726.1: *4* dumper.show_line_range
+    #@+node:ekr.20191114054726.1: *5* dumper.show_line_range
     def show_line_range(self, node: Node) -> str:
 
         token_list = get_node_token_list(node, self.tokens)
@@ -1092,7 +1093,7 @@ class AstDumper:  # pragma: no cover
         min_ = min([z.line_number for z in token_list])
         max_ = max([z.line_number for z in token_list])
         return f"{min_}" if min_ == max_ else f"{min_}..{max_}"
-    #@+node:ekr.20191113223425.1: *4* dumper.show_tokens
+    #@+node:ekr.20191113223425.1: *5* dumper.show_tokens
     def show_tokens(self, node: Node, n: int, m: int, show_cruft: bool=False) -> str:
         """
         Return a string showing node.token_list.
@@ -1144,13 +1145,13 @@ class AstDumper:  # pragma: no cover
         lines.append(''.join(line))
         pad = '\n' + ' ' * n
         return pad.join(lines)
-    #@+node:ekr.20191110165235.5: *3* dumper.show_header
+    #@+node:ekr.20191110165235.5: *4* dumper.show_header
     def show_header(self) -> str:
         """Return a header string, but only the fist time."""
         return (
             f"{'parent':<16} {'lines':<10} {'node':<34} {'tokens'}\n"
             f"{'======':<16} {'=====':<10} {'====':<34} {'======'}\n")
-    #@+node:ekr.20141012064706.18392: *3* dumper.dump_ast & helper
+    #@+node:ekr.20141012064706.18392: *4* dumper.dump_ast & helper
     annotate_fields = False
     include_attributes = False
     indent_ws = ' '
@@ -1177,7 +1178,7 @@ class AstDumper:  # pragma: no cover
             return 'LIST[%s]' % ''.join(
                 ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         return repr(node)
-    #@+node:ekr.20141012064706.18393: *4* dumper.get_fields
+    #@+node:ekr.20141012064706.18393: *5* dumper.get_fields
     def get_fields(self, node: Node) -> Generator:
 
         return (
@@ -1185,8 +1186,1575 @@ class AstDumper:  # pragma: no cover
                 if a not in ['ctx',] and b not in (None, [])
         )
     #@-others
-#@+node:ekr.20191227170628.1: ** TOG classes...
-#@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
+#@+node:ekr.20191222083453.1: *3* class Fstringify
+class Fstringify:
+    """A class to fstringify files."""
+
+    silent = True  # for pytest. Defined in all entries.
+    line_number = 0
+    line = ''
+
+    #@+others
+    #@+node:ekr.20191222083947.1: *4* fs.fstringify
+    def fstringify(self, contents: str, filename: str, tokens: List["Token"], tree: Node) -> str:
+        """
+        Fstringify.fstringify:
+
+        f-stringify the sources given by (tokens, tree).
+
+        Return the resulting string.
+        """
+        self.filename = filename
+        self.tokens = tokens
+        self.tree = tree
+        # Prepass: reassign tokens.
+        ReassignTokens().reassign(filename, tokens, tree)
+        # Main pass.
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.BinOp)
+                and op_name(node.op) == '%'
+                and isinstance(node.left, ast.Str)
+            ):
+                self.make_fstring(node)
+        results = tokens_to_string(self.tokens)
+        return results
+    #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
+    def fstringify_file(self, filename: str) -> bool:  # pragma: no cover
+        """
+        Fstringify.fstringify_file.
+
+        The entry point for the fstringify-file command.
+
+        f-stringify the given external file with the Fstrinfify class.
+
+        Return True if the file was changed.
+        """
+        tag = 'fstringify-file'
+        self.filename = filename
+        self.silent = False
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                print(f"{tag}: Can not fstringify: {filename}")
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        status = 'Wrote' if changed else 'Unchanged'
+        print(f"{tag}: {status:>9}: {filename}")
+        if changed:
+            write_file(filename, results, encoding=encoding)
+        return changed
+    #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
+    def fstringify_file_diff(self, filename: str) -> bool:  # pragma: no cover
+        """
+        Fstringify.fstringify_file_diff.
+
+        The entry point for the diff-fstringify-file command.
+
+        Print the diffs that would resulf from the fstringify-file command.
+
+        Return True if the file would be changed.
+        """
+        tag = 'diff-fstringify-file'
+        self.filename = filename
+        self.silent = False
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        if changed:
+            show_diffs(contents, results, filename=filename)
+        else:
+            print(f"{tag}: Unchanged: {filename}")
+        return changed
+    #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
+    def fstringify_file_silent(self, filename: str) -> bool:  # pragma: no cover
+        """
+        Fstringify.fstringify_file_silent.
+
+        The entry point for the silent-fstringify-file command.
+
+        fstringify the given file, suppressing all but serious error messages.
+
+        Return True if the file would be changed.
+        """
+        self.filename = filename
+        self.silent = True
+        tog = TokenOrderGenerator()
+        try:
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False
+            results = self.fstringify(contents, filename, tokens, tree)
+        except Exception as e:
+            print(e)
+            return False
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        status = 'Wrote' if changed else 'Unchanged'
+        # Write the results.
+        print(f"{status:>9}: {filename}")
+        if changed:
+            write_file(filename, results, encoding=encoding)
+        return changed
+    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
+    def make_fstring(self, node: Node) -> None:
+        """
+        node is BinOp node representing an '%' operator.
+        node.left is an ast.Str node.
+        node.right reprsents the RHS of the '%' operator.
+
+        Convert this tree to an f-string, if possible.
+        Replace the node's entire tree with a new ast.Str node.
+        Replace all the relevant tokens with a single new 'string' token.
+        """
+        trace = False
+        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        # Careful: use the tokens, not Str.s.  This preserves spelling.
+        lt_token_list = get_node_token_list(node.left, self.tokens)
+        if not lt_token_list:  # pragma: no cover
+            print('')
+            g.trace('Error: no token list in Str')
+            dump_tree(self.tokens, node)
+            print('')
+            return
+        lt_s = tokens_to_string(lt_token_list)
+        if trace:
+            g.trace('lt_s:', lt_s)  # pragma: no cover
+        # Get the RHS values, a list of token lists.
+        values = self.scan_rhs(node.right)
+        if trace:  # pragma: no cover
+            for i, z in enumerate(values):
+                dump_tokens(z, tag=f"RHS value {i}")
+        # Compute rt_s, self.line and self.line_number for later messages.
+        token0 = lt_token_list[0]
+        self.line_number = token0.line_number
+        self.line = token0.line.strip()
+        rt_s = ''.join(tokens_to_string(z) for z in values)
+        # Get the % specs in the LHS string.
+        specs = self.scan_format_string(lt_s)
+        if len(values) != len(specs):  # pragma: no cover
+            self.message(
+                f"can't create f-fstring: {lt_s!r}\n"
+                f":f-string mismatch: "
+                f"{len(values)} value{g.plural(len(values))}, "
+                f"{len(specs)} spec{g.plural(len(specs))}")
+            return
+        # Replace specs with values.
+        results = self.substitute_values(lt_s, specs, values)
+        result = self.compute_result(lt_s, results)
+        if not result:
+            return
+        # Remove whitespace before ! and :.
+        result = self.clean_ws(result)
+        # Show the results
+        if trace:  # pragma: no cover
+            before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
+            after = result.replace('\n', '<NL>')
+            self.message(
+                f"trace:\n"
+                f":from: {before!s}\n"
+                f":  to: {after!s}")
+        # Adjust the tree and the token list.
+        self.replace(node, result, values)
+    #@+node:ekr.20191222102831.3: *5* fs.clean_ws
+    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+    def clean_ws(self, s: str) -> str:
+        """Carefully remove whitespace before ! and : specifiers."""
+        s = re.sub(self.ws_pat, r'\2', s)
+        return s
+    #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
+    def compute_result(self, lt_s: str, tokens: List["Token"]) -> str:
+        """
+        Create the final result, with various kinds of munges.
+
+        Return the result string, or None if there are errors.
+        """
+        # Fail if there is a backslash within { and }.
+        if not self.check_back_slashes(lt_s, tokens):
+            return None  # pragma: no cover
+        # Ensure consistent quotes.
+        if not self.change_quotes(lt_s, tokens):
+            return None  # pragma: no cover
+        return tokens_to_string(tokens)
+    #@+node:ekr.20200215074309.1: *6* fs.check_back_slashes
+    def check_back_slashes(self, lt_s: str, tokens: List["Token"]) -> bool:
+        """
+        Return False if any backslash appears with an {} expression.
+
+        Tokens is a list of lokens on the RHS.
+        """
+        count = 0
+        for z in tokens:
+            if z.kind == 'op':
+                if z.value == '{':
+                    count += 1
+                elif z.value == '}':
+                    count -= 1
+            if (count % 2) == 1 and '\\' in z.value:
+                if not self.silent:
+                    self.message(  # pragma: no cover (silent during unit tests)
+                        f"can't create f-fstring: {lt_s!r}\n"
+                        f":backslash in {{expr}}:")
+                return False
+        return True
+    #@+node:ekr.20191222102831.7: *6* fs.change_quotes
+    def change_quotes(self, lt_s: str, aList: List[Any]) -> bool:
+        """
+        Carefully check quotes in all "inner" tokens as necessary.
+
+        Return False if the f-string would contain backslashes.
+
+        We expect the following "outer" tokens.
+
+        aList[0]:  ('string', 'f')
+        aList[1]:  ('string',  a single or double quote.
+        aList[-1]: ('string', a single or double quote matching aList[1])
+        """
+        # Sanity checks.
+        if len(aList) < 4:
+            return True  # pragma: no cover (defensive)
+        if not lt_s:  # pragma: no cover (defensive)
+            self.message("can't create f-fstring: no lt_s!")
+            return False
+        delim = lt_s[0]
+        # Check tokens 0, 1 and -1.
+        token0 = aList[0]
+        token1 = aList[1]
+        token_last = aList[-1]
+        for token in token0, token1, token_last:
+            # These are the only kinds of tokens we expect to generate.
+            ok = (
+                token.kind == 'string' or
+                token.kind == 'op' and token.value in '{}')
+            if not ok:  # pragma: no cover (defensive)
+                self.message(
+                    f"unexpected token: {token.kind} {token.value}\n"
+                    f":           lt_s: {lt_s!r}")
+                return False
+        # These checks are important...
+        if token0.value != 'f':
+            return False  # pragma: no cover (defensive)
+        val1 = token1.value
+        if delim != val1:
+            return False  # pragma: no cover (defensive)
+        val_last = token_last.value
+        if delim != val_last:
+            return False  # pragma: no cover (defensive)
+        #
+        # Check for conflicting delims, preferring f"..." to f'...'.
+        for delim in ('"', "'"):
+            aList[1] = aList[-1] = Token('string', delim)
+            for z in aList[2:-1]:
+                if delim in z.value:
+                    break
+            else:
+                return True
+        if not self.silent:  # pragma: no cover (silent unit test)
+            self.message(
+                f"can't create f-fstring: {lt_s!r}\n"
+                f":   conflicting delims:")
+        return False
+    #@+node:ekr.20191222102831.6: *5* fs.munge_spec
+    def munge_spec(self, spec: str) -> Tuple[str, str]:
+        """
+        Return (head, tail).
+
+        The format is spec !head:tail or :tail
+
+        Example specs: s2, r3
+        """
+        # To do: handle more specs.
+        head, tail = [], []
+        if spec.startswith('+'):
+            pass  # Leave it alone!
+        elif spec.startswith('-'):
+            tail.append('>')
+            spec = spec[1:]
+        if spec.endswith('s'):
+            spec = spec[:-1]
+        if spec.endswith('r'):
+            head.append('r')
+            spec = spec[:-1]
+        tail_s = ''.join(tail) + spec
+        head_s = ''.join(head)
+        return head_s, tail_s
+    #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
+    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+    # fill        ::=  <any character>
+    # align       ::=  "<" | ">" | "=" | "^"
+    # sign        ::=  "+" | "-" | " "
+    # width       ::=  integer
+    # precision   ::=  integer
+    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+    def scan_format_string(self, s: str) -> List[re.Match]:
+        """Scan the format string s, returning a list match objects."""
+        result = list(re.finditer(self.format_pat, s))
+        return result
+    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
+    def scan_rhs(self, node: Node) -> List[Any]:
+        """
+        Scan the right-hand side of a potential f-string.
+
+        Return a list of the token lists for each element.
+        """
+        trace = False
+        # First, Try the most common cases.
+        if isinstance(node, ast.Str):
+            token_list = get_node_token_list(node, self.tokens)
+            return [token_list]
+        if isinstance(node, (list, tuple, ast.Tuple)):
+            result = []
+            elts = node.elts if isinstance(node, ast.Tuple) else node
+            for i, elt in enumerate(elts):
+                tokens = tokens_for_node(self.filename, elt, self.tokens)
+                result.append(tokens)
+                if trace:  # pragma: no cover
+                    g.trace(f"item: {i}: {elt.__class__.__name__}")
+                    g.printObj(tokens, tag=f"Tokens for item {i}")
+            return result
+        # Now we expect only one result.
+        tokens = tokens_for_node(self.filename, node, self.tokens)
+        return [tokens]
+    #@+node:ekr.20191226155316.1: *5* fs.substitute_values
+    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List["Token"]) -> List["Token"]:
+        """
+        Replace specifiers with values in lt_s string.
+
+        Double { and } as needed.
+        """
+        i, results = 0, [Token('string', 'f')]
+        for spec_i, m in enumerate(specs):
+            value = tokens_to_string(values[spec_i])  # type:ignore
+            start, end, spec = m.start(0), m.end(0), m.group(1)
+            if start > i:
+                val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
+                results.append(Token('string', val[0]))
+                results.append(Token('string', val[1:]))
+            head, tail = self.munge_spec(spec)
+            results.append(Token('op', '{'))
+            results.append(Token('string', value))
+            if head:
+                results.append(Token('string', '!'))
+                results.append(Token('string', head))
+            if tail:
+                results.append(Token('string', ':'))
+                results.append(Token('string', tail))
+            results.append(Token('op', '}'))
+            i = end
+        # Add the tail.
+        tail = lt_s[i:]
+        if tail:
+            tail = tail.replace('{', '{{').replace('}', '}}')
+            results.append(Token('string', tail[:-1]))
+            results.append(Token('string', tail[-1]))
+        return results
+    #@+node:ekr.20200214142019.1: *4* fs.message
+    def message(self, message: str) -> None:  # pragma: no cover.
+        """
+        Print one or more message lines aligned on the first colon of the message.
+        """
+        # Print a leading blank line.
+        print('')
+        # Calculate the padding.
+        lines = g.splitLines(message)
+        pad = max(lines[0].find(':'), 30)
+        # Print the first line.
+        z = lines[0]
+        i = z.find(':')
+        if i == -1:
+            print(z.rstrip())
+        else:
+            print(f"{z[:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
+        # Print the remaining message lines.
+        for z in lines[1:]:
+            if z.startswith('<'):
+                # Print left aligned.
+                print(z[1:].strip())
+            elif z.startswith(':') and -1 < z[1:].find(':') <= pad:
+                # Align with the first line.
+                i = z[1:].find(':')
+                print(f"{z[1:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
+            elif z.startswith('>'):
+                # Align after the aligning colon.
+                print(f"{' ':>{pad+2}}{z[1:].strip()}")
+            else:
+                # Default: Put the entire line after the aligning colon.
+                print(f"{' ':>{pad+2}}{z.strip()}")
+        # Print the standard message lines.
+        file_s = f"{'file':>{pad}}"
+        ln_n_s = f"{'line number':>{pad}}"
+        line_s = f"{'line':>{pad}}"
+        print(
+            f"{file_s}: {self.filename}\n"
+            f"{ln_n_s}: {self.line_number}\n"
+            f"{line_s}: {self.line!r}")
+    #@+node:ekr.20191225054848.1: *4* fs.replace
+    def replace(self, node: Node, s: str, values: List["Token"]) -> None:
+        """
+        Replace node with an ast.Str node for s.
+        Replace all tokens in the range of values with a single 'string' node.
+        """
+        # Replace the tokens...
+        tokens = tokens_for_node(self.filename, node, self.tokens)
+        i1 = i = tokens[0].index
+        replace_token(self.tokens[i], 'string', s)
+        j = 1
+        while j < len(tokens):
+            replace_token(self.tokens[i1 + j], 'killed', '')
+            j += 1
+        # Replace the node.
+        new_node = ast.Str()
+        new_node.s = s
+        replace_node(new_node, node)
+        # Update the token.
+        token = self.tokens[i1]
+        token.node = new_node  # type:ignore
+        # Update the token list.
+        add_token_to_token_list(token, new_node)
+    #@-others
+#@+node:ekr.20200107165250.1: *3* class Orange
+class Orange:
+    """
+    A flexible and powerful beautifier for Python.
+    Orange is the new black.
+
+    *Important*: This is a predominantly a *token*-based beautifier.
+    However, orange.colon and orange.possible_unary_op use the parse
+    tree to provide context that would otherwise be difficult to
+    deduce.
+    """
+    # This switch is really a comment. It will always be false.
+    # It marks the code that simulates the operation of the black tool.
+    black_mode = False
+
+    # Patterns...
+    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
+
+    # Patterns from FastAtRead class, specialized for python delims.
+    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
+    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
+    at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
+
+    # Doc parts end with @c or a node sentinel. Specialized for python.
+    end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
+    #@+others
+    #@+node:ekr.20200107165250.2: *4* orange.ctor
+    def __init__(self, settings: Optional[Dict]=None):
+        """Ctor for Orange class."""
+        if settings is None:
+            settings = {}
+        valid_keys = (
+            'allow_joined_strings',
+            'max_join_line_length',
+            'max_split_line_length',
+            'orange',
+            'tab_width',
+        )
+        # For mypy...
+        self.kind: str = ''
+        # Default settings...
+        self.allow_joined_strings = False  # EKR's preference.
+        self.max_join_line_length = 88
+        self.max_split_line_length = 88
+        self.tab_width = 4
+        # Override from settings dict...
+        for key in settings:  # pragma: no cover
+            value = settings.get(key)
+            if key in valid_keys and value is not None:
+                setattr(self, key, value)
+            else:
+                g.trace(f"Unexpected setting: {key} = {value!r}")
+    #@+node:ekr.20200107165250.51: *4* orange.push_state
+    def push_state(self, kind: str, value: Any=None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
+    #@+node:ekr.20200107165250.8: *4* orange: Entries
+    #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
+    def oops(self) -> None:  # pragma: no cover
+        g.trace(f"Unknown kind: {self.kind}")
+
+    def beautify(self, contents: str, filename: str, tokens: List["Token"], tree: Node,
+
+        max_join_line_length: Optional[int]=None, max_split_line_length: Optional[int]=None,
+    ) -> str:
+        """
+        The main line. Create output tokens and return the result as a string.
+        """
+        # Config overrides
+        if max_join_line_length is not None:
+            self.max_join_line_length = max_join_line_length
+        if max_split_line_length is not None:
+            self.max_split_line_length = max_split_line_length
+        # State vars...
+        self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
+        self.decorator_seen = False  # Set by do_name for do_op.
+        self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.level = 0  # Set only by do_indent and do_dedent.
+        self.lws = ''  # Leading whitespace.
+        self.paren_level = 0  # Number of unmatched '(' tokens.
+        self.square_brackets_stack: List[bool] = []  # A stack of bools, for self.word().
+        self.state_stack: List["ParseState"] = []  # Stack of ParseState objects.
+        self.val = None  # The input token's value (a string).
+        self.verbatim = False  # True: don't beautify.
+        #
+        # Init output list and state...
+        self.code_list: List[Token] = []  # The list of output tokens.
+        self.code_list_index = 0  # The token's index.
+        self.tokens = tokens  # The list of input tokens.
+        self.tree = tree
+        self.add_token('file-start', '')
+        self.push_state('file-start')
+        for i, token in enumerate(tokens):
+            self.token = token
+            self.kind, self.val, self.line = token.kind, token.value, token.line
+            if self.verbatim:
+                self.do_verbatim()
+            else:
+                func = getattr(self, f"do_{token.kind}", self.oops)
+                func()
+        # Any post pass would go here.
+        return tokens_to_string(self.code_list)
+    #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
+    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
+        """
+        Orange: Beautify the the given external file.
+
+        Return True if the file was changed.
+        """
+        self.filename = filename
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            return False  # #2529: Not an error.
+        # Beautify.
+        results = self.beautify(contents, filename, tokens, tree)
+        # Something besides newlines must change.
+        if regularize_nls(contents) == regularize_nls(results):
+            return False
+        if 0:  # This obscures more import error messages.
+            show_diffs(contents, results, filename=filename)
+        # Write the results
+        print(f"Beautified: {g.shortFileName(filename)}")
+        write_file(filename, results, encoding=encoding)
+        return True
+    #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
+    def beautify_file_diff(self, filename: str) -> bool:  # pragma: no cover
+        """
+        Orange: Print the diffs that would resulf from the orange-file command.
+
+        Return True if the file would be changed.
+        """
+        tag = 'diff-beautify-file'
+        self.filename = filename
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            print(f"{tag}: Can not beautify: {filename}")
+            return False
+        # fstringify.
+        results = self.beautify(contents, filename, tokens, tree)
+        # Something besides newlines must change.
+        if regularize_nls(contents) == regularize_nls(results):
+            print(f"{tag}: Unchanged: {filename}")
+            return False
+        # Show the diffs.
+        show_diffs(contents, results, filename=filename)
+        return True
+    #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
+    #@+node:ekr.20200107165250.14: *5* orange.do_comment
+    in_doc_part = False
+
+    def do_comment(self) -> None:
+        """Handle a comment token."""
+        val = self.val
+        #
+        # Leo-specific code...
+        if self.node_pat.match(val):
+            # Clear per-node state.
+            self.in_doc_part = False
+            self.verbatim = False
+            self.decorator_seen = False
+            # Do *not clear other state, which may persist across @others.
+                # self.curly_brackets_level = 0
+                # self.in_arg_list = 0
+                # self.level = 0
+                # self.lws = ''
+                # self.paren_level = 0
+                # self.square_brackets_stack = []
+                # self.state_stack = []
+        else:
+            # Keep track of verbatim mode.
+            if self.beautify_pat.match(val):
+                self.verbatim = False
+            elif self.nobeautify_pat.match(val):
+                self.verbatim = True
+            # Keep trace of @doc parts, to honor the convention for splitting lines.
+            if self.start_doc_pat.match(val):
+                self.in_doc_part = True
+            if self.end_doc_pat.match(val):
+                self.in_doc_part = False
+        #
+        # General code: Generate the comment.
+        self.clean('blank')
+        entire_line = self.line.lstrip().startswith('#')
+        if entire_line:
+            self.clean('hard-blank')
+            self.clean('line-indent')
+            # #1496: No further munging needed.
+            val = self.line.rstrip()
+        else:
+            # Exactly two spaces before trailing comments.
+            val = '  ' + self.val.rstrip()
+        self.add_token('comment', val)
+    #@+node:ekr.20200107165250.15: *5* orange.do_encoding
+    def do_encoding(self) -> None:
+        """
+        Handle the encoding token.
+        """
+        pass
+    #@+node:ekr.20200107165250.16: *5* orange.do_endmarker
+    def do_endmarker(self) -> None:
+        """Handle an endmarker token."""
+        # Ensure exactly one blank at the end of the file.
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
+    #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
+    def do_dedent(self) -> None:
+        """Handle dedent token."""
+        self.level -= 1
+        self.lws = self.level * self.tab_width * ' '
+        self.line_indent()
+        if self.black_mode:  # pragma: no cover (black)
+            state = self.state_stack[-1]
+            if state.kind == 'indent' and state.value == self.level:
+                self.state_stack.pop()
+                state = self.state_stack[-1]
+                if state.kind in ('class', 'def'):
+                    self.state_stack.pop()
+                    self.handle_dedent_after_class_or_def(state.kind)
+
+    def do_indent(self) -> None:  # type:ignore
+        """Handle indent token."""
+        new_indent = self.val
+        old_indent = self.level * self.tab_width * ' '
+        if new_indent > old_indent:
+            self.level += 1
+        elif new_indent < old_indent:  # pragma: no cover (defensive)
+            g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+        self.lws = new_indent
+        self.line_indent()
+    #@+node:ekr.20200220054928.1: *6* orange.handle_dedent_after_class_or_def
+    def handle_dedent_after_class_or_def(self, kind: str) -> None:  # pragma: no cover (black)
+        """
+        Insert blank lines after a class or def as the result of a 'dedent' token.
+
+        Normal comment lines may precede the 'dedent'.
+        Insert the blank lines *before* such comment lines.
+        """
+        #
+        # Compute the tail.
+        i = len(self.code_list) - 1
+        tail: List[Token] = []
+        while i > 0:
+            t = self.code_list.pop()
+            i -= 1
+            if t.kind == 'line-indent':
+                pass
+            elif t.kind == 'line-end':
+                tail.insert(0, t)
+            elif t.kind == 'comment':
+                # Only underindented single-line comments belong in the tail.
+                # @+node comments must never be in the tail.
+                single_line = self.code_list[i].kind in ('line-end', 'line-indent')
+                lws = len(t.value) - len(t.value.lstrip())
+                underindent = lws <= len(self.lws)
+                if underindent and single_line and not self.node_pat.match(t.value):
+                    # A single-line comment.
+                    tail.insert(0, t)
+                else:
+                    self.code_list.append(t)
+                    break
+            else:
+                self.code_list.append(t)
+                break
+        #
+        # Remove leading 'line-end' tokens from the tail.
+        while tail and tail[0].kind == 'line-end':
+            tail = tail[1:]
+        #
+        # Put the newlines *before* the tail.
+        # For Leo, always use 1 blank lines.
+        n = 1  # n = 2 if kind == 'class' else 1
+        # Retain the token (intention) for debugging.
+        self.add_token('blank-lines', n)
+        for i in range(0, n + 1):
+            self.add_token('line-end', '\n')
+        if tail:
+            self.code_list.extend(tail)
+        self.line_indent()
+    #@+node:ekr.20200107165250.20: *5* orange.do_name
+    def do_name(self) -> None:
+        """Handle a name token."""
+        name = self.val
+        if self.black_mode and name in ('class', 'def'):  # pragma: no cover (black)
+            # Handle newlines before and after 'class' or 'def'
+            self.decorator_seen = False
+            state = self.state_stack[-1]
+            if state.kind == 'decorator':
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.clean_blank_lines()
+                # Suppress split/join.
+                self.add_token('hard-newline', '\n')
+                self.add_token('line-indent', self.lws)
+                self.state_stack.pop()
+            else:
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.blank_lines(2 if name == 'class' else 1)
+            self.push_state(name)
+            self.push_state('indent', self.level)
+                # For trailing lines after inner classes/defs.
+            self.word(name)
+            return
+        #
+        # Leo mode...
+        if name in ('class', 'def'):
+            self.word(name)
+        elif name in (
+            'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
+        ):
+            self.word_op(name)
+        else:
+            self.word(name)
+    #@+node:ekr.20200107165250.21: *5* orange.do_newline & do_nl
+    def do_newline(self) -> None:
+        """Handle a regular newline."""
+        self.line_end()
+
+    def do_nl(self) -> None:
+        """Handle a continuation line."""
+        self.line_end()
+    #@+node:ekr.20200107165250.22: *5* orange.do_number
+    def do_number(self) -> None:
+        """Handle a number token."""
+        self.blank()
+        self.add_token('number', self.val)
+    #@+node:ekr.20200107165250.23: *5* orange.do_op
+    def do_op(self) -> None:
+        """Handle an op token."""
+        val = self.val
+        if val == '.':
+            self.clean('blank')
+            prev = self.code_list[-1]
+            # #2495 & #2533: Special case for 'from .'
+            if prev.kind == 'word' and prev.value == 'from':
+                self.blank()
+            self.add_token('op-no-blanks', val)
+        elif val == '@':
+            if self.black_mode:  # pragma: no cover (black)
+                if not self.decorator_seen:
+                    self.blank_lines(1)
+                    self.decorator_seen = True
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
+            self.push_state('decorator')
+        elif val == ':':
+            # Treat slices differently.
+            self.colon(val)
+        elif val in ',;':
+            # Pep 8: Avoid extraneous whitespace immediately before
+            # comma, semicolon, or colon.
+            self.clean('blank')
+            self.add_token('op', val)
+            self.blank()
+        elif val in '([{':
+            # Pep 8: Avoid extraneous whitespace immediately inside
+            # parentheses, brackets or braces.
+            self.lt(val)
+        elif val in ')]}':
+            # Ditto.
+            self.rt(val)
+        elif val == '=':
+            # Pep 8: Don't use spaces around the = sign when used to indicate
+            # a keyword argument or a default parameter value.
+            if self.paren_level:
+                self.clean('blank')
+                self.add_token('op-no-blanks', val)
+            else:
+                self.blank()
+                self.add_token('op', val)
+                self.blank()
+        elif val in '~+-':
+            self.possible_unary_op(val)
+        elif val == '*':
+            self.star_op()
+        elif val == '**':
+            self.star_star_op()
+        else:
+            # Pep 8: always surround binary operators with a single space.
+            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
+            # '^','~','*','**','&','|','/','//',
+            # Pep 8: If operators with different priorities are used,
+            # consider adding whitespace around the operators with the lowest priority(ies).
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+    #@+node:ekr.20200107165250.24: *5* orange.do_string
+    def do_string(self) -> None:
+        """Handle a 'string' token."""
+        # Careful: continued strings may contain '\r'
+        val = regularize_nls(self.val)
+        self.add_token('string', val)
+        self.blank()
+    #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
+    beautify_pat = re.compile(
+        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
+
+    def do_verbatim(self) -> None:
+        """
+        Handle one token in verbatim mode.
+        End verbatim mode when the appropriate comment is seen.
+        """
+        kind = self.kind
+        #
+        # Careful: tokens may contain '\r'
+        val = regularize_nls(self.val)
+        if kind == 'comment':
+            if self.beautify_pat.match(val):
+                self.verbatim = False
+            val = val.rstrip()
+            self.add_token('comment', val)
+            return
+        if kind == 'indent':
+            self.level += 1
+            self.lws = self.level * self.tab_width * ' '
+        if kind == 'dedent':
+            self.level -= 1
+            self.lws = self.level * self.tab_width * ' '
+        self.add_token('verbatim', val)
+    #@+node:ekr.20200107165250.25: *5* orange.do_ws
+    def do_ws(self) -> None:
+        """
+        Handle the "ws" pseudo-token.
+
+        Put the whitespace only if if ends with backslash-newline.
+        """
+        val = self.val
+        # Handle backslash-newline.
+        if '\\\n' in val:
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
+            return
+        # Handle start-of-line whitespace.
+        prev = self.code_list[-1]
+        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
+        if prev.kind == 'line-indent' and inner:
+            # Retain the indent that won't be cleaned away.
+            self.clean('line-indent')
+            self.add_token('hard-blank', val)
+    #@+node:ekr.20200107165250.26: *4* orange: Output token generators
+    #@+node:ekr.20200118145044.1: *5* orange.add_line_end
+    def add_line_end(self) -> "Token":
+        """Add a line-end request to the code list."""
+        # This may be called from do_name as well as do_newline and do_nl.
+        assert self.token.kind in ('newline', 'nl'), self.token.kind
+        self.clean('blank')  # Important!
+        self.clean('line-indent')
+        t = self.add_token('line-end', '\n')
+        # Distinguish between kinds of 'line-end' tokens.
+        t.newline_kind = self.token.kind
+        return t
+    #@+node:ekr.20200107170523.1: *5* orange.add_token
+    def add_token(self, kind: str, value: Union[int, str]) -> "Token":
+        """Add an output token to the code list."""
+        tok = Token(kind, value)  # type:ignore
+        tok.index = self.code_list_index  # For debugging only.
+        self.code_list_index += 1
+        self.code_list.append(tok)
+        return tok
+    #@+node:ekr.20200107165250.27: *5* orange.blank
+    def blank(self) -> None:
+        """Add a blank request to the code list."""
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            'blank-lines',
+            'file-start',
+            'hard-blank',  # Unique to orange.
+            'line-end',
+            'line-indent',
+            'lt',
+            'op-no-blanks',
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
+    #@+node:ekr.20200107165250.29: *5* orange.blank_lines (black only)
+    def blank_lines(self, n: int) -> None:  # pragma: no cover (black)
+        """
+        Add a request for n blank lines to the code list.
+        Multiple blank-lines request yield at least the maximum of all requests.
+        """
+        self.clean_blank_lines()
+        prev = self.code_list[-1]
+        if prev.kind == 'file-start':
+            self.add_token('blank-lines', n)
+            return
+        for i in range(0, n + 1):
+            self.add_token('line-end', '\n')
+        # Retain the token (intention) for debugging.
+        self.add_token('blank-lines', n)
+        self.line_indent()
+    #@+node:ekr.20200107165250.30: *5* orange.clean
+    def clean(self, kind: str) -> None:
+        """Remove the last item of token list if it has the given kind."""
+        prev = self.code_list[-1]
+        if prev.kind == kind:
+            self.code_list.pop()
+    #@+node:ekr.20200107165250.31: *5* orange.clean_blank_lines
+    def clean_blank_lines(self) -> bool:
+        """
+        Remove all vestiges of previous blank lines.
+
+        Return True if any of the cleaned 'line-end' tokens represented "hard" newlines.
+        """
+        cleaned_newline = False
+        table = ('blank-lines', 'line-end', 'line-indent')
+        while self.code_list[-1].kind in table:
+            t = self.code_list.pop()
+            if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
+                cleaned_newline = True
+        return cleaned_newline
+    #@+node:ekr.20200107165250.32: *5* orange.colon
+    def colon(self, val: str) -> None:
+        """Handle a colon."""
+
+        def is_expr(node: Node) -> bool:
+            """True if node is any expression other than += number."""
+            if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
+                return True
+            return (
+                isinstance(node, ast.UnaryOp)
+                and not isinstance(node.operand, ast.Num)
+            )
+
+        node = self.token.node
+        self.clean('blank')
+        if not isinstance(node, ast.Slice):
+            self.add_token('op', val)
+            self.blank()
+            return
+        # A slice.
+        lower = getattr(node, 'lower', None)
+        upper = getattr(node, 'upper', None)
+        step = getattr(node, 'step', None)
+        if any(is_expr(z) for z in (lower, upper, step)):
+            prev = self.code_list[-1]
+            if prev.value not in '[:':
+                self.blank()
+            self.add_token('op', val)
+            self.blank()
+        else:
+            self.add_token('op-no-blanks', val)
+    #@+node:ekr.20200107165250.33: *5* orange.line_end
+    def line_end(self) -> None:
+        """Add a line-end request to the code list."""
+        # This should be called only be do_newline and do_nl.
+        node, token = self.token.statement_node, self.token
+        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+        # Create the 'line-end' output token.
+        self.add_line_end()
+        # Attempt to split the line.
+        was_split = self.split_line(node, token)
+        # Attempt to join the line only if it has not just been split.
+        if not was_split and self.max_join_line_length > 0:
+            self.join_lines(node, token)
+        self.line_indent()
+            # Add the indentation for all lines
+            # until the next indent or unindent token.
+    #@+node:ekr.20200107165250.40: *5* orange.line_indent
+    def line_indent(self) -> None:
+        """Add a line-indent token."""
+        self.clean('line-indent')
+            # Defensive. Should never happen.
+        self.add_token('line-indent', self.lws)
+    #@+node:ekr.20200107165250.41: *5* orange.lt & rt
+    #@+node:ekr.20200107165250.42: *6* orange.lt
+    def lt(self, val: str) -> None:
+        """Generate code for a left paren or curly/square bracket."""
+        assert val in '([{', repr(val)
+        if val == '(':
+            self.paren_level += 1
+        elif val == '[':
+            self.square_brackets_stack.append(False)
+        else:
+            self.curly_brackets_level += 1
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind in ('op', 'word-op'):
+            self.blank()
+            self.add_token('lt', val)
+        elif prev.kind == 'word':
+            # Only suppress blanks before '(' or '[' for non-keyworks.
+            if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
+                self.blank()
+            elif val == '(':
+                self.in_arg_list += 1
+            self.add_token('lt', val)
+        else:
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
+    #@+node:ekr.20200107165250.43: *6* orange.rt
+    def rt(self, val: str) -> None:
+        """Generate code for a right paren or curly/square bracket."""
+        assert val in ')]}', repr(val)
+        if val == ')':
+            self.paren_level -= 1
+            self.in_arg_list = max(0, self.in_arg_list - 1)
+        elif val == ']':
+            self.square_brackets_stack.pop()
+        else:
+            self.curly_brackets_level -= 1
+        self.clean('blank')
+        self.add_token('rt', val)
+    #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
+    def possible_unary_op(self, s: str) -> None:
+        """Add a unary or binary op to the token list."""
+        node = self.token.node
+        self.clean('blank')
+        if isinstance(node, ast.UnaryOp):
+            self.unary_op(s)
+        else:
+            self.blank()
+            self.add_token('op', s)
+            self.blank()
+
+    def unary_op(self, s: str) -> None:
+        """Add an operator request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        self.clean('blank')
+        prev = self.code_list[-1]
+        if prev.kind == 'lt':
+            self.add_token('unary-op', s)
+        else:
+            self.blank()
+            self.add_token('unary-op', s)
+    #@+node:ekr.20200107165250.46: *5* orange.star_op
+    def star_op(self) -> None:
+        """Put a '*' op, with special cases for *args."""
+        val = '*'
+        node = self.token.node
+        self.clean('blank')
+        if isinstance(node, ast.arguments):
+            self.blank()
+            self.add_token('op', val)
+            return  # #2533
+        if self.paren_level > 0:
+            prev = self.code_list[-1]
+            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                self.blank()
+                self.add_token('op', val)
+                return
+        self.blank()
+        self.add_token('op', val)
+        self.blank()
+    #@+node:ekr.20200107165250.47: *5* orange.star_star_op
+    def star_star_op(self) -> None:
+        """Put a ** operator, with a special case for **kwargs."""
+        val = '**'
+        node = self.token.node
+        self.clean('blank')
+        if isinstance(node, ast.arguments):
+            self.blank()
+            self.add_token('op', val)
+            return  # #2533
+        if self.paren_level > 0:
+            prev = self.code_list[-1]
+            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                self.blank()
+                self.add_token('op', val)
+                return
+        self.blank()
+        self.add_token('op', val)
+        self.blank()
+    #@+node:ekr.20200107165250.48: *5* orange.word & word_op
+    def word(self, s: str) -> None:
+        """Add a word request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        node = self.token.node
+        if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+            self.clean('blank')
+            self.add_token('blank', ' ')
+            self.add_token('word', s)
+        elif self.square_brackets_stack:
+            # A previous 'op-no-blanks' token may cancel this blank.
+            self.blank()
+            self.add_token('word', s)
+        elif self.in_arg_list > 0:
+            self.add_token('word', s)
+            self.blank()
+        else:
+            self.blank()
+            self.add_token('word', s)
+            self.blank()
+
+    def word_op(self, s: str) -> None:
+        """Add a word-op request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        self.blank()
+        self.add_token('word-op', s)
+        self.blank()
+    #@+node:ekr.20200118120049.1: *4* orange: Split/join
+    #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
+    def split_line(self, node: Node, token: "Token") -> bool:
+        """
+        Split token's line, if possible and enabled.
+
+        Return True if the line was broken into two or more lines.
+        """
+        assert token.kind in ('newline', 'nl'), repr(token)
+        # Return if splitting is disabled:
+        if self.max_split_line_length <= 0:  # pragma: no cover (user option)
+            return False
+        # Return if the node can't be split.
+        if not is_long_statement(node):
+            return False
+        # Find the *output* tokens of the previous lines.
+        line_tokens = self.find_prev_line()
+        line_s = ''.join([z.to_string() for z in line_tokens])
+        # Do nothing for short lines.
+        if len(line_s) < self.max_split_line_length:
+            return False
+        # Return if the previous line has no opening delim: (, [ or {.
+        if not any(z.kind == 'lt' for z in line_tokens):  # pragma: no cover (defensive)
+            return False
+        prefix = self.find_line_prefix(line_tokens)
+        # Calculate the tail before cleaning the prefix.
+        tail = line_tokens[len(prefix) :]
+        # Cut back the token list: subtract 1 for the trailing line-end.
+        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
+        # Append the tail, splitting it further, as needed.
+        self.append_tail(prefix, tail)
+        # Add the line-end token deleted by find_line_prefix.
+        self.add_token('line-end', '\n')
+        return True
+    #@+node:ekr.20200107165250.35: *6* orange.append_tail
+    def append_tail(self, prefix: List["Token"], tail: List["Token"]) -> None:
+        """Append the tail tokens, splitting the line further as necessary."""
+        tail_s = ''.join([z.to_string() for z in tail])
+        if len(tail_s) < self.max_split_line_length:
+            # Add the prefix.
+            self.code_list.extend(prefix)
+            # Start a new line and increase the indentation.
+            self.add_token('line-end', '\n')
+            self.add_token('line-indent', self.lws + ' ' * 4)
+            self.code_list.extend(tail)
+            return
+        # Still too long.  Split the line at commas.
+        self.code_list.extend(prefix)
+        # Start a new line and increase the indentation.
+        self.add_token('line-end', '\n')
+        self.add_token('line-indent', self.lws + ' ' * 4)
+        open_delim = Token(kind='lt', value=prefix[-1].value)
+        value = open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}')
+        close_delim = Token(kind='rt', value=value)
+        delim_count = 1
+        lws = self.lws + ' ' * 4
+        for i, t in enumerate(tail):
+            if t.kind == 'op' and t.value == ',':
+                if delim_count == 1:
+                    # Start a new line.
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', lws)
+                    # Kill a following blank.
+                    if i + 1 < len(tail):
+                        next_t = tail[i + 1]
+                        if next_t.kind == 'blank':
+                            next_t.kind = 'no-op'
+                            next_t.value = ''
+                else:
+                    self.code_list.append(t)
+            elif t.kind == close_delim.kind and t.value == close_delim.value:
+                # Done if the delims match.
+                delim_count -= 1
+                if delim_count == 0:
+                    # Start a new line
+                    self.add_token('op-no-blanks', ',')
+                    self.add_token('line-end', '\n')
+                    self.add_token('line-indent', self.lws)
+                    self.code_list.extend(tail[i:])
+                    return
+                lws = lws[:-4]
+                self.code_list.append(t)
+            elif t.kind == open_delim.kind and t.value == open_delim.value:
+                delim_count += 1
+                lws = lws + ' ' * 4
+                self.code_list.append(t)
+            else:
+                self.code_list.append(t)
+        g.trace('BAD DELIMS', delim_count)  # pragma: no cover
+    #@+node:ekr.20200107165250.36: *6* orange.find_prev_line
+    def find_prev_line(self) -> List["Token"]:
+        """Return the previous line, as a list of tokens."""
+        line = []
+        for t in reversed(self.code_list[:-1]):
+            if t.kind in ('hard-newline', 'line-end'):
+                break
+            line.append(t)
+        return list(reversed(line))
+    #@+node:ekr.20200107165250.37: *6* orange.find_line_prefix
+    def find_line_prefix(self, token_list: List["Token"]) -> List["Token"]:
+        """
+        Return all tokens up to and including the first lt token.
+        Also add all lt tokens directly following the first lt token.
+        """
+        result = []
+        for i, t in enumerate(token_list):
+            result.append(t)
+            if t.kind == 'lt':
+                break
+        return result
+    #@+node:ekr.20200107165250.39: *5* orange.join_lines
+    def join_lines(self, node: Node, token: "Token") -> None:
+        """
+        Join preceding lines, if possible and enabled.
+        token is a line_end token. node is the corresponding ast node.
+        """
+        if self.max_join_line_length <= 0:  # pragma: no cover (user option)
+            return
+        assert token.kind in ('newline', 'nl'), repr(token)
+        if token.kind == 'nl':
+            return
+        # Scan backward in the *code* list,
+        # looking for 'line-end' tokens with tok.newline_kind == 'nl'
+        nls = 0
+        i = len(self.code_list) - 1
+        t = self.code_list[i]
+        assert t.kind == 'line-end', repr(t)
+        # Not all tokens have a newline_kind ivar.
+        assert t.newline_kind == 'newline'  # type:ignore
+        i -= 1
+        while i >= 0:
+            t = self.code_list[i]
+            if t.kind == 'comment':
+                # Can't join.
+                return
+            if t.kind == 'string' and not self.allow_joined_strings:
+                # An EKR preference: don't join strings, no matter what black does.
+                # This allows "short" f-strings to be aligned.
+                return
+            if t.kind == 'line-end':
+                if getattr(t, 'newline_kind', None) == 'nl':
+                    nls += 1
+                else:
+                    break  # pragma: no cover
+            i -= 1
+        # Retain at the file-start token.
+        if i <= 0:
+            i = 1
+        if nls <= 0:  # pragma: no cover (rare)
+            return
+        # Retain line-end and and any following line-indent.
+        # Required, so that the regex below won't eat too much.
+        while True:
+            t = self.code_list[i]
+            if t.kind == 'line-end':
+                if getattr(t, 'newline_kind', None) == 'nl':  # pragma: no cover (rare)
+                    nls -= 1
+                i += 1
+            elif self.code_list[i].kind == 'line-indent':
+                i += 1
+            else:
+                break  # pragma: no cover (defensive)
+        if nls <= 0:  # pragma: no cover (defensive)
+            return
+        # Calculate the joined line.
+        tail = self.code_list[i:]
+        tail_s = tokens_to_string(tail)
+        tail_s = re.sub(r'\n\s*', ' ', tail_s)
+        tail_s = tail_s.replace('( ', '(').replace(' )', ')')
+        tail_s = tail_s.rstrip()
+        # Don't join the lines if they would be too long.
+        if len(tail_s) > self.max_join_line_length:  # pragma: no cover (defensive)
+            return
+        # Cut back the code list.
+        self.code_list = self.code_list[:i]
+        # Add the new output tokens.
+        self.add_token('string', tail_s)
+        self.add_token('line-end', '\n')
+    #@-others
+#@+node:ekr.20200107170847.1: *3* class OrangeSettings
+class OrangeSettings:
+
+    pass
+#@+node:ekr.20200107170126.1: *3* class ParseState
+class ParseState:
+    """
+    A class representing items in the parse state stack.
+
+    The present states:
+
+    'file-start': Ensures the stack stack is never empty.
+
+    'decorator': The last '@' was a decorator.
+
+        do_op():    push_state('decorator')
+        do_name():  pops the stack if state.kind == 'decorator'.
+
+    'indent': The indentation level for 'class' and 'def' names.
+
+        do_name():      push_state('indent', self.level)
+        do_dendent():   pops the stack once or twice if state.value == self.level.
+
+    """
+
+    def __init__(self, kind: str, value: str) -> None:
+        self.kind = kind
+        self.value = value
+
+    def __repr__(self) -> str:
+        return f"State: {self.kind} {self.value!r}"  # pragma: no cover
+
+    __str__ = __repr__
+#@+node:ekr.20191231084514.1: *3* class ReassignTokens
+class ReassignTokens:
+    """A class that reassigns tokens to more appropriate ast nodes."""
+    #@+others
+    #@+node:ekr.20191231084640.1: *4* reassign.reassign
+    def reassign(self, filename: str, tokens: List["Token"], tree: Node) -> None:
+        """The main entry point."""
+        self.filename = filename
+        self.tokens = tokens
+        # For now, just handle Call nodes.
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                self.visit_call(node)
+    #@+node:ekr.20191231084853.1: *4* reassign.visit_call
+    def visit_call(self, node: Node) -> None:
+        """ReassignTokens.visit_call"""
+        tokens = tokens_for_node(self.filename, node, self.tokens)
+        node0, node9 = tokens[0].node, tokens[-1].node
+        nca = nearest_common_ancestor(node0, node9)
+        if not nca:
+            return
+        # Associate () with the call node.
+        i = tokens[-1].index
+        j = find_paren_token(i + 1, self.tokens)
+        if j is None:
+            return  # pragma: no cover
+        k = find_paren_token(j + 1, self.tokens)
+        if k is None:
+            return  # pragma: no cover
+        self.tokens[j].node = nca  # type:ignore
+        self.tokens[k].node = nca  # type:ignore
+        add_token_to_token_list(self.tokens[j], nca)
+        add_token_to_token_list(self.tokens[k], nca)
+    #@-others
+#@+node:ekr.20191110080535.1: *3* class Token
+class Token:
+    """
+    A class representing a 5-tuple, plus additional data.
+    """
+
+    def __init__(self, kind: str, value: str):
+
+        self.kind = kind
+        self.value = value
+        #
+        # Injected by Tokenizer.add_token.
+        self.five_tuple = None
+        self.index = 0
+        # The entire line containing the token.
+        # Same as five_tuple.line.
+        self.line = ''
+        # The line number, for errors and dumps.
+        # Same as five_tuple.start[0]
+        self.line_number = 0
+        #
+        # Injected by Tokenizer.add_token.
+        self.level = 0
+        self.node = None
+
+    def __repr__(self) -> str:  # pragma: no cover
+        nl_kind = getattr(self, 'newline_kind', '')
+        s = f"{self.kind:}.{self.index:<3}"
+        return f"{s:>18}:{nl_kind:7} {self.show_val(80)}"
+
+    def __str__(self) -> str:  # pragma: no cover
+        nl_kind = getattr(self, 'newline_kind', '')
+        return f"{self.kind}.{self.index:<3}{nl_kind:8} {self.show_val(80)}"
+
+    def to_string(self) -> str:
+        """Return the contribution of the token to the source file."""
+        return self.value if isinstance(self.value, str) else ''
+    #@+others
+    #@+node:ekr.20191231114927.1: *4* token.brief_dump
+    def brief_dump(self) -> str:  # pragma: no cover
+        """Dump a token."""
+        return (
+            f"{self.index:>3} line: {self.line_number:<2} "
+            f"{self.kind:>11} {self.show_val(100)}")
+    #@+node:ekr.20200223022950.11: *4* token.dump
+    def dump(self) -> str:  # pragma: no cover
+        """Dump a token and related links."""
+        # Let block.
+        node_id = self.node.node_index if self.node else ''
+        node_cn = self.node.__class__.__name__ if self.node else ''
+        return (
+            f"{self.line_number:4} "
+            f"{node_id:5} {node_cn:16} "
+            f"{self.index:>5} {self.kind:>11} "
+            f"{self.show_val(100)}")
+    #@+node:ekr.20200121081151.1: *4* token.dump_header
+    def dump_header(self) -> None:  # pragma: no cover
+        """Print the header for token.dump"""
+        print(
+            f"\n"
+            f"         node    {'':10} token          token\n"
+            f"line index class {'':10} index        kind value\n"
+            f"==== ===== ===== {'':10} =====        ==== =====\n")
+    #@+node:ekr.20191116154328.1: *4* token.error_dump
+    def error_dump(self) -> str:  # pragma: no cover
+        """Dump a token or result node for error message."""
+        if self.node:
+            node_id = obj_id(self.node)
+            node_s = f"{node_id} {self.node.__class__.__name__}"
+        else:
+            node_s = "None"
+        return (
+            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
+            f"{node_s}")
+    #@+node:ekr.20191113095507.1: *4* token.show_val
+    def show_val(self, truncate_n: int) -> Union[int, str]:  # pragma: no cover
+        """Return the token.value field."""
+        if self.kind in ('ws', 'indent'):
+            val = len(self.value)  # type:ignore
+        elif self.kind == 'string':
+            # Important: don't add a repr for 'string' tokens.
+            # repr just adds another layer of confusion.
+            val = g.truncate(self.value, truncate_n)  # type:ignore
+        else:
+            val = g.truncate(repr(self.value), truncate_n)  # type:ignore
+        return val
+    #@-others
+#@+node:ekr.20191110165235.1: *3* class Tokenizer
+class Tokenizer:
+
+    """Create a list of Tokens from contents."""
+
+    results: List[Token] = []
+
+    #@+others
+    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
+    token_index = 0
+    prev_line_token = None
+
+    def add_token(self, kind: str, five_tuple: Any, line: str, s_row: int, value: str) -> None:
+        """
+        Add a token to the results list.
+
+        Subclasses could override this method to filter out specific tokens.
+        """
+        tok = Token(kind, value)
+        tok.five_tuple = five_tuple
+        tok.index = self.token_index
+        # Bump the token index.
+        self.token_index += 1
+        tok.line = line
+        tok.line_number = s_row
+        self.results.append(tok)
+    #@+node:ekr.20191110170551.1: *4* tokenizer.check_results
+    def check_results(self, contents: str) -> None:
+
+        # Split the results into lines.
+        result = ''.join([z.to_string() for z in self.results])
+        result_lines = g.splitLines(result)
+        # Check.
+        ok = result == contents and result_lines == self.lines
+        assert ok, (
+            f"\n"
+            f"      result: {result!r}\n"
+            f"    contents: {contents!r}\n"
+            f"result_lines: {result_lines}\n"
+            f"       lines: {self.lines}"
+        )
+    #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
+    def create_input_tokens(self, contents: str, tokens: List[Any]) -> List["Token"]:
+        """
+        Generate a list of Token's from tokens, a list of 5-tuples.
+        """
+        # Create the physical lines.
+        self.lines = contents.splitlines(True)
+        # Create the list of character offsets of the start of each physical line.
+        last_offset, self.offsets = 0, [0]
+        for line in self.lines:
+            last_offset += len(line)
+            self.offsets.append(last_offset)
+        # Handle each token, appending tokens and between-token whitespace to results.
+        self.prev_offset, self.results = -1, []
+        for token in tokens:
+            self.do_token(contents, token)
+        # Print results when tracing.
+        self.check_results(contents)
+        # Return results, as a list.
+        return self.results
+    #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
+    header_has_been_shown = False
+
+    def do_token(self, contents: str, five_tuple: Any) -> None:
+        """
+        Handle the given token, optionally including between-token whitespace.
+
+        This is part of the "gem".
+
+        Links:
+
+        - 11/13/19: ENB: A much better untokenizer
+          https://groups.google.com/forum/#!msg/leo-editor/DpZ2cMS03WE/VPqtB9lTEAAJ
+
+        - Untokenize does not round-trip ws before bs-nl
+          https://bugs.python.org/issue38663
+        """
+        import token as token_module
+        # Unpack..
+        tok_type, val, start, end, line = five_tuple
+        s_row, s_col = start  # row/col offsets of start of token.
+        e_row, e_col = end  # row/col offsets of end of token.
+        kind = token_module.tok_name[tok_type].lower()
+        # Calculate the token's start/end offsets: character offsets into contents.
+        s_offset = self.offsets[max(0, s_row - 1)] + s_col
+        e_offset = self.offsets[max(0, e_row - 1)] + e_col
+        # tok_s is corresponding string in the line.
+        tok_s = contents[s_offset:e_offset]
+        # Add any preceding between-token whitespace.
+        ws = contents[self.prev_offset:s_offset]
+        if ws:
+            # No need for a hook.
+            self.add_token('ws', five_tuple, line, s_row, ws)
+        # Always add token, even if it contributes no text!
+        self.add_token(kind, five_tuple, line, s_row, tok_s)
+        # Update the ending offset.
+        self.prev_offset = e_offset
+    #@-others
+#@+node:ekr.20191113063144.1: *3* class TokenOrderGenerator
 class TokenOrderGenerator:
     """
     A class that traverses ast (parse) trees in token order.
@@ -2613,11 +4181,16 @@ class TokenOrderGenerator:
         self.name('from')
         self.visit(node.value)
     #@-others
-#@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
+#@+node:ekr.20191226195813.1: *3* class TokenOrderTraverser
 class TokenOrderTraverser:
     """
     Traverse an ast tree using the parent/child links created by the
     TokenOrderGenerator class.
+    
+    **Important**:
+    
+    This class is a curio. It is no longer used in this file!
+    The Fstringify and ReassignTokens classes now use ast.walk.
     """
     #@+others
     #@+node:ekr.20191226200154.1: *4* TOT.traverse
@@ -2690,1588 +4263,6 @@ class TokenOrderTraverser:
         self.last_node_index += 1
         assert self.last_node_index == node.node_index, (
             self.last_node_index, node.node_index)
-    #@-others
-#@+node:ekr.20200107165250.1: *3* class Orange
-class Orange:
-    """
-    A flexible and powerful beautifier for Python.
-    Orange is the new black.
-
-    *Important*: This is a predominantly a *token*-based beautifier.
-    However, orange.colon and orange.possible_unary_op use the parse
-    tree to provide context that would otherwise be difficult to
-    deduce.
-    """
-    # This switch is really a comment. It will always be false.
-    # It marks the code that simulates the operation of the black tool.
-    black_mode = False
-
-    # Patterns...
-    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
-
-    # Patterns from FastAtRead class, specialized for python delims.
-    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
-    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
-    at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
-
-    # Doc parts end with @c or a node sentinel. Specialized for python.
-    end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
-    #@+others
-    #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[Dict]=None):
-        """Ctor for Orange class."""
-        if settings is None:
-            settings = {}
-        valid_keys = (
-            'allow_joined_strings',
-            'max_join_line_length',
-            'max_split_line_length',
-            'orange',
-            'tab_width',
-        )
-        # For mypy...
-        self.kind: str = ''
-        # Default settings...
-        self.allow_joined_strings = False  # EKR's preference.
-        self.max_join_line_length = 88
-        self.max_split_line_length = 88
-        self.tab_width = 4
-        # Override from settings dict...
-        for key in settings:  # pragma: no cover
-            value = settings.get(key)
-            if key in valid_keys and value is not None:
-                setattr(self, key, value)
-            else:
-                g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20200107165250.51: *4* orange.push_state
-    def push_state(self, kind: str, value: Any=None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
-    #@+node:ekr.20200107165250.8: *4* orange: Entries
-    #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
-    def oops(self) -> None:  # pragma: no cover
-        g.trace(f"Unknown kind: {self.kind}")
-
-    def beautify(self, contents: str, filename: str, tokens: List["Token"], tree: Node,
-
-        max_join_line_length: Optional[int]=None, max_split_line_length: Optional[int]=None,
-    ) -> str:
-        """
-        The main line. Create output tokens and return the result as a string.
-        """
-        # Config overrides
-        if max_join_line_length is not None:
-            self.max_join_line_length = max_join_line_length
-        if max_split_line_length is not None:
-            self.max_split_line_length = max_split_line_length
-        # State vars...
-        self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
-        self.decorator_seen = False  # Set by do_name for do_op.
-        self.in_arg_list = 0  # > 0 if in an arg list of a def.
-        self.level = 0  # Set only by do_indent and do_dedent.
-        self.lws = ''  # Leading whitespace.
-        self.paren_level = 0  # Number of unmatched '(' tokens.
-        self.square_brackets_stack: List[bool] = []  # A stack of bools, for self.word().
-        self.state_stack: List["ParseState"] = []  # Stack of ParseState objects.
-        self.val = None  # The input token's value (a string).
-        self.verbatim = False  # True: don't beautify.
-        #
-        # Init output list and state...
-        self.code_list: List[Token] = []  # The list of output tokens.
-        self.code_list_index = 0  # The token's index.
-        self.tokens = tokens  # The list of input tokens.
-        self.tree = tree
-        self.add_token('file-start', '')
-        self.push_state('file-start')
-        for i, token in enumerate(tokens):
-            self.token = token
-            self.kind, self.val, self.line = token.kind, token.value, token.line
-            if self.verbatim:
-                self.do_verbatim()
-            else:
-                func = getattr(self, f"do_{token.kind}", self.oops)
-                func()
-        # Any post pass would go here.
-        return tokens_to_string(self.code_list)
-    #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
-    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Orange: Beautify the the given external file.
-
-        Return True if the file was changed.
-        """
-        self.filename = filename
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            return False  # #2529: Not an error.
-        # Beautify.
-        results = self.beautify(contents, filename, tokens, tree)
-        # Something besides newlines must change.
-        if regularize_nls(contents) == regularize_nls(results):
-            return False
-        if 0:  # This obscures more import error messages.
-            show_diffs(contents, results, filename=filename)
-        # Write the results
-        print(f"Beautified: {g.shortFileName(filename)}")
-        write_file(filename, results, encoding=encoding)
-        return True
-    #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
-    def beautify_file_diff(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Orange: Print the diffs that would resulf from the orange-file command.
-
-        Return True if the file would be changed.
-        """
-        tag = 'diff-beautify-file'
-        self.filename = filename
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            print(f"{tag}: Can not beautify: {filename}")
-            return False
-        # fstringify.
-        results = self.beautify(contents, filename, tokens, tree)
-        # Something besides newlines must change.
-        if regularize_nls(contents) == regularize_nls(results):
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        show_diffs(contents, results, filename=filename)
-        return True
-    #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
-    #@+node:ekr.20200107165250.14: *5* orange.do_comment
-    in_doc_part = False
-
-    def do_comment(self) -> None:
-        """Handle a comment token."""
-        val = self.val
-        #
-        # Leo-specific code...
-        if self.node_pat.match(val):
-            # Clear per-node state.
-            self.in_doc_part = False
-            self.verbatim = False
-            self.decorator_seen = False
-            # Do *not clear other state, which may persist across @others.
-                # self.curly_brackets_level = 0
-                # self.in_arg_list = 0
-                # self.level = 0
-                # self.lws = ''
-                # self.paren_level = 0
-                # self.square_brackets_stack = []
-                # self.state_stack = []
-        else:
-            # Keep track of verbatim mode.
-            if self.beautify_pat.match(val):
-                self.verbatim = False
-            elif self.nobeautify_pat.match(val):
-                self.verbatim = True
-            # Keep trace of @doc parts, to honor the convention for splitting lines.
-            if self.start_doc_pat.match(val):
-                self.in_doc_part = True
-            if self.end_doc_pat.match(val):
-                self.in_doc_part = False
-        #
-        # General code: Generate the comment.
-        self.clean('blank')
-        entire_line = self.line.lstrip().startswith('#')
-        if entire_line:
-            self.clean('hard-blank')
-            self.clean('line-indent')
-            # #1496: No further munging needed.
-            val = self.line.rstrip()
-        else:
-            # Exactly two spaces before trailing comments.
-            val = '  ' + self.val.rstrip()
-        self.add_token('comment', val)
-    #@+node:ekr.20200107165250.15: *5* orange.do_encoding
-    def do_encoding(self) -> None:
-        """
-        Handle the encoding token.
-        """
-        pass
-    #@+node:ekr.20200107165250.16: *5* orange.do_endmarker
-    def do_endmarker(self) -> None:
-        """Handle an endmarker token."""
-        # Ensure exactly one blank at the end of the file.
-        self.clean_blank_lines()
-        self.add_token('line-end', '\n')
-    #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
-    def do_dedent(self) -> None:
-        """Handle dedent token."""
-        self.level -= 1
-        self.lws = self.level * self.tab_width * ' '
-        self.line_indent()
-        if self.black_mode:  # pragma: no cover (black)
-            state = self.state_stack[-1]
-            if state.kind == 'indent' and state.value == self.level:
-                self.state_stack.pop()
-                state = self.state_stack[-1]
-                if state.kind in ('class', 'def'):
-                    self.state_stack.pop()
-                    self.handle_dedent_after_class_or_def(state.kind)
-
-    def do_indent(self) -> None:  # type:ignore
-        """Handle indent token."""
-        new_indent = self.val
-        old_indent = self.level * self.tab_width * ' '
-        if new_indent > old_indent:
-            self.level += 1
-        elif new_indent < old_indent:  # pragma: no cover (defensive)
-            g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
-        self.lws = new_indent
-        self.line_indent()
-    #@+node:ekr.20200220054928.1: *6* orange.handle_dedent_after_class_or_def
-    def handle_dedent_after_class_or_def(self, kind: str) -> None:  # pragma: no cover (black)
-        """
-        Insert blank lines after a class or def as the result of a 'dedent' token.
-
-        Normal comment lines may precede the 'dedent'.
-        Insert the blank lines *before* such comment lines.
-        """
-        #
-        # Compute the tail.
-        i = len(self.code_list) - 1
-        tail: List[Token] = []
-        while i > 0:
-            t = self.code_list.pop()
-            i -= 1
-            if t.kind == 'line-indent':
-                pass
-            elif t.kind == 'line-end':
-                tail.insert(0, t)
-            elif t.kind == 'comment':
-                # Only underindented single-line comments belong in the tail.
-                # @+node comments must never be in the tail.
-                single_line = self.code_list[i].kind in ('line-end', 'line-indent')
-                lws = len(t.value) - len(t.value.lstrip())
-                underindent = lws <= len(self.lws)
-                if underindent and single_line and not self.node_pat.match(t.value):
-                    # A single-line comment.
-                    tail.insert(0, t)
-                else:
-                    self.code_list.append(t)
-                    break
-            else:
-                self.code_list.append(t)
-                break
-        #
-        # Remove leading 'line-end' tokens from the tail.
-        while tail and tail[0].kind == 'line-end':
-            tail = tail[1:]
-        #
-        # Put the newlines *before* the tail.
-        # For Leo, always use 1 blank lines.
-        n = 1  # n = 2 if kind == 'class' else 1
-        # Retain the token (intention) for debugging.
-        self.add_token('blank-lines', n)
-        for i in range(0, n + 1):
-            self.add_token('line-end', '\n')
-        if tail:
-            self.code_list.extend(tail)
-        self.line_indent()
-    #@+node:ekr.20200107165250.20: *5* orange.do_name
-    def do_name(self) -> None:
-        """Handle a name token."""
-        name = self.val
-        if self.black_mode and name in ('class', 'def'):  # pragma: no cover (black)
-            # Handle newlines before and after 'class' or 'def'
-            self.decorator_seen = False
-            state = self.state_stack[-1]
-            if state.kind == 'decorator':
-                # Always do this, regardless of @bool clean-blank-lines.
-                self.clean_blank_lines()
-                # Suppress split/join.
-                self.add_token('hard-newline', '\n')
-                self.add_token('line-indent', self.lws)
-                self.state_stack.pop()
-            else:
-                # Always do this, regardless of @bool clean-blank-lines.
-                self.blank_lines(2 if name == 'class' else 1)
-            self.push_state(name)
-            self.push_state('indent', self.level)
-                # For trailing lines after inner classes/defs.
-            self.word(name)
-            return
-        #
-        # Leo mode...
-        if name in ('class', 'def'):
-            self.word(name)
-        elif name in (
-            'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
-        ):
-            self.word_op(name)
-        else:
-            self.word(name)
-    #@+node:ekr.20200107165250.21: *5* orange.do_newline & do_nl
-    def do_newline(self) -> None:
-        """Handle a regular newline."""
-        self.line_end()
-
-    def do_nl(self) -> None:
-        """Handle a continuation line."""
-        self.line_end()
-    #@+node:ekr.20200107165250.22: *5* orange.do_number
-    def do_number(self) -> None:
-        """Handle a number token."""
-        self.blank()
-        self.add_token('number', self.val)
-    #@+node:ekr.20200107165250.23: *5* orange.do_op
-    def do_op(self) -> None:
-        """Handle an op token."""
-        val = self.val
-        if val == '.':
-            self.clean('blank')
-            prev = self.code_list[-1]
-            # #2495 & #2533: Special case for 'from .'
-            if prev.kind == 'word' and prev.value == 'from':
-                self.blank()
-            self.add_token('op-no-blanks', val)
-        elif val == '@':
-            if self.black_mode:  # pragma: no cover (black)
-                if not self.decorator_seen:
-                    self.blank_lines(1)
-                    self.decorator_seen = True
-            self.clean('blank')
-            self.add_token('op-no-blanks', val)
-            self.push_state('decorator')
-        elif val == ':':
-            # Treat slices differently.
-            self.colon(val)
-        elif val in ',;':
-            # Pep 8: Avoid extraneous whitespace immediately before
-            # comma, semicolon, or colon.
-            self.clean('blank')
-            self.add_token('op', val)
-            self.blank()
-        elif val in '([{':
-            # Pep 8: Avoid extraneous whitespace immediately inside
-            # parentheses, brackets or braces.
-            self.lt(val)
-        elif val in ')]}':
-            # Ditto.
-            self.rt(val)
-        elif val == '=':
-            # Pep 8: Don't use spaces around the = sign when used to indicate
-            # a keyword argument or a default parameter value.
-            if self.paren_level:
-                self.clean('blank')
-                self.add_token('op-no-blanks', val)
-            else:
-                self.blank()
-                self.add_token('op', val)
-                self.blank()
-        elif val in '~+-':
-            self.possible_unary_op(val)
-        elif val == '*':
-            self.star_op()
-        elif val == '**':
-            self.star_star_op()
-        else:
-            # Pep 8: always surround binary operators with a single space.
-            # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
-            # '^','~','*','**','&','|','/','//',
-            # Pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priority(ies).
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-    #@+node:ekr.20200107165250.24: *5* orange.do_string
-    def do_string(self) -> None:
-        """Handle a 'string' token."""
-        # Careful: continued strings may contain '\r'
-        val = regularize_nls(self.val)
-        self.add_token('string', val)
-        self.blank()
-    #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
-    beautify_pat = re.compile(
-        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
-
-    def do_verbatim(self) -> None:
-        """
-        Handle one token in verbatim mode.
-        End verbatim mode when the appropriate comment is seen.
-        """
-        kind = self.kind
-        #
-        # Careful: tokens may contain '\r'
-        val = regularize_nls(self.val)
-        if kind == 'comment':
-            if self.beautify_pat.match(val):
-                self.verbatim = False
-            val = val.rstrip()
-            self.add_token('comment', val)
-            return
-        if kind == 'indent':
-            self.level += 1
-            self.lws = self.level * self.tab_width * ' '
-        if kind == 'dedent':
-            self.level -= 1
-            self.lws = self.level * self.tab_width * ' '
-        self.add_token('verbatim', val)
-    #@+node:ekr.20200107165250.25: *5* orange.do_ws
-    def do_ws(self) -> None:
-        """
-        Handle the "ws" pseudo-token.
-
-        Put the whitespace only if if ends with backslash-newline.
-        """
-        val = self.val
-        # Handle backslash-newline.
-        if '\\\n' in val:
-            self.clean('blank')
-            self.add_token('op-no-blanks', val)
-            return
-        # Handle start-of-line whitespace.
-        prev = self.code_list[-1]
-        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-        if prev.kind == 'line-indent' and inner:
-            # Retain the indent that won't be cleaned away.
-            self.clean('line-indent')
-            self.add_token('hard-blank', val)
-    #@+node:ekr.20200107165250.26: *4* orange: Output token generators
-    #@+node:ekr.20200118145044.1: *5* orange.add_line_end
-    def add_line_end(self) -> "Token":
-        """Add a line-end request to the code list."""
-        # This may be called from do_name as well as do_newline and do_nl.
-        assert self.token.kind in ('newline', 'nl'), self.token.kind
-        self.clean('blank')  # Important!
-        self.clean('line-indent')
-        t = self.add_token('line-end', '\n')
-        # Distinguish between kinds of 'line-end' tokens.
-        t.newline_kind = self.token.kind
-        return t
-    #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind: str, value: Union[int, str]) -> "Token":
-        """Add an output token to the code list."""
-        tok = Token(kind, value)  # type:ignore
-        tok.index = self.code_list_index  # For debugging only.
-        self.code_list_index += 1
-        self.code_list.append(tok)
-        return tok
-    #@+node:ekr.20200107165250.27: *5* orange.blank
-    def blank(self) -> None:
-        """Add a blank request to the code list."""
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            'blank-lines',
-            'file-start',
-            'hard-blank',  # Unique to orange.
-            'line-end',
-            'line-indent',
-            'lt',
-            'op-no-blanks',
-            'unary-op',
-        ):
-            self.add_token('blank', ' ')
-    #@+node:ekr.20200107165250.29: *5* orange.blank_lines (black only)
-    def blank_lines(self, n: int) -> None:  # pragma: no cover (black)
-        """
-        Add a request for n blank lines to the code list.
-        Multiple blank-lines request yield at least the maximum of all requests.
-        """
-        self.clean_blank_lines()
-        prev = self.code_list[-1]
-        if prev.kind == 'file-start':
-            self.add_token('blank-lines', n)
-            return
-        for i in range(0, n + 1):
-            self.add_token('line-end', '\n')
-        # Retain the token (intention) for debugging.
-        self.add_token('blank-lines', n)
-        self.line_indent()
-    #@+node:ekr.20200107165250.30: *5* orange.clean
-    def clean(self, kind: str) -> None:
-        """Remove the last item of token list if it has the given kind."""
-        prev = self.code_list[-1]
-        if prev.kind == kind:
-            self.code_list.pop()
-    #@+node:ekr.20200107165250.31: *5* orange.clean_blank_lines
-    def clean_blank_lines(self) -> bool:
-        """
-        Remove all vestiges of previous blank lines.
-
-        Return True if any of the cleaned 'line-end' tokens represented "hard" newlines.
-        """
-        cleaned_newline = False
-        table = ('blank-lines', 'line-end', 'line-indent')
-        while self.code_list[-1].kind in table:
-            t = self.code_list.pop()
-            if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
-                cleaned_newline = True
-        return cleaned_newline
-    #@+node:ekr.20200107165250.32: *5* orange.colon
-    def colon(self, val: str) -> None:
-        """Handle a colon."""
-
-        def is_expr(node: Node) -> bool:
-            """True if node is any expression other than += number."""
-            if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
-                return True
-            return (
-                isinstance(node, ast.UnaryOp)
-                and not isinstance(node.operand, ast.Num)
-            )
-
-        node = self.token.node
-        self.clean('blank')
-        if not isinstance(node, ast.Slice):
-            self.add_token('op', val)
-            self.blank()
-            return
-        # A slice.
-        lower = getattr(node, 'lower', None)
-        upper = getattr(node, 'upper', None)
-        step = getattr(node, 'step', None)
-        if any(is_expr(z) for z in (lower, upper, step)):
-            prev = self.code_list[-1]
-            if prev.value not in '[:':
-                self.blank()
-            self.add_token('op', val)
-            self.blank()
-        else:
-            self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.33: *5* orange.line_end
-    def line_end(self) -> None:
-        """Add a line-end request to the code list."""
-        # This should be called only be do_newline and do_nl.
-        node, token = self.token.statement_node, self.token
-        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
-        # Create the 'line-end' output token.
-        self.add_line_end()
-        # Attempt to split the line.
-        was_split = self.split_line(node, token)
-        # Attempt to join the line only if it has not just been split.
-        if not was_split and self.max_join_line_length > 0:
-            self.join_lines(node, token)
-        self.line_indent()
-            # Add the indentation for all lines
-            # until the next indent or unindent token.
-    #@+node:ekr.20200107165250.40: *5* orange.line_indent
-    def line_indent(self) -> None:
-        """Add a line-indent token."""
-        self.clean('line-indent')
-            # Defensive. Should never happen.
-        self.add_token('line-indent', self.lws)
-    #@+node:ekr.20200107165250.41: *5* orange.lt & rt
-    #@+node:ekr.20200107165250.42: *6* orange.lt
-    def lt(self, val: str) -> None:
-        """Generate code for a left paren or curly/square bracket."""
-        assert val in '([{', repr(val)
-        if val == '(':
-            self.paren_level += 1
-        elif val == '[':
-            self.square_brackets_stack.append(False)
-        else:
-            self.curly_brackets_level += 1
-        self.clean('blank')
-        prev = self.code_list[-1]
-        if prev.kind in ('op', 'word-op'):
-            self.blank()
-            self.add_token('lt', val)
-        elif prev.kind == 'word':
-            # Only suppress blanks before '(' or '[' for non-keyworks.
-            if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
-                self.blank()
-            elif val == '(':
-                self.in_arg_list += 1
-            self.add_token('lt', val)
-        else:
-            self.clean('blank')
-            self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.43: *6* orange.rt
-    def rt(self, val: str) -> None:
-        """Generate code for a right paren or curly/square bracket."""
-        assert val in ')]}', repr(val)
-        if val == ')':
-            self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list - 1)
-        elif val == ']':
-            self.square_brackets_stack.pop()
-        else:
-            self.curly_brackets_level -= 1
-        self.clean('blank')
-        self.add_token('rt', val)
-    #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
-    def possible_unary_op(self, s: str) -> None:
-        """Add a unary or binary op to the token list."""
-        node = self.token.node
-        self.clean('blank')
-        if isinstance(node, ast.UnaryOp):
-            self.unary_op(s)
-        else:
-            self.blank()
-            self.add_token('op', s)
-            self.blank()
-
-    def unary_op(self, s: str) -> None:
-        """Add an operator request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        self.clean('blank')
-        prev = self.code_list[-1]
-        if prev.kind == 'lt':
-            self.add_token('unary-op', s)
-        else:
-            self.blank()
-            self.add_token('unary-op', s)
-    #@+node:ekr.20200107165250.46: *5* orange.star_op
-    def star_op(self) -> None:
-        """Put a '*' op, with special cases for *args."""
-        val = '*'
-        node = self.token.node
-        self.clean('blank')
-        if isinstance(node, ast.arguments):
-            self.blank()
-            self.add_token('op', val)
-            return  # #2533
-        if self.paren_level > 0:
-            prev = self.code_list[-1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                self.blank()
-                self.add_token('op', val)
-                return
-        self.blank()
-        self.add_token('op', val)
-        self.blank()
-    #@+node:ekr.20200107165250.47: *5* orange.star_star_op
-    def star_star_op(self) -> None:
-        """Put a ** operator, with a special case for **kwargs."""
-        val = '**'
-        node = self.token.node
-        self.clean('blank')
-        if isinstance(node, ast.arguments):
-            self.blank()
-            self.add_token('op', val)
-            return  # #2533
-        if self.paren_level > 0:
-            prev = self.code_list[-1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                self.blank()
-                self.add_token('op', val)
-                return
-        self.blank()
-        self.add_token('op', val)
-        self.blank()
-    #@+node:ekr.20200107165250.48: *5* orange.word & word_op
-    def word(self, s: str) -> None:
-        """Add a word request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        node = self.token.node
-        if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
-            self.clean('blank')
-            self.add_token('blank', ' ')
-            self.add_token('word', s)
-        elif self.square_brackets_stack:
-            # A previous 'op-no-blanks' token may cancel this blank.
-            self.blank()
-            self.add_token('word', s)
-        elif self.in_arg_list > 0:
-            self.add_token('word', s)
-            self.blank()
-        else:
-            self.blank()
-            self.add_token('word', s)
-            self.blank()
-
-    def word_op(self, s: str) -> None:
-        """Add a word-op request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        self.blank()
-        self.add_token('word-op', s)
-        self.blank()
-    #@+node:ekr.20200118120049.1: *4* orange: Split/join
-    #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
-    def split_line(self, node: Node, token: "Token") -> bool:
-        """
-        Split token's line, if possible and enabled.
-
-        Return True if the line was broken into two or more lines.
-        """
-        assert token.kind in ('newline', 'nl'), repr(token)
-        # Return if splitting is disabled:
-        if self.max_split_line_length <= 0:  # pragma: no cover (user option)
-            return False
-        # Return if the node can't be split.
-        if not is_long_statement(node):
-            return False
-        # Find the *output* tokens of the previous lines.
-        line_tokens = self.find_prev_line()
-        line_s = ''.join([z.to_string() for z in line_tokens])
-        # Do nothing for short lines.
-        if len(line_s) < self.max_split_line_length:
-            return False
-        # Return if the previous line has no opening delim: (, [ or {.
-        if not any(z.kind == 'lt' for z in line_tokens):  # pragma: no cover (defensive)
-            return False
-        prefix = self.find_line_prefix(line_tokens)
-        # Calculate the tail before cleaning the prefix.
-        tail = line_tokens[len(prefix) :]
-        # Cut back the token list: subtract 1 for the trailing line-end.
-        self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
-        # Append the tail, splitting it further, as needed.
-        self.append_tail(prefix, tail)
-        # Add the line-end token deleted by find_line_prefix.
-        self.add_token('line-end', '\n')
-        return True
-    #@+node:ekr.20200107165250.35: *6* orange.append_tail
-    def append_tail(self, prefix: List["Token"], tail: List["Token"]) -> None:
-        """Append the tail tokens, splitting the line further as necessary."""
-        tail_s = ''.join([z.to_string() for z in tail])
-        if len(tail_s) < self.max_split_line_length:
-            # Add the prefix.
-            self.code_list.extend(prefix)
-            # Start a new line and increase the indentation.
-            self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws + ' ' * 4)
-            self.code_list.extend(tail)
-            return
-        # Still too long.  Split the line at commas.
-        self.code_list.extend(prefix)
-        # Start a new line and increase the indentation.
-        self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws + ' ' * 4)
-        open_delim = Token(kind='lt', value=prefix[-1].value)
-        value = open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}')
-        close_delim = Token(kind='rt', value=value)
-        delim_count = 1
-        lws = self.lws + ' ' * 4
-        for i, t in enumerate(tail):
-            if t.kind == 'op' and t.value == ',':
-                if delim_count == 1:
-                    # Start a new line.
-                    self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', lws)
-                    # Kill a following blank.
-                    if i + 1 < len(tail):
-                        next_t = tail[i + 1]
-                        if next_t.kind == 'blank':
-                            next_t.kind = 'no-op'
-                            next_t.value = ''
-                else:
-                    self.code_list.append(t)
-            elif t.kind == close_delim.kind and t.value == close_delim.value:
-                # Done if the delims match.
-                delim_count -= 1
-                if delim_count == 0:
-                    # Start a new line
-                    self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', self.lws)
-                    self.code_list.extend(tail[i:])
-                    return
-                lws = lws[:-4]
-                self.code_list.append(t)
-            elif t.kind == open_delim.kind and t.value == open_delim.value:
-                delim_count += 1
-                lws = lws + ' ' * 4
-                self.code_list.append(t)
-            else:
-                self.code_list.append(t)
-        g.trace('BAD DELIMS', delim_count)  # pragma: no cover
-    #@+node:ekr.20200107165250.36: *6* orange.find_prev_line
-    def find_prev_line(self) -> List["Token"]:
-        """Return the previous line, as a list of tokens."""
-        line = []
-        for t in reversed(self.code_list[:-1]):
-            if t.kind in ('hard-newline', 'line-end'):
-                break
-            line.append(t)
-        return list(reversed(line))
-    #@+node:ekr.20200107165250.37: *6* orange.find_line_prefix
-    def find_line_prefix(self, token_list: List["Token"]) -> List["Token"]:
-        """
-        Return all tokens up to and including the first lt token.
-        Also add all lt tokens directly following the first lt token.
-        """
-        result = []
-        for i, t in enumerate(token_list):
-            result.append(t)
-            if t.kind == 'lt':
-                break
-        return result
-    #@+node:ekr.20200107165250.39: *5* orange.join_lines
-    def join_lines(self, node: Node, token: "Token") -> None:
-        """
-        Join preceding lines, if possible and enabled.
-        token is a line_end token. node is the corresponding ast node.
-        """
-        if self.max_join_line_length <= 0:  # pragma: no cover (user option)
-            return
-        assert token.kind in ('newline', 'nl'), repr(token)
-        if token.kind == 'nl':
-            return
-        # Scan backward in the *code* list,
-        # looking for 'line-end' tokens with tok.newline_kind == 'nl'
-        nls = 0
-        i = len(self.code_list) - 1
-        t = self.code_list[i]
-        assert t.kind == 'line-end', repr(t)
-        # Not all tokens have a newline_kind ivar.
-        assert t.newline_kind == 'newline'  # type:ignore
-        i -= 1
-        while i >= 0:
-            t = self.code_list[i]
-            if t.kind == 'comment':
-                # Can't join.
-                return
-            if t.kind == 'string' and not self.allow_joined_strings:
-                # An EKR preference: don't join strings, no matter what black does.
-                # This allows "short" f-strings to be aligned.
-                return
-            if t.kind == 'line-end':
-                if getattr(t, 'newline_kind', None) == 'nl':
-                    nls += 1
-                else:
-                    break  # pragma: no cover
-            i -= 1
-        # Retain at the file-start token.
-        if i <= 0:
-            i = 1
-        if nls <= 0:  # pragma: no cover (rare)
-            return
-        # Retain line-end and and any following line-indent.
-        # Required, so that the regex below won't eat too much.
-        while True:
-            t = self.code_list[i]
-            if t.kind == 'line-end':
-                if getattr(t, 'newline_kind', None) == 'nl':  # pragma: no cover (rare)
-                    nls -= 1
-                i += 1
-            elif self.code_list[i].kind == 'line-indent':
-                i += 1
-            else:
-                break  # pragma: no cover (defensive)
-        if nls <= 0:  # pragma: no cover (defensive)
-            return
-        # Calculate the joined line.
-        tail = self.code_list[i:]
-        tail_s = tokens_to_string(tail)
-        tail_s = re.sub(r'\n\s*', ' ', tail_s)
-        tail_s = tail_s.replace('( ', '(').replace(' )', ')')
-        tail_s = tail_s.rstrip()
-        # Don't join the lines if they would be too long.
-        if len(tail_s) > self.max_join_line_length:  # pragma: no cover (defensive)
-            return
-        # Cut back the code list.
-        self.code_list = self.code_list[:i]
-        # Add the new output tokens.
-        self.add_token('string', tail_s)
-        self.add_token('line-end', '\n')
-    #@-others
-#@+node:ekr.20200107170847.1: *3* class OrangeSettings
-class OrangeSettings:
-
-    pass
-#@+node:ekr.20200107170126.1: *3* class ParseState
-class ParseState:
-    """
-    A class representing items in the parse state stack.
-
-    The present states:
-
-    'file-start': Ensures the stack stack is never empty.
-
-    'decorator': The last '@' was a decorator.
-
-        do_op():    push_state('decorator')
-        do_name():  pops the stack if state.kind == 'decorator'.
-
-    'indent': The indentation level for 'class' and 'def' names.
-
-        do_name():      push_state('indent', self.level)
-        do_dendent():   pops the stack once or twice if state.value == self.level.
-
-    """
-
-    def __init__(self, kind: str, value: str) -> None:
-        self.kind = kind
-        self.value = value
-
-    def __repr__(self) -> str:
-        return f"State: {self.kind} {self.value!r}"  # pragma: no cover
-
-    __str__ = __repr__
-#@+node:ekr.20200122033203.1: ** TOT classes...
-#@+node:ekr.20191222083453.1: *3* class Fstringify (TOT)
-class Fstringify(TokenOrderTraverser):
-    """A class to fstringify files."""
-
-    silent = True  # for pytest. Defined in all entries.
-    line_number = 0
-    line = ''
-
-    #@+others
-    #@+node:ekr.20191222083947.1: *4* fs.fstringify
-    def fstringify(self, contents: str, filename: str, tokens: List["Token"], tree: Node) -> str:
-        """
-        Fstringify.fstringify:
-
-        f-stringify the sources given by (tokens, tree).
-
-        Return the resulting string.
-        """
-        self.filename = filename
-        self.tokens = tokens
-        self.tree = tree
-        # Prepass: reassign tokens.
-        ReassignTokens().reassign(filename, tokens, tree)
-        # Main pass.
-        self.traverse(self.tree)
-        results = tokens_to_string(self.tokens)
-        return results
-    #@+node:ekr.20200103054101.1: *4* fs.fstringify_file (entry)
-    def fstringify_file(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Fstringify.fstringify_file.
-
-        The entry point for the fstringify-file command.
-
-        f-stringify the given external file with the Fstrinfify class.
-
-        Return True if the file was changed.
-        """
-        tag = 'fstringify-file'
-        self.filename = filename
-        self.silent = False
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                print(f"{tag}: Can not fstringify: {filename}")
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        # Something besides newlines must change.
-        changed = regularize_nls(contents) != regularize_nls(results)
-        status = 'Wrote' if changed else 'Unchanged'
-        print(f"{tag}: {status:>9}: {filename}")
-        if changed:
-            write_file(filename, results, encoding=encoding)
-        return changed
-    #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
-    def fstringify_file_diff(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Fstringify.fstringify_file_diff.
-
-        The entry point for the diff-fstringify-file command.
-
-        Print the diffs that would resulf from the fstringify-file command.
-
-        Return True if the file would be changed.
-        """
-        tag = 'diff-fstringify-file'
-        self.filename = filename
-        self.silent = False
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        # Something besides newlines must change.
-        changed = regularize_nls(contents) != regularize_nls(results)
-        if changed:
-            show_diffs(contents, results, filename=filename)
-        else:
-            print(f"{tag}: Unchanged: {filename}")
-        return changed
-    #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
-    def fstringify_file_silent(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Fstringify.fstringify_file_silent.
-
-        The entry point for the silent-fstringify-file command.
-
-        fstringify the given file, suppressing all but serious error messages.
-
-        Return True if the file would be changed.
-        """
-        self.filename = filename
-        self.silent = True
-        tog = TokenOrderGenerator()
-        try:
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                return False
-            results = self.fstringify(contents, filename, tokens, tree)
-        except Exception as e:
-            print(e)
-            return False
-        # Something besides newlines must change.
-        changed = regularize_nls(contents) != regularize_nls(results)
-        status = 'Wrote' if changed else 'Unchanged'
-        # Write the results.
-        print(f"{status:>9}: {filename}")
-        if changed:
-            write_file(filename, results, encoding=encoding)
-        return changed
-    #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
-    def make_fstring(self, node: Node) -> None:
-        """
-        node is BinOp node representing an '%' operator.
-        node.left is an ast.Str node.
-        node.right reprsents the RHS of the '%' operator.
-
-        Convert this tree to an f-string, if possible.
-        Replace the node's entire tree with a new ast.Str node.
-        Replace all the relevant tokens with a single new 'string' token.
-        """
-        trace = False
-        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
-        # Careful: use the tokens, not Str.s.  This preserves spelling.
-        lt_token_list = get_node_token_list(node.left, self.tokens)
-        if not lt_token_list:  # pragma: no cover
-            print('')
-            g.trace('Error: no token list in Str')
-            dump_tree(self.tokens, node)
-            print('')
-            return
-        lt_s = tokens_to_string(lt_token_list)
-        if trace:
-            g.trace('lt_s:', lt_s)  # pragma: no cover
-        # Get the RHS values, a list of token lists.
-        values = self.scan_rhs(node.right)
-        if trace:  # pragma: no cover
-            for i, z in enumerate(values):
-                dump_tokens(z, tag=f"RHS value {i}")
-        # Compute rt_s, self.line and self.line_number for later messages.
-        token0 = lt_token_list[0]
-        self.line_number = token0.line_number
-        self.line = token0.line.strip()
-        rt_s = ''.join(tokens_to_string(z) for z in values)
-        # Get the % specs in the LHS string.
-        specs = self.scan_format_string(lt_s)
-        if len(values) != len(specs):  # pragma: no cover
-            self.message(
-                f"can't create f-fstring: {lt_s!r}\n"
-                f":f-string mismatch: "
-                f"{len(values)} value{g.plural(len(values))}, "
-                f"{len(specs)} spec{g.plural(len(specs))}")
-            return
-        # Replace specs with values.
-        results = self.substitute_values(lt_s, specs, values)
-        result = self.compute_result(lt_s, results)
-        if not result:
-            return
-        # Remove whitespace before ! and :.
-        result = self.clean_ws(result)
-        # Show the results
-        if trace:  # pragma: no cover
-            before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
-            after = result.replace('\n', '<NL>')
-            self.message(
-                f"trace:\n"
-                f":from: {before!s}\n"
-                f":  to: {after!s}")
-        # Adjust the tree and the token list.
-        self.replace(node, result, values)
-    #@+node:ekr.20191222102831.3: *5* fs.clean_ws
-    ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
-
-    def clean_ws(self, s: str) -> str:
-        """Carefully remove whitespace before ! and : specifiers."""
-        s = re.sub(self.ws_pat, r'\2', s)
-        return s
-    #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, lt_s: str, tokens: List["Token"]) -> str:
-        """
-        Create the final result, with various kinds of munges.
-
-        Return the result string, or None if there are errors.
-        """
-        # Fail if there is a backslash within { and }.
-        if not self.check_back_slashes(lt_s, tokens):
-            return None  # pragma: no cover
-        # Ensure consistent quotes.
-        if not self.change_quotes(lt_s, tokens):
-            return None  # pragma: no cover
-        return tokens_to_string(tokens)
-    #@+node:ekr.20200215074309.1: *6* fs.check_back_slashes
-    def check_back_slashes(self, lt_s: str, tokens: List["Token"]) -> bool:
-        """
-        Return False if any backslash appears with an {} expression.
-
-        Tokens is a list of lokens on the RHS.
-        """
-        count = 0
-        for z in tokens:
-            if z.kind == 'op':
-                if z.value == '{':
-                    count += 1
-                elif z.value == '}':
-                    count -= 1
-            if (count % 2) == 1 and '\\' in z.value:
-                if not self.silent:
-                    self.message(  # pragma: no cover (silent during unit tests)
-                        f"can't create f-fstring: {lt_s!r}\n"
-                        f":backslash in {{expr}}:")
-                return False
-        return True
-    #@+node:ekr.20191222102831.7: *6* fs.change_quotes
-    def change_quotes(self, lt_s: str, aList: List[Any]) -> bool:
-        """
-        Carefully check quotes in all "inner" tokens as necessary.
-
-        Return False if the f-string would contain backslashes.
-
-        We expect the following "outer" tokens.
-
-        aList[0]:  ('string', 'f')
-        aList[1]:  ('string',  a single or double quote.
-        aList[-1]: ('string', a single or double quote matching aList[1])
-        """
-        # Sanity checks.
-        if len(aList) < 4:
-            return True  # pragma: no cover (defensive)
-        if not lt_s:  # pragma: no cover (defensive)
-            self.message("can't create f-fstring: no lt_s!")
-            return False
-        delim = lt_s[0]
-        # Check tokens 0, 1 and -1.
-        token0 = aList[0]
-        token1 = aList[1]
-        token_last = aList[-1]
-        for token in token0, token1, token_last:
-            # These are the only kinds of tokens we expect to generate.
-            ok = (
-                token.kind == 'string' or
-                token.kind == 'op' and token.value in '{}')
-            if not ok:  # pragma: no cover (defensive)
-                self.message(
-                    f"unexpected token: {token.kind} {token.value}\n"
-                    f":           lt_s: {lt_s!r}")
-                return False
-        # These checks are important...
-        if token0.value != 'f':
-            return False  # pragma: no cover (defensive)
-        val1 = token1.value
-        if delim != val1:
-            return False  # pragma: no cover (defensive)
-        val_last = token_last.value
-        if delim != val_last:
-            return False  # pragma: no cover (defensive)
-        #
-        # Check for conflicting delims, preferring f"..." to f'...'.
-        for delim in ('"', "'"):
-            aList[1] = aList[-1] = Token('string', delim)
-            for z in aList[2:-1]:
-                if delim in z.value:
-                    break
-            else:
-                return True
-        if not self.silent:  # pragma: no cover (silent unit test)
-            self.message(
-                f"can't create f-fstring: {lt_s!r}\n"
-                f":   conflicting delims:")
-        return False
-    #@+node:ekr.20191222102831.6: *5* fs.munge_spec
-    def munge_spec(self, spec: str) -> Tuple[str, str]:
-        """
-        Return (head, tail).
-
-        The format is spec !head:tail or :tail
-
-        Example specs: s2, r3
-        """
-        # To do: handle more specs.
-        head, tail = [], []
-        if spec.startswith('+'):
-            pass  # Leave it alone!
-        elif spec.startswith('-'):
-            tail.append('>')
-            spec = spec[1:]
-        if spec.endswith('s'):
-            spec = spec[:-1]
-        if spec.endswith('r'):
-            head.append('r')
-            spec = spec[:-1]
-        tail_s = ''.join(tail) + spec
-        head_s = ''.join(head)
-        return head_s, tail_s
-    #@+node:ekr.20191222102831.9: *5* fs.scan_format_string
-    # format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
-    # fill        ::=  <any character>
-    # align       ::=  "<" | ">" | "=" | "^"
-    # sign        ::=  "+" | "-" | " "
-    # width       ::=  integer
-    # precision   ::=  integer
-    # type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
-
-    format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
-
-    def scan_format_string(self, s: str) -> List[re.Match]:
-        """Scan the format string s, returning a list match objects."""
-        result = list(re.finditer(self.format_pat, s))
-        return result
-    #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
-    def scan_rhs(self, node: Node) -> List[Any]:
-        """
-        Scan the right-hand side of a potential f-string.
-
-        Return a list of the token lists for each element.
-        """
-        trace = False
-        # First, Try the most common cases.
-        if isinstance(node, ast.Str):
-            token_list = get_node_token_list(node, self.tokens)
-            return [token_list]
-        if isinstance(node, (list, tuple, ast.Tuple)):
-            result = []
-            elts = node.elts if isinstance(node, ast.Tuple) else node
-            for i, elt in enumerate(elts):
-                tokens = tokens_for_node(self.filename, elt, self.tokens)
-                result.append(tokens)
-                if trace:  # pragma: no cover
-                    g.trace(f"item: {i}: {elt.__class__.__name__}")
-                    g.printObj(tokens, tag=f"Tokens for item {i}")
-            return result
-        # Now we expect only one result.
-        tokens = tokens_for_node(self.filename, node, self.tokens)
-        return [tokens]
-    #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List["Token"]) -> List["Token"]:
-        """
-        Replace specifiers with values in lt_s string.
-
-        Double { and } as needed.
-        """
-        i, results = 0, [Token('string', 'f')]
-        for spec_i, m in enumerate(specs):
-            value = tokens_to_string(values[spec_i])  # type:ignore
-            start, end, spec = m.start(0), m.end(0), m.group(1)
-            if start > i:
-                val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
-                results.append(Token('string', val[0]))
-                results.append(Token('string', val[1:]))
-            head, tail = self.munge_spec(spec)
-            results.append(Token('op', '{'))
-            results.append(Token('string', value))
-            if head:
-                results.append(Token('string', '!'))
-                results.append(Token('string', head))
-            if tail:
-                results.append(Token('string', ':'))
-                results.append(Token('string', tail))
-            results.append(Token('op', '}'))
-            i = end
-        # Add the tail.
-        tail = lt_s[i:]
-        if tail:
-            tail = tail.replace('{', '{{').replace('}', '}}')
-            results.append(Token('string', tail[:-1]))
-            results.append(Token('string', tail[-1]))
-        return results
-    #@+node:ekr.20200214142019.1: *4* fs.message
-    def message(self, message: str) -> None:  # pragma: no cover.
-        """
-        Print one or more message lines aligned on the first colon of the message.
-        """
-        # Print a leading blank line.
-        print('')
-        # Calculate the padding.
-        lines = g.splitLines(message)
-        pad = max(lines[0].find(':'), 30)
-        # Print the first line.
-        z = lines[0]
-        i = z.find(':')
-        if i == -1:
-            print(z.rstrip())
-        else:
-            print(f"{z[:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
-        # Print the remaining message lines.
-        for z in lines[1:]:
-            if z.startswith('<'):
-                # Print left aligned.
-                print(z[1:].strip())
-            elif z.startswith(':') and -1 < z[1:].find(':') <= pad:
-                # Align with the first line.
-                i = z[1:].find(':')
-                print(f"{z[1:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
-            elif z.startswith('>'):
-                # Align after the aligning colon.
-                print(f"{' ':>{pad+2}}{z[1:].strip()}")
-            else:
-                # Default: Put the entire line after the aligning colon.
-                print(f"{' ':>{pad+2}}{z.strip()}")
-        # Print the standard message lines.
-        file_s = f"{'file':>{pad}}"
-        ln_n_s = f"{'line number':>{pad}}"
-        line_s = f"{'line':>{pad}}"
-        print(
-            f"{file_s}: {self.filename}\n"
-            f"{ln_n_s}: {self.line_number}\n"
-            f"{line_s}: {self.line!r}")
-    #@+node:ekr.20191225054848.1: *4* fs.replace
-    def replace(self, node: Node, s: str, values: List["Token"]) -> None:
-        """
-        Replace node with an ast.Str node for s.
-        Replace all tokens in the range of values with a single 'string' node.
-        """
-        # Replace the tokens...
-        tokens = tokens_for_node(self.filename, node, self.tokens)
-        i1 = i = tokens[0].index
-        replace_token(self.tokens[i], 'string', s)
-        j = 1
-        while j < len(tokens):
-            replace_token(self.tokens[i1 + j], 'killed', '')
-            j += 1
-        # Replace the node.
-        new_node = ast.Str()
-        new_node.s = s
-        replace_node(new_node, node)
-        # Update the token.
-        token = self.tokens[i1]
-        token.node = new_node  # type:ignore
-        # Update the token list.
-        add_token_to_token_list(token, new_node)
-    #@+node:ekr.20191231055008.1: *4* fs.visit
-    def visit(self, node: Node) -> None:
-        """
-        FStringify.visit. (Overrides TOT visit).
-
-        Call fs.makes_fstring if node is a BinOp that might be converted to an
-        f-string.
-        """
-        if (
-            isinstance(node, ast.BinOp)
-            and op_name(node.op) == '%'
-            and isinstance(node.left, ast.Str)
-        ):
-            self.make_fstring(node)
-    #@-others
-#@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
-class ReassignTokens(TokenOrderTraverser):
-    """A class that reassigns tokens to more appropriate ast nodes."""
-    #@+others
-    #@+node:ekr.20191231084640.1: *4* reassign.reassign
-    def reassign(self, filename: str, tokens: List["Token"], tree: Node) -> None:
-        """The main entry point."""
-        self.filename = filename
-        self.tokens = tokens
-        self.tree = tree
-        self.traverse(tree)
-    #@+node:ekr.20191231084853.1: *4* reassign.visit
-    def visit(self, node: Node) -> None:
-        """ReassignTokens.visit"""
-        # For now, just handle call nodes.
-        if not isinstance(node, ast.Call):
-            return
-        tokens = tokens_for_node(self.filename, node, self.tokens)
-        node0, node9 = tokens[0].node, tokens[-1].node
-        nca = nearest_common_ancestor(node0, node9)
-        if not nca:
-            return
-        # g.trace(f"{self.filename:20} nca: {nca.__class__.__name__}")
-        # Associate () with the call node.
-        i = tokens[-1].index
-        j = find_paren_token(i + 1, self.tokens)
-        if j is None:
-            return  # pragma: no cover
-        k = find_paren_token(j + 1, self.tokens)
-        if k is None:
-            return  # pragma: no cover
-        self.tokens[j].node = nca  # type:ignore
-        self.tokens[k].node = nca  # type:ignore
-        add_token_to_token_list(self.tokens[j], nca)
-        add_token_to_token_list(self.tokens[k], nca)
-    #@-others
-#@+node:ekr.20191227170803.1: ** Token classes
-#@+node:ekr.20191110080535.1: *3* class Token
-class Token:
-    """
-    A class representing a 5-tuple, plus additional data.
-
-    The TokenOrderTraverser class creates a list of such tokens.
-    """
-
-    def __init__(self, kind: str, value: str):
-
-        self.kind = kind
-        self.value = value
-        #
-        # Injected by Tokenizer.add_token.
-        self.five_tuple = None
-        self.index = 0
-        # The entire line containing the token.
-        # Same as five_tuple.line.
-        self.line = ''
-        # The line number, for errors and dumps.
-        # Same as five_tuple.start[0]
-        self.line_number = 0
-        #
-        # Injected by Tokenizer.add_token.
-        self.level = 0
-        self.node = None
-
-    def __repr__(self) -> str:  # pragma: no cover
-        nl_kind = getattr(self, 'newline_kind', '')
-        s = f"{self.kind:}.{self.index:<3}"
-        return f"{s:>18}:{nl_kind:7} {self.show_val(80)}"
-
-    def __str__(self) -> str:  # pragma: no cover
-        nl_kind = getattr(self, 'newline_kind', '')
-        return f"{self.kind}.{self.index:<3}{nl_kind:8} {self.show_val(80)}"
-
-    def to_string(self) -> str:
-        """Return the contribution of the token to the source file."""
-        return self.value if isinstance(self.value, str) else ''
-    #@+others
-    #@+node:ekr.20191231114927.1: *4* token.brief_dump
-    def brief_dump(self) -> str:  # pragma: no cover
-        """Dump a token."""
-        return (
-            f"{self.index:>3} line: {self.line_number:<2} "
-            f"{self.kind:>11} {self.show_val(100)}")
-    #@+node:ekr.20200223022950.11: *4* token.dump
-    def dump(self) -> str:  # pragma: no cover
-        """Dump a token and related links."""
-        # Let block.
-        node_id = self.node.node_index if self.node else ''
-        node_cn = self.node.__class__.__name__ if self.node else ''
-        return (
-            f"{self.line_number:4} "
-            f"{node_id:5} {node_cn:16} "
-            f"{self.index:>5} {self.kind:>11} "
-            f"{self.show_val(100)}")
-    #@+node:ekr.20200121081151.1: *4* token.dump_header
-    def dump_header(self) -> None:  # pragma: no cover
-        """Print the header for token.dump"""
-        print(
-            f"\n"
-            f"         node    {'':10} token          token\n"
-            f"line index class {'':10} index        kind value\n"
-            f"==== ===== ===== {'':10} =====        ==== =====\n")
-    #@+node:ekr.20191116154328.1: *4* token.error_dump
-    def error_dump(self) -> str:  # pragma: no cover
-        """Dump a token or result node for error message."""
-        if self.node:
-            node_id = obj_id(self.node)
-            node_s = f"{node_id} {self.node.__class__.__name__}"
-        else:
-            node_s = "None"
-        return (
-            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
-            f"{node_s}")
-    #@+node:ekr.20191113095507.1: *4* token.show_val
-    def show_val(self, truncate_n: int) -> Union[int, str]:  # pragma: no cover
-        """Return the token.value field."""
-        if self.kind in ('ws', 'indent'):
-            val = len(self.value)  # type:ignore
-        elif self.kind == 'string':
-            # Important: don't add a repr for 'string' tokens.
-            # repr just adds another layer of confusion.
-            val = g.truncate(self.value, truncate_n)  # type:ignore
-        else:
-            val = g.truncate(repr(self.value), truncate_n)  # type:ignore
-        return val
-    #@-others
-#@+node:ekr.20191110165235.1: *3* class Tokenizer
-class Tokenizer:
-
-    """Create a list of Tokens from contents."""
-
-    results: List[Token] = []
-
-    #@+others
-    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
-    token_index = 0
-    prev_line_token = None
-
-    def add_token(self, kind: str, five_tuple: Any, line: str, s_row: int, value: str) -> None:
-        """
-        Add a token to the results list.
-
-        Subclasses could override this method to filter out specific tokens.
-        """
-        tok = Token(kind, value)
-        tok.five_tuple = five_tuple
-        tok.index = self.token_index
-        # Bump the token index.
-        self.token_index += 1
-        tok.line = line
-        tok.line_number = s_row
-        self.results.append(tok)
-    #@+node:ekr.20191110170551.1: *4* tokenizer.check_results
-    def check_results(self, contents: str) -> None:
-
-        # Split the results into lines.
-        result = ''.join([z.to_string() for z in self.results])
-        result_lines = g.splitLines(result)
-        # Check.
-        ok = result == contents and result_lines == self.lines
-        assert ok, (
-            f"\n"
-            f"      result: {result!r}\n"
-            f"    contents: {contents!r}\n"
-            f"result_lines: {result_lines}\n"
-            f"       lines: {self.lines}"
-        )
-    #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
-    def create_input_tokens(self, contents: str, tokens: List[Any]) -> List["Token"]:
-        """
-        Generate a list of Token's from tokens, a list of 5-tuples.
-        """
-        # Create the physical lines.
-        self.lines = contents.splitlines(True)
-        # Create the list of character offsets of the start of each physical line.
-        last_offset, self.offsets = 0, [0]
-        for line in self.lines:
-            last_offset += len(line)
-            self.offsets.append(last_offset)
-        # Handle each token, appending tokens and between-token whitespace to results.
-        self.prev_offset, self.results = -1, []
-        for token in tokens:
-            self.do_token(contents, token)
-        # Print results when tracing.
-        self.check_results(contents)
-        # Return results, as a list.
-        return self.results
-    #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
-    header_has_been_shown = False
-
-    def do_token(self, contents: str, five_tuple: Any) -> None:
-        """
-        Handle the given token, optionally including between-token whitespace.
-
-        This is part of the "gem".
-
-        Links:
-
-        - 11/13/19: ENB: A much better untokenizer
-          https://groups.google.com/forum/#!msg/leo-editor/DpZ2cMS03WE/VPqtB9lTEAAJ
-
-        - Untokenize does not round-trip ws before bs-nl
-          https://bugs.python.org/issue38663
-        """
-        import token as token_module
-        # Unpack..
-        tok_type, val, start, end, line = five_tuple
-        s_row, s_col = start  # row/col offsets of start of token.
-        e_row, e_col = end  # row/col offsets of end of token.
-        kind = token_module.tok_name[tok_type].lower()
-        # Calculate the token's start/end offsets: character offsets into contents.
-        s_offset = self.offsets[max(0, s_row - 1)] + s_col
-        e_offset = self.offsets[max(0, e_row - 1)] + e_col
-        # tok_s is corresponding string in the line.
-        tok_s = contents[s_offset:e_offset]
-        # Add any preceding between-token whitespace.
-        ws = contents[self.prev_offset:s_offset]
-        if ws:
-            # No need for a hook.
-            self.add_token('ws', five_tuple, line, s_row, ws)
-        # Always add token, even if it contributes no text!
-        self.add_token(kind, five_tuple, line, s_row, tok_s)
-        # Update the ending offset.
-        self.prev_offset = e_offset
     #@-others
 #@-others
 g = LeoGlobals()
