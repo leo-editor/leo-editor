@@ -2083,9 +2083,9 @@ class Orange:
         t.newline_kind = self.token.kind
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind: str, value: Union[int, str]) -> "Token":
+    def add_token(self, kind: str, value: Any) -> "Token":
         """Add an output token to the code list."""
-        tok = Token(kind, value)  # type:ignore
+        tok = Token(kind, value)
         tok.index = self.code_list_index  # For debugging only.
         self.code_list_index += 1
         self.code_list.append(tok)
@@ -2643,16 +2643,16 @@ class Token:
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *4* token.show_val
-    def show_val(self, truncate_n: int) -> Union[int, str]:  # pragma: no cover
+    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
-            val = len(self.value)  # type:ignore
+            val = str(len(self.value))
         elif self.kind == 'string':
             # Important: don't add a repr for 'string' tokens.
             # repr just adds another layer of confusion.
-            val = g.truncate(self.value, truncate_n)  # type:ignore
+            val = g.truncate(self.value, truncate_n)
         else:
-            val = g.truncate(repr(self.value), truncate_n)  # type:ignore
+            val = g.truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20191110165235.1: *3* class Tokenizer
