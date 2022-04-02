@@ -3102,18 +3102,11 @@ class TokenOrderGenerator:
         #
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
-        posonlyargs = getattr(node, 'posonlyargs', [])  # type:ignore
+        posonlyargs = getattr(node, 'posonlyargs', [])
         vararg = getattr(node, 'vararg', None)
-        kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore
-        kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore
+        kwonlyargs = getattr(node, 'kwonlyargs', [])
+        kw_defaults = getattr(node, 'kw_defaults', [])
         kwarg = getattr(node, 'kwarg', None)
-        if 0:  #pragma: no cover
-            g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
-            g.printObj([ast.dump(z) for z in node.args], tag='node.args')
-            g.printObj([ast.dump(z) for z in node.defaults], tag='node.defaults')
-            g.printObj([ast.dump(z) for z in posonlyargs], tag='node.posonlyargs')
-            g.printObj([ast.dump(z) for z in kwonlyargs], tag='kwonlyargs')
-            g.printObj([ast.dump(z) if z else 'None' for z in kw_defaults], tag='kw_defaults')
         # 1. Sync the position-only args.
         if posonlyargs:
             for n, z in enumerate(posonlyargs):
@@ -3128,7 +3121,6 @@ class TokenOrderGenerator:
                 self.visit(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
-            # g.trace('vararg', ast.dump(vararg))
             self.op('*')
             self.visit(vararg)
         # 4. Sync the keyword-only args.
@@ -3136,7 +3128,6 @@ class TokenOrderGenerator:
             if not vararg:
                 self.op('*')
             for n, z in enumerate(kwonlyargs):
-                # g.trace('keyword-only', ast.dump(z))
                 self.visit(z)
                 val = kw_defaults[n]
                 if val is not None:
@@ -3144,10 +3135,8 @@ class TokenOrderGenerator:
                     self.visit(val)
         # 5. Sync the kwarg.
         if kwarg:
-            # g.trace('kwarg', ast.dump(kwarg))
             self.op('**')
             self.visit(kwarg)
-
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
