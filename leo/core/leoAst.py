@@ -694,6 +694,76 @@ if 1:  # pragma: no cover
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20191223095408.1: *3* node/token nodes...
+    # Functions that associate tokens with nodes.
+    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
+    def find_statement_node(node: Node) -> Optional[Node]:
+        """
+        Return the nearest statement node.
+        Return None if node has only Module for a parent.
+        """
+        if isinstance(node, ast.Module):
+            return None
+        parent = node
+        while parent:
+            if is_statement_node(parent):
+                return parent
+            parent = parent.parent
+        return None
+    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
+    def is_ancestor(node: Node, token: "Token") -> bool:
+        """Return True if node is an ancestor of token."""
+        t_node = token.node
+        if not t_node:
+            assert token.kind == 'killed', repr(token)
+            return False
+        while t_node:
+            if t_node == node:
+                return True
+            t_node = t_node.parent
+        return False
+    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
+    def is_long_statement(node: Node) -> bool:
+        """
+        Return True if node is an instance of a node that might be split into
+        shorter lines.
+        """
+        return isinstance(node, (
+            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
+            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
+            ast.If, ast.Import, ast.ImportFrom,
+            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
+    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
+    def is_statement_node(node: Node) -> bool:
+        """Return True if node is a top-level statement."""
+        return is_long_statement(node) or isinstance(node, (
+            ast.Break, ast.Continue, ast.Pass, ast.Try))
+    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
+    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+        """
+        Return the nearest common ancestor node for the given nodes.
+
+        The nodes must have parent links.
+        """
+
+        def parents(node: Node) -> List[Node]:
+            aList = []
+            while node:
+                aList.append(node)
+                node = node.parent
+            return list(reversed(aList))
+
+        result = None
+        parents1 = parents(node1)
+        parents2 = parents(node2)
+        while parents1 and parents2:
+            parent1 = parents1.pop(0)
+            parent2 = parents2.pop(0)
+            if parent1 == parent2:
+                result = parent1
+            else:
+                break
+        return result
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20191119085222.1: *4* function: obj_id
@@ -781,7 +851,7 @@ if 1:  # pragma: no cover
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
             return None
-        tokens = Tokenizer().create_input_tokens(contents, five_tuples)  # type:ignore
+        tokens = Tokenizer().create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
     #@+node:ekr.20191027075648.1: *4* function: parse_ast
@@ -867,76 +937,6 @@ if 1:  # pragma: no cover
         print('')
         tag = f"Diffs for {filename}" if filename else 'Diffs'
         g.printObj(lines, tag=tag)
-    #@+node:ekr.20191223095408.1: *3* node/token nodes...
-    # Functions that associate tokens with nodes.
-    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
-        """
-        Return the nearest statement node.
-        Return None if node has only Module for a parent.
-        """
-        if isinstance(node, ast.Module):
-            return None
-        parent = node
-        while parent:
-            if is_statement_node(parent):
-                return parent
-            parent = parent.parent
-        return None
-    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
-    def is_ancestor(node: Node, token: "Token") -> bool:
-        """Return True if node is an ancestor of token."""
-        t_node = token.node
-        if not t_node:
-            assert token.kind == 'killed', repr(token)
-            return False
-        while t_node:
-            if t_node == node:
-                return True
-            t_node = t_node.parent
-        return False
-    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
-    def is_long_statement(node: Node) -> bool:
-        """
-        Return True if node is an instance of a node that might be split into
-        shorter lines.
-        """
-        return isinstance(node, (
-            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
-            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
-            ast.If, ast.Import, ast.ImportFrom,
-            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
-    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
-    def is_statement_node(node: Node) -> bool:
-        """Return True if node is a top-level statement."""
-        return is_long_statement(node) or isinstance(node, (
-            ast.Break, ast.Continue, ast.Pass, ast.Try))
-    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
-        """
-        Return the nearest common ancestor node for the given nodes.
-
-        The nodes must have parent links.
-        """
-
-        def parents(node: Node) -> List[Node]:
-            aList = []
-            while node:
-                aList.append(node)
-                node = node.parent
-            return list(reversed(aList))
-
-        result = None
-        parents1 = parents(node1)
-        parents2 = parents(node2)
-        while parents1 and parents2:
-            parent1 = parents1.pop(0)
-            parent2 = parents2.pop(0)
-            if parent1 == parent2:
-                result = parent1
-            else:
-                break
-        return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -2697,7 +2697,7 @@ class Tokenizer:
             f"       lines: {self.lines}"
         )
     #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
-    def create_input_tokens(self, contents: str, tokens: List[Any]) -> List["Token"]:
+    def create_input_tokens(self, contents: str, tokens: Generator) -> List["Token"]:
         """
         Generate a list of Token's from tokens, a list of 5-tuples.
         """
