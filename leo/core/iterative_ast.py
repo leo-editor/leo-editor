@@ -402,7 +402,7 @@ class IterativeTokenGenerator:
         kwonlyargs = getattr(node, 'kwonlyargs', [])
         kw_defaults = getattr(node, 'kw_defaults', [])
         kwarg = getattr(node, 'kwarg', None)
-        result = []
+        result: List = []
         # 1. Sync the position-only args.
         if posonlyargs:
             for n, z in enumerate(posonlyargs):
@@ -829,10 +829,12 @@ class IterativeTokenGenerator:
         """
         Yield the node, with a special case for strings.
         """
+        result: List = []
         if isinstance(node, str):
-            self.token('name', node)
+            result.append((self.token, 'name', node))
         else:
-            self.visit(node)
+            result.append((self.visit, node))
+        return result
     #@+node:ekr.20220330133336.58: *6* iterative.handle_call_arguments
     def handle_call_arguments(self, node: Node) -> List:
         """
@@ -853,74 +855,83 @@ class IterativeTokenGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj):
+        def get_pos(obj: Any) -> Tuple:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
 
-        def sort_key(aTuple):
+        def sort_key(aTuple: Tuple) -> int:
             line, col, obj = aTuple
             return line * 1000 + col
 
         if 0:
             g.printObj([ast.dump(z) for z in args], tag='args')
             g.printObj([ast.dump(z) for z in keywords], tag='keywords')
-
-        if py_version >= (3, 9):
-            places = [get_pos(z) for z in args + keywords]
-            places.sort(key=sort_key)
-            ordered_args = [z[2] for z in places]
-            for z in ordered_args:
-                if isinstance(z, ast.Starred):
-                    self.op('*')
-                    self.visit(z.value)
-                elif isinstance(z, ast.keyword):
-                    if getattr(z, 'arg', None) is None:
-                        self.op('**')
-                        self.arg_helper(z.value)
-                    else:
-                        self.arg_helper(z.arg)
-                        self.op('=')
-                        self.arg_helper(z.value)
+            
+        assert py_version >= (3, 9)
+        
+        places = [get_pos(z) for z in args + keywords]
+        places.sort(key=sort_key)
+        ordered_args = [z[2] for z in places]
+        result = []
+        for z in ordered_args:
+            if isinstance(z, ast.Starred):
+                result.extend([
+                    (self.op, '*'),
+                    (self.visit, z.value),
+                ])
+            elif isinstance(z, ast.keyword):
+                if getattr(z, 'arg', None) is None:
+                    result.extend([
+                        (self.op, '**'),
+                        (self.arg_helper, z.value),
+                    ])
                 else:
-                    self.arg_helper(z)
-        else:  # pragma: no cover
-            #
-            # Legacy code: May fail for Python 3.8
-            #
-            # Scan args for *arg and *[...]
-            kwarg_arg = star_arg = None
-            for z in args:
-                if isinstance(z, ast.Starred):
-                    if isinstance(z.value, ast.Name):  # *Name.
-                        star_arg = z
-                        args.remove(z)
-                        break
-                    elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
-                        # star_list = z
-                        break
-                    raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
-            # Scan keywords for **name.
-            for z in keywords:
-                if hasattr(z, 'arg') and z.arg is None:
-                    kwarg_arg = z
-                    keywords.remove(z)
-                    break
-            # Sync the plain arguments.
-            for z in args:
-                self.arg_helper(z)
-            # Sync the keyword args.
-            for z in keywords:
-                self.arg_helper(z.arg)
-                self.op('=')
-                self.arg_helper(z.value)
-            # Sync the * arg.
-            if star_arg:
-                self.arg_helper(star_arg)
-            # Sync the ** kwarg.
-            if kwarg_arg:
-                self.op('**')
-                self.visit(kwarg_arg.value)
+                    result.extend([
+                        (self.arg_helper, z.arg),
+                        (self.op, '='),
+                        (self.arg_helper, z.value),
+                    ])
+            else:
+                result.append((self.arg_helper, z))
+        return result
+        # else:  # pragma: no cover
+            # #
+            # # Legacy code: May fail for Python 3.8
+            # #
+            # # Scan args for *arg and *[...]
+            # kwarg_arg = star_arg = None
+            # for z in args:
+                # if isinstance(z, ast.Starred):
+                    # if isinstance(z.value, ast.Name):  # *Name.
+                        # star_arg = z
+                        # args.remove(z)
+                        # break
+                    # elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
+                        # # star_list = z
+                        # break
+                    # raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
+            # # Scan keywords for **name.
+            # for z in keywords:
+                # if hasattr(z, 'arg') and z.arg is None:
+                    # kwarg_arg = z
+                    # keywords.remove(z)
+                    # break
+            # # Sync the plain arguments.
+            # for z in args:
+                # self.arg_helper(z)
+            # # Sync the keyword args.
+            # for z in keywords:
+                # self.arg_helper(z.arg)
+                # self.op('=')
+                # self.arg_helper(z.value)
+            # # Sync the * arg.
+            # if star_arg:
+                # self.arg_helper(star_arg)
+            # # Sync the ** kwarg.
+            # if kwarg_arg:
+                # self.op('**')
+                # self.visit(kwarg_arg.value)
     #@+node:ekr.20220330133336.59: *5* iterative.Continue
     def do_Continue(self, node: Node) -> List:
 
@@ -1077,48 +1088,63 @@ class IterativeTokenGenerator:
                     (self.name, alias.asname),
                 ])
         return result
-    #@+node:ekr.20220330133336.68: *5* iterative.Match* (Python 3.10+) *** To do ***
+    #@+node:ekr.20220402124844.1: *5* tog.Match* (Python 3.10+)
     # Match(expr subject, match_case* cases)
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
 
+    # Full syntax diagram: # https://peps.python.org/pep-0634/#appendix-a
+
     def do_Match(self, node: Node) -> List:
 
         cases = getattr(node, 'cases', [])
-        self.name('match')
-        self.visit(node.subject)
-        self.op(':')
+        result: List = [
+            (self.name, 'match'),
+            (self.visit, node.subject),
+            (self.op, ':'),
+        ]
         for case in cases:
-            self.visit(case)
-    #@+node:ekr.20220330133336.69: *6* iterative.match_case
+            result.append((self.visit, case))
+        return result
+    #@+node:ekr.20220402124844.2: *6* tog.match_case
     #  match_case = (pattern pattern, expr? guard, stmt* body)
 
     def do_match_case(self, node: Node) -> List:
 
-        g.trace(g.callers())
         guard = getattr(node, 'guard', None)
         body = getattr(node, 'body', [])
-        self.name('case')
-        self.visit(node.pattern)
+        result: List = [
+            (self.name, 'case'),
+            (self.visit, node.pattern),
+        ]
         if guard:
-            self.visit(guard)
-        self.op(':')
+            result.extend([
+                (self.name, 'if'),
+                (self.visit, guard),
+            ])
+        result.append((self.op, ':'))
         for statement in body:
-            self.visit(statement)
-    #@+node:ekr.20220330133336.70: *6* iterative.MatchAs (test)
+            result.append((self.visit, statement))
+        return result
+    #@+node:ekr.20220402124844.3: *6* tog.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node: Node) -> List:
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
-        g.trace(pattern, name)
-        if pattern:
-            self.visit(pattern)
-        if name:
-            self.name(name)
-
-        
-    #@+node:ekr.20220330133336.71: *6* iterative.MatchClass (*** to do)
+        result = []
+        if pattern and name:
+            result.extend([
+                (self.visit, pattern),
+                (self.name, 'as'),
+                (self.name, name),
+            ])
+        elif pattern:
+            result.append((self.visit, pattern))  # pragma: no cover
+        else:
+            result.append((self.name, name or '_'))
+        return result
+    #@+node:ekr.20220402124844.4: *6* tog.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
     def do_MatchClass(self, node: Node) -> List:
@@ -1127,57 +1153,108 @@ class IterativeTokenGenerator:
         patterns = getattr(node, 'patterns', [])
         kwd_attrs = getattr(node, 'kwd_attrs', [])
         kwd_patterns = getattr(node, 'kwd_patterns', [])
-        g.trace(node, cls, patterns, kwd_attrs, kwd_patterns)
-        ### To do ###
-    #@+node:ekr.20220330133336.72: *6* iterative.MatchMapping (*** to do)
+        result: List = [
+            (self.visit, node.cls),
+            (self.op, '('),
+        ]
+        for pattern in patterns:
+            result.append((self.visit, pattern))
+        for i, kwd_attr in enumerate(kwd_attrs):
+            result.extend([
+                (self.name, kwd_attr),  # a String.
+                (self.op, '='),
+                (self.visit, kwd_patterns[i]),
+            ])
+        result.append((self.op, ')'))
+        return result
+    #@+node:ekr.20220402124844.5: *6* tog.MatchMapping
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
     def do_MatchMapping(self, node: Node) -> List:
-
         keys = getattr(node, 'keys', [])
         patterns = getattr(node, 'patterns', [])
         rest = getattr(node, 'rest', None)
-        g.trace(node, keys, patterns, rest)
-        ### To do ###
-    #@+node:ekr.20220330133336.73: *6* iterative.MatchOr (test)
+        result: List = [
+            (self.op, '{'),
+        ]
+        for i, key in enumerate(keys):
+            result.extend([
+                (self.visit, key),
+                (self.op, ':'),
+                (self.visit, patterns[i]),
+            ])
+        if rest:
+            result.extend([
+                (self.op, '**'),
+                (self.name, rest),  # A string.
+            ])
+        result.append((self.op, '}'))
+        return result
+    #@+node:ekr.20220402124844.6: *6* tog.MatchOr
     # MatchOr(pattern* patterns)
 
     def do_MatchOr(self, node: Node) -> List:
+
         patterns = getattr(node, 'patterns', [])
-        g.trace(node, patterns)
-        for pattern in patterns:
-            self.visit(pattern)
-
-
-    #@+node:ekr.20220330133336.74: *6* iterative.MatchSequence (test)
+        result: List = []
+        for i, pattern in enumerate(patterns):
+            if i > 0:
+                result.append((self.op, '|'))
+            result.append((self.visit, pattern))
+        return result
+    #@+node:ekr.20220402124844.7: *6* tog.MatchSequence
     # MatchSequence(pattern* patterns)
 
     def do_MatchSequence(self, node: Node) -> List:
         patterns = getattr(node, 'patterns', [])
-        g.trace(node, patterns)
-        for pattern in patterns:
-            self.visit(pattern)
-
-    #@+node:ekr.20220330133336.75: *6* iterative.MatchSingleton (test)
+        result: List = []
+        # Scan for the next '(' or '[' token, skipping the 'case' token.
+        token = None
+        for token in self.tokens[self.px + 1 :]:
+            if token.kind == 'op' and token.value in '([':
+                break
+            if is_significant_token(token):
+                # An implicit tuple: there is no '(' or '[' token.
+                token = None
+                break
+        else:
+            raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
+        if token:
+            result.append((self.op, token.value))
+        for i, pattern in enumerate(patterns):
+            result.append((self.visit, pattern))
+        if token:
+            val = ']' if token.value == '[' else ')'
+            result.append((self.op, val))
+        return result
+    #@+node:ekr.20220402124844.8: *6* tog.MatchSingleton
     # MatchSingleton(constant value)
 
     def do_MatchSingleton(self, node: Node) -> List:
-        g.trace(node, node.value)
-        self.visit(node.value)
-    #@+node:ekr.20220330133336.76: *6* iterative.MatchStar (test)
+        """Match True, False or None."""
+        return [
+            (self.token, ('name', repr(node.value))),
+        ]
+    #@+node:ekr.20220402124844.9: *6* tog.MatchStar
     # MatchStar(identifier? name)
 
     def do_MatchStar(self, node: Node) -> List:
+
         name = getattr(node, 'name', None)
-        g.trace(node, repr(name))
+        result: List = [
+            (self.op, '*'),
+        ]
         if name:
-            self.name(name)
-    #@+node:ekr.20220330133336.77: *6* iterative.MatchValue
+            result.append((self.name, name))
+        return result
+    #@+node:ekr.20220402124844.10: *6* tog.MatchValue
     # MatchValue(expr value)
 
     def do_MatchValue(self, node: Node) -> List:
 
-        self.visit(node.value)
+        return [
+            (self.visit, node.value),
+        ]
     #@+node:ekr.20220330133336.78: *5* iterative.Nonlocal
     # Nonlocal(identifier* names)
 
@@ -1311,7 +1388,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.85: *5* iterative.Yield
     def do_Yield(self, node: Node) -> List:
 
-        result = [
+        result: List = [
             (self.name, 'yield'),
         ]
         if hasattr(node, 'value'):
