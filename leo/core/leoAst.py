@@ -2450,7 +2450,7 @@ class Orange:
         t = self.code_list[i]
         assert t.kind == 'line-end', repr(t)
         # Not all tokens have a newline_kind ivar.
-        assert t.newline_kind == 'newline'  # type:ignore
+        assert t.newline_kind == 'newline'
         i -= 1
         while i >= 0:
             t = self.code_list[i]
