@@ -1374,17 +1374,33 @@ class TestOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20220401185811.1: *4* TestOrange.test_relative_imports
+    #@+node:ekr.20220327135448.1: *4* TestOrange.test_relative_imports
     def test_relative_imports(self):
 
+        # #2533.
         contents = """\
-    from . import module1
-    from .module2 import x
+            from .module1 import w
+            from . module2 import x
+            from ..module1 import y
+            from .. module2 import z
+            from . import a
+            from.import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
     """
+        expected = textwrap.dedent("""\
+            from .module1 import w
+            from .module2 import x
+            from ..module1 import y
+            from ..module2 import z
+            from . import a
+            from . import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
+    """)
         contents, tokens, tree = self.make_data(contents)
-        expected = contents
         results = self.beautify(contents, tokens, tree)
-        self.assertEqual(results, expected)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
 
