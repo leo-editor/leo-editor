@@ -1626,7 +1626,7 @@ class Fstringify:
         replace_node(new_node, node)
         # Update the token.
         token = self.tokens[i1]
-        token.node = new_node  # type:ignore
+        token.node = new_node
         # Update the token list.
         add_token_to_token_list(token, new_node)
     #@-others
@@ -2591,7 +2591,7 @@ class Token:
         #
         # Injected by Tokenizer.add_token.
         self.level = 0
-        self.node = None
+        self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
         nl_kind = getattr(self, 'newline_kind', '')
