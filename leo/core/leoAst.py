@@ -4146,11 +4146,11 @@ class TokenOrderGenerator:
         self.visit(expr)
         # No need to put commas.
         for item in items:
-            self.visit(item.context_expr)  # type:ignore
+            self.visit(item.context_expr)
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 self.name('as')
-                self.visit(item.optional_vars)  # type:ignore
+                self.visit(item.optional_vars)
         # End the line.
         self.op(':')
         # Body...
