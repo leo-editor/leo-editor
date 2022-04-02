@@ -7,12 +7,18 @@
 import ast
 import sys
 from typing import List, Optional, Tuple  # Any, Dict, Generator, Union
-from leo.core.leoAst import LeoGlobals
+# Use existing classes.
 from leo.core.leoAst import AssignLinksError
-from leo.core.leoAst import op_name
+from leo.core.leoAst import LeoGlobals
+from leo.core.leoAst import Token
+# Use existing functions.
+from leo.core.leoAst import add_token_to_token_list
+from leo.core.leoAst import find_statement_node
+from leo.core.leoAst import is_significant_token
 from leo.core.leoAst import main
-from leo.core.leoAst import add_token_to_token_list, is_significant_token, find_statement_node
-from leo.core.leoAst import make_tokens, parse_ast
+from leo.core.leoAst import make_tokens
+from leo.core.leoAst import op_name
+from leo.core.leoAst import parse_ast
 from leo.core.leoAst import read_file_with_encoding
 #@-<< imports >>
 
@@ -121,7 +127,7 @@ class IterativeTokenGenerator:
         return tokens, tree
     #@+node:ekr.20220402094825.1: *3* iterative: Syncronizers...
     # The synchronizer sync tokens to nodes.
-    #@+node:ekr.20220402094825.2: *4* tog.find_next_significant_token
+    #@+node:ekr.20220402094825.2: *4* iterative.find_next_significant_token
     def find_next_significant_token(self) -> Optional["Token"]:
         """
         Scan from *after* self.tokens[px] looking for the next significant
@@ -137,7 +143,7 @@ class IterativeTokenGenerator:
                 return token
         # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
-    #@+node:ekr.20220402094825.3: *4* tog.set_links
+    #@+node:ekr.20220402094825.3: *4* iterative.set_links
     last_statement_node = None
 
     def set_links(self, node: Node, token: "Token") -> None:
@@ -177,7 +183,7 @@ class IterativeTokenGenerator:
             token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
-    #@+node:ekr.20220402094825.4: *4* tog.sync_name (aka name)
+    #@+node:ekr.20220402094825.4: *4* iterative.sync_name (aka name)
     def sync_name(self, val: str) -> None:
         aList = val.split('.')
         if len(aList) == 1:
@@ -189,7 +195,7 @@ class IterativeTokenGenerator:
                     self.sync_op('.')
 
     name = sync_name  # for readability.
-    #@+node:ekr.20220402094825.5: *4* tog.sync_op (aka op)
+    #@+node:ekr.20220402094825.5: *4* iterative.sync_op (aka op)
     def sync_op(self, val: str) -> None:
         """
         Sync to the given operator.
@@ -200,7 +206,7 @@ class IterativeTokenGenerator:
         self.sync_token('op', val)
 
     op = sync_op  # For readability.
-    #@+node:ekr.20220402094825.6: *4* tog.sync_token (aka token)
+    #@+node:ekr.20220402094825.6: *4* iterative.sync_token (aka token)
     px = -1  # Index of the previously synced token.
 
     def sync_token(self, kind: str, val: str) -> None:
@@ -403,11 +409,11 @@ class IterativeTokenGenerator:
                 # self.visit(z)
                 result.append((self.visit, z))
             # self.op('/')
-            result.append(self.op, '/')
+            result.append((self.op, '/'))
         # 2. Sync all args.
         for i, z in enumerate(node.args):
             # self.visit(z)
-            result.append(self.visit, z)
+            result.append((self.visit, z))
             if i >= n_plain:
                 # self.op('=')
                 # self.visit(node.defaults[i - n_plain])
@@ -443,7 +449,7 @@ class IterativeTokenGenerator:
         if kwarg:
             # self.op('**')
             # self.visit(kwarg)
-            result.append([
+            result.extend([
                 (self.op, '**'),
                 (self.visit, kwarg),
             ])
@@ -458,7 +464,7 @@ class IterativeTokenGenerator:
     def do_AsyncFunctionDef(self, node):
 
         returns = getattr(node, 'returns', None)
-        result = []
+        result: List = []
         # Decorators...
             # @{z}\n
         for z in node.decorator_list or []:
