@@ -988,7 +988,7 @@ class AstDumper:  # pragma: no cover
     """A class supporting various kinds of dumps of ast nodes."""
     #@+others
     #@+node:ekr.20191112033445.1: *3* dumper.dump_tree & helper
-    def dump_tree(self, tokens: List[Token], tree: Node) -> str:
+    def dump_tree(self, tokens: List["Token"], tree: Node) -> str:
         """Briefly show a tree, properly indented."""
         self.tokens = tokens
         result = [self.show_header()]
@@ -1210,7 +1210,7 @@ class TokenOrderGenerator:
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
     #@+node:ekr.20191228184647.1: *5* tog.balance_tokens
-    def balance_tokens(self, tokens: List[Token]) -> int:
+    def balance_tokens(self, tokens: List["Token"]) -> int:
         """
         TOG.balance_tokens.
 
@@ -1233,7 +1233,7 @@ class TokenOrderGenerator:
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
     #@+node:ekr.20191113063144.4: *5* tog.create_links
-    def create_links(self, tokens: List[Token], tree: Node, file_name: str='') -> List:
+    def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
 
@@ -1261,7 +1261,7 @@ class TokenOrderGenerator:
         # Return [] for compatibility with legacy code: list(tog.create_links).
         return []
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
-    def init_from_file(self, filename: str) -> Tuple[str, str, List[Token], Node]:  # pragma: no cover
+    def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:  # pragma: no cover
         """
         Create the tokens and ast tree for the given file.
         Create links between tokens and the parse tree.
@@ -1321,7 +1321,7 @@ class TokenOrderGenerator:
         # Restore self.node.
         self.node = self.node_stack.pop()
     #@+node:ekr.20200110162044.1: *5* tog.find_next_significant_token
-    def find_next_significant_token(self) -> Optional[Token]:
+    def find_next_significant_token(self) -> Optional["Token"]:
         """
         Scan from *after* self.tokens[px] looking for the next significant
         token.
@@ -3388,7 +3388,7 @@ class Orange:
         self.blank()
     #@+node:ekr.20200118120049.1: *4* orange: Split/join
     #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
-    def split_line(self, node: Node, token: Token) -> bool:
+    def split_line(self, node: Node, token: "Token") -> bool:
         """
         Split token's line, if possible and enabled.
 
@@ -3477,7 +3477,7 @@ class Orange:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)  # pragma: no cover
     #@+node:ekr.20200107165250.36: *6* orange.find_prev_line
-    def find_prev_line(self) -> List[Token]:
+    def find_prev_line(self) -> List["Token"]:
         """Return the previous line, as a list of tokens."""
         line = []
         for t in reversed(self.code_list[:-1]):
