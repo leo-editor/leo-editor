@@ -42,11 +42,10 @@ class IterativeTokenGenerator:
     node_index = 0  # The index into the node_stack.
     node_stack: List[ast.AST] = []  # The stack of parent nodes.
     
-    
     #@+others
     #@+node:ekr.20220402095550.1: *3* iterative: Init...
     # Same as in the TokenOrderGenerator class.
-    #@+node:ekr.20220402095550.2: *4* tog.balance_tokens
+    #@+node:ekr.20220402095550.2: *4* iterative.balance_tokens
     def balance_tokens(self, tokens: List["Token"]) -> int:
         """
         TOG.balance_tokens.
@@ -69,7 +68,7 @@ class IterativeTokenGenerator:
         if stack:  # pragma: no cover
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
-    #@+node:ekr.20220402095550.3: *4* tog.create_links
+    #@+node:ekr.20220402095550.3: *4* iterative.create_links
     def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
@@ -97,7 +96,7 @@ class IterativeTokenGenerator:
         self.token('endmarker', '')
         # Return [] for compatibility with legacy code: list(tog.create_links).
         return []
-    #@+node:ekr.20220402095550.4: *4* tog.init_from_file
+    #@+node:ekr.20220402095550.4: *4* iterative.init_from_file
     def init_from_file(self, filename: str) -> Tuple[str, str, List["Token"], Node]:  # pragma: no cover
         """
         Create the tokens and ast tree for the given file.
@@ -113,7 +112,7 @@ class IterativeTokenGenerator:
         self.tree = tree = parse_ast(contents)
         self.create_links(tokens, tree)
         return contents, encoding, tokens, tree
-    #@+node:ekr.20220402095550.5: *4* tog.init_from_string
+    #@+node:ekr.20220402095550.5: *4* iterative.init_from_string
     def init_from_string(self, contents: str, filename: str) -> Tuple[List["Token"], Node]:  # pragma: no cover
         """
         Tokenize, parse and create links in the contents string.
@@ -1090,7 +1089,7 @@ class IterativeTokenGenerator:
                     (self.name, alias.asname),
                 ])
         return result
-    #@+node:ekr.20220402124844.1: *5* tog.Match* (Python 3.10+)
+    #@+node:ekr.20220402124844.1: *5* iterative.Match* (Python 3.10+)
     # Match(expr subject, match_case* cases)
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
@@ -1108,7 +1107,7 @@ class IterativeTokenGenerator:
         for case in cases:
             result.append((self.visit, case))
         return result
-    #@+node:ekr.20220402124844.2: *6* tog.match_case
+    #@+node:ekr.20220402124844.2: *6* iterative.match_case
     #  match_case = (pattern pattern, expr? guard, stmt* body)
 
     def do_match_case(self, node: Node) -> List:
@@ -1128,7 +1127,7 @@ class IterativeTokenGenerator:
         for statement in body:
             result.append((self.visit, statement))
         return result
-    #@+node:ekr.20220402124844.3: *6* tog.MatchAs
+    #@+node:ekr.20220402124844.3: *6* iterative.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node: Node) -> List:
@@ -1146,7 +1145,7 @@ class IterativeTokenGenerator:
         else:
             result.append((self.name, name or '_'))
         return result
-    #@+node:ekr.20220402124844.4: *6* tog.MatchClass
+    #@+node:ekr.20220402124844.4: *6* iterative.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
     def do_MatchClass(self, node: Node) -> List:
@@ -1169,7 +1168,7 @@ class IterativeTokenGenerator:
             ])
         result.append((self.op, ')'))
         return result
-    #@+node:ekr.20220402124844.5: *6* tog.MatchMapping
+    #@+node:ekr.20220402124844.5: *6* iterative.MatchMapping
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
     def do_MatchMapping(self, node: Node) -> List:
@@ -1192,7 +1191,7 @@ class IterativeTokenGenerator:
             ])
         result.append((self.op, '}'))
         return result
-    #@+node:ekr.20220402124844.6: *6* tog.MatchOr
+    #@+node:ekr.20220402124844.6: *6* iterative.MatchOr
     # MatchOr(pattern* patterns)
 
     def do_MatchOr(self, node: Node) -> List:
@@ -1204,7 +1203,7 @@ class IterativeTokenGenerator:
                 result.append((self.op, '|'))
             result.append((self.visit, pattern))
         return result
-    #@+node:ekr.20220402124844.7: *6* tog.MatchSequence
+    #@+node:ekr.20220402124844.7: *6* iterative.MatchSequence
     # MatchSequence(pattern* patterns)
 
     def do_MatchSequence(self, node: Node) -> List:
@@ -1229,7 +1228,7 @@ class IterativeTokenGenerator:
             val = ']' if token.value == '[' else ')'
             result.append((self.op, val))
         return result
-    #@+node:ekr.20220402124844.8: *6* tog.MatchSingleton
+    #@+node:ekr.20220402124844.8: *6* iterative.MatchSingleton
     # MatchSingleton(constant value)
 
     def do_MatchSingleton(self, node: Node) -> List:
@@ -1237,7 +1236,7 @@ class IterativeTokenGenerator:
         return [
             (self.token, ('name', repr(node.value))),
         ]
-    #@+node:ekr.20220402124844.9: *6* tog.MatchStar
+    #@+node:ekr.20220402124844.9: *6* iterative.MatchStar
     # MatchStar(identifier? name)
 
     def do_MatchStar(self, node: Node) -> List:
@@ -1249,7 +1248,7 @@ class IterativeTokenGenerator:
         if name:
             result.append((self.name, name))
         return result
-    #@+node:ekr.20220402124844.10: *6* tog.MatchValue
+    #@+node:ekr.20220402124844.10: *6* iterative.MatchValue
     # MatchValue(expr value)
 
     def do_MatchValue(self, node: Node) -> List:
