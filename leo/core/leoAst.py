@@ -1534,7 +1534,7 @@ class Fstringify:
         tokens = tokens_for_node(self.filename, node, self.tokens)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List["Token"]) -> List["Token"]:
+    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List) -> List["Token"]:
         """
         Replace specifiers with values in lt_s string.
 
@@ -1542,7 +1542,7 @@ class Fstringify:
         """
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
-            value = tokens_to_string(values[spec_i])  # type:ignore
+            value = tokens_to_string(values[spec_i])
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
