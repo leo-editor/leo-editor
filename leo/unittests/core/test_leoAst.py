@@ -2276,6 +2276,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20191227052446.43: *4* TestTOG.Statements...
     #@+node:ekr.20200112075707.1: *5* test_AnnAssign
     def test_AnnAssign(self):
+        g.pdb()
         contents = """x: int = 0"""
         self.make_data(contents)
     #@+node:ekr.20200112071833.1: *5* test_AsyncFor

@@ -10,6 +10,8 @@ from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree
 from leo.core.iterative_ast import IterativeTokenGenerator
 from leo.unittests.core.test_leoAst import TestTOG, get_time
 
+#@+others
+#@+node:ekr.20220402152331.1: ** class TestIterative
 class TestIterative(TestTOG):
     """
     Tests for the IterativeTokenGenerator class.
@@ -20,7 +22,7 @@ class TestIterative(TestTOG):
     """
     ### debug_list = ['unit-test']
     #@+others
-    #@+node:ekr.20220402150424.1: ** TestIterative.make_data
+    #@+node:ekr.20220402150424.1: *3* TestIterative.make_data (override)
     def make_data(self, contents, description=None):  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
@@ -66,5 +68,5 @@ class TestIterative(TestTOG):
             self.fail(self.link_error)  # pragma: no cover
         return contents, tokens, tree
     #@-others
-
+#@-others
 #@-leo
