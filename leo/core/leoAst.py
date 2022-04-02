@@ -2912,7 +2912,7 @@ class TokenOrderGenerator:
             return
         if is_significant_token(token):
             # Link the token to the ast node.
-            token.node = node  # type:ignore
+            token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
     #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
