@@ -222,7 +222,7 @@ class LeoGlobals:  # pragma: no cover
         if typ == SyntaxError:
             # IndentationError is a subclass of SyntaxError.
             # SyntaxError *does* have 'filename' and 'lineno' attributes.
-            return val.filename, val.lineno  # type:ignore
+            return val.filename, val.lineno
         #
         # Data is a list of tuples, one per stack entry.
         # The tuples have the form (filename, lineNumber, functionName, text).
@@ -694,6 +694,76 @@ if 1:  # pragma: no cover
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20191223095408.1: *3* node/token nodes...
+    # Functions that associate tokens with nodes.
+    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
+    def find_statement_node(node: Node) -> Optional[Node]:
+        """
+        Return the nearest statement node.
+        Return None if node has only Module for a parent.
+        """
+        if isinstance(node, ast.Module):
+            return None
+        parent = node
+        while parent:
+            if is_statement_node(parent):
+                return parent
+            parent = parent.parent
+        return None
+    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
+    def is_ancestor(node: Node, token: "Token") -> bool:
+        """Return True if node is an ancestor of token."""
+        t_node = token.node
+        if not t_node:
+            assert token.kind == 'killed', repr(token)
+            return False
+        while t_node:
+            if t_node == node:
+                return True
+            t_node = t_node.parent
+        return False
+    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
+    def is_long_statement(node: Node) -> bool:
+        """
+        Return True if node is an instance of a node that might be split into
+        shorter lines.
+        """
+        return isinstance(node, (
+            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
+            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
+            ast.If, ast.Import, ast.ImportFrom,
+            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
+    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
+    def is_statement_node(node: Node) -> bool:
+        """Return True if node is a top-level statement."""
+        return is_long_statement(node) or isinstance(node, (
+            ast.Break, ast.Continue, ast.Pass, ast.Try))
+    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
+    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+        """
+        Return the nearest common ancestor node for the given nodes.
+
+        The nodes must have parent links.
+        """
+
+        def parents(node: Node) -> List[Node]:
+            aList = []
+            while node:
+                aList.append(node)
+                node = node.parent
+            return list(reversed(aList))
+
+        result = None
+        parents1 = parents(node1)
+        parents2 = parents(node2)
+        while parents1 and parents2:
+            parent1 = parents1.pop(0)
+            parent2 = parents2.pop(0)
+            if parent1 == parent2:
+                result = parent1
+            else:
+                break
+        return result
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20191119085222.1: *4* function: obj_id
@@ -781,7 +851,7 @@ if 1:  # pragma: no cover
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
             return None
-        tokens = Tokenizer().create_input_tokens(contents, five_tuples)  # type:ignore
+        tokens = Tokenizer().create_input_tokens(contents, five_tuples)
         assert check(contents, tokens)
         return tokens
     #@+node:ekr.20191027075648.1: *4* function: parse_ast
@@ -867,76 +937,6 @@ if 1:  # pragma: no cover
         print('')
         tag = f"Diffs for {filename}" if filename else 'Diffs'
         g.printObj(lines, tag=tag)
-    #@+node:ekr.20191223095408.1: *3* node/token nodes...
-    # Functions that associate tokens with nodes.
-    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
-        """
-        Return the nearest statement node.
-        Return None if node has only Module for a parent.
-        """
-        if isinstance(node, ast.Module):
-            return None
-        parent = node
-        while parent:
-            if is_statement_node(parent):
-                return parent
-            parent = parent.parent
-        return None
-    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
-    def is_ancestor(node: Node, token: "Token") -> bool:
-        """Return True if node is an ancestor of token."""
-        t_node = token.node
-        if not t_node:
-            assert token.kind == 'killed', repr(token)
-            return False
-        while t_node:
-            if t_node == node:
-                return True
-            t_node = t_node.parent
-        return False
-    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
-    def is_long_statement(node: Node) -> bool:
-        """
-        Return True if node is an instance of a node that might be split into
-        shorter lines.
-        """
-        return isinstance(node, (
-            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
-            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
-            ast.If, ast.Import, ast.ImportFrom,
-            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
-    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
-    def is_statement_node(node: Node) -> bool:
-        """Return True if node is a top-level statement."""
-        return is_long_statement(node) or isinstance(node, (
-            ast.Break, ast.Continue, ast.Pass, ast.Try))
-    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
-        """
-        Return the nearest common ancestor node for the given nodes.
-
-        The nodes must have parent links.
-        """
-
-        def parents(node: Node) -> List[Node]:
-            aList = []
-            while node:
-                aList.append(node)
-                node = node.parent
-            return list(reversed(aList))
-
-        result = None
-        parents1 = parents(node1)
-        parents2 = parents(node2)
-        while parents1 and parents2:
-            parent1 = parents1.pop(0)
-            parent2 = parents2.pop(0)
-            if parent1 == parent2:
-                result = parent1
-            else:
-                break
-        return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -1534,7 +1534,7 @@ class Fstringify:
         tokens = tokens_for_node(self.filename, node, self.tokens)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List["Token"]) -> List["Token"]:
+    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List) -> List["Token"]:
         """
         Replace specifiers with values in lt_s string.
 
@@ -1542,7 +1542,7 @@ class Fstringify:
         """
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
-            value = tokens_to_string(values[spec_i])  # type:ignore
+            value = tokens_to_string(values[spec_i])
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
@@ -1626,7 +1626,7 @@ class Fstringify:
         replace_node(new_node, node)
         # Update the token.
         token = self.tokens[i1]
-        token.node = new_node  # type:ignore
+        token.node = new_node
         # Update the token list.
         add_token_to_token_list(token, new_node)
     #@-others
@@ -1852,7 +1852,7 @@ class Orange:
                     self.state_stack.pop()
                     self.handle_dedent_after_class_or_def(state.kind)
 
-    def do_indent(self) -> None:  # type:ignore
+    def do_indent(self) -> None:
         """Handle indent token."""
         new_indent = self.val
         old_indent = self.level * self.tab_width * ' '
@@ -2083,9 +2083,9 @@ class Orange:
         t.newline_kind = self.token.kind
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind: str, value: Union[int, str]) -> "Token":
+    def add_token(self, kind: str, value: Any) -> "Token":
         """Add an output token to the code list."""
-        tok = Token(kind, value)  # type:ignore
+        tok = Token(kind, value)
         tok.index = self.code_list_index  # For debugging only.
         self.code_list_index += 1
         self.code_list.append(tok)
@@ -2450,7 +2450,7 @@ class Orange:
         t = self.code_list[i]
         assert t.kind == 'line-end', repr(t)
         # Not all tokens have a newline_kind ivar.
-        assert t.newline_kind == 'newline'  # type:ignore
+        assert t.newline_kind == 'newline'
         i -= 1
         while i >= 0:
             t = self.code_list[i]
@@ -2563,8 +2563,8 @@ class ReassignTokens:
         k = find_paren_token(j + 1, self.tokens)
         if k is None:
             return  # pragma: no cover
-        self.tokens[j].node = nca  # type:ignore
-        self.tokens[k].node = nca  # type:ignore
+        self.tokens[j].node = nca
+        self.tokens[k].node = nca
         add_token_to_token_list(self.tokens[j], nca)
         add_token_to_token_list(self.tokens[k], nca)
     #@-others
@@ -2591,7 +2591,7 @@ class Token:
         #
         # Injected by Tokenizer.add_token.
         self.level = 0
-        self.node = None
+        self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
         nl_kind = getattr(self, 'newline_kind', '')
@@ -2643,16 +2643,16 @@ class Token:
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
     #@+node:ekr.20191113095507.1: *4* token.show_val
-    def show_val(self, truncate_n: int) -> Union[int, str]:  # pragma: no cover
+    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
-            val = len(self.value)  # type:ignore
+            val = str(len(self.value))
         elif self.kind == 'string':
             # Important: don't add a repr for 'string' tokens.
             # repr just adds another layer of confusion.
-            val = g.truncate(self.value, truncate_n)  # type:ignore
+            val = g.truncate(self.value, truncate_n)
         else:
-            val = g.truncate(repr(self.value), truncate_n)  # type:ignore
+            val = g.truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20191110165235.1: *3* class Tokenizer
@@ -2697,7 +2697,7 @@ class Tokenizer:
             f"       lines: {self.lines}"
         )
     #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
-    def create_input_tokens(self, contents: str, tokens: List[Any]) -> List["Token"]:
+    def create_input_tokens(self, contents: str, tokens: Generator) -> List["Token"]:
         """
         Generate a list of Token's from tokens, a list of 5-tuples.
         """
@@ -2883,7 +2883,7 @@ class TokenOrderGenerator:
         # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
         if token.kind == 'comment':
             # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])  # type:ignore
+            comment_list: List["Token"] = getattr(node, 'comment_list', [])
             node.comment_list = comment_list + [token]
             return
         if token.kind in ('endmarker', 'ws'):
@@ -2893,7 +2893,7 @@ class TokenOrderGenerator:
         # *Always* remember the last statement.
         statement = find_statement_node(node)
         if statement:
-            self.last_statement_node = statement  # type:ignore
+            self.last_statement_node = statement
             assert not isinstance(self.last_statement_node, ast.Module)
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
@@ -2912,7 +2912,7 @@ class TokenOrderGenerator:
             return
         if is_significant_token(token):
             # Link the token to the ast node.
-            token.node = node  # type:ignore
+            token.node = node
             # Add the token to node's token_list.
             add_token_to_token_list(token, node)
     #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
@@ -3014,7 +3014,7 @@ class TokenOrderGenerator:
         # Do this first, *before* updating self.node.
         node.parent = self.node
         if self.node:
-            children = getattr(self.node, 'children', [])  # type:ignore
+            children: List[Node] = getattr(self.node, 'children', [])
             children.append(node)
             self.node.children = children
         # Inject the node_index field.
@@ -3102,18 +3102,11 @@ class TokenOrderGenerator:
         #
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
-        posonlyargs = getattr(node, 'posonlyargs', [])  # type:ignore
+        posonlyargs = getattr(node, 'posonlyargs', [])
         vararg = getattr(node, 'vararg', None)
-        kwonlyargs = getattr(node, 'kwonlyargs', [])  # type:ignore
-        kw_defaults = getattr(node, 'kw_defaults', [])  # type:ignore
+        kwonlyargs = getattr(node, 'kwonlyargs', [])
+        kw_defaults = getattr(node, 'kw_defaults', [])
         kwarg = getattr(node, 'kwarg', None)
-        if 0:  #pragma: no cover
-            g.printObj(ast.dump(node.vararg) if node.vararg else 'None', tag='node.vararg')
-            g.printObj([ast.dump(z) for z in node.args], tag='node.args')
-            g.printObj([ast.dump(z) for z in node.defaults], tag='node.defaults')
-            g.printObj([ast.dump(z) for z in posonlyargs], tag='node.posonlyargs')
-            g.printObj([ast.dump(z) for z in kwonlyargs], tag='kwonlyargs')
-            g.printObj([ast.dump(z) if z else 'None' for z in kw_defaults], tag='kw_defaults')
         # 1. Sync the position-only args.
         if posonlyargs:
             for n, z in enumerate(posonlyargs):
@@ -3128,7 +3121,6 @@ class TokenOrderGenerator:
                 self.visit(node.defaults[i - n_plain])
         # 3. Sync the vararg.
         if vararg:
-            # g.trace('vararg', ast.dump(vararg))
             self.op('*')
             self.visit(vararg)
         # 4. Sync the keyword-only args.
@@ -3136,7 +3128,6 @@ class TokenOrderGenerator:
             if not vararg:
                 self.op('*')
             for n, z in enumerate(kwonlyargs):
-                # g.trace('keyword-only', ast.dump(z))
                 self.visit(z)
                 val = kw_defaults[n]
                 if val is not None:
@@ -3144,10 +3135,8 @@ class TokenOrderGenerator:
                     self.visit(val)
         # 5. Sync the kwarg.
         if kwarg:
-            # g.trace('kwarg', ast.dump(kwarg))
             self.op('**')
             self.visit(kwarg)
-
     #@+node:ekr.20191113063144.15: *6* tog.AsyncFunctionDef
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
@@ -4157,11 +4146,11 @@ class TokenOrderGenerator:
         self.visit(expr)
         # No need to put commas.
         for item in items:
-            self.visit(item.context_expr)  # type:ignore
+            self.visit(item.context_expr)
             optional_vars = getattr(item, 'optional_vars', None)
             if optional_vars is not None:
                 self.name('as')
-                self.visit(item.optional_vars)  # type:ignore
+                self.visit(item.optional_vars)
         # End the line.
         self.op(':')
         # Body...
