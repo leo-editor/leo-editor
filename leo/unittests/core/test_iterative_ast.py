@@ -20,7 +20,8 @@ class TestIterative(TestTOG):
     - all the tests from the TestTOG class.
     - most of the support code from the BaseTest class.
     """
-    ### debug_list = ['unit-test']
+    debug_list = [] # 'full-traceback', 'tokens', 'tree'
+
     #@+others
     #@+node:ekr.20220402150424.1: *3* TestIterative.make_data (override)
     def make_data(self, contents, description=None):  # pragma: no cover

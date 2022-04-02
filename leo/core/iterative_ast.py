@@ -312,8 +312,6 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330120220.1: *4* iterative.main_loop
     def main_loop(self, node: Node) -> None:
         
-        g.pdb()  ###
-
         func = getattr(self, 'do_' + node.__class__.__name__, None)
         if not func:
             print('main_loop: invalid ast node:', repr(node))
@@ -321,20 +319,32 @@ class IterativeTokenGenerator:
         
         exec_list = [(func, node)]
         while exec_list:
-            func, arg = exec_list.pop(0)
-            g.trace(func.__name__)
+            data = exec_list.pop(0)
+            try:
+                func, arg = data
+                # g.trace(func.__name__)
+            except ValueError:
+                g.trace('BAD DATA', self.node.__class__.__name__)
+                if isinstance(data, (list, tuple)):
+                    for z in data:
+                        print(data)
+                else:
+                    print(repr(data))
+                raise
             result = func(arg)
             if result:
                 # Prepend the result, a list of tuples.
                 assert isinstance(result, list), repr(result)
                 exec_list[:0] = result
-                for z in exec_list:  ###
-                    g.printObj(z)
+                if 0:  ###
+                    for z in exec_list:
+                        func, arg = z
+                        print(func.__name__, repr(arg))
     #@+node:ekr.20220330155314.1: *4* iterative.visit
     def visit(self, node: Node) -> List:
         """'Visit' an ast node by return a new list of tuples."""
         # Keep this trace.
-        if True:  # pragma: no cover
+        if False:  # pragma: no cover
             cn = node.__class__.__name__ if node else ' '
             caller1, caller2 = g.callers(2).split(',')
             g.trace(f"{caller1:>15} {caller2:<14} {cn}")
@@ -1198,7 +1208,7 @@ class IterativeTokenGenerator:
         """
         result: List = []
         if isinstance(node, str):
-            result.append((self.token, 'name', node))
+            result.append((self.token, ('name', node)))
         else:
             result.append((self.visit, node))
         return result
