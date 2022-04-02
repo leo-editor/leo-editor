@@ -1649,8 +1649,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210914161519.1: *5* test_bug_2171
     def test_bug_2171(self):
 
-        import sys
-        if sys.version_info < (3, 9, 0):
+        if py_version < (3, 9):
             self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
@@ -1781,8 +1780,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
     def test_FunctionDef_with_posonly_args(self):
 
-        import sys
-        if sys.version_info < (3, 9, 0):
+        if py_version < (3, 9):
             self.skipTest('Requires Python 3.9')  # pragma: no cover
 
         # From PEP 570
