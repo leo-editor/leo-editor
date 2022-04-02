@@ -1289,37 +1289,8 @@ class TokenOrderGenerator:
         self.tree = tree = parse_ast(contents)
         self.create_links(tokens, tree)
         return tokens, tree
-    #@+node:ekr.20191223052749.1: *4* tog: Traversal...
-    #@+node:ekr.20191113063144.3: *5* tog.enter_node
-    def enter_node(self, node: Node) -> None:
-        """Enter a node."""
-        # Update the stats.
-        self.n_nodes += 1
-        # Do this first, *before* updating self.node.
-        node.parent = self.node
-        if self.node:
-            children = getattr(self.node, 'children', [])  # type:ignore
-            children.append(node)
-            self.node.children = children
-        # Inject the node_index field.
-        assert not hasattr(node, 'node_index'), g.callers()
-        node.node_index = self.node_index
-        self.node_index += 1
-        # begin_visitor and end_visitor must be paired.
-        self.begin_end_stack.append(node.__class__.__name__)
-        # Push the previous node.
-        self.node_stack.append(self.node)
-        # Update self.node *last*.
-        self.node = node
-    #@+node:ekr.20200104032811.1: *5* tog.leave_node
-    def leave_node(self, node: Node) -> None:
-        """Leave a visitor."""
-        # begin_visitor and end_visitor must be paired.
-        entry_name = self.begin_end_stack.pop()
-        assert entry_name == node.__class__.__name__, f"{entry_name!r} {node.__class__.__name__}"
-        assert self.node == node, (repr(self.node), repr(node))
-        # Restore self.node.
-        self.node = self.node_stack.pop()
+    #@+node:ekr.20220402052020.1: *4* tog: Syncronizers...
+    # The synchronizer sync tokens to nodes.
     #@+node:ekr.20200110162044.1: *5* tog.find_next_significant_token
     def find_next_significant_token(self) -> Optional["Token"]:
         """
@@ -1336,18 +1307,70 @@ class TokenOrderGenerator:
                 return token
         # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
-    #@+node:ekr.20191121180100.1: *5* tog: wrappers
-    # Useful wrappers...
+    #@+node:ekr.20191125120814.1: *5* tog.set_links
+    last_statement_node = None
 
-    def name(self, val: str) -> None:
-        self.sync_name(val)
+    def set_links(self, node: Node, token: "Token") -> None:
+        """Make two-way links between token and the given node."""
+        # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
+        if token.kind == 'comment':
+            # Append the comment to node.comment_list.
+            comment_list = getattr(node, 'comment_list', [])  # type:ignore
+            node.comment_list = comment_list + [token]
+            return
+        if token.kind in ('endmarker', 'ws'):
+            return
+        if token.kind == 'op' and token.value in ',()':
+            return
+        # *Always* remember the last statement.
+        statement = find_statement_node(node)
+        if statement:
+            self.last_statement_node = statement  # type:ignore
+            assert not isinstance(self.last_statement_node, ast.Module)
+        if token.node is not None:  # pragma: no cover
+            line_s = f"line {token.line_number}:"
+            raise AssignLinksError(
+                    f"       file: {self.filename}\n"
+                    f"{line_s:>12} {token.line.strip()}\n"
+                    f"token index: {self.px}\n"
+                    f"token.node is not None\n"
+                    f" token.node: {token.node.__class__.__name__}\n"
+                    f"    callers: {g.callers()}")
+        # Assign newlines to the previous statement node, if any.
+        if token.kind in ('newline', 'nl'):
+            # Set an *auxilliary* link for the split/join logic.
+            # Do *not* set token.node!
+            token.statement_node = self.last_statement_node
+            return
+        if is_significant_token(token):
+            # Link the token to the ast node.
+            token.node = node  # type:ignore
+            # Add the token to node's token_list.
+            add_token_to_token_list(token, node)
+    #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
+    def sync_name(self, val: str) -> None:
+        aList = val.split('.')
+        if len(aList) == 1:
+            self.sync_token('name', val)
+        else:
+            for i, part in enumerate(aList):
+                self.sync_token('name', part)
+                if i < len(aList) - 1:
+                    self.sync_op('.')
 
-    def op(self, val: str) -> None:
-        self.sync_op(val)
+    name = sync_name  # for readability.
+    #@+node:ekr.20220402052102.1: *5* tog.sync_op (aka op)
+    def sync_op(self, val: str) -> None:
+        """
+        Sync to the given operator.
 
-    def token(self, kind: str, val: str) -> None:
-        self.sync_token(kind, val)
-    #@+node:ekr.20191113063144.7: *5* tog.sync_token & set_links
+        val may be '(' or ')' *only* if the parens *will* actually exist in the
+        token list.
+        """
+        self.sync_token('op', val)
+
+    op = sync_op  # For readability.
+    #@+node:ekr.20191113063144.7: *5* tog.sync_token (aka token)
     px = -1  # Index of the previously synced token.
 
     def sync_token(self, kind: str, val: str) -> None:
@@ -1412,67 +1435,39 @@ class TokenOrderGenerator:
         #
         # Step four: Advance.
         self.px = px
-    #@+node:ekr.20191125120814.1: *6* tog.set_links
-    last_statement_node = None
 
-    def set_links(self, node: Node, token: "Token") -> None:
-        """Make two-way links between token and the given node."""
-        # Don't bother assigning comment, comma, parens, ws and endtoken tokens.
-        if token.kind == 'comment':
-            # Append the comment to node.comment_list.
-            comment_list = getattr(node, 'comment_list', [])  # type:ignore
-            node.comment_list = comment_list + [token]
-            return
-        if token.kind in ('endmarker', 'ws'):
-            return
-        if token.kind == 'op' and token.value in ',()':
-            return
-        # *Always* remember the last statement.
-        statement = find_statement_node(node)
-        if statement:
-            self.last_statement_node = statement  # type:ignore
-            assert not isinstance(self.last_statement_node, ast.Module)
-        if token.node is not None:  # pragma: no cover
-            line_s = f"line {token.line_number}:"
-            raise AssignLinksError(
-                    f"       file: {self.filename}\n"
-                    f"{line_s:>12} {token.line.strip()}\n"
-                    f"token index: {self.px}\n"
-                    f"token.node is not None\n"
-                    f" token.node: {token.node.__class__.__name__}\n"
-                    f"    callers: {g.callers()}")
-        # Assign newlines to the previous statement node, if any.
-        if token.kind in ('newline', 'nl'):
-            # Set an *auxilliary* link for the split/join logic.
-            # Do *not* set token.node!
-            token.statement_node = self.last_statement_node
-            return
-        if is_significant_token(token):
-            # Link the token to the ast node.
-            token.node = node  # type:ignore
-            # Add the token to node's token_list.
-            add_token_to_token_list(token, node)
-    #@+node:ekr.20191124083124.1: *5* tog.sync_name and sync_op
-    # It's valid for these to return None.
-
-    def sync_name(self, val: str) -> None:
-        aList = val.split('.')
-        if len(aList) == 1:
-            self.sync_token('name', val)
-        else:
-            for i, part in enumerate(aList):
-                self.sync_token('name', part)
-                if i < len(aList) - 1:
-                    self.sync_op('.')
-
-    def sync_op(self, val: str) -> None:
-        """
-        Sync to the given operator.
-
-        val may be '(' or ')' *only* if the parens *will* actually exist in the
-        token list.
-        """
-        self.sync_token('op', val)
+    token = sync_token  # For readability.
+    #@+node:ekr.20191223052749.1: *4* tog: Traversal...
+    #@+node:ekr.20191113063144.3: *5* tog.enter_node
+    def enter_node(self, node: Node) -> None:
+        """Enter a node."""
+        # Update the stats.
+        self.n_nodes += 1
+        # Do this first, *before* updating self.node.
+        node.parent = self.node
+        if self.node:
+            children = getattr(self.node, 'children', [])  # type:ignore
+            children.append(node)
+            self.node.children = children
+        # Inject the node_index field.
+        assert not hasattr(node, 'node_index'), g.callers()
+        node.node_index = self.node_index
+        self.node_index += 1
+        # begin_visitor and end_visitor must be paired.
+        self.begin_end_stack.append(node.__class__.__name__)
+        # Push the previous node.
+        self.node_stack.append(self.node)
+        # Update self.node *last*.
+        self.node = node
+    #@+node:ekr.20200104032811.1: *5* tog.leave_node
+    def leave_node(self, node: Node) -> None:
+        """Leave a visitor."""
+        # begin_visitor and end_visitor must be paired.
+        entry_name = self.begin_end_stack.pop()
+        assert entry_name == node.__class__.__name__, f"{entry_name!r} {node.__class__.__name__}"
+        assert self.node == node, (repr(self.node), repr(node))
+        # Restore self.node.
+        self.node = self.node_stack.pop()
     #@+node:ekr.20191113081443.1: *5* tog.visit
     def visit(self, node: Node) -> None:
         """Given an ast node, return a *generator* from its visitor."""
@@ -2184,7 +2179,7 @@ class TokenOrderGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj:Any) -> Tuple[int, int, Any]:
+        def get_pos(obj: Any) -> Tuple[int, int, Any]:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
@@ -2469,7 +2464,7 @@ class TokenOrderGenerator:
         patterns = getattr(node, 'patterns', [])
         # Scan for the next '(' or '[' token, skipping the 'case' token.
         token = None
-        for token in self.tokens[self.px + 1:]:
+        for token in self.tokens[self.px + 1 :]:
             if token.kind == 'op' and token.value in '([':
                 break
             if is_significant_token(token):
@@ -2479,7 +2474,7 @@ class TokenOrderGenerator:
         else:
             raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
         if token:
-            self.op(token.value)  
+            self.op(token.value)
         for i, pattern in enumerate(patterns):
             self.visit(pattern)
         if token:
