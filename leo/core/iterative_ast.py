@@ -35,12 +35,12 @@ has_async_tokens = (3, 5) <= py_version <= (3, 6)
 #@+node:ekr.20220330191947.1: ** class IterativeTokenGenerator
 class IterativeTokenGenerator:
     """
-    Experimental iterative token syncing class.
+    Iterative token syncing class.
     """
     
     begin_end_stack: List[str] = []
     n_nodes = 0  # The number of nodes that have been visited.
-    level = 0
+    node = None  # The current node.
     node_index = 0  # The index into the node_stack.
     node_stack: List[ast.AST] = []  # The stack of parent nodes.
     
@@ -87,7 +87,6 @@ class IterativeTokenGenerator:
         """
         # Init all ivars.
         self.file_name = file_name  # For tests.
-        self.level = 0  # Python indentation level.
         self.node = None  # The node being visited.
         self.tokens = tokens  # The immutable list of input tokens.
         self.tree = tree  # The tree of ast.AST nodes.
@@ -285,7 +284,10 @@ class IterativeTokenGenerator:
         """Enter a node."""
         # Update the stats.
         self.n_nodes += 1
-        # Do this first, *before* updating self.node.
+        # Create parent/child links first, *before* updating self.node.
+        #
+        # Don't even *think* about removing the parent/child links.
+        # The nearest_common_ancestor function depends upon them.
         node.parent = self.node
         if self.node:
             children: List[Node] = getattr(self.node, 'children', [])
@@ -304,7 +306,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402094946.3: *4* iterative.leave_node
     def leave_node(self, node: Node) -> None:
         """Leave a visitor."""
-        # begin_visitor and end_visitor must be paired.
+        # Make *sure* that begin_visitor and end_visitor are paired.
         entry_name = self.begin_end_stack.pop()
         assert entry_name == node.__class__.__name__, f"{entry_name!r} {node.__class__.__name__}"
         assert self.node == node, (repr(self.node), repr(node))
