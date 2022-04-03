@@ -314,7 +314,7 @@ class IterativeTokenGenerator:
     def main_loop(self, node: Node) -> None:
         
         func = getattr(self, 'do_' + node.__class__.__name__, None)
-        if not func:
+        if not func:  # pragma: no cover (defensive code)
             print('main_loop: invalid ast node:', repr(node))
             return
         exec_list: ActionList = [(func, node)]
@@ -358,8 +358,8 @@ class IterativeTokenGenerator:
             result = []
             for z in node:
                 if isinstance(z, ast.AST):
-                    result.append((self.visit, z)) ##### Test.
-                else:
+                    result.append((self.visit, z))
+                else:  # pragma: no cover (This might never happen).
                     # All other fields should contain ints or strings.
                     assert isinstance(z, (int, str)), z.__class__.__name__
             return result
@@ -772,7 +772,7 @@ class IterativeTokenGenerator:
 
     def do_ExtSlice(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
         
-        result: List = []
+        result: ActionList = []
         for i, z in enumerate(node.dims):
             # self.visit(z)
             result.append((self.visit, z))
@@ -899,7 +899,7 @@ class IterativeTokenGenerator:
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
-        result: List = []
+        result: ActionList = []
         if lower is not None:
             result.append((self.visit, lower))
         # Always put the colon between upper and lower.
@@ -909,16 +909,13 @@ class IterativeTokenGenerator:
         # Put the second colon if it exists in the token list.
         if step is None:
             result.append((self.slice_helper, node))
-            # token = self.find_next_significant_token()
-            # if token and token.value == ':':
-                # result.append((self.op, ':'))
         else:
             result.extend([
                 (self.op, ':'),
                 (self.visit, step),
             ])
         return result
-        
+
     def slice_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
         token = self.find_next_significant_token()
@@ -1253,10 +1250,6 @@ class IterativeTokenGenerator:
         def sort_key(aTuple: Tuple) -> int:
             line, col, obj = aTuple
             return line * 1000 + col
-
-        if 0:
-            g.printObj([ast.dump(z) for z in args], tag='args')
-            g.printObj([ast.dump(z) for z in keywords], tag='keywords')
             
         assert py_version >= (3, 9)
         
@@ -1419,7 +1412,7 @@ class IterativeTokenGenerator:
         ]
         for alias in node.names:
             result.append((self.name, alias.name))
-            if alias.asname:
+            if alias.asname:  ### not covered.
                 result.extend([
                     (self.name, 'as'),
                     (self.name, alias.asname),
@@ -1433,7 +1426,7 @@ class IterativeTokenGenerator:
         result: List = [
             (self.name, 'from'),
         ]
-        for i in range(node.level):
+        for i in range(node.level):  ### Not covered.
             result.append((self.op, '.'))
         if node.module:
             result.append((self.name, node.module))
