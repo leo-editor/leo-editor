@@ -2026,25 +2026,18 @@ class IterativeTokenGenerator:
         # 1. Sync the position-only args.
         if posonlyargs:
             for n, z in enumerate(posonlyargs):
-                # self.visit(z)
                 result.append((self.visit, z))
-            # self.op('/')
             result.append((self.op, '/'))
         # 2. Sync all args.
         for i, z in enumerate(node.args):
-            # self.visit(z)
             result.append((self.visit, z))
             if i >= n_plain:
-                # self.op('=')
-                # self.visit(node.defaults[i - n_plain])
                 result.extend([
                     (self.op, '='),
                     (self.visit, node.defaults[i - n_plain]),
                 ])
         # 3. Sync the vararg.
         if vararg:
-            # self.op('*')
-            # self.visit(vararg)
             result.extend([
                 (self.op, '*'),
                 (self.visit, vararg),
@@ -2052,23 +2045,17 @@ class IterativeTokenGenerator:
         # 4. Sync the keyword-only args.
         if kwonlyargs:
             if not vararg:
-                # self.op('*')
                 result.append((self.op, '*'))
             for n, z in enumerate(kwonlyargs):
-                # self.visit(z)
                 result.append((self.visit, z))
                 val = kw_defaults[n]
                 if val is not None:
-                    # self.op('=')
-                    # self.visit(val)
                     result.extend([
                         (self.op, '='),
                         (self.visit, val),
                     ])
         # 5. Sync the kwarg.
         if kwarg:
-            # self.op('**')
-            # self.visit(kwarg)
             result.extend([
                 (self.op, '**'),
                 (self.visit, kwarg),
@@ -2367,10 +2354,8 @@ class IterativeTokenGenerator:
         
         result: ActionList = []
         for i, z in enumerate(node.dims):
-            # self.visit(z)
             result.append((self.visit, z))
             if i < len(node.dims) - 1:
-                # self.op(',')
                 result.append((self.op, ','))
         return result
     #@+node:ekr.20220402160128.10: *6* iterative.Index
@@ -2415,8 +2400,6 @@ class IterativeTokenGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
-        # for z in self.get_concatenated_string_tokens():
-            # self.gen_token(z.kind, z.value)
         return [
             (self.token, (z.kind, z.value))
                 for z in self.get_concatenated_string_tokens()
@@ -2521,10 +2504,6 @@ class IterativeTokenGenerator:
     def do_Str(self, node: Node) -> ActionList:
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
-        
-        # for z in self.get_concatenated_string_tokens():
-            # self.gen_token(z.kind, z.value)
-        
         return [
             (self.token, (z.kind, z.value))
                 for z in self.get_concatenated_string_tokens()
@@ -2635,15 +2614,11 @@ class IterativeTokenGenerator:
             op_name_ = op_name(node.ops[i])
             if op_name_ in ('not in', 'is not'):
                 for z in op_name_.split(' '):
-                    # self.name(z)
                     result.append((self.name, z))
             elif op_name_.isalpha():
-                # self.name(op_name_)
                 result.append((self.name, op_name_))
             else:
-                # self.op(op_name_)
                 result.append((self.op, op_name_))
-            # self.visit(node.comparators[i])
             result.append((self.visit, node.comparators[i]))
         return result
     #@+node:ekr.20220330133336.44: *6* iterative.UnaryOp
@@ -2652,12 +2627,9 @@ class IterativeTokenGenerator:
         op_name_ = op_name(node.op)
         result: List = []
         if op_name_.isalpha():
-            # self.name(op_name_)
             result.append((self.name, op_name_))
         else:
-            # self.op(op_name_)
             result.append((self.op, op_name_))
-        # self.visit(node.operand)
         result.append((self.visit, node.operand))
         return result
     #@+node:ekr.20220330133336.45: *6* iterative.IfExp (ternary operator)
