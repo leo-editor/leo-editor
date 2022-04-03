@@ -315,31 +315,32 @@ class IterativeTokenGenerator:
         if not func:
             print('main_loop: invalid ast node:', repr(node))
             return
-        
         exec_list = [(func, node)]
         while exec_list:
-            data = exec_list.pop(0)
-            try:
-                func, arg = data
-                if 0:
-                    func_name = g.truncate(func.__name__, 15)
-                    print(
-                        f"{self.node.__class__.__name__:>10}:"
-                        f"{func_name:>20} "
-                        f"{arg.__class__.__name__}")
-            except ValueError:
-                g.trace('BAD DATA', self.node.__class__.__name__)
-                if isinstance(data, (list, tuple)):
-                    for z in data:
-                        print(data)
-                else:
-                    print(repr(data))
-                raise
+            func, arg = exec_list.pop(0)
             result = func(arg)
             if result:
                 # Prepend the result, a list of tuples.
                 assert isinstance(result, list), repr(result)
                 exec_list[:0] = result
+
+    # For debugging...
+            # try:
+                # func, arg = data
+                # if 0:
+                    # func_name = g.truncate(func.__name__, 15)
+                    # print(
+                        # f"{self.node.__class__.__name__:>10}:"
+                        # f"{func_name:>20} "
+                        # f"{arg.__class__.__name__}")
+            # except ValueError:
+                # g.trace('BAD DATA', self.node.__class__.__name__)
+                # if isinstance(data, (list, tuple)):
+                    # for z in data:
+                        # print(data)
+                # else:
+                    # print(repr(data))
+                # raise
     #@+node:ekr.20220330155314.1: *4* iterative.visit
     def visit(self, node: Node) -> List:
         """'Visit' an ast node by return a new list of tuples."""
