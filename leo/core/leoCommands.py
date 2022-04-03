@@ -3282,6 +3282,7 @@ class Commands:
         c = self
         for v in c.all_nodes():
             v.contract()
+            v.expandedPositions = []  # #2571
         if c.hoistStack:
             # #2380: Handle hoists properly.
             bunch = c.hoistStack[-1]
