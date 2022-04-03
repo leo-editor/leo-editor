@@ -321,7 +321,7 @@ class IterativeTokenGenerator:
             data = exec_list.pop(0)
             try:
                 func, arg = data
-                if 0:
+                if 1:
                     func_name = g.truncate(func.__name__, 15)
                     print(
                         f"{self.node.__class__.__name__:>10}:"
@@ -1021,9 +1021,9 @@ class IterativeTokenGenerator:
         result = []
         op_name_ = op_name(node.op)
         for i, z in enumerate(node.values):
-            result.append(self.visit(z))
+            result.append((self.visit, z))
             if i < len(node.values) - 1:
-                result.append(self.name(op_name_))
+                result.append((self.name, op_name_))
         return result
     #@+node:ekr.20220330133336.43: *5* iterative.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
@@ -1418,7 +1418,7 @@ class IterativeTokenGenerator:
         ]
         # Else and elif clauses...
         if node.orelse:
-            # We can *not* do this test immediately!
+            # We *must* delay the evaluation of the else clause.
             result.append((self.if_else_helper, node))
         return result
         
