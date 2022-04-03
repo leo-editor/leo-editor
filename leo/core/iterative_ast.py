@@ -1283,43 +1283,6 @@ class IterativeTokenGenerator:
             else:
                 result.append((self.arg_helper, z))
         return result
-        # else:  # pragma: no cover
-            # #
-            # # Legacy code: May fail for Python 3.8
-            # #
-            # # Scan args for *arg and *[...]
-            # kwarg_arg = star_arg = None
-            # for z in args:
-                # if isinstance(z, ast.Starred):
-                    # if isinstance(z.value, ast.Name):  # *Name.
-                        # star_arg = z
-                        # args.remove(z)
-                        # break
-                    # elif isinstance(z.value, (ast.List, ast.Tuple)):  # *[...]
-                        # # star_list = z
-                        # break
-                    # raise AttributeError(f"Invalid * expression: {ast.dump(z)}")  # pragma: no cover
-            # # Scan keywords for **name.
-            # for z in keywords:
-                # if hasattr(z, 'arg') and z.arg is None:
-                    # kwarg_arg = z
-                    # keywords.remove(z)
-                    # break
-            # # Sync the plain arguments.
-            # for z in args:
-                # self.arg_helper(z)
-            # # Sync the keyword args.
-            # for z in keywords:
-                # self.arg_helper(z.arg)
-                # self.op('=')
-                # self.arg_helper(z.value)
-            # # Sync the * arg.
-            # if star_arg:
-                # self.arg_helper(star_arg)
-            # # Sync the ** kwarg.
-            # if kwarg_arg:
-                # self.op('**')
-                # self.visit(kwarg_arg.value)
     #@+node:ekr.20220330133336.59: *5* iterative.Continue
     def do_Continue(self, node: Node) -> List:
 
