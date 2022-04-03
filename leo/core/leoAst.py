@@ -1634,7 +1634,19 @@ class Fstringify:
 #@+node:ekr.20220330191947.1: *3* class IterativeTokenGenerator
 class IterativeTokenGenerator:
     """
-    Self-contained iterative token syncing class.
+    Self-contained iterative token syncing class. It shows how to traverse
+    any tree quickly with neither recursion nor iterators.
+    
+    This class is another curio: Leo does not use this code.
+    
+    The main_loop method executes **actions** (2-tuples): (method, argument).
+    
+    The key idea: visitors (and visit), never execute code directly.
+    Instead, they queue methods to be executed in the main loop.
+    
+    *Important*: find_next_significant_token must be called only *after*
+    actions have eaten all previous tokens. So do_If (and others) queue up
+    helper actions for later (delayed) execution.
     """
     
     begin_end_stack: List[str] = [] # A stack of node names.
@@ -1724,9 +1736,17 @@ class IterativeTokenGenerator:
         self.create_links(tokens, tree)
         return tokens, tree
     #@+node:ekr.20220402094825.1: *4* iterative: Syncronizers...
-    # Same as in the TokenOrderGenerator class.
+    # These synchronizer methods sync various kinds of tokens to nodes.
+    #
+    # These methods are (mostly) the same as in the TokenOrderGenerator class.
+    #
+    # Important: The sync_token in this class has a different signature from its TOG counterpart.
+    #            This slight difference makes it difficult to reuse the TOG methods,
+    #            say via monkey-patching.
+    #
+    #            So I just copied/pasted these methods. This strategy suffices
+    #            to illustrate the ideas presented in this class. 
 
-    # The synchronizer sync tokens to nodes.
     #@+node:ekr.20220402094825.2: *5* iterative.find_next_significant_token
     def find_next_significant_token(self) -> Optional["Token"]:
         """
@@ -1809,7 +1829,6 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402094825.6: *5* iterative.sync_token (aka token)
     px = -1  # Index of the previously synced token.
 
-    ### def sync_token(self, kind: str, val: str) -> None:
     def sync_token(self, data: Tuple[Any, Any]) -> None:
         """
         Sync to a token whose kind & value are given. The token need not be
