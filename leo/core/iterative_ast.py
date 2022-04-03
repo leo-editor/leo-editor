@@ -68,7 +68,7 @@ class IterativeTokenGenerator:
         if stack:  # pragma: no cover
             g.trace("unmatched '(' at {','.join(stack)}")
         return count
-    #@+node:ekr.20220402095550.3: *4* iterative.create_links
+    #@+node:ekr.20220402095550.3: *4* iterative.create_links (changed)
     def create_links(self, tokens: List["Token"], tree: Node, file_name: str='') -> List:
         """
         A generator creates two-way links between the given tokens and ast-tree.
@@ -90,8 +90,7 @@ class IterativeTokenGenerator:
         self.tokens = tokens  # The immutable list of input tokens.
         self.tree = tree  # The tree of ast.AST nodes.
         # Traverse the tree.
-        ### self.visit(tree)
-        self.main_loop(tree) ###
+        self.main_loop(tree)
         # Ensure that all tokens are patched.
         self.node = tree
         self.token(('endmarker', ''))
@@ -322,7 +321,12 @@ class IterativeTokenGenerator:
             data = exec_list.pop(0)
             try:
                 func, arg = data
-                # g.trace(func.__name__)
+                if 0:
+                    func_name = g.truncate(func.__name__, 15)
+                    print(
+                        f"{self.node.__class__.__name__:>10}:"
+                        f"{func_name:>20} "
+                        f"{arg.__class__.__name__}")
             except ValueError:
                 g.trace('BAD DATA', self.node.__class__.__name__)
                 if isinstance(data, (list, tuple)):
@@ -1402,30 +1406,39 @@ class IterativeTokenGenerator:
         #@-<< do_If docstring >>
         # Use the next significant token to distinguish between 'if' and 'elif'.
         token = self.find_next_significant_token()
+        ### g.trace('next significant 1', token)
         result: List = [
             (self.name, token.value),
             (self.visit, node.test),
             (self.op, ':'),
-            #
             # Body...
             # self.level += 1
             (self.visit, node.body),
             # self.level -= 1
         ]
-        #
         # Else and elif clauses...
         if node.orelse:
-            # self.level += 1
-            token = self.find_next_significant_token()
-            if token.value == 'else':
-                result.extend([
-                    (self.name, 'else'),
-                    (self.op, ':'),
-                ])
-            result.append((self.visit, node.orelse))
-            # self.level -= 1
+            # We can *not* do this test immediately!
+            result.append((self.if_else_helper, node))
         return result
-          
+        
+    def if_else_helper(self, node: Node) -> List:
+        """Delayed evaluation!"""
+        ### g.trace(node.__class__.__name__)
+        # self.level += 1
+        token = self.find_next_significant_token()
+        ### g.trace('next significant 2', token)
+        if token.value == 'else':
+            return [
+                (self.name, 'else'),
+                (self.op, ':'),
+                (self.visit, node.orelse),
+                # self.level -= 1
+            ]
+        return [
+            (self.visit, node.orelse),
+            # self.level -= 1
+        ]
     #@+node:ekr.20220330133336.66: *5* iterative.Import & helper
     def do_Import(self, node: Node) -> List:
 
