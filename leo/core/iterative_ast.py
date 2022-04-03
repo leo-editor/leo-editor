@@ -321,7 +321,7 @@ class IterativeTokenGenerator:
             data = exec_list.pop(0)
             try:
                 func, arg = data
-                if 1:
+                if 0:
                     func_name = g.truncate(func.__name__, 15)
                     print(
                         f"{self.node.__class__.__name__:>10}:"
@@ -340,10 +340,6 @@ class IterativeTokenGenerator:
                 # Prepend the result, a list of tuples.
                 assert isinstance(result, list), repr(result)
                 exec_list[:0] = result
-                if 0:  ###
-                    for z in exec_list:
-                        func, arg = z
-                        print(func.__name__, repr(arg))
     #@+node:ekr.20220330155314.1: *4* iterative.visit
     def visit(self, node: Node) -> List:
         """'Visit' an ast node by return a new list of tuples."""
@@ -909,15 +905,25 @@ class IterativeTokenGenerator:
             result.append((self.visit, upper))
         # Put the second colon if it exists in the token list.
         if step is None:
-            token = self.find_next_significant_token()
-            if token and token.value == ':':
-                result.append((self.op, ':'))
+            result.append((self.slice_helper, node))
+            # token = self.find_next_significant_token()
+            # if token and token.value == ':':
+                # result.append((self.op, ':'))
         else:
             result.extend([
                 (self.op, ':'),
                 (self.visit, step),
             ])
         return result
+        
+    def slice_helper(self, node: Node) -> List:
+        """Delayed evaluation!"""
+        token = self.find_next_significant_token()
+        if token and token.value == ':':
+            return [
+                (self.op, ':'),
+            ]
+        return []
     #@+node:ekr.20220402160128.20: *5* iterative.Str & helper
     def do_Str(self, node: Node) -> List:
         """This node represents a string constant."""
