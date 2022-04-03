@@ -1737,7 +1737,7 @@ class IterativeTokenGenerator:
         self.tree = tree = parse_ast(contents)
         self.create_links(tokens, tree)
         return tokens, tree
-    #@+node:ekr.20220402094825.1: *4* iterative: Syncronizers...
+    #@+node:ekr.20220402094825.1: *4* iterative: Synchronizers...
     # These synchronizer methods sync various kinds of tokens to nodes.
     #
     # These methods are (mostly) the same as in the TokenOrderGenerator class.
