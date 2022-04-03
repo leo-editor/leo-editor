@@ -497,7 +497,7 @@ class IterativeTokenGenerator:
             # def name(args): -> returns\n
             # def name(args):\n
         result.extend([
-            (self.name, 'async'),  ###### test.
+            (self.name, 'async'),
             (self.name, 'def'),
             (self.name, node.name),  # A string.
             (self.op, '('),
@@ -1371,7 +1371,6 @@ class IterativeTokenGenerator:
         #@-<< do_If docstring >>
         # Use the next significant token to distinguish between 'if' and 'elif'.
         token = self.find_next_significant_token()
-        ### g.trace('next significant 1', token)
         result: List = [
             (self.name, token.value),
             (self.visit, node.test),
@@ -1389,10 +1388,8 @@ class IterativeTokenGenerator:
         
     def if_else_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
-        ### g.trace(node.__class__.__name__)
         # self.level += 1
         token = self.find_next_significant_token()
-        ### g.trace('next significant 2', token)
         if token.value == 'else':
             return [
                 (self.name, 'else'),
@@ -1412,7 +1409,7 @@ class IterativeTokenGenerator:
         ]
         for alias in node.names:
             result.append((self.name, alias.name))
-            if alias.asname:  ### not covered.
+            if alias.asname:
                 result.extend([
                     (self.name, 'as'),
                     (self.name, alias.asname),
@@ -1426,7 +1423,7 @@ class IterativeTokenGenerator:
         result: List = [
             (self.name, 'from'),
         ]
-        for i in range(node.level):  ### Not covered.
+        for i in range(node.level):
             result.append((self.op, '.'))
         if node.module:
             result.append((self.name, node.module))
