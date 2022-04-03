@@ -1635,18 +1635,20 @@ class Fstringify:
 class IterativeTokenGenerator:
     """
     Self-contained iterative token syncing class. It shows how to traverse
-    any tree quickly with neither recursion nor iterators.
+    any tree with neither recursion nor iterators.
+    
+    This class is almost exactly as fast as the TokenOrderGenerator class.
     
     This class is another curio: Leo does not use this code.
     
-    The main_loop method executes **actions** (2-tuples): (method, argument).
+    The main_loop method executes **actions**: (method, argument) tuples.
     
     The key idea: visitors (and visit), never execute code directly.
     Instead, they queue methods to be executed in the main loop.
     
     *Important*: find_next_significant_token must be called only *after*
-    actions have eaten all previous tokens. So do_If (and others) queue up
-    helper actions for later (delayed) execution.
+    actions have eaten all previous tokens. So do_If (and other visitors)
+    must queue up **helper actions** for later (delayed) execution.
     """
     
     begin_end_stack: List[str] = [] # A stack of node names.
