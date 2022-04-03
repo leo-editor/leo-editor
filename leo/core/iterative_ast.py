@@ -35,10 +35,10 @@ has_async_tokens = (3, 5) <= py_version <= (3, 6)
 #@+node:ekr.20220330191947.1: ** class IterativeTokenGenerator
 class IterativeTokenGenerator:
     """
-    Iterative token syncing class.
+    Self-contained iterative token syncing class.
     """
     
-    begin_end_stack: List[str] = []
+    begin_end_stack: List[str] = [] # A stack of node names.
     n_nodes = 0  # The number of nodes that have been visited.
     node = None  # The current node.
     node_index = 0  # The index into the node_stack.
@@ -104,7 +104,6 @@ class IterativeTokenGenerator:
         Create links between tokens and the parse tree.
         Return (contents, encoding, tokens, tree).
         """
-        self.level = 0
         self.filename = filename
         encoding, contents = read_file_with_encoding(filename)
         if not contents:
@@ -121,7 +120,6 @@ class IterativeTokenGenerator:
         Return (tokens, tree).
         """
         self.filename = filename
-        self.level = 0
         self.tokens = tokens = make_tokens(contents)
         self.tree = tree = parse_ast(contents)
         self.create_links(tokens, tree)
@@ -514,9 +512,7 @@ class IterativeTokenGenerator:
         # Body...
         result.extend([
             (self.op, ':'),
-            # (self.change_level, self.level + 1),
             (self.visit, node.body),
-            # (self.change_level, self.level),
         ])
         return result
     #@+node:ekr.20220330133336.7: *5* iterative.ClassDef
@@ -542,9 +538,7 @@ class IterativeTokenGenerator:
             ])
         result.extend([
             (self.op, ':'),
-            # (self.change_level, self.level + 1),
             (self.visit, node.body),
-            # (self.change_level, self.level),
         ])
         return result
     #@+node:ekr.20220330133336.8: *5* iterative.FunctionDef
@@ -584,9 +578,7 @@ class IterativeTokenGenerator:
         # Body...
         result.extend([
             (self.op, ':'),
-            # (self.change_level, self.level + 1),
             (self.visit, node.body),
-            # (self.change_level, self.level),
         ])
         return result
     #@+node:ekr.20220330133336.9: *5* iterative.Interactive
@@ -1149,7 +1141,6 @@ class IterativeTokenGenerator:
             (self.visit, node.iter),
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
         ]
         # Else clause...
@@ -1159,7 +1150,6 @@ class IterativeTokenGenerator:
                 (self.op, ':'),
                 (self.visit, node.orelse),
             ])
-        # self.level -= 1
         return result
     #@+node:ekr.20220330133336.52: *5* iterative.AsyncWith
     def do_AsyncWith(self, node: Node) -> ActionList:
@@ -1311,9 +1301,7 @@ class IterativeTokenGenerator:
         result.extend([
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
-            # self.level -= 1
         ])
         return result
     #@+node:ekr.20220330133336.62: *5* iterative.For
@@ -1327,7 +1315,6 @@ class IterativeTokenGenerator:
             (self.visit, node.iter),
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
         ]
         # Else clause...
@@ -1337,7 +1324,6 @@ class IterativeTokenGenerator:
                 (self.op, ':'),
                 (self.visit, node.orelse),
             ])
-        # self.level -= 1
         return result
     #@+node:ekr.20220330133336.63: *5* iterative.Global
     # Global(identifier* names)
@@ -1378,9 +1364,7 @@ class IterativeTokenGenerator:
             (self.visit, node.test),
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
-            # self.level -= 1
         ]
         # Else and elif clauses...
         if node.orelse:
@@ -1390,18 +1374,15 @@ class IterativeTokenGenerator:
         
     def if_else_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
-        # self.level += 1
         token = self.find_next_significant_token()
         if token.value == 'else':
             return [
                 (self.name, 'else'),
                 (self.op, ':'),
                 (self.visit, node.orelse),
-                # self.level -= 1
             ]
         return [
             (self.visit, node.orelse),
-            # self.level -= 1
         ]
     #@+node:ekr.20220330133336.66: *5* iterative.Import & helper
     def do_Import(self, node: Node) -> ActionList:
@@ -1666,7 +1647,6 @@ class IterativeTokenGenerator:
             (self.name, 'try'),
             (self.op, ':'),
             # Body...
-            # self.level += 1,
             (self.visit, node.body),
             (self.visit, node.handlers),
         ]
@@ -1684,7 +1664,6 @@ class IterativeTokenGenerator:
                 (self.op, ':'),
                 (self.visit, node.finalbody),
             ])
-        # self.level -= 1
         return result
     #@+node:ekr.20220330133336.83: *5* iterative.While
     def do_While(self, node: Node) -> ActionList:
@@ -1696,7 +1675,6 @@ class IterativeTokenGenerator:
             (self.visit, node.test),
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
         ]
         # Else clause...
@@ -1706,7 +1684,6 @@ class IterativeTokenGenerator:
                 (self.op, ':'),
                 (self.visit, node.orelse),
             ])
-        # self.level -= 1
         return result
     #@+node:ekr.20220330133336.84: *5* iterative.With
     # With(withitem* items, stmt* body)
@@ -1734,9 +1711,7 @@ class IterativeTokenGenerator:
             # End the line.
             (self.op, ':'),
             # Body...
-            # self.level += 1
             (self.visit, node.body),
-            #self.level -= 1
         ])
         return result
     #@+node:ekr.20220330133336.85: *5* iterative.Yield
