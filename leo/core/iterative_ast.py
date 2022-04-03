@@ -344,7 +344,7 @@ class IterativeTokenGenerator:
                     # print(repr(data))
                 # raise
     #@+node:ekr.20220330155314.1: *4* iterative.visit
-    def visit(self, node: Node) -> List:
+    def visit(self, node: Node) -> ActionList:
         """'Visit' an ast node by return a new list of tuples."""
         # Keep this trace.
         if False:  # pragma: no cover
@@ -391,7 +391,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.4: *5*  iterative.arg
     # arg = (identifier arg, expr? annotation)
 
-    def do_arg(self, node: Node) -> List:
+    def do_arg(self, node: Node) -> ActionList:
         """This is one argument of a list of ast.Function or ast.Lambda arguments."""
 
         annotation = getattr(node, 'annotation', None)
@@ -411,7 +411,7 @@ class IterativeTokenGenerator:
     #       expr* kw_defaults, arg? kwarg, expr* defaults
     # )
 
-    def do_arguments(self, node: Node) -> List:
+    def do_arguments(self, node: Node) -> ActionList:
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
         #
         # No need to generate commas anywhere below.
@@ -423,7 +423,7 @@ class IterativeTokenGenerator:
         kwonlyargs = getattr(node, 'kwonlyargs', [])
         kw_defaults = getattr(node, 'kw_defaults', [])
         kwarg = getattr(node, 'kwarg', None)
-        result: List = []
+        result: ActionList = []
         # 1. Sync the position-only args.
         if posonlyargs:
             for n, z in enumerate(posonlyargs):
@@ -482,10 +482,10 @@ class IterativeTokenGenerator:
     # AsyncFunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_AsyncFunctionDef(self, node: Node) -> List:
+    def do_AsyncFunctionDef(self, node: Node) -> ActionList:
 
         returns = getattr(node, 'returns', None)
-        result = []
+        result: ActionList = []
         # Decorators...
             # @{z}\n
         for z in node.decorator_list or []:
@@ -518,9 +518,9 @@ class IterativeTokenGenerator:
         ])
         return result
     #@+node:ekr.20220330133336.7: *5* iterative.ClassDef
-    def do_ClassDef(self, node: Node) -> List:
+    def do_ClassDef(self, node: Node) -> ActionList:
         
-        result = []
+        result: ActionList = []
         for z in node.decorator_list or []:
             # @{z}\n
             result.extend([
@@ -553,10 +553,10 @@ class IterativeTokenGenerator:
     #   expr? returns,
     #   string? type_comment)
 
-    def do_FunctionDef(self, node: Node) -> List:
+    def do_FunctionDef(self, node: Node) -> ActionList:
 
         returns = getattr(node, 'returns', None)
-        result = []
+        result: ActionList = []
         # Decorators...
             # @{z}\n
         for z in node.decorator_list or []:
@@ -588,13 +588,13 @@ class IterativeTokenGenerator:
         ])
         return result
     #@+node:ekr.20220330133336.9: *5* iterative.Interactive
-    def do_Interactive(self, node: Node) -> List:  # pragma: no cover
+    def do_Interactive(self, node: Node) -> ActionList:  # pragma: no cover
 
         return [
             (self.visit, node.body),
         ]
     #@+node:ekr.20220330133336.10: *5* iterative.Lambda
-    def do_Lambda(self, node: Node) -> List:
+    def do_Lambda(self, node: Node) -> ActionList:
 
         return [
             (self.name, 'lambda'),
@@ -604,7 +604,7 @@ class IterativeTokenGenerator:
         ]
 
     #@+node:ekr.20220330133336.11: *5* iterative.Module
-    def do_Module(self, node: Node) -> List:
+    def do_Module(self, node: Node) -> ActionList:
         
         # Encoding is a non-syncing statement.
         return [
@@ -612,21 +612,21 @@ class IterativeTokenGenerator:
         ]
     #@+node:ekr.20220330133336.12: *4* iterative: Expressions
     #@+node:ekr.20220330133336.13: *5* iterative.Expr
-    def do_Expr(self, node: Node) -> List:
+    def do_Expr(self, node: Node) -> ActionList:
         """An outer expression."""
         # No need to put parentheses.
         return [
             (self.visit, node.value),
         ]
     #@+node:ekr.20220330133336.14: *5* iterative.Expression
-    def do_Expression(self, node: Node) -> List:  # pragma: no cover
+    def do_Expression(self, node: Node) -> ActionList:  # pragma: no cover
         """An inner expression."""
         # No need to put parentheses.
         return [
             (self.visit, node.body),
         ]
     #@+node:ekr.20220330133336.15: *5* iterative.GeneratorExp
-    def do_GeneratorExp(self, node: Node) -> List:
+    def do_GeneratorExp(self, node: Node) -> ActionList:
         # '<gen %s for %s>' % (elt, ','.join(gens))
         # No need to put parentheses or commas.
         return [
@@ -636,7 +636,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.16: *5* iterative.NamedExpr
     # NamedExpr(expr target, expr value)
 
-    def do_NamedExpr(self, node: Node) -> List:  # Python 3.8+
+    def do_NamedExpr(self, node: Node) -> ActionList:  # Python 3.8+
 
         return [
             (self.visit, node.target),
@@ -647,7 +647,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.2: *5* iterative.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
-    def do_Attribute(self, node: Node) -> List:
+    def do_Attribute(self, node: Node) -> ActionList:
 
         return [
             (self.visit, node.value),
@@ -655,7 +655,7 @@ class IterativeTokenGenerator:
             (self.name, node.attr),  # A string.
         ]
     #@+node:ekr.20220402160128.3: *5* iterative.Bytes
-    def do_Bytes(self, node: Node) -> List:
+    def do_Bytes(self, node: Node) -> ActionList:
 
         """
         It's invalid to mix bytes and non-bytes literals, so just
@@ -668,10 +668,10 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.4: *5* iterative.comprehension
     # comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
-    def do_comprehension(self, node: Node) -> List:
+    def do_comprehension(self, node: Node) -> ActionList:
 
         # No need to put parentheses.
-        result = [
+        result: ActionList = [
             (self.name, 'for'),
             (self.visit, node.target),  # A name
             (self.name, 'in'),
@@ -684,7 +684,7 @@ class IterativeTokenGenerator:
             ])
         return result
     #@+node:ekr.20220402160128.5: *5* iterative.Constant
-    def do_Constant(self, node: Node) -> List:  # pragma: no cover
+    def do_Constant(self, node: Node) -> ActionList:  # pragma: no cover
         """
 
         https://greentreesnakes.readthedocs.io/en/latest/nodes.html
@@ -722,7 +722,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.6: *5* iterative.Dict
     # Dict(expr* keys, expr* values)
 
-    def do_Dict(self, node: Node) -> List:
+    def do_Dict(self, node: Node) -> ActionList:
 
         assert len(node.keys) == len(node.values)
         result: List = [
@@ -744,9 +744,9 @@ class IterativeTokenGenerator:
 
     # d2 = {val: key for key, val in d}
 
-    def do_DictComp(self, node: Node) -> List:
+    def do_DictComp(self, node: Node) -> ActionList:
             
-        result = [
+        result: ActionList = [
             (self.token, ('op', '{')),
             (self.visit, node.key),
             (self.op, ':'),
@@ -760,7 +760,7 @@ class IterativeTokenGenerator:
         return result
 
     #@+node:ekr.20220402160128.8: *5* iterative.Ellipsis
-    def do_Ellipsis(self, node: Node) -> List:  # pragma: no cover (Does not exist for python 3.8+)
+    def do_Ellipsis(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist for python 3.8+)
 
         return [
             (self.op, '...'),
@@ -770,7 +770,7 @@ class IterativeTokenGenerator:
 
     # ExtSlice(slice* dims)
 
-    def do_ExtSlice(self, node: Node) -> List:  # pragma: no cover (deprecated)
+    def do_ExtSlice(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
         
         result: List = []
         for i, z in enumerate(node.dims):
@@ -781,7 +781,7 @@ class IterativeTokenGenerator:
                 result.append((self.op, ','))
         return result
     #@+node:ekr.20220402160128.10: *5* iterative.Index
-    def do_Index(self, node: Node) -> List:  # pragma: no cover (deprecated)
+    def do_Index(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
 
         return [
             (self.visit, node.value),
@@ -789,7 +789,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.11: *5* iterative.FormattedValue: not called!
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
-    def do_FormattedValue(self, node: Node) -> List:  # pragma: no cover
+    def do_FormattedValue(self, node: Node) -> ActionList:  # pragma: no cover
         """
         This node represents the *components* of a *single* f-string.
 
@@ -812,7 +812,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.12: *5* iterative.JoinedStr & helpers
     # JoinedStr(expr* values)
 
-    def do_JoinedStr(self, node: Node) -> List:
+    def do_JoinedStr(self, node: Node) -> ActionList:
         """
         JoinedStr nodes represent at least one f-string and all other strings
         concatentated to it.
@@ -829,7 +829,7 @@ class IterativeTokenGenerator:
                 for z in self.get_concatenated_string_tokens()
         ]
     #@+node:ekr.20220402160128.13: *5* iterative.List
-    def do_List(self, node: Node) -> List:
+    def do_List(self, node: Node) -> ActionList:
 
         # No need to put commas.
         return [
@@ -840,7 +840,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.14: *5* iterative.ListComp
     # ListComp(expr elt, comprehension* generators)
 
-    def do_ListComp(self, node: Node) -> List:
+    def do_ListComp(self, node: Node) -> ActionList:
 
         result: List = [
             (self.op, '['),
@@ -851,19 +851,19 @@ class IterativeTokenGenerator:
         result.append((self.op, ']'))
         return result
     #@+node:ekr.20220402160128.15: *5* iterative.Name & NameConstant
-    def do_Name(self, node: Node) -> List:
+    def do_Name(self, node: Node) -> ActionList:
 
         return [
             (self.name, node.id),
         ]
 
-    def do_NameConstant(self, node: Node) -> List:  # pragma: no cover (Does not exist in Python 3.8+)
+    def do_NameConstant(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist in Python 3.8+)
 
         return [
             (self.name, repr(node.value)),
         ]
     #@+node:ekr.20220402160128.16: *5* iterative.Num
-    def do_Num(self, node: Node) -> List:  # pragma: no cover (Does not exist in Python 3.8+)
+    def do_Num(self, node: Node) -> ActionList:  # pragma: no cover (Does not exist in Python 3.8+)
 
         return [
             (self.token, ('number', node.n)),
@@ -871,7 +871,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.17: *5* iterative.Set
     # Set(expr* elts)
 
-    def do_Set(self, node: Node) -> List:
+    def do_Set(self, node: Node) -> ActionList:
 
         return [
             (self.op, '{'),
@@ -881,7 +881,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.18: *5* iterative.SetComp
     # SetComp(expr elt, comprehension* generators)
 
-    def do_SetComp(self, node: Node) -> List:
+    def do_SetComp(self, node: Node) -> ActionList:
 
         result: List = [
             (self.op, '{'),
@@ -894,7 +894,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.19: *5* iterative.Slice
     # slice = Slice(expr? lower, expr? upper, expr? step)
 
-    def do_Slice(self, node: Node) -> List:
+    def do_Slice(self, node: Node) -> ActionList:
 
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
@@ -919,7 +919,7 @@ class IterativeTokenGenerator:
             ])
         return result
         
-    def slice_helper(self, node: Node) -> List:
+    def slice_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
         token = self.find_next_significant_token()
         if token and token.value == ':':
@@ -928,7 +928,7 @@ class IterativeTokenGenerator:
             ]
         return []
     #@+node:ekr.20220402160128.20: *5* iterative.Str & helper
-    def do_Str(self, node: Node) -> List:
+    def do_Str(self, node: Node) -> ActionList:
         """This node represents a string constant."""
         # This loop is necessary to handle string concatenation.
         
@@ -941,7 +941,7 @@ class IterativeTokenGenerator:
         ]
             
     #@+node:ekr.20220402160128.21: *6* iterative.get_concatenated_tokens
-    def get_concatenated_string_tokens(self) -> List["Token"]:
+    def get_concatenated_string_tokens(self) -> List:
         """
         Return the next 'string' token and all 'string' tokens concatenated to
         it. *Never* update self.px here.
@@ -993,7 +993,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.22: *5* iterative.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
-    def do_Subscript(self, node: Node) -> List:
+    def do_Subscript(self, node: Node) -> ActionList:
 
         return [
             (self.visit, node.value),
@@ -1004,7 +1004,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402160128.23: *5* iterative.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
-    def do_Tuple(self, node: Node) -> List:
+    def do_Tuple(self, node: Node) -> ActionList:
 
         # Do not call gen_op for parens or commas here.
         # They do not necessarily exist in the token list!
@@ -1014,7 +1014,7 @@ class IterativeTokenGenerator:
         ]
     #@+node:ekr.20220330133336.40: *4* iterative: Operators
     #@+node:ekr.20220330133336.41: *5* iterative.BinOp
-    def do_BinOp(self, node: Node) -> List:
+    def do_BinOp(self, node: Node) -> ActionList:
 
         return [
             (self.visit, node.left),
@@ -1037,7 +1037,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.43: *5* iterative.Compare
     # Compare(expr left, cmpop* ops, expr* comparators)
 
-    def do_Compare(self, node: Node) -> List:
+    def do_Compare(self, node: Node) -> ActionList:
 
         assert len(node.ops) == len(node.comparators)
         result: List = [(self.visit, node.left)]
@@ -1057,7 +1057,7 @@ class IterativeTokenGenerator:
             result.append((self.visit, node.comparators[i]))
         return result
     #@+node:ekr.20220330133336.44: *5* iterative.UnaryOp
-    def do_UnaryOp(self, node: Node) -> List:
+    def do_UnaryOp(self, node: Node) -> ActionList:
 
         op_name_ = op_name(node.op)
         result: List = []
@@ -1073,7 +1073,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.45: *5* iterative.IfExp (ternary operator)
     # IfExp(expr test, expr body, expr orelse)
 
-    def do_IfExp(self, node: Node) -> List:
+    def do_IfExp(self, node: Node) -> ActionList:
 
         #'%s if %s else %s'
         return [
@@ -1088,7 +1088,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.47: *5*  iterative.Starred
     # Starred(expr value, expr_context ctx)
 
-    def do_Starred(self, node: Node) -> List:
+    def do_Starred(self, node: Node) -> ActionList:
         """A starred argument to an ast.Call"""
         return [
             (self.op, '*'),
@@ -1097,10 +1097,10 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.48: *5* iterative.AnnAssign
     # AnnAssign(expr target, expr annotation, expr? value, int simple)
 
-    def do_AnnAssign(self, node: Node) -> List:
+    def do_AnnAssign(self, node: Node) -> ActionList:
 
         # {node.target}:{node.annotation}={node.value}\n'
-        result = [
+        result: ActionList = [
             (self.visit, node.target),
             (self.op, ':'),
             (self.visit, node.annotation),
@@ -1114,7 +1114,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.49: *5* iterative.Assert
     # Assert(expr test, expr? msg)
 
-    def do_Assert(self, node: Node) -> List:
+    def do_Assert(self, node: Node) -> ActionList:
 
         # No need to put parentheses or commas.
         msg = getattr(node, 'msg', None)
@@ -1126,9 +1126,9 @@ class IterativeTokenGenerator:
             result.append((self.visit, node.msg))
         return result
     #@+node:ekr.20220330133336.50: *5* iterative.Assign
-    def do_Assign(self, node: Node) -> List:
+    def do_Assign(self, node: Node) -> ActionList:
 
-        result = []
+        result: ActionList = []
         for z in node.targets:
             result.extend([
                 (self.visit, z),
@@ -1137,7 +1137,7 @@ class IterativeTokenGenerator:
         result.append((self.visit, node.value))
         return result
     #@+node:ekr.20220330133336.51: *5* iterative.AsyncFor
-    def do_AsyncFor(self, node: Node) -> List:
+    def do_AsyncFor(self, node: Node) -> ActionList:
 
         # The def line...
         # Py 3.8 changes the kind of token.
@@ -1163,7 +1163,7 @@ class IterativeTokenGenerator:
         # self.level -= 1
         return result
     #@+node:ekr.20220330133336.52: *5* iterative.AsyncWith
-    def do_AsyncWith(self, node: Node) -> List:
+    def do_AsyncWith(self, node: Node) -> ActionList:
 
         async_token_type = 'async' if has_async_tokens else 'name'
         return [
@@ -1173,7 +1173,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.53: *5* iterative.AugAssign
     # AugAssign(expr target, operator op, expr value)
 
-    def do_AugAssign(self, node: Node) -> List:
+    def do_AugAssign(self, node: Node) -> ActionList:
 
         # %s%s=%s\n'
         return [
@@ -1184,7 +1184,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.54: *5* iterative.Await
     # Await(expr value)
 
-    def do_Await(self, node: Node) -> List:
+    def do_Await(self, node: Node) -> ActionList:
 
         #'await %s\n'
         async_token_type = 'await' if has_async_tokens else 'name'
@@ -1193,7 +1193,7 @@ class IterativeTokenGenerator:
             (self.visit, node.value),
         ]
     #@+node:ekr.20220330133336.55: *5* iterative.Break
-    def do_Break(self, node: Node) -> List:
+    def do_Break(self, node: Node) -> ActionList:
 
         return [
             (self.name, 'break'),
@@ -1203,7 +1203,7 @@ class IterativeTokenGenerator:
 
     # Python 3 ast.Call nodes do not have 'starargs' or 'kwargs' fields.
 
-    def do_Call(self, node: Node) -> List:
+    def do_Call(self, node: Node) -> ActionList:
 
         # The calls to op(')') and op('(') do nothing by default.
         # No need to generate any commas.
@@ -1215,7 +1215,7 @@ class IterativeTokenGenerator:
             (self.op, ')'),
         ]
     #@+node:ekr.20220330133336.57: *6* iterative.arg_helper
-    def arg_helper(self, node: Node) -> List:
+    def arg_helper(self, node: Node) -> ActionList:
         """
         Yield the node, with a special case for strings.
         """
@@ -1226,7 +1226,7 @@ class IterativeTokenGenerator:
             result.append((self.visit, node))
         return result
     #@+node:ekr.20220330133336.58: *6* iterative.handle_call_arguments
-    def handle_call_arguments(self, node: Node) -> List:
+    def handle_call_arguments(self, node: Node) -> ActionList:
         """
         Generate arguments in the correct order.
 
@@ -1263,7 +1263,7 @@ class IterativeTokenGenerator:
         places = [get_pos(z) for z in args + keywords]
         places.sort(key=sort_key)
         ordered_args = [z[2] for z in places]
-        result = []
+        result: ActionList = []
         for z in ordered_args:
             if isinstance(z, ast.Starred):
                 result.extend([
@@ -1286,13 +1286,13 @@ class IterativeTokenGenerator:
                 result.append((self.arg_helper, z))
         return result
     #@+node:ekr.20220330133336.59: *5* iterative.Continue
-    def do_Continue(self, node: Node) -> List:
+    def do_Continue(self, node: Node) -> ActionList:
 
         return [
             (self.name, 'continue'),
         ]
     #@+node:ekr.20220330133336.60: *5* iterative.Delete
-    def do_Delete(self, node: Node) -> List:
+    def do_Delete(self, node: Node) -> ActionList:
 
         # No need to put commas.
         return [
@@ -1300,7 +1300,7 @@ class IterativeTokenGenerator:
             (self.visit, node.targets),
         ]
     #@+node:ekr.20220330133336.61: *5* iterative.ExceptHandler
-    def do_ExceptHandler(self, node: Node) -> List:
+    def do_ExceptHandler(self, node: Node) -> ActionList:
 
         # Except line...
         result: List = [
@@ -1322,9 +1322,9 @@ class IterativeTokenGenerator:
         ])
         return result
     #@+node:ekr.20220330133336.62: *5* iterative.For
-    def do_For(self, node: Node) -> List[Tuple[Any, Any]]:
+    def do_For(self, node: Node) -> ActionList:
 
-        result = [
+        result: ActionList = [
             # The def line...
             (self.name, 'for'),
             (self.visit, node.target),
@@ -1347,7 +1347,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.63: *5* iterative.Global
     # Global(identifier* names)
 
-    def do_Global(self, node: Node) -> List:
+    def do_Global(self, node: Node) -> ActionList:
 
         result = [
             (self.name, 'global'),
@@ -1358,7 +1358,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.64: *5* iterative.If & helpers
     # If(expr test, stmt* body, stmt* orelse)
 
-    def do_If(self, node: Node) -> List:
+    def do_If(self, node: Node) -> ActionList:
         #@+<< do_If docstring >>
         #@+node:ekr.20220330133336.65: *6* << do_If docstring >>
         """
@@ -1394,7 +1394,7 @@ class IterativeTokenGenerator:
             result.append((self.if_else_helper, node))
         return result
         
-    def if_else_helper(self, node: Node) -> List:
+    def if_else_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
         ### g.trace(node.__class__.__name__)
         # self.level += 1
@@ -1412,7 +1412,7 @@ class IterativeTokenGenerator:
             # self.level -= 1
         ]
     #@+node:ekr.20220330133336.66: *5* iterative.Import & helper
-    def do_Import(self, node: Node) -> List:
+    def do_Import(self, node: Node) -> ActionList:
 
         result: List = [
             (self.name, 'import'),
@@ -1428,7 +1428,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.67: *5* iterative.ImportFrom
     # ImportFrom(identifier? module, alias* names, int? level)
 
-    def do_ImportFrom(self, node: Node) -> List:
+    def do_ImportFrom(self, node: Node) -> ActionList:
 
         result: List = [
             (self.name, 'from'),
@@ -1457,7 +1457,7 @@ class IterativeTokenGenerator:
 
     # Full syntax diagram: # https://peps.python.org/pep-0634/#appendix-a
 
-    def do_Match(self, node: Node) -> List:
+    def do_Match(self, node: Node) -> ActionList:
 
         cases = getattr(node, 'cases', [])
         result: List = [
@@ -1471,7 +1471,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.2: *6* iterative.match_case
     #  match_case = (pattern pattern, expr? guard, stmt* body)
 
-    def do_match_case(self, node: Node) -> List:
+    def do_match_case(self, node: Node) -> ActionList:
 
         guard = getattr(node, 'guard', None)
         body = getattr(node, 'body', [])
@@ -1491,10 +1491,10 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.3: *6* iterative.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
-    def do_MatchAs(self, node: Node) -> List:
+    def do_MatchAs(self, node: Node) -> ActionList:
         pattern = getattr(node, 'pattern', None)
         name = getattr(node, 'name', None)
-        result = []
+        result: ActionList = []
         if pattern and name:
             result.extend([
                 (self.visit, pattern),
@@ -1509,7 +1509,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.4: *6* iterative.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
-    def do_MatchClass(self, node: Node) -> List:
+    def do_MatchClass(self, node: Node) -> ActionList:
 
         cls = node.cls
         patterns = getattr(node, 'patterns', [])
@@ -1532,7 +1532,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.5: *6* iterative.MatchMapping
     # MatchMapping(expr* keys, pattern* patterns, identifier? rest)
 
-    def do_MatchMapping(self, node: Node) -> List:
+    def do_MatchMapping(self, node: Node) -> ActionList:
         keys = getattr(node, 'keys', [])
         patterns = getattr(node, 'patterns', [])
         rest = getattr(node, 'rest', None)
@@ -1555,7 +1555,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.6: *6* iterative.MatchOr
     # MatchOr(pattern* patterns)
 
-    def do_MatchOr(self, node: Node) -> List:
+    def do_MatchOr(self, node: Node) -> ActionList:
 
         patterns = getattr(node, 'patterns', [])
         result: List = []
@@ -1567,7 +1567,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.7: *6* iterative.MatchSequence
     # MatchSequence(pattern* patterns)
 
-    def do_MatchSequence(self, node: Node) -> List:
+    def do_MatchSequence(self, node: Node) -> ActionList:
         patterns = getattr(node, 'patterns', [])
         result: List = []
         # Scan for the next '(' or '[' token, skipping the 'case' token.
@@ -1592,7 +1592,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.8: *6* iterative.MatchSingleton
     # MatchSingleton(constant value)
 
-    def do_MatchSingleton(self, node: Node) -> List:
+    def do_MatchSingleton(self, node: Node) -> ActionList:
         """Match True, False or None."""
         return [
             (self.token, ('name', repr(node.value))),
@@ -1600,7 +1600,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.9: *6* iterative.MatchStar
     # MatchStar(identifier? name)
 
-    def do_MatchStar(self, node: Node) -> List:
+    def do_MatchStar(self, node: Node) -> ActionList:
 
         name = getattr(node, 'name', None)
         result: List = [
@@ -1612,7 +1612,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220402124844.10: *6* iterative.MatchValue
     # MatchValue(expr value)
 
-    def do_MatchValue(self, node: Node) -> List:
+    def do_MatchValue(self, node: Node) -> ActionList:
 
         return [
             (self.visit, node.value),
@@ -1620,7 +1620,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.78: *5* iterative.Nonlocal
     # Nonlocal(identifier* names)
 
-    def do_Nonlocal(self, node: Node) -> List:
+    def do_Nonlocal(self, node: Node) -> ActionList:
 
         # nonlocal %s\n' % ','.join(node.names))
         # No need to put commas.
@@ -1631,7 +1631,7 @@ class IterativeTokenGenerator:
             result.append((self.name, z))
         return result
     #@+node:ekr.20220330133336.79: *5* iterative.Pass
-    def do_Pass(self, node: Node) -> List:
+    def do_Pass(self, node: Node) -> ActionList:
 
         return ([
             (self.name, 'pass'),
@@ -1639,7 +1639,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.80: *5* iterative.Raise
     # Raise(expr? exc, expr? cause)
 
-    def do_Raise(self, node: Node) -> List:
+    def do_Raise(self, node: Node) -> ActionList:
 
         # No need to put commas.
         exc = getattr(node, 'exc', None)
@@ -1658,7 +1658,7 @@ class IterativeTokenGenerator:
         return result
 
     #@+node:ekr.20220330133336.81: *5* iterative.Return
-    def do_Return(self, node: Node) -> List:
+    def do_Return(self, node: Node) -> ActionList:
 
         return [
             (self.name, 'return'),
@@ -1667,7 +1667,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.82: *5* iterative.Try
     # Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
-    def do_Try(self, node: Node) -> List:
+    def do_Try(self, node: Node) -> ActionList:
 
         result: List = [
             # Try line...
@@ -1695,7 +1695,7 @@ class IterativeTokenGenerator:
         # self.level -= 1
         return result
     #@+node:ekr.20220330133336.83: *5* iterative.While
-    def do_While(self, node: Node) -> List:
+    def do_While(self, node: Node) -> ActionList:
 
         # While line...
             # while %s:\n'
@@ -1721,7 +1721,7 @@ class IterativeTokenGenerator:
 
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node: Node) -> List:
+    def do_With(self, node: Node) -> ActionList:
 
         expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
         items: List[ast.AST] = getattr(node, 'items', [])
@@ -1748,7 +1748,7 @@ class IterativeTokenGenerator:
         ])
         return result
     #@+node:ekr.20220330133336.85: *5* iterative.Yield
-    def do_Yield(self, node: Node) -> List:
+    def do_Yield(self, node: Node) -> ActionList:
 
         result: List = [
             (self.name, 'yield'),
@@ -1761,7 +1761,7 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.86: *5* iterative.YieldFrom
     # YieldFrom(expr value)
 
-    def do_YieldFrom(self, node: Node) -> List:
+    def do_YieldFrom(self, node: Node) -> ActionList:
 
         return ([
             (self.name, 'yield'),
