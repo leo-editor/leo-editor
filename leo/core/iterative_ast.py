@@ -6,7 +6,7 @@
 #@+node:ekr.20220402095728.1: ** << imports >> (iterative_ast.py)
 import ast
 import sys
-from typing import Any, List, Optional, Tuple  # Dict, Generator, Union
+from typing import Any, Callable, List, Optional, Tuple  # Dict, Generator, Union
 # Use existing classes.
 from leo.core.leoAst import AssignLinksError
 from leo.core.leoAst import LeoGlobals
@@ -23,6 +23,8 @@ from leo.core.leoAst import read_file_with_encoding
 #@-<< imports >>
 
 Node = ast.AST
+ActionList = List[Tuple[Callable, Any]]
+
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
@@ -315,7 +317,7 @@ class IterativeTokenGenerator:
         if not func:
             print('main_loop: invalid ast node:', repr(node))
             return
-        exec_list = [(func, node)]
+        exec_list: ActionList = [(func, node)]
         while exec_list:
             func, arg = exec_list.pop(0)
             result = func(arg)
@@ -1023,9 +1025,9 @@ class IterativeTokenGenerator:
     #@+node:ekr.20220330133336.42: *5* iterative.BoolOp
     # BoolOp(boolop op, expr* values)
 
-    def do_BoolOp(self, node: Node) -> List:
+    def do_BoolOp(self, node: Node) -> ActionList:
 
-        result = []
+        result: ActionList = []
         op_name_ = op_name(node.op)
         for i, z in enumerate(node.values):
             result.append((self.visit, z))
