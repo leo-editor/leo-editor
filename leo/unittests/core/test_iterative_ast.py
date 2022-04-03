@@ -4,19 +4,22 @@
 #@@first
 """Tests of iterative_ast.py"""
 import ast
+import sys
 import textwrap
 import warnings
 from leo.core import leoGlobals as g
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree
 from leo.core.iterative_ast import IterativeTokenGenerator
 from leo.unittests.core.test_leoAst import TestTOG, get_time
-
 try:
     # Suppress a warning about imp being deprecated.
     with warnings.catch_warnings():
         import black
 except Exception:  # pragma: no cover
     black = None
+    
+v1, v2, junk1, junk2, junk3 = sys.version_info
+py_version = (v1, v2)
 
 #@+others
 #@+node:ekr.20220402152331.1: ** class TestIterative
@@ -43,7 +46,8 @@ class TestIterative(TestTOG):
         # Ensure all tests end in exactly one newline.
         contents = textwrap.dedent(contents).rstrip() + '\n'
         # Create the TOG instance.
-        self.tog = IterativeTokenGenerator()  ### TokenOrderGenerator()
+        ### This next line is why we must copy this entire method.
+        self.tog = IterativeTokenGenerator()  # Was TokenOrderGenerator().
         self.tog.filename = description or g.callers(2).split(',')[0]
         # Pass 0: create the tokens and parse tree
         tokens = self.make_tokens(contents)
@@ -55,11 +59,11 @@ class TestIterative(TestTOG):
         if 'contents' in self.debug_list:
             dump_contents(contents)
         if 'ast' in self.debug_list:
-            if True:  ###py_version >= (3, 9):
+            if py_version >= (3, 9):
                 # pylint: disable=unexpected-keyword-arg
                 g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
-            # else:
-            #     g.printObj(ast.dump(tree), tag='ast.dump')
+            else:
+                g.printObj(ast.dump(tree), tag='ast.dump')
         if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)  # pragma: no cover
         if 'tokens' in self.debug_list:
@@ -78,6 +82,34 @@ class TestIterative(TestTOG):
         return contents, tokens, tree
     #@+node:ekr.20220403063148.1: *3* Copies of TestOrange tests
     # Required for full coverage.
+    # These might migrate to the TestTOG class.
+    #@+node:ekr.20220403063936.1: *4* TestIterative.test_relative_imports
+    def test_relative_imports(self):
+
+        # #2533.
+        contents = """\
+            from .module1 import w
+            from . module2 import x
+            from ..module1 import y
+            from .. module2 import z
+            from . import a
+            from.import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
+    """
+        expected = textwrap.dedent("""\
+            from .module1 import w
+            from .module2 import x
+            from ..module1 import y
+            from ..module2 import z
+            from . import a
+            from . import b
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
+    """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(expected, results)
     #@+node:ekr.20220403062001.1: *4* TestIterative.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
         
