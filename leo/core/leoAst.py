@@ -366,10 +366,11 @@ def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) ->
 
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
-            print(f"orange {filename}")
+            # print(f"orange {filename}")
             Orange(settings).beautify_file(filename)
         else:
             print(f"file not found: {filename}")
+    print(f"Orange: {len(files)} files")
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
 def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
@@ -390,10 +391,11 @@ if 1:  # pragma: no cover
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
         # For now, use EKR's prefs.
-        settings_dict: Dict[str, Any] =   {
+        settings_dict: Dict[str, Any] = {
             'allow_joined_strings': False,
             'max_join_line_length': 0,
             'max_split_line_length': 0,
+            'tab_width': 4,
         }
         # Execute the command
         if args.f:
