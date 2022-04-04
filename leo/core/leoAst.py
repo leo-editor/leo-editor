@@ -423,7 +423,7 @@ if 1:  # pragma: no cover
         add2('--max-join', dest='max_join', metavar='N', type=int,
             help='max unsplit line length (default 0)')
         add2('--max-split', dest='max_split', metavar='N', type=int,
-            help='max unjoined line length (default 0)'),
+            help='max unjoined line length (default 0)')
         add2('--tab-width', dest='tab_width', metavar='N', type=int,
             help='tab-width (default -4)')
         # Create the return values, using EKR's prefs as the defaults.
