@@ -427,14 +427,14 @@ if 1:  # pragma: no cover
         add2('--tab-width', dest='tab_width', metavar='N', type=int,
             help='tab-width (default -4)')
         # Create the return values, using EKR's prefs as the defaults.
-        parser.set_defaults(allow_joined=False, max_join=0, max_split=0, tab_width=-4)
+        parser.set_defaults(allow_joined=False, max_join=0, max_split=0, tab_width=4)
         args = parser.parse_args()
         files = args.PATHS
         settings_dict: Dict[str, Any] = {
             'allow_joined_strings': args.allow_joined,
             'max_join_line_length': args.max_join,
             'max_split_line_length': args.max_split,
-            'tab_width': args.tab_width,
+            'tab_width': abs(args.tab_width),  # Must be positive!
         }
         return args, settings_dict, files
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
