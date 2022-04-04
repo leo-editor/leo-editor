@@ -404,7 +404,9 @@ if 1:  # pragma: no cover
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
-        parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
+        parser = argparse.ArgumentParser(
+            description=description,
+            formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
         add = group.add_argument
@@ -430,13 +432,13 @@ if 1:  # pragma: no cover
         parser.set_defaults(allow_joined=False, max_join=0, max_split=0, tab_width=4)
         args = parser.parse_args()
         files = args.PATHS
+        # Create the settings dict, ensuring proper values.
         settings_dict: Dict[str, Any] = {
             'allow_joined_strings': bool(args.allow_joined),
             'max_join_line_length': abs(args.max_join),
             'max_split_line_length': abs(args.max_split),
             'tab_width': abs(args.tab_width),  # Must be positive!
         }
-        ### g.printObj(settings_dict)  ###
         return args, settings_dict, files
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
