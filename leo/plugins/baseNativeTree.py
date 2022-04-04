@@ -4,6 +4,6 @@
 #@@first
 #@@language python
 #@@tabwidth -4
-print('===== baseNativeTree.py is no longer used.''')
+print('===== baseNativeTree.py is no longer used.')
 
 #@-leo
