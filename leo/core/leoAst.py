@@ -362,21 +362,21 @@ def fstringify_diff_command(files: List[str]) -> None:
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20200702115002.1: *3* command: orange_command
-def orange_command(files: List[str]) -> None:
+def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"orange {filename}")
-            Orange().beautify_file(filename)
+            Orange(settings).beautify_file(filename)
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-def orange_diff_command(files: List[str]) -> None:
+def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
     for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"orange-diff {filename}")
-            Orange().beautify_file_diff(filename)
+            Orange(settings).beautify_file_diff(filename)
         else:
             print(f"file not found: {filename}")
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
@@ -385,6 +385,27 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
     def main() -> None:
         """Run commands specified by sys.argv."""
+        args, files = scan_ast_args()
+        # Handle directory arguments.
+        if len(files) == 1 and os.path.isdir(files[0]):
+            files = glob.glob(f"{files[0]}{os.sep}*.py")
+        # For now, use EKR's prefs.
+        settings_dict: Dict[str, Any] =   {
+            'allow_joined_strings': False,
+            'max_join_line_length': 0,
+            'max_split_line_length': 0,
+        }
+        # Execute the command
+        if args.f:
+            fstringify_command(files)
+        if args.fd:
+            fstringify_diff_command(files)
+        if args.o:
+            orange_command(files, settings_dict)
+        if args.od:
+            orange_diff_command(files, settings_dict)
+    #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
+    def scan_ast_args():
         description = textwrap.dedent("""\
             leo-editor/leo/unittests/core/test_leoAst.py contains unit tests (100% coverage).
         """)
@@ -392,22 +413,23 @@ if 1:  # pragma: no cover
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
         add = group.add_argument
-        add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
-        add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
-        add('--orange', dest='o', action='store_true', help='leonine Black')
-        add('--orange-diff', dest='od', action='store_true', help='show orange diff')
+        add('--fstringify', dest='f', action='store_true',
+            help='leonine fstringify')
+        add('--fstringify-diff', dest='fd', action='store_true',
+            help='show fstringify diff')
+        add('--orange', dest='o', action='store_true',
+            help='leonine beautify file/directory')
+        add('--orange-diff', dest='od', action='store_true',
+            help='show orange diff')
+        # add('--allow-joined', dest='allow_joined', action='store_true', ###metavar='FILES',
+            # help='allow joined strings')
+        # add('--max-join', dest='max_join',
+            # help='max unsplit line length (default 0)')
+        # add('--max-split', dest='max_split',
+            # help='max unjoined line length')
         args = parser.parse_args()
         files = args.PATHS
-        if len(files) == 1 and os.path.isdir(files[0]):
-            files = glob.glob(f"{files[0]}{os.sep}*.py")
-        if args.f:
-            fstringify_command(files)
-        if args.fd:
-            fstringify_diff_command(files)
-        if args.o:
-            orange_command(files)
-        if args.od:
-            orange_diff_command(files)
+        return args, files
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
     def regularize_nls(s: str) -> str:
@@ -1650,13 +1672,13 @@ class IterativeTokenGenerator:
     actions have eaten all previous tokens. So do_If (and other visitors)
     must queue up **helper actions** for later (delayed) execution.
     """
-    
-    begin_end_stack: List[str] = [] # A stack of node names.
+
+    begin_end_stack: List[str] = []  # A stack of node names.
     n_nodes = 0  # The number of nodes that have been visited.
     node = None  # The current node.
     node_index = 0  # The index into the node_stack.
     node_stack: List[ast.AST] = []  # The stack of parent nodes.
-    
+
     #@+others
     #@+node:ekr.20220402095550.1: *4* iterative: Init...
     # Same as in the TokenOrderGenerator class.
@@ -1747,7 +1769,7 @@ class IterativeTokenGenerator:
     #            say via monkey-patching.
     #
     #            So I just copied/pasted these methods. This strategy suffices
-    #            to illustrate the ideas presented in this class. 
+    #            to illustrate the ideas presented in this class.
 
     #@+node:ekr.20220402094825.2: *5* iterative.find_next_significant_token
     def find_next_significant_token(self) -> Optional["Token"]:
@@ -1932,7 +1954,7 @@ class IterativeTokenGenerator:
         self.node = self.node_stack.pop()
     #@+node:ekr.20220330120220.1: *5* iterative.main_loop
     def main_loop(self, node: Node) -> None:
-        
+
         func = getattr(self, 'do_' + node.__class__.__name__, None)
         if not func:  # pragma: no cover (defensive code)
             print('main_loop: invalid ast node:', repr(node))
@@ -2124,7 +2146,7 @@ class IterativeTokenGenerator:
         return result
     #@+node:ekr.20220330133336.7: *6* iterative.ClassDef
     def do_ClassDef(self, node: Node) -> ActionList:
-        
+
         result: ActionList = []
         for z in node.decorator_list or []:
             # @{z}\n
@@ -2206,7 +2228,7 @@ class IterativeTokenGenerator:
 
     #@+node:ekr.20220330133336.11: *6* iterative.Module
     def do_Module(self, node: Node) -> ActionList:
-        
+
         # Encoding is a non-syncing statement.
         return [
             (self.visit, node.body),
@@ -2346,7 +2368,7 @@ class IterativeTokenGenerator:
     # d2 = {val: key for key, val in d}
 
     def do_DictComp(self, node: Node) -> ActionList:
-            
+
         result: ActionList = [
             (self.token, ('op', '{')),
             (self.visit, node.key),
@@ -2372,7 +2394,7 @@ class IterativeTokenGenerator:
     # ExtSlice(slice* dims)
 
     def do_ExtSlice(self, node: Node) -> ActionList:  # pragma: no cover (deprecated)
-        
+
         result: ActionList = []
         for i, z in enumerate(node.dims):
             result.append((self.visit, z))
@@ -2529,7 +2551,7 @@ class IterativeTokenGenerator:
             (self.token, (z.kind, z.value))
                 for z in self.get_concatenated_string_tokens()
         ]
-            
+
     #@+node:ekr.20220402160128.21: *7* iterative.get_concatenated_tokens
     def get_concatenated_string_tokens(self) -> List:
         """
@@ -2598,7 +2620,7 @@ class IterativeTokenGenerator:
 
         # Do not call gen_op for parens or commas here.
         # They do not necessarily exist in the token list!
-        
+
         return [
             (self.visit, node.elts),
         ]
@@ -2666,7 +2688,7 @@ class IterativeTokenGenerator:
             (self.name, 'else'),
             (self.visit, node.orelse),
         ]
-        
+
     #@+node:ekr.20220330133336.46: *5* iterative: Statements
     #@+node:ekr.20220330133336.47: *6*  iterative.Starred
     # Starred(expr value, expr_context ctx)
@@ -2834,9 +2856,9 @@ class IterativeTokenGenerator:
         def sort_key(aTuple: Tuple) -> int:
             line, col, obj = aTuple
             return line * 1000 + col
-            
+
         assert py_version >= (3, 9)
-        
+
         places = [get_pos(z) for z in args + keywords]
         places.sort(key=sort_key)
         ordered_args = [z[2] for z in places]
@@ -2963,7 +2985,7 @@ class IterativeTokenGenerator:
             # We *must* delay the evaluation of the else clause.
             result.append((self.if_else_helper, node))
         return result
-        
+
     def if_else_helper(self, node: Node) -> ActionList:
         """Delayed evaluation!"""
         token = self.find_next_significant_token()
@@ -3355,7 +3377,7 @@ class Orange:
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
-    def __init__(self, settings: Optional[Dict]=None):
+    def __init__(self, settings: Optional[Dict[str, Any]]=None):
         """Ctor for Orange class."""
         if settings is None:
             settings = {}
@@ -4199,10 +4221,6 @@ class Orange:
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
     #@-others
-#@+node:ekr.20200107170847.1: *3* class OrangeSettings
-class OrangeSettings:
-
-    pass
 #@+node:ekr.20200107170126.1: *3* class ParseState
 class ParseState:
     """
