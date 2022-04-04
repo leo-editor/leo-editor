@@ -431,11 +431,12 @@ if 1:  # pragma: no cover
         args = parser.parse_args()
         files = args.PATHS
         settings_dict: Dict[str, Any] = {
-            'allow_joined_strings': args.allow_joined,
-            'max_join_line_length': args.max_join,
-            'max_split_line_length': args.max_split,
+            'allow_joined_strings': bool(args.allow_joined),
+            'max_join_line_length': abs(args.max_join),
+            'max_split_line_length': abs(args.max_split),
             'tab_width': abs(args.tab_width),  # Must be positive!
         }
+        ### g.printObj(settings_dict)  ###
         return args, settings_dict, files
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
