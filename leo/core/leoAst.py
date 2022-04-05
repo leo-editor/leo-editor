@@ -386,10 +386,11 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
     def main() -> None:
         """Run commands specified by sys.argv."""
-        args, settings_dict, files = scan_ast_args()
-        # Handle directory arguments.
+        args, settings_dict, files, recursive = scan_ast_args()
+        # Handle directory arguments
+        g.trace(recursive, os.path.isdir(files[0]), len(files), files[0])
         if len(files) == 1 and os.path.isdir(files[0]):
-            files = glob.glob(f"{files[0]}{os.sep}*.py")
+            files = glob.glob(f"**{os.sep}*.py", recursive=recursive)
         # Execute the command
         if args.f:
             fstringify_command(files)
@@ -400,7 +401,7 @@ if 1:  # pragma: no cover
         if args.od:
             orange_diff_command(files, settings_dict)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> Tuple[Any, Dict[str, Any], List[str]]:
+    def scan_ast_args() -> Tuple[Any, Dict[str, Any], List[str], bool]:
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
@@ -426,12 +427,21 @@ if 1:  # pragma: no cover
             help='max unsplit line length (default 0)')
         add2('--max-split', dest='max_split', metavar='N', type=int,
             help='max unjoined line length (default 0)')
+        add2('--recursive', dest='recursive', action='store_true',
+            help='include directories recursively')
         add2('--tab-width', dest='tab_width', metavar='N', type=int,
             help='tab-width (default -4)')
         # Create the return values, using EKR's prefs as the defaults.
-        parser.set_defaults(allow_joined=False, max_join=0, max_split=0, tab_width=4)
+        parser.set_defaults(
+            allow_joined=False,
+            max_join=0,
+            max_split=0,
+            recursive=False,
+            tab_width=4,
+        )
         args = parser.parse_args()
         files = args.PATHS
+        recursive = args.recursive
         # Create the settings dict, ensuring proper values.
         settings_dict: Dict[str, Any] = {
             'allow_joined_strings': bool(args.allow_joined),
@@ -439,7 +449,7 @@ if 1:  # pragma: no cover
             'max_split_line_length': abs(args.max_split),
             'tab_width': abs(args.tab_width),  # Must be positive!
         }
-        return args, settings_dict, files
+        return args, settings_dict, files, recursive
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
     def regularize_nls(s: str) -> str:
