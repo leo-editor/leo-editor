@@ -1031,7 +1031,7 @@ class AssignLinksError(Exception):
 
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
-    
+
 class BeautifyError(Exception):
     """Leading tabs found."""
 
@@ -3502,9 +3502,6 @@ class Orange:
         try:
             results = self.beautify(contents, filename, tokens, tree)
         except BeautifyError:
-            # g.trace('-----', filename)
-            # g.es_exception() ###
-            # g.pdb()
             return False  # #2578. Leading tabs found.
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
