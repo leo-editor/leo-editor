@@ -392,7 +392,7 @@ if 1:  # pragma: no cover
         for path in arg_files:
             if os.path.isdir(path):
                 root_dir = os.path.join(cwd, path)
-                inner_files = glob.glob('*.py', recursive=recursive, root_dir=root_dir)
+                inner_files = glob.glob('*.py', root_dir=root_dir, recursive=recursive)  # type:ignore
                 files.extend([os.path.join(root_dir, z) for z in inner_files])
             else:
                 files.append(path)
