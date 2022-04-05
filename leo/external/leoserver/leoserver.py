@@ -23,7 +23,7 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
         else:
             assert self.path == '/get_tree'
             c = self.server.namespace['c']
-            nodes = [{'h':i.h, 'b':i.b} for i in c.p.self_and_siblings()]
+            nodes = [{'h': i.h, 'b': i.b} for i in c.p.self_and_siblings()]
                                       # for i in c.all_positions()
             response = {'nodes': nodes}
             self.wfile.write(json.dumps(response).encode('utf-8'))
@@ -44,7 +44,7 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
         else:
             # An expression.
             result = eval(command, self.server.namespace)
-            response = {'answer': repr(result)+'\n'}
+            response = {'answer': repr(result) + '\n'}
         s = json.dumps(response).encode('utf-8')
         self.wfile.write(s)
     #@-others
@@ -55,9 +55,9 @@ def open_bridge():
     controller = leoBridge.controller(
         gui='nullGui',
         loadPlugins=False,  # True: attempt to load plugins.
-        readSettings=False, # True: read standard settings files.
-        silent=True,       # True: don't print signon messages.
-        verbose=False,      # True: print informational messages.
+        readSettings=False,  # True: read standard settings files.
+        silent=True,  # True: don't print signon messages.
+        verbose=False,  # True: print informational messages.
     )
     g = controller.globals()
     return controller, g
@@ -74,10 +74,10 @@ STATIC_FILES = {
     '/index.html': join(loadDir, '..', 'external', 'leoserver', 'leoserver.html'),
     # '/leoserver.js': 'leoserver.js',
     # '/leoserver.js': 'c:/test/Terry/leoserver.js',
-    '/leoserver.js': join(loadDir,'..', 'external', 'leoserver', 'leoserver.js'),
+    '/leoserver.js': join(loadDir, '..', 'external', 'leoserver', 'leoserver.js'),
     # '/leoserver.css': 'leoserver.css',
     # '/leoserver.css': 'c:/test/Terry/leoserver.css',
-    '/leoserver.css': join(loadDir,'..', 'external', 'leoserver', 'leoserver.css'),
+    '/leoserver.css': join(loadDir, '..', 'external', 'leoserver', 'leoserver.css'),
 }
 
 #@-<< define STATIC_FILES >>
