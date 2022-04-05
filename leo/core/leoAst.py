@@ -391,8 +391,8 @@ if 1:  # pragma: no cover
         cwd, files = os.getcwd(), []
         for path in arg_files:
             root_dir = os.path.join(cwd, path)
-            # g.trace(root_dir, recursive)
-            inner_files = glob.glob(f'**{os.sep}*.py', root_dir=root_dir, recursive=recursive)  # type:ignore
+            inner_files = glob.glob(f'**{os.sep}*.py',
+                root_dir=root_dir, recursive=recursive)  # type:ignore
             files.extend([os.path.join(root_dir, z) for z in inner_files])
         if not files:
             print('No files found')
