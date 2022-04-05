@@ -3460,7 +3460,6 @@ class Orange:
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
-        self.indent_stack: List[str] = []  # Stack of indent/dedent values.
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
