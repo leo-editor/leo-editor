@@ -391,15 +391,12 @@ if 1:  # pragma: no cover
         cwd, files = os.getcwd(), []
         for path in arg_files:
             if os.path.isdir(path):
-                inner_files = glob.glob('*.py',
-                    recursive=recursive,
-                    root_dir=os.path.join(cwd, path),
-                )
-                ### g.printObj(inner_files, tag=path)
-                files.extend(inner_files)
+                root_dir = os.path.join(cwd, path)
+                inner_files = glob.glob('*.py', recursive=recursive, root_dir=root_dir)
+                files.extend([os.path.join(root_dir, z) for z in inner_files])
             else:
                 files.append(path)
-        ### g.printObj(files, tag=os.getcwd())
+        ### g.printObj(files, tag='All files')
         # Execute the command
         if args.f:
             fstringify_command(files)
