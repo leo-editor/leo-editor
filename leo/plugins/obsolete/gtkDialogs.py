@@ -35,7 +35,7 @@ in the @settings tree of myLeoSettings.leo.
 #@+node:bob.20071220123624:<< version history >>
 #@@killcolor
 #@+at
-# 
+#
 # 1.1 plumloco: Initial version
 # 1.2 plumloco: Changed root node to fit in leoPlugins
 # 1.3 plumloco: check for c is None in hook handler
@@ -68,7 +68,7 @@ import re
 
 __revision__ = re.sub(r'^\D+([\d\.]+)\D+$', r'\1', "$Revision: 1.3 $")
 
-__version__ = '0.%s'% __revision__
+__version__ = '0.%s' % __revision__
 
 __plugin_name__ = "GTK Dialogs"
 
@@ -79,7 +79,7 @@ __author__ = "plumloco@hcoop.net"
 
 #@+others
 #@+node:bob.20071220111856:init
-def init ():
+def init():
 
     if g.unitTesting:
         return False
@@ -92,7 +92,7 @@ def init ():
     return ok
 #@-node:bob.20071220111856:init
 #@+node:bob.20071220110328:onStart2
-def onStart2 (tag, keywords):
+def onStart2(tag, keywords):
 
     """
     Replace tkfile open/save method with external calls to runGtkDialogs.
@@ -112,10 +112,10 @@ def onStart2 (tag, keywords):
     oldopen = g.app.gui.runOpenFileDialog
     oldsave = g.app.gui.runSaveFileDialog
 
-    g.funcToMethod(runOpenFileDialog,g.app.gui)
-    g.funcToMethod(runSaveFileDialog,g.app.gui)
+    g.funcToMethod(runOpenFileDialog, g.app.gui)
+    g.funcToMethod(runSaveFileDialog, g.app.gui)
 
-    pythoncommand = c.config.getString('gtkdialogs_pythoncommand') 
+    pythoncommand = c.config.getString('gtkdialogs_pythoncommand')
 
 #@-node:bob.20071220110328:onStart2
 #@+node:bob.20071220094231.10:callGtkDialogs
@@ -126,7 +126,7 @@ def callGtkDialogs(data, path='runGtkDialogs.py.txt'):
 
     path = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'plugins', path))
 
-    command = [ pythoncommand or 'python', path, data ] 
+    command = [pythoncommand or 'python', path, data]
 
 
     try:
@@ -147,7 +147,7 @@ def callGtkDialogs(data, path='runGtkDialogs.py.txt'):
     ret = o.returncode
 
 
-    if  ret or not data:
+    if ret or not data:
         return True, None
 
     return True, pickle.loads(data)
@@ -156,7 +156,7 @@ def callGtkDialogs(data, path='runGtkDialogs.py.txt'):
 
 #@-node:bob.20071220094231.10:callGtkDialogs
 #@+node:bob.20071220100337:runOpenFileDialog
-def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=False):
+def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False):
 
     """Call runGtkDialogs open file(s) dialog."""
 
@@ -177,7 +177,7 @@ def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=F
     ok, data = callGtkDialogs(data)
 
     if not ok:
-        return oldopen(title=title,filetypes=filetypes,defaultextension=defaultextension,multiple=multiple)
+        return oldopen(title=title, filetypes=filetypes, defaultextension=defaultextension, multiple=multiple)
 
 
     if data is None:
@@ -186,12 +186,12 @@ def runOpenFileDialog(title=None,filetypes=None,defaultextension=None,multiple=F
 
 #@-node:bob.20071220100337:runOpenFileDialog
 #@+node:bob.20071220100831:runSaveFileDialog
-def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextension=None):
+def runSaveFileDialog(initialfile=None, title=None, filetypes=None, defaultextension=None):
 
     """Call runGtkDialogs save file dialog."""
 
 
-    initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
+    initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
 
 
     data = {
@@ -205,7 +205,7 @@ def runSaveFileDialog(initialfile=None,title=None,filetypes=None,defaultextensio
 
     ok, data = callGtkDialogs(data)
     if not ok:
-        return oldsave(initialfile=initialfile,title=title,filetypes=none,defaultextension=none)
+        return oldsave(initialfile=initialfile, title=title, filetypes=none, defaultextension=none)
 
 
     if data is None:

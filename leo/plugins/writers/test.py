@@ -6,14 +6,14 @@ import leo.plugins.writers.basewriter as basewriter
 trace = False and not g.unitTesting
 tag = '(TestWriter)'
 if trace:
-    print('%s importing writers/test.py' % ('='*20))
+    print('%s importing writers/test.py' % ('=' * 20))
 class TestWriter(basewriter.BaseWriter):
-    def __init__(self,c):
+    def __init__(self, c):
         g.trace(tag)
-        basewriter.BaseWriter.__init__(self,c)
+        basewriter.BaseWriter.__init__(self, c)
         assert self.c
-    def write (self,root):
-        g.trace(tag,root.h)
+    def write(self, root):
+        g.trace(tag, root.h)
         return True
 
 writer_dict = {

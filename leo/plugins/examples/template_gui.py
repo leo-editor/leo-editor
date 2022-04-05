@@ -23,7 +23,7 @@ def init():
 #@+node:ekr.20170419150249.3: ** class TemplateFrame
 class TemplateFrame:
 
-    def __init__ (self, c, title):
+    def __init__(self, c, title):
         self.c = c
         self.d = {}
         self.title = title
@@ -54,7 +54,7 @@ class TemplateGui(leoGui.LeoGui):
 
         leoGui.LeoGui.__init__(self, 'curses')
             # Init the base class.
-        self.consoleOnly = True # Affects g.es, etc.
+        self.consoleOnly = True  # Affects g.es, etc.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
 
@@ -85,7 +85,7 @@ class TemplateGui(leoGui.LeoGui):
 #@+node:ekr.20170419150249.39: ** class TemplateMenu
 class TemplateMenu:
 
-    def __init__ (self, c):
+    def __init__(self, c):
         self.c = c
         self.d = {}
 

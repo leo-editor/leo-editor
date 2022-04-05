@@ -19,7 +19,7 @@ import sys
 from leo.plugins.leo_babel import babel_lib
 
 import leo.core.leoGlobals as leoG
-_ = leoG    # Keep pyflakes happy if leoG isn't used.
+_ = leoG  # Keep pyflakes happy if leoG isn't used.
 #@-<< imports >>
 
 #@+others

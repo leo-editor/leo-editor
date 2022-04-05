@@ -1,7 +1,7 @@
 # coding=utf8
 
 import sys
-isPython3 = sys.version_info >= (3,0,0)
+isPython3 = sys.version_info >= (3, 0, 0)
 
 import cgi
 import json
@@ -14,7 +14,7 @@ if isPython3:
     import http.server as BaseHTTPServer
 else:
     import BaseHTTPServer
-    
+
 if isPython3:
     import queue as Queue
 else:
@@ -105,7 +105,7 @@ class PyGeoTag(object):
             except Queue.Empty:
                 pass
 
-        self.request_queue.put({'__msg_type':'shutdown'})
+        self.request_queue.put({'__msg_type': 'shutdown'})
         time.sleep(2)  # wait for the msg to be picked up
         self.running = False
     def open_server_page(self):
@@ -117,14 +117,14 @@ class PyGeoTag(object):
         self.data = data
     def show_position(self, data={}):
 
-        print('SHOWING',data)
+        print('SHOWING', data)
 
         data["__msg_type"] = "show_position"
 
         self.request_queue.put(data)
     def request_position(self, data={}):
 
-        print('REQUESTING',data)
+        print('REQUESTING', data)
 
         data["__msg_type"] = "request_position"
 
@@ -144,7 +144,7 @@ class PyGeoTag(object):
             try:
                 self.request_queue.join_with_timeout(2)
             except QueueTimeout.NotFinished:
-                if self.running: 
+                if self.running:
                     continue
             break
 
@@ -181,7 +181,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(open(
-                os.path.join(self.owner.basedir,self.staticMap[path[0]])).read().encode('utf-8'))
+                os.path.join(self.owner.basedir, self.staticMap[path[0]])).read().encode('utf-8'))
             return
 
         if self.path.startswith("/sendPos?"):
@@ -220,10 +220,9 @@ if __name__ == '__main__':
 
     f = pgt.get_position
     f({"description": "Turtles"})
-    f({"description": "Frogs", 'secret':7})
+    f({"description": "Frogs", 'secret': 7})
     f({"description": "Otters"})
 
     print("DONE")
     if pgt.synchronous:
         pgt.stop_server()
-
