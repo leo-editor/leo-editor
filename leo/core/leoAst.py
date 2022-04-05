@@ -401,7 +401,7 @@ if 1:  # pragma: no cover
         if args.od:
             orange_diff_command(files, settings_dict)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> Tuple[Any, Dict[str, Any], List[str]]:
+    def scan_ast_args() -> Tuple[Any, Dict[str, Any], List[str], bool]:
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
