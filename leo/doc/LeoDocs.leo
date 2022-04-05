@@ -31167,8 +31167,10 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6.1**
 
-- Improved support for Python 3.10 and PyQt6.
-- Simplified leoAst.py.
+- Improve support for Python 3.10 and PyQt6.
+- Add IterativeTokenGenerator class to leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
 - Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
 
 **6.6 Links**
