@@ -370,7 +370,7 @@ def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) ->
             Orange(settings).beautify_file(filename)
         else:
             print(f"file not found: {filename}")
-    print(f"Orange: {len(files)} files")
+    print(f"Beautify done: {len(files)} files")
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
 def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
@@ -396,8 +396,11 @@ if 1:  # pragma: no cover
                 files.extend([os.path.join(root_dir, z) for z in inner_files])
             else:
                 files.append(path)
-        ### g.printObj(files, tag='All files')
-        # Execute the command
+        if not files:
+            print('No files found')
+            return
+        # Execute the command.
+        print(f"Found {len(files)} file{g.plural(len(files))}.")
         if args.f:
             fstringify_command(files)
         if args.fd:
