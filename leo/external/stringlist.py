@@ -46,7 +46,7 @@ class SList(list):
     #@nonl
     #@-node:ville.20090720135131.1501:property accessors
     #@+node:ville.20090720135131.1498:grep
-    def grep(self, pattern, prune = False, field = None):
+    def grep(self, pattern, prune=False, field=None):
         """ Return all strings matching 'pattern' (a regex or callable)
 
         This is case-insensitive. If prune is true, return all items
@@ -73,7 +73,7 @@ class SList(list):
                 return ""
 
         if isinstance(pattern, basestring):
-            pred = lambda x : re.search(pattern, x, re.IGNORECASE)
+            pred = lambda x: re.search(pattern, x, re.IGNORECASE)
         else:
             pred = pattern
         if not prune:
@@ -118,7 +118,7 @@ class SList(list):
         return res
     #@-node:ville.20090720135131.1499:fields
     #@+node:ville.20090720135131.1500:sort
-    def sort(self,field= None,  nums = False):
+    def sort(self, field=None, nums=False):
         """ sort by specified fields (see fields())
 
         Example::
@@ -130,9 +130,9 @@ class SList(list):
 
         #decorate, sort, undecorate
         if field is not None:
-            dsu = [[SList([line]).fields(field),  line] for line in self]
+            dsu = [[SList([line]).fields(field), line] for line in self]
         else:
-            dsu = [[line,  line] for line in self]
+            dsu = [[line, line] for line in self]
         if nums:
             for i in range(len(dsu)):
                 numstr = "".join([ch for ch in dsu[i][0] if ch.isdigit()])
