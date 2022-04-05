@@ -388,7 +388,6 @@ if 1:  # pragma: no cover
         """Run commands specified by sys.argv."""
         args, settings_dict, files, recursive = scan_ast_args()
         # Handle directory arguments
-        g.trace(recursive, os.path.isdir(files[0]), len(files), files[0])
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"**{os.sep}*.py", recursive=recursive)
         # Execute the command
