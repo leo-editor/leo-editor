@@ -3012,7 +3012,7 @@ class LoadManager:
         Create an outline (Commander) for either:
         - a Leo file (including .leo or zipped file),
         - an external file.
-        
+
         Note: The settings don't matter for pre-reads!
         For second read, the settings for the file are *exactly* previousSettings.
         """
@@ -3219,7 +3219,7 @@ class LoadManager:
     def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
         """
         Call c.fileCommands.openLeoFile to open some kind of Leo file.
-        
+
         the_file: An open file, which is a StringIO file for zipped files.
 
         Note: g.app.log is not inited here.

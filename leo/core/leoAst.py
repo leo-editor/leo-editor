@@ -1688,16 +1688,16 @@ class IterativeTokenGenerator:
     """
     Self-contained iterative token syncing class. It shows how to traverse
     any tree with neither recursion nor iterators.
-    
+
     This class is almost exactly as fast as the TokenOrderGenerator class.
-    
+
     This class is another curio: Leo does not use this code.
-    
+
     The main_loop method executes **actions**: (method, argument) tuples.
-    
+
     The key idea: visitors (and visit), never execute code directly.
     Instead, they queue methods to be executed in the main loop.
-    
+
     *Important*: find_next_significant_token must be called only *after*
     actions have eaten all previous tokens. So do_If (and other visitors)
     must queue up **helper actions** for later (delayed) execution.
@@ -5937,9 +5937,9 @@ class TokenOrderTraverser:
     """
     Traverse an ast tree using the parent/child links created by the
     TokenOrderGenerator class.
-    
+
     **Important**:
-    
+
     This class is a curio. It is no longer used in this file!
     The Fstringify and ReassignTokens classes now use ast.walk.
     """

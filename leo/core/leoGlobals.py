@@ -485,10 +485,10 @@ bunch = Bunch
 class EmergencyDialog:
     """
     A class that creates an tkinter dialog with a single OK button.
-    
+
     If tkinter doesn't exist (#2512), this class just prints the message
     passed to the ctor.
-    
+
     """
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
@@ -3403,7 +3403,7 @@ def get_directives_dict_list(p: Pos) -> List[Dict]:
 def getLanguageFromAncestorAtFileNode(p: Pos) -> Optional[str]:
     """
     Return the language in effect at node p.
-    
+
     1. Use an unambiguous @language directive in p itself.
     2. Search p's "extended parents" for an @<file> node.
     3. Search p's "extended parents" for an unambiguous @language directive.
@@ -4271,7 +4271,7 @@ def find_word(s: str, word: str, i: int=0) -> int:
 def findAncestorVnodeByPredicate(p: Pos, v_predicate: Any) -> Optional["VNode"]:
     """
     Return first ancestor vnode matching the predicate.
-    
+
     The predicate must must be a function of a single vnode argument.
     """
     if not p:
@@ -7654,7 +7654,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     Handle a Leo UNL. This must *never* open a browser.
 
     Return the commander for the found UNL, or None.
-    
+
     Redraw the commander if the UNL is found.
     """
     if not unl:

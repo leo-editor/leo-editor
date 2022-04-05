@@ -222,7 +222,7 @@ class Commands:
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
-        
+
         # Break circular import dependencies by doing imports here.
         # All these imports take almost 3/4 sec in the leoBridge.
 
@@ -4012,7 +4012,7 @@ class Commands:
     def deletePositionsInList(self, aList):
         """
         Delete all vnodes corresponding to the positions in aList.
-        
+
         Set c.p if the old position no longer exists.
 
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.

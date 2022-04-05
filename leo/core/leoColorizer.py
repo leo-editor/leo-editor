@@ -2633,7 +2633,7 @@ class PygmentsColorizer(BaseColorizer):
     def pygments_isValidLanguage(self, language: str) -> bool:
         """
         A hack: we will monkey-patch g.isValidLanguage to be this method.
-        
+
         Without this hack this class would have to define its own copy of the
         (complex!) g.getLanguageFromAncestorAtFileNode function.
         """

@@ -752,7 +752,7 @@ class FileCommands:
     def readExternalFiles(self, fileName):
         """
         Read all external files.
-        
+
         A helper for fc.getLeoFile.
         """
         c, fc = self.c, self
@@ -1332,7 +1332,7 @@ class FileCommands:
         def put_v_elements():
             """
             Puts all <v> elements in the order in which they appear in the outline.
-            
+
             This is not the same as fc.put_v_elements!
             """
             c.clearAllVisited()

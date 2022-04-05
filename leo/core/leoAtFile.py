@@ -1888,7 +1888,7 @@ class AtFile:
     def putRefLine(self, s, i, n1, n2, name, p):
         """
         Put a line containing one or more references.
-        
+
         Important: the so-called name *must* include brackets.
         """
         at = self
@@ -2994,7 +2994,7 @@ class FastAtRead:
             ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
             ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
             # @section-delims
-            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'), 
+            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
         for (name, pattern) in table:

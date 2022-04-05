@@ -796,13 +796,13 @@ class Position:
     def get_UNL(self) -> str:
         """
         Return a UNL representing a clickable link.
-        
+
         New in Leo 6.6: Use a single, simplified format for UNL's:
-        
+
         - unl: //
         - self.v.context.fileName() #
         - a list of headlines separated by '-->'
-        
+
         New in Leo 6.6:
         - Always add unl: // and file name.
         - Never translate '-->' to '--%3E'.

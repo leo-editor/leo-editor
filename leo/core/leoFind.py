@@ -341,9 +341,9 @@ class LeoFind:
                     whole_word=False,
                 )
             )
-            
+
         Example 2, settings is a python dict:
-            
+
             c.findCommands.interactive_search_helper(
                 root = c.p,
                 settings = {
