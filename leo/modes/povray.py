@@ -498,19 +498,19 @@ keywordsDictDict = {
 def povray_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def povray_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def povray_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def povray_rule3(colorer, s, i):
@@ -609,7 +609,7 @@ rulesDict1 = {
     "*": [povray_rule11,],
     "+": [povray_rule8,],
     "-": [povray_rule9,],
-    "/": [povray_rule0,povray_rule3,povray_rule10,],
+    "/": [povray_rule0, povray_rule3, povray_rule10,],
     "0": [povray_rule23,],
     "1": [povray_rule23,],
     "2": [povray_rule23,],
@@ -621,9 +621,9 @@ rulesDict1 = {
     "8": [povray_rule23,],
     "9": [povray_rule23,],
     ":": [povray_rule21,],
-    "<": [povray_rule7,povray_rule13,],
+    "<": [povray_rule7, povray_rule13,],
     "=": [povray_rule4,],
-    ">": [povray_rule6,povray_rule12,],
+    ">": [povray_rule6, povray_rule12,],
     "@": [povray_rule23,],
     "A": [povray_rule23,],
     "B": [povray_rule23,],
@@ -692,4 +692,3 @@ rulesDictDict = {
 
 # Import dict for povray mode.
 importDict = {}
-

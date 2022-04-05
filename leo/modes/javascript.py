@@ -197,19 +197,19 @@ keywordsDictDict = {
 def javascript_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def javascript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def javascript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def javascript_rule3(colorer, s, i):
@@ -341,7 +341,7 @@ rulesDict1 = {
     ",": [javascript_rule24,],
     "-": [javascript_rule11,],
     ".": [javascript_rule21,],
-    "/": [javascript_rule0,javascript_rule4,javascript_rule12,],
+    "/": [javascript_rule0, javascript_rule4, javascript_rule12,],
     "0": [javascript_rule31,],
     "1": [javascript_rule31,],
     "2": [javascript_rule31,],
@@ -352,11 +352,11 @@ rulesDict1 = {
     "7": [javascript_rule31,],
     "8": [javascript_rule31,],
     "9": [javascript_rule31,],
-    ":": [javascript_rule29,javascript_rule30,],
+    ":": [javascript_rule29, javascript_rule30,],
     ";": [javascript_rule25,],
-    "<": [javascript_rule5,javascript_rule9,javascript_rule15,],
+    "<": [javascript_rule5, javascript_rule9, javascript_rule15,],
     "=": [javascript_rule6,],
-    ">": [javascript_rule8,javascript_rule14,],
+    ">": [javascript_rule8, javascript_rule14,],
     "?": [javascript_rule28,],
     "@": [javascript_rule31,],
     "A": [javascript_rule31,],
@@ -427,4 +427,3 @@ rulesDictDict = {
 
 # Import dict for javascript mode.
 importDict = {}
-

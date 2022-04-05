@@ -211,19 +211,19 @@ keywordsDictDict = {
 def objectrexx_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def objectrexx_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def objectrexx_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def objectrexx_rule3(colorer, s, i):
@@ -330,8 +330,8 @@ rulesDict1 = {
     "(": [objectrexx_rule24,],
     "*": [objectrexx_rule12,],
     "+": [objectrexx_rule9,],
-    "-": [objectrexx_rule4,objectrexx_rule10,],
-    "/": [objectrexx_rule0,objectrexx_rule11,],
+    "-": [objectrexx_rule4, objectrexx_rule10,],
+    "/": [objectrexx_rule0, objectrexx_rule11,],
     "0": [objectrexx_rule25,],
     "1": [objectrexx_rule25,],
     "2": [objectrexx_rule25,],
@@ -342,10 +342,10 @@ rulesDict1 = {
     "7": [objectrexx_rule25,],
     "8": [objectrexx_rule25,],
     "9": [objectrexx_rule25,],
-    ":": [objectrexx_rule22,objectrexx_rule23,],
-    "<": [objectrexx_rule8,objectrexx_rule14,],
+    ":": [objectrexx_rule22, objectrexx_rule23,],
+    "<": [objectrexx_rule8, objectrexx_rule14,],
     "=": [objectrexx_rule5,],
-    ">": [objectrexx_rule7,objectrexx_rule13,],
+    ">": [objectrexx_rule7, objectrexx_rule13,],
     "@": [objectrexx_rule25,],
     "A": [objectrexx_rule25,],
     "B": [objectrexx_rule25,],
@@ -413,4 +413,3 @@ rulesDictDict = {
 
 # Import dict for objectrexx mode.
 importDict = {}
-

@@ -479,19 +479,19 @@ def nsis2_rule4(colorer, s, i):
 def nsis2_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="nsis2::nsis_literal",exclude_match=False,
+        delegate="nsis2::nsis_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def nsis2_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="nsis2::nsis_literal",exclude_match=False,
+        delegate="nsis2::nsis_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def nsis2_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="nsis2::nsis_literal",exclude_match=False,
+        delegate="nsis2::nsis_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def nsis2_rule8(colorer, s, i):
@@ -502,7 +502,7 @@ rulesDict1 = {
     "!": [nsis2_rule8,],
     "\"": [nsis2_rule5,],
     "#": [nsis2_rule1,],
-    "$": [nsis2_rule2,nsis2_rule8,],
+    "$": [nsis2_rule2, nsis2_rule8,],
     "'": [nsis2_rule6,],
     ".": [nsis2_rule8,],
     "/": [nsis2_rule8,],
@@ -516,7 +516,7 @@ rulesDict1 = {
     "7": [nsis2_rule8,],
     "8": [nsis2_rule8,],
     "9": [nsis2_rule8,],
-    ":": [nsis2_rule3,nsis2_rule4,],
+    ":": [nsis2_rule3, nsis2_rule4,],
     ";": [nsis2_rule0,],
     "@": [nsis2_rule8,],
     "A": [nsis2_rule8,],
@@ -597,4 +597,3 @@ rulesDictDict = {
 
 # Import dict for nsis2 mode.
 importDict = {}
-

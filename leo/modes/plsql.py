@@ -375,25 +375,25 @@ keywordsDictDict = {
 def plsql_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def plsql_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def plsql_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def plsql_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def plsql_rule4(colorer, s, i):
@@ -484,15 +484,15 @@ def plsql_rule24(colorer, s, i):
 
 # Rules dict for plsql_main ruleset.
 rulesDict1 = {
-    "!": [plsql_rule19,plsql_rule20,plsql_rule21,],
+    "!": [plsql_rule19, plsql_rule20, plsql_rule21,],
     "\"": [plsql_rule2,],
     "%": [plsql_rule14,],
     "&": [plsql_rule15,],
     "'": [plsql_rule1,],
     "*": [plsql_rule10,],
     "+": [plsql_rule7,],
-    "-": [plsql_rule4,plsql_rule8,],
-    "/": [plsql_rule0,plsql_rule9,],
+    "-": [plsql_rule4, plsql_rule8,],
+    "/": [plsql_rule0, plsql_rule9,],
     "0": [plsql_rule24,],
     "1": [plsql_rule24,],
     "2": [plsql_rule24,],
@@ -503,7 +503,7 @@ rulesDict1 = {
     "7": [plsql_rule24,],
     "8": [plsql_rule24,],
     "9": [plsql_rule24,],
-    ":": [plsql_rule22,plsql_rule23,],
+    ":": [plsql_rule22, plsql_rule23,],
     "<": [plsql_rule13,],
     "=": [plsql_rule11,],
     ">": [plsql_rule12,],
@@ -525,7 +525,7 @@ rulesDict1 = {
     "O": [plsql_rule24,],
     "P": [plsql_rule24,],
     "Q": [plsql_rule24,],
-    "R": [plsql_rule5,plsql_rule6,plsql_rule24,],
+    "R": [plsql_rule5, plsql_rule6, plsql_rule24,],
     "S": [plsql_rule24,],
     "T": [plsql_rule24,],
     "U": [plsql_rule24,],
@@ -574,4 +574,3 @@ rulesDictDict = {
 
 # Import dict for plsql mode.
 importDict = {}
-

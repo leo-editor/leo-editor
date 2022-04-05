@@ -70,43 +70,43 @@ keywordsDictDict = {
 def tpl_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript",exclude_match=False,
+        delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="tpl::tags",exclude_match=False,
+        delegate="tpl::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 def tpl_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="tpl::tpl",exclude_match=False,
+        delegate="tpl::tpl", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for tpl_main ruleset.
 rulesDict1 = {
     "&": [tpl_rule4,],
-    "<": [tpl_rule0,tpl_rule1,tpl_rule2,tpl_rule3,],
+    "<": [tpl_rule0, tpl_rule1, tpl_rule2, tpl_rule3,],
     "{": [tpl_rule5,],
 }
 
@@ -115,13 +115,13 @@ rulesDict1 = {
 def tpl_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule8(colorer, s, i):
@@ -207,13 +207,13 @@ rulesDict2 = {
 def tpl_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tpl_rule12(colorer, s, i):
@@ -236,4 +236,3 @@ rulesDictDict = {
 
 # Import dict for tpl mode.
 importDict = {}
-

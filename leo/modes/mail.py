@@ -130,9 +130,9 @@ def mail_rule14(colorer, s, i):
 # Rules dict for mail_main ruleset.
 rulesDict1 = {
     "-": [mail_rule5,],
-    ":": [mail_rule4,mail_rule6,mail_rule7,mail_rule8,mail_rule9,mail_rule14,],
-    ";": [mail_rule10,mail_rule11,mail_rule12,mail_rule13,],
-    ">": [mail_rule0,mail_rule1,mail_rule2,],
+    ":": [mail_rule4, mail_rule6, mail_rule7, mail_rule8, mail_rule9, mail_rule14,],
+    ";": [mail_rule10, mail_rule11, mail_rule12, mail_rule13,],
+    ">": [mail_rule0, mail_rule1, mail_rule2,],
     "|": [mail_rule3,],
 }
 
@@ -146,7 +146,7 @@ rulesDict2 = {}
 def mail_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 # Rules dict for mail_header ruleset.
@@ -163,4 +163,3 @@ rulesDictDict = {
 
 # Import dict for mail mode.
 importDict = {}
-

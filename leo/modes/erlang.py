@@ -169,13 +169,13 @@ def erlang_rule0(colorer, s, i):
 def erlang_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def erlang_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def erlang_rule3(colorer, s, i):
@@ -341,7 +341,7 @@ rulesDict1 = {
     "*": [erlang_rule19,],
     "+": [erlang_rule18,],
     ",": [erlang_rule25,],
-    "-": [erlang_rule10,erlang_rule40,],
+    "-": [erlang_rule10, erlang_rule40,],
     ".": [erlang_rule12,],
     "/": [erlang_rule15,],
     "0": [erlang_rule40,],
@@ -354,7 +354,7 @@ rulesDict1 = {
     "7": [erlang_rule40,],
     "8": [erlang_rule40,],
     "9": [erlang_rule40,],
-    ":": [erlang_rule4,erlang_rule20,],
+    ":": [erlang_rule4, erlang_rule20,],
     ";": [erlang_rule13,],
     "<": [erlang_rule11,],
     "=": [erlang_rule14,],
@@ -389,12 +389,12 @@ rulesDict1 = {
     "[": [erlang_rule23,],
     "]": [erlang_rule24,],
     "_": [erlang_rule40,],
-    "a": [erlang_rule36,erlang_rule40,],
-    "b": [erlang_rule6,erlang_rule32,erlang_rule33,erlang_rule34,erlang_rule35,erlang_rule37,erlang_rule39,erlang_rule40,],
+    "a": [erlang_rule36, erlang_rule40,],
+    "b": [erlang_rule6, erlang_rule32, erlang_rule33, erlang_rule34, erlang_rule35, erlang_rule37, erlang_rule39, erlang_rule40,],
     "c": [erlang_rule40,],
-    "d": [erlang_rule28,erlang_rule40,],
+    "d": [erlang_rule28, erlang_rule40,],
     "e": [erlang_rule40,],
-    "f": [erlang_rule8,erlang_rule40,],
+    "f": [erlang_rule8, erlang_rule40,],
     "g": [erlang_rule40,],
     "h": [erlang_rule40,],
     "i": [erlang_rule40,],
@@ -402,17 +402,17 @@ rulesDict1 = {
     "k": [erlang_rule40,],
     "l": [erlang_rule40,],
     "m": [erlang_rule40,],
-    "n": [erlang_rule7,erlang_rule38,erlang_rule40,],
-    "o": [erlang_rule30,erlang_rule40,],
+    "n": [erlang_rule7, erlang_rule38, erlang_rule40,],
+    "o": [erlang_rule30, erlang_rule40,],
     "p": [erlang_rule40,],
     "q": [erlang_rule40,],
-    "r": [erlang_rule29,erlang_rule40,],
+    "r": [erlang_rule29, erlang_rule40,],
     "s": [erlang_rule40,],
-    "t": [erlang_rule9,erlang_rule40,],
+    "t": [erlang_rule9, erlang_rule40,],
     "u": [erlang_rule40,],
     "v": [erlang_rule40,],
     "w": [erlang_rule40,],
-    "x": [erlang_rule31,erlang_rule40,],
+    "x": [erlang_rule31, erlang_rule40,],
     "y": [erlang_rule40,],
     "z": [erlang_rule40,],
     "{": [erlang_rule21,],
@@ -427,4 +427,3 @@ rulesDictDict = {
 
 # Import dict for erlang mode.
 importDict = {}
-

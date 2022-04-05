@@ -133,7 +133,7 @@ keywordsDictDict = {
 def csharp_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def csharp_rule1(colorer, s, i):
@@ -149,19 +149,19 @@ def csharp_rule2(colorer, s, i):
 def csharp_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=True, no_line_break=False, no_word_break=False)
 
 def csharp_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def csharp_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def csharp_rule6(colorer, s, i):
@@ -324,9 +324,9 @@ def csharp_rule42(colorer, s, i):
 
 # Rules dict for csharp_main ruleset.
 rulesDict1 = {
-    "!": [csharp_rule18,csharp_rule25,],
+    "!": [csharp_rule18, csharp_rule25,],
     "\"": [csharp_rule4,],
-    "#": [csharp_rule6,csharp_rule7,csharp_rule8,csharp_rule9,csharp_rule10,csharp_rule11,csharp_rule12,csharp_rule13,csharp_rule14,csharp_rule15,csharp_rule16,],
+    "#": [csharp_rule6, csharp_rule7, csharp_rule8, csharp_rule9, csharp_rule10, csharp_rule11, csharp_rule12, csharp_rule13, csharp_rule14, csharp_rule15, csharp_rule16,],
     "%": [csharp_rule39,],
     "&": [csharp_rule38,],
     "'": [csharp_rule5,],
@@ -336,7 +336,7 @@ rulesDict1 = {
     ",": [csharp_rule23,],
     "-": [csharp_rule29,],
     ".": [csharp_rule24,],
-    "/": [csharp_rule0,csharp_rule1,csharp_rule2,csharp_rule34,],
+    "/": [csharp_rule0, csharp_rule1, csharp_rule2, csharp_rule34,],
     "0": [csharp_rule42,],
     "1": [csharp_rule42,],
     "2": [csharp_rule42,],
@@ -353,7 +353,7 @@ rulesDict1 = {
     "=": [csharp_rule32,],
     ">": [csharp_rule30,],
     "?": [csharp_rule40,],
-    "@": [csharp_rule3,csharp_rule42,],
+    "@": [csharp_rule3, csharp_rule42,],
     "A": [csharp_rule42,],
     "B": [csharp_rule42,],
     "C": [csharp_rule42,],
@@ -421,18 +421,18 @@ rulesDict1 = {
 def csharp_rule43(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def csharp_rule44(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for csharp_doc_comment ruleset.
 rulesDict2 = {
-    "<": [csharp_rule43,csharp_rule44,],
+    "<": [csharp_rule43, csharp_rule44,],
 }
 
 # x.rulesDictDict for csharp mode.
@@ -443,4 +443,3 @@ rulesDictDict = {
 
 # Import dict for csharp mode.
 importDict = {}
-

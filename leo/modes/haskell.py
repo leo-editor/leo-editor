@@ -116,13 +116,13 @@ keywordsDictDict = {
 def haskell_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="{-#", end="#-}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def haskell_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="{-", end="-}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def haskell_rule2(colorer, s, i):
@@ -133,7 +133,7 @@ def haskell_rule2(colorer, s, i):
 def haskell_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def haskell_rule4(colorer, s, i):
@@ -235,7 +235,7 @@ def haskell_rule27(colorer, s, i):
 def haskell_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False,
         ### no_word_break=True)
         no_word_break=False)
@@ -318,13 +318,13 @@ rulesDict1 = {
     "$": [haskell_rule45,],
     "%": [haskell_rule38,],
     "&": [haskell_rule30,],
-    "'": [haskell_rule4,haskell_rule5,haskell_rule6,haskell_rule7,haskell_rule8,haskell_rule9,haskell_rule10,
-        haskell_rule11,haskell_rule12,haskell_rule13,haskell_rule14,haskell_rule15,haskell_rule16,haskell_rule17,
-        haskell_rule18,haskell_rule19,haskell_rule20,haskell_rule21,haskell_rule22,haskell_rule23,haskell_rule24,
-        haskell_rule25,haskell_rule26,haskell_rule27,haskell_rule28,],
+    "'": [haskell_rule4, haskell_rule5, haskell_rule6, haskell_rule7, haskell_rule8, haskell_rule9, haskell_rule10,
+        haskell_rule11, haskell_rule12, haskell_rule13, haskell_rule14, haskell_rule15, haskell_rule16, haskell_rule17,
+        haskell_rule18, haskell_rule19, haskell_rule20, haskell_rule21, haskell_rule22, haskell_rule23, haskell_rule24,
+        haskell_rule25, haskell_rule26, haskell_rule27, haskell_rule28,],
     "*": [haskell_rule36,],
     "+": [haskell_rule34,],
-    "-": [haskell_rule2,haskell_rule35,],
+    "-": [haskell_rule2, haskell_rule35,],
     ".": [haskell_rule29,],
     "/": [haskell_rule37,],
 
@@ -400,7 +400,7 @@ rulesDict1 = {
     "x": [haskell_rule46,],
     "y": [haskell_rule46,],
     "z": [haskell_rule46,],
-    "{": [haskell_rule0,haskell_rule1,],
+    "{": [haskell_rule0, haskell_rule1,],
     "|": [haskell_rule41,],
     "~": [haskell_rule43,],
 }
@@ -412,4 +412,3 @@ rulesDictDict = {
 
 # Import dict for haskell mode.
 importDict = {}
-

@@ -508,13 +508,13 @@ keywordsDictDict = {
 def coldfusion_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment4", begin="<!---", end="--->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule2(colorer, s, i):
@@ -525,56 +525,56 @@ def coldfusion_rule2(colorer, s, i):
 def coldfusion_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<CFSCRIPT", end="</CFSCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cfscript",exclude_match=False,
+        delegate="coldfusion::cfscript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<CF", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cftags",exclude_match=False,
+        delegate="coldfusion::cftags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="</CF", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cftags",exclude_match=False,
+        delegate="coldfusion::cftags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript",exclude_match=False,
+        delegate="html::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::tags",exclude_match=False,
+        delegate="coldfusion::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for coldfusion_main ruleset.
 rulesDict1 = {
     "&": [coldfusion_rule10,],
-    "/": [coldfusion_rule1,coldfusion_rule2,],
-    "<": [coldfusion_rule0,coldfusion_rule3,coldfusion_rule4,coldfusion_rule5,coldfusion_rule6,coldfusion_rule7,coldfusion_rule8,coldfusion_rule9,],
+    "/": [coldfusion_rule1, coldfusion_rule2,],
+    "<": [coldfusion_rule0, coldfusion_rule3, coldfusion_rule4, coldfusion_rule5, coldfusion_rule6, coldfusion_rule7, coldfusion_rule8, coldfusion_rule9,],
 }
 
 # Rules for coldfusion_tags ruleset.
@@ -582,13 +582,13 @@ rulesDict1 = {
 def coldfusion_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule13(colorer, s, i):
@@ -598,26 +598,26 @@ def coldfusion_rule13(colorer, s, i):
 def coldfusion_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<CF", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cftags",exclude_match=False,
+        delegate="coldfusion::cftags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="</CF", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cftags",exclude_match=False,
+        delegate="coldfusion::cftags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<CFSCRIPT", end="</CFSCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="coldfusion::cfscript",exclude_match=False,
+        delegate="coldfusion::cfscript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for coldfusion_tags ruleset.
 rulesDict2 = {
     "\"": [coldfusion_rule11,],
     "'": [coldfusion_rule12,],
-    "<": [coldfusion_rule14,coldfusion_rule15,coldfusion_rule16,],
+    "<": [coldfusion_rule14, coldfusion_rule15, coldfusion_rule16,],
     "=": [coldfusion_rule13,],
 }
 
@@ -626,7 +626,7 @@ rulesDict2 = {
 def coldfusion_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule18(colorer, s, i):
@@ -637,13 +637,13 @@ def coldfusion_rule18(colorer, s, i):
 def coldfusion_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule21(colorer, s, i):
@@ -703,12 +703,12 @@ rulesDict3 = {
     "\"": [coldfusion_rule19,],
     "&": [coldfusion_rule32,],
     "'": [coldfusion_rule20,],
-    "(": [coldfusion_rule21,coldfusion_rule33,],
+    "(": [coldfusion_rule21, coldfusion_rule33,],
     ")": [coldfusion_rule22,],
     "*": [coldfusion_rule30,],
     "+": [coldfusion_rule24,],
     "-": [coldfusion_rule25,],
-    "/": [coldfusion_rule17,coldfusion_rule18,coldfusion_rule26,],
+    "/": [coldfusion_rule17, coldfusion_rule18, coldfusion_rule26,],
     "0": [coldfusion_rule33,],
     "1": [coldfusion_rule33,],
     "2": [coldfusion_rule33,],
@@ -721,7 +721,7 @@ rulesDict3 = {
     "9": [coldfusion_rule33,],
     "<": [coldfusion_rule28,],
     "=": [coldfusion_rule23,],
-    ">": [coldfusion_rule27,coldfusion_rule29,],
+    ">": [coldfusion_rule27, coldfusion_rule29,],
     "@": [coldfusion_rule33,],
     "A": [coldfusion_rule33,],
     "B": [coldfusion_rule33,],
@@ -784,13 +784,13 @@ rulesDict3 = {
 def coldfusion_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule36(colorer, s, i):
@@ -804,7 +804,7 @@ def coldfusion_rule37(colorer, s, i):
 def coldfusion_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#", end="#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def coldfusion_rule39(colorer, s, i):
@@ -813,7 +813,7 @@ def coldfusion_rule39(colorer, s, i):
 # Rules dict for coldfusion_cftags ruleset.
 rulesDict4 = {
     "\"": [coldfusion_rule34,],
-    "#": [coldfusion_rule37,coldfusion_rule38,],
+    "#": [coldfusion_rule37, coldfusion_rule38,],
     "'": [coldfusion_rule35,],
     "(": [coldfusion_rule39,],
     "0": [coldfusion_rule39,],
@@ -894,4 +894,3 @@ rulesDictDict = {
 
 # Import dict for coldfusion mode.
 importDict = {}
-

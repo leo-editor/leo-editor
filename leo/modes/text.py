@@ -42,4 +42,3 @@ rulesDictDict = {
 
 # Import dict for text mode.
 importDict = {}
-

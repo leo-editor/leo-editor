@@ -106,49 +106,49 @@ keywordsDictDict = {
 def xml_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!ENTITY", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::entity-tags",exclude_match=False,
+        delegate="xml::entity-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<![CDATA[", end="]]>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::cdata",exclude_match=False,
+        delegate="xml::cdata", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="<?", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for xml_main ruleset.
 rulesDict1 = {
     "&": [xml_rule6,],
-    "<": [xml_rule0,xml_rule1,xml_rule2,xml_rule3,xml_rule4,xml_rule5,],
+    "<": [xml_rule0, xml_rule1, xml_rule2, xml_rule3, xml_rule4, xml_rule5,],
 }
 
 # Rules for xml_tags ruleset.
@@ -156,19 +156,19 @@ rulesDict1 = {
 def xml_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule10(colorer, s, i):
@@ -188,7 +188,7 @@ rulesDict2 = {
     "\"": [xml_rule8,],
     "'": [xml_rule9,],
     "/": [xml_rule10,],
-    ":": [xml_rule11,xml_rule12,],
+    ":": [xml_rule11, xml_rule12,],
     "<": [xml_rule7,],
 }
 
@@ -197,37 +197,37 @@ rulesDict2 = {
 def xml_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="--", end="--",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="%", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 def xml_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::main",exclude_match=False,
+        delegate="xml::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule19(colorer, s, i):
@@ -347,25 +347,25 @@ rulesDict3 = {
 def xml_rule27(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="--", end="--",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def xml_rule29(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def xml_rule31(colorer, s, i):
@@ -469,4 +469,3 @@ rulesDictDict = {
 
 # Import dict for xml mode.
 importDict = {}
-

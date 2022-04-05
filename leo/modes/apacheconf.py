@@ -963,19 +963,19 @@ def apacheconf_rule0(colorer, s, i):
 def apacheconf_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def apacheconf_rule2(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(VirtualHost)[^>]*>", end="</$1>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="apacheconf::vhost",exclude_match=False,
+        delegate="apacheconf::vhost", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def apacheconf_rule3(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(\\w+)[^>]*>", end="</$1>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="apacheconf::directive",exclude_match=False,
+        delegate="apacheconf::directive", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def apacheconf_rule4(colorer, s, i):
@@ -995,7 +995,7 @@ rulesDict1 = {
     "7": [apacheconf_rule4,],
     "8": [apacheconf_rule4,],
     "9": [apacheconf_rule4,],
-    "< ": [apacheconf_rule2,apacheconf_rule3,],
+    "< ": [apacheconf_rule2, apacheconf_rule3,],
     "@": [apacheconf_rule4,],
     "A": [apacheconf_rule4,],
     "B": [apacheconf_rule4,],
@@ -1062,19 +1062,19 @@ def apacheconf_rule5(colorer, s, i):
 def apacheconf_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def apacheconf_rule7(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(VirtualHost)[^>]*>", end="</$1>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="apacheconf::vhost",exclude_match=False,
+        delegate="apacheconf::vhost", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def apacheconf_rule8(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(\\w+)[^>]*>", end="</$1>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="apacheconf::directive",exclude_match=False,
+        delegate="apacheconf::directive", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def apacheconf_rule9(colorer, s, i):
@@ -1094,7 +1094,7 @@ rulesDict2 = {
     "7": [apacheconf_rule9,],
     "8": [apacheconf_rule9,],
     "9": [apacheconf_rule9,],
-    "< ": [apacheconf_rule7,apacheconf_rule8,],
+    "< ": [apacheconf_rule7, apacheconf_rule8,],
     "@": [apacheconf_rule9,],
     "A": [apacheconf_rule9,],
     "B": [apacheconf_rule9,],
@@ -1161,7 +1161,7 @@ def apacheconf_rule10(colorer, s, i):
 def apacheconf_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def apacheconf_rule12(colorer, s, i):
@@ -1246,4 +1246,3 @@ rulesDictDict = {
 
 # Import dict for apacheconf mode.
 importDict = {}
-

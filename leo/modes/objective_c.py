@@ -110,37 +110,37 @@ keywordsDictDict = {
 def objective_c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def objective_c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def objective_c_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def objective_c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def objective_c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def objective_c_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="@\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def objective_c_rule6(colorer, s, i):
@@ -240,7 +240,7 @@ def objective_c_rule28(colorer, s, i):
 rulesDict1 = {
     "!": [objective_c_rule10,],
     "\"": [objective_c_rule3,],
-    "#": [objective_c_rule6,objective_c_rule7,],
+    "#": [objective_c_rule6, objective_c_rule7,],
     "%": [objective_c_rule19,],
     "&": [objective_c_rule20,],
     "'": [objective_c_rule4,],
@@ -248,7 +248,7 @@ rulesDict1 = {
     "*": [objective_c_rule16,],
     "+": [objective_c_rule13,],
     "-": [objective_c_rule14,],
-    "/": [objective_c_rule0,objective_c_rule1,objective_c_rule2,objective_c_rule8,objective_c_rule15,],
+    "/": [objective_c_rule0, objective_c_rule1, objective_c_rule2, objective_c_rule8, objective_c_rule15,],
     "0": [objective_c_rule28,],
     "1": [objective_c_rule28,],
     "2": [objective_c_rule28,],
@@ -260,10 +260,10 @@ rulesDict1 = {
     "8": [objective_c_rule28,],
     "9": [objective_c_rule28,],
     ":": [objective_c_rule26,],
-    "<": [objective_c_rule12,objective_c_rule18,],
+    "<": [objective_c_rule12, objective_c_rule18,],
     "=": [objective_c_rule9,],
-    ">": [objective_c_rule11,objective_c_rule17,],
-    "@": [objective_c_rule5,objective_c_rule28,],
+    ">": [objective_c_rule11, objective_c_rule17,],
+    "@": [objective_c_rule5, objective_c_rule28,],
     "A": [objective_c_rule28,],
     "B": [objective_c_rule28,],
     "C": [objective_c_rule28,],
@@ -330,4 +330,3 @@ rulesDictDict = {
 
 # Import dict for objective_c mode.
 importDict = {}
-

@@ -148,13 +148,13 @@ def assembly_6502_rule0(colorer, s, i):
 def assembly_6502_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_6502_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_6502_rule3(colorer, s, i):
@@ -268,12 +268,12 @@ def assembly_6502_rule29(colorer, s, i):
 rulesDict1 = {
 	"\t": [assembly_6502_rule4,],
 	" ": [assembly_6502_rule3,],
-	"!": [assembly_6502_rule16,assembly_6502_rule24,],
+	"!": [assembly_6502_rule16, assembly_6502_rule24,],
 	"\"": [assembly_6502_rule2,],
 	"#": [assembly_6502_rule6,],
 	"$": [assembly_6502_rule5,],
 	"%": [assembly_6502_rule11,],
-	"&": [assembly_6502_rule14,assembly_6502_rule27,],
+	"&": [assembly_6502_rule14, assembly_6502_rule27,],
 	"'": [assembly_6502_rule1,],
 	"*": [assembly_6502_rule10,],
 	"+": [assembly_6502_rule7,],
@@ -290,9 +290,9 @@ rulesDict1 = {
 	"8": [assembly_6502_rule29,],
 	"9": [assembly_6502_rule29,],
 	";": [assembly_6502_rule0,],
-	"<": [assembly_6502_rule18,assembly_6502_rule20,assembly_6502_rule22,assembly_6502_rule25,],
-	"=": [assembly_6502_rule17,assembly_6502_rule23,],
-	">": [assembly_6502_rule19,assembly_6502_rule21,assembly_6502_rule26,],
+	"<": [assembly_6502_rule18, assembly_6502_rule20, assembly_6502_rule22, assembly_6502_rule25,],
+	"=": [assembly_6502_rule17, assembly_6502_rule23,],
+	">": [assembly_6502_rule19, assembly_6502_rule21, assembly_6502_rule26,],
 	"@": [assembly_6502_rule29,],
 	"A": [assembly_6502_rule29,],
 	"B": [assembly_6502_rule29,],
@@ -347,7 +347,7 @@ rulesDict1 = {
 	"x": [assembly_6502_rule29,],
 	"y": [assembly_6502_rule29,],
 	"z": [assembly_6502_rule29,],
-	"|": [assembly_6502_rule12,assembly_6502_rule28,],
+	"|": [assembly_6502_rule12, assembly_6502_rule28,],
 	"~": [assembly_6502_rule15,],
 }
 
@@ -358,4 +358,3 @@ rulesDictDict = {
 
 # Import dict for assembly_6502 mode.
 importDict = {}
-

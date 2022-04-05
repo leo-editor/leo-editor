@@ -707,19 +707,19 @@ keywordsDictDict = {
 def maple_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def maple_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def maple_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def maple_rule3(colorer, s, i):
@@ -832,11 +832,11 @@ rulesDict1 = {
     "7": [maple_rule24,],
     "8": [maple_rule24,],
     "9": [maple_rule24,],
-    ":": [maple_rule19,maple_rule20,maple_rule21,],
-    "<": [maple_rule9,maple_rule10,maple_rule11,],
+    ":": [maple_rule19, maple_rule20, maple_rule21,],
+    "<": [maple_rule9, maple_rule10, maple_rule11,],
     "=": [maple_rule14,],
-    ">": [maple_rule12,maple_rule13,],
-    "@": [maple_rule16,maple_rule17,maple_rule24,],
+    ">": [maple_rule12, maple_rule13,],
+    "@": [maple_rule16, maple_rule17, maple_rule24,],
     "A": [maple_rule24,],
     "B": [maple_rule24,],
     "C": [maple_rule24,],
@@ -865,7 +865,7 @@ rulesDict1 = {
     "Z": [maple_rule24,],
     "^": [maple_rule8,],
     "_": [maple_rule24,],
-    "`": [maple_rule2,maple_rule24,],
+    "`": [maple_rule2, maple_rule24,],
     "a": [maple_rule24,],
     "b": [maple_rule24,],
     "c": [maple_rule24,],
@@ -902,4 +902,3 @@ rulesDictDict = {
 
 # Import dict for maple mode.
 importDict = {}
-

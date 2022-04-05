@@ -521,7 +521,7 @@ def inno_setup_rule37(colorer, s, i):
 def inno_setup_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="literal4", begin="{#", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule39(colorer, s, i):
@@ -531,19 +531,19 @@ def inno_setup_rule39(colorer, s, i):
 def inno_setup_rule40(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::string",exclude_match=False,
+        delegate="inno_setup::string", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule41(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::string",exclude_match=False,
+        delegate="inno_setup::string", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule42(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule43(colorer, s, i):
@@ -562,7 +562,7 @@ def inno_setup_rule45(colorer, s, i):
 # Rules dict for inno_setup_main ruleset.
 rulesDict1 = {
     "\"": [inno_setup_rule40,],
-    "#": [inno_setup_rule18,inno_setup_rule19,inno_setup_rule20,inno_setup_rule21,inno_setup_rule22,inno_setup_rule23,inno_setup_rule24,inno_setup_rule25,inno_setup_rule26,inno_setup_rule27,inno_setup_rule28,inno_setup_rule29,inno_setup_rule30,inno_setup_rule31,inno_setup_rule32,inno_setup_rule33,inno_setup_rule34,inno_setup_rule35,inno_setup_rule36,inno_setup_rule37,inno_setup_rule44,],
+    "#": [inno_setup_rule18, inno_setup_rule19, inno_setup_rule20, inno_setup_rule21, inno_setup_rule22, inno_setup_rule23, inno_setup_rule24, inno_setup_rule25, inno_setup_rule26, inno_setup_rule27, inno_setup_rule28, inno_setup_rule29, inno_setup_rule30, inno_setup_rule31, inno_setup_rule32, inno_setup_rule33, inno_setup_rule34, inno_setup_rule35, inno_setup_rule36, inno_setup_rule37, inno_setup_rule44,],
     "%": [inno_setup_rule39,],
     "'": [inno_setup_rule41,],
     "0": [inno_setup_rule45,],
@@ -603,7 +603,7 @@ rulesDict1 = {
     "X": [inno_setup_rule45,],
     "Y": [inno_setup_rule45,],
     "Z": [inno_setup_rule45,],
-    "[": [inno_setup_rule0,inno_setup_rule1,inno_setup_rule2,inno_setup_rule3,inno_setup_rule4,inno_setup_rule5,inno_setup_rule6,inno_setup_rule7,inno_setup_rule8,inno_setup_rule9,inno_setup_rule10,inno_setup_rule11,inno_setup_rule12,inno_setup_rule13,inno_setup_rule14,inno_setup_rule15,inno_setup_rule16,inno_setup_rule17,],
+    "[": [inno_setup_rule0, inno_setup_rule1, inno_setup_rule2, inno_setup_rule3, inno_setup_rule4, inno_setup_rule5, inno_setup_rule6, inno_setup_rule7, inno_setup_rule8, inno_setup_rule9, inno_setup_rule10, inno_setup_rule11, inno_setup_rule12, inno_setup_rule13, inno_setup_rule14, inno_setup_rule15, inno_setup_rule16, inno_setup_rule17,],
     "a": [inno_setup_rule45,],
     "b": [inno_setup_rule45,],
     "c": [inno_setup_rule45,],
@@ -630,7 +630,7 @@ rulesDict1 = {
     "x": [inno_setup_rule45,],
     "y": [inno_setup_rule45,],
     "z": [inno_setup_rule45,],
-    "{": [inno_setup_rule38,inno_setup_rule42,],
+    "{": [inno_setup_rule38, inno_setup_rule42,],
 }
 
 # Rules for inno_setup_string ruleset.
@@ -638,18 +638,18 @@ rulesDict1 = {
 def inno_setup_rule46(colorer, s, i):
     return colorer.match_span(s, i, kind="literal4", begin="{#", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule47(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="inno_setup::constant",exclude_match=False,
+        delegate="inno_setup::constant", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for inno_setup_string ruleset.
 rulesDict2 = {
-    "{": [inno_setup_rule46,inno_setup_rule47,],
+    "{": [inno_setup_rule46, inno_setup_rule47,],
 }
 
 # Rules for inno_setup_constant ruleset.
@@ -678,13 +678,13 @@ def inno_setup_rule50(colorer, s, i):
 def inno_setup_rule51(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule52(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def inno_setup_rule53(colorer, s, i):
@@ -770,4 +770,3 @@ rulesDictDict = {
 
 # Import dict for inno_setup mode.
 importDict = {}
-

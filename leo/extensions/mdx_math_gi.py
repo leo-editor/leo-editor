@@ -16,8 +16,8 @@ See https://github.com/gi1242/python-markdown-math for license, more info.
 from markdown.inlinepatterns import InlineProcessor
 from markdown.extensions import Extension
 
-class inlineMathProcessor( InlineProcessor ):
-    def handleMatch( self, m, data ):
+class inlineMathProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         # MathJAX handles all the math. Just set the uses_math flag, and
         # protect the contents from markdown expansion.
         self.md.uses_math = True
@@ -35,18 +35,18 @@ class MathExtension(Extension):
         md.registerExtension(self)
 
         mathRegExps = [
-            r'(?<!\\)\\\((.+?)\\\)',    # \( ... \)
-            r'(?<!\\)\$\$.+?\$\$',      # $$ ... $$
-            r'(?<!\\)\\\[.+?\\\]',      # \[ ... \]
+            r'(?<!\\)\\\((.+?)\\\)',  # \( ... \)
+            r'(?<!\\)\$\$.+?\$\$',  # $$ ... $$
+            r'(?<!\\)\\\[.+?\\\]',  # \[ ... \]
             r'(?<!\\)\\begin{([a-z]+?\*?)}.+?\\end{\1}',
         ]
         if self.getConfig('enable_dollar_delimiter'):
             md.ESCAPED_CHARS.append('$')
-            mathRegExps.append( r'(?<!\\|\$)\$.+?\$' ) # $ ... $
+            mathRegExps.append(r'(?<!\\|\$)\$.+?\$')  # $ ... $
         for i, pattern in enumerate(mathRegExps):
             # we should have higher priority than 'escape' which has 180
             md.inlinePatterns.register(
-                inlineMathProcessor( pattern, md ), f'math-inline-{i}', 185)
+                inlineMathProcessor(pattern, md), f'math-inline-{i}', 185)
 
         md.uses_math = False
         self.md = md

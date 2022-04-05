@@ -98,25 +98,25 @@ keywordsDictDict = {
 def ruby_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="=begin", end="=end",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ruby_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=True,
+        delegate="", exclude_match=True,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ruby_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="ruby::doublequoteliteral",exclude_match=False,
+        delegate="ruby::doublequoteliteral", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ruby_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ruby_rule4(colorer, s, i):
@@ -251,16 +251,16 @@ def ruby_rule35(colorer, s, i):
 rulesDict1 = {
     "!": [ruby_rule23,],
     "\"": [ruby_rule2,],
-    "#": [ruby_rule1,ruby_rule4,],
+    "#": [ruby_rule1, ruby_rule4,],
     "%": [ruby_rule20,],
     "&": [ruby_rule21,],
     "'": [ruby_rule3,],
     "(": [ruby_rule7,],
     ")": [ruby_rule8,],
-    "*": [ruby_rule18,ruby_rule19,],
+    "*": [ruby_rule18, ruby_rule19,],
     "+": [ruby_rule15,],
     "-": [ruby_rule16,],
-    ".": [ruby_rule28,ruby_rule29,],
+    ".": [ruby_rule28, ruby_rule29,],
     "/": [ruby_rule17,],
     "0": [ruby_rule35,],
     "1": [ruby_rule35,],
@@ -272,10 +272,10 @@ rulesDict1 = {
     "7": [ruby_rule35,],
     "8": [ruby_rule35,],
     "9": [ruby_rule35,],
-    ":": [ruby_rule9,ruby_rule33,ruby_rule34,],
-    "<": [ruby_rule13,ruby_rule14,ruby_rule25,],
-    "=": [ruby_rule0,ruby_rule10,ruby_rule11,],
-    ">": [ruby_rule12,ruby_rule24,],
+    ":": [ruby_rule9, ruby_rule33, ruby_rule34,],
+    "<": [ruby_rule13, ruby_rule14, ruby_rule25,],
+    "=": [ruby_rule0, ruby_rule10, ruby_rule11,],
+    ">": [ruby_rule12, ruby_rule24,],
     "?": [ruby_rule32,],
     "@": [ruby_rule35,],
     "A": [ruby_rule35,],
@@ -345,7 +345,7 @@ rulesDict1 = {
 def ruby_rule36(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="#{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=True,
+        delegate="", exclude_match=True,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for ruby_doublequoteliteral ruleset.
@@ -361,4 +361,3 @@ rulesDictDict = {
 
 # Import dict for ruby mode.
 importDict = {}
-

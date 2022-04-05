@@ -256,7 +256,7 @@ def rib_rule5(colorer, s, i):
 def rib_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rib::literals",exclude_match=False,
+        delegate="rib::literals", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rib_rule7(colorer, s, i):
@@ -265,9 +265,9 @@ def rib_rule7(colorer, s, i):
 # Rules dict for rib_main ruleset.
 rulesDict1 = {
     "\"": [rib_rule6,],
-    "#": [rib_rule0,rib_rule1,],
+    "#": [rib_rule0, rib_rule1,],
     "+": [rib_rule3,],
-    "-": [rib_rule2,rib_rule7,],
+    "-": [rib_rule2, rib_rule7,],
     "0": [rib_rule7,],
     "1": [rib_rule7,],
     "2": [rib_rule7,],
@@ -418,4 +418,3 @@ rulesDictDict = {
 
 # Import dict for rib mode.
 importDict = {}
-

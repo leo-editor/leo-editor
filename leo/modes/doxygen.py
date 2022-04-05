@@ -315,19 +315,19 @@ def doxygen_rule2(colorer, s, i):
 def doxygen_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def doxygen_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def doxygen_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def doxygen_rule6(colorer, s, i):
@@ -336,7 +336,7 @@ def doxygen_rule6(colorer, s, i):
 # Rules dict for doxygen_main ruleset.
 rulesDict1 = {
     "\"": [doxygen_rule3,],
-    "#": [doxygen_rule0,doxygen_rule6,],
+    "#": [doxygen_rule0, doxygen_rule6,],
     "$": [doxygen_rule6,],
     "%": [doxygen_rule6,],
     "&": [doxygen_rule6,],
@@ -425,7 +425,7 @@ def doxygen_rule7(colorer, s, i):
 def doxygen_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def doxygen_rule9(colorer, s, i):
@@ -443,7 +443,7 @@ def doxygen_rule11(colorer, s, i):
 def doxygen_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def doxygen_rule13(colorer, s, i):
@@ -467,7 +467,7 @@ rulesDict2 = {
     "7": [doxygen_rule13,],
     "8": [doxygen_rule13,],
     "9": [doxygen_rule13,],
-    "<": [doxygen_rule8,doxygen_rule9,doxygen_rule10,doxygen_rule11,doxygen_rule12,doxygen_rule13,],
+    "<": [doxygen_rule8, doxygen_rule9, doxygen_rule10, doxygen_rule11, doxygen_rule12, doxygen_rule13,],
     ">": [doxygen_rule13,],
     "@": [doxygen_rule13,],
     "A": [doxygen_rule13,],
@@ -536,4 +536,3 @@ rulesDictDict = {
 
 # Import dict for doxygen mode.
 importDict = {}
-

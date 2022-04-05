@@ -123,7 +123,7 @@ def smi_mib_rule0(colorer, s, i):
 def smi_mib_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def smi_mib_rule2(colorer, s, i):
@@ -156,7 +156,7 @@ def smi_mib_rule8(colorer, s, i):
 # Rules dict for smi_mib_main ruleset.
 rulesDict1 = {
     "\"": [smi_mib_rule1,],
-    "-": [smi_mib_rule0,smi_mib_rule8,],
+    "-": [smi_mib_rule0, smi_mib_rule8,],
     "0": [smi_mib_rule8,],
     "1": [smi_mib_rule8,],
     "2": [smi_mib_rule8,],
@@ -183,11 +183,11 @@ rulesDict1 = {
     "L": [smi_mib_rule8,],
     "M": [smi_mib_rule8,],
     "N": [smi_mib_rule8,],
-    "O": [smi_mib_rule5,smi_mib_rule7,smi_mib_rule8,],
+    "O": [smi_mib_rule5, smi_mib_rule7, smi_mib_rule8,],
     "P": [smi_mib_rule8,],
     "Q": [smi_mib_rule8,],
     "R": [smi_mib_rule8,],
-    "S": [smi_mib_rule6,smi_mib_rule8,],
+    "S": [smi_mib_rule6, smi_mib_rule8,],
     "T": [smi_mib_rule8,],
     "U": [smi_mib_rule8,],
     "V": [smi_mib_rule8,],
@@ -232,4 +232,3 @@ rulesDictDict = {
 
 # Import dict for smi_mib mode.
 importDict = {}
-

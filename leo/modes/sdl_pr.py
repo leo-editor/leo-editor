@@ -179,25 +179,25 @@ keywordsDictDict = {
 def sdl_pr_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="/*#SDTREF", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sdl_pr_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sdl_pr_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def sdl_pr_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def sdl_pr_rule4(colorer, s, i):
@@ -296,7 +296,7 @@ rulesDict1 = {
     "+": [sdl_pr_rule4,],
     "-": [sdl_pr_rule5,],
     ".": [sdl_pr_rule16,],
-    "/": [sdl_pr_rule0,sdl_pr_rule1,sdl_pr_rule7,sdl_pr_rule9,sdl_pr_rule18,],
+    "/": [sdl_pr_rule0, sdl_pr_rule1, sdl_pr_rule7, sdl_pr_rule9, sdl_pr_rule18,],
     "0": [sdl_pr_rule25,],
     "1": [sdl_pr_rule25,],
     "2": [sdl_pr_rule25,],
@@ -308,9 +308,9 @@ rulesDict1 = {
     "8": [sdl_pr_rule25,],
     "9": [sdl_pr_rule25,],
     ":": [sdl_pr_rule10,],
-    "<": [sdl_pr_rule12,sdl_pr_rule13,],
-    "=": [sdl_pr_rule8,sdl_pr_rule11,],
-    ">": [sdl_pr_rule14,sdl_pr_rule15,],
+    "<": [sdl_pr_rule12, sdl_pr_rule13,],
+    "=": [sdl_pr_rule8, sdl_pr_rule11,],
+    ">": [sdl_pr_rule14, sdl_pr_rule15,],
     "@": [sdl_pr_rule25,],
     "A": [sdl_pr_rule25,],
     "B": [sdl_pr_rule25,],
@@ -338,7 +338,7 @@ rulesDict1 = {
     "X": [sdl_pr_rule25,],
     "Y": [sdl_pr_rule25,],
     "Z": [sdl_pr_rule25,],
-    "a": [sdl_pr_rule19,sdl_pr_rule25,],
+    "a": [sdl_pr_rule19, sdl_pr_rule25,],
     "b": [sdl_pr_rule25,],
     "c": [sdl_pr_rule25,],
     "d": [sdl_pr_rule25,],
@@ -350,18 +350,18 @@ rulesDict1 = {
     "j": [sdl_pr_rule25,],
     "k": [sdl_pr_rule25,],
     "l": [sdl_pr_rule25,],
-    "m": [sdl_pr_rule20,sdl_pr_rule25,],
-    "n": [sdl_pr_rule21,sdl_pr_rule25,],
-    "o": [sdl_pr_rule22,sdl_pr_rule25,],
+    "m": [sdl_pr_rule20, sdl_pr_rule25,],
+    "n": [sdl_pr_rule21, sdl_pr_rule25,],
+    "o": [sdl_pr_rule22, sdl_pr_rule25,],
     "p": [sdl_pr_rule25,],
     "q": [sdl_pr_rule25,],
-    "r": [sdl_pr_rule23,sdl_pr_rule25,],
+    "r": [sdl_pr_rule23, sdl_pr_rule25,],
     "s": [sdl_pr_rule25,],
     "t": [sdl_pr_rule25,],
     "u": [sdl_pr_rule25,],
     "v": [sdl_pr_rule25,],
     "w": [sdl_pr_rule25,],
-    "x": [sdl_pr_rule24,sdl_pr_rule25,],
+    "x": [sdl_pr_rule24, sdl_pr_rule25,],
     "y": [sdl_pr_rule25,],
     "z": [sdl_pr_rule25,],
 }
@@ -373,4 +373,3 @@ rulesDictDict = {
 
 # Import dict for sdl_pr mode.
 importDict = {}
-

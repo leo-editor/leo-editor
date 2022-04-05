@@ -226,7 +226,7 @@ def redcode_rule37(colorer, s, i):
 
 # Rules dict for redcode_main ruleset.
 rulesDict1 = {
-    "!": [redcode_rule22,redcode_rule29,],
+    "!": [redcode_rule22, redcode_rule29,],
     "#": [redcode_rule33,],
     "$": [redcode_rule31,],
     "%": [redcode_rule20,],
@@ -237,7 +237,7 @@ rulesDict1 = {
     "+": [redcode_rule17,],
     ",": [redcode_rule13,],
     "-": [redcode_rule18,],
-    ".": [redcode_rule6,redcode_rule7,redcode_rule8,redcode_rule9,redcode_rule10,redcode_rule11,redcode_rule12,],
+    ".": [redcode_rule6, redcode_rule7, redcode_rule8, redcode_rule9, redcode_rule10, redcode_rule11, redcode_rule12,],
     "/": [redcode_rule19,],
     "0": [redcode_rule37,],
     "1": [redcode_rule37,],
@@ -250,11 +250,11 @@ rulesDict1 = {
     "8": [redcode_rule37,],
     "9": [redcode_rule37,],
     ":": [redcode_rule14,],
-    ";": [redcode_rule0,redcode_rule1,redcode_rule2,redcode_rule3,redcode_rule4,redcode_rule5,],
-    "<": [redcode_rule23,redcode_rule25,],
-    "=": [redcode_rule21,redcode_rule30,],
-    ">": [redcode_rule24,redcode_rule26,],
-    "@": [redcode_rule32,redcode_rule37,],
+    ";": [redcode_rule0, redcode_rule1, redcode_rule2, redcode_rule3, redcode_rule4, redcode_rule5,],
+    "<": [redcode_rule23, redcode_rule25,],
+    "=": [redcode_rule21, redcode_rule30,],
+    ">": [redcode_rule24, redcode_rule26,],
+    "@": [redcode_rule32, redcode_rule37,],
     "A": [redcode_rule37,],
     "B": [redcode_rule37,],
     "C": [redcode_rule37,],
@@ -319,4 +319,3 @@ rulesDictDict = {
 
 # Import dict for redcode mode.
 importDict = {}
-

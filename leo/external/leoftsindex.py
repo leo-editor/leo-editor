@@ -40,8 +40,8 @@ import leo.plugins.leofts as leofts
 controller = leoBridge.controller(
     gui='nullGui',
     loadPlugins=False,  # True: attempt to load plugins.
-    readSettings=False, # True: read standard settings files.
-    silent=False,       # True: don't print signon messages.
+    readSettings=False,  # True: read standard settings files.
+    silent=False,  # True: don't print signon messages.
     verbose=False
 )
 g = controller.globals()
@@ -62,19 +62,19 @@ todo = list(files)
 while todo:
 
     item = todo.pop(0)
-    
-    print ("INDEX: %s"%item)
-    
+
+    print("INDEX: %s" % item)
+
     if '#' in item:
         fn, node = item.split('#', 1)
     else:
         fn, node = item, None
-        
+
     if node:
         c = fn2c.setdefault(fn, controller.openLeoFile(fn))
         found, dummy, p = g.recursiveUNLSearch(node.split('-->'), c)
         if not found:
-            print("Could not find '%s'"%item)
+            print("Could not find '%s'" % item)
             break
         if not p:
             p = c.p
@@ -91,18 +91,18 @@ while todo:
 
     else:
         files = [fn]
-        
+
     for fn in files:
-    
+
         # file names may still have '#' if taken from a node list
         real_name = fn.split('#', 1)[0]
         if real_name in done:
             continue
         done.add(real_name)
-        
+
         if len(files) != 1:
-            print (" FILE: %s"%real_name)
-    
+            print(" FILE: %s" % real_name)
+
         c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
         fts.drop_document(real_name)
         fts.index_nodes(c)

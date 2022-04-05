@@ -118,31 +118,31 @@ keywordsDictDict = {
 def cplusplus_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cplusplus_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cplusplus_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def cplusplus_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def cplusplus_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def cplusplus_rule5(colorer, s, i):
@@ -246,7 +246,7 @@ def cplusplus_rule28(colorer, s, i):
 rulesDict1 = {
     "!": [cplusplus_rule9,],
     "\"": [cplusplus_rule3,],
-    "#": [cplusplus_rule5,cplusplus_rule6,],
+    "#": [cplusplus_rule5, cplusplus_rule6,],
     "%": [cplusplus_rule18,],
     "&": [cplusplus_rule19,],
     "'": [cplusplus_rule4,],
@@ -254,7 +254,7 @@ rulesDict1 = {
     "*": [cplusplus_rule15,],
     "+": [cplusplus_rule12,],
     "-": [cplusplus_rule13,],
-    "/": [cplusplus_rule0,cplusplus_rule1,cplusplus_rule2,cplusplus_rule7,cplusplus_rule14,],
+    "/": [cplusplus_rule0, cplusplus_rule1, cplusplus_rule2, cplusplus_rule7, cplusplus_rule14,],
     "0": [cplusplus_rule28,],
     "1": [cplusplus_rule28,],
     "2": [cplusplus_rule28,],
@@ -265,10 +265,10 @@ rulesDict1 = {
     "7": [cplusplus_rule28,],
     "8": [cplusplus_rule28,],
     "9": [cplusplus_rule28,],
-    ":": [cplusplus_rule25,cplusplus_rule26,],
-    "<": [cplusplus_rule11,cplusplus_rule17,],
+    ":": [cplusplus_rule25, cplusplus_rule26,],
+    "<": [cplusplus_rule11, cplusplus_rule17,],
     "=": [cplusplus_rule8,],
-    ">": [cplusplus_rule10,cplusplus_rule16,],
+    ">": [cplusplus_rule10, cplusplus_rule16,],
     "@": [cplusplus_rule28,],
     "A": [cplusplus_rule28,],
     "B": [cplusplus_rule28,],
@@ -337,4 +337,3 @@ rulesDictDict = {
 
 # Import dict for cplusplus mode.
 importDict = {}
-

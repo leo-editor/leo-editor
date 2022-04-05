@@ -207,7 +207,7 @@ keywordsDictDict = {
 def applescript_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def applescript_rule1(colorer, s, i):
@@ -218,13 +218,13 @@ def applescript_rule1(colorer, s, i):
 def applescript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def applescript_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def applescript_rule4(colorer, s, i):
@@ -314,12 +314,12 @@ def applescript_rule24(colorer, s, i):
 rulesDict1 = {
     "\"": [applescript_rule2,],
     "&": [applescript_rule11,],
-    "'": [applescript_rule3,applescript_rule24,],
-    "(": [applescript_rule0,applescript_rule4,],
+    "'": [applescript_rule3, applescript_rule24,],
+    "(": [applescript_rule0, applescript_rule4,],
     ")": [applescript_rule5,],
     "*": [applescript_rule9,],
     "+": [applescript_rule6,],
-    "-": [applescript_rule1,applescript_rule7,],
+    "-": [applescript_rule1, applescript_rule7,],
     "/": [applescript_rule10,],
     "0": [applescript_rule24,],
     "1": [applescript_rule24,],
@@ -331,9 +331,9 @@ rulesDict1 = {
     "7": [applescript_rule24,],
     "8": [applescript_rule24,],
     "9": [applescript_rule24,],
-    "<": [applescript_rule12,applescript_rule13,],
+    "<": [applescript_rule12, applescript_rule13,],
     "=": [applescript_rule16,],
-    ">": [applescript_rule14,applescript_rule15,],
+    ">": [applescript_rule14, applescript_rule15,],
     "@": [applescript_rule24,],
     "A": [applescript_rule24,],
     "B": [applescript_rule24,],
@@ -362,9 +362,9 @@ rulesDict1 = {
     "Y": [applescript_rule24,],
     "Z": [applescript_rule24,],
     "^": [applescript_rule8,],
-    "a": [applescript_rule17,applescript_rule20,applescript_rule21,applescript_rule24,],
+    "a": [applescript_rule17, applescript_rule20, applescript_rule21, applescript_rule24,],
     "b": [applescript_rule24,],
-    "c": [applescript_rule18,applescript_rule24,],
+    "c": [applescript_rule18, applescript_rule24,],
     "d": [applescript_rule24,],
     "e": [applescript_rule24,],
     "f": [applescript_rule24,],
@@ -374,17 +374,17 @@ rulesDict1 = {
     "j": [applescript_rule24,],
     "k": [applescript_rule24,],
     "l": [applescript_rule24,],
-    "m": [applescript_rule23,applescript_rule24,],
+    "m": [applescript_rule23, applescript_rule24,],
     "n": [applescript_rule24,],
     "o": [applescript_rule24,],
     "p": [applescript_rule24,],
     "q": [applescript_rule24,],
     "r": [applescript_rule24,],
-    "s": [applescript_rule22,applescript_rule24,],
+    "s": [applescript_rule22, applescript_rule24,],
     "t": [applescript_rule24,],
     "u": [applescript_rule24,],
     "v": [applescript_rule24,],
-    "w": [applescript_rule19,applescript_rule24,],
+    "w": [applescript_rule19, applescript_rule24,],
     "x": [applescript_rule24,],
     "y": [applescript_rule24,],
     "z": [applescript_rule24,],
@@ -397,4 +397,3 @@ rulesDictDict = {
 
 # Import dict for applescript mode.
 importDict = {}
-

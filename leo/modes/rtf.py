@@ -51,7 +51,7 @@ def rtf_rule4(colorer, s, i):
 
 # Rules dict for rtf_main ruleset.
 rulesDict1 = {
-    "\\": [rtf_rule2,rtf_rule3,rtf_rule4,],
+    "\\": [rtf_rule2, rtf_rule3, rtf_rule4,],
     "{": [rtf_rule0,],
     "}": [rtf_rule1,],
 }
@@ -63,4 +63,3 @@ rulesDictDict = {
 
 # Import dict for rtf mode.
 importDict = {}
-

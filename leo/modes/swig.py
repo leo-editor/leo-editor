@@ -42,7 +42,7 @@ keywordsDictDict = {
 def swig_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="%{", end="%}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def swig_rule1(colorer, s, i):
@@ -52,7 +52,7 @@ def swig_rule1(colorer, s, i):
 
 # Rules dict for swig_main ruleset.
 rulesDict1 = {
-    "%": [swig_rule0,swig_rule1,],
+    "%": [swig_rule0, swig_rule1,],
 }
 
 # x.rulesDictDict for swig mode.
@@ -64,4 +64,3 @@ rulesDictDict = {
 importDict = {
     "swig_main": ["c::main",],
 }
-

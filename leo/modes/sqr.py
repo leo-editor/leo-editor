@@ -136,13 +136,13 @@ def sqr_rule0(colorer, s, i):
 def sqr_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def sqr_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def sqr_rule3(colorer, s, i):
@@ -230,10 +230,10 @@ rulesDict1 = {
     "8": [sqr_rule18,],
     "9": [sqr_rule18,],
     ":": [sqr_rule5,],
-    "<": [sqr_rule7,sqr_rule9,sqr_rule11,],
+    "<": [sqr_rule7, sqr_rule9, sqr_rule11,],
     "=": [sqr_rule6,],
-    ">": [sqr_rule8,sqr_rule10,],
-    "@": [sqr_rule4,sqr_rule18,],
+    ">": [sqr_rule8, sqr_rule10,],
+    "@": [sqr_rule4, sqr_rule18,],
     "A": [sqr_rule18,],
     "B": [sqr_rule18,],
     "C": [sqr_rule18,],
@@ -297,4 +297,3 @@ rulesDictDict = {
 
 # Import dict for sqr mode.
 importDict = {}
-

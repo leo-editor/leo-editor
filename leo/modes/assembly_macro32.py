@@ -537,13 +537,13 @@ def assembly_macro32_rule0(colorer, s, i):
 def assembly_macro32_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_macro32_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def assembly_macro32_rule3(colorer, s, i):
@@ -646,7 +646,7 @@ rulesDict1 = {
     "!": [assembly_macro32_rule24,],
     "\"": [assembly_macro32_rule2,],
     "#": [assembly_macro32_rule22,],
-    "%": [assembly_macro32_rule3,assembly_macro32_rule4,],
+    "%": [assembly_macro32_rule3, assembly_macro32_rule4,],
     "&": [assembly_macro32_rule23,],
     "'": [assembly_macro32_rule1,],
     "*": [assembly_macro32_rule20,],
@@ -666,22 +666,22 @@ rulesDict1 = {
     "9": [assembly_macro32_rule26,],
     ":": [assembly_macro32_rule5,],
     ";": [assembly_macro32_rule0,],
-    "@": [assembly_macro32_rule21,assembly_macro32_rule26,],
-    "A": [assembly_macro32_rule10,assembly_macro32_rule26,],
-    "B": [assembly_macro32_rule6,assembly_macro32_rule26,],
-    "C": [assembly_macro32_rule13,assembly_macro32_rule26,],
-    "D": [assembly_macro32_rule7,assembly_macro32_rule26,],
+    "@": [assembly_macro32_rule21, assembly_macro32_rule26,],
+    "A": [assembly_macro32_rule10, assembly_macro32_rule26,],
+    "B": [assembly_macro32_rule6, assembly_macro32_rule26,],
+    "C": [assembly_macro32_rule13, assembly_macro32_rule26,],
+    "D": [assembly_macro32_rule7, assembly_macro32_rule26,],
     "E": [assembly_macro32_rule26,],
-    "F": [assembly_macro32_rule12,assembly_macro32_rule26,],
-    "G": [assembly_macro32_rule15,assembly_macro32_rule26,],
+    "F": [assembly_macro32_rule12, assembly_macro32_rule26,],
+    "G": [assembly_macro32_rule15, assembly_macro32_rule26,],
     "H": [assembly_macro32_rule26,],
     "I": [assembly_macro32_rule26,],
     "J": [assembly_macro32_rule26,],
     "K": [assembly_macro32_rule26,],
-    "L": [assembly_macro32_rule14,assembly_macro32_rule26,],
-    "M": [assembly_macro32_rule11,assembly_macro32_rule26,],
+    "L": [assembly_macro32_rule14, assembly_macro32_rule26,],
+    "M": [assembly_macro32_rule11, assembly_macro32_rule26,],
     "N": [assembly_macro32_rule26,],
-    "O": [assembly_macro32_rule8,assembly_macro32_rule26,],
+    "O": [assembly_macro32_rule8, assembly_macro32_rule26,],
     "P": [assembly_macro32_rule26,],
     "Q": [assembly_macro32_rule26,],
     "R": [assembly_macro32_rule26,],
@@ -690,7 +690,7 @@ rulesDict1 = {
     "U": [assembly_macro32_rule26,],
     "V": [assembly_macro32_rule26,],
     "W": [assembly_macro32_rule26,],
-    "X": [assembly_macro32_rule9,assembly_macro32_rule26,],
+    "X": [assembly_macro32_rule9, assembly_macro32_rule26,],
     "Y": [assembly_macro32_rule26,],
     "Z": [assembly_macro32_rule26,],
     "\\": [assembly_macro32_rule25,],
@@ -731,4 +731,3 @@ rulesDictDict = {
 
 # Import dict for assembly_macro32 mode.
 importDict = {}
-

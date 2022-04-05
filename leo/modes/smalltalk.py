@@ -59,13 +59,13 @@ keywordsDictDict = {
 def smalltalk_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def smalltalk_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def smalltalk_rule2(colorer, s, i):
@@ -151,10 +151,10 @@ rulesDict1 = {
     "7": [smalltalk_rule17,],
     "8": [smalltalk_rule17,],
     "9": [smalltalk_rule17,],
-    ":": [smalltalk_rule2,smalltalk_rule14,],
-    "<": [smalltalk_rule7,smalltalk_rule9,],
-    "=": [smalltalk_rule4,smalltalk_rule5,],
-    ">": [smalltalk_rule6,smalltalk_rule8,],
+    ":": [smalltalk_rule2, smalltalk_rule14,],
+    "<": [smalltalk_rule7, smalltalk_rule9,],
+    "=": [smalltalk_rule4, smalltalk_rule5,],
+    ">": [smalltalk_rule6, smalltalk_rule8,],
     "@": [smalltalk_rule17,],
     "A": [smalltalk_rule17,],
     "B": [smalltalk_rule17,],
@@ -218,4 +218,3 @@ rulesDictDict = {
 
 # Import dict for smalltalk mode.
 importDict = {}
-

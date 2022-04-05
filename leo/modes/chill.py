@@ -98,25 +98,25 @@ keywordsDictDict = {
 def chill_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<>", end="<>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def chill_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def chill_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def chill_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="H'", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def chill_rule4(colorer, s, i):
@@ -216,7 +216,7 @@ rulesDict1 = {
     ",": [chill_rule13,],
     "-": [chill_rule9,],
     ".": [chill_rule12,],
-    "/": [chill_rule1,chill_rule10,chill_rule20,],
+    "/": [chill_rule1, chill_rule10, chill_rule20,],
     "0": [chill_rule25,],
     "1": [chill_rule25,],
     "2": [chill_rule25,],
@@ -227,12 +227,12 @@ rulesDict1 = {
     "7": [chill_rule25,],
     "8": [chill_rule25,],
     "9": [chill_rule25,],
-    ":": [chill_rule17,chill_rule18,],
+    ":": [chill_rule17, chill_rule18,],
     ";": [chill_rule14,],
-    "<": [chill_rule0,chill_rule22,chill_rule24,],
+    "<": [chill_rule0, chill_rule22, chill_rule24,],
     "=": [chill_rule19,],
-    ">": [chill_rule21,chill_rule23,],
-    "@": [chill_rule16,chill_rule25,],
+    ">": [chill_rule21, chill_rule23,],
+    "@": [chill_rule16, chill_rule25,],
     "A": [chill_rule25,],
     "B": [chill_rule25,],
     "C": [chill_rule25,],
@@ -240,7 +240,7 @@ rulesDict1 = {
     "E": [chill_rule25,],
     "F": [chill_rule25,],
     "G": [chill_rule25,],
-    "H": [chill_rule3,chill_rule25,],
+    "H": [chill_rule3, chill_rule25,],
     "I": [chill_rule25,],
     "J": [chill_rule25,],
     "K": [chill_rule25,],
@@ -298,4 +298,3 @@ rulesDictDict = {
 
 # Import dict for chill mode.
 importDict = {}
-

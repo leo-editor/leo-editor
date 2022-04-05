@@ -149,61 +149,61 @@ keywordsDictDict = {
 def dart_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="@\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="@'''", end="'''",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="@\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def dart_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="@'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def dart_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="dart::dart_literal1",exclude_match=False,
+        delegate="dart::dart_literal1", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'''", end="'''",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="dart::dart_literal1",exclude_match=False,
+        delegate="dart::dart_literal1", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def dart_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="dart::dart_literal1",exclude_match=False,
+        delegate="dart::dart_literal1", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def dart_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="dart::dart_literal1",exclude_match=False,
+        delegate="dart::dart_literal1", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def dart_rule12(colorer, s, i):
@@ -350,12 +350,12 @@ def dart_rule46(colorer, s, i):
 
 # Rules dict for main ruleset.
 rulesDict1 = {
-    "#": [dart_rule41,dart_rule42,dart_rule43,dart_rule44,dart_rule45,],
-     "@": [dart_rule4,dart_rule5,dart_rule6,dart_rule7,dart_rule38,], # Added.
-    "/": [dart_rule39,dart_rule40,
-           dart_rule2,dart_rule3,dart_rule18,], # Added.
-     "'": [dart_rule9,dart_rule11,], # Added.
-     '"': [dart_rule8,dart_rule10,], # Added.
+    "#": [dart_rule41, dart_rule42, dart_rule43, dart_rule44, dart_rule45,],
+     "@": [dart_rule4, dart_rule5, dart_rule6, dart_rule7, dart_rule38,],  # Added.
+    "/": [dart_rule39, dart_rule40,
+           dart_rule2, dart_rule3, dart_rule18,],  # Added.
+     "'": [dart_rule9, dart_rule11,],  # Added.
+     '"': [dart_rule8, dart_rule10,],  # Added.
      # "@": [dart_rule46,],
     # "0": [dart_rule46,],
     # "1": [dart_rule46,],

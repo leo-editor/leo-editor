@@ -5622,7 +5622,7 @@ keywordsDictDict = {
 def matlab_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def matlab_rule1(colorer, s, i):
@@ -5773,14 +5773,14 @@ def matlab_rule36(colorer, s, i):
 rulesDict1 = {
     "%": [matlab_rule1,],
     "&": [matlab_rule21,],
-    "'": [matlab_rule0,matlab_rule19,],
+    "'": [matlab_rule0, matlab_rule19,],
     "(": [matlab_rule30,],
     ")": [matlab_rule31,],
     "*": [matlab_rule15,],
     "+": [matlab_rule9,],
     ",": [matlab_rule26,],
     "-": [matlab_rule10,],
-    ".": [matlab_rule12,matlab_rule14,matlab_rule16,matlab_rule18,matlab_rule20,matlab_rule25,matlab_rule35,],
+    ".": [matlab_rule12, matlab_rule14, matlab_rule16, matlab_rule18, matlab_rule20, matlab_rule25, matlab_rule35,],
     "/": [matlab_rule11,],
     "0": [matlab_rule36,],
     "1": [matlab_rule36,],
@@ -5794,9 +5794,9 @@ rulesDict1 = {
     "9": [matlab_rule36,],
     ":": [matlab_rule24,],
     ";": [matlab_rule27,],
-    "<": [matlab_rule6,matlab_rule8,],
-    "=": [matlab_rule2,matlab_rule3,],
-    ">": [matlab_rule5,matlab_rule7,],
+    "<": [matlab_rule6, matlab_rule8,],
+    "=": [matlab_rule2, matlab_rule3,],
+    ">": [matlab_rule5, matlab_rule7,],
     "?": [matlab_rule34,],
     "@": [matlab_rule36,],
     "A": [matlab_rule36,],
@@ -5859,7 +5859,7 @@ rulesDict1 = {
     "{": [matlab_rule32,],
     "|": [matlab_rule22,],
     "}": [matlab_rule33,],
-    "~": [matlab_rule4,matlab_rule23,],
+    "~": [matlab_rule4, matlab_rule23,],
 }
 
 # x.rulesDictDict for matlab mode.
@@ -5869,4 +5869,3 @@ rulesDictDict = {
 
 # Import dict for matlab mode.
 importDict = {}
-

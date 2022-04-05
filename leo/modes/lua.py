@@ -198,7 +198,7 @@ keywordsDictDict = {
 def lua_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="--[[", end="]]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lua_rule1(colorer, s, i):
@@ -214,13 +214,13 @@ def lua_rule2(colorer, s, i):
 def lua_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lua_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Leo issue #1175:
@@ -300,14 +300,14 @@ def lua_rule23(colorer, s, i):
 
 # Rules dict for lua_main ruleset.
 rulesDict1 = {
-    "\"": [lua_rule3,lua_rule21,],
+    "\"": [lua_rule3, lua_rule21,],
     "#": [lua_rule2,],
-    "'": [lua_rule4,lua_rule22,],
+    "'": [lua_rule4, lua_rule22,],
     "(": [lua_rule19,],
     "*": [lua_rule8,],
     "+": [lua_rule6,],
-    "-": [lua_rule0,lua_rule1,lua_rule7,],
-    ".": [lua_rule11,lua_rule23,],
+    "-": [lua_rule0, lua_rule1, lua_rule7,],
+    ".": [lua_rule11, lua_rule23,],
     "/": [lua_rule9,],
     "0": [lua_rule23,],
     "1": [lua_rule23,],
@@ -319,9 +319,9 @@ rulesDict1 = {
     "7": [lua_rule23,],
     "8": [lua_rule23,],
     "9": [lua_rule23,],
-    "<": [lua_rule12,lua_rule13,],
-    "=": [lua_rule16,lua_rule18,],
-    ">": [lua_rule14,lua_rule15,],
+    "<": [lua_rule12, lua_rule13,],
+    "=": [lua_rule16, lua_rule18,],
+    ">": [lua_rule14, lua_rule15,],
     "@": [lua_rule23,],
     "A": [lua_rule23,],
     "B": [lua_rule23,],
@@ -389,4 +389,3 @@ rulesDictDict = {
 
 # Import dict for lua mode.
 importDict = {}
-

@@ -169,19 +169,19 @@ keywordsDictDict = {
 def nqc_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def nqc_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def nqc_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def nqc_rule3(colorer, s, i):
@@ -285,7 +285,7 @@ rulesDict1 = {
     "*": [nqc_rule12,],
     "+": [nqc_rule9,],
     "-": [nqc_rule10,],
-    "/": [nqc_rule0,nqc_rule4,nqc_rule11,],
+    "/": [nqc_rule0, nqc_rule4, nqc_rule11,],
     "0": [nqc_rule24,],
     "1": [nqc_rule24,],
     "2": [nqc_rule24,],
@@ -297,9 +297,9 @@ rulesDict1 = {
     "8": [nqc_rule24,],
     "9": [nqc_rule24,],
     ":": [nqc_rule22,],
-    "<": [nqc_rule8,nqc_rule14,],
+    "<": [nqc_rule8, nqc_rule14,],
     "=": [nqc_rule5,],
-    ">": [nqc_rule7,nqc_rule13,],
+    ">": [nqc_rule7, nqc_rule13,],
     "@": [nqc_rule24,],
     "A": [nqc_rule24,],
     "B": [nqc_rule24,],
@@ -368,4 +368,3 @@ rulesDictDict = {
 
 # Import dict for nqc mode.
 importDict = {}
-

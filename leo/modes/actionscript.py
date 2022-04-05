@@ -676,19 +676,19 @@ keywordsDictDict = {
 def actionscript_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def actionscript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def actionscript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 # Used to color "("
@@ -822,14 +822,14 @@ rulesDict1 = {
     "%": [actionscript_rule17,],
     "&": [actionscript_rule18,],
     "'": [actionscript_rule2,],
-    "(": [actionscript_rule3,actionscript_rule6,],
+    "(": [actionscript_rule3, actionscript_rule6,],
     ")": [actionscript_rule5,],
     "*": [actionscript_rule14,],
     "+": [actionscript_rule11,],
     ",": [actionscript_rule25,],
     "-": [actionscript_rule12,],
     ".": [actionscript_rule22,],
-    "/": [actionscript_rule0,actionscript_rule4,actionscript_rule13,],
+    "/": [actionscript_rule0, actionscript_rule4, actionscript_rule13,],
     "0": [actionscript_rule32,],
     "1": [actionscript_rule32,],
     "2": [actionscript_rule32,],
@@ -840,11 +840,11 @@ rulesDict1 = {
     "7": [actionscript_rule32,],
     "8": [actionscript_rule32,],
     "9": [actionscript_rule32,],
-    ":": [actionscript_rule30,actionscript_rule31,],
+    ":": [actionscript_rule30, actionscript_rule31,],
     ";": [actionscript_rule26,],
-    "<": [actionscript_rule10,actionscript_rule16,],
+    "<": [actionscript_rule10, actionscript_rule16,],
     "=": [actionscript_rule7,],
-    ">": [actionscript_rule9,actionscript_rule15,],
+    ">": [actionscript_rule9, actionscript_rule15,],
     "?": [actionscript_rule29,],
     "@": [actionscript_rule32,],
     "A": [actionscript_rule32,],
@@ -916,4 +916,3 @@ rulesDictDict = {
 
 # Import dict for actionscript mode.
 importDict = {}
-

@@ -26,7 +26,7 @@ def sqls(k=None):
                                     iconVal,
                                     statusBits,
                                     ua)''',
-        'create-extra-infos': 
+        'create-extra-infos':
             '''create table if not exists extra_infos(name primary key, value)''',
         'create-settings': '''create table settings(name primary key,
                                     value, level, source)''',
@@ -81,7 +81,7 @@ def parseHeadline(s):
     if g.match(s, 0, g.u('@')):
         i = g.skip_id(s, 1, chars=g.u('-'))
         i = g.skip_ws(s, i)
-        kind = s[1: i].strip()
+        kind = s[1:i].strip()
         if kind:
             # name is everything up to '='
             if kind == g.u('data'):
@@ -90,15 +90,15 @@ def parseHeadline(s):
                 if j == -1:
                     name = s[i:].strip()
                 else:
-                    name = s[i: j].strip()
+                    name = s[i:j].strip()
             else:
                 j = s.find(g.u('='), i)
                 if j == -1:
                     name = s[i:].strip()
                 else:
-                    name = s[i: j].strip()
+                    name = s[i:j].strip()
                     # val is everything after the '='
-                    val = s[j + 1:].strip()
+                    val = s[j + 1 :].strip()
     # g.trace("%50s %10s %s" %(name,kind,val))
     return kind, name, val
 #@+node:vitalije.20170706124002.1: *3* harvest_one_setting
@@ -121,22 +121,22 @@ def get_data(node):
             if not x.b[-1].endswith('\n'):
                 data.append(g.u('\n'))
     return data
-    
+
 #@+node:vitalije.20170707152323.1: *3* get_menus_list
 def get_menu_items(node):
     aList = []
     for child in node.children:
         for tag in ('@menu', '@item'):
             if child.h.startswith(tag):
-                name = child.h[len(tag)+1:].strip()
+                name = child.h[len(tag) + 1 :].strip()
                 if tag == '@menu':
-                    aList.append(('%s %s'%(tag, name), get_menu_items(child), None))
+                    aList.append(('%s %s' % (tag, name), get_menu_items(child), None))
                 else:
                     b = g.splitLines(''.join(child.b))
                     aList.append((tag, name, b[0] if b else ''))
                 break
     return aList
-    
+
 def get_menus_list(node):
     aList = []
     tag = '@menu'
@@ -144,7 +144,7 @@ def get_menus_list(node):
     for child in node.children:
         if child.h.startswith(tag):
             menuName = child.h[taglen:].strip()
-            aList.append(('%s %s'%(tag, menuName), get_menu_items(child), None))
+            aList.append(('%s %s' % (tag, menuName), get_menu_items(child), None))
     with open('/tmp/menus', 'w') as out:
         out.write(pprint.pformat(aList))
     return aList
@@ -154,10 +154,10 @@ def get_enabled_plugins(node):
     aList = []
     for s in g.splitLines(s):
         i = s.find('#')
-        if i > -1: s = s[: i] + '\n' # 2011/09/29: must add newline back in.
+        if i > -1: s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
         if s.strip(): aList.append(s.lstrip())
     return ''.join(aList)
-    
+
 #@+node:vitalije.20170707132425.1: *3* get_font
 def get_font(node, values):
     '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
@@ -198,8 +198,8 @@ def parseFontLine(line, d):
         if i == -1:
             name = s; val = None
         else:
-            name = s[: i].strip()
-            val = s[i + 1:].strip()
+            name = s[:i].strip()
+            val = s[i + 1 :].strip()
             val = val.lstrip('"').rstrip('"')
             val = val.lstrip("'").rstrip("'")
         if name.endswith(('_family', '_size', '_slant', '_weight')):
@@ -215,8 +215,8 @@ def get_ints(name, val):
     m = get_ints_items_pattern.search(name)
     if m:
         kind = 'ints' + m.group(0)
-        
-        if ',%s,'%val not in m.group(0).replace('[', ',').replace(']',','):
+
+        if ',%s,' % val not in m.group(0).replace('[', ',').replace(']', ','):
             g.pr("%s is not in %s in %s" % (val, kind, name))
             return
     else:
@@ -228,7 +228,7 @@ def get_ints(name, val):
         valueError('int', name, val)
         return
     return kind, name, value
-    
+
 #@+node:vitalije.20170707160403.1: *3* get_strings
 get_strings_pattern = re.compile('\\[([^\\]]+)\\]')
 def get_strings(name, value):
@@ -237,8 +237,8 @@ def get_strings(name, value):
         items = [x.strip() for x in m.group(1).split(',')]
         nm = name.replace(m.group(0), '').strip()
         if value not in items:
-            raise ValueError('%s value %s not in valid values [%s]'%(nm, value, items))
-        return 'strings[%s]'%(','.join(items)), nm, value
+            raise ValueError('%s value %s not in valid values [%s]' % (nm, value, items))
+        return 'strings[%s]' % (','.join(items)), nm, value
     raise ValueError("%s is not a valid strings for %s" % (value, name))
 #@+node:vitalije.20170706123951.1: *3* harvest_one_simple_setting
 def harvest_one_simple_setting(node, conds, acc):
@@ -307,7 +307,7 @@ def harvest_one_simple_setting(node, conds, acc):
             return
     #@-others
     else:
-        raise ValueError('unhandled kind %s'%node.h)
+        raise ValueError('unhandled kind %s' % node.h)
     harvest_one_setting(node.gnx, kind, name, value, conds, acc)
 #@+node:vitalije.20170706123955.1: *3* harvest_one_complex_setting
 def harvest_one_complex_setting(node, conds, acc):
@@ -379,7 +379,7 @@ def valueError(kind, name, value):
 def vnode_data(vns, seq):
     for gnx in seq:
         v = vns[gnx]
-        yield (gnx, v[0], v[1], v[2], g.u(' ').join(v[3]), v[4], 0, v[5])
+        yield(gnx, v[0], v[1], v[2], g.u(' ').join(v[3]), v[4], 0, v[5])
 #@+node:vitalije.20170704202015.1: ** walk_tree
 def walk_tree(node, vns=None, seq=None):
     if vns is None:
@@ -389,7 +389,7 @@ def walk_tree(node, vns=None, seq=None):
     if not node.gnx in seq:
         seq.append(node.gnx)
     pgnx = node.parent.gnx
-    v = vns.get(node.gnx, 
+    v = vns.get(node.gnx,
         (
             node.h,
             g.u('').join(node.b),
@@ -411,7 +411,7 @@ def main(src, dest):
     root = get_leo_data(g.readFileIntoEncodedString(src))
     root.gnx = 'hidden-root-vnode-gnx'
     vns, seq = walk_tree(root)
-    data = vnode_data(vns, seq[1:]) # skip hidden root
+    data = vnode_data(vns, seq[1:])  # skip hidden root
     with sqlite3.connect(dest) as conn:
         resetdb(conn)
         conn.executemany(sqls('insert-vnode'), data)
@@ -421,9 +421,9 @@ def main(src, dest):
     for gnx, kind, name, value, cond in acc:
         if kind == g.u('data'):
             value = repr(value)[:30]
-        
+
         print(cond or "always", kind, name, pprint.pformat(value))
-            
+
 if __name__ == '__main__':
     src = g.os_path_finalize_join(g.os_path_dirname(__file__),
          '../config/myLeoSettings.leo')

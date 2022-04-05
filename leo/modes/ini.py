@@ -34,7 +34,7 @@ keywordsDictDict = {
 def ini_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="[", end="]",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ini_rule1(colorer, s, i):
@@ -66,4 +66,3 @@ rulesDictDict = {
 
 # Import dict for ini mode.
 importDict = {}
-

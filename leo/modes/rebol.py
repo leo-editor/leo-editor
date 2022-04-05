@@ -530,25 +530,25 @@ keywordsDictDict = {
 def rebol_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="comment {", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rebol_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="comment{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rebol_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rebol_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rebol_rule4(colorer, s, i):
@@ -619,9 +619,9 @@ rulesDict1 = {
     "8": [rebol_rule15,],
     "9": [rebol_rule15,],
     ";": [rebol_rule4,],
-    "<": [rebol_rule7,rebol_rule8,rebol_rule13,],
+    "<": [rebol_rule7, rebol_rule8, rebol_rule13,],
     "=": [rebol_rule5,],
-    ">": [rebol_rule6,rebol_rule12,],
+    ">": [rebol_rule6, rebol_rule12,],
     "?": [rebol_rule15,],
     "@": [rebol_rule15,],
     "A": [rebol_rule15,],
@@ -652,7 +652,7 @@ rulesDict1 = {
     "Z": [rebol_rule15,],
     "a": [rebol_rule15,],
     "b": [rebol_rule15,],
-    "c": [rebol_rule0,rebol_rule1,rebol_rule15,],
+    "c": [rebol_rule0, rebol_rule1, rebol_rule15,],
     "d": [rebol_rule15,],
     "e": [rebol_rule15,],
     "f": [rebol_rule15,],
@@ -687,4 +687,3 @@ rulesDictDict = {
 
 # Import dict for rebol mode.
 importDict = {}
-

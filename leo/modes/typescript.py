@@ -198,19 +198,19 @@ keywordsDictDict = {
 def typescript_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def typescript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def typescript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def typescript_rule3(colorer, s, i):
@@ -328,11 +328,11 @@ def typescript_rule30(colorer, s, i):
 
 def typescript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
-    
+
 def typescript_rule32(colorer, s, i):  # #2287.
       return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 # Rules dict for typescript_main ruleset.
@@ -349,7 +349,7 @@ rulesDict1 = {
     ",": [typescript_rule24,],
     "-": [typescript_rule11,],
     ".": [typescript_rule21,],
-    "/": [typescript_rule0,typescript_rule4,typescript_rule12,],
+    "/": [typescript_rule0, typescript_rule4, typescript_rule12,],
     "0": [typescript_rule31,],
     "1": [typescript_rule31,],
     "2": [typescript_rule31,],
@@ -360,11 +360,11 @@ rulesDict1 = {
     "7": [typescript_rule31,],
     "8": [typescript_rule31,],
     "9": [typescript_rule31,],
-    ":": [typescript_rule29,typescript_rule30,],
+    ":": [typescript_rule29, typescript_rule30,],
     ";": [typescript_rule25,],
-    "<": [typescript_rule5,typescript_rule9,typescript_rule15,],
+    "<": [typescript_rule5, typescript_rule9, typescript_rule15,],
     "=": [typescript_rule6,],
-    ">": [typescript_rule8,typescript_rule14,],
+    ">": [typescript_rule8, typescript_rule14,],
     "?": [typescript_rule28,],
     "@": [typescript_rule31,],
     "A": [typescript_rule31,],

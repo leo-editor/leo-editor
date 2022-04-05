@@ -145,7 +145,7 @@ def batch_rule8(colorer, s, i):
 def batch_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def batch_rule10(colorer, s, i):
@@ -195,7 +195,7 @@ def batch_rule20(colorer, s, i):
 def batch_rule21(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="%", end="%",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def batch_rule22(colorer, s, i):
@@ -205,7 +205,7 @@ def batch_rule22(colorer, s, i):
 rulesDict1 = {
     "!": [batch_rule4,],
     "\"": [batch_rule9,],
-    "%": [batch_rule10,batch_rule11,batch_rule12,batch_rule13,batch_rule14,batch_rule15,batch_rule16,batch_rule17,batch_rule18,batch_rule19,batch_rule20,batch_rule21,],
+    "%": [batch_rule10, batch_rule11, batch_rule12, batch_rule13, batch_rule14, batch_rule15, batch_rule16, batch_rule17, batch_rule18, batch_rule19, batch_rule20, batch_rule21,],
     "&": [batch_rule3,],
     "+": [batch_rule1,],
     ".": [batch_rule22,],
@@ -222,7 +222,7 @@ rulesDict1 = {
     ":": [batch_rule7,],
     "<": [batch_rule6,],
     ">": [batch_rule5,],
-    "@": [batch_rule0,batch_rule22,],
+    "@": [batch_rule0, batch_rule22,],
     "A": [batch_rule22,],
     "B": [batch_rule22,],
     "C": [batch_rule22,],
@@ -240,7 +240,7 @@ rulesDict1 = {
     "O": [batch_rule22,],
     "P": [batch_rule22,],
     "Q": [batch_rule22,],
-    "R": [batch_rule8,batch_rule22,],
+    "R": [batch_rule8, batch_rule22,],
     "S": [batch_rule22,],
     "T": [batch_rule22,],
     "U": [batch_rule22,],
@@ -285,4 +285,3 @@ rulesDictDict = {
 
 # Import dict for batch mode.
 importDict = {}
-

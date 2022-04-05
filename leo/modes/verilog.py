@@ -181,7 +181,7 @@ keywordsDictDict = {
 def verilog_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def verilog_rule1(colorer, s, i):
@@ -192,7 +192,7 @@ def verilog_rule1(colorer, s, i):
 def verilog_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def verilog_rule3(colorer, s, i):
@@ -285,12 +285,12 @@ rulesDict1 = {
     "$": [verilog_rule23,],
     "%": [verilog_rule16,],
     "&": [verilog_rule17,],
-    "'": [verilog_rule3,verilog_rule4,verilog_rule5,verilog_rule6,],
+    "'": [verilog_rule3, verilog_rule4, verilog_rule5, verilog_rule6,],
     "(": [verilog_rule7,],
     "*": [verilog_rule13,],
     "+": [verilog_rule10,],
     "-": [verilog_rule11,],
-    "/": [verilog_rule0,verilog_rule1,verilog_rule12,],
+    "/": [verilog_rule0, verilog_rule1, verilog_rule12,],
     "0": [verilog_rule23,],
     "1": [verilog_rule23,],
     "2": [verilog_rule23,],
@@ -373,4 +373,3 @@ rulesDictDict = {
 
 # Import dict for verilog mode.
 importDict = {}
-

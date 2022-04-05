@@ -219,13 +219,13 @@ def fortran_rule5(colorer, s, i):
 def fortran_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def fortran_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def fortran_rule8(colorer, s, i):
@@ -293,12 +293,12 @@ def fortran_rule23(colorer, s, i):
 
 # Rules dict for fortran_main ruleset.
 rulesDict1 = {
-    "!": [fortran_rule2,fortran_rule4,],
+    "!": [fortran_rule2, fortran_rule4,],
     "\"": [fortran_rule6,],
     "&": [fortran_rule12,],
     "'": [fortran_rule7,],
     "*": [fortran_rule3,],
-    ".": [fortran_rule15,fortran_rule16,fortran_rule17,fortran_rule18,fortran_rule19,fortran_rule20,fortran_rule21,fortran_rule22,fortran_rule23,],
+    ".": [fortran_rule15, fortran_rule16, fortran_rule17, fortran_rule18, fortran_rule19, fortran_rule20, fortran_rule21, fortran_rule22, fortran_rule23,],
     "/": [fortran_rule13,],
     "0": [fortran_rule23,],
     "1": [fortran_rule23,],
@@ -310,14 +310,14 @@ rulesDict1 = {
     "7": [fortran_rule23,],
     "8": [fortran_rule23,],
     "9": [fortran_rule23,],
-    "<": [fortran_rule8,fortran_rule11,],
+    "<": [fortran_rule8, fortran_rule11,],
     "=": [fortran_rule14,],
-    ">": [fortran_rule9,fortran_rule10,],
+    ">": [fortran_rule9, fortran_rule10,],
     "@": [fortran_rule23,],
     "A": [fortran_rule23,],
     "B": [fortran_rule23,],
-    "C": [fortran_rule1,fortran_rule23,],
-    "D": [fortran_rule5,fortran_rule23,],
+    "C": [fortran_rule1, fortran_rule23,],
+    "D": [fortran_rule5, fortran_rule23,],
     "E": [fortran_rule23,],
     "F": [fortran_rule23,],
     "G": [fortran_rule23,],
@@ -342,7 +342,7 @@ rulesDict1 = {
     "Z": [fortran_rule23,],
     "a": [fortran_rule23,],
     "b": [fortran_rule23,],
-    "c": [fortran_rule0,fortran_rule23,],
+    "c": [fortran_rule0, fortran_rule23,],
     "d": [fortran_rule23,],
     "e": [fortran_rule23,],
     "f": [fortran_rule23,],
@@ -375,4 +375,3 @@ rulesDictDict = {
 
 # Import dict for fortran mode.
 importDict = {}
-

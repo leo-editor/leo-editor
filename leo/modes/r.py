@@ -4428,13 +4428,13 @@ keywordsDictDict = {
 def r_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def r_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def r_rule2(colorer, s, i):
@@ -4579,18 +4579,18 @@ def r_rule36(colorer, s, i):
 
 # Rules dict for r_main ruleset.
 rulesDict1 = {
-    "!": [r_rule10,r_rule12,],
+    "!": [r_rule10, r_rule12,],
     "\"": [r_rule0,],
     "#": [r_rule2,],
     "$": [r_rule18,],
-    "%": [r_rule26,r_rule27,r_rule28,r_rule29,r_rule30,],
-    "&": [r_rule13,r_rule16,],
+    "%": [r_rule26, r_rule27, r_rule28, r_rule29, r_rule30,],
+    "&": [r_rule13, r_rule16,],
     "'": [r_rule1,],
     "(": [r_rule3,],
     ")": [r_rule4,],
     "*": [r_rule24,],
     "+": [r_rule22,],
-    "-": [r_rule6,r_rule23,r_rule36,],
+    "-": [r_rule6, r_rule23, r_rule36,],
     ".": [r_rule36,],
     "/": [r_rule25,],
     "0": [r_rule36,],
@@ -4604,9 +4604,9 @@ rulesDict1 = {
     "8": [r_rule36,],
     "9": [r_rule36,],
     ":": [r_rule19,],
-    "<": [r_rule5,r_rule8,r_rule21,],
-    "=": [r_rule9,r_rule11,],
-    ">": [r_rule7,r_rule20,],
+    "<": [r_rule5, r_rule8, r_rule21,],
+    "=": [r_rule9, r_rule11,],
+    ">": [r_rule7, r_rule20,],
     "@": [r_rule36,],
     "A": [r_rule36,],
     "B": [r_rule36,],
@@ -4665,7 +4665,7 @@ rulesDict1 = {
     "y": [r_rule36,],
     "z": [r_rule36,],
     "{": [r_rule34,],
-    "|": [r_rule14,r_rule15,],
+    "|": [r_rule14, r_rule15,],
     "}": [r_rule35,],
     "~": [r_rule17,],
 }
@@ -4677,4 +4677,3 @@ rulesDictDict = {
 
 # Import dict for r mode.
 importDict = {}
-
