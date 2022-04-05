@@ -1031,6 +1031,9 @@ class AssignLinksError(Exception):
 
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
+    
+class BeautifyError(Exception):
+    """Leading tabs found."""
 
 
 class FailFast(Exception):
@@ -3457,6 +3460,7 @@ class Orange:
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.indent_stack: List[str] = []  # Stack of indent/dedent values.
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
@@ -3495,7 +3499,13 @@ class Orange:
         if not contents or not tokens or not tree:
             return False  # #2529: Not an error.
         # Beautify.
-        results = self.beautify(contents, filename, tokens, tree)
+        try:
+            results = self.beautify(contents, filename, tokens, tree)
+        except BeautifyError:
+            # g.trace('-----', filename)
+            # g.es_exception() ###
+            # g.pdb()
+            return False  # #2578. Leading tabs found.
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
             return False
@@ -3587,6 +3597,8 @@ class Orange:
         self.clean_blank_lines()
         self.add_token('line-end', '\n')
     #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
+    # Note: other methods use self.level.
+
     def do_dedent(self) -> None:
         """Handle dedent token."""
         self.level -= 1
@@ -3603,6 +3615,10 @@ class Orange:
 
     def do_indent(self) -> None:
         """Handle indent token."""
+        if '\t' in self.val:
+            message = f"Leading tabs found: {self.filename}"
+            print(message)
+            raise BeautifyError(message)
         new_indent = self.val
         old_indent = self.level * self.tab_width * ' '
         if new_indent > old_indent:
