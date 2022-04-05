@@ -107,7 +107,7 @@ keywordsDictDict = {
 def lotos_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def lotos_rule1(colorer, s, i):
@@ -182,7 +182,7 @@ rulesDict1 = {
     "X": [lotos_rule8,],
     "Y": [lotos_rule8,],
     "Z": [lotos_rule8,],
-    "[": [lotos_rule2,lotos_rule7,],
+    "[": [lotos_rule2, lotos_rule7,],
     "]": [lotos_rule6,],
     "a": [lotos_rule8,],
     "b": [lotos_rule8,],
@@ -210,7 +210,7 @@ rulesDict1 = {
     "x": [lotos_rule8,],
     "y": [lotos_rule8,],
     "z": [lotos_rule8,],
-    "|": [lotos_rule3,lotos_rule4,lotos_rule5,],
+    "|": [lotos_rule3, lotos_rule4, lotos_rule5,],
 }
 
 # x.rulesDictDict for lotos mode.
@@ -220,4 +220,3 @@ rulesDictDict = {
 
 # Import dict for lotos mode.
 importDict = {}
-

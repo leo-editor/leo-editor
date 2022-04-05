@@ -441,25 +441,25 @@ def omnimark_rule1(colorer, s, i):
 def omnimark_rule2(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="invalid", begin="\"((?!$)[^\"])*$", end="$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def omnimark_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def omnimark_rule4(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="invalid", begin="'((?!$)[^'])*$", end="$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def omnimark_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def omnimark_rule6(colorer, s, i):
@@ -527,13 +527,13 @@ def omnimark_rule21(colorer, s, i):
 
 # Rules dict for omnimark_main ruleset.
 rulesDict1 = {
-    "!": [omnimark_rule20,omnimark_rule21,],
-    "\"": [omnimark_rule2,omnimark_rule3,],
-    "#": [omnimark_rule0,omnimark_rule21,],
+    "!": [omnimark_rule20, omnimark_rule21,],
+    "\"": [omnimark_rule2, omnimark_rule3,],
+    "#": [omnimark_rule0, omnimark_rule21,],
     "$": [omnimark_rule15,],
     "%": [omnimark_rule16,],
     "&": [omnimark_rule6,],
-    "'": [omnimark_rule4,omnimark_rule5,],
+    "'": [omnimark_rule4, omnimark_rule5,],
     "*": [omnimark_rule18,],
     "+": [omnimark_rule8,],
     "-": [omnimark_rule21,],
@@ -553,7 +553,7 @@ rulesDict1 = {
     "=": [omnimark_rule9,],
     ">": [omnimark_rule12,],
     "?": [omnimark_rule19,],
-    "@": [omnimark_rule14,omnimark_rule21,],
+    "@": [omnimark_rule14, omnimark_rule21,],
     "A": [omnimark_rule21,],
     "B": [omnimark_rule21,],
     "C": [omnimark_rule21,],
@@ -618,4 +618,3 @@ rulesDictDict = {
 
 # Import dict for omnimark mode.
 importDict = {}
-

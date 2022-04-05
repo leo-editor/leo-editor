@@ -129,19 +129,19 @@ def uscript_rule0(colorer, s, i):
 def uscript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def uscript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def uscript_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def uscript_rule4(colorer, s, i):
@@ -248,7 +248,7 @@ rulesDict1 = {
     "*": [uscript_rule12,],
     "+": [uscript_rule15,],
     "-": [uscript_rule13,],
-    "/": [uscript_rule0,uscript_rule1,uscript_rule4,uscript_rule21,],
+    "/": [uscript_rule0, uscript_rule1, uscript_rule4, uscript_rule21,],
     "0": [uscript_rule26,],
     "1": [uscript_rule26,],
     "2": [uscript_rule26,],
@@ -259,12 +259,12 @@ rulesDict1 = {
     "7": [uscript_rule26,],
     "8": [uscript_rule26,],
     "9": [uscript_rule26,],
-    ":": [uscript_rule18,uscript_rule24,],
+    ":": [uscript_rule18, uscript_rule24,],
     "<": [uscript_rule19,],
     "=": [uscript_rule14,],
     ">": [uscript_rule20,],
     "?": [uscript_rule22,],
-    "@": [uscript_rule7,uscript_rule26,],
+    "@": [uscript_rule7, uscript_rule26,],
     "A": [uscript_rule26,],
     "B": [uscript_rule26,],
     "C": [uscript_rule26,],
@@ -331,4 +331,3 @@ rulesDictDict = {
 
 # Import dict for uscript mode.
 importDict = {}
-

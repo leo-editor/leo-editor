@@ -137,44 +137,44 @@ keywordsDictDict = {
 def velocity_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="velocity::javascript",exclude_match=False,
+        delegate="velocity::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="velocity::css",exclude_match=False,
+        delegate="velocity::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::tags",exclude_match=False,
+        delegate="html::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 
 # Rules dict for velocity_main ruleset.
 rulesDict1 = {
     "&": [velocity_rule5,],
-    "<": [velocity_rule0,velocity_rule1,velocity_rule2,velocity_rule3,velocity_rule4,],
+    "<": [velocity_rule0, velocity_rule1, velocity_rule2, velocity_rule3, velocity_rule4,],
 }
 
 # Rules for velocity_velocity ruleset.
@@ -182,7 +182,7 @@ rulesDict1 = {
 def velocity_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="#*", end="*#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def velocity_rule7(colorer, s, i):
@@ -193,7 +193,7 @@ def velocity_rule7(colorer, s, i):
 def velocity_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def velocity_rule9(colorer, s, i):
@@ -209,8 +209,8 @@ def velocity_rule11(colorer, s, i):
 
 # Rules dict for velocity_velocity ruleset.
 rulesDict2 = {
-    "#": [velocity_rule6,velocity_rule7,velocity_rule11,],
-    "$": [velocity_rule8,velocity_rule9,velocity_rule10,],
+    "#": [velocity_rule6, velocity_rule7, velocity_rule11,],
+    "$": [velocity_rule8, velocity_rule9, velocity_rule10,],
     "0": [velocity_rule11,],
     "1": [velocity_rule11,],
     "2": [velocity_rule11,],
@@ -341,8 +341,7 @@ rulesDictDict = {
 
 # Import dict for velocity mode.
 importDict = {
-    "velocity_css2": ["velocity_css2::velocity","css::main",],
-    "velocity_javascript2": ["velocity_javascript2::velocity","javascript::main",],
+    "velocity_css2": ["velocity_css2::velocity", "css::main",],
+    "velocity_javascript2": ["velocity_javascript2::velocity", "javascript::main",],
     "velocity_main": ["velocity_main::velocity",],
 }
-

@@ -143,13 +143,13 @@ def icon_rule0(colorer, s, i):
 def icon_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def icon_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def icon_rule3(colorer, s, i):
@@ -326,12 +326,12 @@ rulesDict1 = {
     "#": [icon_rule0,],
     "$": [icon_rule44,],
     "%": [icon_rule38,],
-    "&": [icon_rule32,icon_rule44,],
+    "&": [icon_rule32, icon_rule44,],
     "'": [icon_rule2,],
     "(": [icon_rule43,],
-    "*": [icon_rule14,icon_rule34,],
-    "+": [icon_rule13,icon_rule27,icon_rule40,],
-    "-": [icon_rule15,icon_rule26,icon_rule39,icon_rule44,],
+    "*": [icon_rule14, icon_rule34,],
+    "+": [icon_rule13, icon_rule27, icon_rule40,],
+    "-": [icon_rule15, icon_rule26, icon_rule39, icon_rule44,],
     "/": [icon_rule42,],
     "0": [icon_rule44,],
     "1": [icon_rule44,],
@@ -343,12 +343,12 @@ rulesDict1 = {
     "7": [icon_rule44,],
     "8": [icon_rule44,],
     "9": [icon_rule44,],
-    ":": [icon_rule24,icon_rule25,icon_rule29,],
-    "<": [icon_rule8,icon_rule9,icon_rule16,icon_rule17,icon_rule19,icon_rule20,],
-    "=": [icon_rule4,icon_rule11,icon_rule41,],
-    ">": [icon_rule6,icon_rule7,icon_rule21,icon_rule22,],
+    ":": [icon_rule24, icon_rule25, icon_rule29,],
+    "<": [icon_rule8, icon_rule9, icon_rule16, icon_rule17, icon_rule19, icon_rule20,],
+    "=": [icon_rule4, icon_rule11, icon_rule41,],
+    ">": [icon_rule6, icon_rule7, icon_rule21, icon_rule22,],
     "?": [icon_rule35,],
-    "@": [icon_rule36,icon_rule44,],
+    "@": [icon_rule36, icon_rule44,],
     "A": [icon_rule44,],
     "B": [icon_rule44,],
     "C": [icon_rule44,],
@@ -390,8 +390,8 @@ rulesDict1 = {
     "k": [icon_rule44,],
     "l": [icon_rule44,],
     "m": [icon_rule44,],
-    "n": [icon_rule33,icon_rule44,],
-    "o": [icon_rule18,icon_rule44,],
+    "n": [icon_rule33, icon_rule44,],
+    "o": [icon_rule18, icon_rule44,],
     "p": [icon_rule44,],
     "q": [icon_rule44,],
     "r": [icon_rule44,],
@@ -403,8 +403,8 @@ rulesDict1 = {
     "x": [icon_rule44,],
     "y": [icon_rule44,],
     "z": [icon_rule44,],
-    "|": [icon_rule5,icon_rule12,icon_rule31,],
-    "~": [icon_rule3,icon_rule10,icon_rule23,icon_rule28,],
+    "|": [icon_rule5, icon_rule12, icon_rule31,],
+    "~": [icon_rule3, icon_rule10, icon_rule23, icon_rule28,],
 }
 
 # x.rulesDictDict for icon mode.
@@ -414,4 +414,3 @@ rulesDictDict = {
 
 # Import dict for icon mode.
 importDict = {}
-

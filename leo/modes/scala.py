@@ -343,13 +343,13 @@ def scala_rule2(colorer, s, i):
 def scala_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::scaladoc",exclude_match=False,
+        delegate="scala::scaladoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule5(colorer, s, i):
@@ -363,13 +363,13 @@ def scala_rule6(colorer, s, i):
 def scala_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"\"\"", end="\"\"\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def scala_rule9(colorer, s, i):
@@ -515,7 +515,7 @@ def scala_rule43(colorer, s, i):
 def scala_rule44(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="case", end="=>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::pattern",exclude_match=False,
+        delegate="scala::pattern", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def scala_rule45(colorer, s, i):
@@ -524,10 +524,10 @@ def scala_rule45(colorer, s, i):
 # Rules dict for scala_primary ruleset.
 rulesDict2 = {
     "!": [scala_rule16,],
-    "\"": [scala_rule7,scala_rule8,],
+    "\"": [scala_rule7, scala_rule8,],
     "%": [scala_rule27,],
     "&": [scala_rule28,],
-    "'": [scala_rule9,scala_rule10,],
+    "'": [scala_rule9, scala_rule10,],
     "(": [scala_rule43,],
     ")": [scala_rule14,],
     "*": [scala_rule24,],
@@ -535,7 +535,7 @@ rulesDict2 = {
     ",": [scala_rule36,],
     "-": [scala_rule22,],
     ".": [scala_rule35,],
-    "/": [scala_rule1,scala_rule2,scala_rule3,scala_rule4,scala_rule23,],
+    "/": [scala_rule1, scala_rule2, scala_rule3, scala_rule4, scala_rule23,],
     "0": [scala_rule45,],
     "1": [scala_rule45,],
     "2": [scala_rule45,],
@@ -546,11 +546,11 @@ rulesDict2 = {
     "7": [scala_rule45,],
     "8": [scala_rule45,],
     "9": [scala_rule45,],
-    ":": [scala_rule41,scala_rule42,],
+    ":": [scala_rule41, scala_rule42,],
     ";": [scala_rule37,],
-    "<": [scala_rule5,scala_rule6,scala_rule12,scala_rule19,scala_rule20,scala_rule26,],
-    "=": [scala_rule15,scala_rule45,],
-    ">": [scala_rule13,scala_rule17,scala_rule18,scala_rule25,scala_rule45,],
+    "<": [scala_rule5, scala_rule6, scala_rule12, scala_rule19, scala_rule20, scala_rule26,],
+    "=": [scala_rule15, scala_rule45,],
+    ">": [scala_rule13, scala_rule17, scala_rule18, scala_rule25, scala_rule45,],
     "?": [scala_rule40,],
     "@": [scala_rule45,],
     "A": [scala_rule45,],
@@ -579,13 +579,13 @@ rulesDict2 = {
     "X": [scala_rule45,],
     "Y": [scala_rule45,],
     "Z": [scala_rule45,],
-    "[": [scala_rule11,scala_rule39,],
+    "[": [scala_rule11, scala_rule39,],
     "]": [scala_rule38,],
     "^": [scala_rule30,],
     "`": [scala_rule31,],
     "a": [scala_rule45,],
     "b": [scala_rule45,],
-    "c": [scala_rule44,scala_rule45,],
+    "c": [scala_rule44, scala_rule45,],
     "d": [scala_rule45,],
     "e": [scala_rule45,],
     "f": [scala_rule45,],
@@ -640,13 +640,13 @@ def scala_rule48(colorer, s, i):
 def scala_rule49(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<pre>", end="</pre>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::scaladoc_pre",exclude_match=False,
+        delegate="scala::scaladoc_pre", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule50(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule51(colorer, s, i):
@@ -664,7 +664,7 @@ def scala_rule53(colorer, s, i):
 def scala_rule54(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule55(colorer, s, i):
@@ -683,7 +683,7 @@ rulesDict4 = {
     "7": [scala_rule55,],
     "8": [scala_rule55,],
     "9": [scala_rule55,],
-    "<": [scala_rule49,scala_rule50,scala_rule51,scala_rule52,scala_rule53,scala_rule54,],
+    "<": [scala_rule49, scala_rule50, scala_rule51, scala_rule52, scala_rule53, scala_rule54,],
     "=": [scala_rule55,],
     ">": [scala_rule55,],
     "@": [scala_rule55,],
@@ -752,19 +752,19 @@ rulesDict5 = {}
 def scala_rule56(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def scala_rule57(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def scala_rule58(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::main",exclude_match=False,
+        delegate="scala::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule59(colorer, s, i):
@@ -787,7 +787,7 @@ def scala_rule62(colorer, s, i):
 rulesDict6 = {
     "\"": [scala_rule56,],
     "'": [scala_rule57,],
-    ">": [scala_rule59,scala_rule60,scala_rule61,scala_rule62,],
+    ">": [scala_rule59, scala_rule60, scala_rule61, scala_rule62,],
     "{": [scala_rule58,],
 }
 
@@ -796,7 +796,7 @@ rulesDict6 = {
 def scala_rule63(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::main",exclude_match=False,
+        delegate="scala::main", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scala_rule64(colorer, s, i):
@@ -809,7 +809,7 @@ def scala_rule65(colorer, s, i):
 
 # Rules dict for scala_xml_text ruleset.
 rulesDict7 = {
-    "<": [scala_rule64,scala_rule65,],
+    "<": [scala_rule64, scala_rule65,],
     "{": [scala_rule63,],
 }
 
@@ -829,7 +829,7 @@ def scala_rule68(colorer, s, i):
 
 # Rules dict for scala_xml_comment ruleset.
 rulesDict8 = {
-    "-": [scala_rule66,scala_rule67,scala_rule68,],
+    "-": [scala_rule66, scala_rule67, scala_rule68,],
 }
 
 # x.rulesDictDict for scala mode.
@@ -849,4 +849,3 @@ importDict = {
     "scala_main": ["scala_main::primary",],
     "scala_pattern": ["scala_pattern::primary",],
 }
-

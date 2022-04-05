@@ -98,19 +98,19 @@ keywordsDictDict = {
 def haXe_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def haXe_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def haXe_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def haXe_rule3(colorer, s, i):
@@ -242,14 +242,14 @@ rulesDict1 = {
     "%": [haXe_rule18,],
     "&": [haXe_rule19,],
     "'": [haXe_rule2,],
-    "(": [haXe_rule3,haXe_rule4,haXe_rule9,],
+    "(": [haXe_rule3, haXe_rule4, haXe_rule9,],
     ")": [haXe_rule8,],
     "*": [haXe_rule15,],
     "+": [haXe_rule12,],
     ",": [haXe_rule26,],
     "-": [haXe_rule13,],
     ".": [haXe_rule23,],
-    "/": [haXe_rule0,haXe_rule5,haXe_rule14,],
+    "/": [haXe_rule0, haXe_rule5, haXe_rule14,],
     "0": [haXe_rule32,],
     "1": [haXe_rule32,],
     "2": [haXe_rule32,],
@@ -325,7 +325,7 @@ rulesDict1 = {
     "{": [haXe_rule25,],
     "|": [haXe_rule20,],
     "}": [haXe_rule24,],
-    "~": [haXe_rule7,haXe_rule22,],
+    "~": [haXe_rule7, haXe_rule22,],
 }
 
 # x.rulesDictDict for haxe mode.
@@ -335,4 +335,3 @@ rulesDictDict = {
 
 # Import dict for haxe mode.
 importDict = {}
-

@@ -208,31 +208,31 @@ def groovy_rule0(colorer, s, i):
 def groovy_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="groovy::groovydoc",exclude_match=False,
+        delegate="groovy::groovydoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="groovy::literal",exclude_match=False,
+        delegate="groovy::literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule5(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="<<<([[:alpha:]_][[:alnum:]_]*)\\s*", end="$1",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="groovy::literal",exclude_match=False,
+        delegate="groovy::literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule6(colorer, s, i):
@@ -307,9 +307,9 @@ rulesDict1 = {
     "'": [groovy_rule4,],
     "(": [groovy_rule20,],
     "+": [groovy_rule13,],
-    "-": [groovy_rule14,groovy_rule15,],
+    "-": [groovy_rule14, groovy_rule15,],
     ".": [groovy_rule18,],
-    "/": [groovy_rule0,groovy_rule1,groovy_rule2,groovy_rule19,],
+    "/": [groovy_rule0, groovy_rule1, groovy_rule2, groovy_rule19,],
     "0": [groovy_rule21,],
     "1": [groovy_rule21,],
     "2": [groovy_rule21,],
@@ -320,8 +320,8 @@ rulesDict1 = {
     "7": [groovy_rule21,],
     "8": [groovy_rule21,],
     "9": [groovy_rule21,],
-    "<": [groovy_rule5,groovy_rule10,groovy_rule12,],
-    "=": [groovy_rule6,groovy_rule7,],
+    "<": [groovy_rule5, groovy_rule10, groovy_rule12,],
+    "=": [groovy_rule6, groovy_rule7,],
     ">": [groovy_rule11,],
     "?": [groovy_rule16,],
     "@": [groovy_rule21,],
@@ -385,7 +385,7 @@ rulesDict1 = {
 def groovy_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def groovy_rule23(colorer, s, i):
@@ -394,7 +394,7 @@ def groovy_rule23(colorer, s, i):
 
 # Rules dict for groovy_literal ruleset.
 rulesDict2 = {
-    "$": [groovy_rule22,groovy_rule23,],
+    "$": [groovy_rule22, groovy_rule23,],
 }
 
 # Rules for groovy_groovydoc ruleset.
@@ -410,7 +410,7 @@ def groovy_rule25(colorer, s, i):
 def groovy_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def groovy_rule27(colorer, s, i):
@@ -428,7 +428,7 @@ def groovy_rule29(colorer, s, i):
 def groovy_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def groovy_rule31(colorer, s, i):
@@ -438,7 +438,7 @@ def groovy_rule31(colorer, s, i):
 # Rules dict for groovy_groovydoc ruleset.
 rulesDict3 = {
     "*": [groovy_rule25,],
-    "<": [groovy_rule26,groovy_rule27,groovy_rule28,groovy_rule29,groovy_rule30,],
+    "<": [groovy_rule26, groovy_rule27, groovy_rule28, groovy_rule29, groovy_rule30,],
     "@": [groovy_rule31,],
     "{": [groovy_rule24,],
 }
@@ -452,4 +452,3 @@ rulesDictDict = {
 
 # Import dict for groovy mode.
 importDict = {}
-

@@ -971,25 +971,25 @@ keywordsDictDict = {
 def tsql_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tsql_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tsql_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def tsql_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def tsql_rule4(colorer, s, i):
@@ -1078,7 +1078,7 @@ def tsql_rule24(colorer, s, i):
 
 # Rules dict for tsql_main ruleset.
 rulesDict1 = {
-    "!": [tsql_rule18,tsql_rule19,tsql_rule20,],
+    "!": [tsql_rule18, tsql_rule19, tsql_rule20,],
     "\"": [tsql_rule1,],
     "%": [tsql_rule13,],
     "&": [tsql_rule14,],
@@ -1086,8 +1086,8 @@ rulesDict1 = {
     "(": [tsql_rule4,],
     "*": [tsql_rule9,],
     "+": [tsql_rule6,],
-    "-": [tsql_rule5,tsql_rule7,],
-    "/": [tsql_rule0,tsql_rule8,],
+    "-": [tsql_rule5, tsql_rule7,],
+    "/": [tsql_rule0, tsql_rule8,],
     "0": [tsql_rule24,],
     "1": [tsql_rule24,],
     "2": [tsql_rule24,],
@@ -1098,11 +1098,11 @@ rulesDict1 = {
     "7": [tsql_rule24,],
     "8": [tsql_rule24,],
     "9": [tsql_rule24,],
-    ":": [tsql_rule21,tsql_rule22,],
+    ":": [tsql_rule21, tsql_rule22,],
     "<": [tsql_rule12,],
     "=": [tsql_rule10,],
     ">": [tsql_rule11,],
-    "@": [tsql_rule23,tsql_rule24,],
+    "@": [tsql_rule23, tsql_rule24,],
     "A": [tsql_rule24,],
     "B": [tsql_rule24,],
     "C": [tsql_rule24,],
@@ -1169,4 +1169,3 @@ rulesDictDict = {
 
 # Import dict for tsql mode.
 importDict = {}
-

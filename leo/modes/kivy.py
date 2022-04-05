@@ -51,7 +51,7 @@ def kivy_rule0(colorer, s, i):
 def kivy_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="kivy::literal_one",exclude_match=False,
+        delegate="kivy::literal_one", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def kivy_rule2(colorer, s, i):
@@ -133,4 +133,3 @@ rulesDictDict = {
 
 # Import dict for kivy mode.
 importDict = {}
-

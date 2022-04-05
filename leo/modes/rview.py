@@ -143,19 +143,19 @@ def rview_rule0(colorer, s, i):
 def rview_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rview::javadoc",exclude_match=False,
+        delegate="rview::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rview_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def rview_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="rview::rviewstmt",exclude_match=False,
+        delegate="rview::rviewstmt", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rview_rule4(colorer, s, i):
@@ -186,7 +186,7 @@ def rview_rule9(colorer, s, i):
 rulesDict1 = {
     "\"": [rview_rule3,],
     "(": [rview_rule7,],
-    "/": [rview_rule0,rview_rule1,rview_rule2,rview_rule8,],
+    "/": [rview_rule0, rview_rule1, rview_rule2, rview_rule8,],
     "0": [rview_rule9,],
     "1": [rview_rule9,],
     "2": [rview_rule9,],
@@ -260,7 +260,7 @@ rulesDict1 = {
 def rview_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def rview_rule11(colorer, s, i):
@@ -340,10 +340,10 @@ rulesDict2 = {
     "7": [rview_rule25,],
     "8": [rview_rule25,],
     "9": [rview_rule25,],
-    ":": [rview_rule22,rview_rule23,],
-    "<": [rview_rule17,rview_rule19,],
+    ":": [rview_rule22, rview_rule23,],
+    "<": [rview_rule17, rview_rule19,],
     "=": [rview_rule15,],
-    ">": [rview_rule16,rview_rule18,],
+    ">": [rview_rule16, rview_rule18,],
     "@": [rview_rule25,],
     "A": [rview_rule25,],
     "B": [rview_rule25,],
@@ -409,4 +409,3 @@ rulesDictDict = {
 
 # Import dict for rview mode.
 importDict = {}
-

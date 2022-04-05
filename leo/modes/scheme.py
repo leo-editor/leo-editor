@@ -237,7 +237,7 @@ keywordsDictDict = {
 def scheme_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="#|", end="|#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scheme_rule1(colorer, s, i):
@@ -276,7 +276,7 @@ def scheme_rule8(colorer, s, i):
 def scheme_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def scheme_rule10(colorer, s, i):
@@ -286,8 +286,8 @@ def scheme_rule10(colorer, s, i):
 rulesDict1 = {
     "!": [scheme_rule10,],
     "\"": [scheme_rule9,],
-    "#": [scheme_rule0,scheme_rule3,scheme_rule4,scheme_rule5,scheme_rule6,scheme_rule7,scheme_rule10,],
-    "'": [scheme_rule1,scheme_rule2,],
+    "#": [scheme_rule0, scheme_rule3, scheme_rule4, scheme_rule5, scheme_rule6, scheme_rule7, scheme_rule10,],
+    "'": [scheme_rule1, scheme_rule2,],
     "*": [scheme_rule10,],
     "-": [scheme_rule10,],
     "/": [scheme_rule10,],
@@ -368,4 +368,3 @@ rulesDictDict = {
 
 # Import dict for scheme mode.
 importDict = {}
-

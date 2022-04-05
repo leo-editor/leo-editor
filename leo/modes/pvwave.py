@@ -702,13 +702,13 @@ keywordsDictDict = {
 def pvwave_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pvwave_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pvwave_rule2(colorer, s, i):
@@ -838,7 +838,7 @@ rulesDict1 = {
     "<": [pvwave_rule12,],
     "=": [pvwave_rule5,],
     ">": [pvwave_rule11,],
-    "@": [pvwave_rule23,pvwave_rule25,],
+    "@": [pvwave_rule23, pvwave_rule25,],
     "A": [pvwave_rule25,],
     "B": [pvwave_rule25,],
     "C": [pvwave_rule25,],
@@ -906,4 +906,3 @@ rulesDictDict = {
 
 # Import dict for pvwave mode.
 importDict = {}
-

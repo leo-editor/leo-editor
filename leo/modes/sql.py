@@ -375,25 +375,25 @@ keywordsDictDict = {
 def sql_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sql_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sql_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def sql_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def sql_rule4(colorer, s, i):
@@ -484,15 +484,15 @@ def sql_rule24(colorer, s, i):
 
 # Rules dict for sql_main ruleset.
 rulesDict1 = {
-    "!": [sql_rule19,sql_rule20,sql_rule21,],
+    "!": [sql_rule19, sql_rule20, sql_rule21,],
     "\"": [sql_rule2,],
     "%": [sql_rule14,],
     "&": [sql_rule15,],
     "'": [sql_rule1,],
     "*": [sql_rule10,],
     "+": [sql_rule7,],
-    "-": [sql_rule4,sql_rule8,],
-    "/": [sql_rule0,sql_rule9,],
+    "-": [sql_rule4, sql_rule8,],
+    "/": [sql_rule0, sql_rule9,],
     "0": [sql_rule24,],
     "1": [sql_rule24,],
     "2": [sql_rule24,],
@@ -503,7 +503,7 @@ rulesDict1 = {
     "7": [sql_rule24,],
     "8": [sql_rule24,],
     "9": [sql_rule24,],
-    ":": [sql_rule22,sql_rule23,],
+    ":": [sql_rule22, sql_rule23,],
     "<": [sql_rule13,],
     "=": [sql_rule11,],
     ">": [sql_rule12,],
@@ -525,7 +525,7 @@ rulesDict1 = {
     "O": [sql_rule24,],
     "P": [sql_rule24,],
     "Q": [sql_rule24,],
-    "R": [sql_rule5,sql_rule6,sql_rule24,],
+    "R": [sql_rule5, sql_rule6, sql_rule24,],
     "S": [sql_rule24,],
     "T": [sql_rule24,],
     "U": [sql_rule24,],
@@ -574,4 +574,3 @@ rulesDictDict = {
 
 # Import dict for sql mode.
 importDict = {}
-

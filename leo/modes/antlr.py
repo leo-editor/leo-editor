@@ -93,13 +93,13 @@ keywordsDictDict = {
 def antlr_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="java::javadoc",exclude_match=False,
+        delegate="java::javadoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def antlr_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def antlr_rule2(colorer, s, i):
@@ -110,7 +110,7 @@ def antlr_rule2(colorer, s, i):
 def antlr_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def antlr_rule4(colorer, s, i):
@@ -127,7 +127,7 @@ def antlr_rule6(colorer, s, i):
 # Rules dict for antlr_main ruleset.
 rulesDict1 = {
     "\"": [antlr_rule3,],
-    "/": [antlr_rule0,antlr_rule1,antlr_rule2,],
+    "/": [antlr_rule0, antlr_rule1, antlr_rule2,],
     "0": [antlr_rule6,],
     "1": [antlr_rule6,],
     "2": [antlr_rule6,],
@@ -202,4 +202,3 @@ rulesDictDict = {
 
 # Import dict for antlr mode.
 importDict = {}
-

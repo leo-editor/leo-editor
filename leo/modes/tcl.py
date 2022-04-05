@@ -429,7 +429,7 @@ keywordsDictDict = {
 def tcl_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def tcl_rule1(colorer, s, i):
@@ -530,9 +530,9 @@ rulesDict1 = {
     "7": [tcl_rule19,],
     "8": [tcl_rule19,],
     "9": [tcl_rule19,],
-    "<": [tcl_rule5,tcl_rule11,],
+    "<": [tcl_rule5, tcl_rule11,],
     "=": [tcl_rule2,],
-    ">": [tcl_rule4,tcl_rule10,],
+    ">": [tcl_rule4, tcl_rule10,],
     "@": [tcl_rule19,],
     "A": [tcl_rule19,],
     "B": [tcl_rule19,],
@@ -602,4 +602,3 @@ rulesDictDict = {
 
 # Import dict for tcl mode.
 importDict = {}
-

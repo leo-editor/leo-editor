@@ -2548,67 +2548,67 @@ keywordsDictDict = {
 def phpsection_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule4(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<SCRIPT\\s+LANGUAGE=\"?PHP\"?>", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::javascript",exclude_match=False,
+        delegate="phpsection::javascript", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="html::css",exclude_match=False,
+        delegate="html::css", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags",exclude_match=False,
+        delegate="xml::dtd-tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::tags",exclude_match=False,
+        delegate="phpsection::tags", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=True)
 
 # Rules dict for phpsection_main ruleset.
 rulesDict1 = {
     "&": [phpsection_rule9,],
-    "<": [phpsection_rule0,phpsection_rule1,phpsection_rule2,phpsection_rule3,phpsection_rule5,phpsection_rule6,phpsection_rule7,phpsection_rule8,],
+    "<": [phpsection_rule0, phpsection_rule1, phpsection_rule2, phpsection_rule3, phpsection_rule5, phpsection_rule6, phpsection_rule7, phpsection_rule8,],
     "< ": [phpsection_rule4,],
 }
 
@@ -2617,31 +2617,31 @@ rulesDict1 = {
 def phpsection_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::tags_literal",exclude_match=False,
+        delegate="phpsection::tags_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::tags_literal",exclude_match=False,
+        delegate="phpsection::tags_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule15(colorer, s, i):
@@ -2652,7 +2652,7 @@ def phpsection_rule15(colorer, s, i):
 rulesDict2 = {
     "\"": [phpsection_rule13,],
     "'": [phpsection_rule14,],
-    "<": [phpsection_rule10,phpsection_rule11,phpsection_rule12,],
+    "<": [phpsection_rule10, phpsection_rule11, phpsection_rule12,],
     "=": [phpsection_rule15,],
 }
 
@@ -2661,24 +2661,24 @@ rulesDict2 = {
 def phpsection_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php",exclude_match=False,
+        delegate="phpsection::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for phpsection_tags_literal ruleset.
 rulesDict3 = {
-    "<": [phpsection_rule16,phpsection_rule17,phpsection_rule18,],
+    "<": [phpsection_rule16, phpsection_rule17, phpsection_rule18,],
 }
 
 # Rules for phpsection_php ruleset.
@@ -2686,31 +2686,31 @@ rulesDict3 = {
 def phpsection_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::phpdoc",exclude_match=False,
+        delegate="phpsection::phpdoc", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule21(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php_literal",exclude_match=False,
+        delegate="phpsection::php_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule23(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php_literal",exclude_match=False,
+        delegate="phpsection::php_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule24(colorer, s, i):
@@ -2726,7 +2726,7 @@ def phpsection_rule25(colorer, s, i):
 def phpsection_rule26(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="<<<[[:space:]'\"]*([[:alnum:]_]+)[[:space:]'\"]*", end="$1",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="phpsection::php_literal",exclude_match=False,
+        delegate="phpsection::php_literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule27(colorer, s, i):
@@ -2861,9 +2861,9 @@ rulesDict4 = {
     "*": [phpsection_rule37,],
     "+": [phpsection_rule34,],
     ",": [phpsection_rule48,],
-    "-": [phpsection_rule29,phpsection_rule35,],
+    "-": [phpsection_rule29, phpsection_rule35,],
     ".": [phpsection_rule45,],
-    "/": [phpsection_rule19,phpsection_rule20,phpsection_rule24,phpsection_rule36,],
+    "/": [phpsection_rule19, phpsection_rule20, phpsection_rule24, phpsection_rule36,],
     "0": [phpsection_rule56,],
     "1": [phpsection_rule56,],
     "2": [phpsection_rule56,],
@@ -2876,12 +2876,12 @@ rulesDict4 = {
     "9": [phpsection_rule56,],
     ":": [phpsection_rule54,],
     ";": [phpsection_rule49,],
-    "<": [phpsection_rule32,phpsection_rule39,],
+    "<": [phpsection_rule32, phpsection_rule39,],
     "< ": [phpsection_rule26,],
-    "=": [phpsection_rule28,phpsection_rule33,],
-    ">": [phpsection_rule31,phpsection_rule38,],
+    "=": [phpsection_rule28, phpsection_rule33,],
+    ">": [phpsection_rule31, phpsection_rule38,],
     "?": [phpsection_rule52,],
-    "@": [phpsection_rule53,phpsection_rule56,],
+    "@": [phpsection_rule53, phpsection_rule56,],
     "A": [phpsection_rule56,],
     "B": [phpsection_rule56,],
     "C": [phpsection_rule56,],
@@ -2977,25 +2977,25 @@ rulesDict6 = {
 def phpsection_rule60(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="php::php",exclude_match=False,
+        delegate="php::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule61(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?", end="?>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="php::php",exclude_match=False,
+        delegate="php::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule62(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%=", end="%>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="php::php",exclude_match=False,
+        delegate="php::php", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 
 # Rules dict for phpsection_javascript_php ruleset.
 rulesDict7 = {
-    "<": [phpsection_rule60,phpsection_rule61,phpsection_rule62,],
+    "<": [phpsection_rule60, phpsection_rule61, phpsection_rule62,],
 }
 
 # Rules for phpsection_phpdoc ruleset.
@@ -3011,7 +3011,7 @@ def phpsection_rule64(colorer, s, i):
 def phpsection_rule65(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def phpsection_rule66(colorer, s, i):
@@ -3029,7 +3029,7 @@ def phpsection_rule68(colorer, s, i):
 def phpsection_rule69(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags",exclude_match=False,
+        delegate="xml::tags", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def phpsection_rule70(colorer, s, i):
@@ -3048,7 +3048,7 @@ rulesDict8 = {
     "7": [phpsection_rule70,],
     "8": [phpsection_rule70,],
     "9": [phpsection_rule70,],
-    "<": [phpsection_rule65,phpsection_rule66,phpsection_rule67,phpsection_rule68,phpsection_rule69,],
+    "<": [phpsection_rule65, phpsection_rule66, phpsection_rule67, phpsection_rule68, phpsection_rule69,],
     "@": [phpsection_rule70,],
     "A": [phpsection_rule70,],
     "B": [phpsection_rule70,],
@@ -3122,4 +3122,3 @@ rulesDictDict = {
 importDict = {
     "phpsection_javascript_php": ["javascript::main",],
 }
-

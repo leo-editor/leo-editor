@@ -57,13 +57,13 @@ keywordsDictDict = {
 def splus_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def splus_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def splus_rule2(colorer, s, i):
@@ -182,9 +182,9 @@ rulesDict1 = {
     "8": [splus_rule24,],
     "9": [splus_rule24,],
     ":": [splus_rule22,],
-    "<": [splus_rule7,splus_rule8,splus_rule14,],
+    "<": [splus_rule7, splus_rule8, splus_rule14,],
     "=": [splus_rule3,],
-    ">": [splus_rule6,splus_rule13,],
+    ">": [splus_rule6, splus_rule13,],
     "@": [splus_rule24,],
     "A": [splus_rule24,],
     "B": [splus_rule24,],
@@ -253,4 +253,3 @@ rulesDictDict = {
 
 # Import dict for splus mode.
 importDict = {}
-

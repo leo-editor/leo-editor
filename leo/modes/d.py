@@ -138,31 +138,31 @@ def d_rule0(colorer, s, i):
 def d_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def d_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen",exclude_match=False,
+        delegate="doxygen::doxygen", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def d_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def d_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def d_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def d_rule6(colorer, s, i):
@@ -264,7 +264,7 @@ rulesDict1 = {
     "*": [d_rule14,],
     "+": [d_rule11,],
     "-": [d_rule12,],
-    "/": [d_rule0,d_rule1,d_rule2,d_rule3,d_rule6,d_rule13,],
+    "/": [d_rule0, d_rule1, d_rule2, d_rule3, d_rule6, d_rule13,],
     "0": [d_rule27,],
     "1": [d_rule27,],
     "2": [d_rule27,],
@@ -276,10 +276,10 @@ rulesDict1 = {
     "8": [d_rule27,],
     "9": [d_rule27,],
     ":": [d_rule24,],
-    "<": [d_rule10,d_rule16,],
+    "<": [d_rule10, d_rule16,],
     "=": [d_rule7,],
-    ">": [d_rule9,d_rule15,d_rule27,],
-    "@": [d_rule26,d_rule27,],
+    ">": [d_rule9, d_rule15, d_rule27,],
+    "@": [d_rule26, d_rule27,],
     "A": [d_rule27,],
     "B": [d_rule27,],
     "C": [d_rule27,],
@@ -346,4 +346,3 @@ rulesDictDict = {
 
 # Import dict for d mode.
 importDict = {}
-

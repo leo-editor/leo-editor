@@ -103,7 +103,7 @@ def asciidoc_rule8(colorer, s, i):
 def asciidoc_rule9(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment2", begin="^\\/\\/\\/\\/+\\s*$", end="\\/\\/\\/\\/\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule10(colorer, s, i):
@@ -114,31 +114,31 @@ def asciidoc_rule10(colorer, s, i):
 def asciidoc_rule11(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="^----+\\s*$", end="----\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule12(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin="^\\+\\+\\+\\++\\s*$", end="\\+\\+\\+\\+\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule13(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal3", begin="^\\.\\.\\.\\.+\\s*$", end="\\.\\.\\.\\.\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule14(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal4", begin="^\\*\\*\\*\\*+\\s*$", end="\\*\\*\\*\\*\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule15(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment4", begin="^____+\\s*$", end="____\\s*$",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule16(colorer, s, i):
@@ -154,19 +154,19 @@ def asciidoc_rule17(colorer, s, i):
 def asciidoc_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="[[", end="]]",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="label", begin="<<", end=">>",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="[", end="]",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule21(colorer, s, i):
@@ -177,31 +177,31 @@ def asciidoc_rule21(colorer, s, i):
 def asciidoc_rule22(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])_\\S", end="_",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule23(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="comment1", begin="(^|[\\s\\.,\\(\\)\\[\\]])'\\S", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule24(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword1", begin="(^|[\\s\\.,\\(])\\*[^\\*\\s]", end="*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule25(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])`\\S", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule26(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword2", begin="(^|[\\s\\.,\\(])\\+\\S", end="+",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule27(colorer, s, i):
@@ -268,7 +268,7 @@ def asciidoc_rule41(colorer, s, i):
 def asciidoc_rule42(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="\\s*NOTE:", end=" ",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule43(colorer, s, i):
@@ -283,13 +283,13 @@ def asciidoc_rule44(colorer, s, i):
 def asciidoc_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="NOTE:", end=" ",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule46(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="(((", end=")))",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def asciidoc_rule47(colorer, s, i):
@@ -297,14 +297,14 @@ def asciidoc_rule47(colorer, s, i):
 
 # Rules dict for asciidoc_main ruleset.
 rulesDict1 = {
-	"(": [asciidoc_rule22,asciidoc_rule23,asciidoc_rule24,asciidoc_rule25,asciidoc_rule26,asciidoc_rule46,],
-	"*": [asciidoc_rule28,asciidoc_rule29,asciidoc_rule30,asciidoc_rule31,asciidoc_rule32,],
+	"(": [asciidoc_rule22, asciidoc_rule23, asciidoc_rule24, asciidoc_rule25, asciidoc_rule26, asciidoc_rule46,],
+	"*": [asciidoc_rule28, asciidoc_rule29, asciidoc_rule30, asciidoc_rule31, asciidoc_rule32,],
 	"****": [asciidoc_rule14,],
 	"+": [asciidoc_rule8,],
 	"++++": [asciidoc_rule12,],
 	"-": [asciidoc_rule27,],
 	"----": [asciidoc_rule11,],
-	".": [asciidoc_rule33,asciidoc_rule34,asciidoc_rule35,asciidoc_rule36,asciidoc_rule37,asciidoc_rule41,],
+	".": [asciidoc_rule33, asciidoc_rule34, asciidoc_rule35, asciidoc_rule36, asciidoc_rule37, asciidoc_rule41,],
 	"....": [asciidoc_rule13,],
 	"/": [asciidoc_rule10,],
 	"////": [asciidoc_rule9,],
@@ -318,9 +318,9 @@ rulesDict1 = {
 	"7": [asciidoc_rule47,],
 	"8": [asciidoc_rule47,],
 	"9": [asciidoc_rule47,],
-	":": [asciidoc_rule21,asciidoc_rule38,asciidoc_rule39,asciidoc_rule40,asciidoc_rule47,],
+	":": [asciidoc_rule21, asciidoc_rule38, asciidoc_rule39, asciidoc_rule40, asciidoc_rule47,],
 	"<": [asciidoc_rule19,],
-	"=": [asciidoc_rule0,asciidoc_rule1,asciidoc_rule2,asciidoc_rule3,asciidoc_rule4,],
+	"=": [asciidoc_rule0, asciidoc_rule1, asciidoc_rule2, asciidoc_rule3, asciidoc_rule4,],
 	"@": [asciidoc_rule47,],
 	"A": [asciidoc_rule47,],
 	"B": [asciidoc_rule47,],
@@ -335,7 +335,7 @@ rulesDict1 = {
 	"K": [asciidoc_rule47,],
 	"L": [asciidoc_rule47,],
 	"M": [asciidoc_rule47,],
-	"N": [asciidoc_rule45,asciidoc_rule47,],
+	"N": [asciidoc_rule45, asciidoc_rule47,],
 	"O": [asciidoc_rule47,],
 	"P": [asciidoc_rule47,],
 	"Q": [asciidoc_rule47,],
@@ -348,9 +348,9 @@ rulesDict1 = {
 	"X": [asciidoc_rule47,],
 	"Y": [asciidoc_rule47,],
 	"Z": [asciidoc_rule47,],
-	"[": [asciidoc_rule18,asciidoc_rule20,],
+	"[": [asciidoc_rule18, asciidoc_rule20,],
 	"\\": [asciidoc_rule42,],
-	"^": [asciidoc_rule5,asciidoc_rule7,asciidoc_rule16,asciidoc_rule17,],
+	"^": [asciidoc_rule5, asciidoc_rule7, asciidoc_rule16, asciidoc_rule17,],
 	"____": [asciidoc_rule15,],
 	"a": [asciidoc_rule47,],
 	"b": [asciidoc_rule47,],
@@ -378,7 +378,7 @@ rulesDict1 = {
 	"x": [asciidoc_rule47,],
 	"y": [asciidoc_rule47,],
 	"z": [asciidoc_rule47,],
-	"|": [asciidoc_rule43,asciidoc_rule44,asciidoc_rule47,],
+	"|": [asciidoc_rule43, asciidoc_rule44, asciidoc_rule47,],
 	"~": [asciidoc_rule6,],
 }
 
@@ -389,4 +389,3 @@ rulesDictDict = {
 
 # Import dict for asciidoc mode.
 importDict = {}
-

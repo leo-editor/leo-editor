@@ -261,7 +261,7 @@ def fortran90_rule17(colorer, s, i):
 rulesDict1 = {
     "!": [fortran90_rule1,],
     "&": [fortran90_rule6,],
-    ".": [fortran90_rule9,fortran90_rule10,fortran90_rule11,fortran90_rule12,fortran90_rule13,fortran90_rule14,fortran90_rule15,fortran90_rule16,fortran90_rule17,],
+    ".": [fortran90_rule9, fortran90_rule10, fortran90_rule11, fortran90_rule12, fortran90_rule13, fortran90_rule14, fortran90_rule15, fortran90_rule16, fortran90_rule17,],
     "/": [fortran90_rule7,],
     "0": [fortran90_rule17,],
     "1": [fortran90_rule17,],
@@ -273,9 +273,9 @@ rulesDict1 = {
     "7": [fortran90_rule17,],
     "8": [fortran90_rule17,],
     "9": [fortran90_rule17,],
-    "<": [fortran90_rule2,fortran90_rule5,],
+    "<": [fortran90_rule2, fortran90_rule5,],
     "=": [fortran90_rule8,],
-    ">": [fortran90_rule3,fortran90_rule4,],
+    ">": [fortran90_rule3, fortran90_rule4,],
     "@": [fortran90_rule17,],
     "A": [fortran90_rule17,],
     "B": [fortran90_rule17,],
@@ -338,4 +338,3 @@ rulesDictDict = {
 
 # Import dict for fortran90 mode.
 importDict = {}
-

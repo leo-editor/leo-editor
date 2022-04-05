@@ -118,13 +118,13 @@ def factor_rule10(colorer, s, i):
 def factor_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="factor::stack_effect",exclude_match=False,
+        delegate="factor::stack_effect", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def factor_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def factor_rule13(colorer, s, i):
@@ -134,7 +134,7 @@ def factor_rule13(colorer, s, i):
 rulesDict1 = {
     "!": [factor_rule1,],
     "\"": [factor_rule12,],
-    "#": [factor_rule0,factor_rule13,],
+    "#": [factor_rule0, factor_rule13,],
     "(": [factor_rule11,],
     "-": [factor_rule13,],
     "0": [factor_rule13,],
@@ -153,26 +153,26 @@ rulesDict1 = {
     ">": [factor_rule13,],
     "@": [factor_rule13,],
     "A": [factor_rule13,],
-    "B": [factor_rule8,factor_rule13,],
-    "C": [factor_rule7,factor_rule13,],
-    "D": [factor_rule5,factor_rule13,],
+    "B": [factor_rule8, factor_rule13,],
+    "C": [factor_rule7, factor_rule13,],
+    "D": [factor_rule5, factor_rule13,],
     "E": [factor_rule13,],
     "F": [factor_rule13,],
     "G": [factor_rule13,],
-    "H": [factor_rule10,factor_rule13,],
-    "I": [factor_rule3,factor_rule13,],
+    "H": [factor_rule10, factor_rule13,],
+    "I": [factor_rule3, factor_rule13,],
     "J": [factor_rule13,],
     "K": [factor_rule13,],
     "L": [factor_rule13,],
     "M": [factor_rule13,],
     "N": [factor_rule13,],
-    "O": [factor_rule9,factor_rule13,],
-    "P": [factor_rule6,factor_rule13,],
+    "O": [factor_rule9, factor_rule13,],
+    "P": [factor_rule6, factor_rule13,],
     "Q": [factor_rule13,],
     "R": [factor_rule13,],
     "S": [factor_rule13,],
     "T": [factor_rule13,],
-    "U": [factor_rule4,factor_rule13,],
+    "U": [factor_rule4, factor_rule13,],
     "V": [factor_rule13,],
     "W": [factor_rule13,],
     "X": [factor_rule13,],
@@ -231,4 +231,3 @@ rulesDictDict = {
 
 # Import dict for factor mode.
 importDict = {}
-

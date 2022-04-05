@@ -94,7 +94,7 @@ def shellscript_rule1(colorer, s, i):
 def shellscript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def shellscript_rule3(colorer, s, i):
@@ -132,43 +132,43 @@ def shellscript_rule10(colorer, s, i):
 def shellscript_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$((", end="))",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec",exclude_match=False,
+        delegate="shellscript::exec", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule12(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec",exclude_match=False,
+        delegate="shellscript::exec", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule13(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec",exclude_match=False,
+        delegate="shellscript::exec", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::exec",exclude_match=False,
+        delegate="shellscript::exec", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::literal",exclude_match=False,
+        delegate="shellscript::literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule17(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1", begin="<<[[:space:]'\"]*([[:alnum:]_]+)[[:space:]'\"]*", end="$1",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="shellscript::literal",exclude_match=False,
+        delegate="shellscript::literal", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule18(colorer, s, i):
@@ -206,8 +206,8 @@ def shellscript_rule25(colorer, s, i):
 rulesDict1 = {
     "!": [shellscript_rule20,],
     "\"": [shellscript_rule15,],
-    "#": [shellscript_rule0,shellscript_rule1,],
-    "$": [shellscript_rule2,shellscript_rule3,shellscript_rule4,shellscript_rule5,shellscript_rule6,shellscript_rule7,shellscript_rule8,shellscript_rule9,shellscript_rule11,shellscript_rule12,shellscript_rule13,],
+    "#": [shellscript_rule0, shellscript_rule1,],
+    "$": [shellscript_rule2, shellscript_rule3, shellscript_rule4, shellscript_rule5, shellscript_rule6, shellscript_rule7, shellscript_rule8, shellscript_rule9, shellscript_rule11, shellscript_rule12, shellscript_rule13,],
     "%": [shellscript_rule23,],
     "&": [shellscript_rule19,],
     "'": [shellscript_rule16,],
@@ -289,7 +289,7 @@ rulesDict1 = {
 def shellscript_rule26(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def shellscript_rule27(colorer, s, i):
@@ -298,7 +298,7 @@ def shellscript_rule27(colorer, s, i):
 
 # Rules dict for shellscript_literal ruleset.
 rulesDict2 = {
-    "$": [shellscript_rule26,shellscript_rule27,],
+    "$": [shellscript_rule26, shellscript_rule27,],
 }
 
 # Rules for shellscript_exec ruleset.
@@ -306,25 +306,25 @@ rulesDict2 = {
 def shellscript_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def shellscript_rule29(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$((", end="))",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule31(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="$[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def shellscript_rule32(colorer, s, i):
@@ -354,7 +354,7 @@ def shellscript_rule37(colorer, s, i):
 # Rules dict for shellscript_exec ruleset.
 rulesDict3 = {
     "!": [shellscript_rule35,],
-    "$": [shellscript_rule28,shellscript_rule29,shellscript_rule30,shellscript_rule31,shellscript_rule32,],
+    "$": [shellscript_rule28, shellscript_rule29, shellscript_rule30, shellscript_rule31, shellscript_rule32,],
     "&": [shellscript_rule34,],
     "<": [shellscript_rule37,],
     ">": [shellscript_rule36,],
@@ -370,4 +370,3 @@ rulesDictDict = {
 
 # Import dict for shellscript mode.
 importDict = {}
-

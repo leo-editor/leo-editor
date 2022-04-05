@@ -625,13 +625,13 @@ keywordsDictDict = {
 def i4gl_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def i4gl_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def i4gl_rule2(colorer, s, i):
@@ -647,7 +647,7 @@ def i4gl_rule3(colorer, s, i):
 def i4gl_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def i4gl_rule5(colorer, s, i):
@@ -748,7 +748,7 @@ rulesDict1 = {
     "*": [i4gl_rule23,],
     "+": [i4gl_rule20,],
     ",": [i4gl_rule9,],
-    "-": [i4gl_rule2,i4gl_rule21,],
+    "-": [i4gl_rule2, i4gl_rule21,],
     ".": [i4gl_rule8,],
     "/": [i4gl_rule22,],
     "0": [i4gl_rule26,],
@@ -763,9 +763,9 @@ rulesDict1 = {
     "9": [i4gl_rule26,],
     ":": [i4gl_rule11,],
     ";": [i4gl_rule10,],
-    "<": [i4gl_rule16,i4gl_rule17,i4gl_rule19,],
-    "=": [i4gl_rule12,i4gl_rule13,],
-    ">": [i4gl_rule15,i4gl_rule18,],
+    "<": [i4gl_rule16, i4gl_rule17, i4gl_rule19,],
+    "=": [i4gl_rule12, i4gl_rule13,],
+    ">": [i4gl_rule15, i4gl_rule18,],
     "@": [i4gl_rule26,],
     "A": [i4gl_rule26,],
     "B": [i4gl_rule26,],
@@ -833,4 +833,3 @@ rulesDictDict = {
 
 # Import dict for i4gl mode.
 importDict = {}
-

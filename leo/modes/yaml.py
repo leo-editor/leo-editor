@@ -93,7 +93,7 @@ def yaml_rule13(colorer, s, i):
         # Old: at_line_start=True.
     return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r"\s*-?\s*\w+:",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-            
+
 def yaml_rule14(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\s+~\\s*$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -142,15 +142,15 @@ def yaml_rule24(colorer, s, i):
 rulesDict1 = {
     # EKR: \\s represents  [\t\n\r\f\v], so the whitespace characters themselves, rather than a backspace, must be the leadin characters!
     # This is a bug in jEdit2py.
-    "\t":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],    
-    "\n":[yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
-    " ": [yaml_rule13,yaml_rule14,yaml_rule15,yaml_rule16,yaml_rule17,yaml_rule18,yaml_rule19,yaml_rule20,yaml_rule21,],
-    "#":[yaml_rule0,],
-    "!": [yaml_rule22,yaml_rule23,yaml_rule24,],
+    "\t": [yaml_rule13, yaml_rule14, yaml_rule15, yaml_rule16, yaml_rule17, yaml_rule18, yaml_rule19, yaml_rule20, yaml_rule21,],
+    "\n": [yaml_rule13, yaml_rule14, yaml_rule15, yaml_rule16, yaml_rule17, yaml_rule18, yaml_rule19, yaml_rule20, yaml_rule21,],
+    " ": [yaml_rule13, yaml_rule14, yaml_rule15, yaml_rule16, yaml_rule17, yaml_rule18, yaml_rule19, yaml_rule20, yaml_rule21,],
+    "#": [yaml_rule0,],
+    "!": [yaml_rule22, yaml_rule23, yaml_rule24,],
     "&": [yaml_rule11,],
     "*": [yaml_rule12,],
     "+": [yaml_rule8,],
-    "-": [yaml_rule1,yaml_rule7,yaml_rule13],
+    "-": [yaml_rule1, yaml_rule7, yaml_rule13],
         # Fix #1082.
     ".": [yaml_rule2,],
     ">": [yaml_rule10,],
@@ -223,4 +223,3 @@ rulesDictDict = {
 
 # Import dict for yaml mode.
 importDict = {}
-

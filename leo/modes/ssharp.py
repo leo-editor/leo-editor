@@ -97,7 +97,7 @@ keywordsDictDict = {
 def ssharp_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ssharp_rule1(colorer, s, i):
@@ -113,13 +113,13 @@ def ssharp_rule2(colorer, s, i):
 def ssharp_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ssharp_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="? ", end="? ",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ssharp_rule5(colorer, s, i):
@@ -267,19 +267,19 @@ def ssharp_rule40(colorer, s, i):
 
 # Rules dict for ssharp_main ruleset.
 rulesDict1 = {
-    "!": [ssharp_rule33,ssharp_rule35,],
-    "\"": [ssharp_rule2,ssharp_rule3,],
-    "#": [ssharp_rule1,ssharp_rule24,ssharp_rule38,],
+    "!": [ssharp_rule33, ssharp_rule35,],
+    "\"": [ssharp_rule2, ssharp_rule3,],
+    "#": [ssharp_rule1, ssharp_rule24, ssharp_rule38,],
     "$": [ssharp_rule39,],
     "&": [ssharp_rule30,],
     "'": [ssharp_rule0,],
     "(": [ssharp_rule5,],
     ")": [ssharp_rule6,],
-    "*": [ssharp_rule22,ssharp_rule23,],
+    "*": [ssharp_rule22, ssharp_rule23,],
     "+": [ssharp_rule17,],
-    "-": [ssharp_rule18,ssharp_rule29,],
+    "-": [ssharp_rule18, ssharp_rule29,],
     ".": [ssharp_rule28,],
-    "/": [ssharp_rule19,ssharp_rule20,],
+    "/": [ssharp_rule19, ssharp_rule20,],
     "0": [ssharp_rule40,],
     "1": [ssharp_rule40,],
     "2": [ssharp_rule40,],
@@ -290,12 +290,12 @@ rulesDict1 = {
     "7": [ssharp_rule40,],
     "8": [ssharp_rule40,],
     "9": [ssharp_rule40,],
-    ":": [ssharp_rule9,ssharp_rule37,],
+    ":": [ssharp_rule9, ssharp_rule37,],
     ";": [ssharp_rule27,],
-    "<": [ssharp_rule14,ssharp_rule16,],
-    "=": [ssharp_rule11,ssharp_rule12,],
-    ">": [ssharp_rule13,ssharp_rule15,],
-    "?": [ssharp_rule4,ssharp_rule40,],
+    "<": [ssharp_rule14, ssharp_rule16,],
+    "=": [ssharp_rule11, ssharp_rule12,],
+    ">": [ssharp_rule13, ssharp_rule15,],
+    "?": [ssharp_rule4, ssharp_rule40,],
     "@": [ssharp_rule40,],
     "A": [ssharp_rule40,],
     "B": [ssharp_rule40,],
@@ -324,7 +324,7 @@ rulesDict1 = {
     "Y": [ssharp_rule40,],
     "Z": [ssharp_rule40,],
     "\\": [ssharp_rule21,],
-    "^": [ssharp_rule25,ssharp_rule26,ssharp_rule32,],
+    "^": [ssharp_rule25, ssharp_rule26, ssharp_rule32,],
     "_": [ssharp_rule10,],
     "a": [ssharp_rule40,],
     "b": [ssharp_rule40,],
@@ -355,7 +355,7 @@ rulesDict1 = {
     "{": [ssharp_rule7,],
     "|": [ssharp_rule31,],
     "}": [ssharp_rule8,],
-    "~": [ssharp_rule34,ssharp_rule36,],
+    "~": [ssharp_rule34, ssharp_rule36,],
 }
 
 # x.rulesDictDict for ssharp mode.
@@ -365,4 +365,3 @@ rulesDictDict = {
 
 # Import dict for ssharp mode.
 importDict = {}
-

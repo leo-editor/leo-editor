@@ -78,19 +78,19 @@ keywordsDictDict = {
 def idl_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def idl_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def idl_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def idl_rule3(colorer, s, i):
@@ -122,7 +122,7 @@ rulesDict1 = {
     "\"": [idl_rule1,],
     "'": [idl_rule2,],
     "(": [idl_rule7,],
-    "/": [idl_rule0,idl_rule3,],
+    "/": [idl_rule0, idl_rule3,],
     "0": [idl_rule8,],
     "1": [idl_rule8,],
     "2": [idl_rule8,],
@@ -198,4 +198,3 @@ rulesDictDict = {
 
 # Import dict for idl mode.
 importDict = {}
-

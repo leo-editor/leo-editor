@@ -55,7 +55,7 @@ def texinfo_rule4(colorer, s, i):
 
 # Rules dict for texinfo_main ruleset.
 rulesDict1 = {
-    "@": [texinfo_rule0,texinfo_rule1,texinfo_rule2,],
+    "@": [texinfo_rule0, texinfo_rule1, texinfo_rule2,],
     "{": [texinfo_rule3,],
     "}": [texinfo_rule4,],
 }
@@ -67,4 +67,3 @@ rulesDictDict = {
 
 # Import dict for texinfo mode.
 importDict = {}
-

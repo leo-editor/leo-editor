@@ -33,36 +33,36 @@ keywordsDictDict = {
 def json_string(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 if 0:
     def json_single_string(colorer, s, i):
         return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="",exclude_match=False,
+            delegate="", exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
 
 def json_colon(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=":",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def json_comma(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=",",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def json_open_brace(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="{",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def json_close_brace(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def json_open_bracket(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="[",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def json_close_bracket(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")

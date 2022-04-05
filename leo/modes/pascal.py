@@ -174,25 +174,25 @@ keywordsDictDict = {
 def pascal_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="{$", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pascal_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="(*$", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pascal_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="{", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pascal_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def pascal_rule4(colorer, s, i):
@@ -203,7 +203,7 @@ def pascal_rule4(colorer, s, i):
 def pascal_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def pascal_rule6(colorer, s, i):
@@ -296,14 +296,14 @@ def pascal_rule27(colorer, s, i):
 # Rules dict for pascal_main ruleset.
 rulesDict1 = {
     "'": [pascal_rule5,],
-    "(": [pascal_rule1,pascal_rule3,pascal_rule7,],
+    "(": [pascal_rule1, pascal_rule3, pascal_rule7,],
     ")": [pascal_rule6,],
     "*": [pascal_rule26,],
     "+": [pascal_rule23,],
     ",": [pascal_rule11,],
     "-": [pascal_rule24,],
     ".": [pascal_rule10,],
-    "/": [pascal_rule4,pascal_rule25,],
+    "/": [pascal_rule4, pascal_rule25,],
     "0": [pascal_rule27,],
     "1": [pascal_rule27,],
     "2": [pascal_rule27,],
@@ -314,12 +314,12 @@ rulesDict1 = {
     "7": [pascal_rule27,],
     "8": [pascal_rule27,],
     "9": [pascal_rule27,],
-    ":": [pascal_rule15,pascal_rule16,],
+    ":": [pascal_rule15, pascal_rule16,],
     ";": [pascal_rule12,],
-    "<": [pascal_rule18,pascal_rule20,pascal_rule22,],
+    "<": [pascal_rule18, pascal_rule20, pascal_rule22,],
     "=": [pascal_rule17,],
-    ">": [pascal_rule19,pascal_rule21,],
-    "@": [pascal_rule14,pascal_rule27,],
+    ">": [pascal_rule19, pascal_rule21,],
+    "@": [pascal_rule14, pascal_rule27,],
     "A": [pascal_rule27,],
     "B": [pascal_rule27,],
     "C": [pascal_rule27,],
@@ -375,7 +375,7 @@ rulesDict1 = {
     "x": [pascal_rule27,],
     "y": [pascal_rule27,],
     "z": [pascal_rule27,],
-    "{": [pascal_rule0,pascal_rule2,],
+    "{": [pascal_rule0, pascal_rule2,],
 }
 
 # x.rulesDictDict for pascal mode.
@@ -385,4 +385,3 @@ rulesDictDict = {
 
 # Import dict for pascal mode.
 importDict = {}
-

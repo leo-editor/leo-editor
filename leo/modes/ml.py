@@ -123,19 +123,19 @@ keywordsDictDict = {
 def ml_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def ml_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="#\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ml_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def ml_rule3(colorer, s, i):
@@ -216,11 +216,11 @@ rulesDict1 = {
     "7": [ml_rule17,],
     "8": [ml_rule17,],
     "9": [ml_rule17,],
-    ":": [ml_rule8,ml_rule16,],
-    "<": [ml_rule11,ml_rule12,ml_rule13,],
+    ":": [ml_rule8, ml_rule16,],
+    "<": [ml_rule11, ml_rule12, ml_rule13,],
     "=": [ml_rule10,],
-    ">": [ml_rule14,ml_rule15,],
-    "@": [ml_rule9,ml_rule17,],
+    ">": [ml_rule14, ml_rule15,],
+    "@": [ml_rule9, ml_rule17,],
     "A": [ml_rule17,],
     "B": [ml_rule17,],
     "C": [ml_rule17,],
@@ -283,4 +283,3 @@ rulesDictDict = {
 
 # Import dict for ml mode.
 importDict = {}
-

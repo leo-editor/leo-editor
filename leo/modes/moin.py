@@ -45,7 +45,7 @@ def moin_rule1(colorer, s, i):
 def moin_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword4", begin="[[", end="]]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def moin_rule3(colorer, s, i):
@@ -55,13 +55,13 @@ def moin_rule3(colorer, s, i):
 def moin_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="{{{", end="}}}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def moin_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def moin_rule6(colorer, s, i):
@@ -75,7 +75,7 @@ def moin_rule7(colorer, s, i):
 def moin_rule8(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword1", begin="(={1,5})", end="$1",
         at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def moin_rule9(colorer, s, i):
@@ -185,19 +185,19 @@ def moin_rule34(colorer, s, i):
 def moin_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="[\"", end="\"]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def moin_rule36(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword3", begin="[", end="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 # Rules dict for moin_main ruleset.
 rulesDict1 = {
     " ": [moin_rule3,],
-    "#": [moin_rule0,moin_rule1,],
+    "#": [moin_rule0, moin_rule1,],
     "'": [moin_rule6,],
     "-": [moin_rule7,],
     "=": [moin_rule8,],
@@ -227,7 +227,7 @@ rulesDict1 = {
     "X": [moin_rule32,],
     "Y": [moin_rule33,],
     "Z": [moin_rule34,],
-    "[": [moin_rule2,moin_rule35,moin_rule36,],
+    "[": [moin_rule2, moin_rule35, moin_rule36,],
     "`": [moin_rule5,],
     "{": [moin_rule4,],
 }
@@ -239,4 +239,3 @@ rulesDictDict = {
 
 # Import dict for moin mode.
 importDict = {}
-

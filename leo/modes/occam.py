@@ -232,13 +232,13 @@ def occam_rule1(colorer, s, i):
 def occam_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def occam_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def occam_rule4(colorer, s, i):
@@ -332,9 +332,9 @@ rulesDict1 = {
     "'": [occam_rule2,],
     "*": [occam_rule18,],
     "+": [occam_rule14,],
-    "-": [occam_rule0,occam_rule15,],
+    "-": [occam_rule0, occam_rule15,],
     ".": [occam_rule24,],
-    "/": [occam_rule16,occam_rule21,],
+    "/": [occam_rule16, occam_rule21,],
     "0": [occam_rule24,],
     "1": [occam_rule24,],
     "2": [occam_rule24,],
@@ -346,9 +346,9 @@ rulesDict1 = {
     "8": [occam_rule24,],
     "9": [occam_rule24,],
     ":": [occam_rule4,],
-    "<": [occam_rule7,occam_rule8,occam_rule11,occam_rule13,],
+    "<": [occam_rule7, occam_rule8, occam_rule11, occam_rule13,],
     "=": [occam_rule5,],
-    ">": [occam_rule6,occam_rule9,occam_rule10,occam_rule12,],
+    ">": [occam_rule6, occam_rule9, occam_rule10, occam_rule12,],
     "?": [occam_rule19,],
     "@": [occam_rule24,],
     "A": [occam_rule24,],
@@ -377,7 +377,7 @@ rulesDict1 = {
     "X": [occam_rule24,],
     "Y": [occam_rule24,],
     "Z": [occam_rule24,],
-    "\\": [occam_rule17,occam_rule22,],
+    "\\": [occam_rule17, occam_rule22,],
     "a": [occam_rule24,],
     "b": [occam_rule24,],
     "c": [occam_rule24,],
@@ -414,4 +414,3 @@ rulesDictDict = {
 
 # Import dict for occam mode.
 importDict = {}
-

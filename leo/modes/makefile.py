@@ -76,13 +76,13 @@ def makefile_rule0(colorer, s, i):
 def makefile_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable",exclude_match=False,
+        delegate="makefile::variable", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable",exclude_match=False,
+        delegate="makefile::variable", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule3(colorer, s, i):
@@ -92,19 +92,19 @@ def makefile_rule3(colorer, s, i):
 def makefile_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="",exclude_match=False,
+        delegate="", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule7(colorer, s, i):
@@ -118,7 +118,7 @@ def makefile_rule8(colorer, s, i):
 rulesDict1 = {
     "\"": [makefile_rule4,],
     "#": [makefile_rule0,],
-    "$": [makefile_rule1,makefile_rule2,makefile_rule3,],
+    "$": [makefile_rule1, makefile_rule2, makefile_rule3,],
     "'": [makefile_rule5,],
     "-": [makefile_rule8,],
     "0": [makefile_rule8,],
@@ -198,19 +198,19 @@ def makefile_rule9(colorer, s, i):
 def makefile_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="$(", end=")",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable",exclude_match=False,
+        delegate="makefile::variable", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 def makefile_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="makefile::variable",exclude_match=False,
+        delegate="makefile::variable", exclude_match=False,
         no_escape=False, no_line_break=True, no_word_break=False)
 
 # Rules dict for makefile_variable ruleset.
 rulesDict2 = {
     "#": [makefile_rule9,],
-    "$": [makefile_rule10,makefile_rule11,],
+    "$": [makefile_rule10, makefile_rule11,],
 }
 
 # x.rulesDictDict for makefile mode.
@@ -221,4 +221,3 @@ rulesDictDict = {
 
 # Import dict for makefile mode.
 importDict = {}
-
