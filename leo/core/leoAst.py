@@ -3501,7 +3501,7 @@ class Orange:
         try:
             results = self.beautify(contents, filename, tokens, tree)
         except BeautifyError:
-            return False  # #2578. Leading tabs found.
+            return False  # #2578.
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
             return False
@@ -3611,8 +3611,13 @@ class Orange:
 
     def do_indent(self) -> None:
         """Handle indent token."""
+        # #2578: Refuse to beautify files containing leading tabs or unusual indentation.
         if '\t' in self.val:
             message = f"Leading tabs found: {self.filename}"
+            print(message)
+            raise BeautifyError(message)
+        if (len(self.val) % self.tab_width) != 0:
+            message = f" Indentation error: {self.filename}"
             print(message)
             raise BeautifyError(message)
         new_indent = self.val
