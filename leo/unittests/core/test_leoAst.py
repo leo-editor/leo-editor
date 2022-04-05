@@ -33,7 +33,7 @@ from leo.core import leoGlobals as g
 
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
-from leo.core.leoAst import IterativeTokenGenerator ### new
+from leo.core.leoAst import IterativeTokenGenerator
 from leo.core.leoAst import Token, TokenOrderGenerator, TokenOrderTraverser
 from leo.core.leoAst import get_encoding_directive, read_file, strip_BOM
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
@@ -1623,7 +1623,7 @@ class TestIterative(TestTOG):
     - all the tests from the TestTOG class.
     - most of the support code from the BaseTest class.
     """
-    debug_list = [] # 'full-traceback', 'tokens', 'tree'
+    debug_list = []  # 'full-traceback', 'tokens', 'tree'
 
     #@+others
     #@+node:ekr.20220402150424.1: *4* TestIterative.make_data (override)
@@ -1631,7 +1631,7 @@ class TestIterative(TestTOG):
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
-            return '', None, None  
+            return '', None, None
         self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -1704,7 +1704,7 @@ class TestIterative(TestTOG):
         self.assertEqual(expected, results)
     #@+node:ekr.20220403062001.1: *5* TestIterative.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
-        
+
         # A copy of TestOrange.test_one_line_pet_peeves.
         # Necessary for coverage testings for slices.
 
