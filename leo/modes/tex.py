@@ -83,10 +83,10 @@ def tex_general_backslash_rule(colorer, s, i):
     return colorer.match_tex_backslash(s, i, kind='markup')
 
 def tex_rule2(colorer, s, i):
-        return colorer.match_span(s, i, kind="markup", begin="\\[", end="\\]",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="tex::math", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="\\[", end="\\]",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="tex::math", exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
 
 def tex_rule3(colorer, s, i):
     return colorer.match_seq(s, i, kind="keyword1", seq="\\$",
