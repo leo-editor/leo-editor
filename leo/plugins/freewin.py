@@ -12,7 +12,7 @@ switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
 :Version: 2.0
-:Date: 1 Apr 2022
+:Date: 6 Apr 2022
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -34,9 +34,11 @@ selected again.
 
 A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and
-will only display that node.  It will remain synchronized even if the node has been moved to a new position in its outline.
+will only display that node.  It will remain synchronized even if 
+the node has been moved to a new position in its outline.
 
-.. Note:: A Freewin window will close if the underlying node is removed. This will not change the body of the underlying node.
+.. Note:: A Freewin window will close if the underlying node is removed. 
+          This will not change the body of the underlying node.
 
 #@+node:tom.20210625220923.1: *3* Navigating
 Navigating
