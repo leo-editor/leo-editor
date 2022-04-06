@@ -226,7 +226,7 @@ class Importer:
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
-            
+
         d: Dict[str, List[Any]]
 
         if context:
@@ -1126,9 +1126,9 @@ class Importer:
         """
         Remove the *maximum* whitespace of any line from the start of *all* lines,
         appending the underindent escape sequence for all underindented lines.
-        
+
         This is *not* the same as textwrap.dedent!
-        
+
         """
         # Called from i.post_pass, i.unindent_all_nodes.
         c = self.c

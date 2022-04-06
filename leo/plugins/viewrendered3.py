@@ -39,7 +39,7 @@ it duplicates and extendes the functionality of the ViewRendered plugin.  The pl
     #. Optionally render mathematics symbols and equations using MathJax.
     #. While an entire subtree rendering is visible, the display can be locked
        so that the entire tree shows even while a single node is being edited.
-    #. When an entire subtree is rendered, and editing is being done in one 
+    #. When an entire subtree is rendered, and editing is being done in one
        node, the display can be frozen (no changes will be displayed) if
        necessary to avoid excessive delay in re-rendering, or visual anomalies.
     #. The default rendering language for a node can be selected to by one of
@@ -63,7 +63,7 @@ Previous Recent Changes
 ========================
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
-the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.  
+the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.
 Add a line similar to the following to the *[executables]* section::
 
     lua = C:\Program Files (x86)\Lua\5.1\lua.exe
@@ -235,7 +235,7 @@ looked for first in the user's `~/.leo/vr3 directory`, and then in the
 `leo/plugins/viewrendered3` directory.  The choice of stylesheet is as follows:
 
 - If the string setting `vr3-md-stylesheet` contains an absolute path, that file will
-  be used if it is found;  if it contains a bare file name, it will be used if it can 
+  be used if it is found;  if it contains a bare file name, it will be used if it can
   be found in either of the two stylesheet directories.
 
 Otherwise:
@@ -580,7 +580,7 @@ asciidoctor
 -------------
 To use *asciidoctor* first install Ruby.  First install the Ruby code environment.
 It is not necessary to install the entire development system. A minimal
-install will be enough. Next, run the following commands in a terminal 
+install will be enough. Next, run the following commands in a terminal
 or Windows console::
 
     gem install asciidoctor
@@ -600,7 +600,7 @@ unzipped directory, e.g.::
 
 asciidoc3
 ----------
-asciidoc3 is a Python package that can be installed with pip.  On Windows, 
+asciidoc3 is a Python package that can be installed with pip.  On Windows,
 a post-install program must be run.  Sometimes, and with some versions,
 asciidoc3 will malfunction on Windows.  If that happens, a message will
 be written to Leo's Log pane and VR3 will try to use *asciidoc* if it is
@@ -809,7 +809,7 @@ adding the ability to change from RsT to Python and back within a node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality with
 Python 3/QT5. VR3 brings more enhancements to ReStructured Text and Markdown
-rendering, and adds Asciidoc rendering.  Most functionality of the Viewrendered 
+rendering, and adds Asciidoc rendering.  Most functionality of the Viewrendered
 is included, and some additional capability has been added..
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
@@ -1110,7 +1110,7 @@ latex_template = f'''\
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <script src="{MATHJAX_POLYFILL_URL}"></script> 
+    <script src="{MATHJAX_POLYFILL_URL}"></script>
     <script src='{MATHJAX_URL}'></script>
 </head>
 <body bgcolor="#fffbdc">
@@ -1161,7 +1161,7 @@ def find_exe(exename):
 #@+node:tom.20211127234312.1: ** find_dir()
 def find_dir(name, path):
     """Given a starting directory, return the full path to the named directory.
-    
+
     RETURNS
     A full directory, or None if the named directory is not found.
     """
@@ -1191,7 +1191,7 @@ def configure_asciidoc():
         Specifies the use of the external Ruby program, if available.
 
         ``@bool vr3-prefer-asciidoc3 = False``
-        When an internal processor will be used, whether to try asciidoc3 
+        When an internal processor will be used, whether to try asciidoc3
         or asciidoc first.  Some installations will have both.
 
     Sets several variables::
@@ -1673,7 +1673,7 @@ def vr3_plot_2d(event):
     the node may contain a config file-like set of sections
     that define the labels, and plot styling.
 
-    Optionally, the data can be read from a file instead of taken 
+    Optionally, the data can be read from a file instead of taken
     from the selected node.
 
     The matplotlib package is required for plotting.
@@ -1692,10 +1692,10 @@ def vr3_plot_2d(event):
         4 16
         5 32
 
-    Comment lines start with one of ";", "#". Comment, non-numeric, and 
+    Comment lines start with one of ";", "#". Comment, non-numeric, and
     blank lines are ignored.
 
-    Here is an example of one-column data - the missing first column will 
+    Here is an example of one-column data - the missing first column will
     assigned integers starting with 0::
 
         1
@@ -1720,7 +1720,7 @@ def vr3_plot_2d(event):
     a *[name]*, has zero or more lines in the form *key = value*,
     and must end with a blank line or the end of the node.
 
-    Sections may be placed anywhere in the selected node.  The 
+    Sections may be placed anywhere in the selected node.  The
     *[sectionname]* must be left-justified.  Currently the
     following sections are recognized::
 
@@ -1737,7 +1737,7 @@ def vr3_plot_2d(event):
         file = c:\example\datafile.txt
 
     If the file exists, it will be used as the data source instead of the
-    selected Leo node.  All configuration sections in the selected nodes 
+    selected Leo node.  All configuration sections in the selected nodes
     will still take effect.
 
     Graph And Data Labels
@@ -1778,7 +1778,7 @@ def vr3_plot_2d(event):
     Here is an example *[data]* section, with explanatory comments added::
 
         [style]
-        # For VR3 "Plot 2D", only one of these 
+        # For VR3 "Plot 2D", only one of these
         # will be used. "stylename" has priority
         # over "stylefile".
         stylename = ggplot
@@ -1842,7 +1842,7 @@ def vr3_help_for_plot_2d(event):
 @g.command('vr3-render-html-from-clip')
 def vr3_render_html_from_clip(event):
     """Render HTML string from clipboard.
-    
+
     The html is available for export until the current selected
     node is reloaded.
     """
@@ -2018,7 +2018,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.md_stylesheet -- The URL to the stylesheet.  Must include
                                the "file:///" if it is a local file.
         self.md_mathjax_url -- The URL to the MathJax code package.  Must include
-                               the "file:///" if it is a local file. The URL 
+                               the "file:///" if it is a local file. The URL
                                should be to a MathJax V3 site.  A typical URL
                                is https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
                                If the MathJax package has been downloaded to the
@@ -2253,14 +2253,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if their full path is not given.
 
         If a stylesheet file is specified by the setting "vr3-md-stylesheet",
-        then use this stylesheet if it is found.  
+        then use this stylesheet if it is found.
 
         Otherwise, if the setting "vr3-md-style-auto" is True, then attempt to
         use a dark-vs-light theme according to whether the Leo theme
         is marked dark or not.
 
-        Otherwise use the default stylesheet at leo/plugins/viewrendered3. 
-        If not present, create a default stylesheet and write it to a 
+        Otherwise use the default stylesheet at leo/plugins/viewrendered3.
+        If not present, create a default stylesheet and write it to a
         file at that place.
 
 
@@ -2280,7 +2280,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:tom.20211117180937.1: *5* check_paths()
         def check_paths(filename, dir_list):
             """Given a file name, check for its existence in one of
-            a sequence of directories.  Return the first full path where 
+            a sequence of directories.  Return the first full path where
             the file is found, or None.
             """
 
@@ -2456,14 +2456,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:tom.20211104105903.7: *6* has_config_section()
         def has_config_section(pagelines):
             """Find config-like sections in the data page.
-            
+
             Sections are defined by:
                 1. A left-justified term in [brackets].
                 2. A blank line or the end of the list of lines.
-            
+
             ARGUMENT
             pagelines -- a list of text lines.
-            
+
             RETURNS
             a dictionary keyed by section label: {label: line_num, ...}
             """
@@ -2477,7 +2477,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@@pagewidth 65
         def set_custom_style():
             r"""Apply custom matplotlib styles from a file.
-            
+
             The style file has the name given by STYLEFILE. The .leo
             directory (usually ~/.leo) will be checked first for the
             style file.
@@ -2486,7 +2486,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             checked for the style file. On Windows, this is usually the
             %APPDATA%\Python directory. On Linux, this is usually at
             /home/tom/.local.
-            
+
             """
             found_styles = False
             lm = g.app.loadManager
@@ -2595,14 +2595,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             is a key "stylefile", look for a file of that name ins the
             user's Leo home directory (usually ~/.leo) and use those
             styles.
-            
+
             The stylename must be one of the built-in style names, such
             as "ggplot". "xkcd" also works even though it is not actually
             one of the style names.
-            
+
             ARGUMENT style_config_lines -- a sequence of lines starting
             at the [style] section of the data node.
-            
+
             RETURNS
             True if a style was set.
             """
@@ -2995,7 +2995,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         include a MathJax script in the output.
 
         We use a customized .conf file with both asciidoc and asciidoc3
-        to insert Mathjax scripts into the  output when math output is 
+        to insert Mathjax scripts into the  output when math output is
         requested.
 
         Settings used::
@@ -3004,7 +3004,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr3-math-output        self.math_output
             vr3-prefer-external    self.prefer_external
             vr3-prefer-asciidoc3   self.prefer_asciidoc3
-            vr3-asciidoc-path      self.asciidoc_path   
+            vr3-asciidoc-path      self.asciidoc_path
 
         ARGUMENT
         s -- the asciidoc string to convert.

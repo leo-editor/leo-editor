@@ -58,7 +58,7 @@ class BaseTestImporter(LeoUnitTest):
     def compare_outlines(self, created_p, expected_p):  # pragma: no cover
         """
         Ensure that the created and expected trees have equal shape and contents.
-        
+
         Also ensure that all created nodes have the expected node kind.
         """
         d = g.vnode_info
@@ -359,25 +359,25 @@ class TestCoffeescript(BaseTestImporter):
             constructor: ->
               @transformer = new Transformer
             # `build()`
-      
+
             build: (args...) ->
               node = args[0]
               @transform node
-      
+
               name = 'other'
               name = node.typeName()  if node != undefined and node.typeName
-      
+
               fn  = (@[name] or @other)
               out = fn.apply(this, args)
-      
+
               if node.parenthesized then paren(out) else out
             # `transform()`
-      
+
             transform: (args...) ->
               @transformer.transform.apply(@transformer, args)
-      
+
             # `body()`
-      
+
             body: (node, opts={}) ->
               str = @build(node, opts)
               str = blockTrim(str)
@@ -676,19 +676,19 @@ class TestHtml(BaseTestImporter):
             <td width="550">
             <table cellspacing="0" cellpadding="0" width="600" border="0">
                 <td class="blutopgrabot" height="28"></td>
-        
+
                 <!-- The indentation of this element causes the problem. -->
                 <table>
-        
+
             <!--
             <div align="center">
             <iframe src="http://www.amex.com/atamex/regulation/listingStatus/index.jsp"</iframe>
             </div>
             -->
-        
+
             </table>
             </table>
-        
+
             <p>Paragraph</p>
             </td>
         '''
@@ -747,16 +747,16 @@ class TestHtml(BaseTestImporter):
 
         s = '''
             <html>
-        
+
             <head>
                 <!-- oops: link elements terminated two different ways -->
                 <link id="L1">
                 <link id="L2">
                 <link id="L3" />
                 <link id='L4' />
-        
+
                 <title>TITLE</title>
-        
+
             <!-- oops: missing tags. -->
         '''
         p = self.run_test(s)
@@ -776,9 +776,9 @@ class TestHtml(BaseTestImporter):
                 <link id="L2">
                 <link id="L3" />
                 <link id='L4' />
-        
+
                 <title>TITLE</title>
-        
+
             </head>
             </html>
         '''
@@ -3167,15 +3167,15 @@ class TestTypescript(BaseTestImporter):
                     return "Hello, " + this.greeting;
                 }
             }
-        
+
             var greeter = new Greeter("world");
-        
+
             var button = document.createElement('button')
             button.innerText = "Say Hello"
             button.onclick = function() {
                 alert(greeter.greet())
             }
-        
+
             document.body.appendChild(button)
 
         '''

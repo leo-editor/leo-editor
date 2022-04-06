@@ -280,7 +280,7 @@ def test_leoserver(event=None):
 def test_leo_client_and_server(event=None):
     """
     Test leoserver.py with leoclient.py.
-    
+
     The test-all command does *not* run this command, because there is
     no corresponding test*.py file.
     """

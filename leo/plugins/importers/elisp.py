@@ -34,7 +34,7 @@ class Elisp_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
-            
+
         d: Dict[str, List[Any]]
 
         if context:

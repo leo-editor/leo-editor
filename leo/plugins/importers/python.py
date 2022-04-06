@@ -28,7 +28,7 @@ def split_root(root, lines):
     definitions and class definitions in separate nodes which
     are all direct children of the root. All longer class
     nodes are further divided, each method in a separate node.
-    
+
     This function puts comments and decorators in the same node
     above the definition.
     '''

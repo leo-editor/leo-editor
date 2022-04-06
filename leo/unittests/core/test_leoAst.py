@@ -1618,7 +1618,7 @@ class TestFstringify(BaseTest):
 class TestIterative(TestTOG):
     """
     Tests for the IterativeTokenGenerator class.
-    
+
     This class inherits:
     - all the tests from the TestTOG class.
     - most of the support code from the BaseTest class.

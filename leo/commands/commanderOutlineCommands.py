@@ -683,7 +683,7 @@ def goPrevVisitedNode(self, event=None):
 def goToFirstNode(self, event=None):
     """
     Select the first node of the entire outline.
-    
+
     But (#2167), go to the first node of a chapter or hoist
     if Leo is hoisted or within a chapter.
     """
@@ -1083,7 +1083,7 @@ def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
     """
     If c.p is expanded, insert a new node as the first or last child of c.p,
     depending on @bool insert-new-nodes-at-end.
-    
+
     If c.p is not expanded, insert a new node after c.p.
     """
     c = self
