@@ -342,7 +342,7 @@ class Mock(object):
 MOCK_MODULES = [
   ## PyQt4
   'PyQt4',
-  'PyQt4.QtCore',  
+  'PyQt4.QtCore',
   'PyQt4.QtGui',
   ## reportlab
   'reportlab',
