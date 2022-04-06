@@ -691,7 +691,7 @@ class TestFastAtRead(LeoUnitTest):
         #AT+node:{root.gnx}: * {h}
         #AT@first
 
-        #ATdelims !! 
+        #ATdelims !!SPACE
 
         !!AT+LB test >>
         !!AT+node:ekr.20211101111409.2: ** LB test >>
@@ -710,7 +710,7 @@ class TestFastAtRead(LeoUnitTest):
 
         !!AT@language python
         !!AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<').replace('SPACE', ' ')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
