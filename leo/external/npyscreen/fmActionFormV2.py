@@ -125,18 +125,18 @@ class ActionFormExpandedV2(ActionFormV2):
 
 #@+node:ekr.20170428084207.151: ** class ActionFormMinimal
 class ActionFormMinimal(ActionFormV2):
-        #@+others
-        #@+node:ekr.20170428084207.152: *3* create_control_buttons
-        def create_control_buttons(self):
-            self._add_button('ok_button',
-                        self.__class__.OKBUTTON_TYPE,
-                        self.__class__.OK_BUTTON_TEXT,
-                        0 - self.__class__.OK_BUTTON_BR_OFFSET[0],
-                        0 - self.__class__.OK_BUTTON_BR_OFFSET[1] - len(self.__class__.OK_BUTTON_TEXT),
-                        None
-                        )
+    #@+others
+    #@+node:ekr.20170428084207.152: *3* create_control_buttons
+    def create_control_buttons(self):
+        self._add_button('ok_button',
+                    self.__class__.OKBUTTON_TYPE,
+                    self.__class__.OK_BUTTON_TEXT,
+                    0 - self.__class__.OK_BUTTON_BR_OFFSET[0],
+                    0 - self.__class__.OK_BUTTON_BR_OFFSET[1] - len(self.__class__.OK_BUTTON_TEXT),
+                    None
+                    )
 
-        #@-others
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
