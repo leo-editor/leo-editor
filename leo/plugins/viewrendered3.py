@@ -946,17 +946,25 @@ except ImportError:
     print('VR3: *** No numpy')
     np = None
 # nbformat (@jupyter) support, non-vital.
-jupyter_ok = False
+jupyter_ok = nbformat_ok = nbconvert_ok = False
+
 try:
     import nbformat
-    from nbconvert.exporters import HTMLExporter
-    jupyter_ok = True
+    nbformat_ok = True
     # from traitlets.config import Config
-except ImportError as e:
-    mod = f'{e}'.split()[-1].replace("'", '')
-    print('VR3: *** missing module needed by @jupyter nodes.')
-    print('         you want to use @jupyter nodes, then')
-    print(f'         install {mod}: python3 -m pip install {mod}')
+except ImportError:
+    print('VR3: *** nbformat module is needed by @jupyter nodes.\n'
+          '         if you want to use @jupyter nodes, then\n'
+          '         install nbformat: python3 -m pip install nbformat')
+try:
+    from nbconvert.exporters import HTMLExporter
+    nbconvert_ok = True
+except ImportError:
+    print('VR3: *** nbconvert module is needed by @jupyter nodes.\n'
+          '         if you want to use @jupyter nodes, then\n'
+          '         install nbconvert: python3 -m pip install nbconvert')
+jupyter_ok = nbformat_ok and nbconvert_ok
+
 try:
     from pygments import cmdline
 except ImportError:
