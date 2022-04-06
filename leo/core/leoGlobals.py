@@ -7477,8 +7477,8 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 unl_regex = re.compile(r'\bunl:.*$')
 
-kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
+kinds = '(http|https|file|mailto|ftp|gopher|news|nntp|prospero|telnet|wais)'
+url_regex = re.compile(fr"""{kinds}://[^\s'"`>]+[\w=/]""")
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
     """

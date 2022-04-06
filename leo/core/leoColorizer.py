@@ -1661,16 +1661,16 @@ class JEditColorizer(BaseColorizer):
     # Fix bug 893230: URL coloring does not work for many Internet protocols.
     # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
 
-    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
-    url_regex_g = re.compile(r"""gopher://[^\s'"]+[\w=/]""")
+    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"`>]+[\w=/]""")
+    url_regex_g = re.compile(r"""gopher://[^\s'"`>]+[\w=/]""")
     url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
-    url_regex_m = re.compile(r"""mailto://[^\s'"]+[\w=/]""")
-    url_regex_n = re.compile(r"""(news|nntp)://[^\s'"]+[\w=/]""")
-    url_regex_p = re.compile(r"""prospero://[^\s'"]+[\w=/]""")
-    url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
-    url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
-    kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-    url_regex = re.compile(fr"""{kinds}://[^\s'"]+[\w=/]""")
+    url_regex_h = re.compile(r"""(http|https)://[^\s'"`>]+[\w=/]""")
+    url_regex_m = re.compile(r"""mailto://[^\s'"`>]+[\w=/]""")
+    url_regex_n = re.compile(r"""(news|nntp)://[^\s'"`>]+[\w=/]""")
+    url_regex_p = re.compile(r"""prospero://[^\s'"`>]+[\w=/]""")
+    url_regex_t = re.compile(r"""telnet://[^\s'"`>]+[\w=/]""")
+    url_regex_w = re.compile(r"""wais://[^\s'"`>]+[\w=/]""")
+    url_regex = g.url_regex
 
     def match_any_url(self, s, i):
         return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex)

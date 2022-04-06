@@ -298,6 +298,8 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QWidget = QtWidgets.QWidget
 QColor = QtGui.QColor
 
+WrapMode = QtGui.QTextOption.WrapMode
+
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:tom.20210527153422.1: ** << declarations >>
@@ -707,6 +709,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
+        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
         # Adjust editor stylesheet color to match body fg, bg
         fg, bg = get_body_colors(self.c)
