@@ -613,27 +613,27 @@ class TestColorizer(LeoUnitTest):
         text = textwrap.dedent("""\
             # From a perl tutorial.
 
-            print 'Hello world.';		# Print a message
+            print 'Hello world.';               # Print a message
 
-            $a = $b;	# Assign $b to $a
+            $a = $b;    # Assign $b to $a
 
             @food  = ("apples", "pears", "eels");
 
-            $grub = pop(@food);	# Now $grub = "eels"
+            $grub = pop(@food); # Now $grub = "eels"
 
             $#food
 
             @lines = <INFO>;
 
             #!/usr/local/bin/perl
-            print "Password? ";		# Ask for input
-            $a = <STDIN>;			# Get input
-            chop $a;			# Remove the newline at end
-            while ($a ne "fred")		# While input is wrong...
+            print "Password? ";         # Ask for input
+            $a = <STDIN>;                       # Get input
+            chop $a;                    # Remove the newline at end
+            while ($a ne "fred")                # While input is wrong...
             {
-                print "sorry. Again? ";	# Ask again
-                $a = <STDIN>;		# Get input again
-                chop $a;			# Chop off newline again
+                print "sorry. Again? "; # Ask again
+                $a = <STDIN>;           # Get input again
+                chop $a;                        # Chop off newline again
             }
 
             if ($sentence =~ /under/)
@@ -651,17 +651,17 @@ class TestColorizer(LeoUnitTest):
                 print "Somebody is $age\\n";
             }
 
-            &mysubroutine;		# Call the subroutine
-            &mysubroutine($_);	# Call it with a parameter
-            &mysubroutine(1+2, $_);	# Call it with two parameters
+            &mysubroutine;              # Call the subroutine
+            &mysubroutine($_);  # Call it with a parameter
+            &mysubroutine(1+2, $_);     # Call it with two parameters
 
             sub inside
             {
-                local($a, $b);			# Make local variables
-                ($a, $b) = ($_[0], $_[1]);	# Assign values
-                $a =~ s/ //g;			# Strip spaces from
-                $b =~ s/ //g;			#   local variables
-                ($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
+                local($a, $b);                  # Make local variables
+                ($a, $b) = ($_[0], $_[1]);      # Assign values
+                $a =~ s/ //g;                   # Strip spaces from
+                $b =~ s/ //g;                   #   local variables
+                ($a =~ /$b/ || $b =~ /$a/);     # Is $b inside $a
                                 #   or $a inside $b?
             }
     """)

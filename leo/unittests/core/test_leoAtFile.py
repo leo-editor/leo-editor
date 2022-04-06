@@ -239,7 +239,7 @@ class TestAtFile(LeoUnitTest):
         child.b = textwrap.dedent('''\
             def spam():
                 pass
-                
+
             @ A single-line doc part.''')
         child.v.fileIndex = '<GNX>'
         contents = textwrap.dedent('''\
@@ -250,7 +250,7 @@ class TestAtFile(LeoUnitTest):
             #AT+node:<GNX>: ** child
             def spam():
                 pass
-                
+
             @ A single-line doc part.
             #AT-all
         ''').replace('AT', '@')
@@ -542,7 +542,7 @@ class TestFastAtRead(LeoUnitTest):
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
-            
+
             a = 1
             if (
             #AT+LB test >>
@@ -559,7 +559,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211106115654.1: *4* << define expected_body >>
         expected_body = textwrap.dedent('''\
             ATlanguage python
-            
+
             a = 1
             if (
             LB test >> ):
@@ -573,7 +573,7 @@ class TestFastAtRead(LeoUnitTest):
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
-            
+
             a = 1
             if (
             LB test >> ):
@@ -914,10 +914,10 @@ class TestFastAtRead(LeoUnitTest):
             ATq@@+node:{root.gnx}: * @{h}@>
             ATq@@@@language cweb@>
             ATq@@@@comment @@q@@ @@>@>
-            
+
             % This is limbo in cweb mode... It should be in BSLaTeX mode, not BSc mode.
             % The following should not be colorized: class,if,else.
-            
+
             @* this is a _cweb_ comment.  Code is written in BSc.
             "strings" should not be colorized.
             It should be colored in BSLaTeX mode.
@@ -928,16 +928,16 @@ class TestFastAtRead(LeoUnitTest):
             This is section 1.
             ATq@@-LB section ref 1 >>@>
             @c
-            
+
             and this is C code. // It is colored in BSLaTeX mode by default.
             /* This is a C block comment.  It may also be colored in restricted BSLaTeX mode. */
-            
+
             // Section refs are valid in code too, of course.
             ATq@@+LB section ref 2 >>@>
             ATq@@+node:ekr.20211103083538.1: ** LB section ref 2 >>@>
             This is section 2.
             ATq@@-LB section ref 2 >>@>
-            
+
             BSLaTeX and BSc should not be colored.
             if else, while, do // C keywords.
             ATq@@-leo@>
