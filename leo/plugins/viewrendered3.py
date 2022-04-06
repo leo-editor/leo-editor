@@ -1603,9 +1603,9 @@ def open_with_layout(event):
     c = vr3.c
     layout = {'orientation': 1,
               'content': [{'orientation': 2,
-	                      'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
-	                      'sizes': [200, 200]
-	                      },
+                              'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
+                              'sizes': [200, 200]
+                              },
                            '_leo_pane:bodyFrame', VR3_NS_ID
                          ],
               'sizes': [200, 200, 200]

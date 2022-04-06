@@ -495,7 +495,7 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             ])
         update_events = (
             (e.UpdateLater, 'update-later'),  # 78
-            (e.UpdateRequest, 'update'),  #	77
+            (e.UpdateRequest, 'update'),  #     77
         )
         option_table = (
             (traceActivate, activate_events),

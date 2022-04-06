@@ -16,28 +16,28 @@ __version__ = '0.1'
 #@+node:ekr.20090126093408.2: ** << version history >>
 #@@nocolor
 #@+at
-# 
+#
 # 0.1 EKR: Based on version 0.7.2 of __wx_gui.py.
 #@-<< version history >>
 #@+<< bug list & to-do >>
 #@+node:ekr.20090126093408.3: ** << bug list & to-do >>
 #@@nocolor
 #@+at
-# 
+#
 # First:
 # * Arrow keys do not work
 # - Add dummy transaction so ctrl-v works initially.
 # - Don't redraw the entire screen to add/remove text box in the icon.
 # - Add color to Log pane text.
 # - Get aspell working: use g.pdb to trace aspell startup logic.
-# 
+#
 # Bug list: (All unit tests pass on XP, 4 failures & 2 errors on Linux).
-# 
+#
 # * Autocompletion does not work.
 # * Multiple body editors do not work, and crash unit tests in Linux.
 # - Completion tab is too small (XP only).
 # - The Spell tab functional is empty, and aspell is not imported properly.
-# 
+#
 # Later:
 # - Change background of the tree pane when it has focus.
 # - Convert Tk color names to rgb values.
@@ -96,7 +96,7 @@ def init ():
     aList = wx.version().split('.')
     v1,v2 = aList[0],aList[1]
 
-    if not g.CheckVersion ('%s.%s' % (v1,v2),'2.8'):  
+    if not g.CheckVersion ('%s.%s' % (v1,v2),'2.8'):
         g.es_print('wx_gui plugin requires wxPython 2.8 or later')
         return False
 
@@ -332,7 +332,7 @@ class wxFindPanel (wx.Panel):
 
         findSizer.Add(10,0) # Width.
 
-        # Text. 
+        # Text.
         self.findText = plainTextWidget (self.c,self,-1,"",
             wx.DefaultPosition, wx.Size(500,60),
             wx.TE_PROCESS_TAB | wx.TE_MULTILINE,
@@ -436,8 +436,8 @@ class wxFindPanel (wx.Panel):
         # The var names must match the names in leoFind class.
         table = (
             ("Entire Outline","entire-outline",wx.RB_GROUP),
-            ("Suboutline Only","suboutline_only_flag",0),  
-            ("Node Only","node_only_flag",0),    
+            ("Suboutline Only","suboutline_only_flag",0),
+            ("Node Only","node_only_flag",0),
             ("Selection Only","selection-only",0))
 
         for label,var,group in table:
@@ -582,7 +582,7 @@ class wxFindTab (leoFind.findTab):
             self.svarDict[key] = self.svar()
     #@+node:ekr.20090126093408.42: *6* init (wxFindTab)
     # Called from leoFind.findTab.ctor.
-    # We must override leoFind.init to init the checkboxes 'by hand' here. 
+    # We must override leoFind.init to init the checkboxes 'by hand' here.
 
     def init (self,c):
 
@@ -745,7 +745,7 @@ class wxFindTab (leoFind.findTab):
             ('Rege&xp',     'pattern_match'),
             ('Mark &Finds', 'mark_finds'),
             ("*&Entire Outline","entire-outline"),
-            ("*&Suboutline Only","suboutline-only"),  
+            ("*&Suboutline Only","suboutline-only"),
             ("*&Node Only","node-only"),
             ('Search &Headline','search_headline'),
             ('Search &Body','search_body'),
@@ -811,7 +811,7 @@ class wxFindTab (leoFind.findTab):
         '''Create two columns of buttons.'''
     #@+node:ekr.20090126093408.53: *5* createBindings (wsFindTab) TO DO
     def createBindings (self):
-        
+
         pass
     #@+node:ekr.20090126093408.54: *5* Support for minibufferFind class (wxFindTab)
     # This is the same as the Tk code because we simulate Tk svars.
@@ -865,7 +865,7 @@ class wxSpellTab:
     #@+node:ekr.20090126093408.60: *5* createBindings TO DO
     def createBindings (self):
 
-        return ### 
+        return ###
 
         c = self.c ; k = c.k
         widgets = (self.listBox, self.outerFrame)
@@ -1178,9 +1178,9 @@ class headlineWidget (baseTextWidget):
         self.sel = self.ins,self.ins
     def _get(self,i,j):
         s = self.tree.GetItemText(self.id)
-        return s[i:j]         
+        return s[i:j]
     def _getAllText(self):
-        return self.tree.GetItemText(self.id)                      
+        return self.tree.GetItemText(self.id)
     def _getFocus(self):
         return self.tree.FindFocus()
     def _getInsertPoint(self):
@@ -1381,7 +1381,7 @@ class stcWidget (baseTextWidget):
         w.SetKeyWords(0, " ".join(keyword.kwlist))
 
         # Enable folding
-        if use_fold: w.SetProperty("fold", "1" ) 
+        if use_fold: w.SetProperty("fold", "1" )
 
         # Highlight tab/space mixing (shouldn't be any)
         w.SetProperty("tab.timmy.whinge.level", "1")
@@ -1400,13 +1400,13 @@ class stcWidget (baseTextWidget):
         w.SetBackSpaceUnIndents(True)# Backspace unindents rather than delete 1 space
         w.SetTabIndents(True)        # Tab key indents
         w.SetTabWidth(4)             # Proscribed tab size for wx
-        w.SetUseTabs(False)          # Use spaces rather than tabs, or TabTimmy will complain!    
+        w.SetUseTabs(False)          # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
         w.SetViewWhiteSpace(False)   # Don't view white space
 
         # EOL: Since we are loading/saving ourselves, and the
         # strings will always have \n's in them, set the STC to
-        # edit them that way.            
+        # edit them that way.
         w.SetEOLMode(stc.STC_EOL_LF)
         w.SetViewEOL(False)
 
@@ -1431,15 +1431,15 @@ class stcWidget (baseTextWidget):
 
         # Global default style
         if wx.Platform == '__WXMSW__':
-            w.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
+            w.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                 'fore:#000000,back:#FFFFFF,face:Courier New,size:9')
         elif wx.Platform == '__WXMAC__':
-            # TODO: if this looks fine on Linux too, remove the Mac-specific case 
+            # TODO: if this looks fine on Linux too, remove the Mac-specific case
             # and use this whenever OS != MSW.
-            w.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
+            w.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                 'fore:#000000,back:#FFFFFF,face:Courier')
         else:
-            w.StyleSetSpec(stc.STC_STYLE_DEFAULT, 
+            w.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                 'fore:#000000,back:#FFFFFF,face:Courier,size:9')
 
         # Clear styles and revert to default.
@@ -1449,7 +1449,7 @@ class stcWidget (baseTextWidget):
         # The rest remains unchanged.
 
         # Line numbers in margin
-        w.StyleSetSpec(stc.STC_STYLE_LINENUMBER,'fore:#000000,back:#99A9C2')    
+        w.StyleSetSpec(stc.STC_STYLE_LINENUMBER,'fore:#000000,back:#99A9C2')
         # Highlighted brace
         w.StyleSetSpec(stc.STC_STYLE_BRACELIGHT,'fore:#00009D,back:#FFFF00')
         # Unmatched brace
@@ -1595,7 +1595,7 @@ class stcWidget (baseTextWidget):
     #def _insertText(self,i,s):          return self.widget.InsertText(i,s)
     def _scrollLines(self,n):           return self.widget.ScrollToLine(n)
     def _see(self,i):                   g.trace('oops',i) # Should not be called.
-    def _setAllText(self,s):            return self.widget.SetText(s) 
+    def _setAllText(self,s):            return self.widget.SetText(s)
     def _setBackgroundColor(self,color): return self.widget.SetBackgroundColour(color)
     def _setFocus(self):                return self.widget.SetFocus()
     def _setInsertPoint(self,i):        g.trace('oops',i) # Should not be called.
@@ -1955,7 +1955,7 @@ class wxComparePanel (leoCompare.leoCompare): #,leoWxDialog):
         lab = Tk.Label(row,text="mismatches")
         lab.pack(side="left",padx=2)
 
-        for padx,text,var in (    
+        for padx,text,var in (
             (0,  "Print matched lines",           self.printMatchesVar),
             (20, "Show both matching lines",      self.printBothMatchesVar),
             (0,  "Print mismatched lines",        self.printMismatchesVar),
@@ -2420,7 +2420,7 @@ class wxLeoFrame(leoFrame.leoFrame):
 
         w.Bind(wx.EVT_CLOSE,self.onCloseLeoFrame)
 
-        w.Bind(wx.EVT_MENU_OPEN,self.updateAllMenus) 
+        w.Bind(wx.EVT_MENU_OPEN,self.updateAllMenus)
     #@+node:ekr.20090126093408.214: *5* injectCallbacks
     def injectCallbacks(self):
 
@@ -2643,7 +2643,7 @@ class wxLeoFrame(leoFrame.leoFrame):
             c.bodyWantsFocus()
     #@+node:ekr.20090126093408.234: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
-    # 
+    #
     #     f.splitVerticalFlag: use the primary   (tree/body) ratio.
     # not f.splitVerticalFlag: use the secondary (tree/log) ratio.
     #@@c
@@ -2804,7 +2804,7 @@ class wxLeoFrame(leoFrame.leoFrame):
 
         if os.path.exists(file):
             os.startfile(file)
-        else:	
+        else:
             answer = g.app.gui.runAskYesNoDialog(c,
                 "Download Tutorial?",
                 "Download tutorial (sbooks.chm) from SourceForge?")
@@ -2931,9 +2931,9 @@ class wxLeoIconBar:
 
             self.toolbar.Bind(wx.EVT_BUTTON,onClickCallback,b)
     #@+node:ekr.20090126093408.256: *4* show/hide (do nothings)
-    def pack (self):    pass  
-    def unpack (self):  pass 
-    show = pack   
+    def pack (self):    pass
+    def unpack (self):  pass
+    show = pack
     hide = unpack
     #@-others
 #@+node:ekr.20090126093408.257: *3* wxLeoLog class (leoLog)
@@ -3123,7 +3123,7 @@ class wxLeoLog (leoFrame.leoLog):
                 if i == len(values): i = 0
                 tabName = d.keys()[i]
                 self.selectTab(tabName)
-                return 
+                return
         #@+node:ekr.20090126093408.276: *6* lower/raiseTab
         def lowerTab (self,tabName):
 
@@ -3457,11 +3457,11 @@ class wxLeoMenu (leoMenu.leoMenu):
     #@+node:ekr.20090126093408.302: *5* createOpenWithMenuFromTable (not ready yet)
     #@+at Entries in the table passed to createOpenWithMenuFromTable are
     # tuples of the form (commandName,shortcut,data).
-    # 
+    #
     # - command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
     # - shortcut is a string describing a shortcut, just as for createMenuItemsFromTable.
     # - data is a tuple of the form (command,arg,ext).
-    # 
+    #
     # Leo executes command(arg+path) where path is the full path to the temp file.
     # If ext is not None, the temp file has the given extension.
     # Otherwise, Leo computes an extension based on the @language directive in effect.
@@ -3556,7 +3556,7 @@ class wxLeoMenu (leoMenu.leoMenu):
         # Get the actual menu from the base class.
         menu = leoMenu.leoMenu.getMenu(self,name)
 
-        # Create a wrapper class that defines 
+        # Create a wrapper class that defines
         class menuWrapperClass (wx.Menu):
             def index (self,name):
                 '''Return the menu item whose name is given.'''
@@ -3709,7 +3709,7 @@ class wxLeoStatusLine:
         c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
         if not self.isVisible or self.c.frame.killed: return
 
-        s = bodyCtrl.getAllText()    
+        s = bodyCtrl.getAllText()
         index = bodyCtrl.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,index)
         if col > 0:
@@ -4017,7 +4017,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
         item = self.getCurrentItem()
         # g.trace(self.traceItem(item))
-        self.onItemCollapsed(item) 
+        self.onItemCollapsed(item)
 
     def onTreeExpanded(self,event):
 
@@ -4341,8 +4341,8 @@ class wxGui(leoGui.leoGui):
     #@+node:ekr.20090126093408.135: *4* finishCreate
     def finishCreate (self):
 
-       pass
-       # g.trace('gui',g.callers())
+        pass
+        # g.trace('gui',g.callers())
     #@+node:ekr.20090126093408.136: *4* killGui
     def killGui(self,exitFlag=True):
 
@@ -4467,7 +4467,7 @@ class wxGui(leoGui.leoGui):
             file = d.GetFilename()
             return file
         else:
-            return None 
+            return None
     #@+node:ekr.20090126093408.149: *4* runSaveFileDialog
     def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
@@ -4502,8 +4502,8 @@ class wxGui(leoGui.leoGui):
             return "*.leo"
 
         if 1: # Too bad: this is sooo wimpy.
-                a,b = filetypes[0] 
-                return b
+            a,b = filetypes[0]
+            return b
 
         else: # This _sometimes_ works: wxWindows is driving me crazy!
 
@@ -4578,7 +4578,7 @@ class wxGui(leoGui.leoGui):
     #@+at These are by design not compatible with unicode characters.
     # If you want to get a unicode character from a key event use
     # wxKeyEvent::GetUnicodeKey instead.
-    # 
+    #
     # WXK_START   = 300
     # WXK_LBUTTON
     # WXK_RBUTTON
@@ -4644,13 +4644,13 @@ class wxGui(leoGui.leoGui):
     # WXK_NUMPAD_SUBTRACT,
     # WXK_NUMPAD_DECIMAL,
     # WXK_NUMPAD_DIVIDE,
-    # 
+    #
     # // the following key codes are only generated under Windows currently
     # WXK_WINDOWS_LEFT,
     # WXK_WINDOWS_RIGHT,
     # WXK_WINDOWS_MENU,
     # WXK_COMMAND,
-    # 
+    #
     # // Hardware-specific buttons
     # WXK_SPECIAL1 = 193,
     # WXK_SPECIAL2,
@@ -4711,7 +4711,7 @@ class wxGui(leoGui.leoGui):
 
         if keyname is None:
             if 0 < keycode < 27:
-                # EKR: Follow Tk conventions.
+            # EKR: Follow Tk conventions.
                 if shift:
                     keyname = chr(ord('A') + keycode-1) # Return Ctrl+Z
                 else:
@@ -4798,7 +4798,7 @@ class wxGui(leoGui.leoGui):
         if hasattr(event,'leoWidget'):
             return event.leoWidget
         elif isinstance(event,self.leoKeyEvent): # a leoKeyEvent.
-            return event.widget 
+            return event.widget
         elif isinstance(event,g.Bunch): # A manufactured event.
             if hasattr(event,'widget'):
                 w = event.widget
@@ -4983,10 +4983,10 @@ class wxGui(leoGui.leoGui):
                 #@+<< try to use the PIL and tkIcon packages to draw the icon >>
                 #@+node:ekr.20090126093408.183: *6* << try to use the PIL and tkIcon packages to draw the icon >>
                 #@+at This code requires Fredrik Lundh's PIL and tkIcon packages:
-                # 
+                #
                 # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
                 # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-                # 
+                #
                 # Many thanks to Jonathan M. Gilligan for suggesting this code.
                 #@@c
 

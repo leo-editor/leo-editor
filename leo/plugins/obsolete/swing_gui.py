@@ -896,14 +896,14 @@ class leoSwingFrame (leoFrame.leoFrame):
         self.f1 = self.f2 = None
         self.findPanel = None # Inited when first opened.
         self.iconBarComponentName = 'iconBar'
-        self.iconFrame = None 
+        self.iconFrame = None
         self.log = None
         self.canvas = None
         self.outerFrame = None
         self.statusFrame = None
         self.statusLineComponentName = 'statusLine'
-        self.statusText = None 
-        self.statusLabel = None 
+        self.statusText = None
+        self.statusLabel = None
         self.top = None
         self.tree = None
         # self.treeBar = None # Replaced by injected frame.canvas.leo_treeBar.
@@ -1048,11 +1048,11 @@ class leoSwingFrame (leoFrame.leoFrame):
         canvas['yscrollcommand'] = self.setCallback
         treeBar['command']     = self.yviewCallback
         treeBar.pack(side="right", fill="y")
-        if scrolls: 
-            treeXBar = Tk.Scrollbar( 
-                parentFrame,name='treeXBar',orient="horizontal") 
-            canvas['xscrollcommand'] = treeXBar.set 
-            treeXBar['command'] = canvas.xview 
+        if scrolls:
+            treeXBar = Tk.Scrollbar(
+                parentFrame,name='treeXBar',orient="horizontal")
+            canvas['xscrollcommand'] = treeXBar.set
+            treeXBar['command'] = canvas.xview
             treeXBar.pack(side="bottom", fill="x")
 
         if pack:
@@ -1148,10 +1148,10 @@ class leoSwingFrame (leoFrame.leoFrame):
             g.es_exception()
     #@+node:ekr.20081121105001.666: *5* swingFrame.createLeoSplitters & helpers
     #@+at The key invariants used throughout this code:
-    # 
+    #
     # 1. self.splitVerticalFlag tells the alignment of the main splitter and
     # 2. not self.splitVerticalFlag tells the alignment of the secondary splitter.
-    # 
+    #
     # Only the general-purpose divideAnySplitter routine doesn't know about these
     # invariants. So most of this code is specialized for Leo's window. OTOH, creating
     # a single splitter window would be much easier than this code.
@@ -1205,12 +1205,12 @@ class leoSwingFrame (leoFrame.leoFrame):
             self.secondary_ratio = frac # Ratio of tree pane to log pane.
 
     # Divides the main splitter.
-    def divideLeoSplitter1 (self, frac, verticalFlag): 
+    def divideLeoSplitter1 (self, frac, verticalFlag):
         self.divideAnySplitter(frac, verticalFlag,
             self.bar1, self.split1Pane1, self.split1Pane2)
 
     # Divides the secondary splitter.
-    def divideLeoSplitter2 (self, frac, verticalFlag): 
+    def divideLeoSplitter2 (self, frac, verticalFlag):
         self.divideAnySplitter (frac, verticalFlag,
             self.bar2, self.split2Pane1, self.split2Pane2)
     #@+node:ekr.20081121105001.671: *6* onDrag...
@@ -1328,11 +1328,11 @@ class leoSwingFrame (leoFrame.leoFrame):
     def destroySelf (self):
 
         # Remember these: we are about to destroy all of our ivars!
-        top = self.top 
+        top = self.top
         c = self.c
 
         # Indicate that the commander is no longer valid.
-        c.exists = False 
+        c.exists = False
 
         # g.trace(self)
 
@@ -1472,7 +1472,7 @@ class leoSwingFrame (leoFrame.leoFrame):
             if g.app.killed or not self.isVisible:
                 return
 
-            s = bodyCtrl.getAllText()    
+            s = bodyCtrl.getAllText()
             index = bodyCtrl.getInsertPoint()
             row,col = g.convertPythonIndexToRowCol(s,index)
             if col > 0:
@@ -1794,7 +1794,7 @@ class leoSwingFrame (leoFrame.leoFrame):
         ### self.bodyCtrl.configure(bd=border)
 
         # The log pane needs a slightly bigger border when tiling vertically.
-        border = g.choose(self.splitVerticalFlag,4,2) 
+        border = g.choose(self.splitVerticalFlag,4,2)
         ### self.log.configureBorder(border)
     #@+node:ekr.20081121105001.713: *5* resizePanesToRatio (swingFrame)
     def resizePanesToRatio(self,ratio,ratio2):
@@ -2000,7 +2000,7 @@ class leoSwingFrame (leoFrame.leoFrame):
             c.bodyWantsFocus()
     #@+node:ekr.20081121105001.729: *6* expand/contract/hide...Pane
     #@+at The first arg to divideLeoSplitter means the following:
-    # 
+    #
     #     f.splitVerticalFlag: use the primary   (tree/body) ratio.
     # not f.splitVerticalFlag: use the secondary (tree/log) ratio.
     #@@c
@@ -2227,7 +2227,7 @@ class leoSwingFrame (leoFrame.leoFrame):
         self.scale.update_idletasks()
     #@+node:ekr.20081121105001.744: *4* Delayed Focus (swingFrame)
     #@+at New in 4.3. The proper way to change focus is to call c.frame.xWantsFocus.
-    # 
+    #
     # Important: This code never calls select, so there can be no race condition here
     # that alters text improperly.
     #@+node:ekr.20081121105001.745: *4* Tk bindings... (swingFrame)
@@ -2510,7 +2510,7 @@ class leoSwingBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.766: *5* setEditorColors
     def setEditorColors (self,bg,fg):
 
-       pass
+        pass
     #@-others
 #@+node:ekr.20081121105001.767: *3* class leoSwingKeys
 class swingKeyHandlerClass (leoKeys.keyHandlerClass):
@@ -2559,7 +2559,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
 
             def call( self ):
 
-                menu , name , label, enabled = self.queue.take() 
+                menu , name , label, enabled = self.queue.take()
                 target = None
                 for z in menu.getMenuComponents():
                     if hasattr( z, "getText" ) and z.getText() == name:
@@ -2695,7 +2695,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             c = self.c
 
             import leoSwingFrame
-            getColorInstance = leoSwingFrame.getColorInstance 
+            getColorInstance = leoSwingFrame.getColorInstance
 
             colorconfig = js.getColorConfiguration()
             color = config.getColor( c, "jyshell_background" )
@@ -2746,7 +2746,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
 
             js.setVisible( True )
             widget = js.getWidget()
-            log = self.c.frame.log    
+            log = self.c.frame.log
             self.addMenuToJythonShell( js )
             log.addTab( "JythonShell", widget )
             log.selectTab( widget )
@@ -2760,7 +2760,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             jmenu = swing.JMenu( "Leo" )
             jd.addToMenu( jmenu )
 
-            e = swing.JMenuItem( "Execute Node As Script" )  
+            e = swing.JMenuItem( "Execute Node As Script" )
             e.actionPerformed = lambda event, jd = jd: self.fireNodeAsScript( event, jd )
             jmenu.add( e )
 
@@ -2778,7 +2778,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
                     self.loging = False
                     self.ostream = jtcos( c.frame.body.editor.editor )
 
-                def __call__( self, event ):  
+                def __call__( self, event ):
                     menu = self.menu
                     loging = self.loging
                     if not loging:
@@ -2790,7 +2790,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
                         menu.setText( captext )
                         self.loging = False
 
-            sc.actionPerformed = logcontrol( sc )           
+            sc.actionPerformed = logcontrol( sc )
             jmenu.add( sc )
 
             d = swing.JMenuItem( "Detach Shell" )
@@ -2819,7 +2819,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
                         d.setText( "Retach Shell" )
                         jf = swing.JFrame( "JythonShell" )
                         widget = js.getWidget()
-                        log = c.frame.log 
+                        log = c.frame.log
                         log.removeTab( widget )
                         jf.add( widget )
                         jf.setSize( 500, 500 )
@@ -2832,11 +2832,11 @@ class leoSwingMenu( leoMenu.leoMenu ):
                         parent.dispose();
                         log = c.frame.log
                         log.addTab( "JythonShell", widget  )
-                        log.selectTab( widget ) 
+                        log.selectTab( widget )
                         self.embeded = True
 
             d.actionPerformed = detacher( d )
-            jmenu.add( d )    
+            jmenu.add( d )
 
 
         #@+node:ekr.20081121105001.783: *6* getInsertNodeIntoShell
@@ -2846,7 +2846,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             def writeNode( event ):
 
                 cp = c.currentPosition()
-                at = c.atFileCommands 
+                at = c.atFileCommands
                 c.fileCommands.assignFileIndices()
                 at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
                 data = at.stringOutput
@@ -2880,7 +2880,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
                 cp = c.currentPosition()
                 name = cp.h
                 name = name.split()[ 0 ]
-                at = c.atFileCommands 
+                at = c.atFileCommands
                 c.fileCommands.assignFileIndices()
                 at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
                 data = at.stringOutput
@@ -2890,24 +2890,24 @@ class leoSwingMenu( leoMenu.leoMenu ):
                 pw.println( "import pdb" )
                 pw.println( "pdb.set_trace()" )
                 for z in data.split( "\n" ):
-                    pw.println( z )            
+                    pw.println( z )
                 pw.close()
-                f.deleteOnExit()       
+                f.deleteOnExit()
                 l = java.util.Vector()
                 l.add( "execfile( '%s', globals(), locals())" % f.getAbsolutePath() )
                 jd.processAsScript( l )
 
 
-            return runInPdb      
+            return runInPdb
         #@+node:ekr.20081121105001.786: *6* fireNodeAsScript
         def fireNodeAsScript( self, event, jd ):
 
-            c = self.c        
-            cp = c.currentPosition()    
-            at = c.atFileCommands 
+            c = self.c
+            cp = c.currentPosition()
+            at = c.atFileCommands
             c.fileCommands.assignFileIndices()
             at.write(cp.copy(),nosentinels=True,toString=True,scriptWrite=True)
-            data = at.stringOutput.split( '\n' ) 
+            data = at.stringOutput.split( '\n' )
 
 
             l = java.util.Vector()
@@ -3084,7 +3084,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             menu.addSeparator()
 
         def bind (self,bind_shortcut,callback):
-            #self.oops() 
+            #self.oops()
             pass
 
         def delete (self,menu,realItemName):
@@ -3159,7 +3159,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             self.queue.offer( item )
             self.executor.submit( self.menu_changer )
         #@+node:ekr.20081121105001.794: *6* class MenuRunnable
-        class MenuRunnable( swing.AbstractAction, java.lang.Runnable): 
+        class MenuRunnable( swing.AbstractAction, java.lang.Runnable):
 
             def __init__( self, name, command, c , executor):
                 swing.AbstractAction.__init__( self, name )
@@ -3177,7 +3177,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
                 #if self.name == 'Save':
                 self.executor.submit( self )
 
-                #else:        
+                #else:
                 #    se
         #@+node:ekr.20081121105001.795: *6* class MenuExecuteOnSelect
         class MenuExecuteOnSelect( sevent.MenuListener ):
@@ -3256,9 +3256,9 @@ class leoSplash ( java.lang.Runnable ):
         dim = tk.getScreenSize()
         h = dim.height/2
         w = dim.width/2
-        return h, w   
+        return h, w
 
-    def setText( self, text ):  
+    def setText( self, text ):
         self.splashlabel.setText( text )
 
     def hide( self ):
@@ -3314,7 +3314,7 @@ class leoSwingLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.803: *5* swingLog.createControl
     def createControl (self,parentFrame):
 
-        return self 
+        return self
     #@+node:ekr.20081121105001.804: *5* swingLog.finishCreate
     def finishCreate (self):
 
@@ -3463,7 +3463,7 @@ class leoSwingLog (leoFrame.leoLog):
     #@+node:ekr.20081121105001.818: *4* put & putnl (swingLog)
     #@+at Printing uses self.logCtrl, so this code need not concern itself
     # with which tab is active.
-    # 
+    #
     # Also, selectTab switches the contents of colorTags, so that is not concern.
     # It may be that Pmw will allow us to dispense with the colorTags logic...
     #@+node:ekr.20081121105001.819: *5* put
@@ -3509,7 +3509,7 @@ class leoSwingLog (leoFrame.leoLog):
             if i == len(values): i = 0
             tabName = d.keys()[i]
             self.selectTab(tabName)
-            return 
+            return
     #@+node:ekr.20081121105001.828: *5* deleteTab
     def deleteTab (self,tabName,force=False):
 
@@ -3555,7 +3555,7 @@ class leoSwingLog (leoFrame.leoLog):
         '''Create the tab if necessary and make it active.'''
     #@+node:ekr.20081121105001.835: *5* setTabBindings
     def setTabBindings (self,tabName):
-        
+
         '''Set tab bindings'''
     #@+node:ekr.20081121105001.836: *5* Tab menu callbacks & helpers
     #@+node:ekr.20081121105001.837: *6* onRightClick & onClick
@@ -3721,7 +3721,7 @@ class leoSwingLog (leoFrame.leoLog):
         colorBox = Pmw.ComboBox(f2,scrolledlist_items=colors)
         colorBox.pack(side='left',pady=4)
 
-        def colorCallback (newName): 
+        def colorCallback (newName):
             label.delete('1.0','end')
             label.insert('1.0',newName)
             try:
@@ -3832,7 +3832,7 @@ class leoSwingLog (leoFrame.leoLog):
         self.createBindings()
     #@+node:ekr.20081121105001.854: *5* createBindings (fontPicker)
     def createBindings (self):
-        
+
         pass
     #@+node:ekr.20081121105001.855: *5* getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
@@ -4098,7 +4098,7 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75): # swingTextWidget.
 
         pass
-       
+
     #@+node:ekr.20081121105001.882: *5* get
     def get(self,i,j=None):
 
@@ -4154,14 +4154,14 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
         else:
             i = j = 0 ### i = j = Tk.Text.index(w,"insert")
 
-        i,j = w.toPythonIndex(i),w.toPythonIndex(j)  
+        i,j = w.toPythonIndex(i),w.toPythonIndex(j)
         if sort and i > j: i,j = j,i
         return i,j
     #@+node:ekr.20081121105001.887: *5* getYScrollPosition
     def getYScrollPosition (self):
 
-         w = self
-         return 0 ### return w.yview()
+        w = self
+        return 0 ### return w.yview()
     #@+node:ekr.20081121105001.888: *5* getWidth
     def getWidth (self):
 
@@ -4237,8 +4237,8 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     #@+node:ekr.20081121105001.901: *5* setYScrollPosition
     def setYScrollPosition (self,i):
 
-         w = self
-         w.yview('moveto',i)
+        w = self
+        w.yview('moveto',i)
     #@+node:ekr.20081121105001.902: *5* setWidth
     def setWidth (self,width):
 
@@ -4251,7 +4251,7 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
     #@+node:ekr.20081121105001.903: *5* tag_add
     def tag_add(self,tagName,i,j=None,*args):
 
-       pass
+        pass
     #@+node:ekr.20081121105001.904: *5* tag_configure (NEW)
     def tag_configure (self,*args,**keys):
 
@@ -4307,7 +4307,7 @@ class leoSwingTree (leoFrame.leoTree):
     #@@killcolor
     #@+node:ekr.20081121105001.911: *5* Changes made since first update
     #@+at
-    # 
+    #
     # - disabled drawing of user icons. They weren't being hidden, which messed upscrolling.
     # - Expanded clickBox so all clicks fall inside it.
     # - Added binding for plugBox so it doesn't interfere with the clickBox.  Another weirdness.
@@ -4318,77 +4318,77 @@ class leoSwingTree (leoFrame.leoTree):
     #     - This ensures neither they nor their allies can change the caller's position.
     #     - In fact, though, only drawTree changes position.  It makes a copy before calling drawNode.
     #     *** Therefore, all positions in the drawing code are immutable!
-    # 
+    #
     # - Fixed the race conditions that caused drawing sometimes to fail. The essential
     #   idea is that we must not call w.config if we are about to do a redraw. For
     #   full details, see the Notes node in the Race Conditions section.
     #@+node:ekr.20081121105001.912: *5* Changes made since second update
     #@+at
-    # 
+    #
     # - Removed duplicate code in tree.select.
     #   The following code was being called twice (!!):
     #     self.endEditLabel()
     #     self.setUnselectedLabelState(old_p)
-    # 
+    #
     # - Add p.copy() instead of p when inserting nodes into data structures in select.
-    # 
+    #
     # - Fixed a _major_ bug in Leo's core. c.setCurrentPosition must COPY the position
     #   given to it! It's _not_ enough to return a copy of position: it may already
     #   have changed!!
-    # 
+    #
     # - Fixed a another (lesser??) bug in Leo's core. handleUserClick should also make
     #   a copy.
-    # 
+    #
     # - Fixed bug in mod_scripting.py.  The callback was failing if the script was empty.
-    # 
+    #
     # - Put in the self.recycle ivar AND THE CODE STILL FAILS. It seems to me that
     #   this shows there is a bug in my code somewhere, but where??
     #@+node:ekr.20081121105001.913: *5* Most recent changes
     #@+at
-    # 
+    #
     # - Added generation count.
     #     - Incremented on each redraw.
     #     - Potentially a barrior to race conditions,
     #       but it never seemed to do anything.
     #     - This code is a candidate for elimination.
-    # 
+    #
     # - Used vnodes rather than positions in several places.
     #     - I actually don't think this was involved in the real problem,
     #       and it doesn't hurt.
-    # 
+    #
     # - Added much better traces: the beginning of the end for the bugs :-)
     #     - Added self.verbose option.
     #     - Added align keyword option to g.trace.
     #     - Separate each set of traces by a blank line.
     #         - This makes clear the grouping of id's.
-    # 
+    #
     # - Defensive code: Disable dragging at start of redraw code.
     #     - This protects against race conditions.
-    # 
+    #
     # - Fixed blunder 1: Fixed a number of bugs in the dragging code.
     #     - I had never looked at this code!
     #     - Eliminating false drags greatly simplifies matters.
-    # 
+    #
     # - Fixed blunder 2: Added the following to eventToPosition:
     #         x = canvas.canvasx(x)
     #         y = canvas.canvasy(y)
     #     - Apparently this was the cause of false associations between icons and id's.
     #     - It's amazing that the code didn't fail earlier without these!
-    # 
+    #
     # - Converted all module-level constants to ivars.
-    # 
+    #
     # - Lines no longer interfere with eventToPosition.
     #     - The problem was that find_nearest or find_overlapping don't depend on stacking order!
     #     - Added p param to horizontal lines, but not vertical lines.
     #     - EventToPosition adds 1 to the x coordinate of vertical lines, then recomputes the id.
-    # 
+    #
     # - Compute indentation only in forceDrawNode.  Removed child_indent constant.
-    # 
+    #
     # - Simplified drawTree to use indentation returned from forceDrawNode.
-    # 
+    #
     # - setHeadlineText now ensures that state is "normal" before attempting to set the text.
     #     - This is the robust way.
-    # 
+    #
     # 7/31/04: newText must call setHeadlineText for all nodes allocated, even if p matches.
     #@+node:ekr.20081121105001.914: *4*  Birth... (swingTree)
     #@+node:ekr.20081121105001.915: *5* __init__ (swingTree)
@@ -4575,7 +4575,7 @@ class leoSwingTree (leoFrame.leoTree):
             theId = canvas.create_image(x,y,image=image,tag=tag)
             if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
-        if theId not in self.visibleBoxes: 
+        if theId not in self.visibleBoxes:
             self.visibleBoxes.append(theId)
 
         if p:
@@ -5375,7 +5375,7 @@ class leoSwingTree (leoFrame.leoTree):
             if self.center_selected_tree_node: # New in Leo 4.4.3.
                 #@+<< compute frac0 >>
                 #@+node:ekr.20081121105001.969: *7* << compute frac0 >>
-                # frac0 attempt to put the 
+                # frac0 attempt to put the
                 scrollRegion = self.canvas.cget('scrollregion')
                 geom = self.canvas.winfo_geometry()
 
@@ -5544,7 +5544,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         canvas = self.canvas
         x,y = event.x,event.y
-        x = canvas.canvasx(x) 
+        x = canvas.canvasx(x)
         y = canvas.canvasy(y)
         if self.trace: g.trace(x,y)
         item = canvas.find_overlapping(x,y,x,y)
@@ -5755,7 +5755,7 @@ class leoSwingTree (leoFrame.leoTree):
             else:
                 x,y = frame.top.winfo_pointerx(),frame.top.winfo_pointery()
                 # Stop the scrolling if we go outside the entire window.
-                if x == -1 or y == -1: return 
+                if x == -1 or y == -1: return
             if self.dragging: # This gets cleared by onEndDrag()
                 #@+<< scroll the canvas as needed >>
                 #@+node:ekr.20081121105001.989: *7* << scroll the canvas as needed >>
@@ -6043,7 +6043,7 @@ class leoSwingTree (leoFrame.leoTree):
     # explicitly unpost. In order to process the <FocusOut> event, we need to be able
     # to find the reference to the popup window again, so this needs to be an
     # attribute of the tree object; hence, "self.popupMenu".
-    # 
+    #
     # Aside: though Tk tries to be muli-platform, the interaction with different
     # window managers does cause small differences that will need to be compensated by
     # system specific application code. :-(
@@ -6439,7 +6439,7 @@ class swingGui(leoGui.leoGui):
         self.defaultFont = None
         self.defaultFontFamily = None
 
-        # self.win32clipboard = None 
+        # self.win32clipboard = None
     #@+node:ekr.20081121105001.1033: *4* createKeyHandlerClass (swingGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
@@ -6515,7 +6515,7 @@ class swingGui(leoGui.leoGui):
                 # WARNING: retain NO references to widgets or fonts here!
                 w = g.app.gui.plainTextWidget()
                 fn = w.cget("font")
-                font = swingFont.Font(font=fn) 
+                font = swingFont.Font(font=fn)
                 family = font.cget("family")
                 self.defaultFontFamily = family[:]
                 # print '***** getDefaultConfigFont',repr(family)
@@ -6768,7 +6768,7 @@ class swingGui(leoGui.leoGui):
         return event and event.keysym
 
     def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''   
+        '''Return the widget field of an event.'''
         return event and event.widget
 
     def eventXY (self,event,c=None):
@@ -6855,10 +6855,10 @@ class swingGui(leoGui.leoGui):
                 #@+<< try to use the PIL and tkIcon packages to draw the icon >>
                 #@+node:ekr.20081121105001.1062: *6* << try to use the PIL and tkIcon packages to draw the icon >>
                 #@+at This code requires Fredrik Lundh's PIL and tkIcon packages:
-                # 
+                #
                 # Download PIL    from http://www.pythonware.com/downloads/index.htm#pil
                 # Download tkIcon from http://www.effbot.org/downloads/#tkIcon
-                # 
+                #
                 # Many thanks to Jonathan M. Gilligan for suggesting this code.
                 #@@c
 
