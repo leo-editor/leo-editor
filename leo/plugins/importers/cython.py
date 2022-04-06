@@ -47,10 +47,10 @@ class Cython_Importer(Importer):
     def check(self, unused_s, parent):
         """
         Cython_Importer.check:  override Importer.check.
-        
+
         Return True if perfect import checks pass, making additional allowances
         for underindented comment lines.
-        
+
         Raise AssertionError if the checks fail while unit testing.
         """
         if g.app.suppressImportChecks:
@@ -250,7 +250,7 @@ class Cython_Importer(Importer):
         End blocks that are incompatible with the new line.
         - kind:         The kind of the incoming line: 'class', 'def' or 'normal'.
         - new_indent:   The indentation of the incoming line.
-        
+
         Return p, a parent that will either contain the new line or will be the
         parent of a new child of parent.
         """
@@ -304,7 +304,7 @@ class Cython_Importer(Importer):
     def start_python_block(self, kind, line, parent):
         """
         Create, p as the last child of parent and initialize the p.v._import_* ivars.
-        
+
         Return p.
         """
         assert kind in ('org', 'class', 'def'), g.callers()
@@ -382,9 +382,9 @@ class Cython_Importer(Importer):
     def common_lws(self, lines):
         """
         Override Importer.common_lws.
-        
+
         Return the lws (a string) common to all lines.
-        
+
         We must unindent the class/def line fully.
         It would be wrong to examine the indentation of other lines.
         """
@@ -446,7 +446,7 @@ class Cython_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
-            
+
         d: Dict[str, List[Any]]
 
         if context:

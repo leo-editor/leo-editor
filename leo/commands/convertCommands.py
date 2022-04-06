@@ -480,7 +480,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
-        
+
         To use, select an @<file> node for a python external file and execute
         add-mypy-annotations. The command rewrites the @<file> tree, adding
         mypy annotations for untyped function/method arguments.
@@ -492,7 +492,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         @data add-mypy-annotations in leoSettings.leo contains a list of
         key/value pairs. Keys are argument names (as used in Leo); values are
         mypy type names.
-        
+
         This command adds annotations for kwargs that have a constant initial
         value.
         """
@@ -645,7 +645,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def find_arg(self, s, i):
             """
             Scan over type annotations or initializers.
-            
+
             Return (arg, j), the index of the character following the argument starting at s[i].
             """
             assert s[i] in ':=', (i, s[i], s)
@@ -1419,7 +1419,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
         manipulation.
-        
+
         To use, select any @<file> node and execute python-to-typescript. The
         command creates (safe!) results in the last top-level node of the
         outline.
@@ -1463,7 +1463,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert(self, p):
             """
             The main line.
-            
+
             Convert p and all descendants as a child of a new last top-level node.
             """
             c = self.c
@@ -1498,7 +1498,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p, target):
             """
             Convert p.b into target.b.
-            
+
             This is the heart of the algorithm.
             """
             # Calculate this table only once.
@@ -1606,7 +1606,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_docstring(self, i, lines, m, p):
             """
             Convert a python docstring.
-            
+
             Always use the full multi-line typescript format, even for single-line
             python docstrings.
             """
@@ -1877,7 +1877,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_trailing_comment(self, i, lines, m, p):
             """
             Handle a trailing comment line.
-            
+
             All other patterns have already been scanned on the line.
             """
             lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
@@ -1908,7 +1908,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_semicolon(self, i, lines, p):
             """
             Insert a semicolon in lines[i] is appropriate.
-            
+
             No other handler has matched, so we know that the line:
             - Does not end in a comment.
             - Is not part of a docstring.
@@ -1927,7 +1927,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def ends_statement(self, i, lines):
             """
             Return True if lines[i] ends a statement.
-            
+
             If so, the line should end with a semicolon,
             before any trailing comment, that is.
             """

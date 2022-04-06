@@ -14,7 +14,7 @@ example:
 https://doc.qt.io/qt-5/qpixmap.html#reading-and-writing-image-files
 
 This file may be run externally as follows::
-    
+
     python -m leo.plugins.picture_viewer
 
 This plugin may be called from a script (or @command or @button node) as follows:

@@ -18,7 +18,7 @@ def factorial(n):
     # Modified from https://docs.python.org/3/library/doctest.html
     # Must import factorial. See: stackoverflow.com/questions/65066002
     """Return the factorial of n, an exact integer >= 0.
-    
+
     >>> from leo.unittests.test_doctests import factorial
 
     >>> [factorial(n) for n in range(6)]

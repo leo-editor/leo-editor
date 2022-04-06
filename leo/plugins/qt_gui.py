@@ -2062,7 +2062,7 @@ class StyleSheetManager:
         #@+node:tom.20220310224918.1: *5* << docstring >>
         Rescale all pt or px sizes in CSS stylesheet or Leo theme.
 
-        Sheets can have either "logical" or "actual" sizes.    
+        Sheets can have either "logical" or "actual" sizes.
         "Logical" sizes are ones like "@font-family-base = 10.6pt".
         "Actual" sizes are the ones in the "qt-gui-plugin-style-sheet" subtree.
         They look like "font-size: 11pt;"

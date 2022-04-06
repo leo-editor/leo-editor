@@ -126,7 +126,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
         p.b = contents = textwrap.dedent('''\
             def f1(i: int, s: str) -> str:
                 return s
-                
+
             def f2(self, c: Cmdr, g: Any, ivars: List[str]) -> Any:
                 pass
     ''')

@@ -882,7 +882,7 @@ class TestNodes(LeoUnitTest):
             @not_a_sentinel
             def spam():
                 pass
-        
+
     """)
         self.assertEqual(p.b, p.nosentinels)
     #@+node:ekr.20210830095545.22: *5* TestNodes.test_p_relinkAsCloneOf

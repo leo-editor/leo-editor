@@ -1986,7 +1986,7 @@ class TestEditCommands(LeoUnitTest):
     #@@language python
     def spam():
         if 1:  # test
-            
+
     # after line
     """)
         self.run_test(

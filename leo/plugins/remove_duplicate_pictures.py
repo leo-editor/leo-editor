@@ -11,7 +11,7 @@ extensions. By default the recognized extensions are '.jpeg', '.jpg', and
 types known by the Qt PixMap class, including '.gif' and '.bmp'.
 
 This file may be run externally as follows::
-    
+
     python -m leo.plugins.remove_duplicate_pictures
 
 This plugin may be called from a script (or @command or @button node) as follows::
@@ -30,18 +30,18 @@ The following keyword arguments may be supplied to the run method:
     height = 900,  # Window height in pixels.
     path = None,  # Path to the folder.
     starting_directoy = None  # Starting directory for file dialog if no path given.
-    
+
 **Required packages**
 
 This plugin requires the following third-party packages::
-    
+
     imagehash:  pip install imagehash
     numpy:      pip install numpy
     PIL:        pip install pillow
     send2trash: pip install send2trash
-  
+
 **Acknowledgment**
-    
+
 The algorithm used is a faster version of the code here:
 https://medium.com/@somilshah112/how-to-find-duplicate-or-similar-images-quickly-with-python-2d636af9452f
 """

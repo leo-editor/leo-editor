@@ -11,7 +11,7 @@ The window functions as a plain text editor, and can also be
 switched to render the node with Restructured Text.
 
 :By: T\. B\. Passin
-:Version: 2.0 
+:Version: 2.0
 :Date: 1 Apr 2022
 
 #@+others
