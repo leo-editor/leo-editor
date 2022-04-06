@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.74
+About Viewrendered3 V3.8
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -946,13 +946,24 @@ except ImportError:
     print('VR3: *** No numpy')
     np = None
 # nbformat (@jupyter) support, non-vital.
+jupyter_ok = nbformat_ok = nbconvert_ok = False
+try:
+    from nbconvert.exporters import HTMLExporter
+    nbconvert_ok = True
+except ImportError:
+    print('VR3: *** nbconvert module is needed by @jupyter nodes.\n'
+          '         if you want to use @jupyter nodes, then\n'
+          '         install nbconvert: python3 -m pip install nbconvert')
 try:
     import nbformat
-    from nbconvert.exporters import HTMLExporter
+    nbformat_ok = True
     # from traitlets.config import Config
 except ImportError:
-    nbformat = None
-    print('VR3: *** No nbformat')
+    print('VR3: *** nbformat module is needed by @jupyter nodes.\n'
+          '         if you want to use @jupyter nodes, then\n'
+          '         install nbformat: python3 -m pip install nbformat')
+jupyter_ok = nbformat_ok and nbconvert_ok
+
 try:
     from pygments import cmdline
 except ImportError:
@@ -3268,6 +3279,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if body.startswith('<'):
             # Assume the body is html.
             return body
+
+        if not jupyter_ok:
+            return 'can not render @jupyter nodes: need missing nbformat or nbconvert package'
+
         if body.startswith('{'):
             # Leo 5.7.1: Allow raw JSON.
             s = body
@@ -3275,8 +3290,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             url = c.p.h.split()[1]
             if not url:
                 return ''
-            if not nbformat:
-                return 'can not import nbformat to render url: %r' % url
             try:
                 with urlopen(url) as u:
                     s = u.read().decode()
