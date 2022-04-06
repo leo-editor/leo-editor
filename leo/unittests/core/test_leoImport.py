@@ -1028,11 +1028,11 @@ class TestJava(BaseTestImporter):
              */
 
             public class BundleException extends Exception {
-                static final longserialVersionUID = 3571095144220455665L;
+                static final long serialVersionUID = 3571095144220455665L;
                 /**
                  * Nested exception.
                  */
-                private Throwablecause;
+                private Throwable cause;
 
                 /**
                  * Creates a <code>BundleException</code> that wraps another exception.
