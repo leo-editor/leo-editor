@@ -1487,6 +1487,7 @@ Update leoVersion.py in devel after the release.
 @language rest
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
+- Run reindent leo.
 - Run beautify-files.
 
 LeoDocs.leo:
