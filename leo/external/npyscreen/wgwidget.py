@@ -375,20 +375,20 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             # all of the subsequent bytes should be in the range 128 - 191,
             # but we'll risk not checking...
             elif 194 <= ch <= 223:
-                    # 2 bytes
-                    _stored_bytes.append(ch)
-                    _stored_bytes.append(self.parent.curses_pad.getch())
+                # 2 bytes
+                _stored_bytes.append(ch)
+                _stored_bytes.append(self.parent.curses_pad.getch())
             elif 224 <= ch <= 239:
-                    # 3 bytes
-                    _stored_bytes.append(ch)
-                    _stored_bytes.append(self.parent.curses_pad.getch())
-                    _stored_bytes.append(self.parent.curses_pad.getch())
+                # 3 bytes
+                _stored_bytes.append(ch)
+                _stored_bytes.append(self.parent.curses_pad.getch())
+                _stored_bytes.append(self.parent.curses_pad.getch())
             elif 240 <= ch <= 244:
-                    # 4 bytes
-                    _stored_bytes.append(ch)
-                    _stored_bytes.append(self.parent.curses_pad.getch())
-                    _stored_bytes.append(self.parent.curses_pad.getch())
-                    _stored_bytes.append(self.parent.curses_pad.getch())
+                # 4 bytes
+                _stored_bytes.append(ch)
+                _stored_bytes.append(self.parent.curses_pad.getch())
+                _stored_bytes.append(self.parent.curses_pad.getch())
+                _stored_bytes.append(self.parent.curses_pad.getch())
             elif ch >= 245:
                 # probably a control character
                 self._last_get_ch_was_unicode = False

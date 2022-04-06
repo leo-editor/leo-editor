@@ -27,7 +27,7 @@ if 1:
     from IPython.hooks import CommandChainDispatcher
     import re
     import UserDict
-    from IPython.ipapi import TryNext 
+    from IPython.ipapi import TryNext
     import IPython.macro
     import IPython.Shell
 #@-<< ipy_leo imports >>
@@ -44,7 +44,7 @@ _request_immediate_connect = None
 #@+others
 #@+node:ekr.20100120092047.6089: ** init_ipython
 def init_ipython(ipy):
-    """ This will be run by _ip.load('ipy_leo') 
+    """ This will be run by _ip.load('ipy_leo')
 
     Leo still needs to run update_commander() after this.
 
@@ -58,9 +58,9 @@ def init_ipython(ipy):
     ip.expose_magic('mb',mb_f)
     ip.expose_magic('lee',lee_f)
     ip.expose_magic('leoref',leoref_f)
-    ip.expose_magic('lleo',lleo_f)    
+    ip.expose_magic('lleo',lleo_f)
     ip.expose_magic('lshadow', lshadow_f)
-    ip.expose_magic('lno', lno_f)    
+    ip.expose_magic('lno', lno_f)
     # Note that no other push command should EVER have lower than 0
     expose_ileo_push(push_mark_req, -1)
     expose_ileo_push(push_cl_node,100)
@@ -69,7 +69,7 @@ def init_ipython(ipy):
     expose_ileo_push(push_ipython_script, 1000)
     expose_ileo_push(push_plain_python, 100)
     expose_ileo_push(push_ev_node, 100)
-    ip.set_hook('pre_prompt_hook', ileo_pre_prompt_hook)     
+    ip.set_hook('pre_prompt_hook', ileo_pre_prompt_hook)
     global wb
     wb = LeoWorkbook()
     ip.user_ns['wb'] = wb
@@ -106,7 +106,7 @@ def update_commander(new_leox):
     run_leo_startup_node()
     ip.user_ns['_prompt_title'] = 'ileo'
 #@+node:ekr.20100120092047.6091: ** es
-from IPython.external.simplegeneric import generic 
+from IPython.external.simplegeneric import generic
 import pprint
 
 def es(s):
@@ -128,16 +128,16 @@ def format_for_leo(obj):
 attribute_re = re.compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
 
 def valid_attribute(s):
-    return attribute_re.match(s)    
+    return attribute_re.match(s)
 #@+node:ekr.20100120092047.6094: ** rootnode
 _rootnode = None
 
 def rootnode():
-    """ Get ileo root node (@ipy-root) 
+    """ Get ileo root node (@ipy-root)
 
     if node has become invalid or has not been set, return None
 
-    Note that the root is the *first* @ipy-root item found    
+    Note that the root is the *first* @ipy-root item found
     """
     global _rootnode
     if _rootnode is None:
@@ -145,12 +145,12 @@ def rootnode():
     if c.positionExists(_rootnode.p):
         return _rootnode
     _rootnode = None
-    return None  
+    return None
 #@+node:ekr.20100120092047.6095: ** all_cells
 def all_cells():
     global _rootnode
     d = {}
-    r = rootnode() 
+    r = rootnode()
     if r is not None:
         nodes = r.p.children_iter()
     else:
@@ -160,19 +160,19 @@ def all_cells():
         h = p.headString()
         if h.strip() == '@ipy-root':
             # update root node (found it for the first time)
-            _rootnode = LeoNode(p)            
+            _rootnode = LeoNode(p)
             # the next recursive call will use the children of new root
             return all_cells()
 
         if h.startswith('@a '):
             d[h.lstrip('@a ').strip()] = p.parent().copy()
         elif not valid_attribute(h):
-            continue 
+            continue
         d[h] = p.copy()
-    return d    
+    return d
 #@+node:ekr.20100120092047.6096: ** eval_node
 def eval_node(n):
-    body = n.b    
+    body = n.b
     if not body.startswith('@cl'):
         # plain python repr node, just eval it
         return ip.ev(n.b)
@@ -185,10 +185,10 @@ def eval_node(n):
     if len(tup) == 1:
         val = ip.ev(rest)
         ip.user_ns[n.h] = val
-        es("%s = %s" % (n.h, repr(val)[:20]  )) 
+        es("%s = %s" % (n.h, repr(val)[:20]  ))
         return val
 
-    cl, hd = tup 
+    cl, hd = tup
 
     xformer = ip.ev(hd.strip())
     es('Transform w/ %s' % repr(xformer))
@@ -198,18 +198,18 @@ class LeoNode(object, UserDict.DictMixin):
     """ Node in Leo outline
 
     Most important attributes (getters/setters available:
-     .v     - evaluate node, can also be alligned 
+     .v     - evaluate node, can also be alligned
      .b, .h - body string, headline string
      .l     - value as string list
 
-    Also supports iteration, 
+    Also supports iteration,
 
-    setitem / getitem (indexing):  
+    setitem / getitem (indexing):
      wb.foo['key'] = 12
      assert wb.foo['key'].v == 12
 
     Note the asymmetry on setitem and getitem! Also other
-    dict methods are available. 
+    dict methods are available.
 
     .ipush() - run push-to-ipython
 
@@ -238,7 +238,7 @@ class LeoNode(object, UserDict.DictMixin):
         LeoNode.last_edited = self
         c.redraw()
 
-    h = property( __get_h, __set_h, doc = "Node headline string")  
+    h = property( __get_h, __set_h, doc = "Node headline string")
     #@+node:ekr.20100120092047.6103: *3* _get_b and __set_b
     def __get_b(self):
         return self.p.bodyString()
@@ -250,7 +250,7 @@ class LeoNode(object, UserDict.DictMixin):
 
     b = property(__get_b, __set_b, doc = "Nody body string")
     #@+node:ekr.20100120092047.6104: *3* __set_val
-    def __set_val(self, val):        
+    def __set_val(self, val):
         self.b = format_for_leo(val)
 
     v = property(
@@ -267,7 +267,7 @@ class LeoNode(object, UserDict.DictMixin):
         # E1101: LeoNode.<lambda>: Module 'IPython' has no 'genutils' member
         # W0108: LeoNode.<lambda>: Lambda may not be necessary
 
-        lambda self : IPython.genutils.SList(self.b.splitlines()), 
+        lambda self : IPython.genutils.SList(self.b.splitlines()),
         __set_l, doc = "Node value as string list")
     #@+node:ekr.20100120092047.6106: *3* __iter__
     def __iter__(self):
@@ -300,15 +300,15 @@ class LeoNode(object, UserDict.DictMixin):
 
         If key is a valid python name (e.g. 'foo'),
         look for headline '@k foo' as well
-        """  
+        """
         key = str(key)
         d = self.__children()
         return d[key]
     #@+node:ekr.20100120092047.6110: *3* __setitem__
     def __setitem__(self, key, val):
-        """ You can do wb.foo['My Stuff'] = 12 to create children 
+        """ You can do wb.foo['My Stuff'] = 12 to create children
 
-        Create 'My Stuff' as a child of foo (if it does not exist), and 
+        Create 'My Stuff' as a child of foo (if it does not exist), and
         do .v = 12 assignment.
 
         Exception:
@@ -377,17 +377,17 @@ class LeoNode(object, UserDict.DictMixin):
 
         # EKR: change p.v.t to p.v here.
         if not hasattr(p.v,'unknownAttributes'):
-            p.v.unknownAttributes = {}        
+            p.v.unknownAttributes = {}
 
         d = p.v.unknownAttributes.setdefault('ipython', {})
-        return d        
+        return d
 
     #@-others
     uA = property(__get_uA,
         doc = "Access persistent unknownAttributes of node")
 #@+node:ekr.20100120092047.6117: ** class LeoWorkbook
 class LeoWorkbook:
-    """ class for 'advanced' node access 
+    """ class for 'advanced' node access
 
     Has attributes for all "discoverable" nodes.
     Node is discoverable if it either
@@ -441,7 +441,7 @@ class LeoWorkbook:
 
     #@+node:ekr.20100120092047.6123: *3* require
     def require(self, req):
-        """ Used to control node push dependencies 
+        """ Used to control node push dependencies
 
         Call this as first statement in nodes.
         If node has not been pushed, it will be pushed before proceeding
@@ -508,7 +508,7 @@ def push_ipython_script(node):
     """ Execute the node body in IPython,
     as if it was entered in interactive prompt """
     try:
-        ohist = ip.IP.output_hist 
+        ohist = ip.IP.output_hist
         hstart = len(ip.IP.input_hist)
         script = node.script()
 
@@ -546,7 +546,7 @@ def eval_body(body):
         # just use stringlist if it's not completely legal python expression
         val = IPython.genutils.SList(body.splitlines()) # pylint: disable=E1101
             # E1101: eval_body: Module 'IPython' has no 'genutils' member
-    return val 
+    return val
 
 #@+node:ekr.20100120092047.6132: ** push_plain_python
 def push_plain_python(node):
@@ -617,7 +617,7 @@ def edit_object_in_leo(obj, varname):
     formatted = format_for_leo(obj)
     if not formatted.startswith('@cl'):
         formatted = '@cl\n' + formatted
-    node.b = formatted 
+    node.b = formatted
     node.go()
 
 #@+node:ekr.20100120092047.6138: ** edit_macro
@@ -633,7 +633,7 @@ def edit_macro(obj,varname):
 #@+node:ekr.20100120092047.6139: ** get_history
 def get_history(hstart = 0):
     res = []
-    ohist = ip.IP.output_hist 
+    ohist = ip.IP.output_hist
 
     for idx in range(hstart, len(ip.IP.input_hist)):
         val = ohist.get(idx,None)
@@ -643,7 +643,7 @@ def get_history(hstart = 0):
             res.append('In [%d]: %s' % (idx, inp))
         if val:
             res.append(pprint.pformat(val))
-            res.append('\n')    
+            res.append('\n')
     return ''.join(res)
 #@+node:ekr.20100120092047.6140: ** lee_f
 def lee_f(self,s):
@@ -712,7 +712,7 @@ def leoref_f(self,s):
     ))
 #@+node:ekr.20100120092047.6142: ** mb_f
 def mb_f(self, arg):
-    """ Execute leo minibuffer commands 
+    """ Execute leo minibuffer commands
 
     Example:
      mb save-to-file
@@ -767,18 +767,18 @@ def lleo_f(selg,  args):
     """ Launch leo from within IPython
 
     This command will return immediately when Leo has been
-    launched, leaving a Leo session that is connected 
+    launched, leaving a Leo session that is connected
     with current IPython session (once you press alt+I in leo)
 
     Usage::
       lleo foo.leo
-      lleo 
+      lleo
     """
 
     import shlex, sys,os
     argv = shlex.split(args)
 
-    # when run without args, leo will open ipython_notebook for 
+    # when run without args, leo will open ipython_notebook for
     # quick note taking / experimentation
 
     if not argv:
@@ -816,7 +816,7 @@ def lno_f(self, arg):
     child.go()
 #@+node:ekr.20100120092047.6149: ** lshadow_f
 def lshadow_f(self, arg):
-    """ lshadow [path] 
+    """ lshadow [path]
 
     Create shadow nodes for path (default .)
 

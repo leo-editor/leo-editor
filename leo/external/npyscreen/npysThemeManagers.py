@@ -132,7 +132,7 @@ class ThemeManager:
 
     #@+node:ekr.20170428084207.387: *3* initialize_names
     def initialize_names(self):
-           self._names.update(self.__class__.default_colors)
+        self._names.update(self.__class__.default_colors)
 
     #@+node:ekr.20170428084207.388: *3* initalize_pair
     def initalize_pair(self, name, fg, bg):

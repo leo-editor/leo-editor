@@ -131,11 +131,11 @@ class OptionList:
         fn = fn or self.filename
         with open(fn, 'r', encoding="utf-8") as f:
             for line in f.readlines():
-                 line = line.strip()
-                 name, value = line.split("=", maxsplit=1)
-                 for option in self.options:
-                     if option.get_real_name() == name:
-                         option.set(self.deserialize_option_value(option, value.encode('ascii')))
+                line = line.strip()
+                name, value = line.split("=", maxsplit=1)
+                for option in self.options:
+                    if option.get_real_name() == name:
+                        option.set(self.deserialize_option_value(option, value.encode('ascii')))
 
     #@+node:ekr.20170428084207.70: *3* serialize_option_value
     def serialize_option_value(self, option):
