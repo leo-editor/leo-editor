@@ -31172,6 +31172,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Improve argument handling when running leo.core.leoAst externally.
   Run `python -m leo.core.leoAst -h` for details.
 - Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
+- Clean all files with reindent script.
+- The usual minor bug fixes.
 
 **6.6 Links**
 
