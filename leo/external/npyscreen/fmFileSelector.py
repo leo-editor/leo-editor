@@ -127,8 +127,8 @@ class FileGrid(wggrid.SimpleGrid):
     #@+node:ekr.20170428084207.163: *3* FileGrid.h_select_file
     def h_select_file(self, *args, **keywrods):
         try:
-             select_file = os.path.join(self.parent.value, self.values[self.edit_cell[0]][self.edit_cell[1]])
-             select_file = os.path.abspath(select_file)
+            select_file = os.path.join(self.parent.value, self.values[self.edit_cell[0]][self.edit_cell[1]])
+            select_file = os.path.abspath(select_file)
         except(TypeError, IndexError):
             self.edit_cell = [0, 0]
             return False

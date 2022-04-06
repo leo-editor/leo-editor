@@ -324,7 +324,7 @@ class SimpleGrid(widget.Widget):
     def h_move_page_up(self, inpt):
         self.edit_cell[0] -= len(self._my_widgets)
         if self.edit_cell[0] < 0:
-             self.edit_cell[0] = 0
+            self.edit_cell[0] = 0
         self.ensure_cursor_on_display_up()
         self.on_select(inpt)
 
@@ -332,7 +332,7 @@ class SimpleGrid(widget.Widget):
     def h_move_page_down(self, inpt):
         self.edit_cell[0] += len(self._my_widgets)
         if self.edit_cell[0] > len(self.values) - 1:
-             self.edit_cell[0] = len(self.values) - 1
+            self.edit_cell[0] = len(self.values) - 1
 
         self.ensure_cursor_on_display_down_right()
         self.on_select(inpt)

@@ -19,15 +19,15 @@
 # The suffix of source filenames.
 try:
     from recommonmark.parser import CommonMarkParser
-    
+
     source_parsers = {
         '.md': CommonMarkParser,
     }
     source_suffix = ['.html.txt', '.md'] # possible: '.rst',
-    print('===== conf.py: .md files enabled') 
+    print('===== conf.py: .md files enabled')
 except ImportError:
     source_suffix = '.html.txt'
-    print('===== conf.py: .md files NOT enabled') 
+    print('===== conf.py: .md files NOT enabled')
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -112,31 +112,31 @@ html_theme_options = {
 
     'collapsiblesidebar': True,
 
-	#  footerbgcolor (CSS color): Background color for the footer line.
-	#  footertextcolor (CSS color): Text color for the footer line.
-	#  sidebarbgcolor (CSS color): Background color for the sidebar.
-	'sidebarbgcolor': "#fffdbc", # typical yellow. 
+        #  footerbgcolor (CSS color): Background color for the footer line.
+        #  footertextcolor (CSS color): Text color for the footer line.
+        #  sidebarbgcolor (CSS color): Background color for the sidebar.
+        'sidebarbgcolor': "#fffdbc", # typical yellow.
     ## 'sidebarbgcolor': "#cbf5b1", # 203,245,177 # green1 harsh
     ##'sidebarbgcolor': "#e2fad3", # 226, 250, 211 # green2
-	#  sidebartextcolor (CSS color): Text color for the sidebar.
-	'sidebartextcolor': 'black',
-	#  sidebarlinkcolor (CSS color): Link color for the sidebar.
-	'sidebarlinkcolor': 'black',
-	#  relbarbgcolor (CSS color): Background color for the relation bar.
-	#  relbartextcolor (CSS color): Text color for the relation bar.
-	#  relbarlinkcolor (CSS color): Link color for the relation bar.
-	#  bgcolor (CSS color): Body background color.
-	'bgcolor': "#fffbdc", # r = 256, g = 253, b = 220
+        #  sidebartextcolor (CSS color): Text color for the sidebar.
+        'sidebartextcolor': 'black',
+        #  sidebarlinkcolor (CSS color): Link color for the sidebar.
+        'sidebarlinkcolor': 'black',
+        #  relbarbgcolor (CSS color): Background color for the relation bar.
+        #  relbartextcolor (CSS color): Text color for the relation bar.
+        #  relbarlinkcolor (CSS color): Link color for the relation bar.
+        #  bgcolor (CSS color): Body background color.
+        'bgcolor': "#fffbdc", # r = 256, g = 253, b = 220
 
-	#  textcolor (CSS color): Body text color.
-	#  linkcolor (CSS color): Body link color.
-	#  headbgcolor (CSS color): Background color for headings.
-	#  headtextcolor (CSS color): Text color for headings.
-	#  headlinkcolor (CSS color): Link color for headings.
-	#  codebgcolor (CSS color): Background color for code blocks.
-	#  codetextcolor (CSS color): Default text color for code blocks, if not set differently by the highlighting style.
-	#  bodyfont (CSS font-family): Font for normal text.
-	#  headfont (CSS font-family): Font for headings.
+        #  textcolor (CSS color): Body text color.
+        #  linkcolor (CSS color): Body link color.
+        #  headbgcolor (CSS color): Background color for headings.
+        #  headtextcolor (CSS color): Text color for headings.
+        #  headlinkcolor (CSS color): Link color for headings.
+        #  codebgcolor (CSS color): Background color for code blocks.
+        #  codetextcolor (CSS color): Default text color for code blocks, if not set differently by the highlighting style.
+        #  bodyfont (CSS font-family): Font for normal text.
+        #  headfont (CSS font-family): Font for headings.
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -184,7 +184,7 @@ html_use_smartypants = True
 
 html_sidebars = {
 
-   '**': ['relations.html','searchbox.html',] 
+   '**': ['relations.html','searchbox.html',]
 
    # 'localtoc.html',
    # 'globaltoc.html',

@@ -87,10 +87,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, len(before)
         func = c.convertAllBlanks
         self.runTest(before, after, i, j, func)
@@ -101,10 +101,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         after = textwrap.dedent("""\
             @tabwidth -4
 
@@ -112,7 +112,7 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 45
         func = c.convertAllTabs
         self.runTest(before, after, i, j, func)
@@ -131,10 +131,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 51
         func = c.convertBlanks
         self.runTest(before, after, i, j, func)
@@ -145,10 +145,10 @@ class TestUndo(LeoUnitTest):
             @tabwidth -4
 
             line 1
-            	line 2
-            	  line 3
+            TABline 2
+            TAB  line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         after = textwrap.dedent("""\
             @tabwidth -4
 
@@ -156,7 +156,7 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-    """)
+    """).replace('TAB', '\t')
         i, j = 13, 45
         func = c.convertTabs
         self.runTest(before, after, i, j, func)

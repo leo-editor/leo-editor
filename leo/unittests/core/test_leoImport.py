@@ -310,7 +310,7 @@ class TestC(BaseTestImporter):
         s = """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
-                register long longValue;	/* Long integer used to initialize the
+                register long longValue; /* Long integer used to initialize the
                      * new object. */
             {
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
@@ -1028,11 +1028,11 @@ class TestJava(BaseTestImporter):
              */
 
             public class BundleException extends Exception {
-                static final long	serialVersionUID	= 3571095144220455665L;
+                static final long serialVersionUID = 3571095144220455665L;
                 /**
                  * Nested exception.
                  */
-                private Throwable	cause;
+                private Throwable cause;
 
                 /**
                  * Creates a <code>BundleException</code> that wraps another exception.

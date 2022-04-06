@@ -183,14 +183,14 @@ class TreeData:
         #key = operator.methodcaller('getContent',)
 
         if self.sort_function_wrapper and sort_function:
-           # def wrapped_sort_function(the_item):
-           #     if the_item:
-           #         the_real_item = the_item.getContent()
-           #         return sort_function(the_real_item)
-           #     else:
-           #         return the_item
-           # _this_sort_function = wrapped_sort_function
-           _this_sort_function = self.create_wrapped_sort_function(sort_function)
+            # def wrapped_sort_function(the_item):
+            #     if the_item:
+            #         the_real_item = the_item.getContent()
+            #         return sort_function(the_real_item)
+            #     else:
+            #         return the_item
+            # _this_sort_function = wrapped_sort_function
+            _this_sort_function = self.create_wrapped_sort_function(sort_function)
         else:
             _this_sort_function = sort_function
 

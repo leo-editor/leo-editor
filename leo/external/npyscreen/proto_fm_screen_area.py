@@ -137,8 +137,8 @@ class ScreenArea:
 
     #@+node:ekr.20170428084207.430: *3* ScreenArea.useable_space
     def useable_space(self, rely=0, relx=0):
-       mxy, mxx = self.lines, self.columns
-       return (mxy - rely, mxx - 1 - relx)  # x - 1 because can't use last line bottom right.
+        mxy, mxx = self.lines, self.columns
+        return (mxy - rely, mxx - 1 - relx)  # x - 1 because can't use last line bottom right.
 
     #@+node:ekr.20170428084207.431: *3* ScreenArea.widget_useable_space
     def widget_useable_space(self, rely=0, relx=0):

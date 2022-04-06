@@ -1911,12 +1911,12 @@ class TestEditCommands(LeoUnitTest):
     """
         after_b = """\
     first line
-    	line 1
-    	    line a
-    	        line b
-    	line c
+    TABline 1
+    TAB    line a
+    TAB        line b
+    TABline c
     last line
-    """
+    """.replace('TAB', '\t')
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3735,11 +3735,11 @@ class TestEditCommands(LeoUnitTest):
         after_b = """\
     first line
     line 1
-    	line a
-    		line b
+    TABline a
+    TABTABline b
     line c
     last line
-    """
+    """.replace('TAB', '\t')
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -3825,11 +3825,11 @@ class TestEditCommands(LeoUnitTest):
         before_b = """\
     first line
     line 1
-    	line a
-    		line b
+    TABline a
+    TABTABline b
     line c
     last line
-    """
+    """.replace('TAB', '\t')
         after_b = """\
     first line
     line 1
@@ -3837,7 +3837,7 @@ class TestEditCommands(LeoUnitTest):
             line b
     line c
     last line
-    """
+    """.replace('TAB', '\t')
         self.run_test(
             before_b=before_b,
             after_b=after_b,

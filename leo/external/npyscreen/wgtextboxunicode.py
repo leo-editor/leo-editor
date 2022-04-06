@@ -20,8 +20,8 @@ class TextfieldUnicode(wgtextbox.Textfield):
         counter = 0
         columns = 0
         while counter < cursor_place_in_visible_string:
-             columns += self.find_width_of_char(string_to_print[counter])
-             counter += 1
+            columns += self.find_width_of_char(string_to_print[counter])
+            counter += 1
         return columns
 
     #@+node:ekr.20170428084208.358: *3* TextfieldUnicode.find_width_of_char

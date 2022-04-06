@@ -9,7 +9,7 @@ import logging
 import npyscreen
 import weakref
 def print_list(aList, tag=None, sort=False, indent=''):
-    
+
     if aList:
         bList = list(sorted(aList)) if sort else aList
         logging.info('%s...[' % (tag) if tag else '[')
@@ -23,7 +23,7 @@ class TreeDataEditable(npyscreen.TreeData):
 
     def __len__(self):
         return len(self.content)
-        
+
     def new_child_at(self, index, *args, **keywords):
         '''Same as TreeData.new_child, with insert(index, c) instead of append(c)'''
         if self.CHILDCLASS:
@@ -64,11 +64,11 @@ class TreeLineEditable(npyscreen.TreeLine):
 
         self.cursor_position = 0
     def h_cursor_end(self, ch):
-        
+
         # self.value is a TreeDataEditable.
         self.cursor_position = max(0, len(self.value.content)-1)
     def h_cursor_left(self, input):
-        
+
         self.cursor_position = max(0, self.cursor_position -1)
     def h_cursor_right(self, input):
 
@@ -95,7 +95,7 @@ class TreeLineEditable(npyscreen.TreeLine):
         self.value.content = s[:n] + chr(i) + s[n:]
         self.cursor_position += 1
     def set_handlers(self):
-        
+
         # pylint: disable=no-member
         # Override *all* other complex handlers.
         if 1:
@@ -121,7 +121,7 @@ class MLTreeLine (npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
     _contained_widgets = TreeLineEditable
-        
+
     def set_up_handlers(self):
         super(MLTreeLine, self).set_up_handlers()
         assert not hasattr(self, 'hidden_root_node'), repr(self)
@@ -130,14 +130,14 @@ class MLTreeLine (npyscreen.MLTree):
         self.set_handlers()
 
     def dump_values(self):
-        
+
         def info(z):
             return '%15s: %s' % (z._parent.get_content(), z.get_content())
 
         print_list([info(z) for z in self.values])
-        
+
     def dump_widgets(self):
-        
+
         def info(z):
             return '%s.%s' % (id(z), z.__class__.__name__)
 
@@ -207,7 +207,7 @@ class MLTreeLine (npyscreen.MLTree):
             logging.info('LeoMLTree: line: %3s %s' % (self.cursor_line, headline))
         return node
     def insert_line(self):
-        
+
         trace = True
         trace_values = False
         if trace:
@@ -219,27 +219,27 @@ class MLTreeLine (npyscreen.MLTree):
         self.cursor_line += 1
         self.display()
         self.edit_headline()
-       
+
 
     # These insert or delete entire outline nodes.
     def h_delete(self, ch):
 
         self.delete_line()
     def h_edit_headline(self, ch):
-        
+
         self.edit_headline()
     def h_insert(self, ch):
 
         return self.insert_line()
     def h_move_left(self, ch):
-        
+
         node = self.values[self.cursor_line]
         if self._has_children(node) and node.expanded:
             self.h_collapse_tree(ch)
         else:
             self.h_cursor_line_up(ch)
     def h_move_right(self, ch):
-        
+
         node = self.values[self.cursor_line]
         if self._has_children(node):
             if node.expanded:
@@ -249,7 +249,7 @@ class MLTreeLine (npyscreen.MLTree):
         else:
             self.h_cursor_line_down(ch)
     def set_handlers(self):
-        
+
         # pylint: disable=no-member
         d = {
             curses.KEY_LEFT: self.h_move_left,
@@ -266,5 +266,3 @@ class MLTreeLine (npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
-
-

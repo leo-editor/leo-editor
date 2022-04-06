@@ -8,7 +8,7 @@ import leo
 leolibpath = leo.__path__
 print(leolibpath)
 
-## We don't use leoGlobals.computeLoadDir() because it doesn't work 
+## We don't use leoGlobals.computeLoadDir() because it doesn't work
 ## without instantiating g.app first, and that's too much for just this
 # import leo.core.runLeo
 # import leo.core.leoGlobals as g
@@ -18,4 +18,3 @@ print(leolibpath)
 # Leo's launch exe, if in PATH. Py3 only, cross platform
 import shutil
 print(shutil.which('leo'))
-

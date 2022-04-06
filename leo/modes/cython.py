@@ -47,7 +47,7 @@ cython_main_keywords_dict = {
     "IF": "keyword4",
     "ELIF": "keyword4",
     "ELSE": "keyword4",
-    
+
     # New types, hightlighted as builtins (keyword3).
     "NULL": "keyword3",
     "bint": "keyword3",

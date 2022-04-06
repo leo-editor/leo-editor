@@ -22,10 +22,10 @@ If the node identified by the UNL does not have children, the
 node's body is assumed to be a simple text listing of paths to .leo files).
 
 .. note::
-    
+
     It may be necessary to quote the "file" on the command line,
     as the '#' may be interpreted as a comment delimiter::
-        
+
         python leoftsindex.py "workbook.leo#Links"
 
 
