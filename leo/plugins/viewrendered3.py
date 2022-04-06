@@ -947,7 +947,13 @@ except ImportError:
     np = None
 # nbformat (@jupyter) support, non-vital.
 jupyter_ok = nbformat_ok = nbconvert_ok = False
-
+try:
+    from nbconvert.exporters import HTMLExporter
+    nbconvert_ok = True
+except ImportError:
+    print('VR3: *** nbconvert module is needed by @jupyter nodes.\n'
+          '         if you want to use @jupyter nodes, then\n'
+          '         install nbconvert: python3 -m pip install nbconvert')
 try:
     import nbformat
     nbformat_ok = True
@@ -956,13 +962,6 @@ except ImportError:
     print('VR3: *** nbformat module is needed by @jupyter nodes.\n'
           '         if you want to use @jupyter nodes, then\n'
           '         install nbformat: python3 -m pip install nbformat')
-try:
-    from nbconvert.exporters import HTMLExporter
-    nbconvert_ok = True
-except ImportError:
-    print('VR3: *** nbconvert module is needed by @jupyter nodes.\n'
-          '         if you want to use @jupyter nodes, then\n'
-          '         install nbconvert: python3 -m pip install nbconvert')
 jupyter_ok = nbformat_ok and nbconvert_ok
 
 try:
