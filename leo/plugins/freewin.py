@@ -34,10 +34,10 @@ selected again.
 
 A given Freewin window will be synchronized with the node
 that was selected when the Freewin window was opened, and
-will only display that node.  It will remain synchronized even if 
+will only display that node.  It will remain synchronized even if
 the node has been moved to a new position in its outline.
 
-.. Note:: A Freewin window will close if the underlying node is removed. 
+.. Note:: A Freewin window will close if the underlying node is removed.
           This will not change the body of the underlying node.
 
 #@+node:tom.20210625220923.1: *3* Navigating
