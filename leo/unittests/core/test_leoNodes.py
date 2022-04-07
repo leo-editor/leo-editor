@@ -6,6 +6,10 @@
 
 # pylint has troubles finding Commands methods.
 # pylint: disable=no-member
+
+# dunder calls are essential to the tests.
+# The unnecessary-dunder-call option exists only on python 3.10.
+# pylint: disable=bad-option-value, unnecessary-dunder-call
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest

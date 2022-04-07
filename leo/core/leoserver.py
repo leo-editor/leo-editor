@@ -780,7 +780,7 @@ class QuickSearchController:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
             try:
-                t1.__next__()
+                t1.next()
             except StopIteration:
                 continue
             pc = p.copy()

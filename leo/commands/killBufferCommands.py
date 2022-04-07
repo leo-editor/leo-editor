@@ -331,7 +331,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         try:
             if not pop or self.lastYankP and self.lastYankP != current:
                 self.reset = 0
-            s = self.kbiterator.__next__()
+            s = self.kbiterator.next()
             if s is None:
                 s = clip_text or ''
             if i != j:

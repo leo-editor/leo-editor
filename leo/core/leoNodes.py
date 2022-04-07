@@ -3,6 +3,11 @@
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
 #@@first
 """Leo's fundamental data classes."""
+
+# dunder calls are essential here..
+# The unnecessary-dunder-call option exists only on python 3.10.
+# pylint: disable=bad-option-value, unnecessary-dunder-call
+
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
 #Transcrypt does not support Python's copy module.

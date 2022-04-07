@@ -350,7 +350,7 @@ class PickleShareDB:
         # It would be more thorough to delete everything
         # below the root directory, but it's not necessary.
         for z in self.keys():
-            self.__delitem__(z)
+            self.delitem(z)
     #@+node:ekr.20100208223942.5979: *3* get
     def get(self, key, default=None):
 

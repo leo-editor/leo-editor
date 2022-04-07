@@ -1408,12 +1408,12 @@ class TestMarkdown(BaseTestImporter):
             Decl line.
             #Header
 
-            `​``python
+            ```python
             loads.init = {
                 Chloride: 11.5,
                 TotalP: 0.002,
             }
-            `​``
+            ```
             #Last header
         """
         p = self.run_test(s)
@@ -2720,7 +2720,7 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
     def test_large_class_no_methods(self):
 
-        import sys
+        ### import sys
         if sys.version_info < (3, 9, 0):
             self.skipTest('Requires Python 3.9')  # pragma: no cover
 

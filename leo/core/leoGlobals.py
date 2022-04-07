@@ -7,6 +7,10 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
+# dunder calls are essential here..
+# The unnecessary-dunder-call option exists only on python 3.10.
+# pylint: disable=bad-option-value, unnecessary-dunder-call
+
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
 import binascii
