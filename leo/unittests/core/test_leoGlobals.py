@@ -17,6 +17,7 @@ class TestGlobals(LeoUnitTest):
     #@+others
     #@+node:ekr.20210901140645.19: *3* TestGlobals.test_getLastTracebackFileAndLineNumber
     def test_getLastTracebackFileAndLineNumber(self):
+        fn = ''
         try:
             assert False
         except AssertionError:
