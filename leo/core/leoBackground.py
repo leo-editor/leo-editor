@@ -253,7 +253,7 @@ class BackgroundProcessManager:
         fn=None,
         link_pattern=None,  # None, string, or re.pattern.
         link_root=None,
-        shell=False,
+        ### shell=False,
     ):
         """
         Start or queue a process described by command and fn.
@@ -264,7 +264,7 @@ class BackgroundProcessManager:
         def open_process():
             return subprocess.Popen(
                 command,
-                shell=shell,
+                shell=True,  # #2586
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
