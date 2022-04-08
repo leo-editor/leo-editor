@@ -301,7 +301,6 @@ class BackgroundProcessManager:
                 proc.kill()
                 outs, errs = proc.communicate()
             for line in g.splitLines(outs):
-                self.data.number_of_lines += 1
                 self.put_log(line)
             g.es_print(f"{kind}: done")
             return # That's *all*
