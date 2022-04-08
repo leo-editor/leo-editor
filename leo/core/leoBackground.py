@@ -56,7 +56,7 @@ class BackgroundProcessManager:
     class ProcessData:
         """A class to hold data about running or queued processes."""
 
-        def __init__(self, c, kind, fn, link_pattern, link_root, shell):
+        def __init__(self, c, kind, fn, link_pattern, link_root):
             """Ctor for the ProcessData class."""
             self.c = c
             self.callback = None
@@ -65,7 +65,6 @@ class BackgroundProcessManager:
             self.link_pattern = None
             self.link_root = link_root
             self.number_of_lines = 0
-            self.shell = shell
             #
             # Check and compile the link pattern.
             if link_pattern and isinstance(link_pattern, str):
@@ -80,8 +79,7 @@ class BackgroundProcessManager:
                 f"c: {self.c.shortFileName()} "
                 f"kind: {self.kind} "
                 f"callback: {id(self.callback) if self.callback else None} "
-                f"fn: {self.fn} "
-                f"shell: {self.shell}"
+                f"fn: {self.fn}"
             )
 
         __str__ = __repr__
@@ -278,7 +276,7 @@ class BackgroundProcessManager:
             if not self.timer.isActive():
                 self.timer.start(100)
 
-        data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+        data = self.ProcessData(c, kind, fn, link_pattern, link_root)
 
         if self.pid:
             # A process is already active.
