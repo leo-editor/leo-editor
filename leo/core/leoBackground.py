@@ -125,7 +125,7 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
-        # print('BPM.end:', self.pid)
+        g.trace('BPM.end:', self.pid)  ###
         if self.wait:
             pass
         else:
@@ -286,15 +286,6 @@ class BackgroundProcessManager:
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-            if self.wait:  # Works, hangs Leo!
-                try:
-                    outs, errs = proc.communicate(timeout=15)
-                except TimeoutExpired:
-                    proc.kill()
-                    outs, errs = proc.communicate()
-                for line in g.splitLines(outs):
-                    self.data.number_of_lines += 1
-                    self.put_log(line)
             return proc
 
         def start_timer():  # #2528 & #2557.
@@ -302,6 +293,20 @@ class BackgroundProcessManager:
                 return
             if not self.timer.isActive():
                 self.timer.start(100)
+                
+        if self.wait:  # Hangs Leo. Don't do any queuing.
+            g.es_print(f"{kind}: {g.shortFileName(fn)}")
+            proc = open_process()
+            try:
+                outs, errs = proc.communicate(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                outs, errs = proc.communicate()
+            for line in g.splitLines(outs):
+                self.data.number_of_lines += 1
+                self.put_log(line)
+            g.es_print(f"{kind}: done")
+            return # That's *all*
 
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
 
