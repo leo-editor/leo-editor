@@ -29,7 +29,7 @@ class BackgroundProcessManager:
     writes the process's output to the log and starts another background
     process in the queue.
 
-    BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to
+    BPM.start_process(c, command, kind, fn=None) adds a process to
     the queue that will run the given command.
 
     BM.kill(kind=None) kills all process with the given kind. If kind is None
@@ -253,18 +253,22 @@ class BackgroundProcessManager:
         fn=None,
         link_pattern=None,  # None, string, or re.pattern.
         link_root=None,
-        shell=False,
     ):
         """
         Start or queue a process described by command and fn.
 
         Don't set self.data unless we start the process!
         """
-
+        #
+        # Note: setting shell=True is supposedly a security hazard.
+        #       https://docs.python.org/3/library/subprocess.html#security-considerations
+        #       In this case, however, the risk seems small.
+        #       We do not expect tools such as pylint, mypy, etc. to create error messages
+        #       that contain shell injection attacks!
         def open_process():
             return subprocess.Popen(
                 command,
-                shell=shell,
+                shell=True,  # #2586
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
@@ -273,7 +277,6 @@ class BackgroundProcessManager:
         def start_timer():  # #2528 & #2557.
             if not self.timer.isActive():
                 self.timer.start(100)
-                # assert self.timer.isActive()
 
         data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
 
