@@ -51,8 +51,8 @@ class BackgroundProcessManager:
     in any way.
     """
     #@-<< BPM docstring>>
-    
-    wait = True
+
+    wait = False  # True: call process.communicate, which hangs Leo.
 
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
@@ -273,7 +273,7 @@ class BackgroundProcessManager:
         #
         #       Anyway, setting shell=True is supposedly a security hazard.
         #       https://docs.python.org/3/library/subprocess.html#security-considerations
-        #       
+        #
         #       However, we do not expect tools such as pylint, mypy, etc.
         #       to create error messages that contain shell injection attacks!
         def open_process():
@@ -291,8 +291,11 @@ class BackgroundProcessManager:
                 return
             if not self.timer.isActive():
                 self.timer.start(100)
-                
+
+        data = self.ProcessData(c, kind, fn, link_pattern, link_root)
+
         if self.wait:  # Hangs Leo. Don't do any queuing.
+            self.data = data  # Required for self.put.
             g.es_print(f"{kind}: {g.shortFileName(fn)}")
             proc = open_process()
             try:
@@ -303,9 +306,8 @@ class BackgroundProcessManager:
             for line in g.splitLines(outs):
                 self.put_log(line)
             g.es_print(f"{kind}: done")
-            return # That's *all*
-
-        data = self.ProcessData(c, kind, fn, link_pattern, link_root)
+            self.data = None
+            return  # That's *all*
 
         if self.pid:
             # A process is already active.
