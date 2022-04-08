@@ -52,7 +52,7 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
     
-    wait = True
+    wait = False
 
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
@@ -106,7 +106,6 @@ class BackgroundProcessManager:
         #        There should be no danger of a deadlock because
         #        there is only one running subprocess.
         self.check_count += 1
-        g.trace(self.check_count) ###
         if self.pid:
             if self.pid.poll() is None:  # The process is still running.
                 pass
@@ -125,7 +124,7 @@ class BackgroundProcessManager:
     def end(self):
         """End the present process."""
         # Send the output to the log.
-        g.trace('BPM.end:', self.pid)  ###
+        # g.trace('BPM.end:', self.pid)
         if self.wait:
             pass
         else:
@@ -133,8 +132,7 @@ class BackgroundProcessManager:
             for s in self.pid.stdout:
                 n += 1
                 self.put_log(s)
-            if n > 0:
-                g.es_print(f"printed {n} line{g.plural(n)}")
+            # if n > 0: g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -158,7 +156,7 @@ class BackgroundProcessManager:
             except OSError:
                 pass
             self.pid = None
-        self.put_log(f"{kind} finished")
+        self.put_log(f"{kind}: done")
         self.timer.stop()  # #2528
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
