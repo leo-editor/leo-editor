@@ -52,7 +52,7 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
     
-    wait = False
+    wait = True
 
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
