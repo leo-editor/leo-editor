@@ -51,6 +51,9 @@ class BackgroundProcessManager:
     in any way.
     """
     #@-<< BPM docstring>>
+    
+    wait = True
+
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
     class ProcessData:
@@ -95,18 +98,25 @@ class BackgroundProcessManager:
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.on_idle)
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
+    check_count = 0
+
     def check_process(self):
         """Check the running process, and switch if necessary."""
         # #2428: Handle all output only after the process has completed.
         #        There should be no danger of a deadlock because
         #        there is only one running subprocess.
+        self.check_count += 1
+        g.trace(self.check_count) ###
         if self.pid:
             if self.pid.poll() is None:  # The process is still running.
                 pass
             else:  # The process has completed.
-                for s in self.pid.stdout:
-                    self.data.number_of_lines += 1
-                    self.put_log(s)
+                if self.wait:
+                    pass
+                else:
+                    for s in self.pid.stdout:
+                        self.data.number_of_lines += 1
+                        self.put_log(s)
                 self.end()  # End this process.
                 self.start_next()  # Start the next process.
         elif self.process_queue:
@@ -116,12 +126,15 @@ class BackgroundProcessManager:
         """End the present process."""
         # Send the output to the log.
         # print('BPM.end:', self.pid)
-        n = self.data.number_of_lines
-        for s in self.pid.stdout:
-            n += 1
-            self.put_log(s)
-        if n > 0:
-            g.es_print(f"printed {n} line{g.plural(n)}")
+        if self.wait:
+            pass
+        else:
+            n = self.data.number_of_lines
+            for s in self.pid.stdout:
+                n += 1
+                self.put_log(s)
+            if n > 0:
+                g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -257,22 +270,36 @@ class BackgroundProcessManager:
 
         Don't set self.data unless we start the process!
         """
+        # Note: we can't set shell=True (at least on Windows) because the process
+        #       terminates immediately.
         #
-        # Note: setting shell=True is supposedly a security hazard.
+        #       Anyway, setting shell=True is supposedly a security hazard.
         #       https://docs.python.org/3/library/subprocess.html#security-considerations
-        #       In this case, however, the risk seems small.
-        #       We do not expect tools such as pylint, mypy, etc. to create error messages
-        #       that contain shell injection attacks!
+        #       
+        #       However, we do not expect tools such as pylint, mypy, etc.
+        #       to create error messages that contain shell injection attacks!
         def open_process():
-            return subprocess.Popen(
+            proc = subprocess.Popen(
                 command,
-                shell=True,  # #2586
+                shell=False,  # #2586
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
+            if self.wait:  # Works, hangs Leo!
+                try:
+                    outs, errs = proc.communicate(timeout=15)
+                except TimeoutExpired:
+                    proc.kill()
+                    outs, errs = proc.communicate()
+                for line in g.splitLines(outs):
+                    self.data.number_of_lines += 1
+                    self.put_log(line)
+            return proc
 
         def start_timer():  # #2528 & #2557.
+            if self.wait:
+                return
             if not self.timer.isActive():
                 self.timer.start(100)
 
