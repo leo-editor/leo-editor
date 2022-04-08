@@ -113,6 +113,9 @@ class BackgroundProcessManager:
                 if self.wait:
                     pass
                 else:
+                    # This loop apparently exhausts a generator, which is what we want.
+                    # Otoh, self.pid.stdout.read() would work, but only if it were
+                    #       followed by a call to clear the stream.
                     for s in self.pid.stdout:
                         self.data.number_of_lines += 1
                         self.put_log(s)
