@@ -93,9 +93,13 @@ class BackgroundProcessManager:
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
         self.wait = False
-        # Always create a timer.
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.on_idle)
+        # Create a timer if we can.  Otherwise set self.wait = True.
+        if QtCore:
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(self.on_idle)
+        else:
+            self.wait = True  # No choice.
+            self.timer = None
        
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
     check_count = 0
