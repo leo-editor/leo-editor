@@ -107,8 +107,15 @@ class BackgroundProcessManager:
     def check_process(self):
         """Check the running process, and switch if necessary."""
         self.check_count += 1
+        # g.trace(self.check_count)
         if self.pid and self.pid.poll() is None:
             # The process is still running.
+            try:
+                outs, errs = self.pid.communicate(timeout=0.1)
+                for s in g.splitLines(outs):
+                    self.put_log(s)
+            except subprocess.TimeoutExpired:
+                pass
             return
         if self.pid:
             # The process has completed. Wait for the output!
