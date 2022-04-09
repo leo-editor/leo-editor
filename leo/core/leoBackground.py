@@ -107,7 +107,6 @@ class BackgroundProcessManager:
     def check_process(self):
         """Check the running process, and switch if necessary."""
         self.check_count += 1
-        # g.trace(self.check_count)
         if self.pid and self.pid.poll() is None:
             # The process is still running.
             try:
@@ -118,11 +117,6 @@ class BackgroundProcessManager:
                 pass
             return
         if self.pid:
-            if 0:
-                # The process has completed. Wait for the output!
-                outs, errs = self.pid.communicate()
-                for s in g.splitLines(outs):
-                    self.put_log(s)
             self.end()  # End this process.
         self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *3* bpm.end
