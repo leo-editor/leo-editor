@@ -51,8 +51,10 @@ class BackgroundProcessManager:
     in any way.
     """
     #@-<< BPM docstring>>
-
-    wait = False  # True: call process.communicate, which hangs Leo.
+    # This should not be a user option. It should just work!
+    # True:  call process.communicate immediately. This hangs Leo.
+    # False: call process.communicate when the process has finished. This does *not* hang Leo.
+    wait = False
 
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
@@ -67,8 +69,6 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
-            self.number_of_lines = 0
-            #
             # Check and compile the link pattern.
             if link_pattern and isinstance(link_pattern, str):
                 try:
@@ -92,56 +92,41 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
+        self.wait = False  
+        #
+        # Always create the timer
         # #2528: A timer that runs independently of idle time.
-        self.timer = None
-        if QtCore:
-            self.timer = QtCore.QTimer()
-            self.timer.timeout.connect(self.on_idle)
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.on_idle)
+       
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
     check_count = 0
 
     def check_process(self):
         """Check the running process, and switch if necessary."""
         # #2428: Handle all output only after the process has completed.
-        #        There should be no danger of a deadlock because
-        #        there is only one running subprocess.
         self.check_count += 1
         if self.pid:
-            if self.pid.poll() is None:  # The process is still running.
-                pass
-            else:  # The process has completed.
-                if self.wait:
-                    pass
-                else:
-                    # This loop apparently exhausts a generator, which is what we want.
-                    # Otoh, self.pid.stdout.read() would work, but only if it were
-                    #       followed by a call to clear the stream.
-                    for s in self.pid.stdout:
-                        self.data.number_of_lines += 1
-                        self.put_log(s)
-                self.end()  # End this process.
-                self.start_next()  # Start the next process.
+            if self.pid.poll() is None:
+                return
+            # The process has completed. Wait for the output!
+            outs, errs = self.pid.communicate()
+            for s in g.splitLines(outs):
+                self.put_log(s)
+            self.end()  # End this process.
+            self.start_next()  # Start the next process.
         elif self.process_queue:
             self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
-        # Send the output to the log.
-        # g.trace('BPM.end:', self.pid)
-        if self.wait:
-            pass
-        else:
-            n = self.data.number_of_lines
-            for s in self.pid.stdout:
-                n += 1
-                self.put_log(s)
-            # if n > 0: g.es_print(f"printed {n} line{g.plural(n)}")
-        # Terminate the process properly.
         try:
             self.pid.kill()
         except OSError:
             pass
-        self.timer.stop()  # 2557
+        # Do *not* clear self.data here.
+        if self.timer:
+            self.timer.stop()  # 2557
         self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
@@ -283,29 +268,24 @@ class BackgroundProcessManager:
             proc = subprocess.Popen(
                 command,
                 shell=False,  # #2586
-                stderr=subprocess.PIPE,
+                # stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
             return proc
 
         def start_timer():  # #2528 & #2557.
-            if self.wait:
-                return
             if not self.timer.isActive():
                 self.timer.start(100)
 
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
 
-        if self.wait:  # Hangs Leo. Don't do any queuing.
-            self.data = data  # Required for self.put.
-            g.es_print(f"{kind}: {g.shortFileName(fn)}")
+        if self.wait:
+            # Wait for all data. This hangs Leo.
+            self.data = data  # Required.
+            g.es_print(f"{kind}: {g.shortFileName(data.fn)}")
             proc = open_process()
-            try:
-                outs, errs = proc.communicate(timeout=15)
-            except subprocess.TimeoutExpired:
-                proc.kill()
-                outs, errs = proc.communicate()
+            outs, errs = proc.communicate()
             for line in g.splitLines(outs):
                 self.put_log(line)
             g.es_print(f"{kind}: done")
