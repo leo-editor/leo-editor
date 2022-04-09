@@ -92,10 +92,8 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
-        self.wait = False  
-        #
-        # Always create the timer
-        # #2528: A timer that runs independently of idle time.
+        self.wait = False
+        # Always create a timer.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.on_idle)
        
@@ -104,19 +102,17 @@ class BackgroundProcessManager:
 
     def check_process(self):
         """Check the running process, and switch if necessary."""
-        # #2428: Handle all output only after the process has completed.
         self.check_count += 1
+        if self.pid and self.pid.poll() is None:
+            # The process is still running.
+            return
         if self.pid:
-            if self.pid.poll() is None:
-                return
             # The process has completed. Wait for the output!
             outs, errs = self.pid.communicate()
             for s in g.splitLines(outs):
                 self.put_log(s)
             self.end()  # End this process.
-            self.start_next()  # Start the next process.
-        elif self.process_queue:
-            self.start_next()  # Start the next process.
+        self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
@@ -274,7 +270,7 @@ class BackgroundProcessManager:
             )
             return proc
 
-        def start_timer():  # #2528 & #2557.
+        def start_timer():
             if not self.timer.isActive():
                 self.timer.start(100)
 
