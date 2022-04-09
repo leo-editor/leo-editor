@@ -118,10 +118,11 @@ class BackgroundProcessManager:
                 pass
             return
         if self.pid:
-            # The process has completed. Wait for the output!
-            outs, errs = self.pid.communicate()
-            for s in g.splitLines(outs):
-                self.put_log(s)
+            if 0:
+                # The process has completed. Wait for the output!
+                outs, errs = self.pid.communicate()
+                for s in g.splitLines(outs):
+                    self.put_log(s)
             self.end()  # End this process.
         self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *3* bpm.end
