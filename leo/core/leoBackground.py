@@ -55,8 +55,6 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
 
-    wait = False  # True: call process.communicate, which hangs Leo.
-
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
     class ProcessData:
@@ -70,8 +68,7 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
-            self.number_of_lines = 0
-            #
+
             # Check and compile the link pattern.
             if link_pattern and isinstance(link_pattern, str):
                 try:
@@ -111,39 +108,17 @@ class BackgroundProcessManager:
         collected and placed into bpm.process_return_data.
         An on_idle task in bpm checks to see if this data has 
         arrived and if so, uses it.
+        
+        The return string is split into lines because the 
+        downstream code expects that.
         """
         result, err = self.pid.communicate()
+        result_lines = result.split('\n')
         while self.lock.locked():
-            sleep(0.03)
+            sleep(0.02)
         self.lock.acquire()
-        self.process_return_data = result.split('\n')
+        self.process_return_data = result_lines
         self.lock.release()
-    #@+node:ekr.20161026193609.2: *3* bpm.check_process
-    check_count = 0
-
-    def check_process(self):
-        """Check the running process, and switch if necessary."""
-        # #2428: Handle all output only after the process has completed.
-        #        There should be no danger of a deadlock because
-        #        there is only one running subprocess.
-        self.check_count += 1
-        if self.pid:
-            if self.pid.poll() is None:  # The process is still running.
-                pass
-            else:  # The process has completed.
-                if self.wait:
-                    pass
-                else:
-                    # This loop apparently exhausts a generator, which is what we want.
-                    # Otoh, self.pid.stdout.read() would work, but only if it were
-                    #       followed by a call to clear the stream.
-                    for s in self.pid.stdout:
-                        self.data.number_of_lines += 1
-                        self.put_log(s)
-                self.end()  # End this process.
-                self.start_next()  # Start the next process.
-        elif self.process_queue:
-            self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
@@ -185,17 +160,21 @@ class BackgroundProcessManager:
         if self.process_return_data:
             # Wait for data to be fully written
             while self.lock.locked():
-                sleep(0.03)
+                sleep(0.02)
+
+            # Protect acquiring the data from the process, in case another is launched
+            # before we expect it.
             self.lock.acquire()
-            command_result = self.process_return_data
+            result_lines = self.process_return_data
             self.process_return_data = []
             self.lock.release()
-            for s in command_result:
-                self.data.number_of_lines += 1
+
+            for s in result_lines:
                 self.put_log(s)
 
             self.end()  # End this process.
             self.start_next()  # Start the next process.
+
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     unknown_path_names: List[str] = []
 
@@ -279,7 +258,6 @@ class BackgroundProcessManager:
     def start_next(self):
         """The previous process has finished. Start the next one."""
         if self.process_queue:
-            g.es('bpm starting next queued file check')
             self.data = self.process_queue.pop(0)
             self.data.callback()  # The callback starts the next process.
         else:
@@ -317,8 +295,6 @@ class BackgroundProcessManager:
             return proc
 
         def start_timer():  # #2528 & #2557.
-            if self.wait:
-                return
             if not self.timer.isActive():
                 self.timer.start(100)
             thread.start_new_thread(self.thrd_pipe_proc, ())
@@ -326,25 +302,9 @@ class BackgroundProcessManager:
         self.process_return_data = []
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
 
-        if self.wait:  # Hangs Leo. Don't do any queuing.
-            self.data = data  # Required for self.put.
-            g.es_print(f"{kind}: {g.shortFileName(fn)}")
-            proc = open_process()
-            try:
-                outs, errs = proc.communicate(timeout=15)
-            except subprocess.TimeoutExpired:
-                proc.kill()
-                outs, errs = proc.communicate()
-            for line in g.splitLines(outs):
-                self.put_log(line)
-            g.es_print(f"{kind}: done")
-            self.data = None
-            return  # That's *all*
-
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-            g.es('.... bpm: queueing', fn)
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
@@ -355,7 +315,6 @@ class BackgroundProcessManager:
             self.process_queue.append(data)
         else:
             # Start the process immediately.
-            g.es('.... bpm immediate start for', fn)
             self.data = data
             self.kind = kind
             g.es_print(f'{kind}: {g.shortFileName(fn)}')
