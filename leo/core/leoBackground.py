@@ -68,7 +68,6 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
-
             # Check and compile the link pattern.
             if link_pattern and isinstance(link_pattern, str):
                 try:
@@ -106,10 +105,10 @@ class BackgroundProcessManager:
 
         When the process has finished, its output data is
         collected and placed into bpm.process_return_data.
-        An on_idle task in bpm checks to see if this data has 
+        An on_idle task in bpm checks to see if this data has
         arrived and if so, uses it.
-        
-        The return string is split into lines because the 
+
+        The return string is split into lines because the
         downstream code expects that.
         """
         result, err = self.pid.communicate()
@@ -122,14 +121,11 @@ class BackgroundProcessManager:
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
-        # Send the output to the log.
-        # g.trace('BPM.end:', self.pid)
-        # Terminate the process properly.
         try:
             self.pid.kill()
         except OSError:
             pass
-        self.timer.stop()  # 2557
+        self.timer.stop()
         self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
@@ -148,12 +144,12 @@ class BackgroundProcessManager:
                 pass
             self.pid = None
         self.put_log(f"{kind}: done")
-        self.timer.stop()  # #2528
+        self.timer.stop()
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         """The idle-time callback for leo.commands.checkerCommands."""
         try:
-            g.app.gui.qtApp.processEvents()  # #2528.
+            g.app.gui.qtApp.processEvents()
         except Exception:
             pass
 
@@ -161,17 +157,15 @@ class BackgroundProcessManager:
             # Wait for data to be fully written
             while self.lock.locked():
                 sleep(0.02)
-
             # Protect acquiring the data from the process, in case another is launched
             # before we expect it.
             self.lock.acquire()
             result_lines = self.process_return_data
             self.process_return_data = []
             self.lock.release()
-
+            # Put the lines!
             for s in result_lines:
                 self.put_log(s)
-
             self.end()  # End this process.
             self.start_next()  # Start the next process.
 
@@ -264,7 +258,7 @@ class BackgroundProcessManager:
             g.es_print(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
-            self.timer.stop()  # #2528
+            self.timer.stop()
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
     def start_process(self, c, command, kind,
         fn=None,
@@ -287,14 +281,14 @@ class BackgroundProcessManager:
         def open_process():
             proc = subprocess.Popen(
                 command,
-                shell=False,  # #2586
+                shell=False,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
             return proc
 
-        def start_timer():  # #2528 & #2557.
+        def start_timer():
             if not self.timer.isActive():
                 self.timer.start(100)
             thread.start_new_thread(self.thrd_pipe_proc, ())
@@ -309,7 +303,7 @@ class BackgroundProcessManager:
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
                 self.pid = open_process()
-                start_timer()  # #2557.
+                start_timer()
 
             data.callback = callback
             self.process_queue.append(data)
@@ -319,7 +313,7 @@ class BackgroundProcessManager:
             self.kind = kind
             g.es_print(f'{kind}: {g.shortFileName(fn)}')
             self.pid = open_process()
-            start_timer()  # #2557.
+            start_timer()
     #@-others
 #@-others
 #@@language python
