@@ -112,8 +112,7 @@ class BackgroundProcessManager:
         An on_idle task in bpm checks to see if this data has 
         arrived and if so, uses it.
         """
-        if self.pid:
-            result, err = self.pid.communicate()
+        result, err = self.pid.communicate()
         while self.lock.locked():
             sleep(0.03)
         self.lock.acquire()
