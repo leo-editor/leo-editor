@@ -5,6 +5,7 @@
 """Handling background processes"""
 import re
 import subprocess
+import tempfile
 from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
@@ -54,7 +55,7 @@ class BackgroundProcessManager:
     # This should not be a user option. It should just work!
     # True:  call process.communicate immediately. This hangs Leo.
     # False: call process.communicate when the process has finished. This does *not* hang Leo.
-    wait = False
+    wait = True
 
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
@@ -92,7 +93,7 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
-        self.wait = False
+        self.temp_file = None  # Temporary file.
         # Create a timer if we can.  Otherwise set self.wait = True.
         if QtCore:
             self.timer = QtCore.QTimer()
@@ -100,21 +101,15 @@ class BackgroundProcessManager:
         else:
             self.wait = True  # No choice.
             self.timer = None
-       
+
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
     check_count = 0
 
     def check_process(self):
         """Check the running process, and switch if necessary."""
         self.check_count += 1
+        # g.trace(self.check_count)
         if self.pid and self.pid.poll() is None:
-            # The process is still running.
-            try:
-                outs, errs = self.pid.communicate(timeout=0.1)
-                for s in g.splitLines(outs):
-                    self.put_log(s)
-            except subprocess.TimeoutExpired:
-                pass
             return
         if self.pid:
             self.end()  # End this process.
@@ -122,6 +117,9 @@ class BackgroundProcessManager:
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
+        outs, errs = self.pid.communicate()
+        for s in g.splitLines(outs):
+            self.put_log(s)
         try:
             self.pid.kill()
         except OSError:
@@ -267,10 +265,13 @@ class BackgroundProcessManager:
         #       However, we do not expect tools such as pylint, mypy, etc.
         #       to create error messages that contain shell injection attacks!
         def open_process():
+            from multiprocessing import Pipe
+            stderr_pipe, junk_send_end = Pipe(duplex=False)
+            stdout_pipe, junk_send_end = Pipe(duplex=False)
             proc = subprocess.Popen(
                 command,
-                shell=False,  # #2586
-                # stderr=subprocess.PIPE,
+                shell=False,
+                stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
@@ -301,7 +302,8 @@ class BackgroundProcessManager:
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
-                self.pid = open_process()
+                self.temp_file = tempfile.TemporaryFile()
+                self.pid = open_process(self.temp_file)
                 start_timer()  # #2557.
 
             data.callback = callback
