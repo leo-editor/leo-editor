@@ -5,7 +5,6 @@
 """Handling background processes"""
 import re
 import subprocess
-import tempfile
 from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
@@ -302,8 +301,7 @@ class BackgroundProcessManager:
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
-                self.temp_file = tempfile.TemporaryFile()
-                self.pid = open_process(self.temp_file)
+                self.pid = open_process()
                 start_timer()  # #2557.
 
             data.callback = callback
