@@ -5,6 +5,9 @@
 """Handling background processes"""
 import re
 import subprocess
+import _thread as thread
+from time import sleep
+
 from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
@@ -52,8 +55,6 @@ class BackgroundProcessManager:
     """
     #@-<< BPM docstring>>
 
-    wait = False  # True: call process.communicate, which hangs Leo.
-
     #@+others
     #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
     class ProcessData:
@@ -67,8 +68,7 @@ class BackgroundProcessManager:
             self.kind = kind
             self.link_pattern = None
             self.link_root = link_root
-            self.number_of_lines = 0
-            #
+
             # Check and compile the link pattern.
             if link_pattern and isinstance(link_pattern, str):
                 try:
@@ -92,50 +92,38 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
+        self.lock = thread.allocate_lock()
+        self.process_return_data = None
+
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         if QtCore:
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.on_idle)
-    #@+node:ekr.20161026193609.2: *3* bpm.check_process
-    check_count = 0
+    #@+node:tom.20220409203519.1: *3* bpm.thrd_pipe_proc
+    def thrd_pipe_proc(self):
+        """The threaded procedure to handle the Popen pipe.
 
-    def check_process(self):
-        """Check the running process, and switch if necessary."""
-        # #2428: Handle all output only after the process has completed.
-        #        There should be no danger of a deadlock because
-        #        there is only one running subprocess.
-        self.check_count += 1
-        if self.pid:
-            if self.pid.poll() is None:  # The process is still running.
-                pass
-            else:  # The process has completed.
-                if self.wait:
-                    pass
-                else:
-                    # This loop apparently exhausts a generator, which is what we want.
-                    # Otoh, self.pid.stdout.read() would work, but only if it were
-                    #       followed by a call to clear the stream.
-                    for s in self.pid.stdout:
-                        self.data.number_of_lines += 1
-                        self.put_log(s)
-                self.end()  # End this process.
-                self.start_next()  # Start the next process.
-        elif self.process_queue:
-            self.start_next()  # Start the next process.
+        When the process has finished, its output data is
+        collected and placed into bpm.process_return_data.
+        An on_idle task in bpm checks to see if this data has 
+        arrived and if so, uses it.
+        
+        The return string is split into lines because the 
+        downstream code expects that.
+        """
+        result, err = self.pid.communicate()
+        result_lines = result.split('\n')
+        while self.lock.locked():
+            sleep(0.02)
+        self.lock.acquire()
+        self.process_return_data = result_lines
+        self.lock.release()
     #@+node:ekr.20161028063557.1: *3* bpm.end
     def end(self):
         """End the present process."""
         # Send the output to the log.
         # g.trace('BPM.end:', self.pid)
-        if self.wait:
-            pass
-        else:
-            n = self.data.number_of_lines
-            for s in self.pid.stdout:
-                n += 1
-                self.put_log(s)
-            # if n > 0: g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -168,8 +156,25 @@ class BackgroundProcessManager:
             g.app.gui.qtApp.processEvents()  # #2528.
         except Exception:
             pass
-        if self.process_queue or self.pid:
-            self.check_process()
+
+        if self.process_return_data:
+            # Wait for data to be fully written
+            while self.lock.locked():
+                sleep(0.02)
+
+            # Protect acquiring the data from the process, in case another is launched
+            # before we expect it.
+            self.lock.acquire()
+            result_lines = self.process_return_data
+            self.process_return_data = []
+            self.lock.release()
+
+            for s in result_lines:
+                self.put_log(s)
+
+            self.end()  # End this process.
+            self.start_next()  # Start the next process.
+
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     unknown_path_names: List[str] = []
 
@@ -201,7 +206,7 @@ class BackgroundProcessManager:
         link_pattern, link_root = data.link_pattern, data.link_root
         #
         # Always print the message.
-        print(s)
+        # print(s)
         #
         # Put the plain message if the link is not valid.
         if not link_pattern:
@@ -290,32 +295,16 @@ class BackgroundProcessManager:
             return proc
 
         def start_timer():  # #2528 & #2557.
-            if self.wait:
-                return
             if not self.timer.isActive():
                 self.timer.start(100)
+            thread.start_new_thread(self.thrd_pipe_proc, ())
 
+        self.process_return_data = []
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
-
-        if self.wait:  # Hangs Leo. Don't do any queuing.
-            self.data = data  # Required for self.put.
-            g.es_print(f"{kind}: {g.shortFileName(fn)}")
-            proc = open_process()
-            try:
-                outs, errs = proc.communicate(timeout=15)
-            except subprocess.TimeoutExpired:
-                proc.kill()
-                outs, errs = proc.communicate()
-            for line in g.splitLines(outs):
-                self.put_log(line)
-            g.es_print(f"{kind}: done")
-            self.data = None
-            return  # That's *all*
 
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
