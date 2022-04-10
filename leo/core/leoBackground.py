@@ -5,6 +5,9 @@
 """Handling background processes"""
 import re
 import subprocess
+import _thread as thread
+from time import sleep
+
 from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
@@ -92,11 +95,48 @@ class BackgroundProcessManager:
         self.data = None  # a ProcessData instance.
         self.process_queue = []  # List of g.Bunches.
         self.pid = None  # The process id of the running process.
+        self.lock = thread.allocate_lock()
+        self.process_return_data = None
+
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         if QtCore:
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.on_idle)
+    #@+node:tom.20220409203519.1: *3* bpm.thrd_pipe_proc
+    def thrd_pipe_proc(self):
+        """The threaded procedure to handle the Popen pipe.
+
+        When the process has finished, its output data is
+        collected and placed into bpm.process_return_data.
+        An on_idle task in bpm checks to see if this data has 
+        arrived and if so, uses it.
+        """
+        lines = []
+        count = 0
+        last = 0
+        while self.pid and not self.pid.poll():
+            # Prevent buffer from filling, which would cause blocking
+            lines.extend(self.pid.stdout.readlines(8))
+            newlen = len(lines)
+            print('==== thread:', newlen, 'loops:', count)  # Only for developing, remove later
+            # We can stall here if pylint finishes with no error messages.
+            # So monitor for stalled condition and break out.
+            if newlen == last:
+                count += 1
+            else:
+                count = 0
+                last = newlen
+            if count > 20:
+                print('==== thread: reached loop limit, breaking out'); break
+
+        if self.pid:
+            lines.extend(self.pid.stdout)
+        while self.lock.locked():
+            sleep(0.03)
+        self.lock.acquire()
+        self.process_return_data = lines
+        self.lock.release()
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
     check_count = 0
 
@@ -128,14 +168,6 @@ class BackgroundProcessManager:
         """End the present process."""
         # Send the output to the log.
         # g.trace('BPM.end:', self.pid)
-        if self.wait:
-            pass
-        else:
-            n = self.data.number_of_lines
-            for s in self.pid.stdout:
-                n += 1
-                self.put_log(s)
-            # if n > 0: g.es_print(f"printed {n} line{g.plural(n)}")
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -168,8 +200,21 @@ class BackgroundProcessManager:
             g.app.gui.qtApp.processEvents()  # #2528.
         except Exception:
             pass
-        if self.process_queue or self.pid:
-            self.check_process()
+
+        if self.process_return_data:
+            # Wait for data to be fully written
+            while self.lock.locked():
+                sleep(0.03)
+            self.lock.acquire()
+            command_result = self.process_return_data
+            self.process_return_data = []
+            self.lock.release()
+            for s in command_result:
+                self.data.number_of_lines += 1
+                self.put_log(s)
+
+            self.end()  # End this process.
+            self.start_next()  # Start the next process.
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     unknown_path_names: List[str] = []
 
@@ -201,7 +246,7 @@ class BackgroundProcessManager:
         link_pattern, link_root = data.link_pattern, data.link_root
         #
         # Always print the message.
-        print(s)
+        # print(s)
         #
         # Put the plain message if the link is not valid.
         if not link_pattern:
@@ -253,6 +298,7 @@ class BackgroundProcessManager:
     def start_next(self):
         """The previous process has finished. Start the next one."""
         if self.process_queue:
+            g.es('bpm starting next queued file check')
             self.data = self.process_queue.pop(0)
             self.data.callback()  # The callback starts the next process.
         else:
@@ -294,7 +340,9 @@ class BackgroundProcessManager:
                 return
             if not self.timer.isActive():
                 self.timer.start(100)
+            thread.start_new_thread(self.thrd_pipe_proc, ())
 
+        self.process_return_data = []
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
 
         if self.wait:  # Hangs Leo. Don't do any queuing.
@@ -315,7 +363,7 @@ class BackgroundProcessManager:
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-
+            g.es('.... bpm: queueing', fn)
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
                 g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
@@ -326,6 +374,7 @@ class BackgroundProcessManager:
             self.process_queue.append(data)
         else:
             # Start the process immediately.
+            g.es('.... bpm immediate start for', fn)
             self.data = data
             self.kind = kind
             g.es_print(f'{kind}: {g.shortFileName(fn)}')
