@@ -112,30 +112,12 @@ class BackgroundProcessManager:
         An on_idle task in bpm checks to see if this data has 
         arrived and if so, uses it.
         """
-        lines = []
-        count = 0
-        last = 0
-        while self.pid and not self.pid.poll():
-            # Prevent buffer from filling, which would cause blocking
-            lines.extend(self.pid.stdout.readlines(8))
-            newlen = len(lines)
-            print('==== thread:', newlen, 'loops:', count)  # Only for developing, remove later
-            # We can stall here if pylint finishes with no error messages.
-            # So monitor for stalled condition and break out.
-            if newlen == last:
-                count += 1
-            else:
-                count = 0
-                last = newlen
-            if count > 20:
-                print('==== thread: reached loop limit, breaking out'); break
-
         if self.pid:
-            lines.extend(self.pid.stdout)
+            result, err = self.pid.communicate()
         while self.lock.locked():
             sleep(0.03)
         self.lock.acquire()
-        self.process_return_data = lines
+        self.process_return_data = result.split('\n')
         self.lock.release()
     #@+node:ekr.20161026193609.2: *3* bpm.check_process
     check_count = 0
