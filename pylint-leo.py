@@ -72,19 +72,14 @@ def run(fn, verbose):
         theDir = dirs and dirs[-1] or ''
         print(f"pylint-leo.py: {theDir}{os.sep}{g.shortFileName(fn)}")
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
-    if 1: # Invoke pylint directly.
-        # Escaping args is harder here because we are creating an args array.
-        is_win = sys.platform.startswith('win')
-        args =  ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
-        if is_win:
-            args = args.replace('\\','\\\\')
-        command = f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"'
-        if not is_win:
-            command = shlex.split(command)
-    else:
-        # Use g.run_pylint.
-        args = ','.join([f"fn=r'{fn}'", f"rc=r'{rc_fn}'"])
-        command = f'{sys.executable} -c "from leo.core import leoGlobals as g; g.run_pylint({args})"'
+    # Escaping args is harder here because we are creating an args array.
+    is_win = sys.platform.startswith('win')
+    args =  ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
+    if is_win:
+        args = args.replace('\\','\\\\')
+    command = f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"'
+    if not is_win:
+        command = shlex.split(command)
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()
