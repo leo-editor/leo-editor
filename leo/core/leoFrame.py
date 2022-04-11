@@ -1036,7 +1036,8 @@ class LeoFrame:
         if i != j:
             w.delete(i, j)
         # #2593: Replace link patterns with html links.
-        s = c.frame.log.create_html_links(s, w)
+        color = 'black'  # No way to get other colors.
+        s = c.frame.log.create_html_links(color, s, w)
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
@@ -1271,7 +1272,7 @@ class LeoLog:
     def putnl(self, tabName='Log'):
         pass
 
-    def create_html_links(self, s, w):
+    def create_html_links(self, color, s, w):
         """
         LeoLog.create_html_links.
         A do-nothing base-class method, over-ridden by LeoQtLog.create_html_links.
