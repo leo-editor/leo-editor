@@ -3235,10 +3235,12 @@ class LeoQtLog(leoFrame.LeoLog):
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
     #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links & helpers
+    ### To do: handle black and pyflakes.
+
     mypy_s = r'^(.+):([0-9]+): (error|note): (.*)\s*$'
     pylint_s = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
     python_s = r'Syntax error in: (@file|@edit)?\s*(.*?)\n(\s*[0-9]+:.*?\n)+'
-        
+
     link_patterns: List[Tuple[str, Any]] = [
         ('mypy', re.compile(mypy_s)),
         ('pylint', re.compile(pylint_s)),
@@ -3250,11 +3252,11 @@ class LeoQtLog(leoFrame.LeoLog):
     def handle_mypy_match(self, m):
         filename, line = 'mypy:xyzzy', 666
         return filename, line
-        
+
     def handle_pylint_match(self, m):
         filename, line = 'pylint:xyzzy', 666
         return filename, line
-        
+
     def handle_python_match(self, m):
         filename, line = 'python:xyzzy', 666
         return filename, line
