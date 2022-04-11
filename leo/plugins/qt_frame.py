@@ -3249,17 +3249,20 @@ class LeoQtLog(leoFrame.LeoLog):
 
     #@+<< define match handlers >>
     #@+node:ekr.20220411114525.1: *5* << define match handlers >>
-    def handle_mypy_match(self, m):
-        filename, line = 'mypy:xyzzy', 666
-        return filename, line
+    # These handlers mask differences in the regexs for each language,
+    # allowing the number and order of groups to vary.
 
-    def handle_pylint_match(self, m):
-        filename, line = 'pylint:xyzzy', 666
-        return filename, line
+    def handle_mypy_match(self, m: re.Match) -> Tuple[str, int]:
+        url, line = 'mypy:xyzzy', 666
+        return url, line
 
-    def handle_python_match(self, m):
-        filename, line = 'python:xyzzy', 666
-        return filename, line
+    def handle_pylint_match(self, m: re.Match) -> Tuple[str, int]:
+        url, line = 'pylint:xyzzy', 666
+        return url, line
+
+    def handle_python_match(self, m: re.Match) -> Tuple[str, int]:
+        url, line = 'python:xyzzy', 666
+        return url, line
     #@-<< define match handlers >>
 
     link_handlers: Dict[str, Callable] = {
