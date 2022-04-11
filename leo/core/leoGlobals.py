@@ -7099,20 +7099,6 @@ def execute_shell_commands(commands: Any, trace: bool=False) -> None:
         proc = subprocess.Popen(command, shell=True)
         if wait:
             proc.communicate()
-        else:
-            if trace:
-                print('Start:', proc)
-            # #1489: call proc.poll at idle time.
-
-            def proc_poller(timer: Any, proc: Any=proc) -> None:
-                val = proc.poll()
-                if val is not None:
-                    # This trace can be disruptive.
-                    if trace:
-                        print('  End:', proc, val)
-                    timer.stop()
-
-            g.IdleTime(proc_poller, delay=0).start()
 #@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
     base_dir: str=None,
@@ -7133,18 +7119,18 @@ def execute_shell_commands_with_options(
     path_setting:       Name of @string setting for the base directory.
     warning:            A warning to be printed before executing the commands.
     """
-    base_dir = g.computeBaseDir(c, base_dir, path_setting, trace)
+    base_dir = g.computeBaseDir(c, base_dir, path_setting)
     if not base_dir:
         return
-    commands = g.computeCommands(c, commands, command_setting, trace)
+    commands = g.computeCommands(c, commands, command_setting)
     if not commands:
         return
     if warning:
         g.es_print(warning)
     os.chdir(base_dir)  # Can't do this in the commands list.
-    g.execute_shell_commands(commands)
+    g.execute_shell_commands(commands, trace=trace)
 #@+node:ekr.20180217152624.1: *4* g.computeBaseDir
-def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str, trace: bool=False) -> Optional[str]:
+def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str) -> Optional[str]:
     """
     Compute a base_directory.
     If given, @string path_setting takes precedence.
@@ -7172,7 +7158,7 @@ def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str, trace: bool=False)
     g.es_print(f"Please use @string {path_setting}")
     return None
 #@+node:ekr.20180217153459.1: *4* g.computeCommands
-def computeCommands(c: Cmdr, commands: List[str], command_setting: str, trace: bool=False) -> List[str]:
+def computeCommands(c: Cmdr, commands: List[str], command_setting: str) -> List[str]:
     """
     Get the list of commands.
     If given, @data command_setting takes precedence.
@@ -7429,7 +7415,7 @@ def run_coverage_tests(module: str='', filename: str='') -> None:
     os.chdir(unittests_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
     command = f"{prefix} {module} {filename}"
-    g.execute_shell_commands(command, trace=False)
+    g.execute_shell_commands(command)
 #@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
 def run_unit_test_in_separate_process(command: str) -> None:
     """
@@ -7473,7 +7459,7 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     command = f"python -m unittest {verbosity} {tests or ''} "
     # pytest reports too many errors.
     # command = f"python -m pytest --pdb {tests or ''}"
-    g.execute_shell_commands(command, trace=False)
+    g.execute_shell_commands(command)
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 unl_regex = re.compile(r'\bunl:.*$')
 

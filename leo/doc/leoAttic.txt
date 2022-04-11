@@ -7261,6 +7261,37 @@ def find_constants_defined(self, text):
         print("Ten levels of recursion processing styles, abandoned.")
         g.es("Ten levels of recursion processing styles, abandoned.")
     return ans
+#@+node:ekr.20220411054642.1: ** COPY: g.execute_shell_commands
+def execute_shell_commands(commands: Any, trace: bool=False) -> None:
+    """
+    Execute each shell command in a separate process.
+    Wait for each command to complete, except those starting with '&'
+    """
+    if isinstance(commands, str):
+        commands = [commands]
+    for command in commands:
+        wait = not command.startswith('&')
+        if trace:
+            g.trace(command)
+        if command.startswith('&'):
+            command = command[1:].strip()
+        proc = subprocess.Popen(command, shell=True)
+        if wait:
+            proc.communicate()
+        else:
+            if trace:
+                print('Start:', proc)
+            # #1489: call proc.poll at idle time.
+
+            def proc_poller(timer: Any, proc: Any=proc) -> None:
+                val = proc.poll()
+                if val is not None:
+                    # This trace can be disruptive.
+                    if trace:
+                        print('  End:', proc, val)
+                    timer.stop()
+
+            g.IdleTime(proc_poller, delay=0).start()
 #@-all
 #@@nosearch
 #@-leo
