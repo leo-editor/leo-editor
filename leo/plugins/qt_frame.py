@@ -3234,7 +3234,7 @@ class LeoQtLog(leoFrame.LeoLog):
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
     #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links
-    link_patterns = [
+    link_patterns: List[str] = [
 
     ]
 
