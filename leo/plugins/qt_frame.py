@@ -3249,22 +3249,6 @@ class LeoQtLog(leoFrame.LeoLog):
         widget = getattr(w, 'widget', None)
         if not isinstance(widget, QtWidgets.QTextEdit):
             return s
-        g.trace('CREATE LINKS', repr(s))
-        g.trace('Log', log)
-        ### g.trace(wname, w.widget, isinstance(w.widget, QtWidgets.QTextEdit))
-         ### g.printObj(w.getAllText(), tag='After Paste')
-        #
-        # Get color, as in LeoQtLog.put.
-        # Note: g.actualColor does all color translation.
-        if color:
-            color = leoColor.getColor(color)
-        if not color:
-            # #788: First, fall back to 'log_black_color', not 'black.
-            color = c.config.getColor('log-black-color')
-            if not color:
-                # Should never be necessary.
-                color = 'black'
-        #
         # For each line, search for a match against known patterns.
         for line in g.splitLines(s):
             for pattern in self.link_patterns:
