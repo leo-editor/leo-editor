@@ -3003,60 +3003,6 @@ def objToString(obj: Any, indent: str='', printCaller: bool=False, tag: str=None
     return s
 
 toString = objToString
-#@+node:ekr.20140401054342.16844: *4* g.run_pylint
-def run_pylint(
-    fn: str,  # Path to file under test.
-    rc: str,  # Path to settings file.
-    dots: bool=True,  # Show level dots in Sherlock traces.
-    patterns: List[str]=None,  # List of Sherlock trace patterns.
-    sherlock: bool=False,  # Enable Sherlock tracing.
-    show_return: bool=True,  # Show returns in Sherlock traces.
-    stats_patterns: bool=None,  # Patterns for Sherlock statistics.
-    verbose: bool=True,  # Show filenames in Sherlock traces.
-) -> None:
-    """
-    Run pylint with the given args, with Sherlock tracing if requested.
-
-    **Do not assume g.app exists.**
-
-    run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
-    """
-    try:
-        from pylint import lint  #type:ignore
-    except ImportError:
-        g.trace('can not import pylint')
-        return
-    if not g.os_path_exists(fn):
-        g.trace('does not exist:', fn)
-        return
-    if not g.os_path_exists(rc):
-        g.trace('does not exist', rc)
-        return
-    args = [f"--rcfile={rc}"]
-    # Prints error number.
-        # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
-    args.append(fn)
-    if sherlock:
-        sherlock = g.SherlockTracer(
-                dots=dots,
-                show_return=show_return,
-                verbose=True,  # verbose: show filenames.
-                patterns=patterns or [],
-            )
-        try:
-            sherlock.run()
-            lint.Run(args)
-        finally:
-            sherlock.stop()
-            sherlock.print_stats(patterns=stats_patterns or [])
-    else:
-        # print('run_pylint: %s' % g.shortFileName(fn))
-        try:
-            lint.Run(args)  # does sys.exit
-        finally:
-            # Printing does not work well here.
-            # When not waiting, printing from severl process can be interspersed.
-            pass
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n: float) -> None:
     """Wait about n milliseconds."""
@@ -7099,20 +7045,6 @@ def execute_shell_commands(commands: Any, trace: bool=False) -> None:
         proc = subprocess.Popen(command, shell=True)
         if wait:
             proc.communicate()
-        else:
-            if trace:
-                print('Start:', proc)
-            # #1489: call proc.poll at idle time.
-
-            def proc_poller(timer: Any, proc: Any=proc) -> None:
-                val = proc.poll()
-                if val is not None:
-                    # This trace can be disruptive.
-                    if trace:
-                        print('  End:', proc, val)
-                    timer.stop()
-
-            g.IdleTime(proc_poller, delay=0).start()
 #@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
     base_dir: str=None,
@@ -7133,18 +7065,18 @@ def execute_shell_commands_with_options(
     path_setting:       Name of @string setting for the base directory.
     warning:            A warning to be printed before executing the commands.
     """
-    base_dir = g.computeBaseDir(c, base_dir, path_setting, trace)
+    base_dir = g.computeBaseDir(c, base_dir, path_setting)
     if not base_dir:
         return
-    commands = g.computeCommands(c, commands, command_setting, trace)
+    commands = g.computeCommands(c, commands, command_setting)
     if not commands:
         return
     if warning:
         g.es_print(warning)
     os.chdir(base_dir)  # Can't do this in the commands list.
-    g.execute_shell_commands(commands)
+    g.execute_shell_commands(commands, trace=trace)
 #@+node:ekr.20180217152624.1: *4* g.computeBaseDir
-def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str, trace: bool=False) -> Optional[str]:
+def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str) -> Optional[str]:
     """
     Compute a base_directory.
     If given, @string path_setting takes precedence.
@@ -7172,7 +7104,7 @@ def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str, trace: bool=False)
     g.es_print(f"Please use @string {path_setting}")
     return None
 #@+node:ekr.20180217153459.1: *4* g.computeCommands
-def computeCommands(c: Cmdr, commands: List[str], command_setting: str, trace: bool=False) -> List[str]:
+def computeCommands(c: Cmdr, commands: List[str], command_setting: str) -> List[str]:
     """
     Get the list of commands.
     If given, @data command_setting takes precedence.
@@ -7429,37 +7361,7 @@ def run_coverage_tests(module: str='', filename: str='') -> None:
     os.chdir(unittests_dir)
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
     command = f"{prefix} {module} {filename}"
-    g.execute_shell_commands(command, trace=False)
-#@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
-def run_unit_test_in_separate_process(command: str) -> None:
-    """
-    A script to be run from unitTest.leo.
-
-    Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
-    """
-    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-    os.chdir(leo_editor_dir)
-    p = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        shell=sys.platform.startswith('win'),
-    )
-    out, err = p.communicate()
-    err = g.toUnicode(err)
-    out = g.toUnicode(out)
-    print('')
-    print(command)
-    if out.strip():
-        # print('traces...')
-        print(out.rstrip())
-    print(err.rstrip())
-    # There may be skipped tests...
-    err_lines = g.splitLines(err.rstrip())
-    if not err_lines[-1].startswith('OK'):
-        g.trace('Test failed')
-        g.printObj(err_lines, tag='err_lines')
-        assert False
+    g.execute_shell_commands(command)
 #@+node:ekr.20210901065224.1: *3* g.run_unit_tests
 def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     """
@@ -7473,7 +7375,7 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     command = f"python -m unittest {verbosity} {tests or ''} "
     # pytest reports too many errors.
     # command = f"python -m pytest --pdb {tests or ''}"
-    g.execute_shell_commands(command, trace=False)
+    g.execute_shell_commands(command)
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 unl_regex = re.compile(r'\bunl:.*$')
 
