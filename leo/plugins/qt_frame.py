@@ -3242,7 +3242,7 @@ class LeoQtLog(leoFrame.LeoLog):
         """
         Search for lines matching message patterns of known tools.
         If found, create clickable links, similar to LeoQtLog.put.
-        
+
         Return the resulting string.
         """
         c, log = self.c, self.c.frame.log
