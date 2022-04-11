@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
 else:
-    Cmdr = Any
+    Cmdr = Pos = Any
 #@-<< leoBackground.py imports >>
 
 #@+others
