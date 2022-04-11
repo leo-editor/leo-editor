@@ -1000,7 +1000,7 @@ class LeoFrame:
             pass
 
     OnCutFromMenu = cutText
-    #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
+    #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText & helper
     @frame_cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         """
@@ -1035,6 +1035,9 @@ class LeoFrame:
         # Update the widget.
         if i != j:
             w.delete(i, j)
+        if g.app.gui.guiName() == 'qt' and wname.startswith('log'):
+            # #2593: Replace link patterns with html links.
+            s = self.create_html_links(s, w)
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
@@ -1058,6 +1061,48 @@ class LeoFrame:
             w.setXScrollPosition(x_pos)
 
     OnPasteFromMenu = pasteText
+    #@+node:ekr.20220410180439.1: *6* LeoFrame.create_html_links
+    def create_html_links(self, s, w):
+        """
+        Search for lines matching message patterns of known tools.
+        If found, create clickable links, similar to LeoQtLog.put.
+        
+        Return the resulting string.
+        """
+        from leo.core.leoQt import QtWidgets
+        c, log = self.c, self.c.frame.log
+        widget = getattr(w, 'widget', None)
+        if not isinstance(widget, QtWidgets.QTextEdit):
+            return s
+        g.trace('CREATE LINKS', repr(s))
+        g.trace('Log', log)
+        
+            ### g.trace(wname, w.widget, isinstance(w.widget, QtWidgets.QTextEdit))
+            ### g.printObj(w.getAllText(), tag='After Paste')
+        # Similar to code in LeoQtLog.put.
+        if 0:
+            s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            # #884: Always convert leading blanks and tabs to &nbsp.
+            n = len(s) - len(s.lstrip())
+            if n > 0 and s.strip():
+                s = '&nbsp;' * (n) + s[n:]
+            if not log.wrap: ### self.wrap:
+                # Convert all other blanks to &nbsp;
+                s = s.replace(' ', '&nbsp;')
+            s = s.replace('\n', '<br>')  # The caller is responsible for newlines!
+            s = f'<font color="{color}">{s}</font>'
+            if nodeLink:
+                url = nodeLink
+                for scheme in 'file', 'unl':
+                    # QUrl requires paths start with '/'
+                    if (
+                        url.startswith(scheme + '://') and not
+                        url.startswith(scheme + ':///')
+                    ):
+                        url = url.replace('://', ':///', 1)
+                s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
+            widget.insertHtml(s)
+        return s
     #@+node:ekr.20061016071937: *5* LeoFrame.OnPaste (support middle-button paste)
     def OnPaste(self, event=None):
         return self.pasteText(event=event, middleButton=True)

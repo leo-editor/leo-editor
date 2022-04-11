@@ -3328,7 +3328,6 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
-    #@+node:ekr.20120913110135.10613: *3* LeoQtLog.putImage
     #@+node:ekr.20110605121601.18324: *3* LeoQtLog.Tab
     #@+node:ekr.20110605121601.18325: *4* LeoQtLog.clearTab
     def clearTab(self, tabName, wrap='none'):
