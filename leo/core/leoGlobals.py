@@ -7416,36 +7416,6 @@ def run_coverage_tests(module: str='', filename: str='') -> None:
     prefix = r"python -m pytest --cov-report html --cov-report term-missing --cov "
     command = f"{prefix} {module} {filename}"
     g.execute_shell_commands(command)
-#@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
-def run_unit_test_in_separate_process(command: str) -> None:
-    """
-    A script to be run from unitTest.leo.
-
-    Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
-    """
-    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-    os.chdir(leo_editor_dir)
-    p = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        shell=sys.platform.startswith('win'),
-    )
-    out, err = p.communicate()
-    err = g.toUnicode(err)
-    out = g.toUnicode(out)
-    print('')
-    print(command)
-    if out.strip():
-        # print('traces...')
-        print(out.rstrip())
-    print(err.rstrip())
-    # There may be skipped tests...
-    err_lines = g.splitLines(err.rstrip())
-    if not err_lines[-1].startswith('OK'):
-        g.trace('Test failed')
-        g.printObj(err_lines, tag='err_lines')
-        assert False
 #@+node:ekr.20210901065224.1: *3* g.run_unit_tests
 def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     """
