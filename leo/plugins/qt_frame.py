@@ -3238,7 +3238,7 @@ class LeoQtLog(leoFrame.LeoLog):
 
     ]
 
-    def create_html_links(self, color, s, w):
+    def create_html_links(self, s, w, color='black'):
         """
         Search for lines matching message patterns of known tools.
         If found, create clickable links, similar to LeoQtLog.put.
