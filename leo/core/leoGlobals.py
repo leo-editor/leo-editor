@@ -4687,7 +4687,7 @@ def find_on_line(s: str, i: int, pattern: str) -> int:
         j = len(s)
     k = s.find(pattern, i, j)
     return k
-#@+node:ekr.20031218072017.3179: *4* g.g.is_special
+#@+node:ekr.20031218072017.3179: *4* g.is_special
 def is_special(s: str, directive: str) -> Tuple[bool, int]:
     """Return True if the body text contains the @ directive."""
     assert(directive and directive[0] == '@')
