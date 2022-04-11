@@ -8,9 +8,10 @@
 from collections import defaultdict
 import os
 import platform
+import re
 import sys
 import time
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -3233,10 +3234,37 @@ class LeoQtLog(leoFrame.LeoLog):
         c, w = self.c, self
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
-    #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links
-    link_patterns: List[str] = [
-
+    #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links & helpers
+    mypy_s = r'^(.+):([0-9]+): (error|note): (.*)\s*$'
+    pylint_s = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
+    python_s = r'Syntax error in: (@file|@edit)?\s*(.*?)\n(\s*[0-9]+:.*?\n)+'
+        
+    link_patterns: List[Tuple[str, Any]] = [
+        ('mypy', re.compile(mypy_s)),
+        ('pylint', re.compile(pylint_s)),
+        ('python', re.compile(python_s, re.MULTILINE)),
     ]
+
+    #@+<< define match handlers >>
+    #@+node:ekr.20220411114525.1: *5* << define match handlers >>
+    def handle_mypy_match(self, m):
+        filename, line = 'mypy:xyzzy', 666
+        return filename, line
+        
+    def handle_pylint_match(self, m):
+        filename, line = 'pylint:xyzzy', 666
+        return filename, line
+        
+    def handle_python_match(self, m):
+        filename, line = 'python:xyzzy', 666
+        return filename, line
+    #@-<< define match handlers >>
+
+    link_handlers: Dict[str, Callable] = {
+        'mypy': handle_mypy_match,
+        'pylint': handle_pylint_match,
+        'python': handle_python_match,
+    }
 
     def create_html_links(self, s, w, color='black'):
         """
@@ -3251,10 +3279,11 @@ class LeoQtLog(leoFrame.LeoLog):
             return s
         # For each line, search for a match against known patterns.
         for line in g.splitLines(s):
-            for pattern in self.link_patterns:
+            for kind, pattern in self.link_patterns:
                 m = pattern.match(line)
                 if m:
-                    node_link = url = m.group(2) ### Need a lookup???
+                    handler = self.link_handlers.get(kind)
+                    url, line = handler(m)
                     html_line = self.to_html(color, line)
                     # Similar to code in LeoQtLog.put.
                     s = f'<font color="{color}">{s}</font>'
@@ -3265,7 +3294,7 @@ class LeoQtLog(leoFrame.LeoLog):
                             url.startswith(scheme + ':///')
                         ):
                             url = url.replace('://', ':///', 1)
-                    s = f'<a href="{url}" title="{node_link}">{s}</a>'
+                    s = f'<a href="{url}" title="{url}">{s}</a>'
         if 0: ### Do later???
             widget.insertHtml(s)
         return s
