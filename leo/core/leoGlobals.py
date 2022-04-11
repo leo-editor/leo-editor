@@ -3003,60 +3003,6 @@ def objToString(obj: Any, indent: str='', printCaller: bool=False, tag: str=None
     return s
 
 toString = objToString
-#@+node:ekr.20140401054342.16844: *4* g.run_pylint
-def run_pylint(
-    fn: str,  # Path to file under test.
-    rc: str,  # Path to settings file.
-    dots: bool=True,  # Show level dots in Sherlock traces.
-    patterns: List[str]=None,  # List of Sherlock trace patterns.
-    sherlock: bool=False,  # Enable Sherlock tracing.
-    show_return: bool=True,  # Show returns in Sherlock traces.
-    stats_patterns: bool=None,  # Patterns for Sherlock statistics.
-    verbose: bool=True,  # Show filenames in Sherlock traces.
-) -> None:
-    """
-    Run pylint with the given args, with Sherlock tracing if requested.
-
-    **Do not assume g.app exists.**
-
-    run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
-    """
-    try:
-        from pylint import lint  #type:ignore
-    except ImportError:
-        g.trace('can not import pylint')
-        return
-    if not g.os_path_exists(fn):
-        g.trace('does not exist:', fn)
-        return
-    if not g.os_path_exists(rc):
-        g.trace('does not exist', rc)
-        return
-    args = [f"--rcfile={rc}"]
-    # Prints error number.
-        # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
-    args.append(fn)
-    if sherlock:
-        sherlock = g.SherlockTracer(
-                dots=dots,
-                show_return=show_return,
-                verbose=True,  # verbose: show filenames.
-                patterns=patterns or [],
-            )
-        try:
-            sherlock.run()
-            lint.Run(args)
-        finally:
-            sherlock.stop()
-            sherlock.print_stats(patterns=stats_patterns or [])
-    else:
-        # print('run_pylint: %s' % g.shortFileName(fn))
-        try:
-            lint.Run(args)  # does sys.exit
-        finally:
-            # Printing does not work well here.
-            # When not waiting, printing from severl process can be interspersed.
-            pass
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n: float) -> None:
     """Wait about n milliseconds."""
