@@ -8,10 +8,9 @@
 from collections import defaultdict
 import os
 import platform
-import re
 import sys
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
