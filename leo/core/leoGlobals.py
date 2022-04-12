@@ -6977,7 +6977,7 @@ def getDocStringForFunction(func: Any) -> str:
     s = ''
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
-        if hasattr(func, 'func.__doc__') and func.__doc__.strip():
+        if hasattr(func, '__doc__') and func.__doc__.strip():
             s = func.__doc__
     if not s and name(func) == 'commonCommandCallback':
         script = get_defaults(func, 1)
