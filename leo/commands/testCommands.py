@@ -335,8 +335,7 @@ def test_vim(event=None):
 @g.command('test-gui')
 def test_gui(event=None):
     """Run all gui-related unit tests."""
-    g.run_unit_tests('leo.unittests.test_gui.TestNullGui')
-    g.run_unit_tests('leo.unittests.test_gui.TestQtGui')
+    g.run_unit_tests('leo.unittests.test_gui')
 #@-others
 #@@language python
 #@@tabwidth -4
