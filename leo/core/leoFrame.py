@@ -1327,7 +1327,6 @@ class LeoLog:
                         url = p.get_UNL()
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
-                        g.trace('NOT FOUND', filename)
                         self.put(line)
                     break
             else:  # no match
