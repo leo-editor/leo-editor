@@ -11,7 +11,7 @@ import platform
 import re
 import sys
 import time
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -3235,47 +3235,34 @@ class LeoQtLog(leoFrame.LeoLog):
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
     #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links & helpers
-    #@+<< define error patterns >>
-    #@+node:ekr.20220411165048.1: *5* << define error patterns >>
     # To do: error patterns for black and pyflakes.
 
     mypy_s = r'^(.+):([0-9]+): (error|note): (.*)\s*$'
     pylint_s = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
 
-    # Python: filename = m.group(1), line = part of m.group(2)
+    # 
     python_s = r'File "(.*?)", line ([0-9]+)'
-    #@-<< define error patterns >>
+
+
+    # link_patterns: List[Tuple[str, Any]] = [
+        # ('mypy', re.compile(mypy_s)),
+        # ('pylint', re.compile(pylint_s)),
+        # ('python', re.compile(python_s)),
+    # ]
 
     link_patterns: List[Tuple[str, Any]] = [
-        ('mypy', re.compile(mypy_s)),
-        ('pylint', re.compile(pylint_s)),
-        ('python', re.compile(python_s)),  ###, re.MULTILINE)),
+        # (fn_i, line_i, pattern)
+        (1, 2, re.compile(mypy_s)),
+        (1, 2, re.compile(pylint_s)),
+        (1, 2, re.compile(python_s)),
     ]
 
-    #@+<< define match handlers >>
-    #@+node:ekr.20220411114525.1: *5* << define match handlers >>
-    # These handlers mask differences in the regexs for each language,
-    # allowing the number and order of groups to vary.
-
-    def handle_mypy_match(self, m: re.Match) -> Tuple[str, int]:
-        url, line = 'mypy:xyzzy', '666'
-        return url, line
-
-    def handle_pylint_match(self, m: re.Match) -> Tuple[str, int]:
-        url, line = 'pylint:xyzzy', 666
-        return url, line
-
-    def handle_python_match(self, m: re.Match) -> Tuple[str, int]:
-        # url, line = 'python:xyzzy', 666
-        url, line = m.group(1), m.group(2)
-        return url, line
-    #@-<< define match handlers >>
-
-    link_handlers: Dict[str, Callable] = {
-        'mypy': handle_mypy_match,
-        'pylint': handle_pylint_match,
-        'python': handle_python_match,
-    }
+    ### To be removed
+    # link_handlers: Dict[str, Callable] = {
+        # 'mypy': handle_mypy_match,
+        # 'pylint': handle_pylint_match,
+        # 'python': handle_python_match,
+    # }
 
     def create_html_links(self, s: str, w: QtWidgets.QTextEdit, color: str='black'):
         """
@@ -3294,11 +3281,13 @@ class LeoQtLog(leoFrame.LeoLog):
         # For each line, search for a match against known patterns.
         result = []
         for line in g.splitLines(s):
-            for kind, pattern in self.link_patterns:
+            for fn_i, line_i, pattern in self.link_patterns:
                 m = pattern.match(line)
                 if m:
-                    handler = self.link_handlers.get(kind)
-                    url, line = handler(self, m)
+                    # handler = self.link_handlers.get(kind)
+                    # url, line = handler(self, m)
+                    url = m.group(fn_i)
+                    line = m.group(line_i)
                     html_line = self.to_html(color, line)
                     # Similar to code in LeoQtLog.put.
                     s = f'<font color="{color}">{s}</font>'

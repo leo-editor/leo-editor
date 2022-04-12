@@ -110,9 +110,11 @@ class TestQtGui(LeoUnitTest):
         log = LeoQtLog(frame=c.frame, parentFrame=None)
         widget = QtWidgets.QTextEdit()
         wrapper = QTextEditWrapper(widget, name='log', c=c)
-        s = r'File "c:\Test\test_syntax_error.py", line 5'
+        s = r'File "syntax_error.py", line 5'
+        expected = r'<a href="syntax_error.py" title="syntax_error.py"><font color="black">'
         result = log.create_html_links(s, wrapper)
-        g.trace(result) ###
+        self.assertEqual(result, expected)
+        ### g.trace(result) ###
     #@-others
 #@-others
 #@-leo
