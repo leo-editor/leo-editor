@@ -212,7 +212,7 @@ class BackgroundProcessManager:
         link_pattern, link_root = data.link_pattern, data.link_root
         #
         # Always print the message.
-        # print(s)
+        print(s)
         #
         # Put the plain message if the link is not valid.
         if not link_pattern:
