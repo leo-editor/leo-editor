@@ -101,20 +101,15 @@ class TestQtGui(LeoUnitTest):
     #@+node:ekr.20220411165627.1: *3* TestQtGui.test_create_html_links
     def test_create_html_links(self):
 
-        # These imports must be done late.
-        from leo.plugins.qt_text import QTextEditWrapper
-        from leo.core.leoQt import QtWidgets
-        from leo.plugins.qt_frame import LeoQtLog
         c = self.c
-        c.frame.top = g.NullObject(tag='c.frame.top')
-        log = LeoQtLog(frame=c.frame, parentFrame=None)
-        widget = QtWidgets.QTextEdit()
-        wrapper = QTextEditWrapper(widget, name='log', c=c)
-        s = r'File "syntax_error.py", line 5'
-        expected = r'<a href="syntax_error.py" title="syntax_error.py"><font color="black">'
-        result = log.create_html_links(s, wrapper)
-        self.assertEqual(result, expected)
-        ### g.trace(result) ###
+        table = (
+            (None, r'File "syntax_error.py", line 5\n'),
+            ('same', 'Hello world\n'),
+        )
+        for flag, s in table:
+            result = c.frame.log.put_html_links(s)
+            expected_result = s if flag else None
+            self.assertEqual(result, expected_result)
     #@-others
 #@-others
 #@-leo

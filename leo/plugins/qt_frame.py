@@ -11,7 +11,7 @@ import platform
 import re
 import sys
 import time
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -3234,76 +3234,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c, w = self.c, self
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
-    #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links & helpers
-    # To do: error patterns for black and pyflakes.
-
-    mypy_s = r'^(.+):([0-9]+): (error|note): (.*)\s*$'
-    pylint_s = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-
-    # 
-    python_s = r'File "(.*?)", line ([0-9]+)'
-
-
-    # link_patterns: List[Tuple[str, Any]] = [
-        # ('mypy', re.compile(mypy_s)),
-        # ('pylint', re.compile(pylint_s)),
-        # ('python', re.compile(python_s)),
-    # ]
-
-    link_patterns: List[Tuple[str, Any]] = [
-        # (fn_i, line_i, pattern)
-        (1, 2, re.compile(mypy_s)),
-        (1, 2, re.compile(pylint_s)),
-        (1, 2, re.compile(python_s)),
-    ]
-
-    ### To be removed
-    # link_handlers: Dict[str, Callable] = {
-        # 'mypy': handle_mypy_match,
-        # 'pylint': handle_pylint_match,
-        # 'python': handle_python_match,
-    # }
-
-    def create_html_links(self, s: str, w: QtWidgets.QTextEdit, color: str='black'):
-        """
-        Return s, with all lines containing a match against a known pattern
-        converted to html representing clickable link.
-        
-        Search for lines matching message patterns of known tools.
-        If found, create clickable links, similar to LeoQtLog.put.
-
-        Return the resulting string.
-        """
-        c, log = self.c, self.c.frame.log
-        widget = getattr(w, 'widget', None)
-        if not isinstance(widget, QtWidgets.QTextEdit):
-            return s
-        # For each line, search for a match against known patterns.
-        result = []
-        for line in g.splitLines(s):
-            for fn_i, line_i, pattern in self.link_patterns:
-                m = pattern.match(line)
-                if m:
-                    # handler = self.link_handlers.get(kind)
-                    # url, line = handler(self, m)
-                    url = m.group(fn_i)
-                    line = m.group(line_i)
-                    html_line = self.to_html(color, line)
-                    # Similar to code in LeoQtLog.put.
-                    s = f'<font color="{color}">{s}</font>'
-                    for scheme in 'file', 'unl':
-                        # QUrl requires paths start with '/'
-                        if (
-                            url.startswith(scheme + '://') and not
-                            url.startswith(scheme + ':///')
-                        ):
-                            url = url.replace('://', ':///', 1)
-                    result.append(f'<a href="{url}" title="{url}">{s}</a>\n')
-                    break
-            else:  # no match
-                result.append(line)
-        return ''.join(result)
-    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
+    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put & helper
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         """
         Put s to the Qt Log widget, converting to html.
@@ -3341,6 +3272,23 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
+    #@+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
+    def to_html(self, color: str, s: str) -> str:
+        """
+        Convert one line (in s) to html.
+        """
+        g.trace('----', repr(s))
+        s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        # #884: Always convert leading blanks and tabs to &nbsp.
+        n = len(s) - len(s.lstrip())
+        if n > 0 and s.strip():
+            s = '&nbsp;' * (n) + s[n:]
+        if not self.wrap:
+            # Convert all other blanks to &nbsp;
+            s = s.replace(' ', '&nbsp;')
+        s = s.replace('\n', '<br>')  # The caller is responsible for newlines!
+        s = f'<font color="{color}">{s}</font>'
+        return s
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         """Put a newline to the Qt log."""
@@ -3395,22 +3343,6 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
-    #@+node:ekr.20220411085334.1: *4* LeoQtLog.to_html
-    def to_html(self, color, s):
-        """
-        Convert one line (in s) to html.
-        """
-        s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        # #884: Always convert leading blanks and tabs to &nbsp.
-        n = len(s) - len(s.lstrip())
-        if n > 0 and s.strip():
-            s = '&nbsp;' * (n) + s[n:]
-        if not self.wrap:
-            # Convert all other blanks to &nbsp;
-            s = s.replace(' ', '&nbsp;')
-        s = s.replace('\n', '<br>')  # The caller is responsible for newlines!
-        s = f'<font color="{color}">{s}</font>'
-        return s
     #@+node:ekr.20110605121601.18324: *3* LeoQtLog.Tab
     #@+node:ekr.20110605121601.18325: *4* LeoQtLog.clearTab
     def clearTab(self, tabName, wrap='none'):

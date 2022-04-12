@@ -7,7 +7,9 @@ These classes should be overridden to create frames for a particular gui.
 """
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
+import re
 import time
+from typing import Any, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
@@ -1036,7 +1038,9 @@ class LeoFrame:
         if i != j:
             w.delete(i, j)
         # #2593: Replace link patterns with html links.
-        s = c.frame.log.create_html_links(s, w, color='black')  # No way to get other colors.
+        s = c.frame.log.put_html_links(s)
+        if s is None:
+            return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
@@ -1271,12 +1275,54 @@ class LeoLog:
     def putnl(self, tabName='Log'):
         pass
 
-    def create_html_links(self, s, w, color='black'):
+    ###
+    # def put_html_links(self, s):
+        # """
+        # LeoLog.put_html_links.
+        # A do-nothing base-class method, over-ridden by LeoQtLog.put_html_links.
+        # """
+        # return s
+    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links
+    # To do: error patterns for black and pyflakes.
+
+    mypy_pat = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
+    pylint_pat = re.compile(r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$')
+    python_pat = re.compile(r'File "(.*?)", line ([0-9]+)')
+
+    error_patterns = (mypy_pat, pylint_pat, python_pat)
+
+    link_table: List[Tuple[int, int, re.Pattern]] = [
+        # (fn_i, line_i, pattern)
+        (1, 2, mypy_pat),
+        (1, 2, pylint_pat),
+        (1, 2, python_pat),
+    ]
+
+    def put_html_links(self, s: str) -> Optional[str]:  ### , w: QtWidgets.QTextEdit, color: str='black'
         """
-        LeoLog.create_html_links.
-        A do-nothing base-class method, over-ridden by LeoQtLog.create_html_links.
+        Output lines, one-by-one, if s contains any matches against known error patterns.
+        Otherwise, return s.
         """
-        return s
+        lines = g.splitLines(s)
+        # Step 1: return s if no lines match. This is an efficiency measure.
+        if not any(pat.match(line) for line in lines for pat in self.error_patterns):
+            ### g.trace('NO MATCHES')
+            return s
+        # Step 2: Output each line using log.put, with or without a nodeLink kwarg
+        for line in lines:
+            ### g.trace(repr(line))
+            for fn_i, line_i, pattern in self.link_table:
+                m = pattern.match(line)
+                if m:
+                    filename = m.group(fn_i)
+                    line_number = m.group(line_i)
+                    ### g.trace('FOUND filename', filename, 'line_number', line_number)
+                    url = filename ### to do.
+                    self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                    break
+            else:  # no match
+                self.put(line)
+        return None
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName, newName):
         pass
