@@ -4,6 +4,7 @@
 #@@first
 """Tests of gui base classes"""
 
+### import textwrap
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
@@ -97,6 +98,21 @@ class TestQtGui(LeoUnitTest):
         )
         for ivar in table:
             assert hasattr(QtCore.Qt, ivar), repr(ivar)
+    #@+node:ekr.20220411165627.1: *3* TestQtGui.test_create_html_links
+    def test_create_html_links(self):
+
+        # These imports must be done late.
+        from leo.plugins.qt_text import QTextEditWrapper
+        from leo.core.leoQt import QtWidgets
+        from leo.plugins.qt_frame import LeoQtLog
+        c = self.c
+        c.frame.top = g.NullObject(tag='c.frame.top')
+        log = LeoQtLog(frame=c.frame, parentFrame=None)
+        widget = QtWidgets.QTextEdit()
+        wrapper = QTextEditWrapper(widget, name='log', c=c)
+        s = r'File "c:\Test\test_syntax_error.py", line 5'
+        result = log.create_html_links(s, wrapper)
+        g.trace(result) ###
     #@-others
 #@-others
 #@-leo
