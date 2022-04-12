@@ -101,9 +101,15 @@ class TestQtGui(LeoUnitTest):
     #@+node:ekr.20220411165627.1: *3* TestQtGui.test_create_html_links
     def test_create_html_links(self):
 
-        c = self.c
+        c, p = self.c, self.c.p
+        # Create a test outline.
+        assert p == self.root_p
+        assert p.h == 'root'
+        p2 = p.insertAsLastChild()
+        p2.h = '@file test_file.py'
+        # Run the tests.
         table = (
-            (None, r'File "syntax_error.py", line 5\n'),
+            (None, r'File "test_file.py", line 5\n'),
             ('same', 'Hello world\n'),
         )
         for flag, s in table:

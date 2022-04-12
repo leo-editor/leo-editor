@@ -1038,9 +1038,10 @@ class LeoFrame:
         if i != j:
             w.delete(i, j)
         # #2593: Replace link patterns with html links.
-        s = c.frame.log.put_html_links(s)
-        if s is None:
-            return  # create_html_links has done all the work.
+        if wname.startswith('log'):
+            s = c.frame.log.put_html_links(s)
+            if s is None:
+                return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
@@ -1298,27 +1299,45 @@ class LeoLog:
         (1, 2, python_pat),
     ]
 
-    def put_html_links(self, s: str) -> Optional[str]:  ### , w: QtWidgets.QTextEdit, color: str='black'
+    def put_html_links(self, s: str) -> Optional[str]:
         """
-        Output lines, one-by-one, if s contains any matches against known error patterns.
-        Otherwise, return s.
+        Case 1: if s contains any matches against known error patterns.
+                Output lines, one-by-one, to the log.
+                Return None, as a flag to LeoFrame.pastText
+        Case 2: Return s
+
         """
+        c = self.c
+        
+        def find(filename):
+            """Find a position corresponding to filename s"""
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    if filename == p.anyAtFileNodeName():
+                        return p
+                    if filename == g.os_path_normpath(g.fullPath(c, p)):
+                        return p
+            ### g.trace('NOT FOUND', filename)  ###
+            return None
+
         lines = g.splitLines(s)
         # Step 1: return s if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            ### g.trace('NO MATCHES')
             return s
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg
         for line in lines:
-            ### g.trace(repr(line))
             for fn_i, line_i, pattern in self.link_table:
                 m = pattern.match(line)
                 if m:
                     filename = m.group(fn_i)
                     line_number = m.group(line_i)
-                    ### g.trace('FOUND filename', filename, 'line_number', line_number)
-                    url = filename ### to do.
-                    self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                    p = find(filename)  # Try to find a matching @<file> node.
+                    if p:
+                        url = p.get_UNL()
+                        self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                    else:
+                        g.trace('NOT FOUND', filename)
+                        self.put(line)
                     break
             else:  # no match
                 self.put(line)
@@ -2047,7 +2066,7 @@ class NullLog(LeoLog):
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
-        if self.enabled:
+        if self.enabled and not g.unitTesting:
             try:
                 g.pr(s, newline=False)
             except UnicodeError:
@@ -2055,7 +2074,7 @@ class NullLog(LeoLog):
                 g.pr(s, newline=False)
 
     def putnl(self, tabName='Log'):
-        if self.enabled:
+        if self.enabled and not g.unitTesting:
             g.pr('')
     #@+node:ekr.20060124085830: *3* NullLog.tabs
     def clearTab(self, tabName, wrap='none'):
