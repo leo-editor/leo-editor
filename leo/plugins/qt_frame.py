@@ -3232,8 +3232,8 @@ class LeoQtLog(leoFrame.LeoLog):
         # #1286.
         c, w = self.c, self
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
-    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
+    #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
+    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put & helper
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         """
         Put s to the Qt Log widget, converting to html.
@@ -3244,15 +3244,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
-        # Note: g.actualColor does all color translation.
-        if color:
-            color = leoColor.getColor(color)
-        if not color:
-            # #788: First, fall back to 'log_black_color', not 'black.
-            color = c.config.getColor('log-black-color')
-            if not color:
-                # Should never be necessary.
-                color = 'black'
+        color = self.resolve_color(color)
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
         wrapper = self.logCtrl
@@ -3264,16 +3256,7 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
-        s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        # #884: Always convert leading blanks and tabs to &nbsp.
-        n = len(s) - len(s.lstrip())
-        if n > 0 and s.strip():
-            s = '&nbsp;' * (n) + s[n:]
-        if not self.wrap:
-            # Convert all other blanks to &nbsp;
-            s = s.replace(' ', '&nbsp;')
-        s = s.replace('\n', '<br>')  # The caller is responsible for newlines!
-        s = f'<font color="{color}">{s}</font>'
+        s = self.to_html(color, s)
         if nodeLink:
             url = nodeLink
             for scheme in 'file', 'unl':
@@ -3288,6 +3271,20 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
+    #@+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
+    def to_html(self, color: str, s: str) -> str:
+        """Convert s to html."""
+        s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        # #884: Always convert leading blanks and tabs to &nbsp.
+        n = len(s) - len(s.lstrip())
+        if n > 0 and s.strip():
+            s = '&nbsp;' * (n) + s[n:]
+        if not self.wrap:
+            # Convert all other blanks to &nbsp;
+            s = s.replace(' ', '&nbsp;')
+        s = s.replace('\n', '<br>')  # The caller is responsible for newlines!
+        s = f'<font color="{color}">{s}</font>'
+        return s
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         """Put a newline to the Qt log."""
@@ -3313,6 +3310,20 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
+    #@+node:ekr.20220411085427.1: *4* LeoQtLog.resolve_color
+    def resolve_color(self, color):
+        """Resolve the given color name to an actual color name."""
+        c = self.c
+        # Note: g.actualColor does all color translation.
+        if color:
+            color = leoColor.getColor(color)
+        if not color:
+            # #788: First, fall back to 'log_black_color', not 'black.
+            color = c.config.getColor('log-black-color')
+            if not color:
+                # Should never be necessary.
+                color = 'black'
+        return color
     #@+node:ekr.20150205181818.5: *4* LeoQtLog.scrollToEnd
     def scrollToEnd(self, tabName='Log'):
         """Scroll the log to the end."""
@@ -3328,7 +3339,6 @@ class LeoQtLog(leoFrame.LeoLog):
         w.moveCursor(MoveOperation.End)
         sb.setSliderPosition(pos)
         w.repaint()  # Slow, but essential.
-    #@+node:ekr.20120913110135.10613: *3* LeoQtLog.putImage
     #@+node:ekr.20110605121601.18324: *3* LeoQtLog.Tab
     #@+node:ekr.20110605121601.18325: *4* LeoQtLog.clearTab
     def clearTab(self, tabName, wrap='none'):

@@ -7143,7 +7143,7 @@ def executeFile(filename: str, options: str='') -> None:
     g.pr(so, se)
 #@+node:ekr.20040321065415: *3* g.find*Node*
 #@+others
-#@+node:ekr.20210303123423.3: *4* findNodeAnywhere
+#@+node:ekr.20210303123423.3: *4* g.findNodeAnywhere
 def findNodeAnywhere(c: Cmdr, headline: str, exact: bool=True) -> Optional[Pos]:
     h = headline.strip()
     for p in c.all_unique_positions(copy=False):
@@ -7154,11 +7154,11 @@ def findNodeAnywhere(c: Cmdr, headline: str, exact: bool=True) -> Optional[Pos]:
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123525.1: *4* findNodeByPath
+#@+node:ekr.20210303123525.1: *4* g.findNodeByPath
 def findNodeByPath(c: Cmdr, path: str) -> Optional[Pos]:
     """Return the first @<file> node in Cmdr c whose path is given."""
     if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
-        g.trace(f"path not absolute: {path}")
+        g.trace(f"path not absolute: {repr(path)}")
         return None
     path = g.os_path_normpath(path)  # #2049. Do *not* use os.path.normpath.
     for p in c.all_positions():
@@ -7166,7 +7166,7 @@ def findNodeByPath(c: Cmdr, path: str) -> Optional[Pos]:
             if path == g.os_path_normpath(g.fullPath(c, p)):  # #2049. Do *not* use os.path.normpath.
                 return p
     return None
-#@+node:ekr.20210303123423.1: *4* findNodeInChildren
+#@+node:ekr.20210303123423.1: *4* g.findNodeInChildren
 def findNodeInChildren(c: Cmdr, p: Pos, headline: str, exact: bool=True) -> Optional[Pos]:
     """Search for a node in v's tree matching the given headline."""
     p1 = p.copy()
@@ -7179,7 +7179,7 @@ def findNodeInChildren(c: Cmdr, p: Pos, headline: str, exact: bool=True) -> Opti
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123423.2: *4* findNodeInTree
+#@+node:ekr.20210303123423.2: *4* g.findNodeInTree
 def findNodeInTree(c: Cmdr, p: Pos, headline: str, exact: bool=True) -> Optional[Pos]:
     """Search for a node in v's tree matching the given headline."""
     h = headline.strip()
@@ -7192,7 +7192,7 @@ def findNodeInTree(c: Cmdr, p: Pos, headline: str, exact: bool=True) -> Optional
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-#@+node:ekr.20210303123423.4: *4* findTopLevelNode
+#@+node:ekr.20210303123423.4: *4* g.findTopLevelNode
 def findTopLevelNode(c: Cmdr, headline: str, exact: bool=True) -> Optional[Pos]:
     h = headline.strip()
     for p in c.rootPosition().self_and_siblings(copy=False):

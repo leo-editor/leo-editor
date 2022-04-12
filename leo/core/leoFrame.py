@@ -7,12 +7,14 @@ These classes should be overridden to create frames for a particular gui.
 """
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
-import time
+import os
+import re
+from typing import List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
 from leo.core import leoNodes
-assert time
+
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -1035,6 +1037,11 @@ class LeoFrame:
         # Update the widget.
         if i != j:
             w.delete(i, j)
+        # #2593: Replace link patterns with html links.
+        if wname.startswith('log'):
+            s = c.frame.log.put_html_links(s)
+            if s is None:
+                return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
@@ -1260,14 +1267,81 @@ class LeoLog:
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self):
         return len([val for val in list(self.frameDict.values()) if val is not None])
-    #@+node:ekr.20070302101304: *3* LeoLog.put & putnl
+    #@+node:ekr.20070302101304: *3* LeoLog.put, putnl & helper
     # All output to the log stream eventually comes here.
 
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         print(s)
 
     def putnl(self, tabName='Log'):
-        pass  # print ('')
+        pass
+    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helper
+    # To do: error patterns for black and pyflakes.
+
+    mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
+    pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
+    python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
+
+    error_patterns = (mypy_pat, pylint_pat, python_pat)
+
+    link_table: List[Tuple[int, int, re.Pattern]] = [
+        # (fn_i, line_i, pattern)
+        (1, 2, mypy_pat),
+        (1, 2, pylint_pat),
+        (1, 2, python_pat),
+    ]
+
+    def put_html_links(self, s: str) -> Optional[str]:
+        """
+        Case 1: if s contains any matches against known error patterns.
+                Output lines, one-by-one, to the log.
+                Return None, as a flag to LeoFrame.pastText
+        Case 2: Return s
+
+        """
+        c = self.c
+        lines = g.splitLines(s)
+        # Step 1: return s if no lines match. This is an efficiency measure.
+        if not any(pat.match(line) for line in lines for pat in self.error_patterns):
+            # g.trace('No patterns matched')
+            return s
+        # Step 2: Output each line using log.put, with or without a nodeLink kwarg
+        for line in lines:
+            for fn_i, line_i, pattern in self.link_table:
+                m = pattern.match(line)
+                if m:
+                    filename = m.group(fn_i)
+                    line_number = m.group(line_i)
+                    p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
+                    if p:
+                        url = p.get_UNL()
+                        self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                    else:
+                        # g.trace('Not found', filename)
+                        self.put(line)
+                    break
+            else:  # no match
+                self.put(line)
+        return None
+    #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
+    def find_at_file_node(self, filename):
+        """Find a position corresponding to filename s"""
+        c = self.c
+        target1 = os.path.normpath(filename)
+        parts = target1.split(os.sep)
+        candidates = list(p for p in c.all_positions() if p.isAnyAtFileNode())
+        while parts:
+            target = os.sep.join(parts)
+            parts.pop(0)
+            # Search twice, prefering exact matches.
+            for p in candidates:
+                if target == os.path.normpath(p.anyAtFileNodeName()):
+                    return p
+            for p in candidates:
+                if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
+                    return p
+        return None
+
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName, newName):
         pass
@@ -1992,7 +2066,7 @@ class NullLog(LeoLog):
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
-        if self.enabled:
+        if self.enabled and not g.unitTesting:
             try:
                 g.pr(s, newline=False)
             except UnicodeError:
@@ -2000,7 +2074,7 @@ class NullLog(LeoLog):
                 g.pr(s, newline=False)
 
     def putnl(self, tabName='Log'):
-        if self.enabled:
+        if self.enabled and not g.unitTesting:
             g.pr('')
     #@+node:ekr.20060124085830: *3* NullLog.tabs
     def clearTab(self, tabName, wrap='none'):
