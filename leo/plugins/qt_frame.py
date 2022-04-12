@@ -3274,10 +3274,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w.repaint()  # Slow, but essential.
     #@+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
     def to_html(self, color: str, s: str) -> str:
-        """
-        Convert one line (in s) to html.
-        """
-        g.trace('----', repr(s))
+        """Convert s to html."""
         s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         # #884: Always convert leading blanks and tabs to &nbsp.
         n = len(s) - len(s.lstrip())
