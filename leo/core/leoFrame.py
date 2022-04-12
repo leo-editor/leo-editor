@@ -1275,14 +1275,6 @@ class LeoLog:
 
     def putnl(self, tabName='Log'):
         pass
-
-    ###
-    # def put_html_links(self, s):
-        # """
-        # LeoLog.put_html_links.
-        # A do-nothing base-class method, over-ridden by LeoQtLog.put_html_links.
-        # """
-        # return s
     #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links
     # To do: error patterns for black and pyflakes.
 
