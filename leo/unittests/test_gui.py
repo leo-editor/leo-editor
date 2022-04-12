@@ -109,7 +109,7 @@ class TestQtGui(LeoUnitTest):
         p2.h = '@file test_file.py'
         # Run the tests.
         table = (
-            (None, r'File "test_file.py", line 5\n'),
+            (None, 'File "test_file.py", line 5\n'),
             ('same', 'Hello world\n'),
         )
         for flag, s in table:

@@ -7,14 +7,14 @@ These classes should be overridden to create frames for a particular gui.
 """
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
+import os
 import re
-import time
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
 from leo.core import leoNodes
-assert time
+
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -1275,12 +1275,12 @@ class LeoLog:
 
     def putnl(self, tabName='Log'):
         pass
-    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links
+    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helper
     # To do: error patterns for black and pyflakes.
 
     mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
-    pylint_pat = re.compile(r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$')
-    python_pat = re.compile(r'^\s*File "(.*?)",\s*line ([0-9]+)')
+    pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
+    python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
 
     error_patterns = (mypy_pat, pylint_pat, python_pat)
 
@@ -1300,20 +1300,10 @@ class LeoLog:
 
         """
         c = self.c
-
-        def find(filename):
-            """Find a position corresponding to filename s"""
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    if filename == p.anyAtFileNodeName():
-                        return p
-                    if filename == g.os_path_normpath(g.fullPath(c, p)):
-                        return p
-            return None
-
         lines = g.splitLines(s)
         # Step 1: return s if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
+            # g.trace('No patterns matched')
             return s
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg
         for line in lines:
@@ -1322,16 +1312,36 @@ class LeoLog:
                 if m:
                     filename = m.group(fn_i)
                     line_number = m.group(line_i)
-                    p = find(filename)  # Try to find a matching @<file> node.
+                    p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
                     if p:
                         url = p.get_UNL()
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
+                        g.trace('Not found', filename)
                         self.put(line)
                     break
             else:  # no match
                 self.put(line)
         return None
+    #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
+    def find_at_file_node(self, filename):
+        """Find a position corresponding to filename s"""
+        c = self.c
+        target1 = os.path.normpath(filename)
+        parts = target1.split(os.sep)
+        candidates = list(p for p in c.all_positions() if p.isAnyAtFileNode())
+        while parts:
+            target = os.sep.join(parts)
+            parts.pop(0)
+            # Search twice, prefering exact matches.
+            for p in candidates:
+                if target == os.path.normpath(p.anyAtFileNodeName()):
+                    return p
+            for p in candidates:
+                if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
+                    return p
+        return None
+
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName, newName):
         pass
