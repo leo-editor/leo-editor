@@ -3235,16 +3235,21 @@ class LeoQtLog(leoFrame.LeoLog):
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
     #@+node:ekr.20220410180439.1: *4* LeoQtLog.create_html_links & helpers
-    ### To do: handle black and pyflakes.
+    #@+<< define error patterns >>
+    #@+node:ekr.20220411165048.1: *5* << define error patterns >>
+    # To do: error patterns for black and pyflakes.
 
     mypy_s = r'^(.+):([0-9]+): (error|note): (.*)\s*$'
     pylint_s = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-    python_s = r'Syntax error in: (@file|@edit)?\s*(.*?)\n(\s*[0-9]+:.*?\n)+'
+
+    # Python: filename = m.group(1), line = part of m.group(2)
+    python_s = r'File "(.*?)", line ([0-9]+)'
+    #@-<< define error patterns >>
 
     link_patterns: List[Tuple[str, Any]] = [
         ('mypy', re.compile(mypy_s)),
         ('pylint', re.compile(pylint_s)),
-        ('python', re.compile(python_s, re.MULTILINE)),
+        ('python', re.compile(python_s)),  ###, re.MULTILINE)),
     ]
 
     #@+<< define match handlers >>
@@ -3253,7 +3258,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # allowing the number and order of groups to vary.
 
     def handle_mypy_match(self, m: re.Match) -> Tuple[str, int]:
-        url, line = 'mypy:xyzzy', 666
+        url, line = 'mypy:xyzzy', '666'
         return url, line
 
     def handle_pylint_match(self, m: re.Match) -> Tuple[str, int]:
@@ -3261,7 +3266,8 @@ class LeoQtLog(leoFrame.LeoLog):
         return url, line
 
     def handle_python_match(self, m: re.Match) -> Tuple[str, int]:
-        url, line = 'python:xyzzy', 666
+        # url, line = 'python:xyzzy', 666
+        url, line = m.group(1), m.group(2)
         return url, line
     #@-<< define match handlers >>
 
@@ -3271,8 +3277,11 @@ class LeoQtLog(leoFrame.LeoLog):
         'python': handle_python_match,
     }
 
-    def create_html_links(self, s, w, color='black'):
+    def create_html_links(self, s: str, w: QtWidgets.QTextEdit, color: str='black'):
         """
+        Return s, with all lines containing a match against a known pattern
+        converted to html representing clickable link.
+        
         Search for lines matching message patterns of known tools.
         If found, create clickable links, similar to LeoQtLog.put.
 
@@ -3283,12 +3292,13 @@ class LeoQtLog(leoFrame.LeoLog):
         if not isinstance(widget, QtWidgets.QTextEdit):
             return s
         # For each line, search for a match against known patterns.
+        result = []
         for line in g.splitLines(s):
             for kind, pattern in self.link_patterns:
                 m = pattern.match(line)
                 if m:
                     handler = self.link_handlers.get(kind)
-                    url, line = handler(m)
+                    url, line = handler(self, m)
                     html_line = self.to_html(color, line)
                     # Similar to code in LeoQtLog.put.
                     s = f'<font color="{color}">{s}</font>'
@@ -3299,10 +3309,11 @@ class LeoQtLog(leoFrame.LeoLog):
                             url.startswith(scheme + ':///')
                         ):
                             url = url.replace('://', ':///', 1)
-                    s = f'<a href="{url}" title="{url}">{s}</a>'
-        if 0: ### Do later???
-            widget.insertHtml(s)
-        return s
+                    result.append(f'<a href="{url}" title="{url}">{s}</a>\n')
+                    break
+            else:  # no match
+                result.append(line)
+        return ''.join(result)
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         """
