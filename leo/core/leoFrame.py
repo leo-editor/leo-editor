@@ -1278,7 +1278,6 @@ class LeoLog:
     #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links
     # To do: error patterns for black and pyflakes.
 
-
     mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
     pylint_pat = re.compile(r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$')
     python_pat = re.compile(r'^\s*File "(.*?)",\s*line ([0-9]+)')
@@ -1301,7 +1300,7 @@ class LeoLog:
 
         """
         c = self.c
-        
+
         def find(filename):
             """Find a position corresponding to filename s"""
             for p in c.all_positions():
@@ -1310,13 +1309,11 @@ class LeoLog:
                         return p
                     if filename == g.os_path_normpath(g.fullPath(c, p)):
                         return p
-            ### g.trace('NOT FOUND', filename)  ###
             return None
 
         lines = g.splitLines(s)
         # Step 1: return s if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            g.trace('No patterns match')  ###
             return s
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg
         for line in lines:
