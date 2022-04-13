@@ -3,10 +3,8 @@
 #@+node:ekr.20210904022712.2: * @file ../unittests/commands/test_checkerCommands.py
 #@@first
 """Tests of leo.commands.leoCheckerCommands."""
-import re
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-import leo.commands.checkerCommands as checkerCommands
 #@+others
 #@+node:ekr.20210904022712.3: ** class TestChecker(LeoUnitTest):
 class TestChecker(LeoUnitTest):
