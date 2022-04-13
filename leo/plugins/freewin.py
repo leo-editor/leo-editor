@@ -45,7 +45,14 @@ Navigating
 ~~~~~~~~~~~
 
 #@@nocolor
-A Freewin window only ever displays the content of the node it ws opened on.  However, the selected node in the outline in the host can be changed, which will cause the host to navigate to the new selection.  This navigation can be done when a line in the visible text contains a `gnx` - a node identifier.  If the cursor is placed on a line with a gnx, or if that line is selected, and then <CONTROL-F9> is pressed, the host outline will navigate to the node having that gnx.
+
+A Freewin window only ever displays the content of the node it ws opened
+on. However, the selected node in the outline in the host can be changed,
+which will cause the host to navigate to the new selection. This navigation
+can be done when a line in the visible text contains a `gnx` - a node
+identifier. If the cursor is placed on a line with a gnx, or if that line
+is selected, and then <CONTROL-F9> is pressed, the host outline will
+navigate to the node having that gnx.
 
 A gnx looks like this::
 
@@ -55,11 +62,13 @@ A line with a gnx might look like this::
 
     :event: tom.20210623002747.1 `John DeBoer Opens General Store`_
 
-This capability is always available in the editor pane.  It can be available in the rendering pane (see below) if the setting::
+This capability is always available in the editor pane. It can be available
+in the rendering pane (see below) if the setting::
 
     @string fw-render-pane = nav-view
 
-is set in the @settings tree. The setting can be in the @settings tree of an outline or in myLeoSettings.leo.
+is set in the @settings tree. The setting can be in the @settings tree of
+an outline or in myLeoSettings.leo.
 #@+node:tom.20210604181030.1: *3* Rendering with Restructured Text
 Rendering with Restructured Text
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,11 +86,25 @@ link will be underlined even though it will not be active.
 
 Two types of rendering views are available, and can be chosen by a setting in the @settings tree.
 
-1. A well-rendered view with all the features of Restructured Text rendered in an appealing way (depending on the stylesheet used).  This view can be zoomed in or out using the standard browser keys: CTRL-+ and CTRL-- (Currently this feature does not work with Qt6).  A light or dark themed stylesheet is selected based on the dark or light character of your Leo theme.  You can supply your own stylesheet to use instead of the built-in ones.
+1. A well-rendered view with all the features of Restructured Text rendered
+   in an appealing way (depending on the stylesheet used). This view can be
+   zoomed in or out using the standard browser keys: CTRL-+ and CTRL--
+   (Currently this feature does not work with Qt6). A light or dark themed
+   stylesheet is selected based on the dark or light character of your Leo
+   theme. You can supply your own stylesheet to use instead of the built-in
+   ones.
 
-2. A less fully-rendered view that has the ability to cause the host outline to navigate to a node with a selected gnx - see the section on `Navigating` above.  Because of limitations of the Qt widget used for this view, the size cannot be zoomed and some visual features of the rendered RsT can be less refined.  The stylesheets for this view cannot be changed.  Automatic switching between light and dark themes is still done.
+2. A less fully-rendered view that has the ability to cause the host
+   outline to navigate to a node with a selected gnx - see the section on
+   `Navigating` above. Because of limitations of the Qt widget used for
+   this view, the size cannot be zoomed and some visual features of the
+   rendered RsT can be less refined. The stylesheets for this view cannot
+   be changed. Automatic switching between light and dark themes is still
+   done.
 
-View 1 is the default view, except when using PyQt6, which does not currently support its features.  To use View 2 instead, add the following setting to the setting tree of an outline or to myLeoSettings.leo:
+View 1 is the default view, except when using PyQt6, which does not
+currently support its features. To use View 2 instead, add the following
+setting to the setting tree of an outline or to myLeoSettings.leo:
 
     @string fw-render-pane = nav-view
 
@@ -100,7 +123,8 @@ with limitations discussed above discussed above.
 Commands
 ~~~~~~~~~
 
-Freewin has one minibuffer command: ``z-open-freewin``.  This opens a Freewin window linked to the currently selected node.
+Freewin has one minibuffer command: ``z-open-freewin``. This opens a
+Freewin window linked to the currently selected node.
 #@+node:tom.20210712005441.1: *3* Settings
 Settings
 ~~~~~~~~~
@@ -109,7 +133,9 @@ Freewin has two settings:
 
 1. ``@string fw-render-pane = nav-view``
 
-If present with this value, the rendered view will allow the <CNTL>-F7/F9 keys to work as they do in the Editor view.  The rendered view will not be able to display all the features that a full rendered view can.
+If present with this value, the rendered view will allow the <CNTL>-F7/F9
+keys to work as they do in the Editor view. The rendered view will not be
+able to display all the features that a full rendered view can.
 
 2. ``@bool fw-copy-html = False``
 
@@ -122,7 +148,9 @@ The appearance of the editing and rendering view is determined
 by stylesheets. Simple default stylesheets are built into the
 plugin for the editing view.
 
-For styling the Restructured Text rendering view (When the default "View 1" is in use) and for customized editing view stylesheets, the plugin looks in the user's `.leo/css directory`.
+For styling the Restructured Text rendering view (When the default "View 1"
+is in use) and for customized editing view stylesheets, the plugin looks in
+the user's `.leo/css directory`.
 
 The plugin attempts to determine whether the Leo theme in use
 is a dark theme or not.  If it is, a dark-themed stylesheet
@@ -247,9 +275,9 @@ if not qt_imports_ok:
 #@+node:tom.20210603000519.1: *3* <<import QWebView>>
 QWebView = None
 # Not imported above because we might have PyQt without QWebEngineWidgets
-from leo.core.leoQt import has_WebEngineWidgets
+from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
 if has_WebEngineWidgets:
-    from leo.core.leoQt import QtWebEngineWidgets
+    from leo.core.leoQt import QtWebEngineWidgets  # pylint: disable=wrong-import-position
     QWebView = QtWebEngineWidgets.QWebEngineView
 else:
     try:
@@ -594,7 +622,8 @@ def change_css_prop(css, prop, newval):
 
     The previous property value is replace with the new.
     """
-    if prop not in css: return
+    if prop not in css:
+        return None
     start = css.find(prop)
     colon = css[start:].find(':')
     frag = css[start + colon + 1 :]
@@ -711,7 +740,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
-        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)  # pylint: disable=no-member
 
         # Adjust editor stylesheet color to match body fg, bg
         fg, bg = get_body_colors(self.c)

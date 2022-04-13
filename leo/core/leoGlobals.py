@@ -2626,7 +2626,7 @@ class LinterTable():
             'plugins': [self.plugins],
             'tests': [self.tests],
         }
-        suppress_list = ['freewin.py',]
+        suppress_list = []
         functions = d.get(scope)
         paths = []
         if functions:
