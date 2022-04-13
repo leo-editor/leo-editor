@@ -902,7 +902,7 @@ class LeoApp:
     def createBrowserGui(self, fileName='', verbose=False):
         app = self
         try:
-            from flexx import flx
+            from flexx import flx  # type:ignore
             assert flx
         except Exception:
             g.es_exception()

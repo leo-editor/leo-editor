@@ -9,7 +9,7 @@ import os
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
-    from OpenGL import GL
+    from OpenGL import GL  # type:ignore
     assert GL  # To keep pyflakes happy.
 except Exception:
     # but not need to stop if it doesn't work

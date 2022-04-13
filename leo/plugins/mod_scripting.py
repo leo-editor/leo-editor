@@ -465,7 +465,7 @@ class ScriptingController:
             g.trace(self.debuggerKind)
             if self.debuggerKind == 'winpdb':
                 try:
-                    import rpdb2
+                    import rpdb2  # type:ignore
                     debugging = rpdb2.g_debugger is not None
                 except ImportError:
                     debugging = False

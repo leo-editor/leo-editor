@@ -4,6 +4,8 @@
 #@@first
 # This file is part of Leo: https://leoeditor.com
 # Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
+# type: ignore
+
 #@+<< docstring >>
 #@+node:ekr.20200113081838.1: ** << docstring >> (leoAst.py)
 """

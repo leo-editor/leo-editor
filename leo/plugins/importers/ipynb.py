@@ -6,7 +6,7 @@ from typing import List
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position as Pos
 try:
-    import nbformat
+    import nbformat  # type:ignore
 except ImportError:
     nbformat = None
 #@+others

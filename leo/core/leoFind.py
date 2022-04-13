@@ -5,7 +5,18 @@ import keyword
 import re
 import sys
 import time
+from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
+if TYPE_CHECKING:
+    from leo.core.leoNodes import Position as Pos
+    # from leo.core.leoQt import QtWidgets
+    Event = Any
+    Widget = Any  # To do.
+    Wrapper = Any  # To do.
+else:
+    Event = Pos = Widget = Wrapper = Any
+    
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -1151,7 +1162,7 @@ class LeoFind:
         result.append(s0[prev_i:])
         return count, ''.join(result)
     #@+node:ekr.20190602151043.2: *7* find._change_all_regex
-    def _change_all_regex(self, s):
+    def _change_all_regex(self, s: str) -> Tuple[int, str]:
         """
         Perform all regex find/replace on s.
         return (count, new_s)
@@ -1178,7 +1189,7 @@ class LeoFind:
         s = ''.join(result)
         return count, s
     #@+node:ekr.20190602155933.1: *7* find._change_all_word
-    def _change_all_word(self, s):
+    def _change_all_word(self, s: str) -> Tuple[int, str]:
         """
         Perform all whole word find/replace on s.
         return (count, new_s)
@@ -1228,7 +1239,7 @@ class LeoFind:
             return self.batch_word_replace(s)
         return self.batch_plain_replace(s)
     #@+node:ekr.20210110073117.24: *7* new:find.batch_plain_replace
-    def batch_plain_replace(self, s):
+    def batch_plain_replace(self, s: str) -> Tuple[int, str]:
         """
         Perform all plain find/replace on s.
         return (count, new_s)
@@ -1257,7 +1268,7 @@ class LeoFind:
         result.append(s0[prev_i:])
         return count, ''.join(result)
     #@+node:ekr.20210110073117.25: *7* new:find.batch_regex_replace
-    def batch_regex_replace(self, s):
+    def batch_regex_replace(self, s: str) -> Tuple[int, str]:
         """
         Perform all regex find/replace on s.
         return (count, new_s)
@@ -1284,7 +1295,7 @@ class LeoFind:
         s = ''.join(result)
         return count, s
     #@+node:ekr.20210110073117.26: *7* new:find.batch_word_replace
-    def batch_word_replace(self, s):
+    def batch_word_replace(self, s: str) -> Tuple[int, str]:
         """
         Perform all whole word find/replace on s.
         return (count, new_s)
@@ -1319,8 +1330,7 @@ class LeoFind:
     @cmd('clone-find-all')
     @cmd('find-clone-all')
     @cmd('cfa')
-    def interactive_clone_find_all(
-        self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    def interactive_clone_find_all(self, event: Event=None, preloaded: bool=None) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all ( aka find-clone-all and cfa).
 
@@ -1339,7 +1349,7 @@ class LeoFind:
             prefix='Clone Find All: ',
             handler=self.interactive_clone_find_all1)
 
-    def interactive_clone_find_all1(self, event):  # pragma: no cover (interactive)
+    def interactive_clone_find_all1(self, event: Event) -> int:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
@@ -1359,7 +1369,7 @@ class LeoFind:
         return count
     #@+node:ekr.20210114094846.1: *5* find.do_clone_find_all
     # A stand-alone method for unit testing.
-    def do_clone_find_all(self, settings):
+    def do_clone_find_all(self, settings: Dict) -> int:
         """
         Do the clone-all-find commands from settings.
 
@@ -1375,8 +1385,7 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(
-        self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    def interactive_cff(self, event: Event=None, preloaded: bool=None) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 
@@ -1396,7 +1405,7 @@ class LeoFind:
             prefix='Clone Find All Flattened: ',
             handler=self.interactive_cff1)
 
-    def interactive_cff1(self, event):  # pragma: no cover (interactive)
+    def interactive_cff1(self, event: Event) -> int:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
@@ -1416,7 +1425,7 @@ class LeoFind:
         return count
     #@+node:ekr.20210114094944.1: *5* find.do_clone_find_all_flattened
     # A stand-alone method for unit testing.
-    def do_clone_find_all_flattened(self, settings):
+    def do_clone_find_all_flattened(self, settings: Dict) -> int:
         """
         Do the clone-find-all-flattened command from the settings.
 
@@ -1432,7 +1441,7 @@ class LeoFind:
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
     @cmd('cft')
-    def interactive_clone_find_tag(self, event=None):  # pragma: no cover (interactive)
+    def interactive_clone_find_tag(self, event: Event=None) -> None:  # pragma: no cover (interactive)
         """
         clone-find-tag (aka find-clone-tag and cft).
 
@@ -1449,7 +1458,7 @@ class LeoFind:
                 prefix='Clone Find Tag: ',
                 handler=self.interactive_clone_find_tag1)
 
-    def interactive_clone_find_tag1(self, event):  # pragma: no cover (interactive)
+    def interactive_clone_find_tag1(self, event: Event) -> None:  # pragma: no cover (interactive)
         c, k = self.c, self.k
         # Settings...
         self.find_text = tag = k.arg
@@ -1461,7 +1470,7 @@ class LeoFind:
         c.treeWantsFocus()
     #@+node:ekr.20210110073117.11: *5* find.do_clone_find_tag & helper
     # A stand-alone method for unit tests.
-    def do_clone_find_tag(self, tag):
+    def do_clone_find_tag(self, tag: str) -> Tuple[int, bool]:
         """
         Do the clone-all-find commands from settings.
         Return (len(clones), found) for unit tests.
@@ -1508,7 +1517,7 @@ class LeoFind:
         return found
     #@+node:ekr.20131117164142.16998: *4* find.find-all & helper
     @cmd('find-all')
-    def interactive_find_all(self, event=None):  # pragma: no cover (interactive)
+    def interactive_find_all(self, event: Event=None) -> None:  # pragma: no cover (interactive)
         """
         Create a summary node containing descriptions of all matches of the
         search string.
@@ -1522,7 +1531,7 @@ class LeoFind:
             escape_handler=self.find_all_escape_handler,
         )
 
-    def interactive_find_all1(self, event=None):  # pragma: no cover (interactive)
+    def interactive_find_all1(self, event: Event=None) -> None:  # pragma: no cover (interactive)
         k = self.k
         # Settings.
         find_pattern = k.arg
@@ -1537,7 +1546,7 @@ class LeoFind:
         k.showStateAndMode()
         self.do_find_all(settings)
 
-    def find_all_escape_handler(self, event):  # pragma: no cover (interactive)
+    def find_all_escape_handler(self, event: Event) -> None:  # pragma: no cover (interactive)
         k = self.k
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         find_pattern = k.arg
@@ -1548,7 +1557,7 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.find_all_escape_handler2)
 
-    def find_all_escape_handler2(self, event):  # pragma: no cover (interactive)
+    def find_all_escape_handler2(self, event: Event) -> None:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1565,7 +1574,7 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         self.do_change_all(settings)
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
-    def do_find_all(self, settings):
+    def do_find_all(self, settings: Dict) -> int:
         """Top-level helper for find-all command."""
         c = self.c
         count = 0
@@ -1609,11 +1618,11 @@ class LeoFind:
         g.es("found", count, "matches for", self.find_text)
         return count
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper
-    def _find_all_helper(self, after, data, p, undoType):
+    def _find_all_helper(self, after: Pos, data: Dict, p: Pos, undoType: str) -> int:
         """Handle the find-all command from p to after."""
         c, log, u = self.c, self.c.frame.log, self.c.undoer
 
-        def put_link(line, line_number, p):  # pragma: no cover  # #2023
+        def put_link(line: str, line_number: int, p: Pos) -> None:  # pragma: no cover  # #2023
             """Put a link to the given line at the given line_number in p.h."""
 
             if g.unitTesting:
@@ -1671,7 +1680,7 @@ class LeoFind:
             self.restore(data)
         return count
     #@+node:ekr.20150717105329.1: *6* find._create_find_all_node
-    def _create_find_all_node(self, result):
+    def _create_find_all_node(self, result: List[str]) -> Pos:
         """Create a "Found All" node as the last node of the outline."""
         c = self.c
         found = c.lastTopLevel().insertAfter()
@@ -1682,7 +1691,7 @@ class LeoFind:
         found.b = f"# {status}\n{''.join(result)}"
         return found
     #@+node:ekr.20171226143621.1: *6* find._create_find_unique_node
-    def _create_find_unique_node(self):
+    def _create_find_unique_node(self) -> Pos:
         """Create a "Found Unique" node as the last node of the outline."""
         c = self.c
         found = c.lastTopLevel().insertAfter()
@@ -1693,8 +1702,7 @@ class LeoFind:
         return found
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
-    def interactive_find_all_unique_regex(
-        self, event=None):  # pragma: no cover (interactive)
+    def interactive_find_all_unique_regex(self, event: Event) -> None:  # pragma: no cover (interactive)
         """
         Create a summary node containing all unique matches of the regex search
         string. This command shows only the matched string itself.
@@ -1710,8 +1718,7 @@ class LeoFind:
             escape_handler=self.interactive_change_all_unique_regex1,
         )
 
-    def interactive_find_all_unique_regex1(
-        self, event=None):  # pragma: no cover (interactive)
+    def interactive_find_all_unique_regex1(self, event: Event) -> None:  # pragma: no cover (interactive)
         k = self.k
         # Settings...
         find_pattern = k.arg
@@ -1725,8 +1732,7 @@ class LeoFind:
         k.showStateAndMode()
         return self.do_find_all(settings)
 
-    def interactive_change_all_unique_regex1(
-        self, event):  # pragma: no cover (interactive)
+    def interactive_change_all_unique_regex1(self, event: Event) -> None:  # pragma: no cover (interactive)
         k = self.k
         find_pattern = self._sString = k.arg
         self.update_find_list(k.arg)
@@ -1735,8 +1741,7 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.interactive_change_all_unique_regex2)
 
-    def interactive_change_all_unique_regex2(
-        self, event):  # pragma: no cover (interactive)
+    def interactive_change_all_unique_regex2(self, event: Event) -> None:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1755,7 +1760,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
-    def interactive_re_search_forward(self, event):  # pragma: no cover (interactive)
+    def interactive_re_search_forward(self, event: Event) -> None:  # pragma: no cover (interactive)
         """Same as start-find, with regex."""
         # Set flag for show_find_options.
         self.pattern_match = True
@@ -1770,7 +1775,7 @@ class LeoFind:
         )
     #@+node:ekr.20210112044303.1: *4* find.re-search-backward
     @cmd('re-search-backward')
-    def interactive_re_search_backward(self, event):  # pragma: no cover (interactive)
+    def interactive_re_search_backward(self, event: Event) -> None:  # pragma: no cover (interactive)
         """Same as start-find, but with regex and in reverse."""
         # Set flags for show_find_options.
         self.reverse = True
@@ -1788,7 +1793,7 @@ class LeoFind:
 
     #@+node:ekr.20131117164142.17004: *4* find.search_backward
     @cmd('search-backward')
-    def interactive_search_backward(self, event):  # pragma: no cover (interactive)
+    def interactive_search_backward(self, event: Event) -> None:  # pragma: no cover (interactive)
         """Same as start-find, but in reverse."""
         # Set flag for show_find_options.
         self.reverse = True
@@ -1804,7 +1809,7 @@ class LeoFind:
     #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) & common states
     @cmd('start-search')
     @cmd('search-forward')  # Compatibility.
-    def start_search(self, event):  # pragma: no cover (interactive)
+    def start_search(self, event: Event) -> None:  # pragma: no cover (interactive)
         """
         The default binding of Ctrl-F.
 
@@ -1835,7 +1840,7 @@ class LeoFind:
 
     startSearch = start_search  # Compatibility. Do not delete.
     #@+node:ekr.20210117143611.1: *5* find.start_search1
-    def start_search1(self, event=None):  # pragma: no cover
+    def start_search1(self, event: Event=None) -> None:  # pragma: no cover
         """Common handler for use by vim commands and other find commands."""
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
@@ -1853,7 +1858,7 @@ class LeoFind:
         # Do the command!
         self.do_find_next(settings)  # Handles reverse.
     #@+node:ekr.20210117143614.1: *5* find._start_search_escape1
-    def start_search_escape1(self, event=None):  # pragma: no cover
+    def start_search_escape1(self, event: Event=None) -> None:  # pragma: no cover
         """
         Common escape handler for use by find commands.
 
@@ -1876,7 +1881,7 @@ class LeoFind:
         k.getNextArg(self._start_search_escape2)
 
     #@+node:ekr.20210117143615.1: *5* find._start_search_escape2
-    def _start_search_escape2(self, event):  # pragma: no cover
+    def _start_search_escape2(self, event: Event) -> None:  # pragma: no cover
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
@@ -1895,7 +1900,7 @@ class LeoFind:
         self.do_find_next(settings)
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
-    def interactive_tag_children(self, event=None):  # pragma: no cover (interactive)
+    def interactive_tag_children(self, event: Event=None) -> None:  # pragma: no cover (interactive)
         """tag-children: prompt for a tag and add it to all children of c.p."""
         w = self.c.frame.body.wrapper
         if not w:
@@ -1904,7 +1909,7 @@ class LeoFind:
             prefix='Tag Children: ',
             handler=self.interactive_tag_children1)
 
-    def interactive_tag_children1(self, event):  # pragma: no cover (interactive)
+    def interactive_tag_children1(self, event: Event) -> None:  # pragma: no cover (interactive)
         c, k, p = self.c, self.k, self.c.p
         # Settings...
         tag = k.arg
@@ -1915,7 +1920,7 @@ class LeoFind:
         self.do_tag_children(p, tag)
         c.treeWantsFocus()
     #@+node:ekr.20160920164418.4: *5* find.do_tag_children
-    def do_tag_children(self, p, tag):
+    def do_tag_children(self, p: Pos, tag: str) -> None:
         """Handle the tag-children command."""
         c = self.c
         tc = getattr(c, 'theTagController', None)
@@ -1931,7 +1936,7 @@ class LeoFind:
     #@+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
-    def word_search_forward(self, event):  # pragma: no cover (interactive)
+    def word_search_forward(self, event: Event) -> None:  # pragma: no cover (interactive)
         """Same as start-search, with whole_word setting."""
         # Set flag for show_find_options.
         self.whole_word = True
@@ -1946,7 +1951,7 @@ class LeoFind:
         )
     #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
-    def word_search_backward(self, event):  # pragma: no cover (interactive)
+    def word_search_backward(self, event: Event) -> None:  # pragma: no cover (interactive)
         # Set flags for show_find_options.
         self.reverse = True
         self.whole_world = True
@@ -1962,7 +1967,7 @@ class LeoFind:
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: helpers
     #@+node:ekr.20210110073117.9: *4* find._cf_helper & helpers
-    def _cf_helper(self, settings, flatten):  # Caller has  checked the settings.
+    def _cf_helper(self, settings: Dict, flatten: bool) -> int:  # Caller has  checked the settings.
         """
         The common part of the clone-find commands.
 
@@ -2019,7 +2024,7 @@ class LeoFind:
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
-    def _cfa_create_nodes(self, clones, flattened):
+    def _cfa_create_nodes(self, clones: List[Pos], flattened: bool) -> bool:
         """
         Create a "Found" node as the last node of the outline.
         Clone all positions in the clones set a children of found.
@@ -2045,7 +2050,7 @@ class LeoFind:
         found.v.children.sort(key=lambda v: v.h.lower())
         return found
     #@+node:ekr.20210110073117.10: *5* find._cfa_find_next_match (for unit tests)
-    def _cfa_find_next_match(self, p):
+    def _cfa_find_next_match(self, p: Pos) -> bool:
         """
         Find the next batch match at p.
         """
@@ -2062,7 +2067,7 @@ class LeoFind:
                 return True
         return False
     #@+node:ekr.20031218072017.3070: *4* find.change_selection
-    def change_selection(self, p):
+    def change_selection(self, p: Pos) -> bool:
         """Replace selection with self.change_text."""
         c, p, u = self.c, self.c.p, self.c.undoer
         wrapper = c.frame.body and c.frame.body.wrapper
@@ -2117,7 +2122,7 @@ class LeoFind:
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
     #@+node:ekr.20210110073117.31: *4* find.check_args
-    def check_args(self, tag):
+    def check_args(self, tag: str) -> bool:
         """Check the user arguments to a command."""
         if not self.search_headline and not self.search_body:
             if not g.unitTesting:
@@ -2129,7 +2134,7 @@ class LeoFind:
             return False
         return True
     #@+node:ekr.20210110073117.32: *4* find.compile_pattern
-    def compile_pattern(self):
+    def compile_pattern(self) -> bool:
         """Precompile the regexp pattern if necessary."""
         try:  # Precompile the regexp.
             # pylint: disable=no-member
@@ -2151,7 +2156,7 @@ class LeoFind:
                 g.warning('invalid regular expression:', self.find_text)
             return False
     #@+node:ekr.20031218072017.3075: *4* find.find_next_match & helpers
-    def find_next_match(self, p):
+    def find_next_match(self, p: Pos) -> Tuple[Pos, int, int]:
         """
         Resume the search where it left off.
 
@@ -2197,7 +2202,7 @@ class LeoFind:
                     self.work_sel = (ins, ins, ins)
         return None, None, None
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
-    def _fnm_next_after_fail(self, p):
+    def _fnm_next_after_fail(self, p: Pos) -> Optional[Pos]:
         """Return the next node after a failed search or None."""
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
@@ -2208,7 +2213,7 @@ class LeoFind:
             return None
         return p
     #@+node:ekr.20131123071505.16465: *6* find._fail_outside_range
-    def _fail_outside_range(self, p):  # pragma: no cover
+    def _fail_outside_range(self, p: Pos) -> bool:  # pragma: no cover
         """
         Return True if the search is about to go outside its range, assuming
         both the headline and body text of the present node have been searched.
@@ -2229,7 +2234,7 @@ class LeoFind:
                 return True
         return False  # Within range.
     #@+node:ekr.20131124060912.16473: *5* find._fnm_first_search_pane
-    def _fnm_first_search_pane(self):
+    def _fnm_first_search_pane(self) -> bool:
         """
         Set return the value of self.in_headline
         indicating which pane to search first.
@@ -2245,7 +2250,7 @@ class LeoFind:
         g.trace('can not happen: no search enabled')  # pragma: no cover
         return False  # pragma: no cover
     #@+node:ekr.20031218072017.3077: *5* find._fnm_search
-    def _fnm_search(self, p):
+    def _fnm_search(self, p: Pos) -> Tuple[int, int]:
         """
         Search self.work_s for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
@@ -2271,7 +2276,7 @@ class LeoFind:
         self.work_sel = (pos, newpos, ins)
         return pos, newpos
     #@+node:ekr.20131124060912.16472: *5* find._fnm_should_stay_in_node
-    def _fnm_should_stay_in_node(self, p):
+    def _fnm_should_stay_in_node(self, p: "Pos") -> bool:
         """Return True if the find should simply switch panes."""
         # Errors here cause the find command to fail badly.
         # Switch only if:
@@ -2284,7 +2289,7 @@ class LeoFind:
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
     #@+node:ekr.20210110073117.43: *4* find.inner_search_helper & helpers
-    def inner_search_helper(self, s, i, j, pattern):
+    def inner_search_helper(self, s: str, i: int, j: int, pattern: str) -> Tuple[int, int]:
         """
         Dispatch the proper search method based on settings.
         """
@@ -2304,7 +2309,7 @@ class LeoFind:
             pos, newpos = self._inner_search_plain(s, i, j, pattern, nocase, word)
         return pos, newpos
     #@+node:ekr.20210110073117.44: *5* find._inner_search_backward
-    def _inner_search_backward(self, s, i, j, pattern, nocase, word):
+    def _inner_search_backward(self, s: str, i: int, j: int, pattern: str, nocase: bool, word: bool) -> Tuple[int, int]:
         """
         rfind(sub [,start [,end]])
 
@@ -2341,7 +2346,7 @@ class LeoFind:
             return -1, -1
         return k, k + n
     #@+node:ekr.20210110073117.45: *5* find._inner_search_match_word
-    def _inner_search_match_word(self, s, i, pattern):
+    def _inner_search_match_word(self, s: str, i: int, pattern: str) -> bool:
         """Do a whole-word search."""
         pattern = self.replace_back_slashes(pattern)
         if not s or not pattern or not g.match(s, i, pattern):
@@ -2357,7 +2362,7 @@ class LeoFind:
         inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
         return not inWord
     #@+node:ekr.20210110073117.46: *5* find._inner_search_plain
-    def _inner_search_plain(self, s, i, j, pattern, nocase, word):
+    def _inner_search_plain(self, s: str, i: int, j: int, pattern: str, nocase: bool, word: bool) -> Tuple[int, int]:
         """Do a plain search."""
         if nocase:
             s = s.lower()
@@ -2378,7 +2383,7 @@ class LeoFind:
             return -1, -1
         return k, k + n
     #@+node:ekr.20210110073117.47: *5* find._inner_search_regex
-    def _inner_search_regex(self, s, i, j, pattern, backwards, nocase):
+    def _inner_search_regex(self, s: str, i: int, j: int, pattern: bool, backwards: bool, nocase: bool) -> Tuple[int, int]:
         """Called from inner_search_helper"""
         re_obj = self.re_obj  # Use the pre-compiled object
         if not re_obj:
@@ -2403,7 +2408,7 @@ class LeoFind:
         self.match_obj = None
         return -1, -1
     #@+node:ekr.20210110073117.48: *4* find.make_regex_subs
-    def make_regex_subs(self, change_text, groups):
+    def make_regex_subs(self, change_text: str, groups: List[int]) -> str:
         """
         Substitute group[i-1] for \\i strings in change_text.
 
@@ -2412,7 +2417,7 @@ class LeoFind:
 
         # g.printObj(list(groups), tag=f"groups in {change_text!r}")
 
-        def repl(match_object):
+        def repl(match_object: re.Match) -> str:
             """re.sub calls this function once per group."""
             # # 1494...
             n = int(match_object.group(1)) - 1
@@ -2432,7 +2437,7 @@ class LeoFind:
         result = re.sub(r'\\([0-9])', repl, change_text)
         return result
     #@+node:ekr.20131123071505.16467: *4* find.precompile_pattern
-    def precompile_pattern(self):
+    def precompile_pattern(self) -> bool:
         """Precompile the regexp pattern if necessary."""
         try:  # Precompile the regexp.
             # pylint: disable=no-member
@@ -2454,7 +2459,7 @@ class LeoFind:
                 g.warning('invalid regular expression:', self.find_text)  # pragma: no cover
             return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
-    def replace_back_slashes(self, s):
+    def replace_back_slashes(self, s: str) -> str:
         """Carefully replace backslashes in a search pattern."""
         # This is NOT the same as:
         #
@@ -2477,7 +2482,7 @@ class LeoFind:
         return s
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
-    def init_in_headline(self):
+    def init_in_headline(self) -> None:
         """
         Select the first pane to search for incremental searches and changes.
         This is called only at the start of each search.
@@ -2491,7 +2496,7 @@ class LeoFind:
         else:
             self.in_headline = self.search_headline
     #@+node:ekr.20131126085250.16651: *5* find.focus_in_tree
-    def focus_in_tree(self):
+    def focus_in_tree(self) -> bool:
         """
         Return True is the focus widget w is anywhere in the tree pane.
 
@@ -2511,7 +2516,7 @@ class LeoFind:
             val = w_name.startswith('head')  # pragma: no cover
         return val
     #@+node:ekr.20031218072017.3089: *4* find.restore
-    def restore(self, data):
+    def restore(self, data: Any) -> None:
         """
         Restore Leo's gui and settings from data, a g.Bunch.
         """
@@ -2531,7 +2536,7 @@ class LeoFind:
             w.seeInsertPoint()
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save
-    def save(self):
+    def save(self) -> Any:
         """Save everything needed to restore after a search fails."""
         c = self.c
         if self.in_headline:  # pragma: no cover
@@ -2551,7 +2556,7 @@ class LeoFind:
         )
         return data
     #@+node:ekr.20031218072017.3091: *4* find.show_success
-    def show_success(self, p, pos, newpos, showState=True):
+    def show_success(self, p: Pos, pos: int, newpos: int, showState: bool=True) -> "Widget":
         """Display the result of a successful find operation."""
         c = self.c
         # Set state vars.
@@ -2593,7 +2598,7 @@ class LeoFind:
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     #@+node:ekr.20131117164142.16941: *5* find.isearch_forward
     @cmd('isearch-forward')
-    def isearch_forward(self, event):  # pragma: no cover (cmd)
+    def isearch_forward(self, event: Event) -> None:  # pragma: no cover (cmd)
         """
         Begin a forward incremental search.
 
@@ -2608,7 +2613,7 @@ class LeoFind:
             forward=True, ignoreCase=False, regexp=False)
     #@+node:ekr.20131117164142.16942: *5* find.isearch_backward
     @cmd('isearch-backward')
-    def isearch_backward(self, event):  # pragma: no cover (cmd)
+    def isearch_backward(self, event: Event) -> None:  # pragma: no cover (cmd)
         """
         Begin a backward incremental search.
 
@@ -2623,7 +2628,7 @@ class LeoFind:
             forward=False, ignoreCase=False, regexp=False)
     #@+node:ekr.20131117164142.16943: *5* find.isearch_forward_regexp
     @cmd('isearch-forward-regexp')
-    def isearch_forward_regexp(self, event):  # pragma: no cover (cmd)
+    def isearch_forward_regexp(self, event: Event) -> None:  # pragma: no cover (cmd)
         """
         Begin a forward incremental regexp search.
 
@@ -2638,7 +2643,7 @@ class LeoFind:
             forward=True, ignoreCase=False, regexp=True)
     #@+node:ekr.20131117164142.16944: *5* find.isearch_backward_regexp
     @cmd('isearch-backward-regexp')
-    def isearch_backward_regexp(self, event):  # pragma: no cover (cmd)
+    def isearch_backward_regexp(self, event: Event) -> None:  # pragma: no cover (cmd)
         """
         Begin a backward incremental regexp search.
 
@@ -2653,7 +2658,7 @@ class LeoFind:
             forward=False, ignoreCase=False, regexp=True)
     #@+node:ekr.20131117164142.16945: *5* find.isearch_with_present_options
     @cmd('isearch-with-present-options')
-    def isearch_with_present_options(self, event):  # pragma: no cover (cmd)
+    def isearch_with_present_options(self, event: Event) -> None:  # pragma: no cover (cmd)
         """
         Begin an incremental search using find panel options.
 
@@ -2668,7 +2673,7 @@ class LeoFind:
             forward=None, ignoreCase=None, regexp=None)
     #@+node:ekr.20131117164142.16946: *4* LeoFind.Isearch utils
     #@+node:ekr.20131117164142.16947: *5* find.abort_search (incremental)
-    def abort_search(self):  # pragma: no cover (cmd)
+    def abort_search(self) -> None:  # pragma: no cover (cmd)
         """Restore the original position and selection."""
         c, k = self.c, self.k
         w = c.frame.body.wrapper
@@ -2681,13 +2686,13 @@ class LeoFind:
         c.bodyWantsFocus()
         w.setSelectionRange(i, j)
     #@+node:ekr.20131117164142.16948: *5* find.end_search
-    def end_search(self):  # pragma: no cover (cmd)
+    def end_search(self) -> None:  # pragma: no cover (cmd)
         c, k = self.c, self.k
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
     #@+node:ekr.20131117164142.16949: *5* find.iSearch_helper
-    def iSearch_helper(self, again=False):  # pragma: no cover (cmd)
+    def iSearch_helper(self, again: bool=False) -> None:  # pragma: no cover (cmd)
         """Handle the actual incremental search."""
         c, k, p = self.c, self.k, self.c.p
         reverse = not self.isearch_forward_flag
@@ -2741,7 +2746,7 @@ class LeoFind:
                     c, binding='BackSpace', char='\b', w=w)
                 k.updateLabel(event)
     #@+node:ekr.20131117164142.16950: *5* find.isearch_state_handler
-    def isearch_state_handler(self, event):  # pragma: no cover (cmd)
+    def isearch_state_handler(self, event: Event) -> None:  # pragma: no cover (cmd)
         """The state manager when the state is 'isearch"""
         # c = self.c
         k = self.k
@@ -2768,7 +2773,7 @@ class LeoFind:
             k.updateLabel(event)
             self.iSearch_helper()
     #@+node:ekr.20131117164142.16951: *5* find.isearch_backspace
-    def isearch_backspace(self):  # pragma: no cover (cmd)
+    def isearch_backspace(self) -> None:  # pragma: no cover (cmd)
 
         c = self.c
         if len(self.stack) <= 1:
@@ -2794,20 +2799,20 @@ class LeoFind:
         if len(self.stack) <= 1:
             self.abort_search()
     #@+node:ekr.20131117164142.16952: *5* find.get_strokes
-    def get_strokes(self, commandName):  # pragma: no cover (cmd)
+    def get_strokes(self, commandName: str) -> List[Tuple[str, str]]:  # pragma: no cover (cmd)
         aList = self.inverseBindingDict.get(commandName, [])
         return [key for pane, key in aList]
     #@+node:ekr.20131117164142.16953: *5* find.push & pop
-    def push(self, p, i, j, in_headline):  # pragma: no cover (cmd)
+    def push(self, p: Pos, i: int, j: int, in_headline: bool) -> None:  # pragma: no cover (cmd)
         data = p.copy(), i, j, in_headline
         self.stack.append(data)
 
-    def pop(self):  # pragma: no cover (cmd)
+    def pop(self) -> Tuple:  # pragma: no cover (cmd)
         data = self.stack.pop()
         p, i, j, in_headline = data
         return p, i, j, in_headline
     #@+node:ekr.20131117164142.16954: *5* find.set_widget
-    def set_widget(self):  # pragma: no cover (cmd)
+    def set_widget(self) -> "Widget":  # pragma: no cover (cmd)
         c, p = self.c, self.c.p
         wrapper = c.frame.body.wrapper
         if self.in_headline:
@@ -2828,7 +2833,7 @@ class LeoFind:
             c.bodyWantsFocus()
         return w
     #@+node:ekr.20131117164142.16955: *5* find.start_incremental
-    def start_incremental(self, event, commandName, forward, ignoreCase, regexp):  # pragma: no cover (cmd)
+    def start_incremental(self, event: Any, commandName: str, forward: bool, ignoreCase: bool, regexp: bool) -> None:  # pragma: no cover (cmd)
         c, k = self.c, self.k
         # None is a signal to get the option from the find tab.
         self.event = event
@@ -2854,7 +2859,7 @@ class LeoFind:
         c.minibufferWantsFocus()
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20131117164142.16992: *4* find.add_change_string_to_label
-    def add_change_string_to_label(self):  # pragma: no cover (cmd)
+    def add_change_string_to_label(self) -> None:  # pragma: no cover (cmd)
         """Add an unprotected change string to the minibuffer label."""
         c = self.c
         s = self.ftm.get_change_text()
@@ -2863,7 +2868,7 @@ class LeoFind:
             s = s[:-1]
         c.k.extendLabel(s, select=True, protect=False)
     #@+node:ekr.20131117164142.16993: *4* find.add_find_string_to_label
-    def add_find_string_to_label(self, protect=True):  # pragma: no cover (cmd)
+    def add_find_string_to_label(self, protect: bool=True) -> None:  # pragma: no cover (cmd)
         c, k = self.c, self.c.k
         ftm = c.findCommands.ftm
         s = ftm.get_find_text()
@@ -2872,7 +2877,7 @@ class LeoFind:
             s = s[:-1]
         k.extendLabel(s, select=True, protect=protect)
     #@+node:ekr.20210110073117.33: *4* find.compute_result_status
-    def compute_result_status(self, find_all_flag=False):  # pragma: no cover (cmd)
+    def compute_result_status(self, find_all_flag: bool=False) -> str:  # pragma: no cover (cmd)
         """Return the status to be shown in the status line after a find command completes."""
         # Too similar to another method...
         status = []
@@ -2890,11 +2895,11 @@ class LeoFind:
                 status.append(val)
         return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20131119204029.16479: *4* find.help_for_find_commands
-    def help_for_find_commands(self, event=None):  # pragma: no cover (cmd)
+    def help_for_find_commands(self, event: Any=None) -> None:  # pragma: no cover (cmd)
         """Called from Find panel.  Redirect."""
         self.c.helpCommands.help_for_find_commands(event)
     #@+node:ekr.20210111082524.1: *4* find.init_vim_search
-    def init_vim_search(self, pattern):  # pragma: no cover (cmd)
+    def init_vim_search(self, pattern: str) -> None:  # pragma: no cover (cmd)
         """Initialize searches in vim mode."""
         c = self.c
         if c.vim_mode and c.vimCommands:
@@ -2902,7 +2907,7 @@ class LeoFind:
                 find_pattern=pattern,
                 change_pattern=None)  # A flag.
     #@+node:ekr.20150629072547.1: *4* find.preload_find_pattern
-    def preload_find_pattern(self, w):  # pragma: no cover (cmd)
+    def preload_find_pattern(self, w: "Widget") -> None:  # pragma: no cover (cmd)
         """Preload the find pattern from the selected text of widget w."""
         c, ftm = self.c, self.ftm
         if not c.config.getBool('preload-find-pattern', default=False):
@@ -2924,7 +2929,7 @@ class LeoFind:
             ftm.set_find_text(s)
             ftm.init_focus()
     #@+node:ekr.20150619070602.1: *4* find.show_status
-    def show_status(self, found):
+    def show_status(self, found: bool) -> None:
         """Show the find status the Find dialog, if present, and the status line."""
         c = self.c
         status = 'found' if found else 'not found'
@@ -2940,13 +2945,13 @@ class LeoFind:
         if c.config.getBool("show-find-result-in-status") is not False:
             c.frame.putStatusLine(s, bg=bg, fg=fg)
     #@+node:ekr.20150615174549.1: *4* find.show_find_options_in_status_area & helper
-    def show_find_options_in_status_area(self):  # pragma: no cover (cmd)
+    def show_find_options_in_status_area(self) -> None:  # pragma: no cover (cmd)
         """Show find options in the status area."""
         c = self.c
         s = self.compute_find_options_in_status_area()
         c.frame.putStatusLine(s)
     #@+node:ekr.20171129211238.1: *5* find.compute_find_options_in_status_area
-    def compute_find_options_in_status_area(self):
+    def compute_find_options_in_status_area(self) -> str:
         c = self.c
         ftm = c.findCommands.ftm
         table = (
@@ -2970,7 +2975,7 @@ class LeoFind:
                 break
         return f"Find: {' '.join(result)}"
     #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
-    def start_state_machine(self, event, prefix, handler, escape_handler=None):  # pragma: no cover (cmd)
+    def start_state_machine(self, event: Any, prefix: str, handler: Callable, escape_handler: Callable=None) -> None:  # pragma: no cover (cmd)
         """
         Initialize and start the state machine used to get user arguments.
         """
@@ -2994,7 +2999,7 @@ class LeoFind:
         # Start the state maching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
 
-    def state0(self, event):  # pragma: no cover (cmd)
+    def state0(self, event: Any) -> None:  # pragma: no cover (cmd)
         """Dispatch the next handler."""
         k = self.k
         if k.getArgEscapeFlag:
@@ -3003,11 +3008,11 @@ class LeoFind:
         else:
             self.handler(event)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
-    def update_change_list(self, s):  # pragma: no cover (cmd)
+    def update_change_list(self, s: str) -> None:  # pragma: no cover (cmd)
         if s not in self.changeTextList:
             self.changeTextList.append(s)
 
-    def update_find_list(self, s):  # pragma: no cover (cmd)
+    def update_find_list(self, s: str) -> None:  # pragma: no cover (cmd)
         if s not in self.findTextList:
             self.findTextList.append(s)
     #@-others

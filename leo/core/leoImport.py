@@ -24,7 +24,7 @@ except ImportError:
     # print('leoImport.py: can not import docutils')
     docutils = None  # type:ignore
 try:
-    import lxml
+    import lxml  # type:ignore
 except ImportError:
     lxml = None
 #

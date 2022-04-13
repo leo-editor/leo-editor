@@ -19,7 +19,7 @@ from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
 try:
-    import jedi
+    import jedi  # type:ignore
 except ImportError:
     jedi = None
 #@-<< imports >>

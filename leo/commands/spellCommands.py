@@ -10,7 +10,7 @@ try:
     # pylint: disable=import-error
         # We can't assume the user has this.
     # pip install pyenchant
-    import enchant
+    import enchant  # type:ignore
 except Exception:  # May throw WinError(!)
     enchant = None
 from leo.commands.baseCommands import BaseEditCommandsClass

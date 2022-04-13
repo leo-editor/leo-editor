@@ -2584,7 +2584,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     def importJupyterNotebook(self, event):  # pragma: no cover
         """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
         try:
-            import nbformat
+            import nbformat  # type:ignore
             assert nbformat
         except ImportError:
             g.es_print('import-jupyter-notebook requires nbformat package')
