@@ -4,6 +4,7 @@
 #@@first
 """Tests of leo.commands.leoCheckerCommands."""
 import re
+from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 import leo.commands.checkerCommands as checkerCommands
 #@+others
@@ -14,8 +15,7 @@ class TestChecker(LeoUnitTest):
     #@+node:ekr.20210904031436.1: *3* test_regex_for_pylint
     def test_regex_for_pylint(self):
         c = self.c
-        x = checkerCommands.PylintCommand(c)
-        pattern = re.compile(x.link_pattern)
+        pattern = g.pylint_pat
         table = (
             r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',
             r'c:\test\pylint_links_test.py:6:3: C1801: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)',  # pylint: disable=line-too-long

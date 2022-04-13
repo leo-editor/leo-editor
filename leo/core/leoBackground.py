@@ -9,7 +9,7 @@ import re
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Callable, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 if TYPE_CHECKING:  # Always False at runtime.
@@ -18,6 +18,8 @@ if TYPE_CHECKING:  # Always False at runtime.
 else:
     Cmdr = Pos = Any
 #@-<< leoBackground.py imports >>
+
+Pattern = Union[re.Pattern, str]
 
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
@@ -71,18 +73,18 @@ class BackgroundProcessManager:
             c: Cmdr,
             kind: str,
             fn: str,
-            link_pattern: Optional[str],
-            link_root: Optional[Pos],
+            link_pattern: Optional[Pattern]=None,
+            link_root: Optional[Pos]=None,
         ) -> None:
             """Ctor for the ProcessData class."""
             self.c = c
             self.callback: Callable = None
             self.fn = fn
             self.kind = kind
-            self.link_pattern = None
+            self.link_pattern = link_pattern
             self.link_root = link_root
-            # Check and compile the link pattern.
-            if link_pattern and isinstance(link_pattern, str):
+            # Auto-compile string patterns.
+            if isinstance(link_pattern, str):
                 try:
                     self.link_pattern = re.compile(link_pattern)
                 except Exception:
@@ -94,11 +96,12 @@ class BackgroundProcessManager:
                 f"c: {self.c.shortFileName()} "
                 f"kind: {self.kind} "
                 f"callback: {id(self.callback) if self.callback else None} "
-                f"fn: {self.fn}"
+                f"fn: {self.fn}\n"
+                # f"link_pattern: {self.link_pattern}, link_root: {self.link_root.h}"
             )
 
         __str__ = __repr__
-    #@+node:ekr.20180522085807.1: *3* bpm.__init__
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__ (changed to give mypy error)
     def __init__(self) -> None:
         """Ctor for the base BackgroundProcessManager class."""
         self.data: Any = None  # a ProcessData instance.
@@ -197,6 +200,7 @@ class BackgroundProcessManager:
         tag = 'BPM.put_log'
         #
         # Warning: don't use g.es or g.es_print here!
+        #
         s = s and s.rstrip()
         if not s:
             return
@@ -208,58 +212,13 @@ class BackgroundProcessManager:
         if not c or not c.exists:
             print(f"{tag} NO C")
             return
-        log = c.frame.log
-        link_pattern, link_root = data.link_pattern, data.link_root
-        #
         # Always print the message.
         print(s)
-        #
-        # Put the plain message if the link is not valid.
-        if not link_pattern:
-            log.put(s + '\n')
-            return
-        try:
-            m = link_pattern.match(s)
-        except Exception:
-            m = None
-        if not m:
-            # print(f"{tag}: NO LINK_PATTERN MATCH")
-            log.put(s + '\n')
-            return
-        #
-        # Find the line number, and possibly the filename.
-        if link_root:
-            # m.group(1) should be the line number.
-            try:
-                line = int(m.group(1))
-            except Exception:
-                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
-                log.put(s + '\n')
-                return
-        else:
-            # m.group(1) should be the path to the file.
-            path = m.group(1)
-            # m.group(2) should be the line number.
-            try:
-                line = int(m.group(2))
-            except Exception:
-                print(f"{tag}: BAD LINE NUMBER:{m.group(2)}")
-                log.put(s + '\n')
-                return
-            # Look for the @<file> node.
-            link_root = g.findNodeByPath(c, path)
-            if not link_root:
-                if path not in self.unknown_path_names:
-                    self.unknown_path_names.append(path)
-                    print('')
-                    print(f"{tag}: no @<file> node found: {path}")
-                    print('')
-                log.put(s + '\n')
-                return
-        #
-        # Put a clickable link.
-        unl = link_root.get_UNL()
-        log.put(s + '\n', nodeLink=f"{unl}::{-line}")  # Global line.
+        # Let log.put_html_links do all the work!
+        log = c.frame.log
+        result = log.put_html_links(s)
+        if result:
+            log.put(s)
     #@+node:ekr.20161028063800.1: *3* bpm.start_next
     def start_next(self) -> None:
         """The previous process has finished. Start the next one."""
@@ -267,20 +226,22 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()  # The callback starts the next process.
         else:
-            g.es_print(f"{self.data.kind} finished")
+            c, kind = self.data.c, self.data.kind
+            message = f"{kind}: finished"
+            print(message)
+            c.frame.log.put(message + '\n')  # Don't use g.es here.
             self.data = None
             self.pid = None
             self.timer.stop()
+
     #@+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
     def start_process(self, c: Cmdr, command: str, kind: str,
         fn: str=None,
-        link_pattern: str=None,  # None, string, or re.pattern.
+        link_pattern: Pattern=None,  # None, string, or re.pattern.
         link_root: Pos=None,
     ) -> None:
         """
         Start or queue a process described by command and fn.
-
-        Don't set self.data unless we start the process!
         """
         # Note: we can't set shell=True (at least on Windows) because the process
         #       terminates immediately.
@@ -290,7 +251,8 @@ class BackgroundProcessManager:
         #
         #       However, we do not expect tools such as pylint, mypy, etc.
         #       to create error messages that contain shell injection attacks!
-        def open_process() -> Any:
+        def open_process(data: Any) -> Any:
+            g.es_print(f'{data.kind}: {g.shortFileName(data.fn)}')
             proc = subprocess.Popen(
                 command,
                 shell=False,
@@ -305,16 +267,15 @@ class BackgroundProcessManager:
                 self.timer.start(100)
             thread.start_new_thread(self.thrd_pipe_proc, ())
 
+        # Don't set self.data unless we start the process!
         self.process_return_data = []
         data = self.ProcessData(c, kind, fn, link_pattern, link_root)
-
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
             def callback(data: Any=data, kind: str=kind) -> None:
                 """This is called when a process ends."""
-                g.es_print(f'{kind}: {g.shortFileName(data.fn)}')
-                self.pid = open_process()
+                self.pid = open_process(data)
                 start_timer()
 
             data.callback = callback
@@ -323,8 +284,7 @@ class BackgroundProcessManager:
             # Start the process immediately.
             self.data = data
             self.kind = kind
-            g.es_print(f'{kind}: {g.shortFileName(fn)}')
-            self.pid = open_process()
+            self.pid = open_process(data)
             start_timer()
     #@-others
 #@-others
