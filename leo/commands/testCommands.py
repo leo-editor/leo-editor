@@ -203,7 +203,7 @@ def test_bridge(event=None):
 @g.command('test-checker-commands')
 def test_checker_commands(event=None):
     """Run all unit tests for leoCheckerCommands.py."""
-    g.run_unit_tests('leo.unittests.commands.test_leoCheckerCommands')
+    g.run_unit_tests('leo.unittests.commands.test_checkerCommands')
 #@+node:ekr.20210907103024.17: *3* test-colorizer
 @g.command('test-colorizer')
 def test_colorizer(event=None):

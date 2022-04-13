@@ -9,7 +9,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
 import re
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
@@ -1039,8 +1039,7 @@ class LeoFrame:
             w.delete(i, j)
         # #2593: Replace link patterns with html links.
         if wname.startswith('log'):
-            s = c.frame.log.put_html_links(s)
-            if s is None:
+            if c.frame.log.put_html_links(s):
                 return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
@@ -1276,53 +1275,48 @@ class LeoLog:
     def putnl(self, tabName='Log'):
         pass
     #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helper
-    # To do: error patterns for black and pyflakes.
+    error_patterns = (g.mypy_pat, g.pylint_pat, g.python_pat)
 
-    mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
-    pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
-    python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
-
-    error_patterns = (mypy_pat, pylint_pat, python_pat)
+    # This table encodes which groups extract the filename and line_number from global regex patterns.
+    # This is the *only* method that should need to know this information!
 
     link_table: List[Tuple[int, int, re.Pattern]] = [
-        # (fn_i, line_i, pattern)
-        (1, 2, mypy_pat),
-        (1, 2, pylint_pat),
-        (1, 2, python_pat),
+        # (filename_i, line_number_i, pattern)
+        (1, 2, g.mypy_pat),
+        (1, 2, g.pylint_pat),
+        (1, 2, g.python_pat),
     ]
 
-    def put_html_links(self, s: str) -> Optional[str]:
+    def put_html_links(self, s: str) -> bool:
         """
-        Case 1: if s contains any matches against known error patterns.
-                Output lines, one-by-one, to the log.
-                Return None, as a flag to LeoFrame.pastText
-        Case 2: Return s
-
+        If *any* line is s contains a matches against known error patterns,
+        then output *all* lines in s to the log, and return True.
+        Otherwise, return False
         """
         c = self.c
         lines = g.splitLines(s)
         # Step 1: return s if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            # g.trace('No patterns matched')
-            return s
-        # Step 2: Output each line using log.put, with or without a nodeLink kwarg
+            return False  # The user must handle s.
+        # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         for line in lines:
-            for fn_i, line_i, pattern in self.link_table:
+            for filename_i, line_number_i, pattern in self.link_table:
                 m = pattern.match(line)
                 if m:
-                    filename = m.group(fn_i)
-                    line_number = m.group(line_i)
+                    filename = m.group(filename_i)
+                    line_number = m.group(line_number_i)
                     p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
                     if p:
                         url = p.get_UNL()
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
-                        # g.trace('Not found', filename)
+                        # An unusual case, but not worth a message.
                         self.put(line)
                     break
             else:  # no match
                 self.put(line)
-        return None
+        return True  # This method has completely handled s.
+
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
     def find_at_file_node(self, filename):
         """Find a position corresponding to filename s"""

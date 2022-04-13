@@ -110,22 +110,21 @@ class TestQtGui(LeoUnitTest):
         # Run the tests.
         table = (
             # python.
-            (None, 'File "test_file.py", line 5'),
+            (True, 'File "test_file.py", line 5'),
             # pylint.
-            (None, r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)'),
+            (True, r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)'),
             # mypy...
-            (None, 'test_file.py:116: error: Function is missing a return type annotation  [no-untyped-def]'),
-            (None, r'leo\core\test_file.py:116: note: Use "-> None" if function does not return a value'),
-            (True, 'Found 1 error in 1 file (checked 1 source file)'),
-            (True, 'mypy: done'),
+            (True, 'test_file.py:116: error: Function is missing a return type annotation  [no-untyped-def]'),
+            (True, r'leo\core\test_file.py:116: note: Use "-> None" if function does not return a value'),
+            (False, 'Found 1 error in 1 file (checked 1 source file)'),
+            (False, 'mypy: done'),
             # Random output.
-            (True, 'Hello world\n'),
+            (False, 'Hello world\n'),
         )
-        for flag, s in table:
+        for expected, s in table:
             s = s.rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
-            expected_result = s if flag else None
-            self.assertEqual(result, expected_result)
+            self.assertEqual(result, expected, msg=repr(s))
     #@-others
 #@-others
 #@-leo

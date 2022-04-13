@@ -3244,6 +3244,11 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
+        #
+        # *Note*: For reasons that I don't fully understand,
+        #         all lines sent to the log must now end in a newline.
+        #   
+        s = s.rstrip() + '\n'
         color = self.resolve_color(color)
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
