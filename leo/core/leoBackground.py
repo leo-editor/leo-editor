@@ -101,7 +101,7 @@ class BackgroundProcessManager:
             )
 
         __str__ = __repr__
-    #@+node:ekr.20180522085807.1: *3* bpm.__init__ (changed to give mypy error)
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self) -> None:
         """Ctor for the base BackgroundProcessManager class."""
         self.data: Any = None  # a ProcessData instance.
@@ -109,7 +109,6 @@ class BackgroundProcessManager:
         self.pid: Any = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: List[str] = None
-
         # #2528: A timer that runs independently of idle time.
         self.timer = None
         if QtCore:
