@@ -82,8 +82,7 @@ def run(fn, verbose):
         command = shlex.split(command)
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
-    proc.communicate()
-        # Wait: Not waiting is confusing for the user.
+    proc.communicate()  # Wait: Not waiting is confusing for the user.
 #@+node:ekr.20140526142452.17594: ** report_version (pylint-leo.py)
 def report_version():
     try:
