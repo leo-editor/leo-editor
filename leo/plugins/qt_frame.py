@@ -3244,6 +3244,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
+        s = s.rstrip() + '\n'  # 2022/04/12: Amazing! This is required.
         color = self.resolve_color(color)
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
