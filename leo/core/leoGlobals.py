@@ -139,6 +139,18 @@ cmd_instance_dict = {
     'VimCommands':              ['c', 'vimCommands'],
 }
 #@-<< define global decorator dicts >>
+#@+<< define global error regexs >>
+#@+node:ekr.20220412193109.1: ** << define global error regexs >> (leoGlobals.py)
+# To do: error patterns for black and pyflakes.
+
+# At present, the BPM assumes that:
+# m.group(1) is the filename.
+# m.group(2) is the line number.
+
+mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
+pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
+python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
+#@-<< define global error regexs >>
 #@+<< define g.decorators >>
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
