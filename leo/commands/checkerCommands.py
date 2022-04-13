@@ -302,7 +302,7 @@ class MypyCommand:
             link_pattern=g.mypy_pat,
             link_root=root,
         )
-        
+
     #@+node:ekr.20210302111935.5: *3* mypy.finalize
     def finalize(self, p):
         """Finalize p's path."""
