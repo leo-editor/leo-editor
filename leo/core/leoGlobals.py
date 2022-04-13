@@ -3532,8 +3532,8 @@ def scanAtLineendingDirectives(aList: List) -> Optional[str]:
             # g.error("invalid @lineending directive:",e)
     return None
 #@+node:ekr.20080827175609.34: *3* g.scanAtPagewidthDirectives
-def scanAtPagewidthDirectives(aList: List, issue_error_flag: bool=False) -> Optional[str]:
-    """Scan aList for @pagewidth directives."""
+def scanAtPagewidthDirectives(aList: List, issue_error_flag: bool=False) -> Optional[int]:
+    """Scan aList for @pagewidth directives. Return the page width or None"""
     for d in aList:
         s = d.get('pagewidth')
         if s is not None:
