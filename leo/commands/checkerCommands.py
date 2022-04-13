@@ -6,7 +6,6 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import os
-import re
 import shlex
 import sys
 import time
@@ -279,77 +278,31 @@ class MypyCommand:
     def check_all(self, roots):
         """Run mypy on all files in paths."""
         c = self.c
+        if not mypy:
+            print('install mypy with `pip install mypy`')
+            return
         self.unknown_path_names = []
         for root in roots:
             fn = os.path.normpath(g.fullPath(c, root))
-            self.check_file(fn)
-        g.es_print('mypy: done')
+            self.check_file(fn, root)
+
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
-    def check_file(self, fn):
+    def check_file(self, fn, root):
         """Run mypy on one file."""
         c = self.c
-        link_pattern = re.compile(r'^(.+):([0-9]+): (error|note): (.*)\s*$')
-        # Set the working directory.
-        if self.directory:
-            directory = self.directory
-        else:
-            directory = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
-        print(' mypy cwd:', directory)
-        os.chdir(directory)
-        # Set the args. Set the config file only if explicitly given.
-        if self.config_file:
-            config_file = g.os_path_finalize_join(directory, self.config_file)
-            args = [f"--config-file={config_file}"] + self.args
-            if not os.path.exists(config_file):
-                print(f"config file not found: {config_file}")
-                return
-        else:
-            args = self.args
-        if args:
-            print('mypy args:', args)
-        # Run mypy.
-        final_args = args + [fn]
-        result = mypy.api.run(final_args)
-        # Print result, making clickable links.
-        lines = g.splitLines(result[0] or [])  # type:ignore
-        s_head = directory.lower() + os.path.sep
-        for i, s in enumerate(lines):
-            # Print the shortened form of s *without* changing s.
-            if s.lower().startswith(s_head):
-                print(f"{i:<3}", s[len(s_head) :].rstrip())
-            else:
-                print(f"{i:<3}", s.rstrip())
-            # Create links only up to the link limit.
-            if 0 < self.link_limit <= i:
-                print(lines[-1].rstrip())
-                break
-            m = link_pattern.match(s)
-            if not m:
-                g.es(s.strip())
-                continue
-            # m.group(1) should be an absolute path.
-            path = g.os_path_finalize_join(directory, m.group(1))
-            # m.group(2) should be the line number.
-            try:
-                line_number = int(m.group(2))
-            except Exception:
-                g.es(s.strip())
-                continue  # Not an error.
-            # Look for the @<file> node.
-            link_root = g.findNodeByPath(c, path)
-            if link_root:
-                unl = link_root.get_UNL()
-                if s.lower().startswith(s_head):
-                    s = s[len(s_head) :]  # Do *not* strip the line!
-                c.frame.log.put(s, nodeLink=f"{unl}::{-line_number}")  # Global line
-            elif path not in self.unknown_path_names:
-                self.unknown_path_names.append(path)
-                print(f"no @<file> node found: {path}")
-        # Print stderr.
-        if result[1]:
-            print('stderr...')
-            print(result[1])
+        if not mypy:
+            print('install mypy with `pip install mypy`')
+            return
+        command =  f"{sys.executable} -m mypy {fn}"
+        bpm = g.app.backgroundProcessManager
+        bpm.start_process(c, command,
+            fn=fn,
+            kind='mypy',
+            link_pattern=g.mypy_pat,
+            link_root=root,
+        )
+        
     #@+node:ekr.20210302111935.5: *3* mypy.finalize
     def finalize(self, p):
         """Finalize p's path."""
@@ -360,6 +313,9 @@ class MypyCommand:
     def run(self, p):
         """Run mypy on all Python @<file> nodes in c.p's tree."""
         c = self.c
+        if not mypy:
+            print('install mypy with `pip install mypy`')
+            return
         root = p.copy()
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
@@ -476,12 +432,6 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
-    # m.group(1) is the line number.
-    # m.group(2) is the (unused) test name.
-    link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
-
-    # Example message: file-name:3966:12: R1705:xxxx (no-else-return)
-
     def __init__(self, c):
         self.c = c
         self.data = None  # Data for the *running* process.
@@ -576,7 +526,7 @@ class PylintCommand:
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern=self.link_pattern,
+            link_pattern=g.pylint_pat,
             link_root=p,
         )
     #@-others

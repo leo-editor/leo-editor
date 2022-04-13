@@ -1276,19 +1276,14 @@ class LeoLog:
     def putnl(self, tabName='Log'):
         pass
     #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helper
-    # To do: error patterns for black and pyflakes.
 
-    mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
-    pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
-    python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
-
-    error_patterns = (mypy_pat, pylint_pat, python_pat)
+    error_patterns = (g.mypy_pat, g.pylint_pat, g.python_pat)
 
     link_table: List[Tuple[int, int, re.Pattern]] = [
         # (fn_i, line_i, pattern)
-        (1, 2, mypy_pat),
-        (1, 2, pylint_pat),
-        (1, 2, python_pat),
+        (1, 2, g.mypy_pat),
+        (1, 2, g.pylint_pat),
+        (1, 2, g.python_pat),
     ]
 
     def put_html_links(self, s: str) -> Optional[str]:
@@ -1299,7 +1294,7 @@ class LeoLog:
         Case 2: Return s
 
         """
-        c = self.c
+        c, log = self.c, self.c.frame.log
         lines = g.splitLines(s)
         # Step 1: return s if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
@@ -1315,13 +1310,13 @@ class LeoLog:
                     p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
                     if p:
                         url = p.get_UNL()
-                        self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                        log.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
                         # g.trace('Not found', filename)
-                        self.put(line)
+                        log.put(line)
                     break
             else:  # no match
-                self.put(line)
+                log.put(line)
         return None
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
     def find_at_file_node(self, filename):
