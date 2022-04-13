@@ -2626,7 +2626,7 @@ class LinterTable():
             'plugins': [self.plugins],
             'tests': [self.tests],
         }
-        suppress_list = []
+        suppress_list = ['freewin.py']  # No longer hangs Leo, but generates a pylint fatal error.
         functions = d.get(scope)
         paths = []
         if functions:
@@ -2635,7 +2635,7 @@ class LinterTable():
                     # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
-                    if g.shortFileName(fn) in suppress_list:
+                    if scope != 'file' and g.shortFileName(fn) in suppress_list:
                         print(f"\npylint-leo: skip {fn}")
                         continue
                     if g.os_path_exists(fn):
