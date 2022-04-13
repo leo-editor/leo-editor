@@ -143,9 +143,10 @@ cmd_instance_dict = {
 #@+node:ekr.20220412193109.1: ** << define global error regexs >> (leoGlobals.py)
 # To do: error patterns for black and pyflakes.
 
-# At present, the BPM assumes that:
-# m.group(1) is the filename.
-# m.group(2) is the line number.
+# Most code need only know about the *existence* of these patterns.
+
+# At table in LeoQtLog.put tells it how to extract filenames and line_numbers from each pattern.
+# For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
 mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')

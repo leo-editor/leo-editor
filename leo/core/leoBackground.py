@@ -215,8 +215,7 @@ class BackgroundProcessManager:
         print(s)
         # Let log.put_html_links do all the work!
         log = c.frame.log
-        result = log.put_html_links(s)
-        if result:
+        if not log.put_html_links(s):
             log.put(s)
     #@+node:ekr.20161028063800.1: *3* bpm.start_next
     def start_next(self) -> None:
