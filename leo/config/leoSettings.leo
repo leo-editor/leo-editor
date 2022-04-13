@@ -588,12 +588,6 @@
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
 </v>
-<v t="ekr.20210728045642.1"><vh>mypy settings</vh>
-<v t="ekr.20210728045723.1"><vh>@data mypy-arguments</vh></v>
-<v t="ekr.20210728045750.1"><vh>@int mypy-link-limit = 0</vh></v>
-<v t="ekr.20210802064734.1"><vh>@string mypy-config-file=</vh></v>
-<v t="ekr.20220101093956.1"><vh>@string mypy-directory =</vh></v>
-</v>
 <v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
@@ -11599,18 +11593,6 @@ rust: rustc
 go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
-<t tx="ekr.20210728045642.1"></t>
-<t tx="ekr.20210728045723.1"># Arguments to mypy.api, excluding the file name.
-
-# --disable-error-code=attr-defined
-# --disallow-untyped-defs
-# --follow-imports=skip</t>
-<t tx="ekr.20210728045750.1"># 0 means no limit.</t>
-<t tx="ekr.20210802064734.1">Path to .mypy.ini file, for the --config-file option.
-
-If not given, no --config-file option is added to the mypy argument list.
-
-Relative paths are relative to  @string mypy-directory.</t>
 <t tx="ekr.20210823172721.1"></t>
 <t tx="ekr.20210823172729.1"></t>
 <t tx="ekr.20210823172944.1"></t>
@@ -11632,9 +11614,6 @@ p, Position
 s, string
 v, VNode</t>
 <t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
-<t tx="ekr.20220101093956.1">The working directory for the mypy command.
-
-Defaults to os.path.join(g.app.loadDir, '..', '..')</t>
 <t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
 c, Cmdr
 ch, str

@@ -267,11 +267,6 @@ class MypyCommand:
         self.c = c
         self.link_limit = None  # Set in check_file.
         self.unknown_path_names = []
-        # Settings.
-        self.args = c.config.getData('mypy-arguments') or []
-        self.config_file = c.config.getString('mypy-config-file') or None
-        self.directory = c.config.getString('mypy-directory') or None
-        self.link_limit = c.config.getInt('mypy-link-limit') or 0
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
@@ -303,12 +298,6 @@ class MypyCommand:
             link_root=root,
         )
 
-    #@+node:ekr.20210302111935.5: *3* mypy.finalize
-    def finalize(self, p):
-        """Finalize p's path."""
-        c = self.c
-        # Use os.path.normpath to give system separators.
-        return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20210302111935.7: *3* mypy.run
     def run(self, p):
         """Run mypy on all Python @<file> nodes in c.p's tree."""

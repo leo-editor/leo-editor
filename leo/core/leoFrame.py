@@ -9,7 +9,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
 import re
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
