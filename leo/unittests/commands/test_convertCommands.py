@@ -97,6 +97,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             'ch': 'str',
             'gnx': 'str',
             'd': 'Dict[str, str]',
+            'event': 'Event',
             'i': 'int',
             'j': 'int',
             'k': 'int',
@@ -111,11 +112,11 @@ class TestAddMypyAnnotations(LeoUnitTest):
     def test_plain_args(self):
         p = self.p
         p.b = textwrap.dedent('''\
-            def f1(i, s):
+            def f1(event, i, s):
                 pass
     ''')
         expected = textwrap.dedent('''\
-            def f1(i: int, s: str) -> None:
+            def f1(event: Event, i: int, s: str) -> None:
                 pass
     ''')
         self.x.convert_body(p)
