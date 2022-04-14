@@ -504,6 +504,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """A class that implements the add-mypy-annotations command."""
 
         changed_lines = 0
+        default_annotation = 'Any'  # The 'DEFAULT' @data add-mypy-annotations key overrides this.
         tag = 'add-mypy-annotations'
         types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
 
@@ -524,6 +525,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     key, val = s.split(',', 1)
                     if key in d:
                         print(f"{tag}: ignoring duplicate key: {s!r}")
+                    elif key == 'DEFAULT':
+                        self.default_annotation = val.strip()
                     else:
                         d[key] = val.strip()
                 except ValueError:
@@ -690,7 +693,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'Any'
             if self.string_pat.match(s):
                 return 'str'
-            return 'Any'  # pragma: no cover
+            return self.default_annotation  # pragma: no cover
         #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
