@@ -655,7 +655,6 @@ class LeoMenu:
 
     def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
         self.oops()
-        return None
 
     def disableMenu(self, menu: str, name: str) -> None:
         self.oops()
@@ -664,7 +663,7 @@ class LeoMenu:
         self.oops()
 
     def getMacHelpMenu(self, table: List) -> Any:
-        return None
+        self.oops()
 
     def getMenuLabel(self, menu: str, name: str) -> str:
         self.oops()

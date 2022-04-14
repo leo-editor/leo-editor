@@ -298,7 +298,6 @@ class LeoGui:
         # However, this message is useful when writing gui plugins.
         if 1:
             g.pr("LeoGui oops", g.callers(4), "should be overridden in subclass")
-        return None
     #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         pass
