@@ -115,7 +115,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 pass
     ''')
         expected = textwrap.dedent('''\
-            def f1(i: int, s: str) -> Any:
+            def f1(i: int, s: str) -> None:
                 pass
     ''')
         self.x.convert_body(p)
@@ -140,7 +140,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 pass
     ''')
         expected = textwrap.dedent('''\
-            def f3(i: int=2, f: float=1.1, b: bool=True, s: str='abc', x: Any=None) -> Any:
+            def f3(i: int=2, f: float=1.1, b: bool=True, s: str='abc', x: Any=None) -> None:
                 pass
     ''')
         self.x.convert_body(p)
@@ -167,7 +167,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 c: int=2,
                 *args: Any,
                 **kwargs: Any,
-            ) -> Any:
+            ) -> None:
                 pass
     ''')
         self.x.convert_body(p)
@@ -193,7 +193,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 b: int=1,
                 d: int=2,  # comment with trailing comma,
                 e: int=3,
-            ) -> Any:
+            ) -> None:
                 pass
     ''')
         self.x.convert_body(p)

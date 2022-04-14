@@ -505,6 +505,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         changed_lines = 0
         default_annotation = 'Any'  # The 'DEFAULT' @data add-mypy-annotations key overrides this.
+        default_return_annotation = 'None'
         tag = 'add-mypy-annotations'
         types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
 
@@ -527,6 +528,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         print(f"{tag}: ignoring duplicate key: {s!r}")
                     elif key == 'DEFAULT':
                         self.default_annotation = val.strip()
+                    elif key == 'DEFAULT_RETURN':
+                        self.default_return_annotation = val.strip()
                     else:
                         d[key] = val.strip()
                 except ValueError:
@@ -583,7 +586,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
             args = self.do_args(args)
             if not return_val.strip():
-                val_s = 'None' if name == '__init__' else 'Any'
+                val_s = 'None' if name == '__init__' else self.default_return_annotation
                 return_val = f" -> {val_s}"
             if not tail.strip():
                 tail = ''
@@ -632,11 +635,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}{comma}")
                 elif tail == ',':
-                    kind = self.types_d.get(name.strip(), 'Any')
+                    kind = self.types_d.get(name.strip(), self.default_annotation)
                     result.append(f"{lws}{name}: {kind}{comma}")
                     i += 1
                 else:
-                    kind = self.types_d.get(name.strip(), 'Any')
+                    kind = self.types_d.get(name.strip(), self.default_annotation)
                     result.append(f"{lws}{name}: {kind}{comma}")
             s = ''.join(result)
             if multiline:
