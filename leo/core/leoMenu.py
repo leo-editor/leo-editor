@@ -1,8 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
-from typing import Any, Dict, List
+#@+<< imports leoMenu.py >>
+#@+node:ekr.20220414095908.1: ** << imports leoMenu.py >>
+from typing import Any, Callable, Dict, List
 from leo.core import leoGlobals as g
+Event = Any
+#@-<< imports leoMenu.py >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu:
@@ -11,11 +15,10 @@ class LeoMenu:
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__(self, frame: str) -> None:
         self.c = frame.c
-        self.enable_dict = {}  # Created by finishCreate.
+        self.enable_dict: Dict[str, Callable] = {}  # Created by finishCreate.
         self.frame = frame
         self.isNull = False
-        self.menus = {}  # Menu dictionary.
-        self.menuShortcuts = {}
+        self.menus: Dict[str, Any] = {}  # Menu dictionary.
 
     def finishCreate(self) -> None:
         self.define_enable_dict()
@@ -109,7 +112,7 @@ class LeoMenu:
     #@+node:ekr.20060926213642: *4* LeoMenu.capitalizeMinibufferMenuName
     #@@nobeautify
 
-    def capitalizeMinibufferMenuName(self, s: str, removeHyphens: str) -> None:
+    def capitalizeMinibufferMenuName(self, s: str, removeHyphens: str) -> str:
         result = []
         for i, ch in enumerate(s):
             prev =     s[i - 1] if i > 0 else ''
@@ -210,7 +213,7 @@ class LeoMenu:
         if table:
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
-    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str=None, table: str=None) -> None:
+    def handleSpecialMenus(self, name: str, parentName: str, alt_name: str=None, table: str=None) -> bool:
         """
         Handle a special menu if name is the name of a special menu.
         return True if this method handles the menu.
@@ -245,14 +248,14 @@ class LeoMenu:
         return False
     #@+node:ekr.20051022053758.1: *3* LeoMenu.Helpers
     #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*
-    def canonicalizeMenuName(self, name: str) -> None:
+    def canonicalizeMenuName(self, name: str) -> str:
 
         # #1121 & #1188. Allow Chinese characters in command names
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch.isalnum()])
         return name
 
-    def canonicalizeTranslatedMenuName(self, name: str) -> None:
+    def canonicalizeTranslatedMenuName(self, name: str) -> str:
 
         # #1121 & #1188. Allow Chinese characters in command names
         if g.isascii(name):
@@ -422,7 +425,7 @@ class LeoMenu:
             g.es_exception()
         g.app.menuWarningsGiven = True
     #@+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
-    def createNewMenu(self, menuName: str, parentName: str="top", before: str=None) -> None:
+    def createNewMenu(self, menuName: str, parentName: str="top", before: str=None) -> Any:
         try:
             parent = self.getMenu(parentName)  # parent may be None.
             menu = self.getMenu(menuName)
@@ -530,10 +533,10 @@ class LeoMenu:
                     command=callback,
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: Dict[str, str]=None) -> None:
+    def defineOpenWithMenuCallback(self, d: Dict[str, str]=None) -> Callable:
         # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event=None, self=self, d=d) -> None:
+        def openWithMenuCallback(event=None, self=self, d=d) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 
@@ -595,7 +598,7 @@ class LeoMenu:
             g.es("exception in", "setRealMenuNamesFromTable")
             g.es_exception()
     #@+node:ekr.20031218072017.3807: *4* LeoMenu.getMenu, setMenu, destroyMenu
-    def getMenu(self, menuName: str) -> None:
+    def getMenu(self, menuName: str) -> Any:
         cmn = self.canonicalizeMenuName(menuName)
         return self.menus.get(cmn)
 
@@ -629,7 +632,7 @@ class LeoMenu:
     def destroy(self, menu: str) -> None:
         self.oops()
 
-    def insert(self, menuName: str, position: str, label: str, command: str, underline: str=None) -> None:  # New in Leo 4.4.3 a1
+    def insert(self, menuName: str, position: str, label: str, command: str, underline: str=None) -> None:
         self.oops()
 
     def insert_cascade(self, parent: str, index: str, label: str, menu: str, underline: str) -> None:
