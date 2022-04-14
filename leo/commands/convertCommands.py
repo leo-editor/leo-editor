@@ -534,6 +534,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         d[key] = val.strip()
                 except ValueError:
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
+            self.types_d = d
+            g.printObj(self.types_d)
         #@+node:ekr.20220105154158.1: *5* ama.add_annotations
         def add_annotations(self):  # pragma: no cover
 
@@ -550,6 +552,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if not self.types_d:
                 print(f"{self.tag}: no types given")
                 return
+            g.trace('default_annotation', repr(self.default_annotation))
+            g.trace('default_return_annotation', repr(self.default_return_annotation))
             try:
                 # Convert p and (recursively) all its descendants.
                 self.convert_node(p)
@@ -560,7 +564,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         #@+node:ekr.20220105155837.4: *5* ama.convert_node
         def convert_node(self, p):  # pragma: no cover
-            # Convert p.b into child.b
+            """Convert p and all its descendants."""
+            # Convert p.b.
             self.convert_body(p)
             # Recursively create all descendants.
             for child in p.children():
@@ -596,7 +601,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         comment_pat = re.compile(r'(\s*#.*?\n)')
 
         def do_args(self, args):
-            """Add type annotations."""
+            """Add type annotations for all arguments."""
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
             lws = ' ' * 4 if multiline else ''
@@ -628,11 +633,16 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if i < len(args) and args[i] == ',':
                         i += 1
                 elif tail == ':':
+                    # Never change an already-annotated arg.
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}{comma}")
                 elif tail == '=':
                     arg, i = self.find_arg(args, i)
-                    kind = self.kind(arg)
+                    if arg is 'None':
+                        # Use a known type for the arg, if it exists.
+                        kind = self.init_types_d.get(arg, self.default_annotation)
+                    else:
+                        kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}{comma}")
                 elif tail == ',':
                     kind = self.types_d.get(name.strip(), self.default_annotation)
@@ -681,7 +691,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         bool_pat = re.compile(r'(True|False)')
         float_pat = re.compile(r'[0-9]*\.[0-9]*')
         int_pat = re.compile(r'[0-9]+')
-        none_pat = re.compile(r'None')
+        # none_pat = re.compile(r'None')
         string_pat = re.compile(r'[\'"].*[\'"]')
 
         def kind(self, s):
@@ -692,8 +702,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'float'
             if self.int_pat.match(s):
                 return 'int'
-            if self.none_pat.match(s):
-                return 'Any'
+            # if self.none_pat.match(s):
+                # return self.default_annotation
             if self.string_pat.match(s):
                 return 'str'
             return self.default_annotation  # pragma: no cover
