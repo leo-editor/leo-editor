@@ -638,7 +638,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     arg, i = self.find_arg(args, i)
                     if arg == 'None':
                         # Use a known type for the arg, if it exists.
-                        kind = self.types_d.get(arg, self.default_annotation)
+                        kind = self.types_d.get(name, self.default_annotation)
                     else:
                         kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}{comma}")
