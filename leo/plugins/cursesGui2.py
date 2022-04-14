@@ -1561,7 +1561,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
     # Yes, using Tkinter seems to be the standard way.
     #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
-    def getTextFromClipboard(self):
+    def getTextFromClipboard(self) -> str:
         """Get a unicode string from the clipboard."""
         if not Tk:
             return ''
@@ -1627,16 +1627,16 @@ class LeoCursesGui(leoGui.LeoGui):
     def runAskOkCancelNumberDialog(self, c, title, message,
         cancelButtonText=None,
         okButtonText=None,
-    ):
+    ) -> str:
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting:
-            return False
+            return 'no'
         if self.curses_app:
             self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message, title=title)
             self.in_dialog = False
             return val
-        return False
+        return 'no'
     #@+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(self, c, title, message,
         cancelButtonText=None,
@@ -1699,7 +1699,7 @@ class LeoCursesGui(leoGui.LeoGui):
         return 'yes' if val else 'no'
 
     #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None) -> str:
         if not g.unitTesting:
             g.trace('not ready yet', title)
 
@@ -1715,7 +1715,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c, title, filetypes, defaultextension):
+    def runSaveFileDialog(self, c, title, filetypes, defaultextension) -> str:
         if g.unitTesting:
             return None
         # Not tested.

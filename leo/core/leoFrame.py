@@ -1137,8 +1137,9 @@ class LeoFrame:
     def fullyExpandPane(self, event=None):
         self.oops()
 
-    def get_window_info(self):
+    def get_window_info(self) -> Tuple[int, int, int, int]:
         self.oops()
+        return 0, 0, 0, 0
 
     def hideBodyPane(self, event=None):
         self.oops()

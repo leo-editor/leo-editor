@@ -164,7 +164,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace('no clipboard!')
     #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
-    def getTextFromClipboard(self):
+    def getTextFromClipboard(self) -> str:
         """Get a unicode string from the clipboard."""
         cb = self.qtApp.clipboard()
         if cb:
@@ -584,7 +584,7 @@ class LeoQtGui(leoGui.LeoGui):
         defaultextension='',
         multiple=False,
         startpath=None,
-    ):
+    ) -> str:
         """
         Create and run an Qt open file dialog.
         """
@@ -635,8 +635,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
     #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
-    def runSaveFileDialog(
-        self, c, title='Save', filetypes=None, defaultextension=''):
+    def runSaveFileDialog(self, c, title='Save', filetypes=None, defaultextension='') -> str:
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:
             return ''
