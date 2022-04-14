@@ -34,7 +34,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, List
+from typing import Any, List, Union
 # Third-party.
 try:
     import curses
@@ -1699,9 +1699,12 @@ class LeoCursesGui(leoGui.LeoGui):
         return 'yes' if val else 'no'
 
     #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None) -> str:
+    def runOpenFileDialog(self,
+        c, title, filetypes, defaultextension, multiple=False, startpath=None,
+    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         if not g.unitTesting:
             g.trace('not ready yet', title)
+        return ''
 
     #@+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
     def runPropertiesDialog(self,

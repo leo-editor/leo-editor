@@ -9,8 +9,7 @@ import functools
 import re
 import sys
 import textwrap
-from typing import List
-
+from typing import Any, List, Union
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -53,11 +52,11 @@ class LeoQtGui(leoGui.LeoGui):
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages = {}
         self.globalFindDialog = None
-        self.idleTimeClass = qt_idle_time.IdleTime
+        self.idleTimeClass: Any = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
         self.main_window = None  # The *singleton* QMainWindow.
-        self.plainTextWidget = qt_text.PlainTextWrapper
+        self.plainTextWidget: Any = qt_text.PlainTextWrapper
         self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
         # Be aware of the systems native colors, fonts, etc.
@@ -584,7 +583,7 @@ class LeoQtGui(leoGui.LeoGui):
         defaultextension='',
         multiple=False,
         startpath=None,
-    ) -> str:
+    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         """
         Create and run an Qt open file dialog.
         """

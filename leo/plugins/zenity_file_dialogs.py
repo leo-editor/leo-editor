@@ -60,7 +60,8 @@ def callZenity(title, multiple=False, save=False, test=False):
         return filename.split('|')
     return filename
 #@+node:ekr.20101110095557.5894: ** runOpenFileDialog
-def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False) -> str:
+def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False,
+):
     """Call zenity's open file(s) dialog."""
     # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, multiple=multiple)

@@ -14,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 from leo.core import leoGlobals as g
 from leo.commands import gotoCommands
 from leo.external import codewise
@@ -3012,7 +3012,7 @@ class KeyHandlerClass:
         k.fnc.get_file_name(event, callback, filterExt, prompt, tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
-    def masterKeyHandler(self, event):
+    def masterKeyHandler(self, event: Any):
         """The master key handler for almost all key bindings."""
         trace = 'keys' in g.app.debug
         c, k = self.c, self

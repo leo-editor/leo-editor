@@ -12,7 +12,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 """
 #@+<< imports leoGui.py >>
 #@+node:ekr.20220414080546.1: ** << imports leoGui.py >>
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -38,7 +38,7 @@ class LeoGui:
     #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName: str) -> None:
         """Ctor for the LeoGui class."""
-        self.active = None  # Used only by qt_gui.
+        self.active = False  # Used only by qt_gui.
         self.consoleOnly = True  # True if g.es goes to console.
         self.globalFindTabManager = None
         self.globalFindTab = None
@@ -69,10 +69,10 @@ class LeoGui:
         char: str=None,
         event: Event=None,
         w: Wrapper=None,
-        x: str=None,
-        x_root: str=None,
-        y: str=None,
-        y_root: str=None,
+        x: int=None,
+        x_root: int=None,
+        y: int=None,
+        y_root: int=None,
     ) -> Event:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
@@ -173,7 +173,7 @@ class LeoGui:
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
-    ) -> str:
+    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         """Create and run an open file dialog ."""
         self.oops()
         return 'no'
@@ -323,12 +323,12 @@ class LeoKeyEvent:
         c: Cmdr,
         char: str,
         event: Event,
-        binding: str,
+        binding: Any,
         w: Wrapper,
-        x: str=None,
-        y: str=None,
-        x_root: str=None,
-        y_root: str=None,
+        x: int=None,
+        y: int=None,
+        x_root: int=None,
+        y_root: int=None,
     ) -> None:
         """Ctor for LeoKeyEvent class."""
         stroke: Any
@@ -428,7 +428,7 @@ class NullGui(LeoGui):
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
-    ) -> str:
+    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         return self.simulateDialog("openFileDialog", None)
 
     def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: str, defaultextension: str) -> str:
