@@ -3564,7 +3564,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # if menu:
             # return menu.delete(realItemName)
     #@+node:ekr.20110605121601.18348: *5* LeoQtMenu.delete_range
-    def delete_range(self, menu, n1, n2):
+    def delete_range(self, menu: str, n1: int, n2: int):
         """Wrapper for the Tkinter delete menu method."""
         # Menu is a subclass of QMenu and LeoQtMenu.
         for z in menu.actions()[n1:n2]:
@@ -3611,7 +3611,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             g.trace('no action for menu', label)
         return menu
     #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
-    def new_menu(self, parent, tearoff=False, label=''):  # label is for debugging.
+    def new_menu(self, parent, tearoff=False, label='') -> Any:  # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
@@ -3635,7 +3635,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         self.createMenusFromTables()
             # This is LeoMenu.createMenusFromTables.
     #@+node:ekr.20110605121601.18357: *5* LeoQtMenu.createOpenWithMenu
-    def createOpenWithMenu(self, parent, label, index, amp_index):
+    def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
         """
         Create the File:Open With submenu.
 
@@ -3666,7 +3666,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         Return None if there is no such menu item."""
         # At present, it is valid to always return None.
     #@+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
-    def setMenuLabel(self, menu, name, label, underline=-1):
+    def setMenuLabel(self, menu, name, label, underline: int=-1):
 
         def munge(s):
             return (s or '').replace('&', '')
@@ -3715,7 +3715,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # menubar.setActiveAction(None)
         # menubar.repaint()
     #@+node:ekr.20110605121601.18362: *3* LeoQtMenu.getMacHelpMenu
-    def getMacHelpMenu(self, table):
+    def getMacHelpMenu(self, table: List):
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)

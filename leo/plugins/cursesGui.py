@@ -339,7 +339,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         menu.entries = []
         return menu
     #@+node:ekr.20150107090324.49: *3* add_cascade
-    def add_cascade(self, parent, label, menu, underline):
+    def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
         if parent is None:
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
