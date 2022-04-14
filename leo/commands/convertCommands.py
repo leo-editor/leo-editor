@@ -504,6 +504,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """A class that implements the add-mypy-annotations command."""
 
         changed_lines = 0
+        default_annotation = 'Any'  # The 'DEFAULT' @data add-mypy-annotations key overrides this.
+        default_return_annotation = 'None'
         tag = 'add-mypy-annotations'
         types_d: Dict[str, str] = {}  # Keys are argument names. Values are mypy types.
 
@@ -524,11 +526,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     key, val = s.split(',', 1)
                     if key in d:
                         print(f"{tag}: ignoring duplicate key: {s!r}")
+                    elif key == 'DEFAULT':
+                        self.default_annotation = val.strip()
+                    elif key == 'DEFAULT_RETURN':
+                        self.default_return_annotation = val.strip()
                     else:
                         d[key] = val.strip()
                 except ValueError:
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
-        #@+node:ekr.20220105154158.1: *5* ama.add_annotations
+            self.types_d = d
+            g.printObj(self.types_d)
+        #@+node:ekr.20220105154158.1: *5* ama.add_annotations (entry)
         def add_annotations(self):  # pragma: no cover
 
             c, p, tag = self.c, self.c.p, self.tag
@@ -554,7 +562,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         #@+node:ekr.20220105155837.4: *5* ama.convert_node
         def convert_node(self, p):  # pragma: no cover
-            # Convert p.b into child.b
+            """Convert p and all its descendants."""
+            # Convert p.b.
             self.convert_body(p)
             # Recursively create all descendants.
             for child in p.children():
@@ -580,7 +589,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
             args = self.do_args(args)
             if not return_val.strip():
-                val_s = 'None' if name == '__init__' else 'Any'
+                val_s = 'None' if name == '__init__' else self.default_return_annotation
                 return_val = f" -> {val_s}"
             if not tail.strip():
                 tail = ''
@@ -590,7 +599,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         comment_pat = re.compile(r'(\s*#.*?\n)')
 
         def do_args(self, args):
-            """Add type annotations."""
+            """Add type annotations for all arguments."""
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
             lws = ' ' * 4 if multiline else ''
@@ -622,18 +631,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if i < len(args) and args[i] == ',':
                         i += 1
                 elif tail == ':':
+                    # Never change an already-annotated arg.
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}{comma}")
                 elif tail == '=':
                     arg, i = self.find_arg(args, i)
-                    kind = self.kind(arg)
+                    if arg == 'None':
+                        # Use a known type for the arg, if it exists.
+                        kind = self.types_d.get(name, self.default_annotation)
+                    else:
+                        kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}{comma}")
                 elif tail == ',':
-                    kind = self.types_d.get(name.strip(), 'Any')
+                    kind = self.types_d.get(name.strip(), self.default_annotation)
                     result.append(f"{lws}{name}: {kind}{comma}")
                     i += 1
                 else:
-                    kind = self.types_d.get(name.strip(), 'Any')
+                    kind = self.types_d.get(name.strip(), self.default_annotation)
                     result.append(f"{lws}{name}: {kind}{comma}")
             s = ''.join(result)
             if multiline:
@@ -675,7 +689,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         bool_pat = re.compile(r'(True|False)')
         float_pat = re.compile(r'[0-9]*\.[0-9]*')
         int_pat = re.compile(r'[0-9]+')
-        none_pat = re.compile(r'None')
         string_pat = re.compile(r'[\'"].*[\'"]')
 
         def kind(self, s):
@@ -686,11 +699,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'float'
             if self.int_pat.match(s):
                 return 'int'
-            if self.none_pat.match(s):
-                return 'Any'
             if self.string_pat.match(s):
                 return 'str'
-            return 'Any'  # pragma: no cover
+            return self.default_annotation  # pragma: no cover
         #@-others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
