@@ -536,7 +536,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
             self.types_d = d
             g.printObj(self.types_d)
-        #@+node:ekr.20220105154158.1: *5* ama.add_annotations
+        #@+node:ekr.20220105154158.1: *5* ama.add_annotations (entry)
         def add_annotations(self):  # pragma: no cover
 
             c, p, tag = self.c, self.c.p, self.tag
@@ -552,8 +552,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if not self.types_d:
                 print(f"{self.tag}: no types given")
                 return
-            g.trace('default_annotation', repr(self.default_annotation))
-            g.trace('default_return_annotation', repr(self.default_return_annotation))
             try:
                 # Convert p and (recursively) all its descendants.
                 self.convert_node(p)
@@ -638,9 +636,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     result.append(f"{lws}{name}: {arg}{comma}")
                 elif tail == '=':
                     arg, i = self.find_arg(args, i)
-                    if arg is 'None':
+                    if arg == 'None':
                         # Use a known type for the arg, if it exists.
-                        kind = self.init_types_d.get(arg, self.default_annotation)
+                        kind = self.types_d.get(arg, self.default_annotation)
                     else:
                         kind = self.kind(arg)
                     result.append(f"{lws}{name}: {kind}={arg}{comma}")
@@ -691,7 +689,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         bool_pat = re.compile(r'(True|False)')
         float_pat = re.compile(r'[0-9]*\.[0-9]*')
         int_pat = re.compile(r'[0-9]+')
-        # none_pat = re.compile(r'None')
         string_pat = re.compile(r'[\'"].*[\'"]')
 
         def kind(self, s):
@@ -702,8 +699,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 'float'
             if self.int_pat.match(s):
                 return 'int'
-            # if self.none_pat.match(s):
-                # return self.default_annotation
             if self.string_pat.match(s):
                 return 'str'
             return self.default_annotation  # pragma: no cover
