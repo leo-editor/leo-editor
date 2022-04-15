@@ -20,12 +20,13 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
     # from leo.core.leoQt import QtWidgets
-    Event = Any
-    Widget = Any  # To do.
-    Wrapper = Any  # To do.
+    
 else:
-    Cmdr = Event = Pos = Widget = Wrapper = Any
+    Cmdr = Pos = Any
     # for NullGui and StringTextWrapper.
+Event = Any
+Widget = Any
+Wrapper = Any
 #@-<< imports leoGui.py >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui

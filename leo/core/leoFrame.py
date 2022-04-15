@@ -91,10 +91,10 @@ class StatusLineAPI:
     def enable(self, background: str="white") -> None:
         pass
 
-    def get(self) -> None:
+    def get(self) -> str:
         return ''
 
-    def isEnabled(self) -> None:
+    def isEnabled(self) -> bool:
         return False
 
     def put(self, s: str, bg: str=None, fg: str=None) -> None:
@@ -211,19 +211,19 @@ class WrapperAPI:
     def getAllText(self) -> str:
         return ''
 
-    def getInsertPoint(self) -> None:
+    def getInsertPoint(self) -> int:
         return 0
 
-    def getSelectedText(self) -> None:
+    def getSelectedText(self) -> str:
         return ''
 
     def getSelectionRange(self) -> Tuple[int, int]:
         return (0, 0)
 
-    def getXScrollPosition(self) -> None:
+    def getXScrollPosition(self) -> int:
         return 0
 
-    def getYScrollPosition(self) -> None:
+    def getYScrollPosition(self) -> int:
         return 0
 
     def hasSelection(self) -> bool:
@@ -310,7 +310,7 @@ class LeoBody:
         c = frame.c
         frame.body = self
         self.c = c
-        self.editorWrappers = {}  # keys are pane names, values are text widgets
+        self.editorWrappers: Dict[str, Widget] = {}  # keys are pane names, values are text widgets
         self.frame = frame
         self.parentFrame = parentFrame  # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -345,11 +345,13 @@ class LeoBody:
         """Say that a required method in a subclass is missing."""
         g.trace("(LeoBody) %s should be overridden in a subclass", g.callers())
 
-    def createEditorFrame(self, w: Wrapper) -> None:
+    def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
+        return None
 
-    def createTextWidget(self, parentFrame: str, p: Pos, name: str) -> None:
+    def createTextWidget(self, parentFrame: str, p: Pos, name: str) -> Wrapper:
         self.oops()
+        return None
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
@@ -499,10 +501,10 @@ class LeoBody:
         try:
             val = None
             self.selectEditorLockout = True
-            val = self.selectEditorHelper(w)
+            self.selectEditorHelper(w)
         finally:
             self.selectEditorLockout = False
-        return val  # Don't put a return in a finally clause.
+        ### return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
     def selectEditorHelper(self, wrapper: str) -> None:
         """Select the editor whose widget is given."""
@@ -541,7 +543,7 @@ class LeoBody:
         c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
     #@+node:ekr.20070422093128: *5* LeoBody.computeLabel
-    def computeLabel(self, w: Wrapper) -> None:
+    def computeLabel(self, w: Wrapper) -> str:
         s = w.leo_label_s
         if hasattr(w, 'leo_chapter') and w.leo_chapter:
             s = f"{w.leo_chapter.name}: {s}"
@@ -626,7 +628,7 @@ class LeoBody:
         w.leo_label_s = p.h
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
-    def getInsertLines(self) -> None:
+    def getInsertLines(self) -> Tuple[str, str, str]:
         """
         Return before,after where:
 
@@ -649,7 +651,7 @@ class LeoBody:
         after = g.checkUnicode(after)
         return before, ins, after
     #@+node:ekr.20031218072017.4031: *4* LeoBody.getSelectionAreas
-    def getSelectionAreas(self) -> None:
+    def getSelectionAreas(self) -> Tuple[str, str, str]:
         """
         Return before,sel,after where:
 
@@ -729,12 +731,12 @@ class LeoFrame:
         self.miniBufferWidget = None
         self.outerFrame = None
         self.prefsPanel = None
-        self.statusLine = g.NullObject()  # For unit tests.
+        self.statusLine: str = g.NullObject()  # For unit tests.
         self.tree = None
         self.useMiniBufferWidget = False
         # Gui-independent data
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
-        self.componentsDict = {}  # Keys are names, values are componentClass instances.
+        self.componentsDict: Dict[str, Any] = {}  # Keys are names, values are componentClass instances.
         self.es_newlines = 0  # newline count for this log stream
         self.openDirectory = ""
         self.saved = False  # True if ever saved
@@ -813,10 +815,10 @@ class LeoFrame:
                 r2 = 0.8
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName
-    def longFileName(self) -> None:
+    def longFileName(self) -> str:
         return self.c.mFileName
 
-    def shortFileName(self) -> None:
+    def shortFileName(self) -> str:
         return g.shortFileName(self.c.mFileName)
     #@+node:ekr.20031218072017.3691: *4* LeoFrame.oops
     def oops(self) -> None:
@@ -1227,7 +1229,7 @@ class LeoLog:
         if w:
             w.delete(0, 'end')
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
-    def createTab(self, tabName: str, createText: bool=True, widget: str=None, wrap: str='none') -> None:
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> None:
         if createText:
             w = self.createTextWidget(self.tabFrame)
             self.canvasDict[tabName] = None
@@ -1237,7 +1239,7 @@ class LeoLog:
             self.textDict[tabName] = None
             self.frameDict[tabName] = tabName  # tabFrame
     #@+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
-    def createTextWidget(self, parentFrame: str) -> None:
+    def createTextWidget(self, parentFrame: str) -> Wrapper:
         return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName: str) -> None:
@@ -1332,7 +1334,7 @@ class LeoLog:
         return True  # This method has completely handled s.
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
-    def find_at_file_node(self, filename: str) -> None:
+    def find_at_file_node(self, filename: str) -> Pos:
         """Find a position corresponding to filename s"""
         c = self.c
         target1 = os.path.normpath(filename)
@@ -1454,7 +1456,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict: Dict[Vnode, Tuple[Pos, Any]] = {}
+        self.edit_text_dict: Dict[VNode, Tuple[Pos, Any]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -1474,7 +1476,7 @@ class LeoTree:
         # This interferes with the find command and interferes with focus generally!
             # c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
-    def getEditTextDict(self, v: VNode) -> None:
+    def getEditTextDict(self, v: VNode) -> Tuple[Pos, Any]:
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v, [])
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
@@ -1544,11 +1546,13 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> None:
+    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> Wrapper:
         self.oops()
+        return None
 
-    def edit_widget(self, p: Pos) -> None:
+    def edit_widget(self, p: Pos) -> Wrapper:
         self.oops()
+        return None
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -1768,7 +1772,7 @@ class NullBody(LeoBody):
     def assignPositionToEditor(self, p: Pos) -> None:
         pass
 
-    def createEditorFrame(self, w: Wrapper) -> None:
+    def createEditorFrame(self, w: Wrapper) -> Wrapper:
         return None
 
     def cycleEditorFocus(self, event: Event=None) -> None:
@@ -2205,8 +2209,8 @@ class NullTree(LeoTree):
 
     def redraw(self, p: Pos=None) -> Pos:
         self.redrawCount += 1
+        # Support for #503: Use string/null gui for unit tests
         return p
-            # Support for #503: Use string/null gui for unit tests
 
     redraw_now = redraw
 
@@ -2377,7 +2381,7 @@ class StringTextWrapper:
         i = self.ins
         return i, i
     #@+node:ekr.20140903172510.18586: *4* stw.hasSelection
-    def hasSelection(self) -> None:
+    def hasSelection(self) -> bool:
         """StringTextWrapper."""
         i, j = self.getSelectionRange()
         return i != j
@@ -2391,7 +2395,7 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18589: *4* stw.selectAllText
-    def selectAllText(self, insert: str=None) -> None:
+    def selectAllText(self, insert: int=None) -> None:
         """StringTextWrapper."""
         self.setSelectionRange(0, 'end', insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
@@ -2409,13 +2413,13 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: str=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: str) -> int:
+    def toPythonIndex(self, index: int) -> int:
         """
         StringTextWrapper.toPythonIndex.
 
