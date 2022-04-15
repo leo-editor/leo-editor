@@ -359,7 +359,7 @@ class textLeoMenu(leoMenu.LeoMenu):
 
         def doNothingCallback():
             pass
-            
+
         if not command:
             command = doNothingCallback
 

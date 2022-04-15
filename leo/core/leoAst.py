@@ -1898,7 +1898,7 @@ class IterativeTokenGenerator:
         - Create two-way links between T and self.node.
         - Advance by updating self.px to point to T.
         """
-        kind, val = data  ### New
+        kind, val = data
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
         # g.trace(

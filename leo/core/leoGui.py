@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
     # from leo.core.leoQt import QtWidgets
-    
+
 else:
     Cmdr = Pos = Any
     # for NullGui and StringTextWrapper.

@@ -7192,6 +7192,52 @@ def run_pylint(
             # Printing does not work well here.
             # When not waiting, printing from severl process can be interspersed.
             pass
+#@+node:ekr.20220415164121.1: ** Not used methods
+#@+node:ekr.20110605121601.18292: *3* qtFrame.OnBodyDoubleClick (Events) (not used)
+# Not called
+
+def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
+    try:
+        c, p = self.c, self.c.p
+        if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
+            c.editCommands.extendToWord(event)  # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodydclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodydclick")
+    return "break"  # Restore this to handle proper double-click logic.
+#@+node:ekr.20071027150501: *3* LeoFrame.event handlers (not used)
+def OnBodyClick(self, event: Event=None) -> None:
+    pass
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    pass
+#@+node:ekr.20110605121601.18291: *3* qtFrame.OnBodyClick, OnBodyRClick (not used)
+# At present, these are not called,
+# but they could be called by LeoQTextBrowser.
+
+def OnBodyClick(self, event: Event=None) -> None:
+    g.trace()
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyclick1", c=c, p=p, event=event):
+            g.doHook("bodyclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyrclick1", c=c, p=p, event=event):
+            g.doHook("bodyrclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyrclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("iconrclick")
 #@-all
 #@@nosearch
 #@-leo

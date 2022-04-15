@@ -357,7 +357,7 @@ class LeoBody:
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
 
-    def onFocusOut(self, obj: str) -> None:
+    def onFocusOut(self, obj: Any) -> None:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
@@ -763,12 +763,6 @@ class LeoFrame:
         p._linkAsRoot()
         return v
     #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
-    #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
-    def OnBodyClick(self, event: Event=None) -> None:
-        pass
-
-    def OnBodyRClick(self, event: Event=None) -> None:
-        pass
     #@+node:ekr.20031218072017.3688: *4* LeoFrame.getTitle & setTitle
     def getTitle(self) -> str:
         return self.title
@@ -2118,7 +2112,7 @@ class NullLog(LeoLog):
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
 
-    def selectTab(self, tabName: str, wrap: str='none') -> None: 
+    def selectTab(self, tabName: str, wrap: str='none') -> None:
         pass
     #@-others
 #@+node:ekr.20070302171509: ** class NullStatusLineClass

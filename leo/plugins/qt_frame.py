@@ -969,7 +969,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                         d[stroke.s] = cmd_name
                 return d
             #@+node:ekr.20131118172620.16893: *8* EventWrapper.wrapper
-            def wrapper(self, event: Event) -> Any:  ### ???
+            def wrapper(self, event: Event) -> Any:
 
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
@@ -979,7 +979,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                     return self.keyRelease(event)
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *8* EventWrapper.keyPress
-            def keyPress(self, event: Event) -> Any:  ### ???
+            def keyPress(self, event: Event) -> Any:
 
                 s = event.text()
                 out = s and s in '\t\r\n'
@@ -1009,7 +1009,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *8* EventWrapper.keyRelease
             def keyRelease(self, event: Event) -> None:
-                return self.oldEvent(event)  ###
+                return self.oldEvent(event)
             #@-others
         #@-others
         EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
@@ -1751,7 +1751,6 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         if not wrapper:
             return
-            ### return c.frame.body.wrapper
         if self.selectEditorLockout:
             return
         w = wrapper.widget
@@ -1767,7 +1766,7 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         try:
             self.selectEditorLockout = True
-            self.selectEditorHelper(wrapper)  ### Does this return anything??
+            self.selectEditorHelper(wrapper)
         finally:
             self.selectEditorLockout = False
     #@+node:ekr.20110605121601.18203: *6* LeoQtBody.selectEditorHelper
@@ -1971,7 +1970,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 obj.setReadOnly(False)
             obj.setFocus()  # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *4* LeoQtBody.onFocusOut
-    def onFocusOut(self, obj: Any) -> None:  ### obj -> any
+    def onFocusOut(self, obj: Any) -> None:
         """Handle a focus-out event in the body pane."""
         # Apparently benign.
         if obj.objectName() == 'richTextEdit':
@@ -2572,7 +2571,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@+node:ekr.20141031053508.14: *4* QtIconBar.goto_command
-        def goto_command(self, controller: Any, gnx: str) -> None:  ### Set controller to Any, not Cmdr.
+        def goto_command(self, controller: Any, gnx: str) -> None:
             """
             Select the node corresponding to the given gnx.
             controller is a ScriptingController instance.
@@ -2625,7 +2624,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def add_rclick_menu(
             self,
             action_container: Any,
-            rclicks: str,  ###
+            rclicks: str,
             controller: Cmdr,
             top_level: bool=True,
             button: str=None,
@@ -2757,10 +2756,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         pass
     #@+node:ekr.20110605121601.18280: *4* qtFrame.forceWrap & setWrap
     def forceWrap(self, p: Pos=None) -> None:
-        return self.c.frame.body.forceWrap(p)  ###
+        self.c.frame.body.forceWrap(p)
 
     def setWrap(self, p: Pos=None) -> None:
-        return self.c.frame.body.setWrap(p)  ###
+        self.c.frame.body.setWrap(p)
     #@+node:ekr.20110605121601.18281: *4* qtFrame.reconfigurePanes
     def reconfigurePanes(self) -> None:
         c, f = self.c, self
@@ -2842,45 +2841,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18290: *4* qtFrame.OnActivateTree
     def OnActivateTree(self, event: Event=None) -> None:
         pass
-    #@+node:ekr.20110605121601.18291: *4* qtFrame.OnBodyClick, OnBodyRClick (not used)
-    # At present, these are not called,
-    # but they could be called by LeoQTextBrowser.
-
-    def OnBodyClick(self, event: Event=None) -> None:
-        g.trace()
-        try:
-            c, p = self.c, self.c.p
-            if g.doHook("bodyclick1", c=c, p=p, event=event):
-                g.doHook("bodyclick2", c=c, p=p, event=event)
-                return
-            c.k.showStateAndMode(w=c.frame.body.wrapper)
-            g.doHook("bodyclick2", c=c, p=p, event=event)
-        except Exception:
-            g.es_event_exception("bodyclick")
-
-    def OnBodyRClick(self, event: Event=None) -> None:
-        try:
-            c, p = self.c, self.c.p
-            if g.doHook("bodyrclick1", c=c, p=p, event=event):
-                g.doHook("bodyrclick2", c=c, p=p, event=event)
-                return
-            c.k.showStateAndMode(w=c.frame.body.wrapper)
-            g.doHook("bodyrclick2", c=c, p=p, event=event)
-        except Exception:
-            g.es_event_exception("iconrclick")
-    #@+node:ekr.20110605121601.18292: *4* qtFrame.OnBodyDoubleClick (Events) (not used)
-    # Not called
-
-    def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
-        try:
-            c, p = self.c, self.c.p
-            if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
-                c.editCommands.extendToWord(event)  # Handles unicode properly.
-                c.k.showStateAndMode(w=c.frame.body.wrapper)
-            g.doHook("bodydclick2", c=c, p=p, event=event)
-        except Exception:
-            g.es_event_exception("bodydclick")
-        return "break"  # Restore this to handle proper double-click logic.
     #@+node:ekr.20110605121601.18293: *3* qtFrame.Gui-dependent commands
     #@+node:ekr.20110605121601.18301: *4* qtFrame.Window Menu...
     #@+node:ekr.20110605121601.18302: *5* qtFrame.toggleActivePane
@@ -3557,17 +3517,6 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def add_command(self, menu: Widget,
         accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0) -> None:
         """Wrapper for the Tkinter add_command menu method."""
-        ###
-            ### py--lint: disable=arguments-differ
-            # accel: str = keys.get('accelerator') or ''
-            # command: Callable = keys.get('command') or ''
-            # commandName: str = keys.get('commandName')
-            # label: int = keys.get('label')
-            # n: int = keys.get('underline')
-            # n = underline
-            # if n is None:
-                # n = -1
-            ### menu = keys.get('menu') or self
         if not label:
             return
         if -1 < underline < len(label):
@@ -3634,7 +3583,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         label: str,
         menu: Widget,
         underline: int,  # Not used
-    ) -> None:  
+    ) -> None:
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
