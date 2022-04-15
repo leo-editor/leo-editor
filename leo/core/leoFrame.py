@@ -9,7 +9,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
 import re
-from typing import Any, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -26,8 +26,7 @@ if TYPE_CHECKING:  # Always False at runtime.
 else:
     Cmdr = Pos = VNode = Any
 Event = Any
-### Settings = Any
-### Stroke = Any
+Widget = Any
 Wrapper = Any
 #@-<< type aliases leoFrame >>
 #@+<< About handling events >>
@@ -60,15 +59,15 @@ Wrapper = Any
 #@-<< About handling events >>
 #@+<< command decorators >>
 #@+node:ekr.20150509054428.1: ** << command decorators >> (leoFrame.py)
-def log_cmd(name: str) -> None:  # Not used.
+def log_cmd(name: str) -> Callable:  # Not used.
     """Command decorator for the LeoLog class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 
-def body_cmd(name: str) -> None:
+def body_cmd(name: str) -> Callable:
     """Command decorator for the c.frame.body class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
 
-def frame_cmd(name: str) -> None:
+def frame_cmd(name: str) -> Callable:
     """Command decorator for the LeoFrame class."""
     return g.new_cmd_decorator(name, ['c', 'frame',])
 #@-<< command decorators >>
@@ -206,10 +205,10 @@ class WrapperAPI:
     def flashCharacter(self, i: int, bg: str='white', fg: str='red', flashes: int=3, delay: int=75) -> None:
         pass
 
-    def get(self, i: int, j: int) -> None:
+    def get(self, i: int, j: int) -> str:
         return ''
 
-    def getAllText(self) -> None:
+    def getAllText(self) -> str:
         return ''
 
     def getInsertPoint(self) -> None:
@@ -218,7 +217,7 @@ class WrapperAPI:
     def getSelectedText(self) -> None:
         return ''
 
-    def getSelectionRange(self) -> None:
+    def getSelectionRange(self) -> Tuple[int, int]:
         return (0, 0)
 
     def getXScrollPosition(self) -> None:
@@ -227,7 +226,7 @@ class WrapperAPI:
     def getYScrollPosition(self) -> None:
         return 0
 
-    def hasSelection(self) -> None:
+    def hasSelection(self) -> bool:
         return False
 
     def insert(self, i: int, s: str) -> None:
@@ -263,10 +262,10 @@ class WrapperAPI:
     def tag_configure(self, colorName: str, **keys: str) -> None:
         pass
 
-    def toPythonIndex(self, index: str) -> None:
+    def toPythonIndex(self, index: str) -> int:
         return 0
 
-    def toPythonIndexRowCol(self, index: str) -> None:
+    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
         return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
@@ -557,7 +556,7 @@ class LeoBody:
             else:
                 w.leo_chapter = None
     #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
-    def ensurePositionExists(self, w: Wrapper) -> None:
+    def ensurePositionExists(self, w: Wrapper) -> bool:
         """Return True if w.leo_p exists or can be reconstituted."""
         c = self.c
         if c.positionExists(w.leo_p):
@@ -674,7 +673,7 @@ class LeoBody:
         after = g.checkUnicode(after)
         return before, sel, after
     #@+node:ekr.20031218072017.2377: *4* LeoBody.getSelectionLines
-    def getSelectionLines(self) -> None:
+    def getSelectionLines(self) -> Tuple[str, str, str]:
         """
         Return before,sel,after where:
 
@@ -744,7 +743,7 @@ class LeoFrame:
         self.stylesheet = None  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
-    def createFirstTreeNode(self) -> None:
+    def createFirstTreeNode(self) -> VNode:
         c = self.c
         #
         # #1631: Initialize here, not in p._linkAsRoot.
@@ -794,7 +793,7 @@ class LeoFrame:
         self.tab_width = w
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
-    def initialRatios(self) -> None:
+    def initialRatios(self) -> Tuple[bool, float, float]:
         c = self.c
         s = c.config.get("initial_split_orientation", "string")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
@@ -823,7 +822,7 @@ class LeoFrame:
     def oops(self) -> None:
         g.pr("LeoFrame oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
-    def promptForSave(self) -> None:
+    def promptForSave(self) -> bool:
         """
         Prompt the user to save changes.
         Return True if the user vetos the quit or save operation.
@@ -921,7 +920,7 @@ class LeoFrame:
         if self.iconBar:
             self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
-    def createStatusLine(self) -> None:
+    def createStatusLine(self) -> str:
         if not self.statusLine:
             self.statusLine = self.statusLineClass(self.c, self.outerFrame)  # type:ignore
         return self.statusLine
@@ -938,7 +937,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> None:
+    def getStatusLine(self) -> str:
         return self.statusLine
 
     getStatusObject = getStatusLine
@@ -951,7 +950,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.setFocus()
 
-    def statusLineIsEnabled(self) -> None:
+    def statusLineIsEnabled(self) -> bool:
         if self.statusLine:
             return self.statusLine.isEnabled()
         return False
@@ -1216,11 +1215,11 @@ class LeoLog:
         self.logCtrl = None  # Set below. Same as self.textDict.get(self.tabName)
         self.tabName = None  # The name of the active tab.
         self.tabFrame = None  # Same as self.frameDict.get(self.tabName)
-        self.canvasDict = {}  # Keys are page names.  Values are Tk.Canvas's.
-        self.frameDict = {}  # Keys are page names. Values are Tk.Frames.
+        self.canvasDict: Dict[str, Widget] = {}  # Keys are page names.  Values are Widgets.
+        self.frameDict: Dict[str, Widget] = {}  # Keys are page names. Values are Frames
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
-        self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
+        self.textDict: Dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str='none') -> None:
         self.selectTab(tabName, wrap=wrap)
@@ -1276,10 +1275,10 @@ class LeoLog:
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str=None) -> None:
+    def orderedTabNames(self, LeoLog: str=None) -> List:
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
-    def numberOfVisibleTabs(self) -> None:
+    def numberOfVisibleTabs(self) -> int:
         return len([val for val in list(self.frameDict.values()) if val is not None])
     #@+node:ekr.20070302101304: *3* LeoLog.put, putnl & helper
     # All output to the log stream eventually comes here.
@@ -1455,7 +1454,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict = {}
+        self.edit_text_dict: Dict[Vnode, Tuple[Pos, Any]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -1896,7 +1895,7 @@ class NullFrame(LeoFrame):
     def fullyExpandPane(self, event: Event=None) -> None:
         pass
 
-    def get_window_info(self) -> None:
+    def get_window_info(self) -> Tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
     def hideBodyPane(self, event: Event=None) -> None:
@@ -1935,7 +1934,7 @@ class NullFrame(LeoFrame):
     def setInitialWindowGeometry(self) -> None:
         pass
 
-    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> None:
+    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> Tuple[int, int, int, int]:
         return 0, 0, 0, 0
 
     def setWrap(self, flag: str, force: bool=False) -> None:
@@ -1992,7 +1991,7 @@ class NullIconBarClass:
     def show(self) -> None:
         pass
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
-    def add(self, *args: str, **keys: str) -> None:
+    def add(self, *args: str, **keys: str) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
         command = keys.get('command')
         text = keys.get('text')
@@ -2018,7 +2017,7 @@ class NullIconBarClass:
                 self.name = name
                 self.text = text
 
-            def __repr__(self) -> None:
+            def __repr__(self) -> str:
                 return self.name
 
         b = nullButtonWidget(self.c, command, name, text)
@@ -2058,7 +2057,7 @@ class NullLog(LeoLog):
     def createControl(self, parentFrame: str) -> None:
         return self.createTextWidget(parentFrame)
     #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
-    def createTextWidget(self, parentFrame: str) -> None:
+    def createTextWidget(self, parentFrame: str) -> Wrapper:
         self.logNumber += 1
         c = self.c
         log = StringTextWrapper(c=c, name=f"log-{self.logNumber}")
@@ -2067,7 +2066,7 @@ class NullLog(LeoLog):
     def hasSelection(self) -> None:
         return self.widget.hasSelection()
     #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
-    def isLogWidget(self, w: Wrapper) -> None:
+    def isLogWidget(self, w: Wrapper) -> bool:
         return False
     #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self) -> None:
@@ -2140,10 +2139,10 @@ class NullStatusLineClass:
     def clear(self) -> None:
         self.textWidget.delete(0, 'end')
 
-    def get(self) -> None:
+    def get(self) -> str:
         return self.textWidget.getAllText()
 
-    def isEnabled(self) -> None:
+    def isEnabled(self) -> bool:
         return self.enabled
 
     def put(self, s: str, bg: str=None, fg: str=None) -> None:
@@ -2165,7 +2164,7 @@ class NullTree(LeoTree):
         super().__init__(frame)
         assert self.frame
         self.c = frame.c
-        self.editWidgetsDict = {}  # Keys are vnodes, values are StringTextWidgets.
+        self.editWidgetsDict: Dict[VNode, Widget] = {}  # Keys are vnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None
@@ -2173,7 +2172,7 @@ class NullTree(LeoTree):
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
-    def edit_widget(self, p: Pos) -> None:
+    def edit_widget(self, p: Pos) -> Wrapper:
         d = self.editWidgetsDict
         if not p or not p.v:
             return None
@@ -2185,7 +2184,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> None:
+    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> Tuple[Any, Wrapper]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
@@ -2204,7 +2203,7 @@ class NullTree(LeoTree):
     def drawIcon(self, p: Pos) -> None:
         pass
 
-    def redraw(self, p: Pos=None) -> None:
+    def redraw(self, p: Pos=None) -> Pos:
         self.redrawCount += 1
         return p
             # Support for #503: Use string/null gui for unit tests
@@ -2264,10 +2263,10 @@ class StringTextWrapper:
         self.virtualInsertPoint = 0
         self.widget = None  # This ivar must exist, and be None.
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         return f"<StringTextWrapper: {id(self)} {self.name}>"
 
-    def getName(self) -> None:
+    def getName(self) -> str:
         """StringTextWrapper."""
         return self.name  # Essential.
     #@+node:ekr.20140903172510.18578: *3* stw.Clipboard
@@ -2283,10 +2282,10 @@ class StringTextWrapper:
     def flashCharacter(self, i: int, bg: str='white', fg: str='red', flashes: int=3, delay: int=75) -> None:
         pass
 
-    def getXScrollPosition(self) -> None:
+    def getXScrollPosition(self) -> int:
         return 0
 
-    def getYScrollPosition(self) -> None:
+    def getYScrollPosition(self) -> int:
         return 0
 
     def see(self, i: int) -> None:
@@ -2336,7 +2335,7 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         self.delete(i, j)
     #@+node:ekr.20140903172510.18595: *4* stw.get
-    def get(self, i: int, j: int=None) -> None:
+    def get(self, i: int, j: int=None) -> str:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None:
@@ -2345,12 +2344,12 @@ class StringTextWrapper:
         s = self.s[i:j]
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText
-    def getAllText(self) -> None:
+    def getAllText(self) -> str:
         """StringTextWrapper."""
         s = self.s
         return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18584: *4* stw.getInsertPoint
-    def getInsertPoint(self) -> None:
+    def getInsertPoint(self) -> int:
         """StringTextWrapper."""
         i = self.ins
         if i is None:
@@ -2361,13 +2360,13 @@ class StringTextWrapper:
         self.virtualInsertPoint = i
         return i
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText
-    def getSelectedText(self) -> None:
+    def getSelectedText(self) -> str:
         """StringTextWrapper."""
         i, j = self.sel
         s = self.s[i:j]
         return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18585: *4* stw.getSelectionRange
-    def getSelectionRange(self, sort: bool=True) -> None:
+    def getSelectionRange(self, sort: bool=True) -> Tuple[int, int]:
         """Return the selected range of the widget."""
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
@@ -2416,7 +2415,7 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: str) -> None:
+    def toPythonIndex(self, index: str) -> int:
         """
         StringTextWrapper.toPythonIndex.
 
@@ -2426,7 +2425,7 @@ class StringTextWrapper:
         """
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: str) -> None:
+    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
         i = self.toPythonIndex(index)
