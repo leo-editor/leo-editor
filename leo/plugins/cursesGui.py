@@ -10,7 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 import os
-from typing import Any
+from typing import Any, Callable
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -19,7 +19,9 @@ from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.core import leoNodes
 get_input = input
+
 #@-<< imports >>
+Widget = Any
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
 #@@nocolor-node
@@ -333,7 +335,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Widget, tearoff: int=0, labe: strl=''):
+    def new_menu(self, parent: Widget, tearoff: int=0, labe: str=''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)

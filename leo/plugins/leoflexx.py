@@ -43,6 +43,7 @@ import os
 import re
 import sys
 import time
+from typing import Union
 
 # This is what Leo typically does.
 # pylint: disable=wrong-import-position

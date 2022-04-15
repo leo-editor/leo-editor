@@ -5,7 +5,7 @@
 """Text classes for the Qt version of Leo"""
 import time
 assert time
-from typing import Any, Union
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
