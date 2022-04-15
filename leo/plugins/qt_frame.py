@@ -1889,12 +1889,11 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
         w.leo_chapter = None
-        # w.leo_colorizer = None # Set in JEditColorizer ctor.
-
-        w.leo_frame: Widget = parentFrame
-        # w.leo_label = None # Injected by packLabel.
+        # w.leo_colorizer injected by JEditColorizer ctor.
+        # w.leo_label injected by packLabel.
+        w.leo_frame = parentFrame
         w.leo_name = name
-        w.leo_wrapper: Wrapper = wrapper
+        w.leo_wrapper = wrapper
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
         """Support QScintillaColorizer.colorize."""
@@ -2093,14 +2092,14 @@ class LeoQtBody(leoFrame.LeoBody):
         """Show the canvas area in the body pane, creating it if necessary."""
         c = self.c
         f = c.frame.top.leo_body_inner_frame
-        assert isinstance(f, QtWidgets.QFrame), f
+        name = 'Text Renderer'
         w = self.textRenderer
+        assert isinstance(f, QtWidgets.QFrame), f
         if w:
-            name = 'Text Renderer'
             self.textRenderer = qt_text.LeoQTextBrowser(f, c, self)
             w = self.textRenderer
             w.setObjectName(name)
-            self.textRendererWrapper: Wrapper = qt_text.QTextEditWrapper(w, name='text-renderer', c=c)
+            self.textRendererWrapper = qt_text.QTextEditWrapper(w, name='text-renderer', c=c)
         if not self.textRendererVisible:
             self.textRendererLabel = self.packRenderer(f, name, w)
             self.textRendererVisible = True
@@ -3099,7 +3098,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are widgets.
         self.eventFilters: List = []  # Apparently needed to make filters work!
         self.logCtrl: Any = None
-        self.logDict = {}  # Keys are tab names text widgets; values are the widgets.
+        self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
         self.logWidget = None  # Set in finishCreate.
         self.menu = None  # A menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget = tw = c.frame.top.tabWidget  # The Qt.QTabWidget that holds all the tabs.
