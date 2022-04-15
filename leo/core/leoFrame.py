@@ -26,6 +26,7 @@ if TYPE_CHECKING:  # Always False at runtime.
 else:
     Cmdr = Pos = VNode = Any
 Event = Any
+Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
 Widget = Any
 Wrapper = Any
 #@-<< type aliases leoFrame >>
@@ -190,7 +191,7 @@ class WrapperAPI:
     def clipboard_clear(self) -> None:
         pass
 
-    def delete(self, i: Union[int, str], j: Union[int, str]=None) -> None:
+    def delete(self, i: Index, j: Index=None) -> None:
         pass
 
     def deleteTextSelection(self) -> None:
@@ -229,7 +230,7 @@ class WrapperAPI:
     def hasSelection(self) -> bool:
         return False
 
-    def insert(self, i: Union[int, str], s: str) -> None:
+    def insert(self, i: Index, s: str) -> None:
         pass
 
     def see(self, i: int) -> None:
@@ -250,7 +251,7 @@ class WrapperAPI:
     def setInsertPoint(self, pos: str, s: str=None) -> None:
         pass
 
-    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None) -> None:
+    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
         pass
 
     def setXScrollPosition(self, i: int) -> None:
@@ -262,7 +263,7 @@ class WrapperAPI:
     def tag_configure(self, colorName: str, **keys: str) -> None:
         pass
 
-    def toPythonIndex(self, index: Union[int, str]) -> int:
+    def toPythonIndex(self, index: Index) -> int:
         return 0
 
     def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
@@ -2322,7 +2323,7 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    def delete(self, i: Union[int, str], j: Union[int, str]=None) -> None:
+    def delete(self, i: Index, j: Index=None) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None:
@@ -2388,7 +2389,7 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    def insert(self, i: Union[int, str], s: str) -> None:
+    def insert(self, i: Index, s: str) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
@@ -2415,13 +2416,13 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None) -> None:
+    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: Union[int, str]) -> int:
+    def toPythonIndex(self, index: Index) -> int:
         """
         StringTextWrapper.toPythonIndex.
 
