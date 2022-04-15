@@ -31,6 +31,8 @@ from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.nested_splitter import NestedSplitter
 #@-<< imports >>
+Widget = Any
+Wrapper = Any
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
@@ -3351,7 +3353,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if w:
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
-    def createTab(self, tabName, createText=True, widget=None, wrap='none'):
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none'):
         """
         Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
@@ -3421,7 +3423,7 @@ class LeoQtLog(leoFrame.LeoLog):
         return len([val for val in self.contentsDict.values() if val is not None])
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
-    def selectTab(self, tabName, createText=True, widget=None, wrap='none'):
+    def selectTab(self, tabName: str, widget: Widget=None, wrap: str='none'):
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:

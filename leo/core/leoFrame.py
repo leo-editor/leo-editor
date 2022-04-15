@@ -298,7 +298,9 @@ class IconBarAPI:
     def getNewFrame(self) -> None:
         pass
 
-    def setCommandForButton(self, button: str, command: str, command_p: str, controller: str, gnx: str, script: str) -> None:
+    def setCommandForButton(self,
+        button: Any, command: str, command_p: Pos, controller: Cmdr, gnx: str, script: str,
+    ) -> None:
         pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
 class LeoBody:
@@ -347,11 +349,9 @@ class LeoBody:
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
-        return None
 
     def createTextWidget(self, parentFrame: str, p: Pos, name: str) -> Wrapper:
         self.oops()
-        return None
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
@@ -492,19 +492,17 @@ class LeoBody:
         #  Called whenever wrapper must be selected.
         c = self.c
         if self.selectEditorLockout:
-            return None
+            return
         if w and w == self.c.frame.body.widget:
             if w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocus()
-            return None
+            return
         try:
-            val = None
             self.selectEditorLockout = True
             self.selectEditorHelper(w)
         finally:
             self.selectEditorLockout = False
-        ### return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
     def selectEditorHelper(self, wrapper: str) -> None:
         """Select the editor whose widget is given."""
@@ -1229,7 +1227,7 @@ class LeoLog:
         if w:
             w.delete(0, 'end')
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
-    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> None:
+    def createTab(self, tabName: str, createText=True, widget: Widget=None, wrap: str='none') -> None:
         if createText:
             w = self.createTextWidget(self.tabFrame)
             self.canvasDict[tabName] = None
@@ -1356,12 +1354,12 @@ class LeoLog:
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
     #@+node:ekr.20070302094848.11: *3* LeoLog.selectTab
-    def selectTab(self, tabName: str, createText: bool=True, widget: str=None, wrap: str='none') -> None:  # widget unused.
+    def selectTab(self, tabName: str, widget: Widget=None, wrap: str='none') -> None:  ### widget unused.
         """Create the tab if necessary and make it active."""
         c = self.c
         tabFrame = self.frameDict.get(tabName)
         if not tabFrame:
-            self.createTab(tabName, createText=createText)
+            self.createTab(tabName, createText=True)
         # Update the status vars.
         self.tabName = tabName
         self.canvasCtrl = self.canvasDict.get(tabName)
@@ -1548,11 +1546,9 @@ class LeoTree:
 
     def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> Wrapper:
         self.oops()
-        return None
 
     def edit_widget(self, p: Pos) -> Wrapper:
         self.oops()
-        return None
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -1729,7 +1725,7 @@ class LeoTreeTab:
     def createControl(self) -> None:
         self.oops()
 
-    def createTab(self, tabName: str, select: bool=True) -> None:
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, select: bool=True) -> None:
         self.oops()
 
     def destroyTab(self, tabName: str) -> None:
@@ -2031,7 +2027,14 @@ class NullIconBarClass:
         g.app.iconWidgetCount = 0
         g.app.iconImageRefs = []
     #@+node:ekr.20140904043623.18575: *3* NullIconBarClass.setCommandForButton
-    def setCommandForButton(self, button: str, command: str, command_p: str, controller: str, gnx: str, script: str) -> None:
+    def setCommandForButton(self,
+        button: Any,
+        command: str,
+        command_p: Pos,
+        controller: Cmdr,\
+        gnx: str,
+        script: str,
+    ) -> None:
         button.command = command
         try:
             # See PR #2441: Add rclick support.
@@ -2095,7 +2098,7 @@ class NullLog(LeoLog):
     def createCanvas(self, tabName: str) -> None:
         pass
 
-    def createTab(self, tabName: str, createText: bool=True, widget: str=None, wrap: str='none') -> None:
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> None:
         pass
 
     def deleteTab(self, tabName: str) -> None:
@@ -2113,7 +2116,7 @@ class NullLog(LeoLog):
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
 
-    def selectTab(self, tabName: str, createText: bool=True, widget: str=None, wrap: str='none') -> None:
+    def selectTab(self, tabName: str, widget: str=None, wrap: str='none') -> None: 
         pass
     #@-others
 #@+node:ekr.20070302171509: ** class NullStatusLineClass
