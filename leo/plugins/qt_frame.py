@@ -1537,7 +1537,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.textRenderer = None
         self.textRendererLabel = None
         self.textRendererVisible = False
-        self.textRendererWrapper = None
+        self.textRendererWrapper: Wrapper = None
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
@@ -1890,6 +1890,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_bodyXBar = None
         w.leo_chapter = None
         # w.leo_colorizer = None # Set in JEditColorizer ctor.
+
         w.leo_frame: Widget = parentFrame
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
@@ -2093,12 +2094,13 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         f = c.frame.top.leo_body_inner_frame
         assert isinstance(f, QtWidgets.QFrame), f
-        if not self.textRenderer:
+        w = self.textRenderer
+        if w:
             name = 'Text Renderer'
-            self.textRenderer = w = qt_text.LeoQTextBrowser(f, c, self)
+            self.textRenderer = qt_text.LeoQTextBrowser(f, c, self)
+            w = self.textRenderer
             w.setObjectName(name)
-            self.textRendererWrapper = qt_text.QTextEditWrapper(
-                w, name='text-renderer', c=c)
+            self.textRendererWrapper: Wrapper = qt_text.QTextEditWrapper(w, name='text-renderer', c=c)
         if not self.textRendererVisible:
             self.textRendererLabel = self.packRenderer(f, name, w)
             self.textRendererVisible = True
@@ -2446,7 +2448,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.c = c
             self.parentFrame = parentFrame
             # Status ivars.
-            self.actions = []
+            self.actions: List[Any] = []
             self.chapterController = None
             self.toolbar = self
             self.w = c.frame.top.iconBar  # A QToolBar.
@@ -3094,8 +3096,8 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl  # type:ignore
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict = {}  # Keys are tab names.  Values are widgets.
-        self.eventFilters = []  # Apparently needed to make filters work!
+        self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are widgets.
+        self.eventFilters: List = []  # Apparently needed to make filters work!
         self.logCtrl: Any = None
         self.logDict = {}  # Keys are tab names text widgets; values are the widgets.
         self.logWidget = None  # Set in finishCreate.

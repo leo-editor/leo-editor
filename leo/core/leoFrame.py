@@ -714,7 +714,7 @@ class LeoFrame:
         self.gui = gui
         self.iconBarClass = NullIconBarClass
         self.statusLineClass = NullStatusLineClass
-        self.title = None  # Must be created by subclasses.
+        self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
         self.body = None
         self.colorPanel = None
@@ -769,7 +769,7 @@ class LeoFrame:
     def OnBodyRClick(self, event: Event=None) -> None:
         pass
     #@+node:ekr.20031218072017.3688: *4* LeoFrame.getTitle & setTitle
-    def getTitle(self) -> None:
+    def getTitle(self) -> str:
         return self.title
 
     def setTitle(self, title: str) -> None:
@@ -1210,11 +1210,11 @@ class LeoLog:
         self.newlines = 0
         self.isNull = False
         # Official ivars...
-        self.canvasCtrl = None  # Set below. Same as self.canvasDict.get(self.tabName)
+        self.canvasCtrl: Widget = None  # Set below. Same as self.canvasDict.get(self.tabName)
         # Important: depending on the log *tab*, logCtrl may be either a wrapper or a widget.
-        self.logCtrl = None  # Set below. Same as self.textDict.get(self.tabName)
-        self.tabName = None  # The name of the active tab.
-        self.tabFrame = None  # Same as self.frameDict.get(self.tabName)
+        self.logCtrl: Widget = None  # Set below. Same as self.textDict.get(self.tabName)
+        self.tabName: str = None  # The name of the active tab.
+        self.tabFrame: Widget = None  # Same as self.frameDict.get(self.tabName)
         self.canvasDict: Dict[str, Widget] = {}  # Keys are page names.  Values are Widgets.
         self.frameDict: Dict[str, Widget] = {}  # Keys are page names. Values are Frames
         self.logNumber = 0  # To create unique name fields for text widgets.
@@ -1262,7 +1262,7 @@ class LeoLog:
     def enable(self, enabled: bool=True) -> None:
         self.enabled = enabled
     #@+node:ekr.20070302094848.7: *3* LeoLog.getSelectedTab
-    def getSelectedTab(self) -> None:
+    def getSelectedTab(self) -> str:
         return self.tabName
     #@+node:ekr.20070302094848.6: *3* LeoLog.hideTab
     def hideTab(self, tabName: str) -> None:
@@ -1475,7 +1475,7 @@ class LeoTree:
         # This interferes with the find command and interferes with focus generally!
             # c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
-    def getEditTextDict(self, v: VNode) -> Tuple[Pos, Any]:
+    def getEditTextDict(self, v: VNode) -> Any:
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v, [])
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
@@ -1752,10 +1752,10 @@ class NullBody(LeoBody):
         self.insertPoint = 0
         self.selection = 0, 0
         self.s = ""  # The body text
-        self.widget = None
-        self.wrapper = wrapper = StringTextWrapper(c=self.c, name='body')
-        self.editorWrappers['1'] = wrapper
-        self.colorizer = NullColorizer(self.c)
+        self.widget: Widget = None
+        self.wrapper: Wrapper = StringTextWrapper(c=self.c, name='body')
+        self.editorWrappers['1'] = self.wrapper
+        self.colorizer: Any = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
 
@@ -1828,7 +1828,7 @@ class NullFrame(LeoFrame):
         self.isNullFrame = True
         self.outerFrame: Wrapper = None
         self.ratio = self.secondary_ratio = 0.5
-        self.statusLineClass = NullStatusLineClass
+        self.statusLineClass: Any = NullStatusLineClass
         self.title = title
         self.top = None  # Always None.
         # Create the component objects.
@@ -1994,7 +1994,7 @@ class NullIconBarClass:
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args: str, **keys: str) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
-        command: Callable = keys.get('command')
+        command: Any = keys.get('command')
         text = keys.get('text')
         try:
             g.app.iconWidgetCount += 1
@@ -2012,7 +2012,7 @@ class NullIconBarClass:
 
         class nullButtonWidget:
 
-            def __init__(self, c: Cmdr, command: Callable, name: str, text: str) -> None:
+            def __init__(self, c: Cmdr, command: Any, name: str, text: str) -> None:
                 self.c = c
                 self.command = command
                 self.name = name
