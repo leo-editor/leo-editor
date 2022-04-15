@@ -79,7 +79,7 @@ def frame_cmd(name: str) -> Callable:
 class StatusLineAPI:
     """The required API for c.frame.statusLine."""
 
-    def __init__(self, c: Cmdr, parentFrame: str) -> None:
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
         pass
 
     def clear(self) -> None:
@@ -271,7 +271,7 @@ class WrapperAPI:
 class IconBarAPI:
     """The required API for c.frame.iconBar."""
 
-    def __init__(self, c: Cmdr, parentFrame: str) -> None:
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
         pass
 
     def add(self, *args: str, **keys: str) -> None:
@@ -307,18 +307,18 @@ class LeoBody:
     """The base class for the body pane in Leo windows."""
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
-    def __init__(self, frame: str, parentFrame: str) -> None:
+    def __init__(self, frame: str, parentFrame: Widget) -> None:
         """Ctor for LeoBody class."""
         c = frame.c
         frame.body = self
         self.c = c
         self.editorWrappers: Dict[str, Widget] = {}  # keys are pane names, values are text widgets
         self.frame = frame
-        self.parentFrame = parentFrame  # New in Leo 4.6.
+        self.parentFrame: Widget = parentFrame  # New in Leo 4.6.
         self.totalNumberOfEditors = 0
         # May be overridden in subclasses...
-        self.widget = None  # set in LeoQtBody.set_widget.
-        self.wrapper = None  # set in LeoQtBody.set_widget.
+        self.widget: Widget = None  # set in LeoQtBody.set_widget.
+        self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
         self.numberOfEditors = 1
         self.pb = None  # paned body widget.
         # Must be overridden in subclasses...
@@ -350,7 +350,7 @@ class LeoBody:
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
 
-    def createTextWidget(self, parentFrame: str, p: Pos, name: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget, p: Pos, name: str) -> Wrapper:
         self.oops()
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
@@ -1202,7 +1202,7 @@ class LeoLog:
     #@+others
     #@+node:ekr.20150509054436.1: *3* LeoLog.Birth
     #@+node:ekr.20031218072017.3695: *4* LeoLog.ctor
-    def __init__(self, frame: str, parentFrame: str) -> None:
+    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
         """Ctor for LeoLog class."""
         self.frame = frame
         self.c = frame.c if frame else None
@@ -1238,7 +1238,7 @@ class LeoLog:
             self.textDict[tabName] = None
             self.frameDict[tabName] = tabName  # tabFrame
     #@+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
-    def createTextWidget(self, parentFrame: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget) -> Widget:
         return None
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName: str) -> None:
@@ -1717,13 +1717,13 @@ class LeoTreeTab:
     """A class representing a tabbed outline pane."""
     #@+others
     #@+node:ekr.20070317073627.1: *3*  ctor (LeoTreeTab)
-    def __init__(self, c: Cmdr, chapterController: str, parentFrame: str) -> None:
+    def __init__(self, c: Cmdr, chapterController: Any, parentFrame: Widget) -> None:
         self.c = c
-        self.cc = chapterController
-        self.nb = None  # Created in createControl.
-        self.parentFrame = parentFrame
+        self.cc: Any = chapterController
+        self.nb: Any = None  # Created in createControl.
+        self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
-    def createControl(self) -> None:
+    def createControl(self) -> Wrapper:
         self.oops()
 
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, select: bool=True) -> None:
@@ -1746,7 +1746,7 @@ class NullBody(LeoBody):
     """A do-nothing body class."""
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  NullBody.__init__
-    def __init__(self, frame: str=None, parentFrame: str=None) -> None:
+    def __init__(self, frame: Widget=None, parentFrame: Widget=None) -> None:
         """Ctor for NullBody class."""
         super().__init__(frame, parentFrame)
         self.insertPoint = 0
@@ -1759,7 +1759,7 @@ class NullBody(LeoBody):
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
 
-    def createControl(self, parentFrame: str, p: Pos) -> None:
+    def createControl(self, parentFrame: Widget, p: Pos) -> Wrapper:
         pass
     # Editors...
 
@@ -1822,20 +1822,20 @@ class NullFrame(LeoFrame):
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c
-        self.wrapper = None
-        self.iconBar = NullIconBarClass(self.c, self)
+        self.wrapper: Wrapper = None
+        self.iconBar: Wrapper = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.outerFrame = None
+        self.outerFrame: Wrapper = None
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
         self.top = None  # Always None.
         # Create the component objects.
-        self.body = NullBody(frame=self, parentFrame=None)
-        self.log = NullLog(frame=self, parentFrame=None)
-        self.menu = leoMenu.NullMenu(frame=self)
-        self.tree = NullTree(frame=self)
+        self.body: Wrapper = NullBody(frame=self, parentFrame=None)
+        self.log: Wrapper = NullLog(frame=self, parentFrame=None)
+        self.menu: Wrapper = leoMenu.NullMenu(frame=self)
+        self.tree: Wrapper = NullTree(frame=self)
         # Default window position.
         self.w = 600
         self.h = 500
@@ -1935,8 +1935,8 @@ class NullFrame(LeoFrame):
     def setInitialWindowGeometry(self) -> None:
         pass
 
-    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> Tuple[int, int, int, int]:
-        return 0, 0, 0, 0
+    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> None:
+        pass
 
     def setWrap(self, flag: str, force: bool=False) -> None:
         pass
@@ -1961,12 +1961,12 @@ class NullIconBarClass:
     """A class representing the singleton Icon bar"""
     #@+others
     #@+node:ekr.20070301164543.1: *3*  NullIconBarClass.ctor
-    def __init__(self, c: Cmdr, parentFrame: str) -> None:
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
         """Ctor for NullIconBarClass."""
         self.c = c
         self.iconFrame = None
-        self.parentFrame = parentFrame
-        self.w = g.NullObject()
+        self.parentFrame: Widget = parentFrame
+        self.w: Widget = g.NullObject()
     #@+node:ekr.20070301165343: *3*  NullIconBarClass.Do nothing
     def addRow(self, height: str=None) -> None:
         pass
@@ -1994,7 +1994,7 @@ class NullIconBarClass:
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args: str, **keys: str) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
-        command = keys.get('command')
+        command: Callable = keys.get('command')
         text = keys.get('text')
         try:
             g.app.iconWidgetCount += 1
@@ -2012,7 +2012,7 @@ class NullIconBarClass:
 
         class nullButtonWidget:
 
-            def __init__(self, c: Cmdr, command: str, name: str, text: str) -> None:
+            def __init__(self, c: Cmdr, command: Callable, name: str, text: str) -> None:
                 self.c = c
                 self.command = command
                 self.name = name
@@ -2051,21 +2051,21 @@ class NullLog(LeoLog):
     #@+others
     #@+node:ekr.20070302095500: *3* NullLog.Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__
-    def __init__(self, frame: str=None, parentFrame: str=None) -> None:
+    def __init__(self, frame: Widget=None, parentFrame: Widget=None) -> None:
 
         super().__init__(frame, parentFrame)
         self.isNull = True
         # self.logCtrl is now a property of the base LeoLog class.
         self.logNumber = 0
-        self.widget = self.createControl(parentFrame)
+        self.widget: Widget = self.createControl(parentFrame)
     #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self) -> None:
         pass
     #@+node:ekr.20041012083237.1: *4* NullLog.createControl
-    def createControl(self, parentFrame: str) -> None:
+    def createControl(self, parentFrame: Widget) -> Wrapper:
         return self.createTextWidget(parentFrame)
     #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
-    def createTextWidget(self, parentFrame: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget) -> Wrapper:
         self.logNumber += 1
         c = self.c
         log = StringTextWrapper(c=c, name=f"log-{self.logNumber}")
@@ -2086,7 +2086,7 @@ class NullLog(LeoLog):
             try:
                 g.pr(s, newline=False)
             except UnicodeError:
-                s = s.encode('ascii', 'replace')
+                s = s.encode('ascii', 'replace')  # type:ignore
                 g.pr(s, newline=False)
 
     def putnl(self, tabName: str='Log') -> None:
@@ -2124,12 +2124,12 @@ class NullLog(LeoLog):
 class NullStatusLineClass:
     """A do-nothing status line."""
 
-    def __init__(self, c: Cmdr, parentFrame: str) -> None:
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
         """Ctor for NullStatusLine class."""
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget = StringTextWrapper(c, name='status-line')
+        self.textWidget: Wrapper = StringTextWrapper(c, name='status-line')
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
@@ -2167,7 +2167,7 @@ class NullTree(LeoTree):
     """A do-almost-nothing tree class."""
     #@+others
     #@+node:ekr.20031218072017.2234: *3*  NullTree.__init__
-    def __init__(self, frame: str) -> None:
+    def __init__(self, frame: Widget) -> None:
         """Ctor for NullTree class."""
         super().__init__(frame)
         assert self.frame

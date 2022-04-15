@@ -2,8 +2,8 @@
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
 """This file contains the gui wrapper for Qt: g.app.gui."""
 # pylint: disable=import-error
-#@+<< imports >>
-#@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
+#@+<< imports qt_gui.py >>
+#@+node:ekr.20140918102920.17891: ** << imports qt_gui.py >>
 import datetime
 import functools
 import re
@@ -25,7 +25,8 @@ from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
 assert qt_commands
-#@-<< imports >>
+#@-<< imports qt_gui.py >>
+Widget = Any
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
@@ -265,7 +266,7 @@ class LeoQtGui(leoGui.LeoGui):
         """Create a qt color picker panel."""
         return None  # This window is optional.
 
-    def createFindTab(self, c, parentFrame):
+    def createFindTab(self, c, parentFrame: Widget):
         """Create a qt find tab in the indicated frame."""
         pass  # Now done in dw.createFindTab.
 

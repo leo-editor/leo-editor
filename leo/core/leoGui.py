@@ -192,7 +192,7 @@ class LeoGui:
         """Create Compare panel."""
         self.oops()
 
-    def createFindTab(self, c: Cmdr, parentFrame: str) -> None:
+    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
         """Create a find tab in the indicated frame."""
         self.oops()
 
@@ -522,7 +522,7 @@ class NullGui(LeoGui):
         """Create Compare panel."""
         self.oops()
 
-    def createFindTab(self, c: Cmdr, parentFrame: str) -> None:
+    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
         """Create a find tab in the indicated frame."""
         pass  # Now always done during startup.
 

@@ -3,14 +3,15 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 #@@first
 """Leo's qt frame classes."""
-#@+<< imports >>
-#@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
+#@+<< imports qt_frame.py >>
+#@+node:ekr.20110605121601.18003: **  << imports qt_frame.py >>
 from collections import defaultdict
 import os
 import platform
 import sys
 import time
 from typing import Any, Dict, List
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -30,9 +31,16 @@ from leo.plugins import qt_text
 from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.nested_splitter import NestedSplitter
-#@-<< imports >>
+#@-<< imports qt_frame.py >>
+#@+<< type aliases qt_frame.py >>
+#@+node:ekr.20220415080427.1: ** << type aliases qt_frame.py >>
+if TYPE_CHECKING:  # Always False at runtime.
+    from leo.core.leoCommands import Commands as Cmdr
+else:
+    Cmdr = Any
 Widget = Any
 Wrapper = Any
+#@-<< type aliases qt_frame.py >>
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
@@ -1506,7 +1514,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20150521061618.1: *3* LeoQtBody.body_cmd (decorator)
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
-    def __init__(self, frame, parentFrame):
+    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
         super().__init__(frame, parentFrame)
@@ -1882,10 +1890,10 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_bodyXBar = None
         w.leo_chapter = None
         # w.leo_colorizer = None # Set in JEditColorizer ctor.
-        w.leo_frame = parentFrame
+        w.leo_frame: Widget = parentFrame
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
-        w.leo_wrapper = wrapper
+        w.leo_wrapper: Wrapper = wrapper
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
         """Support QScintillaColorizer.colorize."""
@@ -2282,7 +2290,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """A class representing the status line."""
         #@+others
         #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
-        def __init__(self, c, parentFrame):
+        def __init__(self, c: Cmdr, parentFrame: Widget):
             """Ctor for LeoQtFrame class."""
             self.c = c
             self.statusBar = c.frame.top.statusBar
@@ -2432,7 +2440,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """A class representing the singleton Icon bar"""
         #@+others
         #@+node:ekr.20110605121601.18263: *4*  QtIconBar.ctor & reloadSettings
-        def __init__(self, c, parentFrame):
+        def __init__(self, c: Cmdr, parentFrame: Widget):
             """Ctor for QtIconBarClass."""
             # Copy ivars
             self.c = c
@@ -3060,7 +3068,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w = self.top.leo_master
             w.setWindowTitle(s)
     #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
-    def setTopGeometry(self, w, h, x, y):
+    def setTopGeometry(self, w, h, x, y) -> None:
         # self.top is a DynamicWindow.
         if self.top:
             if 'size' in g.app.debug:
@@ -3078,7 +3086,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+others
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
-    def __init__(self, frame, parentFrame):
+    def __init__(self, frame: Widget, parentFrame: Widget):
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)  # Calls createControl.
         # Set in finishCreate.
