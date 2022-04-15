@@ -2030,7 +2030,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Rearrange the lines.
                 lines[i - 1 : k + 1] = lines[j : k + 1] + [lines[i - 1]]
                 i = k + 1
-            ### return lines
         #@+node:ekr.20211016200908.1: *7* py2ts.post_pass & helpers
         def post_pass(self, lines):
 

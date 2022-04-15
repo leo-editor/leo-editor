@@ -2212,8 +2212,6 @@ class NullTree(LeoTree):
 
     def redraw(self, p: Pos=None) -> None:
         self.redrawCount += 1
-        # Support for #503: Use string/null gui for unit tests
-        ### return p
 
     redraw_now = redraw
 

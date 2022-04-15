@@ -585,8 +585,6 @@ class TestFastAtRead(LeoUnitTest):
         self.assertEqual(root.b, expected_body, msg='mismatch in body')
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # Leo has *never* round-tripped the contents without change!
-        ### g.printObj(s, tag='s')
-        ### g.printObj(expected_contents, tag='expected_contents')
         self.assertEqual(s, expected_contents, msg='mismatch in contents')
 
     #@+node:ekr.20211103093332.1: *3* TestFast.test_at_all

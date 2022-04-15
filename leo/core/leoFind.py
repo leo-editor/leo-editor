@@ -909,8 +909,6 @@ class LeoFind:
         """Return the status line as two strings."""
         z = []
         # Set the scope field.
-        ### head = self.search_headline
-        ### body = self.search_body
         if self.suboutline_only:
             scope = 'tree'
         elif self.node_only:
