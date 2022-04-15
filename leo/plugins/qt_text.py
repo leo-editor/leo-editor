@@ -209,7 +209,7 @@ class QTextMixin:
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
     #@+node:ekr.20140901141402.18706: *5* qtm.delete
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         """QTextMixin"""
         i = self.toPythonIndex(i)
         if j is None:
@@ -254,7 +254,7 @@ class QTextMixin:
         s = self.getAllText()
         return s[i:j]
     #@+node:ekr.20140901141402.18702: *5* qtm.insert
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> int:
         """QTextMixin"""
         s2 = self.getAllText()
         i = self.toPythonIndex(i)
@@ -408,7 +408,7 @@ class QLineEditWrapper(QTextMixin):
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
-    def setSelectionRange(self, i, j, insert=None, s=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None, s: str=None):
         """QHeadlineWrapper."""
         if not self.check():
             return
@@ -1254,7 +1254,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 
-    def setSelectionRange(self, i, j, insert=None, s=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None, s: str=None):
         QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
         insert = j if insert is None else insert
         if self.widget:
@@ -1303,7 +1303,7 @@ class QScintillaWrapper(QTextMixin):
         w.setAutoIndent(True)
     #@+node:ekr.20110605121601.18107: *3* qsciw.WidgetAPI
     #@+node:ekr.20140901062324.18593: *4* qsciw.delete
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         """Delete s[i:j]"""
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1406,7 +1406,7 @@ class QScintillaWrapper(QTextMixin):
         """Return True if a QsciScintilla widget has a selection range."""
         return self.widget.hasSelectedText()
     #@+node:ekr.20140901062324.18601: *4* qsciw.insert
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> int:
         """Insert s at position i."""
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1479,7 +1479,7 @@ class QScintillaWrapper(QTextMixin):
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL, i, i)
     #@+node:ekr.20110605121601.18115: *4* qsciw.setSelectionRange
-    def setSelectionRange(self, i, j, insert=None, s=None):
+    def setSelectionRange(self, i: Union[int, str], j: int, insert: Union[int, str]=None, s: str=None):
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1571,7 +1571,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
     # These are all widget-dependent
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         """QTextEditWrapper."""
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1688,7 +1688,7 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
         i = self.toPythonIndex(i)
@@ -1854,7 +1854,7 @@ class QTextEditWrapper(QTextMixin):
         # Use the more careful code in setSelectionRange.
         self.setSelectionRange(i=i, j=i, insert=i, s=s)
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
-    def setSelectionRange(self, i, j, insert=None, s=None):
+    def setSelectionRange(self, i: Union[int, str], j: int, insert: Union[int, str]=None, s: str=None):
         """Set the selection range and the insert point."""
         #
         # Part 1
@@ -1935,8 +1935,8 @@ class QTextEditWrapper(QTextMixin):
         doc = te.document()
         data = index.split('.')
         if len(data) == 2:
-            row, col = data
-            row, col = int(row), int(col)
+            row1, col1 = data
+            row, col = int(row1), int(col1)
             bl = doc.findBlockByNumber(row - 1)
             return bl.position() + col
         g.trace(f"bad string index: {index}")

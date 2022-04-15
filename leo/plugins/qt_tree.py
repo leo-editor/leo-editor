@@ -16,6 +16,8 @@ from leo.core import leoNodes
 from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
 from leo.plugins import qt_text
 #@-<< imports >>
+Widget = Any
+Wrapper = Any
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
 class LeoQtTree(leoFrame.LeoTree):
@@ -44,10 +46,11 @@ class LeoQtTree(leoFrame.LeoTree):
         self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
         self.reloadSettings()
         # Components.
-        self.canvas = self  # An official ivar used by Leo's core.
-        self.headlineWrapper = qt_text.QHeadlineWrapper  # This is a class.
+        self.canvas: Wrapper = self  # An official ivar used by Leo's core.
+        self.headlineWrapper: Wrapper = qt_text.QHeadlineWrapper  # This is a class.
         # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-        self.treeWidget = w = frame.top.treeWidget  # An internal ivar.
+        self.treeWidget: Widget = frame.top.treeWidget  # An internal ivar.
+        w = self.treeWidget
         #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering

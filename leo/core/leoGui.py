@@ -41,18 +41,18 @@ class LeoGui:
         """Ctor for the LeoGui class."""
         self.active = False  # Used only by qt_gui.
         self.consoleOnly = True  # True if g.es goes to console.
-        self.globalFindTabManager = None
-        self.globalFindTab = None
+        self.globalFindTabManager: Any = None
+        self.globalFindTab: Widget = None
         self.idleTimeClass = None
         self.isNullGui = False
-        self.lastFrame = None
+        self.lastFrame: Wrapper = None
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
-        self.plainTextWidget = None  # For SpellTabHandler class only.
-        self.root = None
+        self.plainTextWidget: Widget = None  # For SpellTabHandler class only.
+        self.root: Pos = None
         self.script: Optional[str] = None
-        self.splashScreen = None
+        self.splashScreen: Widget = None
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass

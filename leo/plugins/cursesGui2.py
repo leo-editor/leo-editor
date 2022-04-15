@@ -4021,7 +4021,7 @@ class TextMixin:
     def clipboard_clear(self):
         g.app.gui.replaceClipboardWith('')
     #@+node:ekr.20170511053143.14: *5* tm.delete
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         """TextMixin"""
         i = self.toPythonIndex(i)
         if j is None:
@@ -4072,7 +4072,7 @@ class TextMixin:
         s = self.getAllText()
         return s[i:j]
     #@+node:ekr.20170511053143.19: *5* tm.insert
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> int:
         """TextMixin"""
         s2 = self.getAllText()
         i = self.toPythonIndex(i)

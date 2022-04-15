@@ -190,7 +190,7 @@ class WrapperAPI:
     def clipboard_clear(self) -> None:
         pass
 
-    def delete(self, i: int, j: int=None) -> None:
+    def delete(self, i: Union[int, str], j: Union[int, str]=None) -> None:
         pass
 
     def deleteTextSelection(self) -> None:
@@ -229,7 +229,7 @@ class WrapperAPI:
     def hasSelection(self) -> bool:
         return False
 
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: Union[int, str], s: str) -> None:
         pass
 
     def see(self, i: int) -> None:
@@ -250,7 +250,7 @@ class WrapperAPI:
     def setInsertPoint(self, pos: str, s: str=None) -> None:
         pass
 
-    def setSelectionRange(self, i: int, j: int, insert: str=None) -> None:
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None) -> None:
         pass
 
     def setXScrollPosition(self, i: int) -> None:
@@ -719,18 +719,18 @@ class LeoFrame:
         self.body = None
         self.colorPanel = None
         self.comparePanel = None
-        self.findPanel = None
-        self.fontPanel = None
-        self.iconBar = None
+        self.findPanel: Widget = None
+        self.fontPanel: Widget = None
+        self.iconBar: Widget = None
         self.isNullFrame = False
         self.keys = None
-        self.log = None
-        self.menu = None
-        self.miniBufferWidget = None
-        self.outerFrame = None
-        self.prefsPanel = None
-        self.statusLine: str = g.NullObject()  # For unit tests.
-        self.tree = None
+        self.log: Wrapper = None
+        self.menu: Wrapper = None
+        self.miniBufferWidget: Widget = None
+        self.outerFrame: Widget = None
+        self.prefsPanel: Widget = None
+        self.statusLine: Widget = g.NullObject()  # For unit tests.
+        self.tree: Wrapper = None
         self.useMiniBufferWidget = False
         # Gui-independent data
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
@@ -1818,7 +1818,7 @@ class NullFrame(LeoFrame):
     """A null frame class for tests and batch execution."""
     #@+others
     #@+node:ekr.20040327105706: *3* NullFrame.ctor
-    def __init__(self, c: Cmdr, title: str, gui: str) -> None:
+    def __init__(self, c: Cmdr, title: str, gui: Any) -> None:
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c
@@ -2322,7 +2322,7 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    def delete(self, i: int, j: int=None) -> None:
+    def delete(self, i: Union[int, str], j: Union[int, str]=None) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None:
@@ -2388,7 +2388,7 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: Union[int, str], s: str) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
@@ -2415,7 +2415,7 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None) -> None:
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j

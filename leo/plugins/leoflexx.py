@@ -185,7 +185,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().setInsertPoint(pos, s)
         self.finish_set_insert('setInsertPoint')
 
-    def setSelectionRange(self, i, j, insert=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None):
         super().setSelectionRange(i, j, insert)
         self.finish_set_insert('setSelectionRange')
     #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
@@ -224,7 +224,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().appendText(s)
         self.finish_setter('appendText')
 
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         super().delete(i, j)
         self.finish_setter('delete')
 
@@ -232,7 +232,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().deleteTextSelection()
         self.finish_setter('deleteTextSelection')
 
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s):
         # Called from doPlainChar, insertNewlineHelper, etc. on every keystroke.
         super().insert(i, s)
         self.finish_setter('insert')
@@ -1447,14 +1447,14 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
 
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         super().delete(i, j)
         self.update('delete')
 
     def getAllText(self):
         return self.s
 
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> None:
         super().insert(i, s)
         self.update('insert')
 
@@ -1462,7 +1462,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.update('setAllText')
 
-    def setSelectionRange(self, i, j, insert=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
 
