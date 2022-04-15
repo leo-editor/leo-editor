@@ -3425,11 +3425,11 @@ class LeoQtLog(leoFrame.LeoLog):
         return len([val for val in self.contentsDict.values() if val is not None])
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
-    def selectTab(self, tabName: str, widget: Widget=None, wrap: str='none'):
+    def selectTab(self, tabName: str, wrap: str='none') -> None:
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:
-            self.createTab(tabName, widget=widget, wrap=wrap)
+            self.createTab(tabName, wrap=wrap)
             self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)
     #@+node:ekr.20190603064815.1: *5* LeoQtLog.finishCreateTab

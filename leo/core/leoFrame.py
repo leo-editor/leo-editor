@@ -1228,6 +1228,7 @@ class LeoLog:
             w.delete(0, 'end')
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
     def createTab(self, tabName: str, createText=True, widget: Widget=None, wrap: str='none') -> None:
+        # Important: widget *is* used in subclasses. Do not change the signature above.
         if createText:
             w = self.createTextWidget(self.tabFrame)
             self.canvasDict[tabName] = None
@@ -1354,7 +1355,7 @@ class LeoLog:
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
     #@+node:ekr.20070302094848.11: *3* LeoLog.selectTab
-    def selectTab(self, tabName: str, widget: Widget=None, wrap: str='none') -> None:  ### widget unused.
+    def selectTab(self, tabName: str, wrap: str='none') -> None:
         """Create the tab if necessary and make it active."""
         c = self.c
         tabFrame = self.frameDict.get(tabName)
@@ -1731,7 +1732,7 @@ class LeoTreeTab:
     def destroyTab(self, tabName: str) -> None:
         self.oops()
 
-    def selectTab(self, tabName: str) -> None:
+    def selectTab(self, tabName: str, wrap: str='none') -> None:
         self.oops()
 
     def setTabLabel(self, tabName: str) -> None:
@@ -2116,7 +2117,7 @@ class NullLog(LeoLog):
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
 
-    def selectTab(self, tabName: str, widget: str=None, wrap: str='none') -> None: 
+    def selectTab(self, tabName: str, wrap: str='none') -> None: 
         pass
     #@-others
 #@+node:ekr.20070302171509: ** class NullStatusLineClass
