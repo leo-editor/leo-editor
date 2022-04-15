@@ -5,6 +5,7 @@
 """Text classes for the Qt version of Leo"""
 import time
 assert time
+from typing import Union
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
@@ -270,7 +271,7 @@ class QTextMixin:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
     #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex
-    def toPythonIndex(self, index, s=None):
+    def toPythonIndex(self, index: Union[int, str], s: str=None):
         """QTextMixin"""
         if s is None:
             s = self.getAllText()
@@ -1919,7 +1920,7 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex
-    def toPythonIndex(self, index, s=None):
+    def toPythonIndex(self, index: Union[int, str], s: str=None):
         """This is much faster than versions using g.toPythonIndex."""
         w = self
         te = self.widget

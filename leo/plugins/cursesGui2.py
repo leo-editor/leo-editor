@@ -4125,7 +4125,7 @@ class TextMixin:
 
     tag_config = tag_configure
     #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
-    def toPythonIndex(self, index, s=None):
+    def toPythonIndex(self, index: Union[int, str], s: str=None):
         """TextMixin"""
         if s is None:
             s = self.getAllText()

@@ -1512,9 +1512,10 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
+        self.wrapper: Wrapper = None
+        self.widget: Widget = None
         self.reloadSettings()
-        self.set_widget()
-            # Sets self.widget and self.wrapper.
+        self.set_widget() # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None
@@ -2164,12 +2165,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.createSplitterComponents()
         self.createStatusLine()  # A base class method.
         self.createFirstTreeNode()  # Call the base-class method.
-        self.menu = LeoQtMenu(c, self, label='top-level-menu')
+        self.menu: Wrapper = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
         t2 = time.process_time()
         self.setQtStyle()  # Slow, but only the first time it is called.
         t3 = time.process_time()
-        self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        self.miniBufferWidget: Wrapper = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
         t4 = time.process_time()
         if 'speed' in g.app.debug:
@@ -2184,9 +2185,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def createSplitterComponents(self):
 
         c = self.c
-        self.tree = qt_tree.LeoQtTree(c, self)
-        self.log = LeoQtLog(self, None)
-        self.body = LeoQtBody(self, None)
+        self.tree: Wrapper = qt_tree.LeoQtTree(c, self)
+        self.log: Wrapper = LeoQtLog(self, None)
+        self.body: Wrapper = LeoQtBody(self, None)
         self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
         self.resizePanesToRatio(ratio, secondary_ratio)
     #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
@@ -3223,7 +3224,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w = tabw.widget(idx)
         #
         # #917814: Switching Log Pane tabs is done incompletely
-        wrapper = getattr(w, 'leo_log_wrapper', None)
+        wrapper: Wrapper = getattr(w, 'leo_log_wrapper', None)
         #
         # #1161: Don't change logs unless the wrapper is correct.
         if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
@@ -3362,7 +3363,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if widget is None:
             # widget is subclass of QTextBrowser.
-            widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
+            widget: Widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
             # contents is a wrapper.
             contents = qt_text.QTextEditWrapper(widget=widget, name='log', c=c)
             # Inject an ivar into the QTextBrowser that points to the wrapper.
@@ -3441,7 +3442,7 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         # #1161.
         if tabName == 'Log':
-            wrapper = None
+            wrapper: Wrapper = None
             widget = self.contentsDict.get('Log')  # a qt_text.QTextEditWrapper
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)

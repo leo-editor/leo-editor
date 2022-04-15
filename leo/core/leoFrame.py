@@ -9,7 +9,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
 import re
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -262,7 +262,7 @@ class WrapperAPI:
     def tag_configure(self, colorName: str, **keys: str) -> None:
         pass
 
-    def toPythonIndex(self, index: str) -> int:
+    def toPythonIndex(self, index: Union[int, str]) -> int:
         return 0
 
     def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
@@ -2422,7 +2422,7 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: int) -> int:
+    def toPythonIndex(self, index: Union[int, str]) -> int:
         """
         StringTextWrapper.toPythonIndex.
 

@@ -5466,7 +5466,7 @@ def getLine(s: str, i: int) -> Tuple[int, int]:
         k = k + 1
     return j, k
 #@+node:ekr.20111114151846.9847: *4* g.toPythonIndex
-def toPythonIndex(s: str, index: int) -> int:
+def toPythonIndex(s: str, index: Union[int, str]) -> int:
     """
     Convert index to a Python int.
 
