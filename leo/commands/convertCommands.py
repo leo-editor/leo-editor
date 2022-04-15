@@ -673,7 +673,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
                 if ch in '[{(':
                     level += 1
-                elif ch in ']}':
+                elif ch in ')]}':  # Bug fix.
                     level -= 1
                 elif ch in '\'"':
                     i = g.skip_python_string(s, i - 1)
