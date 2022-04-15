@@ -102,7 +102,7 @@ class LeoFind:
         self.work_sel: Tuple[int, int, int] = None  # pos, newpos, insert.
         #
         # Options ivars: set by FindTabManager.init.
-        # These *must* be initially None, not false.
+        # These *must* be initially None, not False.
         self.ignore_case: bool = None
         self.node_only: bool = None
         self.pattern_match: bool = None
@@ -145,7 +145,7 @@ class LeoFind:
         self.unique_matches: Set = set()
         #
         # User settings.
-        self.minibuffer_mode = None
+        self.minibuffer_mode: bool = None
         self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self) -> Settings:
