@@ -680,7 +680,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch == ',' and level == 0:
                     # Skip the comma, but don't include it in the result.
                     break
-            assert level == 0, (level, i == len(s), s)
+            if level > 0:  # Try to recover gracefully.
+                g.printObj(s, tag=f"level > 0: {level}")
+                return s, len(s)
             result = s[i1:i].strip()
             if result.endswith(','):
                 result = result[:-1].strip()
