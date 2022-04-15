@@ -5,7 +5,7 @@ import keyword
 import re
 import sys
 import time
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # Always False at runtime.
@@ -15,6 +15,7 @@ else:
     Cmdr = Pos = Any
 Event = Any
 Settings = Any
+Stroke = Any
 Wrapper = Any
 
 #@+<< Theory of operation of find/change >>
@@ -86,14 +87,14 @@ class LeoFind:
         """Ctor for LeoFind class."""
         self.c = c
         self.expert_mode = False  # Set in finishCreate.
-        self.ftm = None  # Created by dw.createFindTab.
-        self.frame = None
-        self.k = c.k
+        self.ftm: Any = None  # Created by dw.createFindTab.
+        self.frame: Wrapper = None
+        self.k: Any = c.k
         self.re_obj = None
         #
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
-        self.work_sel = (0, 0, 0)  # pos, newpos, insert.
+        self.work_sel: Tuple[Pos, int, int] = (None, 0, 0)  # pos, newpos, insert.
         #
         # Options ivars: set by FindTabManager.init.
         self.ignore_case = None
@@ -107,20 +108,22 @@ class LeoFind:
         self.whole_word = None
         #
         # For isearch commands...
-        self.stack = []  # Entries are (p, sel)
-        self.isearch_ignore_case = None
-        self.isearch_forward_flag = None
-        self.isearch_regexp = None
-        self.findTextList = []
-        self.changeTextList = []
+        self.stack: List[Tuple[Pos, int, int, bool]] = []
+        self.inverseBindingDict: Dict[str, List[Tuple[str, str]]] = {}
+        self.isearch_ignore_case: bool = False
+        self.isearch_forward_flag: bool = False
+        self.isearch_regexp: bool = False
+        self.iSearchStrokes: List[Stroke] = []
+        self.findTextList: List = []
+        self.changeTextList: List = []
         #
         # For find/change...
         self.find_text = ""
         self.change_text = ""
         #
         # State machine...
-        self.escape_handler = None
-        self.handler = None
+        self.escape_handler: Callable = None
+        self.handler: Callable = None
         # "Delayed" requests for do_find_next.
         self.request_reverse = False
         self.request_pattern_match = False
@@ -132,8 +135,8 @@ class LeoFind:
         self.in_headline = False
         self.match_obj = None
         self.reverse = False
-        self.root = None  # The start of the search, especially for suboutline-only.
-        self.unique_matches = set()
+        self.root: Pos = None  # The start of the search, especially for suboutline-only.
+        self.unique_matches: Set = set()
         #
         # User settings.
         self.minibuffer_mode = None
@@ -1343,7 +1346,7 @@ class LeoFind:
     def interactive_clone_find_all(self,
         event: Event=None,
         preloaded: bool=False,
-    ) -> int:  # pragma: no cover (interactive)
+    ) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all ( aka find-clone-all and cfa).
 
@@ -1362,7 +1365,7 @@ class LeoFind:
             prefix='Clone Find All: ',
             handler=self.interactive_clone_find_all1)
 
-    def interactive_clone_find_all1(self, event: Event) -> None:  # pragma: no cover (interactive)
+    def interactive_clone_find_all1(self, event: Event) -> int:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
@@ -1398,7 +1401,7 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(self, event: Event=None, preloaded: bool=False) -> int:  # pragma: no cover (interactive)
+    def interactive_cff(self, event: Event=None, preloaded: bool=False) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 
@@ -1418,7 +1421,7 @@ class LeoFind:
             prefix='Clone Find All Flattened: ',
             handler=self.interactive_cff1)
 
-    def interactive_cff1(self, event: Event) -> None:  # pragma: no cover (interactive)
+    def interactive_cff1(self, event: Event) -> int:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
@@ -1736,7 +1739,7 @@ class LeoFind:
             escape_handler=self.interactive_change_all_unique_regex1,
         )
 
-    def interactive_find_all_unique_regex1(self, event: Event=None) -> None:  # pragma: no cover (interactive)
+    def interactive_find_all_unique_regex1(self, event: Event=None) -> int:  # pragma: no cover (interactive)
         k = self.k
         # Settings...
         find_pattern = k.arg
@@ -1985,7 +1988,7 @@ class LeoFind:
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: helpers
     #@+node:ekr.20210110073117.9: *4* find._cf_helper & helpers
-    def _cf_helper(self, settings: Settings, flatten: str) -> int:  # Caller has  checked the settings.
+    def _cf_helper(self, settings: Settings, flatten: bool) -> int:  # Caller has  checked the settings.
         """
         The common part of the clone-find commands.
 
@@ -2422,7 +2425,7 @@ class LeoFind:
         pattern: str,
         backwards: bool,
         nocase: bool,
-    ) -> None:
+    ) -> Tuple[int, int]:
         """Called from inner_search_helper"""
         re_obj = self.re_obj  # Use the pre-compiled object
         if not re_obj:
@@ -2594,7 +2597,7 @@ class LeoFind:
         )
         return data
     #@+node:ekr.20031218072017.3091: *4* find.show_success
-    def show_success(self, p: Pos, pos: int, newpos: int, showState: bool=True) -> None:
+    def show_success(self, p: Pos, pos: int, newpos: int, showState: bool=True) -> Wrapper:
         """Display the result of a successful find operation."""
         c = self.c
         # Set state vars.
