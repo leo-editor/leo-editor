@@ -51,11 +51,11 @@ def addMenu(tag, keywords):
     if not c:
         return
     mc = c.frame.menu
-    m = mc.createNewMenu('Produce', parentName="outline", before=None)
-    c.add_command(m,
+    menu = mc.createNewMenu('Produce', parentName="outline", before=None)
+    c.add_command(menu,
         label="Execute All Produce",
         command=lambda c=c: run(c, all=True))
-    c.add_command(m,
+    c.add_command(menu,
         label="Execute Tree Produce",
         command=lambda c=c: run(c, all=False))
 #@+node:ekr.20140920173002.17965: ** at-produce commands

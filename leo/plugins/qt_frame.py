@@ -568,7 +568,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         lineWidth: int=1,
         shadow: Any=None,
         shape: Any=None,
-    ) -> None:
+    ) -> Widget:
         """Create a Qt Frame."""
         if shadow is None:
             shadow = Shadow.Plain
@@ -651,9 +651,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         parent: Widget,
         name: str,
         lineWidth: int=0,
-        shadow: str=None,
-        shape: str=None,
-    ) -> None:
+        shadow: Any=None,
+        shape: Any=None,
+    ) -> Widget:
         # Create a text widget.
         c = self.leo_c
         if name == 'richTextEdit' and self.useScintilla and Qsci:
@@ -814,7 +814,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         fc = c.findCommands
         ftm = fc.ftm
 
-        def mungeName(kind: str, label: str) -> None:
+        def mungeName(kind: str, label: str) -> str:
             # The returned value is the namve of an ivar.
             kind = 'check_box_' if kind == 'box' else 'radio_button_'
             name = label.replace(' ', '_').replace('&', '').lower()
@@ -1024,7 +1024,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 # name = 'leo_' + name
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
-    def setSizePolicy(self, widget: Widget, kind1: str=None, kind2: str=None) -> None:
+    def setSizePolicy(self, widget: Widget, kind1: Any=None, kind2: Any=None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -1035,7 +1035,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
-    def tr(self, s: str) -> None:
+    def tr(self, s: str) -> str:
         # pylint: disable=no-member
         if isQt5 or isQt6:
             # QApplication.UnicodeUTF8 no longer exists.
@@ -1743,16 +1743,17 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18202: *5* LeoQtBody.selectEditor & helpers
     selectEditorLockout = False
 
-    def selectEditor(self, wrapper: Wrapper) -> Any:  ### Clarify.
+    def selectEditor(self, wrapper: Wrapper) -> None:
         """Select editor w and node w.leo_p."""
         # pylint: disable=arguments-differ
         trace = 'select' in g.app.debug and not g.unitTesting
         tag = 'qt_body.selectEditor'
         c = self.c
         if not wrapper:
-            return c.frame.body.wrapper
+            return
+            ### return c.frame.body.wrapper
         if self.selectEditorLockout:
-            return None
+            return
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
@@ -1763,24 +1764,21 @@ class LeoQtBody(leoFrame.LeoBody):
             if hasattr(w, 'leo_p') and w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocus()
-            return None
+            return
         try:
-            val = None
             self.selectEditorLockout = True
-            val = self.selectEditorHelper(wrapper)  ### Does this return anything??
+            self.selectEditorHelper(wrapper)  ### Does this return anything??
         finally:
             self.selectEditorLockout = False
-        return val  # Don't put a return in a finally clause.
     #@+node:ekr.20110605121601.18203: *6* LeoQtBody.selectEditorHelper
-    def selectEditorHelper(self, wrapper: Wrapper) -> Optional[str]:  ### Necessary???
-
+    def selectEditorHelper(self, wrapper: Wrapper) -> None:
         c = self.c
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
         if not w.leo_p:
             g.trace('no w.leo_p')
-            return 'break'
+            return
         # The actual switch.
         self.deactivateEditors(wrapper)
         self.recolorWidget(w.leo_p, wrapper)  # switches colorizers.
@@ -1792,10 +1790,11 @@ class LeoQtBody(leoFrame.LeoBody):
         self.switchToChapter(wrapper)
         self.selectLabel(wrapper)
         if not self.ensurePositionExists(w):
-            return g.trace('***** no position editor!')
+            g.trace('***** no position editor!')
+            return
         if not (hasattr(w, 'leo_p') and w.leo_p):
             g.trace('***** no w.leo_p', w)
-            return None
+            return
         p = w.leo_p
         assert p, p
         c.expandAllAncestors(p)
@@ -1805,7 +1804,6 @@ class LeoQtBody(leoFrame.LeoBody):
         c.redraw()
         c.recolor()
         c.bodyWantsFocus()
-        return None
     #@+node:ekr.20110605121601.18205: *5* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
@@ -2435,7 +2433,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return goto.find_node_start(p)
             return None
         #@+node:ekr.20190118082047.1: *5* qstatus.put_status_line
-        def put_status_line(self, col: int, fcol: int, row: int, words: str) -> None:
+        def put_status_line(self, col: int, fcol: int, row: int, words: int) -> None:
 
             if 1:
                 fcol_part = '' if fcol is None else f" fcol: {fcol}"
@@ -2479,7 +2477,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def getNewFrame(self) -> None:
             return None  # To do
         #@+node:ekr.20110605121601.18265: *4* QtIconBar.add
-        def add(self, *args: Any, **keys: Any) -> None:
+        def add(self, *args: Any, **keys: Any) -> Any:
             """Add a button to the icon bar."""
             c = self.c
             if not self.w:
@@ -2508,6 +2506,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     self.button.setProperty('button_kind', kind)  # for styling
                     return b
 
+            action: Any
             if qaction is None:
                 action = leoIconBarButton(parent=self.w, text=text, toolbar=self)
                 button_name = text
@@ -2532,7 +2531,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             rb.triggered.connect(delete_callback)
             if command:
 
-                def button_callback(event: Event, c: str=c, command: str=command) -> None:
+                def button_callback(event: Event, c: Cmdr=c, command: Callable=command) -> None:
                     val = command()
                     if c.exists:
                         # c.bodyWantsFocus()
@@ -2594,9 +2593,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.trace('not found', gnx)
         #@+node:ekr.20110605121601.18271: *4* QtIconBar.setCommandForButton (@rclick nodes) & helper
         # qtFrame.QtIconBarClass.setCommandForButton
+        # Controller is a ScriptingController.
 
         def setCommandForButton(self,
-            button: Any, command: Callable, command_p: Pos, controller: Cmdr, gnx: str, script: str,
+            button: Any, command: Callable, command_p: Pos, controller: Any, gnx: str, script: str,
         ) -> None:
             """
             Set the "Goto Script" rlick item of an @button button.
@@ -2613,10 +2613,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
             b = button.button
             b.clicked.connect(command)
 
-            # Fix bug 74: use the controller and gnx arguments.
-
-            def goto_callback(checked: str, controller: str=controller, gnx: str=gnx) -> None:
+            def goto_callback(checked: str, controller: Any=controller, gnx: str=gnx) -> None:
                 self.goto_command(controller, gnx)
+
             b.goto_script = gts = QAction('Goto Script', b)
             b.addAction(gts)
             gts.triggered.connect(goto_callback)
@@ -2872,7 +2871,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18292: *4* qtFrame.OnBodyDoubleClick (Events) (not used)
     # Not called
 
-    def OnBodyDoubleClick(self, event: Event=None) -> None:
+    def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
         try:
             c, p = self.c, self.c.p
             if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
@@ -2987,7 +2986,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
     # The ratio and secondary_ratio properties are read-only.
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
-    def __get_ratio(self) -> None:
+    def __get_ratio(self) -> float:
         """Return splitter ratio of the main splitter."""
         c = self.c
         free_layout = c.free_layout
@@ -3006,7 +3005,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         __get_ratio,  # No setter.
         doc="qtFrame.ratio property")
     #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
-    def __get_secondary_ratio(self) -> None:
+    def __get_secondary_ratio(self) -> float:
         """Return the splitter ratio of the secondary splitter."""
         c = self.c
         free_layout = c.free_layout
@@ -3039,7 +3038,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
-    def get_window_info(self) -> None:
+    def get_window_info(self) -> Tuple[int, int, int, int]:
         """Return the geometry of the top window."""
         if getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
@@ -3086,7 +3085,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             w = self.top.leo_master
             w.setWindowTitle(s)
     #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
-    def setTopGeometry(self, w: Wrapper, h: int, x: int, y: int) -> None:
+    def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
         # self.top is a DynamicWindow.
         if self.top:
             if 'size' in g.app.debug:
@@ -3555,30 +3554,32 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu.leo_menu_label = label
         return menu
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
-    def add_command(self, **keys: Any) -> None:
+    def add_command(self, menu: Widget,
+        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0) -> None:
         """Wrapper for the Tkinter add_command menu method."""
-        # pylint: disable=arguments-differ
-        accel: str = keys.get('accelerator') or ''
-        command: Callable = keys.get('command') or ''
-        commandName: str = keys.get('commandName')
-        label: int = keys.get('label')
-        n: int = keys.get('underline')
-        if n is None:
-            n = -1
-        menu = keys.get('menu') or self
+        ###
+            ### py--lint: disable=arguments-differ
+            # accel: str = keys.get('accelerator') or ''
+            # command: Callable = keys.get('command') or ''
+            # commandName: str = keys.get('commandName')
+            # label: int = keys.get('label')
+            # n: int = keys.get('underline')
+            # n = underline
+            # if n is None:
+                # n = -1
+            ### menu = keys.get('menu') or self
         if not label:
             return
-        if -1 < n < len(label):
-            label = label[:n] + '&' + label[n:]
-        if accel:
-            label = f"{label}\t{accel}"
+        if -1 < underline < len(label):
+            label = label[:underline] + '&' + label[underline:]
+        if accelerator:
+            label = f"{label}\t{accelerator}"
         action = menu.addAction(label)  # type:ignore
-        # 2012/01/20: Inject the command name into the action
-        # so that it can be enabled/disabled dynamically.
-        action.leo_command_name = commandName
+        # Inject the command name into the action so that it can be enabled/disabled dynamically.
+        action.leo_command_name = commandName or ''
         if command:
 
-            def qt_add_command_callback(checked: str, label: str=label, command: Callable=command) -> None:
+            def qt_add_command_callback(checked: int, label: str=label, command: Callable=command) -> None:
                 return command()
 
             action.triggered.connect(qt_add_command_callback)
@@ -3611,8 +3612,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return 0
     #@+node:ekr.20110605121601.18351: *5* LeoQtMenu.insert
     def insert(self,
-        menuName: str, position: str, label: str, command: Callable, underline: int=None,
-    ) -> None:  ### Underline should be int.
+        menuName: str, position: int, label: str, command: Callable, underline: int=None,
+    ) -> None:
 
         menu = self.getMenu(menuName)
         if menu and label:
@@ -3628,8 +3629,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
                 action.triggered.connect(insert_callback)
     #@+node:ekr.20110605121601.18352: *5* LeoQtMenu.insert_cascade
     def insert_cascade(self,
-        parent: Widget, index: int, label: str, menu: Widget, underline: str,
-    ) -> None:  # underline not used.
+        parent: Widget,
+        index: int,
+        label: str,
+        menu: Widget,
+        underline: int,  # Not used
+    ) -> None:  
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
@@ -3645,7 +3650,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             g.trace('no action for menu', label)
         return menu
     #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
-    def new_menu(self, parent: Widget, tearoff: bool=False, label: str='') -> Any:  # label is for debugging.
+    def new_menu(self, parent: Widget, tearoff: int=0, label: str='') -> Any:  # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
@@ -3684,10 +3689,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def disableMenu(self, menu: Wrapper, name: str) -> None:
         self.enableMenu(menu, name, False)
 
-    def enableMenu(self, menu: Wrapper, name: str, val: str) -> None:
+    def enableMenu(self, menu: Wrapper, name: str, val: bool) -> None:
         """Enable or disable the item in the menu with the given name."""
         if menu and name:
-            val = bool(val)
             for action in menu.actions():
                 s = g.checkUnicode(action.text()).replace('&', '')
                 if s.startswith(name):
@@ -3917,7 +3921,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             # Attempt to move p1 to the first child of p2.
             # parent = p2
 
-            def move(p1: str, p2: str) -> Pos:
+            def move(p1: Pos, p2: Pos) -> Pos:
                 if cloneDrag:
                     p1 = p1.clone()
                 p1.moveToNthChildOf(p2, 0)
@@ -3928,7 +3932,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             # Attempt to move p1 after p2.
             # parent = p2.parent()
 
-            def move(p1: str, p2: str) -> Pos:
+            def move(p1: Pos, p2: Pos) -> Pos:
                 if cloneDrag:
                     p1 = p1.clone()
                 p1.moveAfter(p2)
@@ -4371,9 +4375,8 @@ class LeoQtTreeTab:
         assert self.cc
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
-        self.tabNames = []
-            # The list of tab names. Changes when tabs are renamed.
-        self.w = None  # The QComboBox
+        self.tabNames: List[str] = []  # The list of tab names. Changes when tabs are renamed.
+        self.w: Widget = None  # The QComboBox
         # self.reloadSettings()
         self.createControl()
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
@@ -4383,7 +4386,7 @@ class LeoQtTreeTab:
         class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
-            def __init__(self, tt: str) -> None:
+            def __init__(self, tt: Widget) -> None:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
@@ -4576,8 +4579,8 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames = {}  # Keys are DynamicWindows, values are frames.
-        self.masterFrame = None
+        self.leoFrames: Dict[Any, Widget] = {}  # Keys are DynamicWindows, values are frames.
+        self.masterFrame: Widget = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame: Widget) -> Widget:
@@ -4660,7 +4663,7 @@ class TabbedFrameFactory:
                 if c is not myc:
                     c.close()
 
-        def tab_cycle(offset: str) -> None:
+        def tab_cycle(offset: int) -> None:
 
             tabw = self.masterFrame
             cur = tabw.currentIndex()

@@ -616,7 +616,9 @@ class LeoMenu:
     def add_cascade(self, parent: Any, label: str, menu: Any, underline: int) -> None:
         self.oops()
 
-    def add_command(self, menu: str, **keys: Any) -> None:
+    def add_command(self, menu: Widget,
+        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0,
+    ) -> None:
         self.oops()
 
     def add_separator(self, menu: str) -> None:
@@ -634,13 +636,13 @@ class LeoMenu:
     def destroy(self, menu: Any) -> None:
         self.oops()
 
-    def insert(self, menuName: str, position: int, label: str, command: str, underline: int=None) -> None:
+    def insert(self, menuName: str, position: int, label: str, command: Callable, underline: int=None) -> None:
         self.oops()
 
-    def insert_cascade(self, parent: Any, index: int, label: str, menu: Any, underline: int) -> None:
+    def insert_cascade(self, parent: Widget, index: int, label: str, menu: Any, underline: int) -> None:
         self.oops()
 
-    def new_menu(self, parent: Any, tearoff: int=0, label: str='') -> Any:
+    def new_menu(self, parent: Widget, tearoff: int=0, label: str='') -> Any:
         # 2010: added label arg for pylint.
         self.oops()
     #@+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
@@ -659,7 +661,7 @@ class LeoMenu:
     def disableMenu(self, menu: str, name: str) -> None:
         self.oops()
 
-    def enableMenu(self, menu: str, name: str, val: str) -> None:
+    def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
         self.oops()
 
     def getMacHelpMenu(self, table: List) -> Any:

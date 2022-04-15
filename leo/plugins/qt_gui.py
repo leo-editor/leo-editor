@@ -1484,7 +1484,7 @@ class LeoQtGui(leoGui.LeoGui):
         lineWidth=1,
         shadow=None,
         shape=None,
-    ):
+    ) -> Widget:
         """Create a Qt Frame."""
         if shadow is None:
             shadow = Shadow.Plain
@@ -1532,7 +1532,7 @@ class LeoQtGui(leoGui.LeoGui):
         w.setObjectName(name)
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
-    def setSizePolicy(self, widget, kind1=None, kind2=None):
+    def setSizePolicy(self, widget: Widget, kind1: Any=None, kind2: Any=None):
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:

@@ -249,19 +249,19 @@ def addMenu(tag, keywords):
 
     # elmen= Tk.Menu( xmen, tearoff = False )
     # xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
-    m2 = mc.createNewMenu('Insert XSL Element', 'XSLT')
+    menu2 = mc.createNewMenu('Insert XSL Element', 'XSLT')
 
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
         # pylint: disable=cell-var-from-loop
-        c.add_command(m2,
+        c.add_command(menu2,
             label=z,
             command=lambda c=c, element=xslt[z]: addXSLTElement(c, element))
 
     # men.add_cascade(menu = xmen, label = "XSLT-Node Commands")
-    m3 = mc.createNewMenu('XSLT-Node Commands', 'XSLT')
-    c.add_command(m3,
+    menu3 = mc.createNewMenu('XSLT-Node Commands', 'XSLT')
+    c.add_command(menu3,
         label='Test Node with Minidom',
         command=lambda c=c: doMinidomTest(c))
 #@+node:mork.20041025100716: ** examples/tests

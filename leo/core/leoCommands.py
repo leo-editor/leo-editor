@@ -19,6 +19,7 @@ from leo.core import leoNodes
     # The leoCommands ctor now does most leo.core.leo* imports,
     # thereby breaking circular dependencies.
 #@-<< imports >>
+Widget = Any
 
 def cmd(name) -> Callable:
     """Command decorator for the Commands class."""
@@ -3444,9 +3445,15 @@ class Commands:
         c.widgetWantsFocusNow(tree and tree.canvas)
     #@+node:ekr.20031218072017.2955: *4* c.Menus
     #@+node:ekr.20080610085158.2: *5* c.add_command
-    def add_command(self, menu, **keys):
+    def add_command(self, menu: Widget,
+        accelerator: str='',  # Not used.
+        command: Callable=None,
+        commandName: str=None,  # Not used.
+        label: str=None,  # Not used.
+        underline: int=0,
+    ) -> None:
         c = self
-        command = keys.get('command')
+        ### command = keys.get('command')
         if command:
             # Command is always either:
             # one of two callbacks defined in createMenuEntries or
@@ -3459,8 +3466,9 @@ class Commands:
                     c.outerUpdate()
                 return val
 
-            keys['command'] = add_commandCallback
-            menu.add_command(**keys)
+            ### keys['command'] = add_commandCallback
+            menu.add_command(menu,
+                accelerator=accelerator, command=command, commandName=commandName, label=label, underline=underline)
         else:
             g.trace('can not happen: no "command" arg')
     #@+node:ekr.20171123203044.1: *5* c.Menu Enablers

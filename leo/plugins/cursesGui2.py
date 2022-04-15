@@ -2291,7 +2291,7 @@ class CoreFrame(leoFrame.LeoFrame):
         """Ignore do-nothing methods."""
         g.pr("CoreFrame oops:", g.callers(4), "should be overridden in subclass")
 
-    def resizePanesToRatio(self, ratio, secondary_ratio):
+    def resizePanesToRatio(self, ratio: float, secondary_ratio: float):
         """Resize splitter1 and splitter2 using the given ratios."""
         # self.divideLeoSplitter1(ratio)
         # self.divideLeoSplitter2(secondary_ratio)

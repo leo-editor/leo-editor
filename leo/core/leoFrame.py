@@ -1179,7 +1179,7 @@ class LeoFrame:
     def minimizeAll(self, event: Event=None) -> None:
         self.oops()
 
-    def resizePanesToRatio(self, ratio: str, secondary_ratio: str) -> None:
+    def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         self.oops()
 
     def resizeToScreen(self, event: Event=None) -> None:
@@ -1188,7 +1188,7 @@ class LeoFrame:
     def setInitialWindowGeometry(self) -> None:
         self.oops()
 
-    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> None:
+    def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
         self.oops()
 
     def toggleActivePane(self, event: Event=None) -> None:
@@ -1927,7 +1927,7 @@ class NullFrame(LeoFrame):
     def oops(self) -> None:
         g.trace("NullFrame", g.callers(4))
 
-    def resizePanesToRatio(self, ratio: str, secondary_ratio: str) -> None:
+    def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
 
     def resizeToScreen(self, event: Event=None) -> None:
@@ -1936,7 +1936,7 @@ class NullFrame(LeoFrame):
     def setInitialWindowGeometry(self) -> None:
         pass
 
-    def setTopGeometry(self, w: Wrapper, h: str, x: str, y: str) -> None:
+    def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
         pass
 
     def setWrap(self, flag: str, force: bool=False) -> None:
