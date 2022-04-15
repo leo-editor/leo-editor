@@ -5482,8 +5482,8 @@ def toPythonIndex(s: str, index: Union[int, str]) -> int:
         return len(s)
     data = index.split('.')
     if len(data) == 2:
-        row, col = data
-        row, col = int(row), int(col)
+        row1, col1 = data
+        row, col = int(row1), int(col1)
         i = g.convertRowColToPythonIndex(s, row - 1, col)
         return i
     g.trace(f"bad string index: {index}")

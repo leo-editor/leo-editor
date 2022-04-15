@@ -1674,7 +1674,6 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         """This is c.frame.tree.redraw!"""
-        # print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
     #@+node:ekr.20181120063844.1: *4* tree.setFocus
     def setFocus(self):

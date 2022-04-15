@@ -382,7 +382,7 @@ class NullGui(LeoGui):
         self.clipboardContents = ''
         self.focusWidget: Widget = None
         self.script = None
-        self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
+        self.lastFrame: Wrapper = None  # The outer frame, to set g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs

@@ -2210,10 +2210,10 @@ class NullTree(LeoTree):
     def drawIcon(self, p: Pos) -> None:
         pass
 
-    def redraw(self, p: Pos=None) -> Pos:
+    def redraw(self, p: Pos=None) -> None:
         self.redrawCount += 1
         # Support for #503: Use string/null gui for unit tests
-        return p
+        ### return p
 
     redraw_now = redraw
 

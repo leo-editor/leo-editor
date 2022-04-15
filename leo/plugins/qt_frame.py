@@ -3088,6 +3088,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
         self.contentsDict = {}  # Keys are tab names.  Values are widgets.
         self.eventFilters = []  # Apparently needed to make filters work!
+        self.logCtrl: Any = None
         self.logDict = {}  # Keys are tab names text widgets; values are the widgets.
         self.logWidget = None  # Set in finishCreate.
         self.menu = None  # A menu that pops up on right clicks in the hull or in tabs.
@@ -3354,7 +3355,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if w:
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
-    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none'):
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
         """
         Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
@@ -3363,7 +3364,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if widget is None:
             # widget is subclass of QTextBrowser.
-            widget: Widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
+            widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
             # contents is a wrapper.
             contents = qt_text.QTextEditWrapper(widget=widget, name='log', c=c)
             # Inject an ivar into the QTextBrowser that points to the wrapper.
