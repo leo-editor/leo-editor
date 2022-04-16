@@ -511,6 +511,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def __init__(self, c):
             self.c = c
+            
+        class AnnotationError (Exception):
+            pass
 
         #@+others
         #@+node:ekr.20220105154019.1: *5* ama.init_types_d
@@ -574,7 +577,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             c = self.c
             if not p.b.strip():
                 return  # pragma: no cover
-            s = self.def_pat.sub(self.do_def, p.b)
+            try:
+                s = self.def_pat.sub(self.do_def, p.b)
+            except AnnotationError as e:
+                print('Not converted: p.h:', e)
+                return
             if p.b != s:
                 self.changed_lines += 1
                 if not g.unitTesting:
@@ -583,14 +590,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c.setChanged()
                 p.b = s
         #@+node:ekr.20220105174453.1: *5* ama.do_def
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+        # The old regex recognizes existing return values.
+        # def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+
+        # Alas, the old regex can put too much in the return value, thereby putting too little in the argument.
+        # *Warning*: a greedy (MULTILINE) search for arguments would match to the *next* def!
+
+        # #2606: End the pattern at the *first* "):" so arguments don't end prematurely.
+        #        Alas, now we can't convert defs that already have return values.
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\):(.*?)\n', re.MULTILINE + re.DOTALL)
 
         def do_def(self, m):
-            lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3), m.group(4)
             args = self.do_args(args)
-            if not return_val.strip():
-                val_s = 'None' if name == '__init__' else self.default_return_annotation
-                return_val = f" -> {val_s}"
+            return_val_s = 'None' if name == '__init__' else self.default_return_annotation
+            return_val = f" -> {return_val_s}"
             if not tail.strip():
                 tail = ''
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
@@ -620,8 +634,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         continue
                 m = self.arg_pat.match(rest)
                 if not m:  # pragma: no cover
-                    g.trace('==== bad args', i, repr(rest))
-                    return args
+                    raise self.AnnotationError(f"no match for arg_pat.match({rest})")
+                    ### g.trace('==== bad args', i, repr(rest))
+                    ### return args
                 name1, tail = m.group(1), m.group(2)
                 name = name1.strip()
                 i += len(name1)
@@ -681,8 +696,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # Skip the comma, but don't include it in the result.
                     break
             if level > 0:  # Try to recover gracefully.
-                g.printObj(s, tag=f"level > 0: {level}")
-                return s, len(s)
+                raise self.AnnotationError(f"Bad level: {level}, {s!r}")
+                ### g.printObj(s, tag=f"level > 0: {level}")
+                ### return s, len(s)
             result = s[i1:i].strip()
             if result.endswith(','):
                 result = result[:-1].strip()
