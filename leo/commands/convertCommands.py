@@ -609,7 +609,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_def(self, m):
             lws, name, args, tail = m.group(1), m.group(2), m.group(3), m.group(4)
             args = self.do_args(args)
-            ### return_val_s = 'None' if name == '__init__' else self.default_return_annotation
             return_val_s = self.return_dict.get(name, self.default_return_annotation)
             return_val = f" -> {return_val_s}"
             if not tail.strip():
