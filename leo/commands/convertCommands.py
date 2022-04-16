@@ -583,14 +583,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 c.setChanged()
                 p.b = s
         #@+node:ekr.20220105174453.1: *5* ama.do_def
-        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+        # The old regex recognizes existing return values.
+        # def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\)(.*?):(.*?)\n', re.MULTILINE + re.DOTALL)
+
+        # Alas, the old regex can put too much in the return value, thereby putting too little in the argument.
+        # *Warning*: a greedy (MULTILINE) search for arguments would match to the *next* def!
+
+        # #2606: End the pattern at the *first* "):" so arguments don't end prematurely.
+        #        Alas, now we can't convert defs that already have return values.
+        def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\):(.*?)\n', re.MULTILINE + re.DOTALL)
 
         def do_def(self, m):
-            lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+            ### lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3), m.group(4)
             args = self.do_args(args)
-            if not return_val.strip():
-                val_s = 'None' if name == '__init__' else self.default_return_annotation
-                return_val = f" -> {val_s}"
+            if True: ### not return_val.strip():
+                return_val_s = 'None' if name == '__init__' else self.default_return_annotation
+                return_val = f" -> {return_val_s}"
             if not tail.strip():
                 tail = ''
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
@@ -673,7 +682,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i += 1
                 if ch in '[{(':
                     level += 1
-                elif ch in ']}':
+                elif ch in ')]}':
                     level -= 1
                 elif ch in '\'"':
                     i = g.skip_python_string(s, i - 1)

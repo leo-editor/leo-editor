@@ -6,6 +6,7 @@
 import os
 import re
 import textwrap
+from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -124,12 +125,19 @@ class TestAddMypyAnnotations(LeoUnitTest):
     def test_bug_2606(self):
         # https://github.com/leo-editor/leo-editor/issues/2606
         p = self.p
+        # Make sure any adjustment to the args logic doesn't affect following functions.
         p.b = textwrap.dedent('''\
-            def f(root=p and p.copy()):
+            def f1(root=p and p.copy()):
+                pass
+
+            def f2(n=1, f=0.1):
                 pass
     ''')
         expected = textwrap.dedent('''\
-            def f(root: Any=p and p.copy()) -> None:
+            def f1(root: Any=p and p.copy()) -> None:
+                pass
+
+            def f2(n: int=1, f: float=0.1) -> None:
                 pass
     ''')
         self.x.convert_body(p)
