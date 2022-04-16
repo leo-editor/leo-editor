@@ -6,6 +6,7 @@
 import os
 import re
 import textwrap
+from typing import Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -108,19 +109,6 @@ class TestAddMypyAnnotations(LeoUnitTest):
         }
 
     #@+others
-    #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
-    def test_plain_args(self):
-        p = self.p
-        p.b = textwrap.dedent('''\
-            def f1(event, i, s):
-                pass
-    ''')
-        expected = textwrap.dedent('''\
-            def f1(event: Event, i: int, s: str) -> None:
-                pass
-    ''')
-        self.x.convert_body(p)
-        self.assertEqual(p.b, expected)
     #@+node:ekr.20220108091352.1: *3* test_ama.test_already_annotated
     def test_already_annotated(self):
         p = self.p
@@ -133,6 +121,33 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, contents)
+    #@+node:ekr.20220416053117.1: *3* test_ama.test_bug_2606
+    def test_bug_2606(self):
+        # https://github.com/leo-editor/leo-editor/issues/2606
+        p = self.p
+        # Make sure any adjustment to the args logic doesn't affect following functions.
+        p.b = textwrap.dedent('''\
+            def f1(root=p and p.copy()):
+                pass
+
+            def f2(n=1, f=0.1):
+                pass
+
+            def f3(a, self=self):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f1(root: Any=p and p.copy()) -> None:
+                pass
+
+            def f2(n: int=1, f: float=0.1) -> None:
+                pass
+
+            def f3(a: Any, self=self) -> None:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
     #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
     def test_initializers(self):
         p = self.p
@@ -199,6 +214,44 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         # g.printObj(p.b)
+        self.assertEqual(p.b, expected)
+    #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
+    def test_plain_args(self):
+        p = self.p
+        p.b = textwrap.dedent('''\
+            def f1(event, i, s):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f1(event: Event, i: int, s: str) -> None:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
+    #@+node:ekr.20220416082758.1: *3* test_ama.test_special_methods
+    def test_special_methods(self):
+        p = self.p
+        p.b = textwrap.dedent('''\
+            def __init__(self):
+                pass
+
+            def __repr__(self):
+                pass
+
+            def __str__(self):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def __init__(self) -> None:
+                pass
+
+            def __repr__(self) -> str:
+                pass
+
+            def __str__(self) -> str:
+                pass
+    ''')
+        self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@-others
 #@-others
