@@ -132,7 +132,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def f2(n=1, f=0.1):
                 pass
-                
+
             def f3(a, self=self):
                 pass
     ''')
@@ -142,7 +142,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def f2(n: int=1, f: float=0.1) -> None:
                 pass
-                
+
             def f3(a: Any, self=self) -> None:
                 pass
     ''')
@@ -234,20 +234,20 @@ class TestAddMypyAnnotations(LeoUnitTest):
         p.b = textwrap.dedent('''\
             def __init__(self):
                 pass
-                
+
             def __repr__(self):
                 pass
-                
+
             def __str__(self):
                 pass
     ''')
         expected = textwrap.dedent('''\
             def __init__(self) -> None:
                 pass
-                
+
             def __repr__(self) -> str:
                 pass
-                
+
             def __str__(self) -> str:
                 pass
     ''')
