@@ -170,7 +170,7 @@ class LeoGui:
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: str,
+        filetypes: List[str],
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
@@ -179,7 +179,7 @@ class LeoGui:
         self.oops()
         return 'no'
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: str, defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
         """Create and run a save file dialog ."""
         self.oops()
         return 'no'
@@ -245,14 +245,6 @@ class LeoGui:
         """Return the window information."""
         self.oops()
         return 0, 0, 0, 0
-    #@+node:ekr.20031218072017.3737: *5* LeoGui.Focus
-    def get_focus(self, *args: str, **kwargs: str) -> None:
-        """Return the widget that has focus, or the body widget if None."""
-        self.oops()
-
-    def set_focus(self, commander: str, widget: str) -> None:
-        """Set the focus of the widget in the given commander if it needs to be changed."""
-        self.oops()
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> None:
 
@@ -424,14 +416,14 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        filetypes: str,
+        filetypes: List[str],
         defaultextension: str,
         multiple: bool=False,
         startpath: str=None,
     ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
         return self.simulateDialog("openFileDialog", None)
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: str, defaultextension: str) -> str:
+    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
         return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(

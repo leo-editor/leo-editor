@@ -3331,7 +3331,7 @@ class Commands:
             # bg='red', fg='red')
     #@+node:ekr.20141028061518.23: *4* c.Focus
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
-    def get_focus(self):
+    def get_focus(self) -> Widget:
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:

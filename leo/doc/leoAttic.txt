@@ -7238,6 +7238,28 @@ def OnBodyRClick(self, event: Event=None) -> None:
         g.doHook("bodyrclick2", c=c, p=p, event=event)
     except Exception:
         g.es_event_exception("iconrclick")
+#@+node:ekr.20190601054958.1: *3* qt_gui.get_focus (no longer used)
+def get_focus(self, c: Cmdr=None, raw: bool=False, at_idle: bool=False) -> Widget:
+    """Returns the widget that has focus."""
+    # pylint: disable=arguments-differ
+    trace = 'focus' in g.app.debug
+    trace_idle = False
+    trace = trace and (trace_idle or not at_idle)
+    app = QtWidgets.QApplication
+    w = app.focusWidget()
+    if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
+        has_w = getattr(w, 'leo_wrapper', None)
+        if has_w:
+            if trace:
+                g.trace(w)
+        elif c:
+            # Kludge: DynamicWindow creates the body pane
+            # with wrapper = None, so return the LeoQtBody.
+            w = c.frame.body
+    if trace:
+        name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+        g.trace('(LeoQtGui)', name)
+    return w
 #@-all
 #@@nosearch
 #@-leo
