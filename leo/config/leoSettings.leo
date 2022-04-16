@@ -11615,17 +11615,33 @@ s, string
 v, VNode</t>
 <t tx="ekr.20211209060458.1">True: Add 'class' to the headlines of class nodes (python only).</t>
 <t tx="ekr.20220105172501.1"># comma-separated pairs of strings: (argument-name, typescript-type)
+
+# Note: add-mypy-annotations can automatically annotate kwargs initialized to 
+#       bool, float, int or string constants.
+
+# Define default annotations for arguments and return types.
+
+DEFAULT, str
+DEFAULT_RETURN, None
+
+# Naming conventions used in Leo.
+
 c, Cmdr
+callback, Callable
 ch, str
-gnx, str
+char, str
 d, Dict[str, str]
+event, Event
+gnx, str
 i, int
 j, int
 k, int
 n, int
 p, Pos
 s, str
-v, VNode</t>
+v, VNode
+w, Wrapper
+</t>
 <t tx="ekr.20220224094744.1">True: Attempt to use a dark-vs-light theme according to whether the Leo
       theme is marked dark or not.
 
