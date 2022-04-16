@@ -249,8 +249,7 @@ class BaseColorizer:
             if self.showInvisibles:
                 color = c.config.getColor(option_name) if option_name else default_color
             else:
-                option_name, default_color = self.default_colors_dict.get(
-                    name, (None, None),)
+                option_name, default_color = self.default_colors_dict.get(name, (None, None))
                 color = c.config.getColor(option_name) if option_name else ''
             try:
                 wrapper.tag_configure(name, background=color)
@@ -628,7 +627,7 @@ class BaseColorizer:
             "blank",  # show_invisibles_space_color
             "docpart",
             "leokeyword",
-            "link",
+            "link",  # section reference.
             "name",
             "namebrackets",
             "tab",  # show_invisibles_space_color

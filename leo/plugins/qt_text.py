@@ -98,7 +98,7 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 '''
 
 @g.command('help-for-highlight-current-line')
-def helpForLineHighlight(self, event: Event=None) -> None:
+def helpForLineHighlight(self: Any, event: Event=None) -> None:
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
 
@@ -118,13 +118,12 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
         self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
-        # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
-    def injectIvars(self, c):
+    def injectIvars(self, c: Cmdr) -> Widget:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         w = self
         w.leo_p = c.p.copy() if c.p else None
@@ -309,11 +308,12 @@ class QTextMixin:
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
-    #@+node:ekr.20140901062324.18712: *4* qtm.tag_configure
-    def tag_configure(self, key,
-        background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0,
-    ) -> None:
-
+    #@+node:ekr.20140901062324.18712: *4* QTexMixin.tag_configure
+    def tag_configure(self, key: str, foreground: str=None, underline: int=0, **kwargs: Any) -> None:
+        if 0:
+            underline_s = 'underline' if underline else ' '*9
+            kwargs_s = kwargs or ''
+            g.trace(f"QTextMixin {key:>25} {foreground!r:<25} {underline_s} {kwargs}")
         if foreground:
             self.configDict[key] = foreground
         if underline:
@@ -1632,7 +1632,7 @@ class QTextEditWrapper(QTextMixin):
         def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
-        def addFlashCallback(self=self, w: str=w) -> None:
+        def addFlashCallback(self: Any=self, w: str=w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
@@ -1649,7 +1649,7 @@ class QTextEditWrapper(QTextMixin):
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self=self, w: Widget=w) -> None:
+        def removeFlashCallback(self: Any=self, w: Widget=w) -> None:
             w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)

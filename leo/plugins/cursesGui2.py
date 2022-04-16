@@ -3968,7 +3968,7 @@ class LeoValues(npyscreen.TreeData):
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
-#@+node:ekr.20170511053143.1: *3*  class TextMixin
+#@+node:ekr.20170511053143.1: *3*  class TextMixin: cursesGui2.py
 class TextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
     #@+others
@@ -3976,13 +3976,13 @@ class TextMixin:
     def __init__(self, c=None):
         """Ctor for TextMixin class"""
         self.c = c
-        self.changingText = False  # A lockout for onTextChanged.
+        # self.changingText = False  # A lockout for onTextChanged.
         self.enabled = True
         self.supportsHighLevelInterface = True  # Flag for k.masterKeyHandler and isTextWrapper.
-        self.tags = {}
-        self.configDict = {}  # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict = {}  # Keys are tags, values are True
-        self.virtualInsertPoint = None
+        # self.tags = {}
+        # self.configDict = {}  # Keys are tags, values are colors (names or values).
+        # self.configUnderlineDict = {}  # Keys are tags, values are True
+        # self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
@@ -4101,15 +4101,9 @@ class TextMixin:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.25: *5* tm.tag_configure
-    def tag_configure(self, key, background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0) -> None:
-
-        if foreground:
-            self.configDict[key] = foreground
-        if underline:
-            self.configUnderlineDict[key] = True
-
-    tag_config = tag_configure
+    #@+node:ekr.20170511053143.25: *5* TextMixin.tag_configure (cursesGui2.py)
+    def tag_configure(self, key: str, foreground: str=None, underline: int=0, **kwargs) -> None:
+        """Part of CursesGui2.py. Not used."""
     #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
     def toPythonIndex(self, index: Union[int, str], s: str=None):
         """TextMixin"""
@@ -4135,7 +4129,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
     def __init__(self, c, name, w):
         """Ctor for BodyWrapper class"""
         super().__init__(c, name)
-        self.changingText = False  # A lockout for onTextChanged.
+        # self.changingText = False  # A lockout for onTextChanged.
         self.widget = w
         self.injectIvars(c)  # These are used by Leo's core.
 
