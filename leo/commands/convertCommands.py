@@ -464,6 +464,9 @@ def convert_at_test_nodes(c, converter, root, copy_tree=False):  # pragma: no co
     target.expand()
     c.redraw(target)
     print(f"converted {count} @test nodes")
+#@+node:ekr.20220416082017.1: ** class AnnotationError
+class AnnotationError (Exception):
+    pass
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
     """Leo's file-conversion commands"""
@@ -499,6 +502,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         self.Add_Mypy_Annotations(self.c).add_annotations()
         self.c.bodyWantsFocus()
     #@+node:ekr.20220105152521.1: *4* class Add_Mypy_Annotations
+
     class Add_Mypy_Annotations:
 
         """A class that implements the add-mypy-annotations command."""
@@ -535,7 +539,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except ValueError:
                     print(f"{tag}: ignoring invalid key/value pair: {s!r}")
             self.types_d = d
-            g.printObj(self.types_d)
         #@+node:ekr.20220105154158.1: *5* ama.add_annotations (entry)
         def add_annotations(self):  # pragma: no cover
 
@@ -574,7 +577,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             c = self.c
             if not p.b.strip():
                 return  # pragma: no cover
-            s = self.def_pat.sub(self.do_def, p.b)
+            try:
+                s = self.def_pat.sub(self.do_def, p.b)
+            except AnnotationError as e:
+                print(f"Unchanged: {p.h}: {e!r}")
+                return
             if p.b != s:
                 self.changed_lines += 1
                 if not g.unitTesting:
@@ -593,13 +600,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #        Alas, now we can't convert defs that already have return values.
         def_pat = re.compile(r'^([ \t]*)def[ \t]+(\w+)\s*\((.*?)\):(.*?)\n', re.MULTILINE + re.DOTALL)
 
+        return_dict: Dict[str, str] = {
+            '__init__': 'None',
+            '__repr__': 'str',
+            '__str__': 'str',
+        }
+
         def do_def(self, m):
-            ### lws, name, args, return_val, tail = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3), m.group(4)
             args = self.do_args(args)
-            if True: ### not return_val.strip():
-                return_val_s = 'None' if name == '__init__' else self.default_return_annotation
-                return_val = f" -> {return_val_s}"
+            ### return_val_s = 'None' if name == '__init__' else self.default_return_annotation
+            return_val_s = self.return_dict.get(name, self.default_return_annotation)
+            return_val = f" -> {return_val_s}"
             if not tail.strip():
                 tail = ''
             return f"{lws}def {name}({args}){return_val}:{tail}\n"
@@ -629,16 +641,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         continue
                 m = self.arg_pat.match(rest)
                 if not m:  # pragma: no cover
-                    g.trace('==== bad args', i, repr(rest))
-                    return args
+                    g.printObj(args, tag='args')
+                    raise AnnotationError(f"no match for arg_pat.match({rest})")
                 name1, tail = m.group(1), m.group(2)
                 name = name1.strip()
                 i += len(name1)
                 if name == 'self':
-                    # Don't annotate self.
-                    result.append(f"{lws}{name}{comma}")
-                    if i < len(args) and args[i] == ',':
-                        i += 1
+                    # Don't annotate self, but allow unusual self=expr.
+                    if tail == '=':
+                        arg, i = self.find_arg(args, i)
+                        result.append(f"{lws}{name}={arg}{comma}")
+                    else:
+                        result.append(f"{lws}{name}{comma}")
+                        if i < len(args) and args[i] == ',':
+                            i += 1
                 elif tail == ':':
                     # Never change an already-annotated arg.
                     arg, i = self.find_arg(args, i)
@@ -689,7 +705,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch == ',' and level == 0:
                     # Skip the comma, but don't include it in the result.
                     break
-            assert level == 0, (level, i == len(s), s)
+            if level > 0:
+                raise AnnotationError(f"Bad level: {level}, {s!r}")
             result = s[i1:i].strip()
             if result.endswith(','):
                 result = result[:-1].strip()

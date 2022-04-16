@@ -132,12 +132,18 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def f2(n=1, f=0.1):
                 pass
+                
+            def f3(a, self=self):
+                pass
     ''')
         expected = textwrap.dedent('''\
             def f1(root: Any=p and p.copy()) -> None:
                 pass
 
             def f2(n: int=1, f: float=0.1) -> None:
+                pass
+                
+            def f3(a: Any, self=self) -> None:
                 pass
     ''')
         self.x.convert_body(p)
@@ -218,6 +224,31 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         expected = textwrap.dedent('''\
             def f1(event: Event, i: int, s: str) -> None:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
+    #@+node:ekr.20220416082758.1: *3* test_ama.test_special_methods
+    def test_special_methods(self):
+        p = self.p
+        p.b = textwrap.dedent('''\
+            def __init__(self):
+                pass
+                
+            def __repr__(self):
+                pass
+                
+            def __str__(self):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def __init__(self) -> None:
+                pass
+                
+            def __repr__(self) -> str:
+                pass
+                
+            def __str__(self) -> str:
                 pass
     ''')
         self.x.convert_body(p)
