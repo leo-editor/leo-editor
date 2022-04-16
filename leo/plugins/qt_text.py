@@ -7,7 +7,7 @@
 #@+node:ekr.20220416085845.1: ** << imports qt_text.py >>
 import time
 assert time
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
@@ -114,31 +114,27 @@ class QTextMixin:
         self.enabled = True
         # A flag for k.masterKeyHandler and isTextWrapper.
         self.supportsHighLevelInterface = True
-        self.tags = {}
+        self.tags: Dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
-        self.configDict = {}  # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict = {}  # Keys are tags, values are True
+        self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
         # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
-    def injectIvars(self, name: str='1', parentFrame: Wrapper=None) -> Wrapper:
+    def injectIvars(self, c):
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         w = self
-        p = self.c.currentPosition()
-        if name == '1':
-            w.leo_p = None  # Will be set when the second editor is created.
-        else:
-            w.leo_p = p and p.copy()
+        w.leo_p = c.p.copy() if c.p else None
         w.leo_active = True
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
         w.leo_chapter = None
         w.leo_frame = None
-        w.leo_name = name
+        w.leo_name = '1'
         w.leo_label = None
         return w
     #@+node:ekr.20140901062324.18825: *3* qtm.getName
@@ -314,19 +310,14 @@ class QTextMixin:
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
     #@+node:ekr.20140901062324.18712: *4* qtm.tag_configure
-    def tag_configure(self, *args: Any, **keys: Any) -> None:
+    def tag_configure(self, key,
+        background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0,
+    ) -> None:
 
-        if len(args) == 1:
-            key = args[0]
-            self.tags[key] = keys
-            val = keys.get('foreground')
-            underline = keys.get('underline')
-            if val:
-                self.configDict[key] = val
-            if underline:
-                self.configUnderlineDict[key] = True
-        else:
-            g.trace('oops', args, keys)
+        if foreground:
+            self.configDict[key] = foreground
+        if underline:
+            self.configUnderlineDict[key] = True
 
     tag_config = tag_configure
     #@-others
@@ -1059,7 +1050,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
                 '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
         self.highest_line = 0  # The highest line that is currently visibile.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
-        self.offsets = []
+        self.offsets: List[Tuple[int, Any]] = []
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -1148,7 +1139,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             # Propagate the event.
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self,
-        bold: bool, n: str, painter: Any, top_left: int, scroll_y: int,
+        bold: bool, n: int, painter: Any, top_left: int, scroll_y: int,
     ) -> None:
         """Paint n, right justified in the line number field."""
         c = self.c
@@ -1305,7 +1296,7 @@ class QScintillaWrapper(QTextMixin):
     def set_config(self) -> None:
         """Set QScintillaWrapper configuration options."""
         c, w = self.c, self.widget
-        n = c.config.getInt('qt-scintilla-zoom-in')
+        n = c.config.getInt('qt-scintilla-zoom-in')  # type:ignore
         if n not in (None, 1, 0):
             w.zoomIn(n)
         w.setUtf8(True)  # Important.
@@ -1638,7 +1629,7 @@ class QTextEditWrapper(QTextMixin):
         # Remember highlighted line:
         last_selections = w.extraSelections()
 
-        def after(func: str) -> None:
+        def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
         def addFlashCallback(self=self, w: str=w) -> None:
@@ -1658,7 +1649,7 @@ class QTextEditWrapper(QTextMixin):
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self=self, w: str=w) -> None:
+        def removeFlashCallback(self=self, w: Widget=w) -> None:
             w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)
@@ -1770,7 +1761,7 @@ class QTextEditWrapper(QTextMixin):
             g.app.gui.setClipboardSelection(sel)
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
-    def pageUpDown(self, op: str, moveMode: str) -> None:
+    def pageUpDown(self, op: Any, moveMode: Any) -> None:
         """
         The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
         and not externally accessible. Since Leo has its own keyhandling

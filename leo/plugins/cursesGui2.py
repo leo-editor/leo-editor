@@ -3985,21 +3985,17 @@ class TextMixin:
         self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
-    #@+node:ekr.20170511053143.3: *5* tm.injectIvars
-    def injectIvars(self, name='1', parentFrame=None):
+    #@+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
+    def injectIvars(self, c):
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
-        p = self.c.currentPosition()
-        if name == '1':
-            self.leo_p = None  # Will be set when the second editor is created.
-        else:
-            self.leo_p = p and p.copy()
+        self.leo_p = c.p.copy() if c.p else None
         self.leo_active = True
         # Inject the scrollbar items into the text widget.
         self.leo_bodyBar = None
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = name
+        self.leo_name = '1'
         self.leo_label = None
         return self
     #@+node:ekr.20170511053143.4: *4* tm.getName
@@ -4106,22 +4102,12 @@ class TextMixin:
         g.app.gui.set_focus(self)
 
     #@+node:ekr.20170511053143.25: *5* tm.tag_configure
-    def tag_configure(self, *args, **keys):
+    def tag_configure(self, key, background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0) -> None:
 
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(args, keys)
-        if len(args) == 1:
-            key = args[0]
-            self.tags[key] = keys
-            val = keys.get('foreground')
-            underline = keys.get('underline')
-            if val:
-                self.configDict[key] = val
-            if underline:
-                self.configUnderlineDict[key] = True
-        else:
-            g.trace('oops', args, keys)
+        if foreground:
+            self.configDict[key] = foreground
+        if underline:
+            self.configUnderlineDict[key] = True
 
     tag_config = tag_configure
     #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
@@ -4154,21 +4140,17 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.injectIvars(c)  # These are used by Leo's core.
 
     #@+others
-    #@+node:ekr.20170504034655.3: *4* bw.injectIvars
-    def injectIvars(self, name='1', parentFrame=None):
+    #@+node:ekr.20170504034655.3: *4* bw.injectIvars (cursesGui2)
+    def injectIvars(self, c):
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
-        p = self.c.currentPosition()
-        if name == '1':
-            self.leo_p = None  # Will be set when the second editor is created.
-        else:
-            self.leo_p = p and p.copy()
+        self.leo_p = c.p.copy() if c.p else None
         self.leo_active = True
         # Inject the scrollbar items into the text widget.
         self.leo_bodyBar = None
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = name
+        self.leo_name = '1'
         self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):

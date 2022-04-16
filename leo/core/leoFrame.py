@@ -260,7 +260,9 @@ class WrapperAPI:
     def setYScrollPosition(self, i: int) -> None:
         pass
 
-    def tag_configure(self, colorName: str, **keys: str) -> None:
+    def tag_configure(self, key,
+        background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0,
+    ) -> None:
         pass
 
     def toPythonIndex(self, index: Index) -> int:
@@ -2307,7 +2309,9 @@ class StringTextWrapper:
     def setYScrollPosition(self, i: int) -> None:
         pass
 
-    def tag_configure(self, colorName: str, **keys: str) -> None:
+    def tag_configure(self, key,
+        background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0,
+    ) -> None:
         pass
     #@+node:ekr.20140903172510.18591: *3* stw.Text
     #@+node:ekr.20140903172510.18592: *4* stw.appendText

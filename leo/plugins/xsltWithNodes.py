@@ -462,13 +462,15 @@ class CSVVisualizer:
         return dialog
 
 
-    #@+node:ekr.20140906065955.18801: *5* createTable
+    #@+node:ekr.20140906065955.18801: *5* createTable (table.py)
     def createTable( parent , arr ):
 
-        tab = tktab.Table( parent , rows = 0, cols = 0, variable = arr, sparsearray=1,
-        background = 'white', foreground = 'blue', selecttype = 'row' )
-        tab.tag_configure( 'active', background = '#FFE7C6', foreground = 'blue' )
-        tab.tag_configure( 'sel', background = '#FFE7C6', foreground = 'blue', bd =2 )
+        tab = tktab.Table(parent,
+            rows = 0, cols = 0, variable = arr, sparsearray=1,
+            background = 'white', foreground = 'blue', selecttype = 'row',
+        )
+        tab.tag_configure('active', background = '#FFE7C6', foreground = 'blue')
+        tab.tag_configure('sel', background = '#FFE7C6', foreground = 'blue', bd =2)
         tab.pack()
         return tab
 

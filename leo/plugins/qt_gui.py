@@ -1375,7 +1375,7 @@ class LeoQtGui(leoGui.LeoGui):
             if b != m.next_tip_button:
                 break
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
-    def onButton(self, m: Any) -> None:  ###
+    def onButton(self, m: Any) -> None:
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state: str) -> None:
@@ -1385,7 +1385,7 @@ class LeoQtGui(leoGui.LeoGui):
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
             c.redraw()  # #2390: Show the change immediately.
     #@+node:ekr.20180127103142.1: *4* onNext (not used)
-    def onNext(self, *args: Any, **keys: Any) -> bool:  ###
+    def onNext(self, *args: Any, **keys: Any) -> bool:
         g.trace(args, keys)
         return True
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
@@ -1924,7 +1924,7 @@ class StyleSheetManager:
         sheet = sheet.replace('\\\n', '')  # join lines ending in \
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
-    def adjust_sizes(self, settingsDict: Dict) -> Tuple[Dict, Any]: ###
+    def adjust_sizes(self, settingsDict: Dict) -> Tuple[Dict, Any]:
         """Adjust constants to reflect c._style_deltas."""
         c = self.c
         constants = {}
