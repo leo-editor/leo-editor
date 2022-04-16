@@ -108,19 +108,6 @@ class TestAddMypyAnnotations(LeoUnitTest):
         }
 
     #@+others
-    #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
-    def test_plain_args(self):
-        p = self.p
-        p.b = textwrap.dedent('''\
-            def f1(event, i, s):
-                pass
-    ''')
-        expected = textwrap.dedent('''\
-            def f1(event: Event, i: int, s: str) -> None:
-                pass
-    ''')
-        self.x.convert_body(p)
-        self.assertEqual(p.b, expected)
     #@+node:ekr.20220108091352.1: *3* test_ama.test_already_annotated
     def test_already_annotated(self):
         p = self.p
@@ -133,6 +120,20 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, contents)
+    #@+node:ekr.20220416053117.1: *3* test_ama.test_bug_2606
+    def test_bug_2606(self):
+        # https://github.com/leo-editor/leo-editor/issues/2606
+        p = self.p
+        p.b = textwrap.dedent('''\
+            def f(root=p and p.copy()):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f(root: Any=p and p.copy()) -> None:
+                pass
+    ''')
+        self.x.convert_body(p)
+        self.assertEqual(p.b, expected)
     #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
     def test_initializers(self):
         p = self.p
@@ -199,6 +200,19 @@ class TestAddMypyAnnotations(LeoUnitTest):
     ''')
         self.x.convert_body(p)
         # g.printObj(p.b)
+        self.assertEqual(p.b, expected)
+    #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
+    def test_plain_args(self):
+        p = self.p
+        p.b = textwrap.dedent('''\
+            def f1(event, i, s):
+                pass
+    ''')
+        expected = textwrap.dedent('''\
+            def f1(event: Event, i: int, s: str) -> None:
+                pass
+    ''')
+        self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@-others
 #@-others
