@@ -1313,10 +1313,14 @@ class LeoLog:
                 g.trace('NO MATCH', len(lines))  ### New debugging trace
             return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
+        if not g.unitTesting:
+            g.trace('MATCH', len(lines))
+        found_match = False
         for line in lines:
             for filename_i, line_number_i, pattern in self.link_table:
                 m = pattern.match(line)
                 if m:
+                    found_match = True
                     filename = m.group(filename_i)
                     line_number = m.group(line_number_i)
                     p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
@@ -1325,10 +1329,14 @@ class LeoLog:
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
                         # An unusual case, but not worth a message.
+                        if not g.unitTesting:
+                            g.trace('NO @file NODE for FILENAME', repr(filename))
                         self.put(line)
                     break
             else:  # no match
                 self.put(line)
+        if not g.unitTesting:
+            g.trace('FOUND MATCH', found_match)
         return True  # This method has completely handled s.
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
