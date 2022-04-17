@@ -61,7 +61,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         undoType = 'backward-kill-sentence'
         self.beginCommand(w, undoType=undoType)
         i2 = s.rfind('.', 0, i) + 1
-        self.killHelper(event, i2, i + 1, undoType=undoType)
+        self.killHelper(event, i2, i + 1, w, undoType=undoType)
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
@@ -91,7 +91,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # self.killWs(event)
             e.extendToWord(event)
             i, j = w.getSelectionRange()
-            self.killHelper(event, i, j)
+            self.killHelper(event, i, j, w)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
@@ -145,10 +145,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* ec.killHelper
-    def killHelper(self, event, frm, to, undoType=None):
+    def killHelper(self, event, frm, to, w, undoType=None):
         """
         A helper method for all kill commands except kill-paragraph commands.
         """
+        c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -166,6 +167,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         w.setInsertPoint(frm)
         if undoType:
             self.endCommand(changed=True, setLabel=True)
+        g.app.gui.set_focus(c, w)  # 2607
     #@+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
     def killParagraphHelper(self, event, frm, to, undoType=None):
         """A helper method for kill-paragraph commands."""
@@ -203,7 +205,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         else:
             i = j
         if i < j:
-            self.killHelper(event, i, j, undoType='kill-to-end-of-line')
+            self.killHelper(event, i, j, w, undoType='kill-to-end-of-line')
     #@+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
     def killLine(self, event):
@@ -223,7 +225,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             j -= 1
         else:
             pass  # Kill the newline in the present line.
-        self.killHelper(event, i, j, undoType='kill-line')
+        self.killHelper(event, i, j, w, undoType='kill-line')
     #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
     def killRegion(self, event):
@@ -268,7 +270,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         undoType = 'kill-sentence'
         self.beginCommand(w, undoType=undoType)
         i2 = s.rfind('.', 0, ins) + 1
-        self.killHelper(event, i2, i + 1, undoType=undoType)
+        self.killHelper(event, i2, i + 1, w, undoType=undoType)
         w.setInsertPoint(i2)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.424: *3* killWs
