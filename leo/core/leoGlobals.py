@@ -4256,7 +4256,7 @@ def findAncestorVnodeByPredicate(p: Pos, v_predicate: Any) -> Optional["VNode"]:
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
-def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]:
+def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Callable=None) -> List[Pos]:
     """
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.

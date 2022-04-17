@@ -646,7 +646,7 @@ if QtWidgets:
             def set_position(self, c: Cmdr) -> None:
                 """Set the position of the QListWidget."""
 
-                def glob(obj: Any, pt: str) -> None:
+                def glob(obj: Any, pt: str) -> Any:
                     """Convert pt from obj's local coordinates to global coordinates."""
                     return obj.mapToGlobal(pt)
 
@@ -920,7 +920,7 @@ if QtWidgets:
             pos = sb.sliderPosition()
             return pos
 
-        def setYScrollPosition(self, pos: str) -> None:
+        def setYScrollPosition(self, pos: int) -> None:
             """Set the position of the vertical scrollbar."""
             w = self
             if pos is None:

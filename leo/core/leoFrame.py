@@ -1307,9 +1307,11 @@ class LeoLog:
         """
         c = self.c
         lines = g.splitLines(s)
-        # Step 1: return s if no lines match. This is an efficiency measure.
+        # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            return False  # The user must handle s.
+            if not g.unitTesting:
+                g.trace('NO MATCH', len(lines))  ### New debugging trace
+            return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         for line in lines:
             for filename_i, line_number_i, pattern in self.link_table:

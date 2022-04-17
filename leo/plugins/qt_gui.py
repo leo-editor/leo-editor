@@ -1425,7 +1425,7 @@ class LeoQtGui(leoGui.LeoGui):
     def isTextWidget(self, w: Wrapper) -> bool:
         """Return True if w is some kind of Qt text widget."""
         if Qsci:
-            return isinstance(w, (Qsci.QsciScintilla, QtWidgets.QTextEdit)), w
+            return isinstance(w, (Qsci.QsciScintilla, QtWidgets.QTextEdit))
         return isinstance(w, QtWidgets.QTextEdit)
 
     def isTextWrapper(self, w: Wrapper) -> bool:

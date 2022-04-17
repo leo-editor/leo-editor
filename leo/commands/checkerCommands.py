@@ -298,7 +298,7 @@ class MypyCommand:
             link_root=root,
         )
 
-    #@+node:ekr.20210302111935.7: *3* mypy.run
+    #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
     def run(self, p):
         """Run mypy on all Python @<file> nodes in c.p's tree."""
         c = self.c
@@ -311,6 +311,7 @@ class MypyCommand:
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
+        g.printObj([z.h for z in roots], tag='mypy.run')
         self.check_all(roots)
     #@-others
 #@+node:ekr.20160516072613.2: ** class PyflakesCommand

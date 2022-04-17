@@ -1532,6 +1532,7 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
+        self.colorizer: Any = None
         self.wrapper: Wrapper = None
         self.widget: Widget = None
         self.reloadSettings()
@@ -1584,8 +1585,7 @@ class LeoQtBody(leoFrame.LeoBody):
             # dw.createText sets self.scintilla_widget
             self.widget = c.frame.top.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
-            self.colorizer = leoColorizer.QScintillaColorizer(
-                c, self.widget, self.wrapper)
+            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
         else:
             self.widget = top.richTextEdit  # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)

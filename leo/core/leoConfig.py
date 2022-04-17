@@ -1900,7 +1900,7 @@ class LocalConfigManager:
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting, default=None):
+    def getBool(self, setting, default=None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1914,7 +1914,7 @@ class LocalConfigManager:
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
-    def getData(self, setting, strip_comments=True, strip_data=True):
+    def getData(self, setting, strip_comments=True, strip_data=True) -> List[str]:
         """Return a list of non-comment strings in the body text of @data setting."""
         # 904: Add local abbreviations to global settings.
         append = setting == 'global-abbreviations'
@@ -1961,7 +1961,7 @@ class LocalConfigManager:
             return theDir
         return None
     #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
-    def getFloat(self, setting):
+    def getFloat(self, setting) -> float:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
@@ -1994,7 +1994,7 @@ class LocalConfigManager:
             weight = "normal"
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20120215072959.12532: *5* c.config.getInt
-    def getInt(self, setting):
+    def getInt(self, setting) -> int:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
