@@ -331,7 +331,7 @@ class QLineEditWrapper(QTextMixin):
     """
     #@+others
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
-    def __init__(self, widget: str, name: str, c: Cmdr=None) -> None:
+    def __init__(self, widget: Widget, name: str, c: Cmdr=None) -> None:
         """Ctor for QLineEditWrapper class."""
         super().__init__(c)
         self.widget = widget
@@ -493,7 +493,7 @@ if QtWidgets:
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
-        def __init__(self, parent: str, c: Cmdr, wrapper: Wrapper) -> None:
+        def __init__(self, parent: Widget, c: Cmdr, wrapper: Wrapper) -> None:
             """ctor for LeoQTextBrowser class."""
             for attr in ('leo_c', 'leo_wrapper',):
                 assert not hasattr(QtWidgets.QTextBrowser, attr), attr

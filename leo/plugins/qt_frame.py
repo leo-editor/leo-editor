@@ -37,11 +37,13 @@ from leo.plugins.nested_splitter import NestedSplitter
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
+    from PyQt6 import QtWidgets as QtWidgets6
+    Widget = QtWidgets6.QWidget
 else:
     Cmdr = Any
     Pos = Any
+    Widget = Any
 Event = Any
-Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_frame.py >>
 #@+others
@@ -353,7 +355,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.centralwidget = w
         return w
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
-    def createLogPane(self, parent: str) -> None:
+    def createLogPane(self, parent: Any) -> None:
         """Create all parts of Leo's log pane."""
         c = self.leo_c
         #
@@ -533,8 +535,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if n is None:
             n = c.frame.body.numberOfEditors
         n = max(0, n - 1)
-        grid.addWidget(label, 0, n)
-        grid.addWidget(w, 1, n)
+        # mypy error: grid is a QGridLayout, not a QLayout.
+        grid.addWidget(label, 0, n)  # type:ignore
+        grid.addWidget(w, 1, n)  # type:ignore
         grid.setRowStretch(0, 0)  # Don't grow the label vertically.
         grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
         # Inject the ivar.
@@ -1064,7 +1067,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
         g.app.gui.attachLeoIcon(self)
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
-    def setSplitDirection(self, main_splitter: Widget, secondary_splitter: Widget, orientation: str) -> None:
+    def setSplitDirection(self, main_splitter: Widget, secondary_splitter: Widget, orientation: Any) -> None:
         """Set the orientations of the splitters in the Leo main window."""
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
@@ -1526,7 +1529,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20150521061618.1: *3* LeoQtBody.body_cmd (decorator)
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    def __init__(self, frame: Wrapper, parentFrame: Widget) -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
         super().__init__(frame, parentFrame)
@@ -1545,10 +1548,10 @@ class LeoQtBody(leoFrame.LeoBody):
         self.totalNumberOfEditors = 1
         # For renderer panes.
         self.canvasRenderer = None
-        self.canvasRendererLabel = None
+        self.canvasRendererLabel: Widget = None
         self.canvasRendererVisible = False
-        self.textRenderer = None
-        self.textRendererLabel = None
+        self.textRenderer: Widget = None
+        self.textRendererLabel: Widget = None
         self.textRendererVisible = False
         self.textRendererWrapper: Wrapper = None
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
@@ -2494,7 +2497,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
             class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
-                def __init__(self, parent: Widget, text: str, toolbar: Widget) -> None:
+                # toolbar is a QtIconBarClass object, not a QWidget.
+                def __init__(self, parent: Widget, text: str, toolbar: Any) -> None:
                     super().__init__(parent)
                     self.button: Widget = None  # set below
                     self.text = text
@@ -2890,7 +2894,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         for frame in g.app.windowList:
             self.minimize(frame)
 
-    def minimize(self, frame: str) -> None:
+    def minimize(self, frame: Widget) -> None:
         # This unit test will fail when run externally.
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
@@ -3063,7 +3067,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+others
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    def __init__(self, frame: Wrapper, parentFrame: Widget) -> None:
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)  # Calls createControl.
         # Set in finishCreate.
@@ -3075,9 +3079,10 @@ class LeoQtLog(leoFrame.LeoLog):
         self.eventFilters: List = []  # Apparently needed to make filters work!
         self.logCtrl: Any = None
         self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
-        self.logWidget = None  # Set in finishCreate.
-        self.menu = None  # A menu that pops up on right clicks in the hull or in tabs.
-        self.tabWidget = tw = c.frame.top.tabWidget  # The Qt.QTabWidget that holds all the tabs.
+        self.logWidget: Widget = None  # Set in finishCreate.
+        self.menu: Widget = None  # A menu that pops up on right clicks in the hull or in tabs.
+        self.tabWidget: Widget = c.frame.top.tabWidget  # The Qt.QTabWidget that holds all the tabs.
+        tw = self.tabWidget
 
         # Bug 917814: Switching Log Pane tabs is done incompletely.
         tw.currentChanged.connect(self.onCurrentChanged)
@@ -3099,7 +3104,8 @@ class LeoQtLog(leoFrame.LeoLog):
         #
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
-        self.logWidget = logWidget = self.contentsDict.get('Log')
+        self.logWidget = self.contentsDict.get('Log')
+        logWidget = self.logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')
             # Required.
@@ -3340,13 +3346,16 @@ class LeoQtLog(leoFrame.LeoLog):
         if w:
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
-    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
+    def createTab(self,
+        tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none',
+    ) -> Any:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
         c = self.c
+        contents: Any
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
@@ -3470,7 +3479,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
     #@+others
     #@+node:ekr.20110605121601.18341: *3* LeoQtMenu.__init__
-    def __init__(self, c: Cmdr, frame: Widget, label: str) -> None:
+    def __init__(self, c: Cmdr, frame: Wrapper, label: str) -> None:
         """ctor for LeoQtMenu class."""
         assert frame
         assert frame.c
@@ -3583,7 +3592,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         label: str,
         menu: Widget,
         underline: int,  # Not used
-    ) -> None:
+    ) -> Widget:
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
@@ -3679,7 +3688,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         else:
             g.trace(f"No such menu: {menuName}")
     #@+node:ekr.20120922041923.10607: *4* LeoQtMenu.activateAllParentMenus
-    def activateAllParentMenus(self, menu: Widget) -> None:
+    def activateAllParentMenus(self, menu: Wrapper) -> None:
         """menu is a QtMenuWrapper.  Activate it and all parent menus."""
         parent = menu.parent()
         action = menu.menuAction()
@@ -4325,7 +4334,7 @@ class LeoQtTreeTab:
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
         self.tabNames: List[str] = []  # The list of tab names. Changes when tabs are renamed.
-        self.w: Widget = None  # The QComboBox
+        self.w: Any = None  # The QComboBox, not a QWidget.
         # self.reloadSettings()
         self.createControl()
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
@@ -4335,7 +4344,7 @@ class LeoQtTreeTab:
         class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
-            def __init__(self, tt: Widget) -> None:
+            def __init__(self, tt: Wrapper) -> None:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.

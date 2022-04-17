@@ -14,7 +14,7 @@ class LeoMenu:
     """The base class for all Leo menus."""
     #@+others
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
-    def __init__(self, frame: str) -> None:
+    def __init__(self, frame: Widget) -> None:
         self.c = frame.c
         self.enable_dict: Dict[str, Callable] = {}  # Created by finishCreate.
         self.frame = frame
@@ -639,7 +639,7 @@ class LeoMenu:
     def insert(self, menuName: str, position: int, label: str, command: Callable, underline: int=None) -> None:
         self.oops()
 
-    def insert_cascade(self, parent: Widget, index: int, label: str, menu: Any, underline: int) -> None:
+    def insert_cascade(self, parent: Widget, index: int, label: str, menu: Any, underline: int) -> Widget:
         self.oops()
 
     def new_menu(self, parent: Widget, tearoff: int=0, label: str='') -> Any:
@@ -652,7 +652,7 @@ class LeoMenu:
     def clearAccel(self, menu: str, name: str) -> None:
         self.oops()
 
-    def createMenuBar(self, frame: str) -> None:
+    def createMenuBar(self, frame: Widget) -> None:
         self.oops()
 
     def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:

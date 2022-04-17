@@ -12,7 +12,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 """
 #@+<< imports leoGui.py >>
 #@+node:ekr.20220414080546.1: ** << imports leoGui.py >>
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -540,7 +540,7 @@ class NullScriptingControllerClass:
 
     This keeps pylint happy."""
 
-    def __init__(self, c: Cmdr, iconBar: str=None) -> None:
+    def __init__(self, c: Cmdr, iconBar: Widget=None) -> None:
         self.c = c
         self.iconBar = iconBar
 
@@ -811,7 +811,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: str=None) -> None:
+    def __init__(self, theDict: Dict=None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")

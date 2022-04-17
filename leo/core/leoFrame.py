@@ -110,7 +110,7 @@ class StatusLineAPI:
 class TreeAPI:
     """The required API for c.frame.tree."""
 
-    def __init__(self, frame: str) -> None:
+    def __init__(self, frame: Widget) -> None:
         pass
     # Must be defined in subclasses.
 
@@ -310,7 +310,7 @@ class LeoBody:
     """The base class for the body pane in Leo windows."""
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
-    def __init__(self, frame: str, parentFrame: Widget) -> None:
+    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
         """Ctor for LeoBody class."""
         c = frame.c
         frame.body = self
@@ -712,7 +712,7 @@ class LeoFrame:
     instances = 0
     #@+others
     #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, gui: str) -> None:
+    def __init__(self, c: Cmdr, gui: Any) -> None:
         self.c = c
         self.gui = gui
         self.iconBarClass = NullIconBarClass
@@ -1224,7 +1224,7 @@ class LeoLog:
         if w:
             w.delete(0, 'end')
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
-    def createTab(self, tabName: str, createText=True, widget: Widget=None, wrap: str='none') -> None:
+    def createTab(self, tabName: str, createText=True, widget: Widget=None, wrap: str='none') -> Widget:
         # Important: widget *is* used in subclasses. Do not change the signature above.
         if createText:
             w = self.createTextWidget(self.tabFrame)
@@ -1448,7 +1448,7 @@ class LeoTree:
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
-    def __init__(self, frame: str) -> None:
+    def __init__(self, frame: Widget) -> None:
         """Ctor for the LeoTree class."""
         self.frame = frame
         self.c = frame.c
