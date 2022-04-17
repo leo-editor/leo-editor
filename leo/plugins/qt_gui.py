@@ -32,12 +32,15 @@ assert qt_commands
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
+    from PyQt6 import QtWidgets as QtWidgets6
+    Widget = QtWidgets6.QWidget
 else:
     Cmdr = Any
     Pos = Any
+    Widget = Any
 Event = Any
-Widget = Any
 Wrapper = Any
+
 #@-<< type aliases qt_gui.py >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -64,7 +67,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages: Dict = {}
-        self.globalFindDialog = None
+        self.globalFindDialog: Widget = None
         self.idleTimeClass: Any = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
@@ -282,11 +285,11 @@ class LeoQtGui(leoGui.LeoGui):
         """Create a qt find tab in the indicated frame."""
         pass  # Now done in dw.createFindTab.
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Wrapper:
         """Create a new Leo frame."""
         return qt_frame.LeoQtFrame(c, title, gui=self)
 
-    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Widget:
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Wrapper:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -361,12 +364,12 @@ class LeoQtGui(leoGui.LeoGui):
         class Calendar(QtWidgets.QDialog):  # type:ignore
 
             def __init__(
-            self,
-            parent: Widget=None,
-            message: str='Select Date/Time',
-            init: Any=None,
-            step_min: Dict=None,
-        ) -> None:
+                self,
+                parent: Wrapper=None,
+                message: str='Select Date/Time',
+                init: Any=None,
+                step_min: Dict=None,
+            ) -> None:
                 if step_min is None:
                     step_min = {}
                 super().__init__(parent)
@@ -983,7 +986,7 @@ class LeoQtGui(leoGui.LeoGui):
         return f"PyQt {qtLevel}"
     #@+node:ekr.20110605121601.18514: *3* qt_gui.Icons
     #@+node:ekr.20110605121601.18515: *4* qt_gui.attachLeoIcon
-    def attachLeoIcon(self, window: Widget) -> None:
+    def attachLeoIcon(self, window: Any) -> None:
         """Attach a Leo icon to the window."""
         #icon = self.getIconImage('leoApp.ico')
         if self.appIcon:
@@ -2157,7 +2160,7 @@ class StyleSheetManager:
         return newsheet
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
-    def get_master_widget(self, top: Widget=None) -> Widget:
+    def get_master_widget(self, top: Any=None) -> Widget:
         """
         Carefully return the master widget.
         c.frame.top is a DynamicWindow.

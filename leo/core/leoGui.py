@@ -222,7 +222,7 @@ class LeoGui:
         self.oops()
         return ''
     #@+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
-    def attachLeoIcon(self, window: str) -> None:
+    def attachLeoIcon(self, window: Any) -> None:
         """Attach the Leo icon to a window."""
         self.oops()
 
@@ -467,7 +467,7 @@ class NullGui(LeoGui):
     def alert(self, c: Cmdr, message: str) -> None:
         pass
 
-    def attachLeoIcon(self, window: str) -> None:
+    def attachLeoIcon(self, window: Any) -> None:
         pass
 
     def destroySelf(self) -> None:
