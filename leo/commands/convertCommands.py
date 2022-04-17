@@ -515,7 +515,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def __init__(self, c):
             self.c = c
-            
+
         class AnnotationError (Exception):
             pass
 
