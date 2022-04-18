@@ -8,7 +8,7 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Dict, Generator, List, Tuple, Union
+from typing import Any, Dict, Generator, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
@@ -17,7 +17,6 @@ from leo.core import leoGlobals as g
 #@+<< type aliases: leoConfig.py >>
 #@+node:ekr.20220417212402.1: ** << type aliases: leoConfig.py >>
 if TYPE_CHECKING:  # Always False at runtime.
-    ### from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
     from PyQt6 import QtWidgets as QtWidgets6
     Widget = QtWidgets6.QWidget
@@ -66,7 +65,7 @@ class ParserBaseClass:
         'shortcuts',
     ]
     # Keys are settings names, values are (type,value) tuples.
-    settingsDict: Dict[str, Tuple[str, Union[g.TypedDict, g.GeneralSetting]]] = {}
+    settingsDict: Dict[str, Any] = {}
     #@-<< ParserBaseClass data >>
     #@+others
     #@+node:ekr.20041119204700: *3*  pbc.ctor
@@ -75,7 +74,7 @@ class ParserBaseClass:
     def __init__(self, c: Cmdr, localFlag: bool) -> None:
         """Ctor for the ParserBaseClass class."""
         self.c = c
-        self.clipBoard = []
+        self.clipBoard: Any = []
         # True if this is the .leo file being opened,
         # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
@@ -84,7 +83,7 @@ class ParserBaseClass:
             keyType=type('shortcutName'),
             valType=g.BindingInfo,
         )
-        self.openWithList = []  # A list of dicts containing 'name','shortcut','command' keys.
+        self.openWithList: List[Dict[str, Any]] = []  # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
         self.dispatchDict = {
             'bool':         self.doBool,
@@ -133,7 +132,7 @@ class ParserBaseClass:
         modeName = s + '-mode'
         return modeName
     #@+node:ekr.20060102103625: *3* pbc.createModeCommand
-    def createModeCommand(self, modeName: str, name: str, modeDict: Dict) -> None:
+    def createModeCommand(self, modeName: str, name: str, modeDict: Any) -> None:
         modeName = 'enter-' + modeName.replace(' ', '-')
         i = name.find('::')
         if i > -1:
@@ -369,11 +368,11 @@ class ParserBaseClass:
         i = name.find('[')
         j = name.find(']')
         if -1 < i < j:
-            items = name[i + 1 : j]
-            items = items.split(',')
+            items_s = name[i + 1 : j]
+            items = items_s.split(',')
             name = name[:i] + name[j + 1 :].strip()
             try:
-                items = [int(item.strip()) for item in items]
+                items = [int(item.strip()) for item in items]  # type:ignore
             except ValueError:
                 items = []
                 self.valueError(p, 'ints[]', name, val)
@@ -462,8 +461,11 @@ class ParserBaseClass:
                 g.es_print(f"{pad} {kind}... [{path + '/' + name}]")
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
-    def patchMenuTree(self, orig: str, targetPath: str, path: str='') -> Any:
+    def patchMenuTree(self, orig: List[Any], targetPath: str, path: str='') -> Any:
 
+        kind: str
+        val: Any
+        val2: Any
         for n, z in enumerate(orig):
             kind, val, val2 = z
             if kind == '@item':
@@ -682,8 +684,8 @@ class ParserBaseClass:
         i = name.find('[')
         j = name.find(']')
         if -1 < i < j:
-            items = name[i + 1 : j]
-            items = items.split(',')
+            items_s = name[i + 1 : j]
+            items = items_s.split(',')
             items = [item.strip() for item in items]
             name = name[:i] + name[j + 1 :].strip()
             kind = f"strings[{','.join(items)}]"
@@ -699,7 +701,7 @@ class ParserBaseClass:
             "must be overridden in subclass")
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
-    def parseFont(self, p: Pos) -> Dict[str, str]:
+    def parseFont(self, p: Pos) -> Dict[str, Any]:
         d: Dict[str, Any] = {
             'comments': [],
             'family': None,
@@ -715,7 +717,7 @@ class ParserBaseClass:
         d['comments'] = '\n'.join(comments)
         return d
     #@+node:ekr.20041213082558.2: *5* pbc.parseFontLine
-    def parseFontLine(self, line: str, d: Dict[str, str]) -> None:
+    def parseFontLine(self, line: str, d: Dict[str, Any]) -> None:
         s = line.strip()
         if not s:
             return
@@ -773,7 +775,7 @@ class ParserBaseClass:
                         val = s[j + 1 :].strip()
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* pbc.parseOpenWith & helper
-    def parseOpenWith(self, p: Pos) -> Dict:
+    def parseOpenWith(self, p: Pos) -> Dict[str, Any]:
 
         d = {'command': None}
            # d contains args, kind, etc tags.
@@ -781,7 +783,7 @@ class ParserBaseClass:
             self.parseOpenWithLine(line, d)
         return d
     #@+node:ekr.20070411101643.4: *5* pbc.parseOpenWithLine
-    def parseOpenWithLine(self, line: str, d: Dict[str, str]) -> None:
+    def parseOpenWithLine(self, line: str, d: Dict[str, Any]) -> None:
         s = line.strip()
         if not s:
             return
@@ -800,7 +802,7 @@ class ParserBaseClass:
         i += 1
         val = s[i:].strip() or ''  # An empty val is valid.
         if tag == 'arg':
-            aList = d.get('args', [])
+            aList: List[Any] = d.get('args', [])
             aList.append(val)
             d['args'] = aList
         elif d.get(tag):
@@ -889,11 +891,11 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind,  # type:ignore
             path=c.mFileName,
             tag='setting',
-            unl=(p and p.get_UNL()),
+            unl=p.get_UNL() if p else '',
             val=val,
         )
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
-    def traverse(self) -> Tuple[Dict, Dict]:
+    def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(  # type:ignore
@@ -925,8 +927,9 @@ class ParserBaseClass:
         """Give an error: val is not valid for kind."""
         self.error(f"{val} is not a valid {kind} for {name}")
     #@+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
-    def visitNode(self, p: Pos) -> None:
+    def visitNode(self, p: Pos) -> str:
         self.oops()
+        return ''
     #@-others
 #@-<< class ParserBaseClass >>
 #@+others
@@ -960,7 +963,7 @@ class ActiveSettingsOutline:
         self.commander.config.settingsDict = settings_copy
         self.commander.config.shortcutsDict = shortcuts_copy
     #@+node:ekr.20190905091614.3: *4* aso.create_commanders_list
-    def create_commanders_list(self) -> List[Tuple[str, Cmdr]]:
+    def create_commanders_list(self) -> None:
 
         """Create the commanders list. Order matters."""
         lm = g.app.loadManager
@@ -1177,7 +1180,7 @@ class ActiveSettingsOutline:
             else:
                 p.doDelete()
     #@+node:ekr.20190905091614.14: *3* aso.filter_settings
-    def filter_settings(self, target_kind: str) -> Dict:
+    def filter_settings(self, target_kind: str) -> Dict[str, Any]:
         """Return a dict containing only settings defined in the file given by kind."""
         # Crucial: Always use the newly-created commander.
         #          It's settings are guaranteed to be correct.
@@ -1336,10 +1339,12 @@ class GlobalConfigManager:
             self.relative_path_base_directory = '!'
         self.use_plugins = False  # Required to keep pylint happy.
         self.create_nonexistent_directories = False  # Required to keep pylint happy.
-        self.atCommonButtonsList = []  # List of info for common @buttons nodes.
-        self.atCommonCommandsList = []  # List of info for common @commands nodes.
-        self.atLocalButtonsList = []  # List of positions of @button nodes.
-        self.atLocalCommandsList = []  # List of positions of @command nodes.
+        # List of info (command_p, script, rclicks) for common @buttons nodes.
+        # where rclicks is a namedtuple('RClick', 'position,children')
+        self.atCommonButtonsList: List[Tuple[Cmdr, str, Any]] = []
+        self.atCommonCommandsList: List[Tuple[Cmdr, str]] = []  # List of info for common @commands nodes.
+        self.atLocalButtonsList: List[Pos] = []  # List of positions of @button nodes.
+        self.atLocalCommandsList: List[Pos] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
@@ -1347,7 +1352,7 @@ class GlobalConfigManager:
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
         self.inited = False
-        self.menusList = []
+        self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
@@ -1355,6 +1360,7 @@ class GlobalConfigManager:
             valType=g.TypedDict)  # was TypedDictOfLists.
         # Inited later...
         self.panes = None
+        self.recentFiles: List[str] = []
         self.sc = None
         self.tree = None
         self.initDicts()
@@ -1467,7 +1473,7 @@ class GlobalConfigManager:
         return None
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self,
-        d: Dict[str, str], setting: str, requestedType: str, warn: bool=True,
+        d: Any, setting: str, requestedType: str, warn: bool=True,
     ) -> Tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
@@ -1521,12 +1527,12 @@ class GlobalConfigManager:
             or type1 == type2
         )
     #@+node:ekr.20060608224112: *4* gcm.getAbbrevDict
-    def getAbbrevDict(self) -> Dict:
+    def getAbbrevDict(self) -> Dict[str, Any]:
         """Search all dictionaries for the setting & check it's type"""
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20041117081009.3: *4* gcm.getBool
-    def getBool(self, setting: str, default: str=None) -> bool:
+    def getBool(self, setting: str, default: bool=None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1586,7 +1592,7 @@ class GlobalConfigManager:
             return None
     #@+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: int, slant: str, weight: str, defaultSize: int=12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int=12,
     ) -> Any:
         """Compute a font from font parameters.
 
@@ -1599,7 +1605,7 @@ class GlobalConfigManager:
             family = self.defaultFontFamily
         size = self.get(size, "size")
         if size in (None, 0):
-            size = defaultSize
+            size = str(defaultSize)  # type:ignore
         slant = self.get(slant, "slant")
         if slant in (None, ""):
             slant = "roman"
@@ -1628,7 +1634,7 @@ class GlobalConfigManager:
         # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20070411101643: *4* gcm.getOpenWith
-    def getOpenWith(self) -> List[Dict]:
+    def getOpenWith(self) -> List[Dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
@@ -1858,10 +1864,7 @@ class LocalConfigManager:
         return None
     #@+node:ekr.20120215072959.12520: *6* c.config.getValFromDict
     def getValFromDict(self,
-        d: Dict[str, str],
-        setting: str,
-        requestedType: str,
-        warn: bool=True,
+        d: Any, setting: str, requestedType: str, warn: bool=True,
     ) -> Tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
@@ -1915,7 +1918,7 @@ class LocalConfigManager:
             or type1 == type2
         )
     #@+node:ekr.20120215072959.12522: *5* c.config.getAbbrevDict
-    def getAbbrevDict(self) -> Dict:
+    def getAbbrevDict(self) -> Dict[str, Any]:
         """Search all dictionaries for the setting & check it's type"""
         d = self.get('abbrev', 'abbrev')
         return d or {}
@@ -1991,7 +1994,7 @@ class LocalConfigManager:
             return None
     #@+node:ekr.20120215072959.12531: *5* c.config.getFontFromParams
     def getFontFromParams(self,
-        family: str, size: int, slant: str, weight: str, defaultSize: int=12,
+        family: str, size: str, slant: str, weight: str, defaultSize: int=12,
     ) -> Any:
         """
         Compute a font from font parameters. This should be used *only*
@@ -2007,7 +2010,7 @@ class LocalConfigManager:
             family = g.app.config.defaultFontFamily
         size = self.get(size, "size")
         if size in (None, 0):
-            size = defaultSize
+            size = str(defaultSize)  # type:ignore
         slant = self.get(slant, "slant")
         if slant in (None, ""):
             slant = "roman"
@@ -2036,7 +2039,7 @@ class LocalConfigManager:
         # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
-    def getOpenWith(self) -> List[Dict]:
+    def getOpenWith(self) -> List[Dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
         val = self.get('openwithtable', 'openwithtable')
         return val
@@ -2257,7 +2260,7 @@ class SettingsTreeParser(ParserBaseClass):
     #@+others
     #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
-    def visitNode(self, p: Pos) -> Any:
+    def visitNode(self, p: Pos) -> str:
         """Init any settings found in node p."""
         p = p.copy()
         munge = g.app.config.munge
@@ -2283,7 +2286,7 @@ class SettingsTreeParser(ParserBaseClass):
         return None
     #@-others
 #@+node:ekr.20171229131953.1: ** parseFont (leoConfig.py)
-def parseFont(b: Any) -> Tuple[str, str, bool, bool, int]:
+def parseFont(b: str) -> Tuple[str, str, bool, bool, float]:
     family = None
     weight = None
     slant = None
@@ -2302,11 +2305,11 @@ def parseFont(b: Any) -> Tuple[str, str, bool, bool, int]:
         elif name.endswith('_weight'):
             weight = line[i + 1 :].strip()
         elif name.endswith('_size'):
-            size = line[i + 1 :].strip()
+            size_s = line[i + 1 :].strip()
             try:
-                size = float(size)  # type:ignore
+                size = float(size_s)
             except ValueError:
-                size = 12  # type:ignore
+                size = 12.0
         elif name.endswith('_slant'):
             slant = line[i + 1 :].strip()
         if settings_name is None and name.endswith(

@@ -246,7 +246,7 @@ class LeoGui:
         self.oops()
         return 0, 0, 0, 0
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> None:
+    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> Any:
 
         self.oops()
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
@@ -476,7 +476,7 @@ class NullGui(LeoGui):
     def finishCreate(self) -> None:
         pass
 
-    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> None:
+    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> Any:
         return g.app.config.defaultFont
 
     def getIconImage(self, name: str) -> None:
