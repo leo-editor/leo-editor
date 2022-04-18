@@ -117,7 +117,7 @@ class TreeAPI:
     def drawIcon(self, p: Pos) -> None:
         pass
 
-    def editLabel(self, v: VNode, selectAll: bool=False, selection: str=None) -> None:
+    def editLabel(self, v: VNode, selectAll: bool=False, selection: Any=None) -> None:
         pass
 
     def edit_widget(self, p: Pos) -> None:
@@ -1552,7 +1552,7 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> Wrapper:
+    def editLabel(self, p: Pos, selectAll: bool=False, selection: Any=None) -> Wrapper:
         self.oops()
 
     def edit_widget(self, p: Pos) -> Wrapper:
@@ -2199,7 +2199,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: str=None) -> Tuple[Any, Wrapper]:
+    def editLabel(self, p: Pos, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Wrapper]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:

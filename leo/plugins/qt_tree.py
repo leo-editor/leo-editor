@@ -7,7 +7,7 @@
 #@+node:ekr.20140907131341.18709: ** << imports: qt_tree.py >>
 import re
 import time
-from typing import Any, Callable, Generator, List, Tuple
+from typing import Any, Callable, Dict, Generator, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
@@ -30,13 +30,11 @@ else:
     Pos = Any
     VNode = Any
     Widget = Any
-
 Editor = Any
 Event = Any
 Icon = Any
 Item = Any
 Selection = Tuple[int, int, int]
-Widget = Any
 Wrapper = Any
 #@-<< type aliases: qt_tree.py >>
 #@+others
@@ -58,13 +56,13 @@ class LeoQtTree(leoFrame.LeoTree):
         # Debugging...
         self.traceCallersFlag = False  # Enable traceCallers method.
         # Associating items with position and vnodes...
-        self.items = []
-        self.item2positionDict = {}
-        self.item2vnodeDict = {}
-        self.nodeIconsDict = {}  # keys are gnx, values are declutter generated icons
-        self.position2itemDict = {}
-        self.vnode2itemsDict = {}  # values are lists of items.
-        self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
+        self.items: List[Item] = []
+        self.item2positionDict: Dict[str, Pos] = {}  # Keys are gnxs.
+        self.item2vnodeDict: Dict[str, VNode] = {}  # Keys are gnxs.
+        self.nodeIconsDict: Dict[str, List[Icon]] = {}  # keys are gnxs, values are declutter generated icons
+        self.position2itemDict: Dict[str, Item] = {}  # Keys are gnxs.
+        self.vnode2itemsDict: Dict[VNode, List[Item]] = {}  # values are lists of items.
+        self.editWidgetsDict: Dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
         self.reloadSettings()
         # Components.
         self.canvas: Wrapper = self  # An official ivar used by Leo's core.
@@ -74,9 +72,9 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         #
         # "declutter", node appearance tweaking
-        self.declutter_patterns = None  # list of pairs of patterns for decluttering
-        self.declutter_data = {}
-        self.loaded_images = {}
+        self.declutter_patterns: List[Any] = None  # list of pairs of patterns for decluttering
+        self.declutter_data: Dict[Any, Any] = {}
+        self.loaded_images: Dict[str, Icon] = {}
         if 0:  # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -279,7 +277,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if target_p:
             g.trace('NOT FOUND:', target_p.h)
     #@+node:ekr.20180810052056.3: *5* qtree.slowYieldVisible
-    def slowYieldVisible(self, first_p: Pos, target_p: Pos=None) -> None:
+    def slowYieldVisible(self, first_p: Pos, target_p: Pos=None) -> Generator:
         """
         A generator yielding positions from first_p to target_p.
         """
@@ -328,8 +326,9 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # Compatibility
 
-    redraw = full_redraw
-    redraw_now = full_redraw
+    # mypy complains that there is a mismatch with the base redraw method.
+    redraw = full_redraw  # type:ignore
+    redraw_now = full_redraw  #type:ignore
     #@+node:vitalije.20200329160945.1: *5* tree declutter code
     #@+node:tbrown.20150807090639.1: *6* qtree.declutter_node & helpers
     def declutter_node(self, c: Cmdr, p: Pos, item: Item) -> Icon:
@@ -358,7 +357,7 @@ class LeoQtTree(leoFrame.LeoTree):
             a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
             return a
         #@+node:ekr.20171122064635.1: *7* declutter_replace
-        def declutter_replace(arg: str, cmd: str) -> Tuple[Callable, str]:
+        def declutter_replace(arg: str, cmd: Callable) -> Tuple[Callable, str]:
             """
             Executes cmd if cmd is any replace command and returns
             pair (commander, s), where 'commander' corresponds
@@ -388,7 +387,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
             return replacement, s
         #@+node:ekr.20171122055719.1: *7* declutter_style
-        def declutter_style(arg: str, cmd: str) -> Tuple[Callable, str]:
+        def declutter_style(arg: str, cmd: Callable) -> Tuple[Callable, str]:
             """
             Handles style options and returns pair '(commander, param)',
             where 'commander' is the applied style-modifying operation,
@@ -439,7 +438,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 modifier(item, param)
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
-        def apply_declutter_rules(cmds: str) -> List[Any]:
+        def apply_declutter_rules(cmds: List[Tuple[Callable, str]]) -> List[Any]:
             """
             Applies all commands for the matched rule. Returns the list
             of the applied operations paired with their single parameter.
@@ -541,7 +540,7 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             self.contractItem(parent_item)
     #@+node:ekr.20110605121601.17875: *5* qtree.drawNode
-    def drawNode(self, p: Pos, parent_item: Item) -> None:
+    def drawNode(self, p: Pos, parent_item: Item) -> Item:
         """Draw the node p."""
         c = self.c
         v = p.v
@@ -907,7 +906,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
 
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
-    def icon_filenames_for_node(self, p: Pos, val: str) -> List[str]:
+    def icon_filenames_for_node(self, p: Pos, val: int) -> List[str]:
         """Prepares and returns a list of icon filenames
            related to this node.
         """
@@ -930,7 +929,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 loaded_images[f] = g.app.gui.getImageImage(f)
         return fnames
     #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
-    def make_composite_icon(self, images: str) -> Icon:
+    def make_composite_icon(self, images: List[Any]) -> Icon:
         hsep = self.c.config.getInt('tree-icon-separation') or 0
         images = [x for x in images if x]
         height = max([i.height() for i in images])
@@ -1047,7 +1046,7 @@ class LeoQtTree(leoFrame.LeoTree):
             items = [w.topLevelItem(z) for z in range(n)]
         return items
     #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & callback
-    def connectEditorWidget(self, e: Editor, item: Item) -> None:
+    def connectEditorWidget(self, e: Editor, item: Item) -> Wrapper:
         """
         Connect QLineEdit e to QTreeItem item.
 
@@ -1321,6 +1320,8 @@ class LeoQtTree(leoFrame.LeoTree):
         s = e.text()
         if s == 'newHeadline':
             selectAll = True
+        start: int
+        n: int
         if selection:
             # pylint: disable=unpacking-non-sequence
             # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
@@ -1332,7 +1333,8 @@ class LeoQtTree(leoFrame.LeoTree):
             elif ins == j:
                 start, n = i, j - i
             else:
-                start = start, n = j, i - j
+                ### start = start, n = j, i - j  ### Bug???
+                start, n = j, i - j
         elif selectAll:
             start, n, ins = 0, len(s), len(s)
         else:
