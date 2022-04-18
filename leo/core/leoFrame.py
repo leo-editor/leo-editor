@@ -1306,7 +1306,10 @@ class LeoLog:
         Otherwise, return False
         """
         c = self.c
-        lines = g.splitLines(s)
+        # lines = g.splitLines(s)
+        lines = s.split('\n')
+        if not g.unitTesting:
+            g.printObj(lines, tag=f"{len(lines)} lines")
         # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
             if not g.unitTesting:
@@ -1328,12 +1331,14 @@ class LeoLog:
                         url = p.get_UNL()
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
-                        # An unusual case, but not worth a message.
+                        # An unusual case, but not worth a message??
                         if not g.unitTesting:
-                            g.trace('NO @file NODE for FILENAME', repr(filename))
+                            g.trace('NO @file NODE for FILENAME', repr(filename), repr(line))
                         self.put(line)
                     break
-            else:  # no match
+            else:  # none of the patterns match.
+                if not g.unitTesting:
+                    g.trace('NO PATTERNS MATCH', repr(line))
                 self.put(line)
         if not g.unitTesting:
             g.trace('FOUND MATCH', found_match)
