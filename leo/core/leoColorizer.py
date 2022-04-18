@@ -47,7 +47,7 @@ class BaseColorizer:
     #@+others
     #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
-    def __init__(self, c, widget=None, wrapper=None):
+    def __init__(self, c, widget=None, wrapper=None):  # wrapper kwarg no longer used!
         """ctor for BaseColorizer class."""
         #
         # Copy args...
@@ -55,9 +55,13 @@ class BaseColorizer:
         self.widget = widget
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
-        self.wrapper = wrapper
+        ### self.wrapper = wrapper
         # This assert is not true when using multiple body editors
             # assert(wrapper == self.c.frame.body.wrapper)
+        #
+        # Configuration
+        self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
         #
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
@@ -82,18 +86,19 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configureTags & helpers
     def configureTags(self):
         """Configure all tags."""
-        wrapper = self.wrapper
-        if wrapper and hasattr(wrapper, 'start_tag_configure'):
-            wrapper.start_tag_configure()
+        # wrapper = self.wrapper
+        # if wrapper and hasattr(wrapper, 'start_tag_configure'):
+            # wrapper.start_tag_configure()
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if wrapper and hasattr(wrapper, 'end_tag_configure'):
-            wrapper.end_tag_configure()
+        # if wrapper and hasattr(wrapper, 'end_tag_configure'):
+            # wrapper.end_tag_configure()
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
     def configure_colors(self):
         """Configure all colors in the default colors dict."""
-        c, wrapper = self.c, self.wrapper
+        ### c, wrapper = self.c, self.wrapper
+        c = self.c
         # getColor puts the color name in standard form:
         # color = color.replace(' ', '').lower().strip()
         getColor = c.config.getColor
@@ -105,17 +110,19 @@ class BaseColorizer:
                 default_color
             )
             # Must use foreground, not fg.
-            try:
-                wrapper.tag_configure(key, foreground=color)
-            except Exception:  # Recover after a user settings error.
-                g.es_exception()
-                wrapper.tag_configure(key, foreground=default_color)
+            self.configure_key(key, foreground=color)
+            ###
+            # try:
+                # wrapper.tag_configure(key, foreground=color)
+            # except Exception:  # Recover after a user settings error.
+                # g.es_exception()
+                # wrapper.tag_configure(key, foreground=default_color)
     #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
     def configure_fonts(self):
         """Configure all fonts in the default fonts dict."""
         c = self.c
         isQt = g.app.gui.guiName().startswith('qt')
-        wrapper = self.wrapper
+        ### wrapper = self.wrapper
         #
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
@@ -141,7 +148,8 @@ class BaseColorizer:
                 font = self.find_font(key, name)
                 if font:
                     self.fonts[key] = font
-                    wrapper.tag_configure(key, font=font)
+                    ### wrapper.tag_configure(key, font=font)
+                    self.configure_key(key, font=font)  ### A do-nothing???
                     if isQt and key == 'url':
                         font.setUnderline(True)
                     # #1919: This really isn't correct.
@@ -150,7 +158,8 @@ class BaseColorizer:
             else:
                 # Neither setting exists.
                 self.fonts[key] = None  # Essential
-                wrapper.tag_configure(key, font=defaultBodyfont)
+                ### wrapper.tag_configure(key, font=defaultBodyfont)
+                self.configure_key(key, font=defaultBodyfont)  ### A do-nothing???
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
     zoom_dict: Dict[str, int] = {}
         # Keys are key::settings_names, values are cumulative font size.
@@ -208,6 +217,17 @@ class BaseColorizer:
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
+    #@+node:ekr.20220418152552.1: *5* BaseColorizer.configure_key
+    ### Was wrapper.tag_configure.
+    def configure_key(self, key: str, foreground: str=None, underline: int=0, **kwargs: Any) -> None:
+        if 0:
+            underline_s = 'underline' if underline else ' '*9
+            kwargs_s = kwargs or ''
+            g.trace(f"QTextMixin {key:>25} {foreground!r:<25} {underline_s} {kwargs}")
+        if foreground:
+            self.configDict[key] = foreground
+        if underline:
+            self.configUnderlineDict[key] = True
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font):
         """
@@ -236,11 +256,13 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18579: *5* BaseColorizer.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
-        wrapper = self.wrapper
-        wrapper.tag_configure("link", underline=0)
+        ### wrapper = self.wrapper
+        ### wrapper.tag_configure("link", underline=0)
+        self.configure_key("link", underline=0)
         use_pygments = pygments and c.config.getBool('use-pygments', default=False)
         name = 'name.other' if use_pygments else 'name'
-        wrapper.tag_configure(name, underline=1 if self.underline_undefined else 0)
+        ### wrapper.tag_configure(name, underline=1 if self.underline_undefined else 0)
+        self.configure_key(name, underline=1 if self.underline_undefined else 0)
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
@@ -251,14 +273,17 @@ class BaseColorizer:
             else:
                 option_name, default_color = self.default_colors_dict.get(name, (None, None))
                 color = c.config.getColor(option_name) if option_name else ''
-            try:
-                wrapper.tag_configure(name, background=color)
-            except Exception:  # A user error.
-                wrapper.tag_configure(name, background=default_color)
-                g.es_print(f"invalid setting: {name!r} = {default_color!r}")
+            self.configure_key(name, background=color)
+            ###
+            # try:
+                # wrapper.tag_configure(name, background=color)
+            # except Exception:  # A user error.
+                # wrapper.tag_configure(name, background=default_color)
+                # g.es_print(f"invalid setting: {name!r} = {default_color!r}")
         # Special case:
         if not self.showInvisibles:
-            wrapper.tag_configure("elide", elide="1")
+            ### wrapper.tag_configure("elide", elide="1")
+            self.configure_key("elide", elide="1")  ### A do-nothing ???
     #@+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     #@@nobeautify
 
@@ -648,7 +673,7 @@ class BaseColorizer:
         self.n_setTag += 1
         if i == j:
             return
-        wrapper = self.wrapper  # A QTextEditWrapper
+        ### wrapper = self.wrapper  # A QTextEditWrapper
         if not tag.strip():
             return
         tag = tag.lower().strip()
@@ -656,7 +681,8 @@ class BaseColorizer:
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots') :]
-        colorName = wrapper.configDict.get(tag)  # This color name should already be valid.
+        ### colorName = wrapper.configDict.get(tag)  # This color name should already be valid.
+        colorName = self.configDict.get(tag)  # This color name should already be valid.
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.
@@ -673,7 +699,8 @@ class BaseColorizer:
             else:
                 g.trace('unknown color name', colorName, g.callers())
                 return
-        underline = wrapper.configUnderlineDict.get(tag)
+        ### underline = wrapper.configUnderlineDict.get(tag)
+        underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
         font = self.fonts.get(tag)
         if font:

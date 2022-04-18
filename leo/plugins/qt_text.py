@@ -116,8 +116,8 @@ class QTextMixin:
         self.supportsHighLevelInterface = True
         self.tags: Dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
-        self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
+        ### self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+        ### self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
         if c:
@@ -308,18 +308,6 @@ class QTextMixin:
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = w.getYScrollPosition()
-    #@+node:ekr.20140901062324.18712: *4* QTexMixin.tag_configure
-    def tag_configure(self, key: str, foreground: str=None, underline: int=0, **kwargs: Any) -> None:
-        if 0:
-            underline_s = 'underline' if underline else ' '*9
-            kwargs_s = kwargs or ''
-            g.trace(f"QTextMixin {key:>25} {foreground!r:<25} {underline_s} {kwargs}")
-        if foreground:
-            self.configDict[key] = foreground
-        if underline:
-            self.configUnderlineDict[key] = True
-
-    tag_config = tag_configure
     #@-others
 #@+node:ekr.20110605121601.18058: **  class QLineEditWrapper(QTextMixin)
 class QLineEditWrapper(QTextMixin):

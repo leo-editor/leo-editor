@@ -4101,9 +4101,6 @@ class TextMixin:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.25: *5* TextMixin.tag_configure (cursesGui2.py)
-    def tag_configure(self, key: str, foreground: str=None, underline: int=0, **kwargs) -> None:
-        """Part of CursesGui2.py. Not used."""
     #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
     def toPythonIndex(self, index: Union[int, str], s: str=None):
         """TextMixin"""
