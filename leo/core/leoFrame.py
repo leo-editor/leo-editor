@@ -1341,12 +1341,12 @@ class LeoLog:
         if trace:
             g.trace('At least one match found in:', c.shortFileName())
             g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
-        found_match = False
+        found_matches = 0
         for line in lines:
             for filename_i, line_number_i, pattern in self.link_table:
                 m = pattern.match(line)
                 if m:
-                    found_match = True
+                    found_matches += 1
                     filename = m.group(filename_i)
                     line_number = m.group(line_number_i)
                     p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
@@ -1358,7 +1358,7 @@ class LeoLog:
                     else:
                         # An unusual case, but not worth a message??
                         if trace:
-                            g.trace('No p! filename:', repr(filename), 'line:', repr(line))
+                            g.trace('No p for:', repr(filename), 'in:', repr(line))
                         self.put(line)
                     break
             else:  # none of the patterns match.
@@ -1366,7 +1366,7 @@ class LeoLog:
                     g.trace('No match in line:', repr(line))
                 self.put(line)
         if trace:
-            g.trace('Found', found_match, 'matches')
+            g.trace('Found', found_matches, 'matches')
         return True  # This method has completely handled s.
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
