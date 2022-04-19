@@ -7,7 +7,7 @@ from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
-from leo.plugins import qt_text
+### from leo.plugins import qt_text
 
 # import time  # temporary for debugging
 
@@ -35,9 +35,9 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
-        self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
-        self.wrapper.widget = self
-        self.highlighter = JEditColorizer(c, self, self.wrapper)
+        ### self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
+        ### self.wrapper.widget = self
+        self.highlighter = JEditColorizer(c, self) ###, self.wrapper)
 
         # maybe need to go in this direction, but this is insufficient by iteself
         # g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')

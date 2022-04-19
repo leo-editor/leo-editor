@@ -35,26 +35,26 @@ except Exception:
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c, widget, wrapper):
+def make_colorizer(c, widget): ###, wrapper):
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
     if use_pygments:
-        return PygmentsColorizer(c, widget, wrapper)
-    return JEditColorizer(c, widget, wrapper)
+        return PygmentsColorizer(c, widget) ###, wrapper)
+    return JEditColorizer(c, widget) ###, wrapper)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
     #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
-    def __init__(self, c, widget=None, wrapper=None):  # wrapper kwarg no longer used!
+    def __init__(self, c, widget=None): ###, wrapper=None):  # wrapper kwarg no longer used!
         """ctor for BaseColorizer class."""
         # Copy args...
         self.c = c
         self.widget = widget
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
-        # Configuration
+        # Configuration dicts...
         self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
         self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
         # Common state ivars...
@@ -765,9 +765,9 @@ class JEditColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ & helpers
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget): ###, wrapper):
         """Ctor for JEditColorizer class."""
-        super().__init__(c, widget, wrapper)
+        super().__init__(c, widget) ###, wrapper)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -2571,9 +2571,9 @@ class PygmentsColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317053040.1: *3*  pyg_c: Birth
     #@+node:ekr.20190319151826.3: *4* pyg_c.__init__
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget): ###, wrapper):
         """Ctor for PygmentsColorizer class."""
-        super().__init__(c, widget, wrapper)
+        super().__init__(c, widget)  ###, wrapper)
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
@@ -2831,7 +2831,7 @@ class QScintillaColorizer(BaseColorizer):
     """A colorizer for a QsciScintilla widget."""
     #@+others
     #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget): ###, wrapper):
         """Ctor for QScintillaColorizer. widget is a """
         super().__init__(c)
         self.count = 0  # For unit testing.

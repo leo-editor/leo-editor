@@ -41,9 +41,9 @@ class TestColorizer(LeoUnitTest):
     def test_bc_scanLanguageDirectives(self):
         c = self.c
         c.target_language = 'python'  # Set the default.
-        wrapper = c.frame.body.wrapper
+        ### wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        x = leoColorizer.JEditColorizer(c, widget, wrapper)
+        x = leoColorizer.JEditColorizer(c, widget) ###, wrapper)
         child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = (
@@ -60,9 +60,9 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.4: *3* TestColorizer.test_bc_useSyntaxColoring
     def test_bc_useSyntaxColoring(self):
         c = self.c
-        wrapper = c.frame.body.wrapper
+        ### wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        x = leoColorizer.JEditColorizer(c, widget, wrapper)
+        x = leoColorizer.JEditColorizer(c, widget) ###, wrapper)
         child = c.rootPosition().insertAsLastChild()
         grand = child.insertAsLastChild()
         language_table = [
