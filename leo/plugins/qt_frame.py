@@ -3159,7 +3159,7 @@ class LeoQtLog(leoFrame.LeoLog):
         fn = self.c.shortFileName()
         printable = string.ascii_letters + string.digits + string.punctuation + ' '
 
-        def dump(s):
+        def dump(s: str) -> str:
             return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
 
         g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
