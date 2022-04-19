@@ -1302,23 +1302,25 @@ class LeoLog:
         """
         c = self.c
         
-        if 1: ### Temporary
+        trace = False and not g.unitTesting
+        
+        if trace: ### Temporary
             import string
             printable = string.ascii_letters + string.digits + string.punctuation + ' '
             def dump(s):
                 return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
 
         lines = s.split('\n')
-        if not g.unitTesting:
+        if trace:
             g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
             # g.printObj(lines, tag=f"{len(lines)} lines")
         # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            if not g.unitTesting:
+            if trace:
                 g.trace('NO MATCH', len(lines))  ### New debugging trace
             return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
-        if not g.unitTesting:
+        if trace:
             g.trace('MATCH', len(lines))
         found_match = False
         for line in lines:
@@ -1334,15 +1336,15 @@ class LeoLog:
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
                         # An unusual case, but not worth a message??
-                        if not g.unitTesting:
+                        if trace:
                             g.trace('NO @file NODE for FILENAME', repr(filename), repr(line))
                         self.put(line)
                     break
             else:  # none of the patterns match.
-                if not g.unitTesting:
+                if trace:
                     g.trace('NO PATTERNS MATCH', repr(line))
                 self.put(line)
-        if not g.unitTesting:
+        if trace:
             g.trace('FOUND MATCH', found_match)
         return True  # This method has completely handled s.
 
