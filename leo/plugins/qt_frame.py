@@ -3143,6 +3143,9 @@ class LeoQtLog(leoFrame.LeoLog):
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget  # type:ignore
         if w:
+            if 1: ###
+                g.printObj(w.toPlainText(), 'toPlainText')
+                g.printObj(w.toHtml(), 'toHtml')
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:

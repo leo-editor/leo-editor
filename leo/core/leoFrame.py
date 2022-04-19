@@ -1301,10 +1301,17 @@ class LeoLog:
         Otherwise, return False
         """
         c = self.c
-        # lines = g.splitLines(s)
+        
+        if 1: ### Temporary
+            import string
+            printable = string.ascii_letters + string.digits + string.punctuation + ' '
+            def dump(s):
+                return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
+
         lines = s.split('\n')
         if not g.unitTesting:
-            g.printObj(lines, tag=f"{len(lines)} lines")
+            g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
+            # g.printObj(lines, tag=f"{len(lines)} lines")
         # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
             if not g.unitTesting:
