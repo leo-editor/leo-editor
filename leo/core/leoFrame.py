@@ -1312,11 +1312,31 @@ class LeoLog:
 
         lines = s.split('\n')
         # Step 1: return False if no lines match. This is an efficiency measure.
-        if not any(pat.match(line) for line in lines for pat in self.error_patterns):
+        # Less elegant code allows better traces.
+        found = False
+        for line in lines:
+            if found:
+                break
+            for pat in self.error_patterns:
+                if line.strip():
+                    m = pat.match(line)
+                    if m and trace:
+                        g.trace('Initial match:', m.group(0), 'in', repr(line))
+                    if m:
+                        found = True
+                        break
+        if not found:
             if trace:
                 g.trace('No initial matches found in:', c.shortFileName())  ### New debugging trace
                 g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
             return False  # The caller must handle s.
+        #
+        # More elegant code, but it applies patterns to empty lines!
+            # if not any(pat.match(line) for line in lines for pat in self.error_patterns):
+            # if trace:
+                # g.trace('No initial matches found in:', c.shortFileName())  ### New debugging trace
+                # g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
+            # return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         if trace:
             g.trace('At least one match found in:', c.shortFileName())
