@@ -3143,8 +3143,14 @@ class LeoQtLog(leoFrame.LeoLog):
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget  # type:ignore
         if w:
+            if 1: ### Temporary
+                import string
+                printable = string.ascii_letters + string.digits + string.punctuation + ' '
+                def dump(s):
+                    return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
             if 1: ###
-                g.printObj(w.toPlainText(), 'toPlainText')
+                # g.printObj(w.toPlainText(), 'toPlainText')
+                g.printObj([dump(z) for z in w.toPlainText().split('\n')])
                 g.printObj(w.toHtml(), 'toHtml')
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
