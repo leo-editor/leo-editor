@@ -300,7 +300,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         if isinstance(widget, QtWidgets.QTextEdit):
-            colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
+            colorizer = leoColorizer.make_colorizer(c, widget)
             colorizer.highlighter.setDocument(widget.document())
         else:
             # Scintilla only.
@@ -1588,12 +1588,12 @@ class LeoQtBody(leoFrame.LeoBody):
             # dw.createText sets self.scintilla_widget
             self.widget = c.frame.top.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
-            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
+            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget)
         else:
             self.widget = top.richTextEdit  # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            self.colorizer = leoColorizer.make_colorizer(c, self.widget, self.wrapper)
+            self.colorizer = leoColorizer.make_colorizer(c, self.widget)
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.forceWrap and setWrap
     def forceWrap(self, p: Pos) -> None:
         """Set **only** the wrap bits in the body."""

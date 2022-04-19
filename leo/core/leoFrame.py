@@ -260,11 +260,6 @@ class WrapperAPI:
     def setYScrollPosition(self, i: int) -> None:
         pass
 
-    def tag_configure(self, key,
-        background: str=None, elide: str=None, foreground: str=None, font: str=None, underline: int=0,
-    ) -> None:
-        pass
-
     def toPythonIndex(self, index: Index) -> int:
         return 0
 
