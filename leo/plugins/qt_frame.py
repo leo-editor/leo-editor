@@ -3151,7 +3151,8 @@ class LeoQtLog(leoFrame.LeoLog):
             if 1: ###
                 # g.printObj(w.toPlainText(), 'toPlainText')
                 g.printObj([dump(z) for z in w.toPlainText().split('\n')])
-                g.printObj(w.toHtml(), 'toHtml')
+                # g.printObj(w.toHtml(), 'toHtml')
+                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')])
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:
