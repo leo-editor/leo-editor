@@ -3136,11 +3136,12 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self) -> str:
         return 'log'  # Required for proper pane bindings.
-    #@+node:ekr.20150717102728.1: *3* LeoQtLog.Commands
+    #@+node:ekr.20150717102728.1: *3* LeoQtLog: clear-log
     @log_cmd('clear-log')
     def clearLog(self, event: Event=None) -> None:
         """Clear the log pane."""
-        w = self.logCtrl.widget  # type:ignore # w is a QTextBrowser
+        # self.logCtrl may be either a wrapper or a widget
+        w = self.logCtrl.widget  # type:ignore
         if w:
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
