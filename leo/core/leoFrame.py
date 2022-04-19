@@ -1018,7 +1018,9 @@ class LeoFrame:
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
+            g.trace('===== BAD W', repr(w))  ###
             return
+        g.trace('===== Entry')
         bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
@@ -1045,6 +1047,7 @@ class LeoFrame:
         # #2593: Replace link patterns with html links.
         if wname.startswith('log'):
             if c.frame.log.put_html_links(s):
+                g.trace('Contains links')  ###
                 return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
