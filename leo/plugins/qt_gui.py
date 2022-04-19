@@ -1781,7 +1781,7 @@ class StyleSheetManager:
                 table.append(directory2)
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
-    def compute_theme_directories(self) -> Any:  ###
+    def compute_theme_directories(self) -> List[str]:
         """
         Return a list of *existing* directories that could contain theme .leo files.
         """

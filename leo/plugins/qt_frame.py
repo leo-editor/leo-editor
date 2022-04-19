@@ -3140,7 +3140,7 @@ class LeoQtLog(leoFrame.LeoLog):
     @log_cmd('clear-log')
     def clearLog(self, event: Event=None) -> None:
         """Clear the log pane."""
-        # self.logCtrl may be either a wrapper or a widget
+        # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget  # type:ignore
         if w:
             w.clear()

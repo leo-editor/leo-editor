@@ -116,8 +116,6 @@ class QTextMixin:
         self.supportsHighLevelInterface = True
         self.tags: Dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
-        ### self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
-        ### self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
         if c:

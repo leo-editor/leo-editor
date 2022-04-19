@@ -56,7 +56,7 @@ class BaseColorizer:
             widget.leo_colorizer = self
         # Configuration dicts...
         self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict: Dict[str, Any] = {}  # Keys are tags, values are True
+        self.configUnderlineDict: Dict[str, bool] = {}  # Keys are tags, values are bools.
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter = g.NullObject()  # May be overridden in subclass...
@@ -98,8 +98,7 @@ class BaseColorizer:
                 getColor(option_name) or
                 default_color
             )
-            # Must use foreground, not fg.
-            self.configure_key(key, foreground=color)
+            self.configDict[key] = color
     #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
     def configure_fonts(self):
         """Configure all fonts in the default fonts dict."""
@@ -195,16 +194,6 @@ class BaseColorizer:
                             f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
-    #@+node:ekr.20220418152552.1: *5* BaseColorizer.configure_key
-    def configure_key(self, key: str, foreground: str=None, underline: int=0) -> None:
-        """
-        Leo 6.6.2: A simplified version of tag_configure supporting only foreground and underline settings.
-        """
-        if foreground:
-            self.configDict[key] = foreground
-        if underline:
-            self.configUnderlineDict[key] = True
-
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
     def configure_hard_tab_width(self, font):
         """
@@ -235,7 +224,7 @@ class BaseColorizer:
         c = self.c
         use_pygments = pygments and c.config.getBool('use-pygments', default=False)
         name = 'name.other' if use_pygments else 'name'
-        self.configure_key(name, underline=1 if self.underline_undefined else 0)
+        self.configUnderlineDict[name] = self.underline_undefined
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
