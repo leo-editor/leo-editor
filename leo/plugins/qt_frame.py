@@ -3144,16 +3144,16 @@ class LeoQtLog(leoFrame.LeoLog):
         w = self.logCtrl.widget  # type:ignore
         if w:
             if 1: # https://stackoverflow.com/questions/13927889/show-non-printable-characters-in-a-string
+                fn = self.c.shortFileName()
                 import string
                 printable = string.ascii_letters + string.digits + string.punctuation + ' '
         
                 def dump(s):
                     return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
 
-                # g.printObj(w.toPlainText(), 'toPlainText')
-                g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag='w.toPlainText')
-                # g.printObj(w.toHtml(), 'toHtml')
-                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag='w.toHtml')
+                g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
+                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag=f"{fn}: w.toHtml")
+
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:

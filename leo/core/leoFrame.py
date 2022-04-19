@@ -1314,12 +1314,12 @@ class LeoLog:
         # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
             if trace:
-                g.trace('No initial matches found')  ### New debugging trace
+                g.trace('No initial matches found in:', c.shortFileName())  ### New debugging trace
                 g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
             return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         if trace:
-            g.trace('At least one match found')
+            g.trace('At least one match found in:', c.shortFileName())
             g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
         found_match = False
         for line in lines:
