@@ -81,7 +81,7 @@ class BaseColorizer:
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if False and not g.unitTesting:  ###
+        if 'coloring' in g.app.debug:
             g.printObj(self.configDict, tag='configDict')
             g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
