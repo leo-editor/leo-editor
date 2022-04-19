@@ -8,6 +8,7 @@
 from collections import defaultdict
 import os
 import platform
+import string
 import sys
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -3136,25 +3137,35 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self) -> str:
         return 'log'  # Required for proper pane bindings.
-    #@+node:ekr.20150717102728.1: *3* LeoQtLog: clear-log
+    #@+node:ekr.20150717102728.1: *3* LeoQtLog: clear-log & dump-log
     @log_cmd('clear-log')
+    @log_cmd('log-clear')
     def clearLog(self, event: Event=None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget  # type:ignore
         if w:
-            if 1: # https://stackoverflow.com/questions/13927889/show-non-printable-characters-in-a-string
-                fn = self.c.shortFileName()
-                import string
-                printable = string.ascii_letters + string.digits + string.punctuation + ' '
-
-                def dump(s):
-                    return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
-
-                g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
-                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag=f"{fn}: w.toHtml")
-
             w.clear()
+            
+    @log_cmd('dump-log')
+    @log_cmd('log-dump')
+    def dumpLog(self, event: Event=None) -> None:
+        """Clear the log pane."""
+        # self.logCtrl may be either a wrapper or a widget.
+        w = self.logCtrl.widget  # type:ignore
+        if not w:
+            return
+        
+        fn = self.c.shortFileName()
+        printable = string.ascii_letters + string.digits + string.punctuation + ' '
+
+        def dump(s):
+            return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
+
+        g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
+        g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag=f"{fn}: w.toHtml")
+
+          
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:
         g.warning('color picker not ready for qt')
