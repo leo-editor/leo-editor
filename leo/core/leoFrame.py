@@ -1301,9 +1301,9 @@ class LeoLog:
         Otherwise, return False
         """
         c = self.c
-        
+
         trace = True and not g.unitTesting
-        
+
         if trace: ### Temporary
             import string
             printable = string.ascii_letters + string.digits + string.punctuation + ' '
