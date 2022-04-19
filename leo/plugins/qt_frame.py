@@ -3143,12 +3143,13 @@ class LeoQtLog(leoFrame.LeoLog):
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget  # type:ignore
         if w:
-            if 1: ### Temporary
+            if 1: # https://stackoverflow.com/questions/13927889/show-non-printable-characters-in-a-string
                 import string
                 printable = string.ascii_letters + string.digits + string.punctuation + ' '
+        
                 def dump(s):
                     return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
-            if 1: ###
+
                 # g.printObj(w.toPlainText(), 'toPlainText')
                 g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag='w.toPlainText')
                 # g.printObj(w.toHtml(), 'toHtml')

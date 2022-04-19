@@ -1302,7 +1302,7 @@ class LeoLog:
         """
         c = self.c
         
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         
         if trace: ### Temporary
             import string
@@ -1311,17 +1311,16 @@ class LeoLog:
                 return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
 
         lines = s.split('\n')
-        if trace:
-            g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
-            # g.printObj(lines, tag=f"{len(lines)} lines")
         # Step 1: return False if no lines match. This is an efficiency measure.
         if not any(pat.match(line) for line in lines for pat in self.error_patterns):
             if trace:
-                g.trace('NO MATCH', len(lines))  ### New debugging trace
+                g.trace('No initial matches found')  ### New debugging trace
+                g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
             return False  # The caller must handle s.
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         if trace:
-            g.trace('MATCH', len(lines))
+            g.trace('At least one match found')
+            g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
         found_match = False
         for line in lines:
             for filename_i, line_number_i, pattern in self.link_table:
@@ -1332,20 +1331,22 @@ class LeoLog:
                     line_number = m.group(line_number_i)
                     p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
                     if p:
+                        if trace:
+                            g.trace('Found p:', p.h)
                         url = p.get_UNL()
                         self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
                     else:
                         # An unusual case, but not worth a message??
                         if trace:
-                            g.trace('NO @file NODE for FILENAME', repr(filename), repr(line))
+                            g.trace('No p! filename:', repr(filename), 'line:', repr(line))
                         self.put(line)
                     break
             else:  # none of the patterns match.
                 if trace:
-                    g.trace('NO PATTERNS MATCH', repr(line))
+                    g.trace('No match in line:', repr(line))
                 self.put(line)
         if trace:
-            g.trace('FOUND MATCH', found_match)
+            g.trace('Found', found_match, 'matches')
         return True  # This method has completely handled s.
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
