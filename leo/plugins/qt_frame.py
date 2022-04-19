@@ -3150,9 +3150,9 @@ class LeoQtLog(leoFrame.LeoLog):
                     return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
             if 1: ###
                 # g.printObj(w.toPlainText(), 'toPlainText')
-                g.printObj([dump(z) for z in w.toPlainText().split('\n')])
+                g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag='w.toPlainText')
                 # g.printObj(w.toHtml(), 'toHtml')
-                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')])
+                g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag='w.toHtml')
             w.clear()
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:
