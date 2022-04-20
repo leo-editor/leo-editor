@@ -1012,7 +1012,6 @@ class LeoFrame:
         c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         wname = c.widget_name(w)
-        g.trace(repr(wname), w)  ###
         if not w or not g.isTextWrapper(w):
             return
         bunch = u.beforeChangeBody(p)
@@ -1026,7 +1025,6 @@ class LeoFrame:
             c.k.previousSelection = None
         else:
             s = g.app.gui.getTextFromClipboard()
-        g.printObj(s)  ###
         s = g.checkUnicode(s)
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
