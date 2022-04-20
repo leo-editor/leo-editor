@@ -1395,7 +1395,6 @@ class LeoLog:
         if trace:
             g.trace('Found', found_matches, 'matches')
         return bool(found_matches)
-
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName: str, newName: str) -> None:
         pass
