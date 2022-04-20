@@ -504,6 +504,7 @@
 <v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
 <v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
 <v t="ekr.20200526090848.1"><vh>Satheesh Vattekkat</vh></v>
+<v t="ekr.20220420153633.1"><vh>Thomas Passin</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -31200,6 +31201,41 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
+<t tx="ekr.20220420153633.1">There have been one or two recent threads on how different people discovered or use Leo.  But I haven't really seen anything that gives the flavor of how very many ways Leo can be used, apart from outright programming that is.  So I thought I'd try to lay out how I typically use it.  It's true that many of these items are programming-related, but many are not.  Some of them do require the help of one or another script, which need to be written if they don't already exist.  But one often can borrow someone else's script.
+
+Here are some of the main ways I'm using Leo these days.
+
+1. Managing a software project.  Leo makes managing all the files and documentation way easier than anything else I know.
+
+2. Simplifying programming itself.  Leo has many strengths that make the actual job of programming much easier, especially for python but also for other languages..
+
+3. Learning how to make bits of code work.  It often takes a lot of guessing and experimenting to turn what you read into correctly working code.  Leo makes this way easier than anything else I know.  And often you can avoid littering  up your file system with small experimental files as you work out your problems.
+
+4. Writing in structured languages like RestructuredText, Markdown, and Asciidoc.  The viewrendered3 plugin displays a fully rendered version of your document, removing an element of guesswork.
+
+5. Writing technical documentation using Sphinx.  Sphinx can produce beautifully readable documents, both for HTML and pdf.  Leo's outlines and rst3 command make it much easier and faster to use Sphinx.  It's gotten hard for me to even imagine producing this kind of documentation without Leo.
+
+6. Producing drafts of documents in formats like .doc files or Libreoffice Writer format.  You need the help of pandoc for this, and a bit of glue script.  I don't know of any way to round-trip these documents, so once your draft gets into the word processor, you can't get it back into Leo in a usable form. Even so, writing the first draft in Leo is a big win.
+
+7. Jupyiter notebook-style mixing of text, code, and output.  The viewrendered3 plugin can do similar things, although more Python-oriented and being less practical for rather long documents.
+
+8. Keeping time records,  with notes, for consulting projects.
+
+9. I have a bookmark manager in Leo - I mean, browser bookmarks - that makes finding the promising bookmarks , adding one to the collection, and organizing them much more practical than anything else I have tried.  It does use a bit of "real" programming, but now that it's working, a user doesn't need to write more.
+
+10. I have adapted the "zettel-kasten" system for storing research notes and inter-linking them to a collection of family history (genealogical) data.  With the help of some scripts that are easy to use, Leo becomes a family history database.  More scripts can produce several family tree-like charts (with the help of Graphviz) that display within Leo and can show a line of descent from a candidate ancestor to a chosen person.  I'm really enjoying using this system.
+
+11. Producing mind maps.  I'm very fond of mind maps, and I have contributed a set of scripts that can turn Leo trees, or any indented list, into a mind map.  It's a bit primitive so far, but it does the basics that I want.  The scripts are in the Leo repo.
+
+12. On-the-spot plotting of 2D numerical data.  If you can get the data into the clipboard, you can plot it using the viewrendered3 plugin with minimal fuss.
+
+13. Literate programming - if you want to go full out with literate programming, there are several ways to do this with Leo.
+
+I'm sure I'm not thinking of several more things here, but you get the idea.  The range of activities that Leo can support is amazingly wide.  That's why it's hard to tell someone what Leo "is".  It's like the elephant and the blind men - none of them can see the whole of the elephant.
+
+To me, the base of Leo's versatility is the extremely good and convenient handling of its outline tree, the ability to subdivide projects into convenient pieces, combined with the ability for anyone to easily extend Leo's core capabilities with scripts and user commands of all kinds.
+
+Phenomenal!</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
