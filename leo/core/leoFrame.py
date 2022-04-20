@@ -1288,7 +1288,7 @@ class LeoLog:
 
     def putnl(self, tabName: str='Log') -> None:
         pass
-    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helper
+    #@+node:ekr.20220410180439.1: *4* LeoLog.put_html_links & helpers
     error_patterns = (g.mypy_pat, g.pylint_pat, g.python_pat)
 
     # This table encodes which groups extract the filename and line_number from global regex patterns.
@@ -1310,6 +1310,8 @@ class LeoLog:
         c = self.c
         trace = False and not g.unitTesting
         
+        #@+others  # Define helpers
+        #@+node:ekr.20220420100806.1: *5* function: find_match
         def find_match(line: s) -> Tuple[re.Match, int, int]:
             """Search line for any pattern in link_table."""
             if not line.strip():
@@ -1322,7 +1324,25 @@ class LeoLog:
                 if m:
                     return m, filename_i, line_number_i
             return None, None, None
-
+        #@+node:ekr.20220412084258.1: *5* function: find_at_file_node
+        def find_at_file_node(c: Cmdr, filename: str) -> Pos:
+            """Find a position corresponding to filename s"""
+            c = self.c
+            target = os.path.normpath(filename)
+            parts = target.split(os.sep)
+            while parts:
+                target = os.sep.join(parts)
+                parts.pop(0)
+                # Search twice, prefering exact matches.
+                for p in at_file_nodes:
+                    if target == os.path.normpath(p.anyAtFileNodeName()):
+                        return p
+                for p in at_file_nodes:
+                    if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
+                        return p
+            return None
+        #@-others
+        
         # Report any bad chars.
         printables = string.ascii_letters + string.digits + string.punctuation + ' ' + '\n'
         bad = list(set(ch for ch in s if ch not in printables))
@@ -1346,6 +1366,12 @@ class LeoLog:
             if trace:
                 print('No matches found!')
             return False  # The caller must handle s.
+        # Find all @<file> nodes.
+        at_file_nodes = list(p for p in c.all_positions() if p.isAnyAtFileNode())
+        if not at_file_nodes:
+            if trace:
+                print('No @<file> nodes')
+            return False
         # Output each line using log.put, with or without a nodeLink.
         found_matches = 0
         for i, line in enumerate(lines):
@@ -1353,11 +1379,11 @@ class LeoLog:
             if m:
                 filename = m.group(filename_i)
                 line_number = m.group(line_number_i)
-                p = self.find_at_file_node(filename)  # Find a corresponding @<file> node.
+                p = find_at_file_node(c, filename)  # Find a corresponding @<file> node.
                 if p:
+                    unl = p.get_UNL()
                     found_matches += 1
-                    url = p.get_UNL()
-                    self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                    self.put(line, nodeLink=f"{unl}::-{line_number}")  # Use global line.
                 else:  # An unusual case.
                     if not g.unitTesting:
                         print(f"{i:2} p not found! {filename!r}")
@@ -1369,31 +1395,6 @@ class LeoLog:
         if trace:
             g.trace('Found', found_matches, 'matches')
         return bool(found_matches)
-
-    #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
-    def find_at_file_node(self, filename: str) -> Pos:
-        """Find a position corresponding to filename s"""
-        c = self.c
-        candidates = list(p for p in c.all_positions() if p.isAnyAtFileNode())
-        if 0: # Ignore all parent directories!
-            target = os.path.basename(filename)
-            for p in candidates:
-                if os.path.basename(p.anyAtFileNodeName()) == target:
-                    return p
-        else:
-            target1 = os.path.normpath(filename)
-            parts = target1.split(os.sep)
-            while parts:
-                target = os.sep.join(parts)
-                parts.pop(0)
-                # Search twice, prefering exact matches.
-                for p in candidates:
-                    if target == os.path.normpath(p.anyAtFileNodeName()):
-                        return p
-                for p in candidates:
-                    if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
-                        return p
-        return None
 
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
     def renameTab(self, oldName: str, newName: str) -> None:
