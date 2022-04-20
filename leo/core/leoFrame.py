@@ -1312,7 +1312,7 @@ class LeoLog:
         
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match
-        def find_match(line: s) -> Tuple[re.Match, int, int]:
+        def find_match(line: str) -> Tuple[re.Match, int, int]:
             """Search line for any pattern in link_table."""
             if not line.strip():
                 return None, None, None
