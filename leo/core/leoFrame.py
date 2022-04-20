@@ -1309,6 +1309,20 @@ class LeoLog:
         """
         c = self.c
         trace = False and not g.unitTesting
+        
+        def find_match(line: s) -> Tuple[re.Match, int, int]:
+            """Search line for any pattern in link_table."""
+            if not line.strip():
+                return None, None, None
+            for filename_i, line_number_i, pattern in self.link_table:
+                m = pattern.match(line)
+                if m and trace:
+                    g.trace(f"Match! {i:2} {m.group(filename_i)}:{m.group(line_number_i)}")
+                    print('    ', repr(line))
+                if m:
+                    return m, filename_i, line_number_i
+            return None, None, None
+
         # Report any bad chars.
         printables = string.ascii_letters + string.digits + string.punctuation + ' ' + '\n'
         bad = list(set(ch for ch in s if ch not in printables))
@@ -1324,54 +1338,37 @@ class LeoLog:
             for i, line in enumerate(lines):
                 print(f"{i:2} {line!r}")
         # Return False if no lines match initially. This is an efficiency measure.
-        found = False
-        for i, line in enumerate(lines):
-            if found:
+        for line in lines:
+            m, junk, junk = find_match(line)
+            if m:
                 break
-            for filename_i, line_number_i, pattern in self.link_table:
-                if line.strip():
-                    m = pattern.match(line)
-                    if m and trace:
-                        g.trace(f"Match! {i:2} {m.group(filename_i)}:{m.group(line_number_i)}")
-                        print('    ', repr(line))
-                    if m:
-                        found = True
-                        break
-        if not found:
+        else:
             if trace:
                 print('No matches found!')
             return False  # The caller must handle s.
-        # Output each line using log.put, with or without a nodeLink kwarg.
+        # Output each line using log.put, with or without a nodeLink.
         found_matches = 0
         for i, line in enumerate(lines):
-            for filename_i, line_number_i, pattern in self.link_table:
-                if not line.strip():
-                    continue
-                m = pattern.match(line)
-                if not m:
-                    continue
+            m, filename_i, line_number_i = find_match(line)
+            if m:
                 filename = m.group(filename_i)
                 line_number = m.group(line_number_i)
-                p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
+                p = self.find_at_file_node(filename)  # Find a corresponding @<file> node.
                 if p:
                     found_matches += 1
-                    # if trace:
-                    #    print(f"{i:2} Found {p.h}")
                     url = p.get_UNL()
                     self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
-                else:
-                    # An unusual case.  Maybe *always* report it.
-                    if not g.unitTesting:  ###
+                else:  # An unusual case.
+                    if not g.unitTesting:
                         print(f"{i:2} p not found! {filename!r}")
                     self.put(line)
-                break
-            else:  # none of the patterns match.
+            else:  # None of the patterns match.
                 if trace:
                     print(f"{i:2} No match!")
                 self.put(line)
         if trace:
             g.trace('Found', found_matches, 'matches')
-        return bool(found_matches)  # This method may have completely handled s.
+        return bool(found_matches)
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
     def find_at_file_node(self, filename: str) -> Pos:
