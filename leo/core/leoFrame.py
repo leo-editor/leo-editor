@@ -9,6 +9,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
 import re
+import string
 from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -1014,13 +1015,14 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
+        trace = True and not g.unitTesting
         c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
-            g.trace('===== BAD W', repr(w))  ###
+            if trace: g.trace('===== BAD W', repr(w))  ###
             return
-        g.trace('===== Entry')
+        if trace: g.trace('===== Entry')
         bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
@@ -1306,15 +1308,23 @@ class LeoLog:
         c = self.c
 
         trace = True and not g.unitTesting
-
-        if trace: ### Temporary
-            import string
-            printable = string.ascii_letters + string.digits + string.punctuation + ' '
-            def dump(s):
-                return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
+        
+        # Report any bad chars.
+        printables = string.ascii_letters + string.digits + string.punctuation + ' ' + '\n'
+        bad = list(set(ch for ch in s if ch not in printables))
+        
+        # Strip bad chars.
+        if bad:
+            g.trace('Strip unprintables', repr(bad), 'in', repr(s))
+            # Strip unprintable chars.
+            s = ''.join(ch for ch in s if ch in printables)
+        
+        ### s = ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
 
         lines = s.split('\n')
+        
         # Step 1: return False if no lines match. This is an efficiency measure.
+
         # Less elegant code allows better traces.
         found = False
         for line in lines:
@@ -1330,20 +1340,18 @@ class LeoLog:
                         break
         if not found:
             if trace:
-                g.trace('No initial matches found in:', c.shortFileName())  ### New debugging trace
-                g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
+                g.trace('No initial matches found in:', c.shortFileName())
+                g.printObj(lines, tag=f"{len(lines)} lines")
             return False  # The caller must handle s.
         #
         # More elegant code, but it applies patterns to empty lines!
             # if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            # if trace:
-                # g.trace('No initial matches found in:', c.shortFileName())  ### New debugging trace
-                # g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
-            # return False  # The caller must handle s.
+            #     return False  # The caller must handle s.
+
         # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
         if trace:
             g.trace('At least one match found in:', c.shortFileName())
-            g.printObj([dump(z) for z in lines], tag=f"{len(lines)} lines")
+            g.printObj(lines, tag=f"{len(lines)} lines")
         found_matches = 0
         for line in lines:
             for filename_i, line_number_i, pattern in self.link_table:
