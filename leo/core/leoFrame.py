@@ -1021,7 +1021,7 @@ class LeoFrame:
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             if trace:
-                g.trace('===== BAD W', repr(w))  ###
+                g.trace('===== BAD W', repr(w))
             return
         if trace:
             g.trace('===== Entry')
@@ -1051,7 +1051,7 @@ class LeoFrame:
         # #2593: Replace link patterns with html links.
         if wname.startswith('log'):
             if c.frame.log.put_html_links(s):
-                g.trace('Contains links')  ###
+                g.trace('Contains links')
                 return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
@@ -1367,7 +1367,7 @@ class LeoLog:
                 print('No matches found!')
             return False  # The caller must handle s.
         # Find all @<file> nodes.
-        at_file_nodes = list(p for p in c.all_positions() if p.isAnyAtFileNode())
+        at_file_nodes = [p for p in c.all_positions() if p.isAnyAtFileNode()]
         if not at_file_nodes:
             if trace:
                 print('No @<file> nodes')
