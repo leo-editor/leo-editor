@@ -1015,14 +1015,16 @@ class LeoFrame:
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
-            if trace: g.trace('===== BAD W', repr(w))  ###
+            if trace:
+                g.trace('===== BAD W', repr(w))  ###
             return
-        if trace: g.trace('===== Entry')
+        if trace:
+            g.trace('===== Entry')
         bunch = u.beforeChangeBody(p)
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
@@ -1306,97 +1308,94 @@ class LeoLog:
         Otherwise, return False
         """
         c = self.c
-
-        trace = True and not g.unitTesting
-        
+        trace = False and not g.unitTesting
         # Report any bad chars.
         printables = string.ascii_letters + string.digits + string.punctuation + ' ' + '\n'
         bad = list(set(ch for ch in s if ch not in printables))
-        
         # Strip bad chars.
         if bad:
             g.trace('Strip unprintables', repr(bad), 'in', repr(s))
             # Strip unprintable chars.
             s = ''.join(ch for ch in s if ch in printables)
-        
-        ### s = ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
-
         lines = s.split('\n')
-        
-        # Step 1: return False if no lines match. This is an efficiency measure.
-
-        # Less elegant code allows better traces.
+        # Trace lines.
+        if trace:
+            g.trace(c.shortFileName())
+            for i, line in enumerate(lines):
+                print(f"{i:2} {line!r}")
+        # Return False if no lines match initially. This is an efficiency measure.
         found = False
-        for line in lines:
+        for i, line in enumerate(lines):
             if found:
                 break
-            for pat in self.error_patterns:
+            for filename_i, line_number_i, pattern in self.link_table:
                 if line.strip():
-                    m = pat.match(line)
+                    m = pattern.match(line)
                     if m and trace:
-                        g.trace('Initial match:', m.group(0), 'in', repr(line))
+                        g.trace(f"Match! {i:2} {m.group(filename_i)}:{m.group(line_number_i)}")
+                        print('    ', repr(line))
                     if m:
                         found = True
                         break
         if not found:
             if trace:
-                g.trace('No initial matches found in:', c.shortFileName())
-                g.printObj(lines, tag=f"{len(lines)} lines")
+                print('No matches found!')
             return False  # The caller must handle s.
-        #
-        # More elegant code, but it applies patterns to empty lines!
-            # if not any(pat.match(line) for line in lines for pat in self.error_patterns):
-            #     return False  # The caller must handle s.
-
-        # Step 2: Output each line using log.put, with or without a nodeLink kwarg.
-        if trace:
-            g.trace('At least one match found in:', c.shortFileName())
-            g.printObj(lines, tag=f"{len(lines)} lines")
+        # Output each line using log.put, with or without a nodeLink kwarg.
         found_matches = 0
-        for line in lines:
+        for i, line in enumerate(lines):
             for filename_i, line_number_i, pattern in self.link_table:
+                if not line.strip():
+                    continue
                 m = pattern.match(line)
-                if m:
+                if not m:
+                    continue
+                filename = m.group(filename_i)
+                line_number = m.group(line_number_i)
+                p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
+                if p:
                     found_matches += 1
-                    filename = m.group(filename_i)
-                    line_number = m.group(line_number_i)
-                    p = self.find_at_file_node(filename)  # Try to find a matching @<file> node.
-                    if p:
-                        if trace:
-                            g.trace('Found p:', p.h)
-                        url = p.get_UNL()
-                        self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
-                    else:
-                        # An unusual case, but not worth a message??
-                        if trace:
-                            g.trace('No p for:', repr(filename), 'in:', repr(line))
-                        self.put(line)
-                    break
+                    # if trace:
+                    #    print(f"{i:2} Found {p.h}")
+                    url = p.get_UNL()
+                    self.put(line, nodeLink=f"{url}::-{line_number}")  # Use global line.
+                else:
+                    # An unusual case.  Maybe *always* report it.
+                    if not g.unitTesting:  ###
+                        print(f"{i:2} p not found! {filename!r}")
+                    self.put(line)
+                break
             else:  # none of the patterns match.
                 if trace:
-                    g.trace('No match in line:', repr(line))
+                    print(f"{i:2} No match!")
                 self.put(line)
         if trace:
             g.trace('Found', found_matches, 'matches')
-        return True  # This method has completely handled s.
+        return bool(found_matches)  # This method may have completely handled s.
 
     #@+node:ekr.20220412084258.1: *5* LeoLog.find_at_file_node
     def find_at_file_node(self, filename: str) -> Pos:
         """Find a position corresponding to filename s"""
         c = self.c
-        target1 = os.path.normpath(filename)
-        parts = target1.split(os.sep)
         candidates = list(p for p in c.all_positions() if p.isAnyAtFileNode())
-        while parts:
-            target = os.sep.join(parts)
-            parts.pop(0)
-            # Search twice, prefering exact matches.
+        if 0: # Ignore all parent directories!
+            target = os.path.basename(filename)
             for p in candidates:
-                if target == os.path.normpath(p.anyAtFileNodeName()):
+                if os.path.basename(p.anyAtFileNodeName()) == target:
                     return p
-            for p in candidates:
-                if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
-                    return p
+        else:
+            target1 = os.path.normpath(filename)
+            parts = target1.split(os.sep)
+            while parts:
+                target = os.sep.join(parts)
+                parts.pop(0)
+                # Search twice, prefering exact matches.
+                for p in candidates:
+                    if target == os.path.normpath(p.anyAtFileNodeName()):
+                        return p
+                for p in candidates:
+                    if os.path.normpath(p.anyAtFileNodeName()).endswith(target):
+                        return p
         return None
 
     #@+node:ekr.20070302094848.10: *3* LeoLog.renameTab
