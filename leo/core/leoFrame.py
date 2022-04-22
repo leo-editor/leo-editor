@@ -1309,7 +1309,7 @@ class LeoLog:
         """
         c = self.c
         trace = False and not g.unitTesting
-        
+
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match
         def find_match(line: str) -> Tuple[re.Match, int, int]:
@@ -1342,7 +1342,7 @@ class LeoLog:
                         return p
             return None
         #@-others
-        
+
         # Report any bad chars.
         printables = string.ascii_letters + string.digits + string.punctuation + ' ' + '\n'
         bad = list(set(ch for ch in s if ch not in printables))
