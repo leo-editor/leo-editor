@@ -89,6 +89,7 @@ def report_version():
         from pylint import lint
     except ImportError:
         g.trace('can not import pylint')
+        return
     table = (
         os.path.abspath(os.path.expanduser('~/.leo/pylint-leo-rc.txt')),
         os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt')),
