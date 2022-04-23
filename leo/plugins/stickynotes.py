@@ -304,7 +304,7 @@ if encOK:
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
 #@+node:tbrown.20141214173054.3: ** class TextEditSearch
-class TextEditSearch(QtWidgets.QWidget):
+class TextEditSearch(QtWidgets.QWidget):  # type:ignore
     """A QTextEdit with a search box
 
     Used to make decoded encoded body text searchable, so when you've decoded
@@ -381,7 +381,7 @@ class FocusingPlaintextEdit(TextEditSearch):
             self.closed()
         self.focusout()
 #@+node:ville.20091023181249.5264: ** class SimpleRichText
-class SimpleRichText(QtWidgets.QTextEdit):
+class SimpleRichText(QtWidgets.QTextEdit):  # type:ignore
 
     # pylint: disable=method-hidden
 
@@ -604,7 +604,7 @@ def tabula_subtree_f(event):
         t.add_note(p)
 
 #@+node:ville.20100703194946.5584: *3* class Tabula(QMainWindow)
-class Tabula(QtWidgets.QMainWindow):
+class Tabula(QtWidgets.QMainWindow):  # type:ignore
 
     #@+others
     #@+node:ekr.20101114061906.5445: *4* __init__

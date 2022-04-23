@@ -118,7 +118,7 @@ def toggle_autoload(event):
         c.db[c_db_key] = str(c.p.v.gnx)
         g.es('Graph for current node will be autoloaded')
 #@+node:bob.20110119123023.7395: ** class graphcanvasUI
-class graphcanvasUI(QtWidgets.QWidget):
+class graphcanvasUI(QtWidgets.QWidget):  # type:ignore
     #@+others
     #@+node:bob.20110119123023.7396: *3* __init__
     def __init__(self, owner=None):
@@ -191,7 +191,7 @@ class graphcanvasUI(QtWidgets.QWidget):
         self.canvasView.current_scale = 0
     #@-others
 #@+node:bob.20110119123023.7397: ** class GraphicsView
-class GraphicsView(QtWidgets.QGraphicsView):
+class GraphicsView(QtWidgets.QGraphicsView):  # type:ignore
     #@+others
     #@+node:bob.20110119123023.7398: *3* __init__
     def __init__(self, glue, *args, **kargs):
@@ -293,7 +293,7 @@ class GetImage:
             g.app.loadDir, '../plugins/GraphCanvas/no_image.png'))
         return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
-class nodeBase(QtWidgets.QGraphicsItemGroup):
+class nodeBase(QtWidgets.QGraphicsItemGroup):  # type:ignore
 
     node_types: Dict[str, Any] = {}
 
@@ -584,7 +584,7 @@ class nodeImage(nodeBase):
 
 nodeBase.node_types[nodeImage.__name__] = nodeImage
 #@+node:bob.20110121161547.3424: ** class linkItem
-class linkItem(QtWidgets.QGraphicsItemGroup):
+class linkItem(QtWidgets.QGraphicsItemGroup):  # type:ignore
     """Node on the canvas"""
     #@+others
     #@+node:bob.20110119123023.7405: *3* __init__

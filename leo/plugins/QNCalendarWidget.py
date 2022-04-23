@@ -21,7 +21,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 def init():
     return True  # For unit tests.
 
-class QNCalendarWidget(QtWidgets.QCalendarWidget):
+class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up
 
@@ -112,7 +112,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             i.blockSignals(old)
         self.activated.emit(date)
 
-class QNDateEdit(QtWidgets.QDateEdit):
+class QNDateEdit(QtWidgets.QDateEdit):  # type:ignore
     def __init__(self, parent=None, n=3, columns=3):
         """set up
 

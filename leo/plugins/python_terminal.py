@@ -71,20 +71,18 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:peckj.20150428142729.3: ** class MyInterpreter
-if QtWidgets:
+class MyInterpreter(QtWidgets.QWidget):  # type:ignore
 
-    class MyInterpreter(QtWidgets.QWidget):
-
-        def __init__(self, parent, c):
-            super().__init__(parent)
-            hBox = QtWidgets.QHBoxLayout()
-            self.setLayout(hBox)
-            self.textEdit = PyInterp(self, c)
-            # this is how you pass in locals to the interpreter
-            self.textEdit.initInterpreter(locals())
-            hBox.addWidget(self.textEdit)
-            hBox.setContentsMargins(0, 0, 0, 0)
-            hBox.setSpacing(0)
+    def __init__(self, parent, c):
+        super().__init__(parent)
+        hBox = QtWidgets.QHBoxLayout()
+        self.setLayout(hBox)
+        self.textEdit = PyInterp(self, c)
+        # this is how you pass in locals to the interpreter
+        self.textEdit.initInterpreter(locals())
+        hBox.addWidget(self.textEdit)
+        hBox.setContentsMargins(0, 0, 0, 0)
+        hBox.setSpacing(0)
 #@+node:peckj.20150428142729.6: ** class InteractiveInterpreter (code.InteractiveInterpreter)
 class InteractiveInterpreter(code.InteractiveInterpreter):
     #@+others
@@ -106,7 +104,7 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
 #@+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
 
-    class PyInterp(QtWidgets.QTextEdit):
+    class PyInterp(QtWidgets.QTextEdit):  # type:ignore
         #@+others
         #@+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):

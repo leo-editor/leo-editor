@@ -715,7 +715,7 @@ class Demo:
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes & helpers
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label(QtWidgets.QLabel):
+class Label(QtWidgets.QLabel):  # type:ignore
     """A class for user-defined callouts in demo.py."""
 
     def __init__(self, text,
@@ -788,7 +788,7 @@ class Callout(Label):
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image(QtWidgets.QLabel):
+class Image(QtWidgets.QLabel):  # type:ignore
 
     def __init__(self, fn,
         pane=None, magnification=None, position=None, size=None):
@@ -836,7 +836,7 @@ class Image(QtWidgets.QLabel):
         widget.setPixmap(pixmap)
     #@-others
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
-class Text(QtWidgets.QPlainTextEdit):
+class Text(QtWidgets.QPlainTextEdit):  # type:ignore
 
     def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None

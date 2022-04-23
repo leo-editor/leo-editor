@@ -258,7 +258,7 @@ class OrderedDefaultDict(OrderedDict):
         args = (self.default_factory,) if self.default_factory else ()
         return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
-class QuickSearchEventFilter(QtCore.QObject):
+class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
@@ -295,7 +295,7 @@ class QuickSearchEventFilter(QtCore.QObject):
         return False
     #@-others
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
-class LeoQuickSearchWidget(QtWidgets.QWidget):
+class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     """ 'Find in files'/grep style search widget """
 

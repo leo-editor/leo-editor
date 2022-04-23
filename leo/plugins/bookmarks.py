@@ -479,7 +479,7 @@ def cmd_use_other_outline(event):
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 
 #@+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
-class FlowLayout(QtWidgets.QLayout):
+class FlowLayout(QtWidgets.QLayout):  # type:ignore
     """
     from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/
     PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py

@@ -62,7 +62,9 @@ def c12_hook(tag, keys):
 #@+node:vitalije.20190928160510.1: ** IdleChecker
 def init_idle_checker(tag, keys):
     global idle_checker
-    class IdleChecker(QtCore.QObject):
+
+
+    class IdleChecker(QtCore.QObject):  # type:ignore
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)

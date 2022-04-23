@@ -225,9 +225,9 @@ from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 from leo.plugins import free_layout
 try:
-    BaseTextWidget = QtWebKitWidgets.QWebView
+    BaseTextWidget = QtWebKitWidgets.QWebView  # type:ignore
 except Exception:
-    BaseTextWidget = QtWidgets.QTextBrowser
+    BaseTextWidget = QtWidgets.QTextBrowser  # type:ignore
 #
 # Optional third-party imports...
 #
@@ -680,7 +680,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.badColors = []
         self.delete_callback = None
         self.gnx = None
-        self.graphics_class = QtWidgets.QGraphicsWidget
+        self.graphics_class = QtWidgets.QGraphicsWidget  # type:ignore
         self.pyplot_canvas = None
         self.gs = None  # For @graphics-script: a QGraphicsScene
         self.gv = None  # For @graphics-script: a QGraphicsView

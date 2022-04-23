@@ -204,7 +204,7 @@ def main():
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
-    class Slides(QtWidgets.QWidget):
+    class Slides(QtWidgets.QWidget):  # type:ignore
 
         files_list: List[str]
         scale: float = 1.0

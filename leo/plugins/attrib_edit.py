@@ -412,7 +412,7 @@ class AttributeGetterColon(AttributeGetter):
 
 AttributeGetter.register(AttributeGetterColon)
 #@+node:tbrown.20091028131637.1353: ** class ListDialog
-class ListDialog(QtWidgets.QDialog):
+class ListDialog(QtWidgets.QDialog):  # type:ignore
 
     #@+others
     #@+node:tbrown.20091028131637.1354: *3* __init__ (attrib_edit.py)

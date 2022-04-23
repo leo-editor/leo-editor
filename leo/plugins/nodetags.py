@@ -249,7 +249,7 @@ class TagController:
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
 if QtWidgets:
 
-    class LeoTagWidget(QtWidgets.QWidget):
+    class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
         def __init__(self, c, parent=None):

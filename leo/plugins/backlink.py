@@ -692,7 +692,7 @@ class backlinkController:
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if QtWidgets:
 
-    class backlinkQtUI(QtWidgets.QWidget):
+    class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:ekr.20140920145803.17987: *3* __init__
         def __init__(self, owner):
