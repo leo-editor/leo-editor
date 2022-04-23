@@ -544,14 +544,12 @@ class QuickSearchController:
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
-            # in python 3.6 there is no (?ms) at the end
-            # only \Z
             bpat = bpat.replace(r'\Z', '')
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -643,7 +641,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             # bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         if combo == "All":
             hNodes = self.c.all_positions()
