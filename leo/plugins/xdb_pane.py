@@ -4,6 +4,7 @@
 Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 """
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy, WrapMode
@@ -12,7 +13,7 @@ from leo.core.leoQt import ScrollBarPolicy, WrapMode
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #
 # Globals.
-controllers = {}
+controllers: Dict[str, Any] = {}
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
 #@+node:ekr.20181004143535.4: *3* init (xdb_pane.py)
