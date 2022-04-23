@@ -27,7 +27,7 @@ Requires "valuespace" plugin. Fetches vars from valuespace.
 try:
     from jinja2 import Template
 except ImportError:
-    Template = None
+    Template = None  # type:ignore
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
