@@ -36,7 +36,7 @@ def onCreate(tag, key):
 #@+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
 
-    class XdbPane(QtWidgets.QWidget):
+    class XdbPane(QtWidgets.QWidget):  # type:ignore
         """Create the contents of the Debug pane."""
 
         def __init__(self, c):
