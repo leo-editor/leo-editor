@@ -146,6 +146,7 @@ import os
 import time
 import tempfile
 import difflib
+from typing import List
 from leo.core import leoGlobals as g
 try:
     from leo.plugins import stickynotes
@@ -183,7 +184,7 @@ class leoscreen_Controller:
         # pulling in lines from output, this is the next one to get
         self.next_unread_line = self.first_line
         # output from last command
-        self.output = []
+        self.output: List[str] = []
         self.old_output = []
         # file name for hardcopy and paste commands
         fd, self.tmpfile = tempfile.mkstemp()
@@ -307,7 +308,7 @@ class leoscreen_Controller:
             return None
         if not c:
             c = self.c
-        self.output: str = None  # trick get_line into getting output
+        self.output = []  # trick get_line into getting output
         self.get_line()  # updates self.output, ignore returned line
         sm = difflib.SequenceMatcher(None, self.old_output, self.output)
         x = sm.find_longest_match(0, len(self.old_output) - 1, 0, len(self.output) - 1)
@@ -382,8 +383,8 @@ class leoscreen_Controller:
         proc = subprocess.Popen(cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
-        out, err = proc.communicate()
-        out = out.decode('utf-8')
+        out_bytes, err = proc.communicate()
+        out = out_bytes.decode('utf-8')
 
         screens = [[('CURRENT: ' if i == self.use_screen else '') + i, False, i]
                    for i in out.split('\n') if i.startswith('\t')]  # type:ignore
