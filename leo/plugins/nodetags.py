@@ -95,6 +95,7 @@ whitespace (calling .strip()).
 """
 #@-<< docstring >>
 import re
+from typing import Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
@@ -161,7 +162,8 @@ class TagController:
     def show_all_tags(self):
         """Show all tags, organized by node."""
         c, tc = self.c, self
-        d = {}
+        aList: List[str]
+        d: Dict[str, List[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))
