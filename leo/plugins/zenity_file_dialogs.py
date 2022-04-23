@@ -57,7 +57,7 @@ def callZenity(title, multiple=False, save=False, test=False):
     if ret:
         return ''
     if multiple:
-        return filename.split('|')
+        return filename.split('|')  # type:ignore
     return filename
 #@+node:ekr.20101110095557.5894: ** runOpenFileDialog
 def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False):
