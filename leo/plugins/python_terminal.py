@@ -50,6 +50,7 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
@@ -62,7 +63,7 @@ use_rlcompleter = False
 if use_rlcompleter:
     from rlcompleter import Completer
 else:
-    Completer = None
+    Completer = None  # type:ignore
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -240,11 +241,13 @@ if QtWidgets:
             return False
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
+            
+            completer: Any
             try:
                 # #1212: Disable this by default.
                 if use_rlcompleter and event.key() == Key.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
-                    completer = Completer(self.interpreter.locals)
+                    completer = Completer(self.interpreter.locals)  # type:ignore
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
                         self.insertPlainText(suggestion[len(line) :])
@@ -292,8 +295,6 @@ if QtWidgets:
                 super().keyPressEvent(event)
             except Exception:
                 g.es_exception()
-
-
         #@+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             """Handle the <return> key."""
@@ -346,7 +347,7 @@ if QtWidgets:
             position = len(self.document().toPlainText())
             textCursor.setPosition(position)
             self.setTextCursor(textCursor)
-            lines = []
+            lines: List[str] = []
             block = self.document().lastBlock()
             #
             # Scan backward, looking for lines.
@@ -382,7 +383,9 @@ if QtWidgets:
                 return
             #
             # Execute lines in groups, delimited by indentation.
-            indent, ok, exec_lines = 0, True, []
+            indent: int = 0
+            ok: bool = True
+            exec_lines: List = []
             for line in lines:
                 indent = compute_indent(line) if exec_lines else 0
                 if indent > 0 or not exec_lines:
