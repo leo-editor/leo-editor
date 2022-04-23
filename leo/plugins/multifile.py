@@ -50,13 +50,14 @@ beginning of the line and by themselves.
 import os.path
 import shutil
 import weakref
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core import leoAtFile
 #@-<< imports >>
 multiprefix = '@multiprefix'
 multipath = '@multipath'
-haveseen = {}
-files = {}
+haveseen: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
+files: Dict[str, Any] = {}  # Values are positions.
 original_precheck = None
 #@+others
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
@@ -79,8 +80,6 @@ def init():
     g.plugin_signon(__name__)
     return True  # gui-independent.
 #@+node:mork.20041019091317: *3* addMenu
-haveseen = weakref.WeakKeyDictionary()
-
 def addMenu(tag, keywords):
 
     # pylint: disable=undefined-variable
@@ -147,7 +146,8 @@ def scanForMultiPath(c):
     New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements."""
 
     global multiprefix, multipath
-    d, sep = {}, ';'
+    d: Dict = {}
+    sep = ';'
     for fileName in files:  # Keys are fileNames, values are root positions.
         root = files[fileName]
         default_directory = g.os_path_dirname(fileName)
