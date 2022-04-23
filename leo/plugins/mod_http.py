@@ -226,6 +226,7 @@ import select
 import shutil
 import socket
 import time
+from typing import Any
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
@@ -357,7 +358,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         # pylint: disable=super-init-not-called
         self._map = asyncore.socket_map
         self.socket = sock
-        self.socket.setblocking(0)
+        self.socket.setblocking(False)
         self.closed = 1  # compatibility with SocketServer
         self.buffer = []
     #@+node:EKR.20040517080250.6: *3* write
@@ -370,8 +371,8 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self.out_buffer = b''.join(aList)
         del self.buffer
         self.set_socket(self.socket, None)
-        self.socket.setblocking(0)
-        self.connected = 1
+        self.socket.setblocking(False)
+        self.connected = True
         try:
             self.addr = self.socket.getpeername()
         except socket.error:
@@ -663,7 +664,7 @@ class leo_interface:
         if result:
             result2 = result[:-1]
             if result2:
-                result2 = ' / '.join(result2)
+                result2 = ' / '.join(result2)  # type:ignore
                 f.write("<p>\n")
                 f.write("<br />\n")
                 f.write(escape(result2))
@@ -700,7 +701,7 @@ class LeoActions:
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)
+            one_tab_links = json.loads(one_tab_links)  # type:ignore
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -926,7 +927,7 @@ class ExecHandler:
         if parsed_url.path.startswith('/_/exec/commanders/'):
             ans = [i.fileName() for i in g.app.commanders()]
             if enc != 'json':
-                ans = '\n'.join(ans)
+                ans = '\n'.join(ans)  # type:ignore
         else:
             ans = self.proc_cmds()
 
@@ -992,7 +993,7 @@ class RequestHandler(
         self.client_address = addr
         self.connection = conn
         self.server = server
-        self.wfile = delayedSocketStream(self.socket)
+        self.wfile = delayedSocketStream(self.socket)  # type:ignore
         # Sets the terminator. When it is received, this means that the
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
@@ -1049,13 +1050,13 @@ class RequestHandler(
         bytesToRead = int(self.headers.getheader('content-length'))
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
-        self.buffer = StringIO()
+        self.buffer = StringIO()  # type:ignore
         # control will be passed to a new found_terminator
-        self.found_terminator = self.handle_post_data
+        self.found_terminator = self.handle_post_data  # type:ignore
     #@+node:EKR.20040517080250.19: *3* handle_post_data
     def handle_post_data(self):
         """Called when a POST request body has been read"""
-        self.rfile = StringIO(self.buffer.getvalue())
+        self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
         self.do_POST()
         self.finish()
     #@+node:EKR.20040517080250.31: *3* do_GET
@@ -1108,7 +1109,7 @@ class RequestHandler(
         if self.path.find('?') >= 0:
             self.qs = self.path[self.path.find('?') + 1 :]
             self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))
+        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
         if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method = "do_" + self.command
@@ -1227,8 +1228,12 @@ def poll(timeout=0.0):
     map = asyncore.socket_map
     if not map:
         return False
+    e: Any
+    f: Any
+    r: Any
+    w: Any
     while 1:
-        e, r, w = [], [], []
+        e = f = w = []
         for fd, obj in map.items():
             if obj.readable():
                 r.append(fd)
@@ -1244,13 +1249,10 @@ def poll(timeout=0.0):
     else:
         #@+<< try r, w, e = select.select >>
         #@+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
+        r
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error:  # as err:
-            # if err[0] != EINTR:
-                # raise
-            # else:
-                # return False
             return False  # EKR: EINTR is undefined.
         #@-<< try r, w, e = select.select >>
     for fd in r:
