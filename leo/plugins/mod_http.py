@@ -1230,7 +1230,7 @@ def poll(timeout=0.0):
         return False
     e: Any
     f: Any
-    r: Any
+    r: Any = []
     w: Any
     while 1:
         e = f = w = []
@@ -1249,7 +1249,6 @@ def poll(timeout=0.0):
     else:
         #@+<< try r, w, e = select.select >>
         #@+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
-        r
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error:  # as err:

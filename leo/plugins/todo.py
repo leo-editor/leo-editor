@@ -69,7 +69,7 @@ import os
 import re
 import datetime
 import time
-from typing import Callable, Dict, Tuple
+from typing import Callable, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #
