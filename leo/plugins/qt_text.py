@@ -966,7 +966,7 @@ if QtWidgets:
             # First, call the base class paintEvent.
             QtWidgets.QTextBrowser.paintEvent(self, event)
 
-            def set_cursor_width(width: str) -> None:
+            def set_cursor_width(width: int) -> None:
                 """Set the cursor width, but only if necessary."""
                 if self.leo_cursor_width != width:
                     self.leo_cursor_width = width

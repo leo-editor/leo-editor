@@ -158,20 +158,6 @@ class LProtoServer:
     def readyread(self):
         pass
     #@-others
-#@+node:ville.20091010205847.1360: ** (ignore) class LProtoObsoleteClient
-if 0:
-
-
-    class LProtoObsoleteClient:
-        #@+others
-        #@+node:ville.20091010205847.1361: *3* initialization (LProtoObsoleteClient)
-        def __init__(self):
-            self.cl = QtNetwork.QLocalSocket()
-
-        def connect(self, name):
-            self.cl.connectToServer(name)
-            lprint("client connected")
-        #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
 class LProtoClient:
 

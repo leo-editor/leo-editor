@@ -71,6 +71,7 @@ def leoserv_start(event):
 
     lps.set_receiver(dispatch_script)
     # EKR: 2011/10/12
+    uniqtid: Any
     if hasattr(socket, 'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
     else:

@@ -307,7 +307,7 @@ class leoscreen_Controller:
             return None
         if not c:
             c = self.c
-        self.output = None  # trick get_line into getting output
+        self.output: str = None  # trick get_line into getting output
         self.get_line()  # updates self.output, ignore returned line
         sm = difflib.SequenceMatcher(None, self.old_output, self.output)
         x = sm.find_longest_match(0, len(self.old_output) - 1, 0, len(self.output) - 1)
@@ -386,7 +386,7 @@ class leoscreen_Controller:
         out = out.decode('utf-8')
 
         screens = [[('CURRENT: ' if i == self.use_screen else '') + i, False, i]
-                   for i in out.split('\n') if i.startswith('\t')]
+                   for i in out.split('\n') if i.startswith('\t')]  # type:ignore
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
         ld.exec_()

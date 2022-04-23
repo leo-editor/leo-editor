@@ -7035,7 +7035,7 @@ def python_tokenize(s: str) -> List:
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
 #@+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: Dict[str, str], script: str=None) -> None:
+def exec_file(path: str, d: Dict[str, Any], script: str=None) -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:
