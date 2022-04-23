@@ -14,7 +14,7 @@ Revised by EKR February 6-7, 2017.
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
 from typing import List
-from typing import TypeAlias
+from typing import TypeAlias  # pylint: disable=no-name-in-module
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
