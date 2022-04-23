@@ -239,7 +239,7 @@ if QtWidgets:
             return False
         #@+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
         def keyPressEvent(self, event):
-            
+
             completer: Any
             try:
                 # #1212: Disable this by default.

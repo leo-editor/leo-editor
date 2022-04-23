@@ -82,7 +82,7 @@ class LeoFts:
     def schema(self):
         my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
         schema = Schema(
-            h=TEXT(stored=True, analyzer=my_analyzer), 
+            h=TEXT(stored=True, analyzer=my_analyzer),
             gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer),
             parent=ID(stored=True),
             doc=ID(stored=True),

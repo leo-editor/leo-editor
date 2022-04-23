@@ -37,7 +37,7 @@ class PyGeoTag(object):
 
         self.basedir = os.path.dirname(__file__)
         self.synchronous = synchronous
-        
+
 
         if callback is not None:
             self.callback = callback  # type:ignore

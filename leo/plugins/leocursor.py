@@ -68,7 +68,7 @@ class AM_Colon(AttribManager):
             if not self.pattern.match(i)])
 
     def getAttrib(self, v, what):
-        
+
         m: Any
 
         for i in v.b.split('\n'):

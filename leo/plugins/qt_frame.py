@@ -3146,7 +3146,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w = self.logCtrl.widget  # type:ignore
         if w:
             w.clear()
-            
+
     @log_cmd('dump-log')
     @log_cmd('log-dump')
     def dumpLog(self, event: Event=None) -> None:
@@ -3155,7 +3155,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w = self.logCtrl.widget  # type:ignore
         if not w:
             return
-        
+
         fn = self.c.shortFileName()
         printable = string.ascii_letters + string.digits + string.punctuation + ' '
 
@@ -3165,7 +3165,7 @@ class LeoQtLog(leoFrame.LeoLog):
         g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
         g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag=f"{fn}: w.toHtml")
 
-          
+
     #@+node:ekr.20110605121601.18333: *3* LeoQtLog.color tab stuff
     def createColorPicker(self, tabName: str) -> None:
         g.warning('color picker not ready for qt')

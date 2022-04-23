@@ -50,7 +50,7 @@ def init_dict(c):
     except Exception as e:
         g.es_trace("This outline has no Headline Formats node\n" + str(e))
         return
-    try: 
+    try:
         # There is something wrong. Both pylint and mypy complain.
         # pylint: disable=no-value-for-parameter
         formats = yaml.load(fbody)  # type:ignore
