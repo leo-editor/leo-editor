@@ -104,7 +104,8 @@ def popup_entry(c, p, menu):
     c.cleo.addPopupMenu(c, p, menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
-    class todoQtUI(QtWidgets.QWidget):
+
+    class todoQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
         def __init__(self, owner, logTab=True):
@@ -383,9 +384,9 @@ class todoController:
         """
         # Patch the buttons only if the pyqt version is greater than 5.12.
         from leo.core.leoQt import qt_version
-        size = QtCore.QSize(16, 16)
-        qt_version = [int(z) for z in qt_version.split('.')]
-        if qt_version[1] <= 12:
+        size = QtCore.QSize(16, 16)  # type:ignore
+        qt_version = [int(z) for z in qt_version.split('.')]  # type:ignore
+        if qt_version[1] <= 12:  # type:ignore
             return
         ui = self.ui.UI
 
