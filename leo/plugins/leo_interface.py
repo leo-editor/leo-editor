@@ -19,7 +19,7 @@ to the first element.
 
 """
 #@-<< docstring >>
-# import pdb
+from typing import Any, List
 # Define globals
 debug = False
 vnode_count = 0
@@ -28,7 +28,7 @@ if debug:
         # leo_file:None, # Fixed a valid pylint complaint. file is not defined.
     }
     vnode_count = 0
-    vnode_stack = []
+    vnode_stack: List[Any] = []
 #@+others
 #@+node:ekr.20101110092416.5699: ** escape
 def escape(s):
