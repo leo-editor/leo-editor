@@ -60,7 +60,7 @@ def parsenote(cont):
     title = tree.findtext('{http://beatniksoftware.com/tomboy}title')
     # EKR: I'm not sure that finditer is correct, but geiterator no longer exists.
     # body  = tree.getiterator('{http://beatniksoftware.com/tomboy}note-content')[0]
-    body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]
+    body = tree.iterfind('{http://beatniksoftware.com/tomboy}note-content')[0]  # type:ignore
     b = ET.tostring(body)
     b = strip_tags(b)
     return title, b
