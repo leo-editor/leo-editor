@@ -3564,7 +3564,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return menu
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
     def add_command(self, menu: Widget,
-        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0) -> None:
+        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0,
+    ) -> None:
         """Wrapper for the Tkinter add_command menu method."""
         if not label:
             return

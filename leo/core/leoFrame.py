@@ -2123,8 +2123,9 @@ class NullLog(LeoLog):
     def oops(self) -> None:
         g.trace("NullLog:", g.callers(4))
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
-    def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False, nodeLink: str=None) -> None:
-        # print('(nullGui) print',repr(s))
+    def put(self,
+        s: str, color: str=None, tabName: str='Log', from_redirect: bool=False, nodeLink: str=None,
+    ) -> None:
         if self.enabled and not g.unitTesting:
             try:
                 g.pr(s, newline=False)

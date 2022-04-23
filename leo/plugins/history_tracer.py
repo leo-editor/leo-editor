@@ -34,6 +34,7 @@
 import datetime
 import time
 import threading
+from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from urllib.error import URLError
 from leo.core import leoGlobals as g
@@ -41,6 +42,9 @@ from leo.core.leoQt import QtCore
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Type alias.
+QObject: TypeAlias = QtCore.QObject
 #@-<< imports >>
 
 idle_checker = None
@@ -64,7 +68,7 @@ def init_idle_checker(tag, keys):
     global idle_checker
 
 
-    class IdleChecker(QtCore.QObject):  # type:ignore
+    class IdleChecker(QObject):
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)
