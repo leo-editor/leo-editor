@@ -14,12 +14,17 @@ Revised by EKR February 6-7, 2017.
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
 from typing import List
+from typing import TypeAlias
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Abbreviations, for mypy
+QLabel: TypeAlias = QtWidgets.QLabel
+QPlainTextEdit: TypeAlias = QtWidgets.QPlainTextEdit
 #@-<< demo.py imports >>
 # pylint: disable=no-member,not-callable
 #@@language python
@@ -715,7 +720,7 @@ class Demo:
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes & helpers
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label(QtWidgets.QLabel):  # type:ignore
+class Label(QLabel):
     """A class for user-defined callouts in demo.py."""
 
     def __init__(self, text,
@@ -788,8 +793,7 @@ class Callout(Label):
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image(QtWidgets.QLabel):  # type:ignore
-
+class Image(QLabel):
     def __init__(self, fn,
         pane=None, magnification=None, position=None, size=None):
         """Image.__init__."""
@@ -835,8 +839,8 @@ class Image(QtWidgets.QLabel):  # type:ignore
             demo.set_position(widget, position)
         widget.setPixmap(pixmap)
     #@-others
-#@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
-class Text(QtWidgets.QPlainTextEdit):  # type:ignore
+#@+node:ekr.20170208095240.1: *3* class Text (QPlainTextEdit)
+class Text(QPlainTextEdit):
 
     def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None
