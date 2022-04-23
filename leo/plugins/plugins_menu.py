@@ -59,6 +59,7 @@ __plugin_priority__
 #@+node:ekr.20050101090207.10: ** << imports >>
 import configparser as ConfigParser
 import os
+from typing import Sequence
 from leo.core import leoGlobals as g
 #@-<< imports >>
 
@@ -75,6 +76,7 @@ def addPluginMenuItem(p, c):
     @param c:  Leo-editor "commander" for the current .leo file
     """
     plugin_name = p.name.split('.')[-1]  # TNB 20100304 strip module path
+    table: Sequence
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
