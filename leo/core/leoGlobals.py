@@ -3906,7 +3906,7 @@ def getBaseDirectory(c: Cmdr) -> str:
         return base  # base need not exist yet.
     return ""  # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
-def getEncodingAt(p: Pos, s: str=None) -> str:
+def getEncodingAt(p: Pos, s: bytes=None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -4031,7 +4031,7 @@ def openWithFileName(fileName: str, old_c: Cmdr=None, gui: str=None) -> Cmdr:
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
-def readFileIntoEncodedString(fn: str, silent: bool=False) -> Optional[bytes]:
+def readFileIntoEncodedString(fn: str, silent: bool=False) -> bytes:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -5676,7 +5676,7 @@ def isWordChar(ch: str) -> bool:
 def isWordChar1(ch: str) -> bool:
     return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s: str) -> Tuple[Optional[str], str]:
+def stripBOM(s: bytes) -> Tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
