@@ -664,10 +664,10 @@ class leo_interface:
         if result:
             result2 = result[:-1]
             if result2:
-                result2 = ' / '.join(result2)  # type:ignore
+                result2_s = ' / '.join(result2)
                 f.write("<p>\n")
                 f.write("<br />\n")
-                f.write(escape(result2))
+                f.write(escape(result2_s))
                 f.write("<br />\n")
                 f.write("</p>\n")
             f.write("<h2>")
