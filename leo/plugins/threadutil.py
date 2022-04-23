@@ -8,13 +8,13 @@ import sys
 import time
 import traceback
 from typing import Any, List
+from typing import TypeAlias  # pylint: disable=no-name-in-module
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-
-log = None  # log = logging.getLogger("out")
+QThread: TypeAlias = QtCore.QThread
+log = None
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level
 #@+node:ekr.20121126095734.12432: *3* async_syscmd
@@ -141,7 +141,7 @@ class NowOrLater:
 
     #@-others
 #@+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):  # type:ignore
+class Repeater(QThread):
     """ execute f forever, signal on every run """
 
     fragment = QtCore.pyqtSignal(object)
