@@ -17,9 +17,9 @@ import struct
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore
 if isQt5:
-    from PyQt5 import QtNetwork
+    from PyQt5 import QtNetwork  # type:ignore
 else:
-    from PyQt4 import QtNetwork
+    from PyQt4 import QtNetwork  # type:ignore
 
 
 
