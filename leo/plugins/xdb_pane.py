@@ -5,13 +5,14 @@ Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 """
 from typing import Any, Dict
+from typing import TypeAlias  # pylint: disable=no-name-in-module
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy, WrapMode
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
+# Type aliases.
+QWidget: TypeAlias = QtWidgets.QWidget
 # Globals.
 controllers: Dict[str, Any] = {}
 #@+others
@@ -36,7 +37,7 @@ def onCreate(tag, key):
 #@+node:ekr.20181004143535.7: ** class XdbPane
 if g.app.gui.guiName() == "qt":
 
-    class XdbPane(QtWidgets.QWidget):  # type:ignore
+    class XdbPane(QWidget):
         """Create the contents of the Debug pane."""
 
         def __init__(self, c):
