@@ -14,6 +14,7 @@ This plugin is active only if::
 
 # By Paul Paterson. Rewritten by EKR.
 import time
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 #
@@ -21,7 +22,7 @@ from leo.core.leoQt import QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #
 # The global settings dict.
-gDict = {}  # Keys are commanders, values are settings dicts.
+gDict: Dict[Any, Any] = {}  # Keys are commanders, values are settings dicts.
 
 #@+others
 #@+node:ekr.20060108123141.2: ** init
