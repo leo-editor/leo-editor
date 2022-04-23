@@ -22,6 +22,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 #@+node:mork.20041025113509: ** << imports >>
 import io
 import weakref
+from typing import Dict
 from xml.dom import minidom
 from leo.core import leoGlobals as g
 # Third-part imports
@@ -104,7 +105,7 @@ xslt = {
 
 }
 #@+node:mork.20041010095202: ** setStyleNode
-stylenodes = weakref.WeakKeyDictionary()
+stylenodes: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
 
 def setStyleNode(c):
     """this command sets what the current style node is"""
