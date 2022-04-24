@@ -406,6 +406,7 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18124: *4* qlew.see & seeInsertPoint
     def see(self, i):
         """QHeadlineWrapper."""
+
         pass
 
     def seeInsertPoint(self):
@@ -995,6 +996,7 @@ if QtWidgets:
 
             New in Leo 6.4: Draw a box around the cursor in command mode.
                             This is as close as possible to vim's look.
+            New in Leo 6.6.2: Draw right margin guideline.
             """
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
             #
@@ -1007,7 +1009,7 @@ if QtWidgets:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
 
-            if w == c.frame.body.widget and\
+            if w == c.frame.body.widget and \
                     c.config.getBool('show-rmargin-guide'):
                 #@+<< paint margin guides >>
                 #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
@@ -1023,11 +1025,11 @@ if QtWidgets:
                 rmargin = fm.horizontalAdvance('9' * rcol) + 2
                 if vp.width() >= rmargin:
                     painter = QtGui.QPainter(vp)
-                    pen =QtGui.QPen(SolidLine)
+                    pen = QtGui.QPen(SolidLine)
 
                     # guideline color
-                    pallete = w.viewport().palette()
-                    fg_hex = pallete.text().color().rgb()
+                    palette = w.viewport().palette()
+                    fg_hex = palette.text().color().rgb()
                     # Change "r" value to "88"
                     # e.g., #bbccdd ==> #88ccdd
                     guide_rgb = '88' + f'{fg_hex:x}'[4:]
@@ -1038,7 +1040,7 @@ if QtWidgets:
                     painter.setPen(pen)
                     painter.drawLine(rmargin, 0, rmargin, vp.height())
                 #@-<< paint margin guides >>
-            
+
             #
             # Are we in vim mode?
             if self.leo_vim_mode is None:
