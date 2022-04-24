@@ -13,7 +13,6 @@ import sys
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from typing import TYPE_CHECKING
-### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer

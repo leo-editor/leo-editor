@@ -217,7 +217,6 @@ from pathlib import Path
 import shutil
 import textwrap
 from typing import Any, Dict, Tuple
-### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets

@@ -38,8 +38,6 @@ from leo.core.leoAst import Token, TokenOrderGenerator, TokenOrderTraverser
 from leo.core.leoAst import get_encoding_directive, read_file, strip_BOM
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
-
-### from leo.core.iterative_ast import IterativeTokenGenerator
 #@-<< test_leoAst imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -1638,7 +1636,7 @@ class TestIterative(TestTOG):
         # Ensure all tests end in exactly one newline.
         contents = textwrap.dedent(contents).rstrip() + '\n'
         # Create the TOG instance.
-        ### This next line is why we must copy this entire method.
+        # This next line is why we must copy this entire method.
         self.tog = IterativeTokenGenerator()  # Was TokenOrderGenerator().
         self.tog.filename = description or g.callers(2).split(',')[0]
         # Pass 0: create the tokens and parse tree

@@ -2468,7 +2468,7 @@ class CoreTree(leoFrame.LeoTree):
         self.selecting = False
     #@+node:ekr.20170511094217.1: *4* CTree.Drawing
     #@+node:ekr.20170511094217.3: *5* CTree.redraw
-    def redraw(self, p=None):  ###, scroll=True, forceDraw=False):
+    def redraw(self, p=None):
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.

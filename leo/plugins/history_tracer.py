@@ -34,7 +34,6 @@
 import datetime
 import time
 import threading
-### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from urllib.error import URLError
 from leo.core import leoGlobals as g
@@ -43,9 +42,6 @@ from leo.core.leoQt import QtCore
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports: history_tracer.py >>
-#
-# Type alias.
-###QObject: TypeAlias = QtCore.QObject
 
 idle_checker = None
 

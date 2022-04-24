@@ -3453,7 +3453,6 @@ class Commands:
         underline: int=0,
     ) -> None:
         c = self
-        ### command = keys.get('command')
         if command:
             # Command is always either:
             # one of two callbacks defined in createMenuEntries or
@@ -3466,7 +3465,6 @@ class Commands:
                     c.outerUpdate()
                 return val
 
-            ### keys['command'] = add_commandCallback
             menu.add_command(menu,
                 accelerator=accelerator, command=command, commandName=commandName, label=label, underline=underline)
         else:

@@ -759,7 +759,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
-    def onItemClicked(self, item: Item, col: int) -> None:  ### Col not used.
+    def onItemClicked(self, item: Item, col: int) -> None:  # Col not used.
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
         if self.busy:
@@ -819,7 +819,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
-    def onItemDoubleClicked(self, item: Item, col: Any) -> None:  ### col not used.
+    def onItemDoubleClicked(self, item: Item, col: Any) -> None:  # col not used.
         """Handle a double click in a BaseNativeTree widget item."""
         if self.busy:  # Required.
             return
@@ -1333,7 +1333,6 @@ class LeoQtTree(leoFrame.LeoTree):
             elif ins == j:
                 start, n = i, j - i
             else:
-                ### start = start, n = j, i - j  ### Bug???
                 start, n = j, i - j
         elif selectAll:
             start, n, ins = 0, len(s), len(s)
