@@ -428,7 +428,7 @@ class Commands:
         c = self
         if c.mFileName:
             return g.os_path_finalize(c.mFileName).lower()  # #1341.
-        return f"{id(self)!s}"  
+        return f"{id(self)!s}"
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
 
