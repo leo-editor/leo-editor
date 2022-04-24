@@ -76,14 +76,15 @@ from leo.core.leoQt import QAction, Weight
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< imports >>
 
 # Aliases...
+# These can *not* be used as the base classes.
 QInputDialog = QtWidgets.QInputDialog
 QLineEdit = QtWidgets.QLineEdit
 QMdiArea = QtWidgets.QMdiArea
 QTextCharFormat = QtGui.QTextCharFormat
 QTimer = QtCore.QTimer
-#@-<< imports >>
 
 # Keys are commanders. Values are inner dicts: keys are gnx's; values are widgets.
 outer_dict: Dict[Any, Dict[str, Any]] = {}  # #2471
