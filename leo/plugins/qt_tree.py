@@ -1184,7 +1184,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Fix #265: Erratic scrolling bug.
         # w.PositionAtCenter causes unwanted scrolling.
         w.scrollToItem(item, w.EnsureVisible)
-        self.setHScroll(0) # Necessary
+        self.setHScroll(0)  # Necessary
     #@+node:ekr.20110605121601.18431: *4* qtree.setCurrentItemHelper
     def setCurrentItemHelper(self, item: Item) -> None:
         w = self.treeWidget

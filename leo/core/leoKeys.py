@@ -1043,7 +1043,7 @@ class ContextSniffer:
     """
 
     def __init__(self) -> None:
-        self.vars: Dict[str, List[Any]] = {} # Keys are var names; values are list of classes
+        self.vars: Dict[str, List[Any]] = {}  # Keys are var names; values are list of classes
     #@+others
     #@+node:ekr.20110312162243.14261: *3* get_classes
     def get_classes(self, s: str, varname: str) -> List[str]:
@@ -4207,7 +4207,7 @@ class ModeInfo:
         # The bindings in effect for this mode.
         # Keys are names of (valid) command names, values are BindingInfo objects.
         self.d: Dict[str, Any] = {}
-        self.entryCommands: List[Any] = [] # A list of BindingInfo objects.
+        self.entryCommands: List[Any] = []  # A list of BindingInfo objects.
         self.k = c.k
         self.name: str = self.computeModeName(name)
         self.prompt: str = self.computeModePrompt(self.name)

@@ -1557,7 +1557,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.wrapper: Wrapper = None
         self.widget: Widget = None
         self.reloadSettings()
-        self.set_widget() # Sets self.widget and self.wrapper.
+        self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None

@@ -42,8 +42,8 @@ else:
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ctagscompleter imports >>
 # Global variables
-controllers: Dict[Any, Any] = {} # Keys are commanders, values are controllers.
-tagLines: List[str] = [] # The saved contents of the tags file.
+controllers: Dict[Any, Any] = {}  # Keys are commanders, values are controllers.
+tagLines: List[str] = []  # The saved contents of the tags file.
 
 #@+others
 #@+node:ekr.20110307092028.14155: ** Top-level functions
