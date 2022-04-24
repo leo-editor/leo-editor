@@ -12,6 +12,8 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
 
 QColor = QtGui.QColor
+QFontMetrics = QtGui.QFontMetrics
+
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
 #@+others
@@ -978,6 +980,36 @@ if QtWidgets:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
 
+            if w == c.frame.body.widget and\
+                    c.config.getBool('show-rmargin-guide'):
+                #@+<< paint margin guides >>
+                #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
+                # based on https://stackoverflow.com/questions/30371613/draw-vertical-lines-on-qtextedit-in-pyqt
+                # Honor @pagewidth directive if any
+                dict_list = g.get_directives_dict_list(c.p)
+                rcol = (g.scanAtPagewidthDirectives(dict_list)
+                        or c.config.getInt('rguide-col') or 80)
+
+                vp = w.viewport()
+                font = w.document().defaultFont()
+                fm = QFontMetrics(font)
+                rmargin = fm.horizontalAdvance('9' * rcol) + 2
+                if vp.width() >= rmargin:
+                    painter = QtGui.QPainter(vp)
+                    #pen =QtGui.QPen(Qt.SolidLine)
+                    pen = QtGui.QPen(1)
+
+                    pallete = w.viewport().palette()
+                    fg_hex = pallete.text().color().rgb()
+                    guide_rgb = '88' + f'{fg_hex:x}'[4:]
+                    guide_color = f'#{guide_rgb}'
+
+                    pen.setColor(QtGui.QColor(guide_color))
+                    pen.setWidth(1)
+                    painter.setPen(pen)
+                    painter.drawLine(rmargin, 0, rmargin, vp.height())
+                #@-<< paint margin guides >>
+            
             #
             # Are we in vim mode?
             if self.leo_vim_mode is None:
@@ -1008,6 +1040,7 @@ if QtWidgets:
             qp.begin(self.viewport())
             qp.drawRect(w.cursorRect())
             qp.end()
+            
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
