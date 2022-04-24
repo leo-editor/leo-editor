@@ -216,7 +216,7 @@ import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 ### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
@@ -287,7 +287,6 @@ except ImportError:
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-### QWidget: TypeAlias = QtWidgets.QWidget
 #pylint: disable=no-member
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -324,10 +323,8 @@ latex_template = '''\
 </html>
 '''
 #@-<< define html templates >>
-# Keys are c.hash(): values are PluginControllers (QWidget's).
-controllers: Dict[int, Any] = {}
-# Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
-layouts = {}
+controllers: Dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
+layouts: Dict[str, Tuple] = {}  # Dict[c.hash(), Tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
 #@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
@@ -667,7 +664,7 @@ class ViewRenderedProvider:
         return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtWidgets.QWidget):  ###
+class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers

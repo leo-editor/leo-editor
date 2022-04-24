@@ -150,7 +150,7 @@ def log_cmd(name: str) -> Callable:
     """Command decorator for the LeoQtLog class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
-class DynamicWindow(QtWidgets.QMainWindow):
+class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     """
     A class representing all parts of the main Qt window.
 
@@ -459,7 +459,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
 
-        class VisLineEdit(QtWidgets.QLineEdit):
+        class VisLineEdit(QtWidgets.QLineEdit):  # type:ignore
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: Event) -> None:
@@ -1398,7 +1398,7 @@ class FindTabManager:
             find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
-class LeoBaseTabWidget(QtWidgets.QTabWidget):
+class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
     """Base class for all QTabWidgets in Leo."""
     #@+others
     #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
@@ -2513,7 +2513,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # image = keys.get('image')
 
 
-            class leoIconBarButton(QtWidgets.QWidgetAction):
+            class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
                 # toolbar is a QtIconBarClass object, not a QWidget.
                 def __init__(self, parent: Widget, text: str, toolbar: Any) -> None:
@@ -3754,7 +3754,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
-class LeoQTreeWidget(QtWidgets.QTreeWidget):
+class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
 
     def __init__(self, c: Cmdr, parent: Widget) -> None:
         super().__init__(parent)
@@ -4380,7 +4380,7 @@ class LeoQtTreeTab:
     def createControl(self) -> None:
 
 
-        class LeoQComboBox(QtWidgets.QComboBox):
+        class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
             def __init__(self, tt: Wrapper) -> None:
@@ -4465,7 +4465,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
 #@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
-class QtTabBarWrapper(QtWidgets.QTabBar):
+class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
     def __init__(self, parent: Widget=None) -> None:
@@ -4480,7 +4480,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others
 #@+node:ekr.20110605121601.18458: ** class QtMenuWrapper (LeoQtMenu,QMenu)
-class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
     def __init__(self, c: Cmdr, frame: Widget, parent: Widget, label: str) -> None:

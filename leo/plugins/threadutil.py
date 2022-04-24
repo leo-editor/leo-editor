@@ -141,7 +141,7 @@ class NowOrLater:
 
     #@-others
 #@+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):  ###
+class Repeater(QtCore.QThread):  # type:ignore
     """ execute f forever, signal on every run """
 
     fragment = QtCore.pyqtSignal(object)
