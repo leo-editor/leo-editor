@@ -13,6 +13,7 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
 
 QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
+SolidLine = QtCore.Qt.PenStyle.SolidLine
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
@@ -86,6 +87,30 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 def helpForLineHighlight(self, event=None):
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
+
+#@+node:tom.20220424002954.1: ** Show Right Margin Settings command
+# Add item to known "help-for" commands
+rmargin_doc = r'''
+Right Margin Guidelines
+-------------------------
+
+A vertical guideline may optionally shown at the right margin of the 
+body editor.  The guideline will be shown at
+
+1. The column value of an @pagewidth directive in effect; or
+2. The column value given by the setting ``@int rguide-col = <col>``; or
+3. Column 80.
+
+The guideline will be shown if the setting ``@bool show-rmargin-guide``
+is ``True``.
+
+The color of the guideline is set based on the current text color.
+'''
+
+@g.command('help-for-right-margin-guide')
+def helpForRMarginGuides(self, event=None):
+    """Displays settings used by right margin guide lines."""
+    self.c.putHelpFor(rmargin_doc)
 
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
@@ -879,9 +904,10 @@ if QtWidgets:
 
             editor.setExtraSelections([selection])
             #@-<< Apply Highlight >>
-        #@+node:tom.20210905130804.1: *4* Add Help Menu Item
+        #@+node:tom.20210905130804.1: *4* Add Help Menu Items
         # Add entry to Help menu
-        new_entry = ('@item', 'help-for-&highlight-current-line', '')
+        hilite_entry = ('@item', 'help-for-&highlight-current-line', '')
+        guide_entry = ('@item', 'help-for-&right-margin-guide', '')
 
         if g.app.config:
             for item in g.app.config.menusList:
@@ -889,7 +915,8 @@ if QtWidgets:
                     for entry in item[1]:
                         if entry[0].lower() == '@menu &open help topics':
                             menu_items = entry[1]
-                            menu_items.append(new_entry)
+                            menu_items.append(hilite_entry)
+                            menu_items.append(guide_entry)
                             menu_items.sort()
                             break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
@@ -996,11 +1023,13 @@ if QtWidgets:
                 rmargin = fm.horizontalAdvance('9' * rcol) + 2
                 if vp.width() >= rmargin:
                     painter = QtGui.QPainter(vp)
-                    #pen =QtGui.QPen(Qt.SolidLine)
-                    pen = QtGui.QPen(1)
+                    pen =QtGui.QPen(SolidLine)
 
+                    # guideline color
                     pallete = w.viewport().palette()
                     fg_hex = pallete.text().color().rgb()
+                    # Change "r" value to "88"
+                    # e.g., #bbccdd ==> #88ccdd
                     guide_rgb = '88' + f'{fg_hex:x}'[4:]
                     guide_color = f'#{guide_rgb}'
 
