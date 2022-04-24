@@ -29,12 +29,12 @@
 """
 
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:vitalije.20190928154420.3: ** << imports >>
+#@+<< imports: history_tracer.py >>
+#@+node:vitalije.20190928154420.3: ** << imports: history_tracer.py >>
 import datetime
 import time
 import threading
-from typing import TypeAlias  # pylint: disable=no-name-in-module
+### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from urllib.error import URLError
 from leo.core import leoGlobals as g
@@ -42,10 +42,10 @@ from leo.core.leoQt import QtCore
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#@-<< imports: history_tracer.py >>
 #
 # Type alias.
-QObject: TypeAlias = QtCore.QObject
-#@-<< imports >>
+###QObject: TypeAlias = QtCore.QObject
 
 idle_checker = None
 
@@ -68,7 +68,7 @@ def init_idle_checker(tag, keys):
     global idle_checker
 
 
-    class IdleChecker(QObject):
+    class IdleChecker(QtCore.QObject):  ###
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)

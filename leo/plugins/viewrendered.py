@@ -217,7 +217,7 @@ from pathlib import Path
 import shutil
 import textwrap
 from typing import Any, Dict
-from typing import TypeAlias  # pylint: disable=no-name-in-module
+### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
@@ -287,7 +287,7 @@ except ImportError:
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-QWidget: TypeAlias = QtWidgets.QWidget
+### QWidget: TypeAlias = QtWidgets.QWidget
 #pylint: disable=no-member
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -667,7 +667,7 @@ class ViewRenderedProvider:
         return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QWidget):
+class ViewRenderedController(QtWidgets.QWidget):  ###
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers

@@ -13,7 +13,7 @@ import sys
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
 from typing import TYPE_CHECKING
-from typing import TypeAlias  # pylint: disable=no-name-in-module
+### from typing import TypeAlias  # pylint: disable=no-name-in-module
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -41,25 +41,25 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoNodes import Position as Pos
     from PyQt6 import QtWidgets as QtWidgets6
     Widget = QtWidgets6.QWidget
-    QComboBox: TypeAlias = QtWidgets6.QComboBox
-    QLineEdit: TypeAlias = QtWidgets6.QLineEdit
-    QMainWindow: TypeAlias = QtWidgets6.QMainWindow
-    QMenu: TypeAlias = QtWidgets.QMenu
-    QTabBar: TypeAlias = QtWidgets6.QTabBar
-    QTabWidget: TypeAlias = QtWidgets6.QTabWidget
-    QTreeWidget: TypeAlias = QtWidgets6.QTreeWidget
-    QWidgetAction: TypeAlias = QtWidgets6.QWidgetAction
+    #~ QComboBox: TypeAlias = QtWidgets6.QComboBox
+    #~ QLineEdit: TypeAlias = QtWidgets6.QLineEdit
+    #~ QMainWindow: TypeAlias = QtWidgets6.QMainWindow
+    #~ QMenu: TypeAlias = QtWidgets.QMenu
+    #~ QTabBar: TypeAlias = QtWidgets6.QTabBar
+    #~ QTabWidget: TypeAlias = QtWidgets6.QTabWidget
+    #~ QTreeWidget: TypeAlias = QtWidgets6.QTreeWidget
+    #~ QWidgetAction: TypeAlias = QtWidgets6.QWidgetAction
 else:
     Cmdr = Any
     Pos = Any
     QComboBox = Any
-    QLineEdit = Any
-    QMainWindow = Any
-    QMenu = Any
-    QTabBar = Any
-    QTabWidget = Any
-    QTreeWidget = Any
-    QWidgetAction = Any
+    #~ QLineEdit = Any
+    #~ QMainWindow = Any
+    #~ QMenu = Any
+    #~ QTabBar = Any
+    #~ QTabWidget = Any
+    #~ QTreeWidget = Any
+    #~ QWidgetAction = Any
     Widget = Any
 Event = Any
 Wrapper = Any
@@ -150,7 +150,7 @@ def log_cmd(name: str) -> Callable:
     """Command decorator for the LeoQtLog class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
-class DynamicWindow(QMainWindow):
+class DynamicWindow(QtWidgets.QMainWindow):
     """
     A class representing all parts of the main Qt window.
 
@@ -459,7 +459,7 @@ class DynamicWindow(QMainWindow):
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
 
-        class VisLineEdit(QLineEdit):
+        class VisLineEdit(QtWidgets.QLineEdit):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: Event) -> None:
@@ -1398,7 +1398,7 @@ class FindTabManager:
             find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
-class LeoBaseTabWidget(QTabWidget):
+class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
     #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
@@ -2513,7 +2513,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # image = keys.get('image')
 
 
-            class leoIconBarButton(QWidgetAction):
+            class leoIconBarButton(QtWidgets.QWidgetAction):
 
                 # toolbar is a QtIconBarClass object, not a QWidget.
                 def __init__(self, parent: Widget, text: str, toolbar: Any) -> None:
@@ -3754,7 +3754,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
-class LeoQTreeWidget(QTreeWidget):
+class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     def __init__(self, c: Cmdr, parent: Widget) -> None:
         super().__init__(parent)
@@ -4380,7 +4380,7 @@ class LeoQtTreeTab:
     def createControl(self) -> None:
 
 
-        class LeoQComboBox(QComboBox):
+        class LeoQComboBox(QtWidgets.QComboBox):
             """Create a subclass in order to handle focusInEvents."""
 
             def __init__(self, tt: Wrapper) -> None:
@@ -4465,7 +4465,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
 #@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
-class QtTabBarWrapper(QTabBar):
+class QtTabBarWrapper(QtWidgets.QTabBar):
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
     def __init__(self, parent: Widget=None) -> None:
@@ -4480,7 +4480,7 @@ class QtTabBarWrapper(QTabBar):
         QtWidgets.QTabBar.mouseReleaseEvent(self, event)
     #@-others
 #@+node:ekr.20110605121601.18458: ** class QtMenuWrapper (LeoQtMenu,QMenu)
-class QtMenuWrapper(LeoQtMenu, QMenu):
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
     def __init__(self, c: Cmdr, frame: Widget, parent: Widget, label: str) -> None:
