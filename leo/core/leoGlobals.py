@@ -295,19 +295,18 @@ def new_cmd_decorator(name: str, ivars: List[str]) -> Callable:
                 c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
+                # Don't use a keyword for self.
+                # This allows the VimCommands class to use vc instead.
                 func(self, event=event)
-                    # Don't use a keyword for self.
-                    # This allows the VimCommands class to use vc instead.
             except Exception:
                 g.es_exception()
 
         new_cmd_wrapper.__func_name__ = func.__name__  # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
+        # Put the *wrapper* into the global dict.
         global_commands_dict[name] = new_cmd_wrapper
-            # Put the *wrapper* into the global dict.
-        return func
-            # The decorator must return the func itself.
+        return func  # The decorator must return the func itself.
 
     return _decorator
 #@-others
@@ -892,8 +891,8 @@ class KeyStroke:
             ['ctrl', 'control',],  # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
+            # 868: Allow alternative spellings.
             ['keypad', 'key_pad', 'numpad', 'num_pad'],
-                # 868: Allow alternative spellings.
         )
         result = []
         for aList in table:
@@ -2125,12 +2124,12 @@ class Tracer:
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
     def __init__(self, limit: int=0, trace: bool=False, verbose: bool=False) -> None:
+        # Keys are function names.
+        # Values are the number of times the function was called by the caller.
         self.callDict: Dict[str, Any] = {}
-            # Keys are function names.
-            # Values are the number of times the function was called by the caller.
+        # Keys are function names.
+        # Values are the total number of times the function was called.
         self.calledDict: Dict[str, int] = {}
-            # Keys are function names.
-            # Values are the total number of times the function was called.
         self.count = 0
         self.inited = False
         self.limit = limit  # 0: no limit, otherwise, limit trace to n entries deep.
@@ -2631,8 +2630,7 @@ class LinterTable():
         paths = []
         if functions:
             for func in functions:
-                files = [func] if isinstance(func, str) else func()
-                    # Bug fix: 2016/10/15
+                files = [func] if isinstance(func, str) else func()  # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
                     if scope != 'file' and g.shortFileName(fn) in suppress_list:
@@ -2779,9 +2777,9 @@ def _callerName(n: int, verbose: bool=False) -> str:
             return f"line {line:4} {sfn:>30} {full_name}"
         return name
     except ValueError:
+        # The stack is not deep enough OR
+        # sys._getframe does not exist on this platform.
         return ''
-            # The stack is not deep enough OR
-            # sys._getframe does not exist on this platform.
     except Exception:
         es_exception()
         return ''  # "<no caller name>"
@@ -3329,9 +3327,9 @@ def get_directives_dict(p: Pos, root: Any=None) -> Dict[str, str]:
                 continue
             j = i + len(word)
             if j < len(s) and s[j] not in ' \t\n':
+                # Not a valid directive: just ignore it.
+                # A unit test tests that @path:any is invalid.
                 continue
-                    # Not a valid directive: just ignore it.
-                    # A unit test tests that @path:any is invalid.
             k = g.skip_line(s, j)
             val = s[j:k].strip()
             d[word] = val
@@ -3649,8 +3647,7 @@ def set_delims_from_language(language: str) -> Tuple[str, str, str]:
             return '', delim1, delim2
         # 0,1 or 3 params.
         return delim1, delim2, delim3
-    return '', '', ''
-        # Indicate that no change should be made
+    return '', '', ''  # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
 def set_delims_from_string(s: str) -> Tuple[str, str, str]:
     """
@@ -6900,8 +6897,7 @@ def os_startfile(fname: str) -> None:
         quoted_fname = f'"{fname}"'
     if sys.platform.startswith('win'):
         # pylint: disable=no-member
-        os.startfile(quoted_fname)
-            # Exists only on Windows.
+        os.startfile(quoted_fname)  # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
