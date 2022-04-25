@@ -1516,9 +1516,11 @@
 <v t="ekr.20131213135427.22361"><vh>@item help-for-&amp;debugging-commands</vh></v>
 <v t="ekr.20180403100800.1"><vh>@item help-for-&amp;dynamic-abbreviations</vh></v>
 <v t="ekr.20131213135427.22362"><vh>@item help-for-&amp;find-commands</vh></v>
+<v t="tom.20220424213334.1"><vh>@item help-for-&amp;highlight-current-line</vh></v>
 <v t="ekr.20180403100839.1"><vh>@item help-for-&amp;keystroke</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item help-for-&amp;minibuffer</vh></v>
 <v t="ekr.20180403100900.1"><vh>@item help-for-&amp;python</vh></v>
+<v t="tom.20220424213426.1"><vh>@item help-for-&amp;right-margin-guide</vh></v>
 <v t="ekr.20131215083347.18148"><vh>@item help-for-&amp;scripting</vh></v>
 <v t="ekr.20180403100919.1"><vh>@item help-for-&amp;regular-expressions</vh></v>
 <v t="ekr.20180403100935.1"><vh>@item help-for-&amp;settings</vh></v>
@@ -12282,6 +12284,8 @@ AltControlShift hoist
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
+<t tx="tom.20220424213334.1"></t>
+<t tx="tom.20220424213426.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

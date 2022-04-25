@@ -905,21 +905,6 @@ if QtWidgets:
 
             editor.setExtraSelections([selection])
             #@-<< Apply Highlight >>
-        #@+node:tom.20210905130804.1: *4* Add Help Menu Items
-        # Add entry to Help menu
-        hilite_entry = ('@item', 'help-for-&highlight-current-line', '')
-        guide_entry = ('@item', 'help-for-&right-margin-guide', '')
-
-        if g.app.config:
-            for item in g.app.config.menusList:
-                if 'Help' in item[0]:
-                    for entry in item[1]:
-                        if entry[0].lower() == '@menu &open help topics':
-                            menu_items = entry[1]
-                            menu_items.append(hilite_entry)
-                            menu_items.append(guide_entry)
-                            menu_items.sort()
-                            break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
