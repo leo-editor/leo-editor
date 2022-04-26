@@ -3125,7 +3125,11 @@ class FastAtRead:
                     indent += m.end(1)  # adjust current identation
                 else:  # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
-                    gnx, indent, body = stack.pop()
+                    try:
+                        gnx, indent, body = stack.pop()
+                    except IndexError:
+                        # #2624: This can happen during git-diff.
+                        pass
                 continue
             #@-<< handle @others >>
             #@+<< handle section refs >>
