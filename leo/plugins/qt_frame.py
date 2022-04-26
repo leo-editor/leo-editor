@@ -463,8 +463,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
 
             def focusInEvent(self, event: Event) -> None:
                 self.parent().show()
-                super().focusInEvent(event)
-                    # Call the base class method.
+                super().focusInEvent(event)  # Call the base class method.
 
             def focusOutEvent(self, event: Event) -> None:
                 self.store_selection()
@@ -503,8 +502,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
         self.verticalLayout.addWidget(frame)
+        # Transfers focus request from label to lineEdit.
         label.setBuddy(lineEdit)
-            # Transfers focus request from label to lineEdit.
         #
         # Official ivars.
         self.lineEdit = lineEdit
@@ -795,8 +794,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if False:
             dw = self
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
-            grid.addWidget(lab1, row, 0, 1, 2, Alignment.AlignLeft)
-                # AlignHCenter
+            grid.addWidget(lab1, row, 0, 1, 2, Alignment.AlignLeft)  # AlignHCenter
             row += 1
         return row
     #@+node:ekr.20131118152731.16848: *6* dw.create_find_findbox
@@ -1459,8 +1457,8 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         if c.styleSheetManager:
             c.styleSheetManager.set_style_sheets(w=w)
         if platform.system() == 'Windows':
+            # Windows (XP and 7) put the windows title bar off screen.
             w.move(20, 20)
-                # Windows (XP and 7) put the windows title bar off screen.
         return w
     #@+node:ekr.20131115120119.17392: *3* qt_base_tab.tile
     def tile(self, index: int, orientation: str='V') -> None:
@@ -1672,8 +1670,8 @@ class LeoQtBody(leoFrame.LeoBody):
             old_w = old_wrapper.widget
             self.injectIvars(f, old_name, p, old_wrapper)
             self.updateInjectedIvars(old_w, p)
+            # Immediately create the label in the old editor.
             self.selectLabel(old_wrapper)
-                 # Immediately create the label in the old editor.
         # Switch editors.
         c.frame.body.wrapper = wrapper
         self.selectLabel(wrapper)
@@ -1817,9 +1815,9 @@ class LeoQtBody(leoFrame.LeoBody):
         p = w.leo_p
         assert p, p
         c.expandAllAncestors(p)
+        # Calls assignPositionToEditor.
+        # Calls p.v.restoreCursorAndScroll.
         c.selectPosition(p)
-            # Calls assignPositionToEditor.
-            # Calls p.v.restoreCursorAndScroll.
         c.redraw()
         c.recolor()
         c.bodyWantsFocus()
@@ -2361,8 +2359,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def put1(self, s: str, bg: str=None, fg: str=None) -> None:
             self.put_helper(s, self.textWidget1, bg, fg)
 
+        # Keys are widgets, values are stylesheets.
         styleSheetCache: Dict[Any, str] = {}
-            # Keys are widgets, values are stylesheets.
 
         def put_helper(self, s: str, w: Wrapper, bg: str=None, fg: str=None) -> None:
             """Put string s in the indicated widget, with proper colors."""
@@ -3124,8 +3122,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.logWidget = self.contentsDict.get('Log')
         logWidget = self.logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
-        w.insertTab(0, logWidget, 'Log')
-            # Required.
+        w.insertTab(0, logWidget, 'Log')  # Required.
         #
         # set up links in log handling
         logWidget.setTextInteractionFlags(
@@ -3455,8 +3452,8 @@ class LeoQtLog(leoFrame.LeoLog):
         return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20110605121601.18330: *4* LeoQtLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self) -> int:
+        # **Note**: the base-class version of this uses frameDict.
         return len([val for val in self.contentsDict.values() if val is not None])
-            # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
     def selectTab(self, tabName: str, wrap: str='none') -> None:
         """Create the tab if necessary and make it active."""
@@ -4429,8 +4426,7 @@ class LeoQtTreeTab:
         """LeoQtTreeTab."""
         tt, c, cc = self, self.c, self.cc
         exists = tabName in self.tabNames
-        c.treeWantsFocusNow()
-            # Fix #969. Somehow this is important.
+        c.treeWantsFocusNow()  # Fix #969. Somehow this is important.
         if not exists:
             tt.createTab(tabName)  # Calls tt.setNames()
         if tt.lockout:
@@ -4525,8 +4521,8 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
         c = self.c
         if action and commandName == 'mark':
             action.setText('UnMark' if c.p.isMarked() else 'Mark')
+            # Set the proper shortcut.
             self.leo_update_shortcut(action, commandName)
-                # Set the proper shortcut.
     #@+node:ekr.20120120095156.10260: *4* leo_update_shortcut
     def leo_update_shortcut(self, action: Any, commandName: str) -> None:
 
@@ -4728,10 +4724,10 @@ class TabbedFrameFactory:
         w = tabw.widget(idx)
         f = self.leoFrames[w]
         c = f.c
+        # 2012/03/04: Don't set the frame here.
+        # Wait until the next slotCurrentChanged event.
+        # This keeps the log and the QTabbedWidget in sync.
         c.close(new_c=None)
-            # 2012/03/04: Don't set the frame here.
-            # Wait until the next slotCurrentChanged event.
-            # This keeps the log and the QTabbedWidget in sync.
 
     def slotCurrentChanged(self, idx: str) -> None:
         # Two events are generated, one for the tab losing focus,

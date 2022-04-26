@@ -629,8 +629,7 @@ class LeoQtTree(leoFrame.LeoTree):
             c.selectPosition(p)
             self.update_expansion(p)
         else:
-            self.full_redraw(p)
-                # Don't try to shortcut this!
+            self.full_redraw(p)  # Don't try to shortcut this!
     #@+node:ekr.20110605121601.17882: *4* qtree.redraw_after_head_changed
     def redraw_after_head_changed(self) -> None:
         """Redraw all Qt outline items cloned to c.p."""
@@ -781,8 +780,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     # & QtConst.MetaModifier.
                     if isCtrl:
                         if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
-                            c.frame.tree.OnIconCtrlClick(p)
-                                # Call the base class method.
+                            c.frame.tree.OnIconCtrlClick(p)  # Call the base class method.
                         g.doHook("iconctrlclick2", c=c, p=p, event=event)
                     else:
                         # 2014/02/21: generate headclick1/2 instead of iconclick1/2
@@ -871,8 +869,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Do **not** set lockouts here.
         # Only methods that actually generate events should set lockouts.
-        self.select(p)
-            # This is a call to LeoTree.select(!!)
+        self.select(p)  # This is a call to LeoTree.select(!!)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17944: *3* qtree.Focus
     def getFocus(self) -> Any:
@@ -1288,9 +1285,9 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.busy:
             return None
         c = self.c
+        # Do any scheduled redraw.
+        # This won't do anything in the new redraw scheme.
         c.outerUpdate()
-            # Do any scheduled redraw.
-            # This won't do anything in the new redraw scheme.
         item = self.position2item(p)
         if item:
             if self.use_declutter:
@@ -1311,11 +1308,10 @@ class LeoQtTree(leoFrame.LeoTree):
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
+        # Must do this first.
+        # This generates a call to onTreeSelect.
         w.setCurrentItem(item)
-            # Must do this first.
-            # This generates a call to onTreeSelect.
-        w.editItem(item)
-            # Generates focus-in event that tree doesn't report.
+        w.editItem(item)  # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item, 0)  # A QLineEdit.
         s = e.text()
         if s == 'newHeadline':
@@ -1406,8 +1402,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return item
         try:
             self.busy = True
+            # This generates gui events, so we must use a lockout.
             self.treeWidget.setCurrentItem(item)
-                # This generates gui events, so we must use a lockout.
         finally:
             self.busy = False
         return item

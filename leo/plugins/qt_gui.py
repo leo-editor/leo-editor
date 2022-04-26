@@ -16,9 +16,9 @@ from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
+# This import causes pylint to fail on this file and on leoBridge.py.
+# The failure is in astroid: raw_building.py.
 from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
-    # This import causes pylint to fail on this file and on leoBridge.py.
-    # The failure is in astroid: raw_building.py.
 from leo.plugins import qt_events
 from leo.plugins import qt_frame
 from leo.plugins import qt_idle_time
@@ -105,9 +105,9 @@ class LeoQtGui(leoGui.LeoGui):
             'KP_0', 'KP_1', 'KP_2', 'KP_3', 'KP_4', 'KP_5', 'KP_6', 'KP_7', 'KP_8', 'KP_9',
             'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
             'KP_F1', 'KP_F2', 'KP_F3', 'KP_F4',
+            # Keypad chars should be have been converted to other keys.
+            # Users should just bind to the corresponding normal keys.
             'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
-                # Keypad chars should be have been converted to other keys.
-                # Users should just bind to the corresponding normal keys.
             'CapsLock', 'Caps_Lock',
             'NumLock', 'Num_Lock',
             'ScrollLock',
@@ -115,12 +115,10 @@ class LeoQtGui(leoGui.LeoGui):
             'Control_L', 'Control_R',
             'Meta_L', 'Meta_R',
             'Shift_L', 'Shift_R',
-            'Win_L', 'Win_R',
-                # Clearly, these should never be generated.
+            'Win_L', 'Win_R',  # Clearly, these should never be generated.
+            # These are real keys, but they don't mean anything.
             'Break', 'Pause', 'Sys_Req',
-                # These are real keys, but they don't mean anything.
-            'Begin', 'Clear',
-                # Don't know what these are.
+            'Begin', 'Clear',  # Don't know what these are.
         ]
         #@-<< define ignoreChars >>
         #@+<< define specialChars >>
@@ -129,20 +127,13 @@ class LeoQtGui(leoGui.LeoGui):
         self.specialChars = [
             # These are *not* special keys.
                 # 'BackSpace', 'Linefeed', 'Return', 'Tab',
-            'Left', 'Right', 'Up', 'Down',
-                # Arrow keys
-            'Next', 'Prior',
-                # Page up/down keys.
-            'Home', 'End',
-                # Home end keys.
-            'Delete', 'Escape',
-                # Others.
-            'Enter', 'Insert', 'Ins',
-                # These should only work if bound.
-            'Menu',
-                # #901.
-            'PgUp', 'PgDn',
-                # #868.
+            'Left', 'Right', 'Up', 'Down',  # Arrow keys
+            'Next', 'Prior',  # Page up/down keys.
+            'Home', 'End',  # Home end keys.
+            'Delete', 'Escape',  # Others.
+            'Enter', 'Insert', 'Ins',  # These should only work if bound.
+            'Menu',  # #901.
+            'PgUp', 'PgDn',  # #868.
         ]
         #@-<< define specialChars >>
         # Put up the splash screen()
@@ -219,8 +210,8 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
     def makeFilter(self, filetypes: List[str]) -> str:
         """Return the Qt-style dialog filter from filetypes list."""
+        # Careful: the second %s is *not* replaced.
         filters = ['%s (%s)' % (z) for z in filetypes]
-            # Careful: the second %s is *not* replaced.
         return ';;'.join(filters)
     #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helper
     def openFindDialog(self, c: Cmdr) -> None:
@@ -764,8 +755,8 @@ class LeoQtGui(leoGui.LeoGui):
         #@+<< emergency fallback >>
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
         dialog = QtWidgets.QMessageBox(None)
+        # That is, not a fixed size dialog.
         dialog.setWindowFlags(WindowType.Dialog)
-            # That is, not a fixed size dialog.
         dialog.setWindowTitle(title)
         if msg:
             dialog.setText(msg)
@@ -1059,8 +1050,8 @@ class LeoQtGui(leoGui.LeoGui):
             "themes/{theme}",
             "Icons/{theme}",
         ]
+        # "." for icons referred to as Icons/blah/blah.png
         bare_subs = ["Icons", "."]
-            # "." for icons referred to as Icons/blah/blah.png
         paths = []
         for theme_name in (theme_name1, theme_name2):
             for root in roots:
@@ -1790,8 +1781,8 @@ class StyleSheetManager:
         directory = g.os_path_normslashes(g.app.theme_directory)
         if directory and directory not in table:
             table.insert(0, directory)
+        # All entries are known to exist and have normalized slashes.
         return table
-            # All entries are known to exist and have normalized slashes.
     #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
     def find_icon_path(self, setting: str) -> Optional[str]:
         """Return the path to the open/close indicator icon."""
@@ -2105,8 +2096,7 @@ class StyleSheetManager:
         """
         s = ''.join([s.lstrip().replace('  ', ' ').replace(' \n', '\n')
             for s in g.splitLines(stylesheet)])
-        return s.rstrip()
-            # Don't care about ending newline.
+        return s.rstrip()  # Don't care about ending newline.
     #@+node:tom.20220310224019.1: *4* ssm.rescale_sizes
     def rescale_sizes(self, sheet: str, factor: float) -> str:
         """

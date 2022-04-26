@@ -77,8 +77,7 @@ def zoom_helper(event: Event, delta: int) -> None:
         return
     c.zoom_delta = delta
     colorizer.configure_fonts()
-    wrapper.setAllText(wrapper.getAllText())
-        # Recolor everything.
+    wrapper.setAllText(wrapper.getAllText())  # Recolor everything.
 #@+node:tom.20210904233317.1: ** Show Hilite Settings command
 # Add item to known "help-for" commands
 hilite_doc = r'''
@@ -273,8 +272,8 @@ class QTextMixin:
     #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
+        # getInsertPoint defined in client classes.
         self.see(self.getInsertPoint())
-            # getInsertPoint defined in client classes.
     #@+node:ekr.20140902135648.18668: *5* qtm.selectAllText
     def selectAllText(self, s: str=None) -> None:
         """QTextMixin."""
@@ -1121,8 +1120,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             block = block.next()
         self.highest_line = i
         painter.end()
-        QtWidgets.QWidget.paintEvent(self, event)
-            # Propagate the event.
+        QtWidgets.QWidget.paintEvent(self, event)  # Propagate the event.
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self,
         bold: bool, n: int, painter: Any, top_left: int, scroll_y: int,
@@ -1544,8 +1542,8 @@ class QTextEditWrapper(QTextMixin):
                 """
                 assert isinstance(self, QTextEditWrapper), self
                 assert isinstance(self.widget, QtWidgets.QTextEdit), self.widget
+                # Call the base class.
                 QtWidgets.QTextEdit.mouseReleaseEvent(self.widget, event)
-                    # Call the base class.
                 c = self.c
                 setattr(event, 'c', c)
                 # Open the url on a control-click.
