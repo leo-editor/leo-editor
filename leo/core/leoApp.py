@@ -191,8 +191,8 @@ class LeoApp:
         self.atAutoWritersDict = {}
         self.writersDispatchDict = {}
         # From leoImport.py
+        # Keys are @auto names, values are scanner classes.
         self.atAutoDict = {}
-            # Keys are @auto names, values are scanner classes.
         self.classDispatchDict = {}
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
@@ -1217,8 +1217,8 @@ class LeoApp:
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False
+        # Make sure .leoRecentFiles.txt is written.
         g.app.recentFilesManager.writeRecentFilesFile(c)
-            # Make sure .leoRecentFiles.txt is written.
         if c.changed:
             c.promptingForClose = True
             veto = frame.promptForSave()
@@ -1229,8 +1229,7 @@ class LeoApp:
         g.doHook("close-frame", c=c)
         #
         # Save the window state for *all* open files.
-        g.app.commander_cacher.commit()
-            # store cache, but don't close it.
+        g.app.commander_cacher.commit()  # store cache, but don't close it.
         # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -1650,8 +1649,8 @@ class LoadManager:
     def computeLeoDir(self):
         # lm = self
         loadDir = g.app.loadDir
+        # We don't want the result in sys.path
         return g.os_path_dirname(loadDir)
-            # We don't want the result in sys.path
     #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
     def computeLoadDir(self):
         """Returns the directory containing leo.py."""
@@ -1724,8 +1723,8 @@ class LoadManager:
             join(home, '.leo', 'themes'),
             join(leo, 'themes'),
         ]
+        # Make sure home has normalized slashes.
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
-            # Make sure home has normalized slashes.
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
     def computeThemeFilePath(self):
         """
@@ -1820,8 +1819,7 @@ class LoadManager:
             ('leo-editor', g.app.leoEditorDir),
             ('load', g.app.loadDir),
             ('config', g.app.globalConfigDir),
-        ):
-            # g.blue calls g.es_print, and that's annoying.
+        ):  # g.blue calls g.es_print, and that's annoying.
             g.es(f"{kind:>10}:", os.path.normpath(theDir), color='blue')
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
@@ -1913,8 +1911,7 @@ class LoadManager:
             d1, d2 = lm.computeLocalSettings(c,
                 lm.globalSettingsDict,
                 lm.globalBindingsDict,
-                localFlag=True)
-                    # d1 and d2 are copies.
+                localFlag=True)  # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
             return PreviousSettings(d1, d2)
@@ -2081,8 +2078,7 @@ class LoadManager:
         g.app.openingSettingsFile = True
         try:
             ok = c.fileCommands.openLeoFile(theFile, fn,
-                    readAtFileNodesFlag=False, silent=True)
-                        # closes theFile.
+                    readAtFileNodesFlag=False, silent=True)  # closes theFile.
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -2171,8 +2167,7 @@ class LoadManager:
         print('')  # Give some separation for the coming traces.
         if not lm.isValidPython():
             return
-        lm.doPrePluginsInit(fileName, pymacs)
-            # sets lm.options and lm.files
+        lm.doPrePluginsInit(fileName, pymacs)  # sets lm.options and lm.files
         g.app.computeSignon()
         g.app.printSignon()
         if lm.options.get('version'):
@@ -2393,12 +2388,9 @@ class LoadManager:
 
         Create global data structures describing importers and writers.
         """
-        assert g.app.loadDir
-            # This is the only data required.
-        self.createWritersData()
-            # Was an AtFile method.
-        self.createImporterData()
-            # Was a LeoImportCommands method.
+        assert g.app.loadDir  # This is the only data required.
+        self.createWritersData()  # Was an AtFile method.
+        self.createImporterData()  # Was a LeoImportCommands method.
     #@+node:ekr.20140724064952.18037: *6* LM.createImporterData & helper
     def createImporterData(self):
         """Create the data structures describing importer plugins."""
@@ -2569,8 +2561,8 @@ class LoadManager:
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose):
 
+        # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         self.createAllImporterData()
-            # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         assert g.app.loadManager
         from leo.core import leoBackground
         from leo.core import leoConfig
@@ -2580,8 +2572,8 @@ class LoadManager:
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
+            # This launches the IPython Qt Console.  It *is* required.
             from leo.core import leoIPython
-                # This launches the IPython Qt Console.  It *is* required.
             assert leoIPython  # suppress pyflakes/flake8 warning.
         # Make sure we call the new leoPlugins.init top-level function.
         leoPlugins.init()
@@ -2642,8 +2634,7 @@ class LoadManager:
             'load_type': lm.doLoadTypeOption(args),
             'screenshot_fn': lm.doScreenShotOption(args),  # --screen-shot=fn
             'script': script,
-            'select': args.select and args.select.strip('"'),
-                # --select=headline
+            'select': args.select and args.select.strip('"'),  # --select=headline
             'theme_path': args.theme,  # --theme=name
             'version': args.version,  # --version: print the version and exit.
             'windowFlag': script and args.script_window,
@@ -3246,8 +3237,8 @@ class LoadManager:
         theFile = lm.openAnyLeoFile(fn)
         if theFile:
             c.fileCommands.initIvars()
+            # Closes the file.
             c.fileCommands.getLeoFile(theFile, fn, checkOpenFiles=False)
-                # Closes the file.
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:
