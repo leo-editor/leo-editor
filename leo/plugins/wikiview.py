@@ -161,8 +161,7 @@ class WikiView:
                     cfmt.setFontPointSize(self.pts)
                     cfmt.setFontLetterSpacing(self.pct)
                     # cfmt._is_hidden = True  # gets lost
-                    cursor.setCharFormat(cfmt)
-                        # Triggers a recolor.
+                    cursor.setCharFormat(cfmt)  # Triggers a recolor.
     #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
         c = self.c
@@ -194,8 +193,7 @@ class WikiView:
             # Common code.
             cfmt.setFontPointSize(self.size)
             cfmt.setFontLetterSpacing(100)
-            cursor.setCharFormat(cfmt)
-                # Triggers a recolor.
+            cursor.setCharFormat(cfmt)  # Triggers a recolor.
     #@-others
 #@-others
 #@@language python

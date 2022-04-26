@@ -92,8 +92,8 @@ outer_dict: Dict[Any, Dict[str, Any]] = {}  # #2471
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
+    # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     g.app.gui.attachLeoIcon(w)
-        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init():
@@ -261,9 +261,9 @@ if encOK:
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
             # pylint: disable=no-member
+            # #1265: When in doubt, use MODE_EAX.
+            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
-                # #1265: When in doubt, use MODE_EAX.
-                # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
         # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 

@@ -110,8 +110,7 @@ def addPluginMenuItem(p, c):
             d = p.othercmds
             for cmd in list(d.keys()):
                 fn = d.get(cmd)
-                items.append((cmd, None, fn),)
-                    # No need for a callback.
+                items.append((cmd, None, fn),)  # No need for a callback.
             table.extend(sorted(items))
         c.frame.menu.createMenuEntries(m, table)
     else:

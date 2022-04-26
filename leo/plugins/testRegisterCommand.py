@@ -22,8 +22,8 @@ def hello_command(event):
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:
+        # shortcut='Alt-Ctrl-Shift-p',
         c.keyHandler.registerCommand('print-hello', hello_command)
-            # shortcut='Alt-Ctrl-Shift-p',
 
 # This is the recommended way of registering commands.
 

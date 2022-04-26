@@ -356,8 +356,7 @@ class AtButtonCallback:
         """AtButtonCallback.__getattr__. Implement __name__."""
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
-        raise AttributeError
-            # Returning None is not correct.
+        raise AttributeError  # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         """Execute the script associated with this button."""
@@ -659,8 +658,8 @@ class ScriptingController:
 
         def deleteButtonCallback(event=None, self=self, b=b):
             self.deleteButton(b, event=event)
-        # Register the delete-x-button command.
 
+        # Register the delete-x-button command.
         deleteCommandName = 'delete-%s-button' % commandName
         c.k.registerCommand(
             # allowBinding=True,
@@ -669,7 +668,7 @@ class ScriptingController:
             pane='button',
             shortcut=None,
         )
-            # Reporting this command is way too annoying.
+        # Reporting this command is way too annoying.
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self, b, buttonText, p, script, script_gnx=None):
@@ -1197,8 +1196,8 @@ class EvalController:
         else:
             self.c.vs = self.globals_d
         # allow the auto-completer to complete in this namespace
+        # Updated by do_exec.
         self.c.keyHandler.autoCompleter.namespaces.append(self.c.vs)
-                # Updated by do_exec.
         self.last_result = None
         self.old_stderr = None
         self.old_stdout = None
@@ -1237,8 +1236,8 @@ class EvalController:
             s = self.get_selected_lines()
             if self.legacy and s is None:
                 return
+            # Updates self.last_answer if there is exactly one answer.
             self.eval_text(s)
-                # Updates self.last_answer if there is exactly one answer.
     #@+node:ekr.20180328085426.3: *4* eval-block
     @eval_cmd("eval-block")
     def eval_block(self, event):

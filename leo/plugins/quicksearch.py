@@ -336,11 +336,9 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
         else:
             self.scon.doSearch(t)
         if self.scon.its:
-            w.blockSignals(True)
-                # don't jump to first hit
+            w.blockSignals(True)  # don't jump to first hit
             w.setFocus()
-            w.blockSignals(False)
-                # ok, respond if user moves
+            w.blockSignals(False)  # ok, respond if user moves
     #@+node:ville.20121118193144.3622: *3* quick_w.liveUpdate
     def liveUpdate(self):
 

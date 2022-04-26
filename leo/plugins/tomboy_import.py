@@ -18,8 +18,7 @@ Usage:
 import html.parser as HTMLParser
 import xml.etree.ElementTree as ET
 from leo.core import leoGlobals as g
-from leo.core import leoPlugins
-    # Uses leoPlugins.TryNext
+from leo.core import leoPlugins  # Uses leoPlugins.TryNext
 #@-<< imports >>
 #@+others
 #@+node:ville.20090503124249.5: ** init

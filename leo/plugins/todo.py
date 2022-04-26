@@ -735,8 +735,8 @@ class todoController:
 
         self.updateUI()
         if not g.app.initing:
+            # This is disabled (converted to redraw_later) during startup.
             self.c.redraw()
-                # This is disabled (converted to redraw_later) during startup.
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
@@ -1133,7 +1133,7 @@ class todoController:
                     x0 = x0.replace(what, ','.join(repl))
 
                 x0 = [int(i) for i in x0.replace(',', ' ').split()]
-                      # if int(i) in self.todo_priorities]
+                    # if int(i) in self.todo_priorities]
             except Exception:
                 g.es('Not understood, no action')
                 return

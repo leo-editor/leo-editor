@@ -104,10 +104,10 @@ class BigDash:
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
         if (
+            # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
             not QtWebKitWidgets
-                # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
             or isQt5 and sys.platform.startswith('win')
-                # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
         ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:

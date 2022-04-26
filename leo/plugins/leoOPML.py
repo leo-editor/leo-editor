@@ -83,8 +83,8 @@ from leo.core import leoPlugins
 StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports >>
+# For traces.
 printElements: List[str] = []  # ['all','outline','head','body',]
-    # For traces.
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init

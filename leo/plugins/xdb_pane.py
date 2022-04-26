@@ -27,8 +27,8 @@ def init():
         if name not in ('curses', 'nullGui'):
             print('xdb_pane.py plugin not loading because gui is not Qt')
         return False
+    # Can't use before-create-leo-frame because Qt dock's not ready
     g.registerHandler('after-create-leo-frame', onCreate)
-        # Can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20181004143535.5: *3* onCreate (xdb_pane.py)

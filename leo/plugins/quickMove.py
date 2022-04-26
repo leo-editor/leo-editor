@@ -251,12 +251,13 @@ class quickMove:
             ("Clear ALL Permanent Buttons Here", None, self.clearButton),
         )
 
-        self.recent_moves = []  # recent move/copy/bookmark to commands for
-                                # top level context menu entries
-
-        self.imps = []  # implementations, (func,name,text)
-        self.txts = {}  # get short from name, for permanent buttons
-                        # filled in below
+        # recent move/copy/bookmark to commands for
+        # top level context menu entries
+        self.recent_moves = []
+        # implementations, (func,name,text)
+        self.imps = []
+        # get short from name, for permanent buttons. filled in below
+        self.txts = {}
 
         # build callables for imp list
         todo: Sequence[Any]
@@ -415,8 +416,8 @@ class quickMove:
                     but = b.button
                     rc = QAction(txt, but)
                     rc.triggered.connect(cb)
+                    # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
-                        # insert rc before Remove Button
 
         self.buttons.append((mb, b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton

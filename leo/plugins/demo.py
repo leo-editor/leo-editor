@@ -213,8 +213,7 @@ class Demo:
             script = self.script_list[self.script_i]
             self.setup_script()
             self.exec_node(script)
-            self.script_i += 1
-                # Restore invariant, and make net change = -1.
+            self.script_i += 1  # Restore invariant, and make net change = -1.
             self.teardown_script()
 
     prev_command = prev

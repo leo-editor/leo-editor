@@ -940,8 +940,7 @@ diff -Naur 5.0.2-original/asciidoc.py 5.0.2-mrc-patched/asciidoc.py
                  # Translate 'preamble' (untitled elements between header
                  # and first section title).
                  if Lex.next() is not Title:
-@@ -952,7 +956,7 @@
-                 # Parse revision line.
+@@ -952,7 +956,7 @@  # Parse revision line.
                  s = reader.read()
                  s = subs_glossary([s])[0]
 -                # Match RCS/CVS $Id: leoPluginsRef.leo,v 1.63 2008/02/18 21:53:38 edream Exp $ marker format.

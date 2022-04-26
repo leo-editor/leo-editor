@@ -469,8 +469,8 @@ if QtWidgets:
         def command2_hook(self, tag, keywords):
             paste_cmds = [
                 'paste-node',
+                # strange that this one isn't canonicalized
                 'pasteOutlineRetainingClones',
-                    # strange that this one isn't canonicalized
                 'paste-retaining-clones',
             ]
             if keywords.get('label') in paste_cmds:

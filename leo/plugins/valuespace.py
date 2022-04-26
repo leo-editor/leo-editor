@@ -139,11 +139,10 @@ except ImportError:
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.external.stringlist import SList
-    # Uses leoPlugins.TryNext.
+from leo.external.stringlist import SList  # Uses leoPlugins.TryNext.
 #@-<< imports >>
+# Keys are c.hash(), values are ValueSpaceControllers.
 controllers: Dict[str, Any] = {}
-    # Keys are c.hash(), values are ValueSpaceControllers.
 
 # pylint: disable=eval-used
 # Eval is essential to this plugin.

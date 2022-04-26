@@ -21,11 +21,11 @@ class JSON_Scanner:
     ):
         """The ctor for the JSON_Scanner class."""
         self.c = c = importCommands.c
+        # Keys are gnx's. Values are vnode_dicts.
         self.gnx_dict = {}
-            # Keys are gnx's. Values are vnode_dicts.
         self.tab_width = c.tab_width
+        # Keys are gnx's. Values are already-created vnodes.
         self.vnodes_dict = {}
-            # Keys are gnx's. Values are already-created vnodes.
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent, parent_d):
         """Create the tree of nodes rooted in parent."""

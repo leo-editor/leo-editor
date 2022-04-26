@@ -23,34 +23,24 @@ class TS_Importer(Importer):
     #
     # The pattern table. Order matters!
     function_patterns = (
-        (1, re.compile(r'(interface\s+\w+)')),
-            # interface name
-        (1, re.compile(r'(class\s+\w+)')),
-            # class name
-        (1, re.compile(r'export\s+(class\s+\w+)')),
-            # export class name
-        (1, re.compile(r'export\s+enum\s+(\w+)')),
-            # function name
-        (1, re.compile(r'export\s+const\s+enum\s+(\w+)')),
-            # function name
-        (1, re.compile(r'export\s+function\s+(\w+)')),
-            # function name
-        (1, re.compile(r'export\s+interface\s+(\w+)')),
-            # interface name
-        (1, re.compile(r'function\s+(\w+)')),
-            # function name
-        (1, re.compile(r'(constructor).*{')),
-            # constructor ... {
+        (1, re.compile(r'(interface\s+\w+)')),  # interface name
+        (1, re.compile(r'(class\s+\w+)')),  # class name
+        (1, re.compile(r'export\s+(class\s+\w+)')),  # export class name
+        (1, re.compile(r'export\s+enum\s+(\w+)')),  # function name
+        (1, re.compile(r'export\s+const\s+enum\s+(\w+)')),  # function name
+        (1, re.compile(r'export\s+function\s+(\w+)')),  # function name
+        (1, re.compile(r'export\s+interface\s+(\w+)')),  # interface name
+        (1, re.compile(r'function\s+(\w+)')),  # function name
+        (1, re.compile(r'(constructor).*{')),  # constructor ... {
+        # kind function name
         (2, re.compile(r'%s\s*function\s+(\w+)' % kinds)),
-            # kind function name
+        # kind kind function name
         (3, re.compile(r'%s\s+%s\s+function\s+(\w+)' % (kinds, kinds))),
-            # kind kind function name
-        #
         # Bare functions last...
+        # kind kind name (...) {
         (3, re.compile(r'%s\s+%s\s+(\w+)\s*\(.*\).*{' % (kinds, kinds))),
-            # kind kind name (...) {
+        # name (...) {
         (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
-            # name (...) {
         # #1619: Don't allow completely bare functions.
         # (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
             # name (...) {

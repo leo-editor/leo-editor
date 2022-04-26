@@ -422,8 +422,8 @@ def init():
     ok = g.app.gui.guiName().startswith('qt')
     if ok:
         # g.registerHandler(('new','open2'),onCreate)
+        # Fail: g.app.log does not exist.
         g.registerHandler('after-create-leo-frame', onCreate)
-            # Fail: g.app.log does not exist.
         g.plugin_signon(__name__)
     else:
         g.es('Plugin %s not loaded.' % __name__, color='red')

@@ -85,8 +85,7 @@ def start_file(c, p):
                 # Warning: os.startfile usually does not throw exceptions.
                 # pylint: disable=no-member
                 # Previous code checks that os.startfile exists.
-                os.startfile(filename)
-                    # This may not work for all file types.
+                os.startfile(filename)  # This may not work for all file types.
             except Exception:
                 g.es(filename + ' - file not found in ' + startdir)
                 g.es_exception()
