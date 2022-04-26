@@ -42,8 +42,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
                 g.es_print(g.toUnicode(line.rstrip()))
         except Exception:
             g.es_exception()
-        k.keyboardQuit()
-            # Inits vim mode too.
+        k.keyboardQuit()  # Inits vim mode too.
         g.es(f"Done: {command}")
     #@+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('show-plugin-handlers')

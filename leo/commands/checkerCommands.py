@@ -472,10 +472,10 @@ class PylintCommand:
         """Return the path to the pylint configuration file."""
         base = 'pylint-leo-rc.txt'
         table = (
+            # In ~/.leo
             g.os_path_finalize_join(g.app.homeDir, '.leo', base),
-                # In ~/.leo
+            # In leo/test
             g.os_path_finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base),
-                # In leo/test
         )
         for fn in table:
             fn = g.os_path_abspath(fn)

@@ -155,9 +155,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         c.abbrev_place_end = c.config.getString('abbreviations-place-end')
         c.abbrev_place_start = c.config.getString('abbreviations-place-start')
         c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+        # The environment for all substitutions.
+        # May be augmented in init_env.
         c.abbrev_subst_env = {'c': c, 'g': g, '_values': {},}
-            # The environment for all substitutions.
-            # May be augmented in init_env.
         c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
         # Local settings.
         self.enabled = (
@@ -658,8 +658,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if 0 < ins < len(s) and not g.isWordChar(s[ins]):
             ins1 -= 1
         i, j = g.getWord(s, ins1)
+        # This allows the cursor to be placed anywhere in the word.
         w.setInsertPoint(j)
-            # This allows the cursor to be placed anywhere in the word.
         word = w.get(i, j)
         aList = self.getDynamicList(w, word)
         if not aList:

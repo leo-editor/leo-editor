@@ -34,8 +34,7 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units: List[Any] = []
-        # List of positions containing @unit.
+    units: List[Any] = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
@@ -1047,10 +1046,10 @@ class GitDiffController:
         root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
         hidden_root.h = fn + ':' + rev if rev else fn
         # Set at.encoding first.
+        # Must be called before at.scanAllDirectives.
         at.initReadIvars(hidden_root, fn)
-            # Must be called before at.scanAllDirectives.
+        # Sets at.startSentinelComment/endSentinelComment.
         at.scanAllDirectives(hidden_root)
-            # Sets at.startSentinelComment/endSentinelComment.
         new_public_lines = g.splitLines(s)
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)

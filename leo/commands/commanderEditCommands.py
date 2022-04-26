@@ -132,8 +132,8 @@ def convertAllBlanks(self, event=None):
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
+        # Must come before c.redraw().
         g.es("blanks converted to tabs in", count, "nodes")
-            # Must come before c.redraw().
     if count > 0:
         c.redraw_after_icons_changed()
 #@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
@@ -412,8 +412,7 @@ def editHeadline(self, event=None):
         # k.setDefaultInputState()
         k.setEditingState()
         k.showStateAndMode(w=wrapper)
-    return e, wrapper
-        # Neither of these is used by any caller.
+    return e, wrapper  # Neither of these is used by any caller.
 #@+node:ekr.20171123135625.23: ** c_ec.extract & helpers
 @g.commander_command('extract')
 def extract(self, event=None):
