@@ -576,8 +576,8 @@ class AutoCompleterClass:
                     g.es_print('ignoring @bool use_jedi = True')
             if jedi:
                 aList = (
+                    # Prefer the jedi completions.
                     self.get_jedi_completions(prefix) or
-                        # Prefer the jedi completions.
                     self.get_leo_completions(prefix))
                 d[prefix] = aList
                 return aList
@@ -593,8 +593,8 @@ class AutoCompleterClass:
         if aList:
             return aList
         aList = (
+            # Prefer the Leo completions.
             self.get_leo_completions(prefix) or
-                # Prefer the Leo completions.
             self.get_codewise_completions(prefix)
         )
         d[prefix] = aList
@@ -1585,8 +1585,7 @@ class GetArg:
             char in ('\n', 'Return',) or
             k.oneCharacterArg or
             stroke and stroke in k.getArgEscapes or
-            char == '\t' and char in k.getArgEscapes
-                # The Find Easter Egg.
+            char == '\t' and char in k.getArgEscapes  # The Find Easter Egg.
         )
     #@+node:ekr.20140818103808.18235: *4* ga.trace_state
     def trace_state(self,
@@ -2077,8 +2076,7 @@ class KeyHandlerClass:
                 commandName=commandName,
                 stroke=stroke)
             if shortcut:
-                k.bindKeyToDict(pane, shortcut, bi)
-                    # Updates k.masterBindingsDict
+                k.bindKeyToDict(pane, shortcut, bi)  # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
                 aList = k.remove_conflicting_definitions(
                     aList, commandName, pane, shortcut)
@@ -2458,8 +2456,7 @@ class KeyHandlerClass:
                     c.frame.log.deleteTab('Completion')
                     w.setSelectionRange(sel1, sel2, insert=ins)
                 else:
-                    c.frame.log.deleteTab('Completion')
-                        # 2016/04/27
+                    c.frame.log.deleteTab('Completion')  # 2016/04/27
                 if k.mb_help:
                     s = k.getLabel()
                     commandName = s[len(helpPrompt) :].strip()
@@ -3149,8 +3146,8 @@ class KeyHandlerClass:
             event.widget = None
         assert g.isStrokeOrNone(event.stroke)
         if event:
+            # A continuous unit test, better than "@test k.isPlainKey".
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
-                # A continuous unit test, better than "@test k.isPlainKey".
     #@+node:ekr.20180418034305.1: *6* k.setEventWidget
     def setEventWidget(self, event: Event) -> None:
         """

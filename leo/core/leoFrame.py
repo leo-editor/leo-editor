@@ -857,8 +857,7 @@ class LeoFrame:
             if g.app.gui.guiName() == 'curses':
                 g.pr(f"Saving: {c.mFileName}")
             ok = c.fileCommands.save(c.mFileName)
-            return not ok
-                # Veto if the save did not succeed.
+            return not ok  # Veto if the save did not succeed.
         return True  # Veto.
     #@+node:ekr.20031218072017.1375: *4* LeoFrame.frame.scanForTabWidth
     def scanForTabWidth(self, p: Pos) -> None:
@@ -1097,8 +1096,8 @@ class LeoFrame:
         else:
             c.bodyWantsFocus()
             k.setDefaultInputState()
+            # Recolor the *body* text, **not** the headline.
             k.showStateAndMode(w=c.frame.body.wrapper)
-                # Recolor the *body* text, **not** the headline.
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self) -> None:
         self.oops()
@@ -1488,8 +1487,8 @@ class LeoTree:
         c.frame.body.recolor(p)
         p.setDirty()
         u.afterChangeHeadline(p, undoType, undoData)
+        # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         c.redraw_after_head_changed()
-            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
     def __init__(self, frame: Widget) -> None:
@@ -1623,8 +1622,7 @@ class LeoTree:
                 # Don't redraw during unit testing: an important speedup.
                 if c.expandAllAncestors(p) and not g.unitTesting:
                     # This can happen when doing goto-next-clone.
-                    c.redraw_later()
-                        # This *does* happen sometimes.
+                    c.redraw_later()  # This *does* happen sometimes.
                 else:
                     c.outerUpdate()  # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
@@ -1652,16 +1650,16 @@ class LeoTree:
         old_p = c.p
         call_event_handlers = p != old_p
         # Order is important...
+        # 1. Call c.endEditLabel.
         self.unselect_helper(old_p, p)
-            # 1. Call c.endEditLabel.
+        # 2. Call set_body_text_after_select.
         self.select_new_node(old_p, p)
-            # 2. Call set_body_text_after_select.
+        # 3. Call c.undoer.onSelect.
         self.change_current_position(old_p, p)
-            # 3. Call c.undoer.onSelect.
+        # 4. Set cursor in body.
         self.scroll_cursor(p)
-            # 4. Set cursor in body.
+        # 5. Last tweaks.
         self.set_status_line(p)
-            # 5. Last tweaks.
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
@@ -1697,8 +1695,7 @@ class LeoTree:
             if 'select' in g.app.debug:
                 g.trace('select1 override')
             return
-        c.frame.setWrap(p)
-            # Not that expensive
+        c.frame.setWrap(p)  # Not that expensive
         self.set_body_text_after_select(p, old_p)
         c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
@@ -1712,9 +1709,9 @@ class LeoTree:
         if p and p == old_p and s == old_s:
             return
         # Part 2: set the new text. This forces a recolor.
+        # Important: do this *before* setting text,
+        # so that the colorizer will have the proper c.p.
         c.setCurrentPosition(p)
-            # Important: do this *before* setting text,
-            # so that the colorizer will have the proper c.p.
         w.setAllText(s)
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
@@ -1724,8 +1721,8 @@ class LeoTree:
         c = self.c
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
+        #GS I believe this should also get into the select1 hook
         c.frame.scanForTabWidth(p)
-            #GS I believe this should also get into the select1 hook
         use_chapters = c.config.getBool('use-chapters')
         if use_chapters:
             cc = c.chapterController
@@ -1738,16 +1735,13 @@ class LeoTree:
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Pos) -> None:
         """Scroll the cursor."""
-        p.restoreCursorAndScroll()
-            # Was in setBodyTextAfterSelect
+        p.restoreCursorAndScroll()  # Was in setBodyTextAfterSelect
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
     def set_status_line(self, p: Pos) -> None:
         """Update the status line."""
         c = self.c
-        c.frame.body.assignPositionToEditor(p)
-            # New in Leo 4.4.1.
-        c.frame.updateStatusLine()
-            # New in Leo 4.4.1.
+        c.frame.body.assignPositionToEditor(p)  # New in Leo 4.4.1.
+        c.frame.updateStatusLine()  # New in Leo 4.4.1.
         c.frame.clearStatusLine()
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL())
@@ -1854,8 +1848,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
     recolorCount = 0
 
     def colorize(self, p: Pos) -> None:
-        self.recolorCount += 1
-            # For #503: Use string/null gui for unit tests
+        self.recolorCount += 1  # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
     """A null frame class for tests and batch execution."""
@@ -1996,8 +1989,7 @@ class NullFrame(LeoFrame):
     def finishCreate(self) -> None:
 
         # 2017/11/12: For #503: Use string/null gui for unit tests.
-        self.createFirstTreeNode()
-            # Call the base LeoFrame method.
+        self.createFirstTreeNode()  # Call the base LeoFrame method.
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass
 class NullIconBarClass:

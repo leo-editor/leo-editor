@@ -2623,7 +2623,7 @@ class LeoFind:
             # Tricky code.  Do not change without careful thought.
             w = c.frame.body.wrapper
             # *Always* do the full selection logic.
-            # This ensures that the body text is inited  and recolored.
+            # This ensures that the body text is inited and recolored.
             c.selectPosition(p)
             c.bodyWantsFocus()
             if showState:
@@ -2631,10 +2631,8 @@ class LeoFind:
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
             k = g.see_more_lines(w.getAllText(), insert, 4)
-            w.see(k)
-                # #78: find-next match not always scrolled into view.
-            c.outerUpdate()
-                # Set the focus immediately.
+            w.see(k)  # #78: find-next match not always scrolled into view.
+            c.outerUpdate()  # Set the focus immediately.
             if c.vim_mode and c.vimCommands:  # pragma: no cover
                 c.vimCommands.update_selection_after_search()
         # Support for the console gui.
