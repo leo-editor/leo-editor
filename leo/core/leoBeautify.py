@@ -534,8 +534,8 @@ class CPrettyPrinter:
     #         j < n and
     #         not s[j].isspace() and
     #         not s[j].isalpha() and
+    #         # start of strings, identifiers, and single-character tokens.
     #         not s[j] in '"\'_@' and
-    #             # start of strings, identifiers, and single-character tokens.
     #         not g.match(s,j,'//') and
     #         not g.match(s,j,'/*') and
     #         not g.match(s,j,'-->')
