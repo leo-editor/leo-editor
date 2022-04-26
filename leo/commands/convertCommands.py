@@ -465,7 +465,7 @@ def convert_at_test_nodes(c, converter, root, copy_tree=False):  # pragma: no co
     c.redraw(target)
     print(f"converted {count} @test nodes")
 #@+node:ekr.20220416082017.1: ** class AnnotationError
-class AnnotationError (Exception):
+class AnnotationError(Exception):
     pass
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
@@ -516,7 +516,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def __init__(self, c):
             self.c = c
 
-        class AnnotationError (Exception):
+        class AnnotationError(Exception):
             pass
 
         #@+others

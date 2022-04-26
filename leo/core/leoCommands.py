@@ -3880,7 +3880,7 @@ class Commands:
         generator,  # The generator used to traverse the tree.
         predicate,  # A function of one argument p, returning True
                     # if p should be included in the results.
-        failMsg=None,   # Failure message. Default is no message.
+        failMsg=None,  # Failure message. Default is no message.
         flatten=False,  # True: Put all matches at the top level.
         iconPath=None,  # Full path to icon to attach to all matches.
         undoType=None,  # The undo name, shown in the Edit:Undo menu.
