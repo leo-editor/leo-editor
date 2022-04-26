@@ -154,16 +154,15 @@ class AtFile:
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
-        at.outputList = []
-            # For stream output.
+        at.outputList = []  # For stream output.
+        # Sets the following ivars:
+        # at.encoding
+        # at.explicitLineEnding
+        # at.language
+        # at.output_newline
+        # at.page_width
+        # at.tab_width
         at.scanAllDirectives(root)
-            # Sets the following ivars:
-                # at.encoding
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
         #
         # Overrides of at.scanAllDirectives...
         if at.language == 'python':
@@ -307,14 +306,14 @@ class AtFile:
         elif not fileName and not fromString and not file_s:  # pragma: no cover
             return False
         root.clearVisitedInTree()
+        # Sets the following ivars:
+        # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+        # at.explicitLineEnding
+        # at.language
+        # at.output_newline
+        # at.page_width
+        # at.tab_width
         at.scanAllDirectives(root)
-            # Sets the following ivars:
-                # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
@@ -535,10 +534,10 @@ class AtFile:
             g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
         at.rememberReadPath(fileName, root)
+        # Must be called before at.scanAllDirectives.
         at.initReadIvars(root, fileName)
-            # Must be called before at.scanAllDirectives.
+        # Sets at.startSentinelComment/endSentinelComment.
         at.scanAllDirectives(root)
-            # Sets at.startSentinelComment/endSentinelComment.
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
@@ -1455,8 +1454,8 @@ class AtFile:
             c.endEditing()  # Capture the current headline.
             fn = p.atShadowFileNodeName()
             assert fn, p.h
+            # A hack to support unknown extensions. May set c.target_language.
             self.adjustTargetLanguage(fn)
-                # A hack to support unknown extensions. May set c.target_language.
             full_path = g.fullPath(c, p)
             at.initWriteIvars(root)
             # Force python sentinels to suppress an error message.
@@ -1495,8 +1494,8 @@ class AtFile:
                     at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
+                # makeShadowDirectory takes a *public* file name.
                 x.makeShadowDirectory(full_path)
-                    # makeShadowDirectory takes a *public* file name.
                 x.replaceFileWithString(at.encoding, private_fn, at.private_s)
                 x.replaceFileWithString(at.encoding, full_path, at.public_s)
             at.checkPythonCode(contents=at.private_s, fileName=full_path, root=root)
@@ -1636,9 +1635,9 @@ class AtFile:
         #
         # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
         p.v.setVisited()
-            # Make sure v is never expanded again.
-            # Suppress orphans check.
         #
         # #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
@@ -1741,8 +1740,8 @@ class AtFile:
         k = g.skip_to_end_of_line(s, i)
         at.putLeadInSentinel(s, i, j)
         at.indent += delta
+        # s[j:k] starts with '@all'
         at.putSentinel("@+" + s[j + 1 : k].strip())
-            # s[j:k] starts with '@all'
         for child in p.children():
             at.putAtAllChild(child)
         at.putSentinel("@-all")
@@ -1752,9 +1751,9 @@ class AtFile:
         """ Generate the body enclosed in sentinel lines."""
         at = self
         s = p.b
+        # Make sure v is never expanded again.
+        # Suppress orphans check.
         p.v.setVisited()
-            # Make sure v is never expanded again.
-            # Suppress orphans check.
         if at.sentinels and s and s[-1] != '\n':
             s = s + '\n'
         i = 0
@@ -1776,8 +1775,8 @@ class AtFile:
         representation in the derived file doesn't matter much.
         """
         at = self
+        # Suppress warnings about @file nodes.
         at.putOpenNodeSentinel(p, inAtAll=True)
-            # Suppress warnings about @file nodes.
         at.putAtAllBody(p)
         for child in p.children():
             at.putAtAllChild(child)  # pragma: no cover (recursive call)
@@ -2395,8 +2394,8 @@ class AtFile:
                 g.es_print('@last is not valid in @clean nodes')
             # #1297.
             elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+                # Convert to an verbatim line _without_ anything else.
                 self.putSentinel("@@last")
-                    # Convert to an verbatim line _without_ anything else.
             else:
                 at.error(f"ignoring @last directive in {p.h!r}")  # pragma: no cover
         elif g.match_word(s, k, "@first"):
@@ -2406,8 +2405,8 @@ class AtFile:
                 g.es_print('@first is not valid in @clean nodes')
             # #1297.
             elif g.app.inScript or g.unitTesting or p.isAnyAtFileNode():
+                # Convert to an verbatim line _without_ anything else.
                 self.putSentinel("@@first")
-                    # Convert to an verbatim line _without_ anything else.
             else:
                 at.error(f"ignoring @first directive in {p.h!r}")  # pragma: no cover
         else:
@@ -2544,8 +2543,8 @@ class AtFile:
             g.error('error writing', sfn)
             g.es('not written:', sfn)
             at.addToOrphanList(root)
+        # Check *after* writing the file.
         at.checkPythonCode(contents, fileName, root)
-            # Check *after* writing the file.
         return ok
     #@+node:ekr.20190114061452.27: *6* at.compareIgnoringBlankLines
     def compareIgnoringBlankLines(self, s1, s2):  # pragma: no cover
