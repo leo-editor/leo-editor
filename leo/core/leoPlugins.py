@@ -545,9 +545,9 @@ class LeoPluginsController:
             return None
         if moduleOrFileName.startswith('@'):
             report(f"ignoring Leo directive: {moduleOrFileName}")
+            # Return None, not False, to keep pylint happy.
+            # Allow Leo directives in @enabled-plugins nodes.
             return None
-                # Return None, not False, to keep pylint happy.
-                # Allow Leo directives in @enabled-plugins nodes.
         moduleName = self.regularizeName(moduleOrFileName)
         if self.isLoaded(moduleName):
             module = self.loadedModules.get(moduleName)

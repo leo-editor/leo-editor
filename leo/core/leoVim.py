@@ -77,8 +77,8 @@ class VimCommands:
         """The ctor for the VimCommands class."""
         self.c = c
         self.k = c.k
+        # Toggled by :toggle-vim-trace.
         self.trace_flag = 'keys' in g.app.debug
-            # Toggled by :toggle-vim-trace.
         self.init_constant_ivars()
         self.init_dot_ivars()
         self.init_persistent_ivars()
@@ -1925,8 +1925,7 @@ class VimCommands:
             """Ctor for VimCommands.LoadFileAtCursor class."""
             self.vc = vc
 
-        __name__ = ':r'
-            # Required.
+        __name__ = ':r'  # Required.
         #@+others
         #@+node:ekr.20140820034724.18316: *5* :r.__call__
         def __call__(self, event=None):
@@ -2012,8 +2011,7 @@ class VimCommands:
             """Ctor for VimCommands.tabnew class."""
             self.vc = vc
 
-        __name__ = ':tabnew'
-            # Required.
+        __name__ = ':tabnew'  # Required.
         #@+others
         #@+node:ekr.20140820034724.18313: *5* :tabnew.__call__
         def __call__(self, event=None):

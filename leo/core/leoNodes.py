@@ -2088,8 +2088,7 @@ class VNode:
         return self.findAtFileName(names)
 
     def atFileNodeName(self) -> str:
-        names = ("@file", "@thin")
-            # Fix #403.
+        names = ("@file", "@thin")  # Fix #403.
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName(self) -> str:
@@ -2541,8 +2540,7 @@ class VNode:
         """Adjust links after adding a link to v."""
         v = self
         v.context.frame.tree.generation += 1
-        parent_v.childrenModified()
-            # For a plugin.
+        parent_v.childrenModified()  # For a plugin.
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
@@ -2554,8 +2552,7 @@ class VNode:
         """Adjust links after adding a link to v."""
         v = self
         v.context.frame.tree.generation += 1
-        parent_v.childrenModified()
-            # For a plugin.
+        parent_v.childrenModified()  # For a plugin.
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)

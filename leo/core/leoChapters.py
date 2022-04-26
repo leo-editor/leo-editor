@@ -46,8 +46,7 @@ class ChapterController:
         """Create the box in the icon area."""
         c, cc = self.c, self
         cc.createIcon()
-        cc.setAllChapterNames()
-            # Create all chapters.
+        cc.setAllChapterNames()  # Create all chapters.
         # #31.
         cc.initing = False
         # Always select the main chapter.
@@ -310,8 +309,8 @@ class ChapterController:
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         if 'main' not in cc.chaptersDict:
             cc.chaptersDict['main'] = Chapter(c, cc, 'main')
+            # This binds any existing bindings to chapter-select-main.
             cc.makeCommand('main')
-                # This binds any existing bindings to chapter-select-main.
         result, seen = ['main'], set()
         for p in c.all_unique_positions():
             chapterName, binding = self.parseHeadline(p)

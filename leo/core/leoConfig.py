@@ -187,8 +187,8 @@ class ParserBaseClass:
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
         if aList:
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonButtonsList.extend(aList)
-                # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.buttonsFileName = (c.shortFileName() if c else '<no settings file>')
     #@+node:ekr.20041120094940.2: *4* pbc.doColor
     def doColor(self, p: Pos, kind: str, name: str, val: Any) -> None:
@@ -223,8 +223,8 @@ class ParserBaseClass:
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
         if aList:
+            # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonCommandsList.extend(aList)
-                # Bug fix: 2011/11/24: Extend the list, don't replace it.
     #@+node:ekr.20071214140900: *4* pbc.doData
     def doData(self, p: Pos, kind: str, name: str, val: Any) -> None:
         # New in Leo 4.11: do not strip lines.
@@ -777,8 +777,7 @@ class ParserBaseClass:
     #@+node:ekr.20070411101643.2: *4* pbc.parseOpenWith & helper
     def parseOpenWith(self, p: Pos) -> Dict[str, Any]:
 
-        d = {'command': None}
-           # d contains args, kind, etc tags.
+        d = {'command': None}  # d contains args, kind, etc tags.
         for line in g.splitLines(p.b):
             self.parseOpenWithLine(line, d)
         return d
@@ -1284,8 +1283,8 @@ class GlobalConfigManager:
     encodingIvarsData = (
         ("default_at_auto_file_encoding", "string", "utf-8"),
         ("default_derived_file_encoding", "string", "utf-8"),
+        # Upper case for compatibility with previous versions.
         ("new_leo_file_encoding", "string", "UTF-8"),
-            # Upper case for compatibility with previous versions.
         #
         # The defaultEncoding ivar is no longer used,
         # so it doesn't override better defaults.
@@ -1301,11 +1300,11 @@ class GlobalConfigManager:
         valType=g.GeneralSetting,
     )
     ivarsData = (
+        # For compatibility with previous versions.
         ("at_root_bodies_start_in_doc_mode", "bool", True),
-            # For compatibility with previous versions.
         ("create_nonexistent_directories", "bool", False),
+        # "" for compatibility with previous versions.
         ("output_initial_comment", "string", ""),
-            # "" for compatibility with previous versions.
         ("output_newline", "string", "nl"),
         ("page_width", "int", "132"),
         ("read_only", "bool", True),
@@ -1315,13 +1314,12 @@ class GlobalConfigManager:
         ("save_clears_undo_buffer", "bool", False),
         ("stylesheet", "string", None),
         ("tab_width", "int", -4),
+        # Bug fix: added: 6/20/2005.
         ("target_language", "language", "python"),
-            # Bug fix: added: 6/20/2005.
         ("trailing_body_newlines", "string", "asis"),
+        # New in 4.3: use_plugins = True by default.
         ("use_plugins", "bool", True),
-            # New in 4.3: use_plugins = True by default.
-        ("undo_granularity", "string", "word"),
-            # "char","word","line","node"
+        ("undo_granularity", "string", "word"),  # "char","word","line","node"
         ("write_strips_blank_lines", "bool", False),
     )
     #@-<< gcm.ivarsDict >>
@@ -1499,8 +1497,7 @@ class GlobalConfigManager:
                     f"{tag}: there may be conflicting settings!")
             return None, False
         if isNone:
-            return '', True
-                # 2011/10/24: Exists, a *user-defined* empty value.
+            return '', True  # 2011/10/24: Exists, a *user-defined* empty value.
         return val, True
     #@+node:ekr.20051015093141: *5* gcm.typesMatch
     def typesMatch(self, type1: str, type2: str) -> bool:
@@ -1724,8 +1721,8 @@ class LocalConfigManager:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
+            # was TypedDictOfLists.
             assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)
-                # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
@@ -1890,8 +1887,7 @@ class LocalConfigManager:
                     f"{tag}: there may be conflicting settings!")
             return None, False
         if isNone:
-            return '', True
-                # 2011/10/24: Exists, a *user-defined* empty value.
+            return '', True  # 2011/10/24: Exists, a *user-defined* empty value.
         return val, True
     #@+node:ekr.20120215072959.12521: *6* c.config.typesMatch
     def typesMatch(self, type1: str, type2: str) -> bool:

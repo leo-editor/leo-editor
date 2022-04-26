@@ -144,8 +144,7 @@ class ShadowController:
             with open(fileName, 'wb') as f:
                 # Fix bug 1243847: unicode error when saving @shadow nodes.
                 f.write(g.toEncodedString(s, encoding=encoding))
-            c.setFileTimeStamp(fileName)
-                # Fix #1053.  This is an *ancient* bug.
+            c.setFileTimeStamp(fileName)  # Fix #1053.  This is an *ancient* bug.
             if not g.unitTesting:
                 kind = 'wrote' if exists else 'created'
                 g.es(f"{kind:>6}: {fileName}")
@@ -261,13 +260,13 @@ class ShadowController:
         """
         x = self
         lines = x.old_sent_lines
+        # The sentinels preceding each non-sentinel line,
+        # not including @verbatim sentinels.
         sentinels: List[str] = []
-            # The sentinels preceding each non-sentinel line,
-            # not including @verbatim sentinels.
+        # A list of all non-sentinel lines found.  Should match x.a.
         new_lines = []
-            # A list of all non-sentinel lines found.  Should match x.a.
+        # A list of lists of sentinels preceding each line.
         x.sentinels = []
-            # A list of lists of sentinels preceding each line.
         i = 0
         while i < len(lines):
             line = lines[i]
@@ -320,8 +319,8 @@ class ShadowController:
         assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
         for i in range(ai, aj):
             x.put_sentinels(i)
+            # works because x.lines[ai:aj] == x.lines[bi:bj]
             x.put_plain_line(x.a[i])
-                # works because x.lines[ai:aj] == x.lines[bi:bj]
     #@+node:ekr.20150207044400.14: *5* x.op_insert
     def op_insert(self, tag, ai, aj, bi, bj):
         """Handle the 'insert' opcode."""

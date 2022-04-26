@@ -170,8 +170,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         super().__init__(
             stdin=stdin_q,
             stdout=stdout_q,
-            readrc=False,
-                # Don't read a .rc file.
+            readrc=False,  # Don't read a .rc file.
         )
         sys.stdout = stdout_q
         self.daemon = True
@@ -270,8 +269,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.write('End xdb\n')
         self._user_requested_quit = True
         self.set_quit()
+        # Kill xdb *after* all other messages have been sent.
         self.qr.put(['stop-xdb'])
-            # Kill xdb *after* all other messages have been sent.
         return 1
 
     do_q = do_quit
@@ -282,8 +281,8 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.saved_frame = frame
         self.saved_traceback = traceback
         self.select_line(frame, traceback)
+        # Call the base class method.
         pdb.Pdb.interaction(self, frame, traceback)
-            # Call the base class method.
     #@+node:ekr.20180701050839.10: *4* xdb.set_continue (overrides Bdb)
     def set_continue(self):
         """ override Bdb.set_continue"""
@@ -346,9 +345,9 @@ class Xdb(pdb.Pdb, threading.Thread):
         stack, curindex = self.get_stack(frame, traceback)
         frame, lineno = stack[curindex]
         filename = frame.f_code.co_filename
+        # Select the line in the main thread.
+        # xdb.show_line finalizes the file name.
         self.qr.put(['select-line', lineno, filename])
-            # Select the line in the main thread.
-            # xdb.show_line finalizes the file name.
     #@+node:ekr.20181007044254.1: *3* xdb.write
     def write(self, s):
         """Write s to the output stream."""
@@ -609,10 +608,10 @@ def xdb_command(event):
         # Start the debugger in a separate thread.
         g.app.xdb = xdb = Xdb(path)
         xdb.start()
+        # This is Threading.start().
+        # It runs the debugger in a separate thread.
+        # It also selects the start of the file.
         xdb.qr.put(['clear-stdout'])
-            # This is Threading.start().
-            # It runs the debugger in a separate thread.
-            # It also selects the start of the file.
 #@-others
 #@@language python
 #@@tabwidth -4

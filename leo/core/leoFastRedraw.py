@@ -67,8 +67,8 @@ class FastRedraw:
 
     def extend_flattened_outline(self, aList, p):
         """Add p and all p's visible descendants to aList."""
+        # Padding the fields causes problems later.
         aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
-            # Padding the fields causes problems later.
         if p.isExpanded():
             for child in p.children():
                 self.extend_flattened_outline(aList, child)

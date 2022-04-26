@@ -310,8 +310,8 @@ class PersistenceDataController:
         unl_list = unl.split('-->')
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
             return root
+        # return self.find_best_match(root, unl_list)
         return self.find_exact_match(root, unl_list)
-            # return self.find_best_match(root, unl_list)
     #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
     def find_best_match(self, root, unl_list):
         """Find the best partial matches of the tail in root's tree."""
@@ -449,8 +449,8 @@ class PersistenceDataController:
         Return True if p is *any* kind of @auto node,
         including @auto-otl and @auto-rst.
         """
+        # The safe way: it tracks changes to p.isAtAutoNode.
         return p.isAtAutoNode()
-            # The safe way: it tracks changes to p.isAtAutoNode.
     #@+node:ekr.20140711111623.17897: *5* pd.is_at_file_node
     def is_at_file_node(self, p):
         """Return True if p is an @file node."""

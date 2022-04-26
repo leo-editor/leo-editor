@@ -138,8 +138,8 @@ class BaseColorizer:
                 # Neither setting exists.
                 self.fonts[key] = None  # Essential
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
+    # Keys are key::settings_names, values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
-        # Keys are key::settings_names, values are cumulative font size.
 
     def find_font(self, key, setting_name):
         """
@@ -318,8 +318,8 @@ class BaseColorizer:
             'name.label'            :('name.label',         '#A0A000'),
             'name.namespace'        :('name.namespace',     '#0000FF'), # bold
             'name.other'            :('name.other',         'red'),
+            # A hack: getLegacyFormat returns name.pygments instead of name.
             'name.pygments'         :('name.pygments',      'white'),
-                # A hack: getLegacyFormat returns name.pygments instead of name.
             'name.tag'              :('name.tag',               '#008000'), # bold
             'name.variable'         :('name.variable',          '#19177C'),
             'name.variable.class'   :('name.variable.class',    '#19177C'),
@@ -857,8 +857,8 @@ class JEditColorizer(BaseColorizer):
         # pylint: disable=no-member
         table = [
             # Rules added at front are added in **reverse** order.
+            # Debatable: Leo keywords override langauge keywords.
             ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
-                # Debatable: Leo keywords override langauge keywords.
             ('@', self.match_at_color, True),
             ('@', self.match_at_killcolor, True),
             ('@', self.match_at_language, True),  # 2011/01/17
@@ -908,8 +908,7 @@ class JEditColorizer(BaseColorizer):
         if not name:
             return False
         if name == 'latex':
-            name = 'tex'
-                # #1088: use tex mode for both tex and latex.
+            name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
         # if 'coloring' in g.app.debug and not g.unitTesting:
         #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
@@ -1261,8 +1260,8 @@ class JEditColorizer(BaseColorizer):
 
         This is called whenever a pattern matcher succeed.
         """
+        # setTag does most tracing.
         trace = 'coloring' in g.app.debug and not g.unitTesting
-            # setTag does most tracing.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace:
@@ -1330,8 +1329,8 @@ class JEditColorizer(BaseColorizer):
         if i == 0 and g.match_word(s, 0, '@color'):
             n = self.setRestart(self.restartColor)
             self.setState(n)  # Enable coloring of *this* line.
+            # Now required. Sets state.
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-                # Now required. Sets state.
             return len('@color')
         return 0
     #@+node:ekr.20170125140113.1: *6* restartColor
@@ -1501,12 +1500,12 @@ class JEditColorizer(BaseColorizer):
             block_n = self.currentBlockNumber()
             text_block = doc.findBlockByNumber(block_n)
             g.trace(f"block_n: {block_n:2} {s!r}")
+            # How to get the cursor of the colorized line.
+                # body = self.c.frame.body
+                # s = body.wrapper.getAllText()
+                # wrapper.delete(0, j)
+                # cursor.insertHtml(src)
             g.trace(f"block text: {repr(text_block.text())}")
-                # How to get the cursor of the colorized line.
-                    # body = self.c.frame.body
-                    # s = body.wrapper.getAllText()
-                    # wrapper.delete(0, j)
-                    # cursor.insertHtml(src)
             return j
         return 0
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
@@ -2012,13 +2011,11 @@ class JEditColorizer(BaseColorizer):
 
             def span(s):
                 # Note: bindings are frozen by this def.
-                return self.restart_match_span(s,
-                    # Positional args, in alpha order
+                return self.restart_match_span(s,  # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(span,
-                # These must be keyword args.
+            self.setRestart(span,  # These must be keyword args.
                 delegate=delegate, end=end,
                 exclude_match=exclude_match,
                 kind=kind,
@@ -2088,13 +2085,11 @@ class JEditColorizer(BaseColorizer):
         if j > len(s):
 
             def span(s):
-                return self.restart_match_span(s,
-                    # Positional args, in alpha order
+                return self.restart_match_span(s,  # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(span,
-                # These must be keywords args.
+            self.setRestart(span,  # These must be keywords args.
                 delegate=delegate, end=end, kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
@@ -2236,8 +2231,8 @@ class JEditColorizer(BaseColorizer):
                     return j
                 i = j
             return i
+        # Include the newline so we don't get a flash at the end of the line.
         return g.skip_line(s, i)
-                # Include the newline so we don't get a flash at the end of the line.
     #@+node:ekr.20110605121601.18628: *4* jedit.trace_match
     def trace_match(self, kind, s, i, j):
 
@@ -2378,8 +2373,8 @@ if QtGui:
             self.c = c
             self.colorizer = colorizer
             self.n_calls = 0
+            # Alas, a QsciDocument is not a QTextDocument.
             assert isinstance(document, QtGui.QTextDocument), document
-                # Alas, a QsciDocument is not a QTextDocument.
             self.leo_document = document
             super().__init__(document)
             self.reloadSettings()
@@ -2388,8 +2383,7 @@ if QtGui:
             """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
-            self.colorizer.recolor(s)
-                # Highlight just one line.
+            self.colorizer.recolor(s)  # Highlight just one line.
         #@+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
         def reloadSettings(self):
             """Reload all reloadable settings."""
@@ -2529,8 +2523,7 @@ if Qsci:
         """A do-nothing colorizer for Scintilla."""
 
         def __init__(self, c, parent=None):
-            super().__init__(parent)
-                # Init the pase class
+            super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
 
@@ -2755,10 +2748,10 @@ class PygmentsColorizer(BaseColorizer):
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
                     (r'^(@language)\s+(\w+)', self.at_language_callback),
+                    # Single-line, non-greedy match.
                     (leo_sec_ref_pat, self.section_ref_callback),
-                        # Single-line, non-greedy match.
+                    # Multi-line, non-greedy match.
                     (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
-                        # Multi-line, non-greedy match.
                    inherit,
                 ],
             }
@@ -2801,9 +2794,9 @@ class PygmentsColorizer(BaseColorizer):
         p = self.c.p
         self.recolorCount += 1
         if p.v != self.old_v:
+            # Force a full recolor
+            # sets self.language and self.enabled.
             self.updateSyntaxColorer(p)
-                # Force a full recolor
-                # sets self.language and self.enabled.
             self.color_enabled = self.enabled
             self.old_v = p.v  # Fix a major performance bug.
             self.init()
