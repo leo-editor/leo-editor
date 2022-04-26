@@ -283,8 +283,7 @@ class LeoGlobals:  # pragma: no cover
         the endings of all lines, including the last line."""
         # g.stat()
         if s:
-            return s.splitlines(True)
-                # This is a Python string function!
+            return s.splitlines(True)  # This is a Python string function!
         return []
     #@+node:ekr.20191226190844.1: *3* LeoGlobals.toEncodedString
     def toEncodedString(self, s: Any, encoding: str='utf-8') -> bytes:
@@ -606,8 +605,7 @@ if 1:  # pragma: no cover
 
         fields = (
                         # Common...
-            'elt', 'elts', 'body', 'value',
-                        # Less common...
+            'elt', 'elts', 'body', 'value',  # Less common...
             'dims', 'ifs', 'names', 's',
             'test', 'values', 'targets',
         )
@@ -3698,8 +3696,8 @@ class Orange:
                 # Always do this, regardless of @bool clean-blank-lines.
                 self.blank_lines(2 if name == 'class' else 1)
             self.push_state(name)
+            # For trailing lines after inner classes/defs.
             self.push_state('indent', self.level)
-                # For trailing lines after inner classes/defs.
             self.word(name)
             return
         #
@@ -3954,14 +3952,13 @@ class Orange:
         # Attempt to join the line only if it has not just been split.
         if not was_split and self.max_join_line_length > 0:
             self.join_lines(node, token)
+        # Add the indentation for all lines
+        # until the next indent or unindent token.
         self.line_indent()
-            # Add the indentation for all lines
-            # until the next indent or unindent token.
     #@+node:ekr.20200107165250.40: *5* orange.line_indent
     def line_indent(self) -> None:
         """Add a line-indent token."""
-        self.clean('line-indent')
-            # Defensive. Should never happen.
+        self.clean('line-indent')  # Defensive. Should never happen.
         self.add_token('line-indent', self.lws)
     #@+node:ekr.20200107165250.41: *5* orange.lt & rt
     #@+node:ekr.20200107165250.42: *6* orange.lt
