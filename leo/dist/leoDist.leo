@@ -1488,7 +1488,11 @@ Update leoVersion.py in devel after the release.
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
 - Run reindent leo.
-- Run beautify-files.
+- Run Leo's beautify-files command on the following nodes:
+  - Core classes
+  - Command classes
+  - Gui base classes
+  - Qt gui
 
 LeoDocs.leo:
 - Make sure copyright dates are correct.
