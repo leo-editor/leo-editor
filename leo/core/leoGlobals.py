@@ -7452,7 +7452,41 @@ def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
 
     #@+others  # Define helper functions
     #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    def convert_unl_list(aList: List[str]) -> List[str]:
+        """
+        Convert old-style UNLs to new UNLs, retaining line numbers if possible.
+        """
+        result = []
+        for s in aList:
+            # Try to get the line number.
+            for m, line_group in (
+                (old_pat.match(s), 4),
+                (new_pat.match(s), 3),
+            ):
+                if m:
+                    try:
+                        n = int(m.group(line_group))
+                        result.append(f"{m.group(1)}::{n}")
+                        continue
+                    except Exception:
+                        pass
+            # Finally, just add the whole UNL.
+            result.append(s)
+        return result
     #@+node:ekr.20220213142735.1: *4* function: full_match
+    def full_match(p: Pos) -> bool:
+        """Return True if the headlines of p and all p's parents match unlList."""
+        # Careful: make copies.
+        aList, p1 = unlList[:], p.copy()
+        while aList and p1:
+            m = new_pat.match(aList[-1])
+            if m and m.group(1).strip() != p1.h.strip():
+                return False
+            if not m and aList[-1].strip() != p1.h.strip():
+                return False
+            aList.pop()
+            p1.moveToParent()
+        return not aList
     #@-others
 
     unlList = convert_unl_list(unlList1)
