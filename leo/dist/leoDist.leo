@@ -1493,7 +1493,8 @@ Update leoVersion.py in devel after the release.
 
 LeoDocs.leo:
 - Make sure copyright dates are correct.
-- Update the version number in index.html.
+- Update the version numbers in index.html.
+  Search for 6.6.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
