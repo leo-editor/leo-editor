@@ -7441,8 +7441,60 @@ def es_clickable_link(c: Cmdr, p: Pos, line_number: int, message: str) -> None:
     unl = p.get_UNL()
     c.frame.log.put(message.strip() + '\n', nodeLink=f"{unl}::{line_number}")
 #@+node:tbrown.20140311095634.15188: *3* g.findUNL & helpers
-#@+node:ekr.20220213142925.1: *4* function: convert_unl_list
-#@+node:ekr.20220213142735.1: *4* function: full_match
+def findUNL(unlList1: List[str], c: Cmdr) -> Optional[Pos]:
+    """
+    Find and move to the unl given by the unlList in the commander c.
+    Return the found position, or None.
+    """
+    # Define the unl patterns.
+    old_pat = re.compile(r'^(.*):(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')  # ':' is the separator.
+    new_pat = re.compile(r'^(.*?)(::)([-\d]+)?$')  # '::' is the separator.
+
+    #@+others  # Define helper functions
+    #@+node:ekr.20220213142925.1: *4* function: convert_unl_list
+    #@+node:ekr.20220213142735.1: *4* function: full_match
+    #@-others
+
+    unlList = convert_unl_list(unlList1)
+    if not unlList:
+        return None
+    # Find all target headlines.
+    targets = []
+    m = new_pat.match(unlList[-1])
+    target = m and m.group(1) or unlList[-1]
+    targets.append(target)
+    targets.extend(unlList[:-1])
+    # Find all target positions. Prefer later positions.
+    positions = list(reversed(list(z for z in c.all_positions() if z.h.strip() in targets)))
+    while unlList:
+        for p in positions:
+            p1 = p.copy()
+            if full_match(p):
+                assert p == p1, (p, p1)
+                n = 0  # The default line number.
+                # Parse the last target.
+                m = new_pat.match(unlList[-1])
+                if m:
+                    line = m.group(3)
+                    try:
+                        n = int(line)
+                    except(TypeError, ValueError):
+                        g.trace('bad line number', line)
+                if n == 0:
+                    c.redraw(p)
+                elif n < 0:
+                    p, offset, ok = c.gotoCommands.find_file_line(-n, p)  # Calls c.redraw().
+                    return p if ok else None
+                elif n > 0:
+                    insert_point = sum(len(i) + 1 for i in p.b.split('\n')[: n - 1])
+                    c.redraw(p)
+                    c.frame.body.wrapper.setInsertPoint(insert_point)
+                c.frame.bringToFront()
+                c.bodyWantsFocusNow()
+                return p
+        # Not found. Pop the first parent from unlList.
+        unlList.pop(0)
+    return None
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p: Pos) -> Optional[str]:
     """
