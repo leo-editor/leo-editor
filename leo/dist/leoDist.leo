@@ -228,7 +228,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6
+Version: 6.6.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -247,31 +247,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6 final is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/6.6b2/).
+<t tx="EKR.20040519090846.9">Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+**The highlights of Leo 6.6.1**
 
-**The highlights of Leo 6.6**
+- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.
+- The usual minor bug fixes.
 
-- Replaced `@raw` and `@end_raw` with `@section-delims`.
-- Leo recognizes section references only when they appear on an otherwise blank line.
-- Many improvements to the python-to-typescript command.
-- Improved python importer.
-- Added plugins/picture_viewer.py, a stand-alone app that displays images.
-- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
-- The user may choose *other* commands after starting repeat-complex-command.
-- Improved leoserver.py to support leointeg.
-- Many bug fixes.
+**6.6.1 Links**
 
-**6.6 Links**
-
-- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
-- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
-- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
-- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
-- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+- [6.6.1 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1)
+- [6.6.1 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.1)
+- [6.6.1 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6.1+)
+- [6.6.1 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1+label%3Aenhancement+)
+- [6.6.1 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.1+label%3Acode+)
 
 **General Links**
 
@@ -1496,7 +1493,7 @@ Update leoVersion.py in devel after the release.
 
 LeoDocs.leo:
 - Make sure copyright dates are correct.
-- Update the version numbers in index.html.
+- Update the version number in index.html.
 - Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
@@ -1535,8 +1532,8 @@ LeoPyRef.leo:
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run test-all command.
-- Run pylint on all files.
-</t>
+- Run mypy leo.
+- Run pylint on all files.</t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 - Create a full (annotated) tag:
