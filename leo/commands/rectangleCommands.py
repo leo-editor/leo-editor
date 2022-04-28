@@ -22,8 +22,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """Ctor for RectangleCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.theKillRectangle = []
-            # Do not re-init this!
+        self.theKillRectangle = []  # Do not re-init this!
         self.stringRect = None
         self.commandsDict = {
         'c': ('clear-rectangle', self.clearRectangle),

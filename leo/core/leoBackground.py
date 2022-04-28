@@ -19,9 +19,15 @@ else:
     Cmdr = Pos = Any
 #@-<< leoBackground.py imports >>
 
+Event = Any
 Pattern = Union[re.Pattern, str]
 
 #@+others
+#@+node:ekr.20220415160700.1: ** bpm-status
+@g.command('bpm-status')
+def bpm_status(event: Event) -> None:
+    bpm = g.app.backgroundProcessManager
+    bpm.show_status()
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
     #@+<< BPM docstring>>
@@ -217,6 +223,15 @@ class BackgroundProcessManager:
         log = c.frame.log
         if not log.put_html_links(s):
             log.put(s)
+    #@+node:ekr.20220415161133.1: *3* bpm.show_status
+    def show_status(self) -> None:
+        """Show status for debugging."""
+        g.trace('BPM.pid', repr(self.pid))
+        g.trace('BPM.lock', repr(self.lock))
+        g.trace('BPM.timer', repr(self.timer), 'active:', self.timer.isActive())
+        g.printObj(self.data, tag='BPM.data')
+        g.printObj(self.process_queue, tag='BPM.process_queue')
+        g.printObj(self.process_return_data, tag='BPM.process_return_data')
     #@+node:ekr.20161028063800.1: *3* bpm.start_next
     def start_next(self) -> None:
         """The previous process has finished. Start the next one."""

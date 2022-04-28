@@ -271,11 +271,11 @@ class VimCommander:
         s = wrapper.getAllText()
         ins = wrapper.getInsertPoint()
         row, col = g.convertPythonIndexToRowCol(s, ins)
+        # This is an Ex command, not a normal Vim command.  See:
+        # http://vimdoc.sourceforge.net/htmldoc/remote.html
+        # and
+        # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html#tag_20_40_13_02
         return "+" + str(row + 1)
-            # This is an Ex command, not a normal Vim command.  See:
-            # http://vimdoc.sourceforge.net/htmldoc/remote.html
-            # and
-            # http://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html#tag_20_40_13_02
     #@+node:ekr.20150326180928.1: *4* vim.open_file
     def open_file(self, root):
         """Open the the file in vim using c.openWith."""
@@ -293,8 +293,8 @@ class VimCommander:
             fn = os.path.normpath(g.fullPath(c, root))  # #1914.
         else:
             # vim-open-node
+            # Set the cursor position to the current line in the node.
             args.append(self.get_cursor_arg())
-                # Set the cursor position to the current line in the node.
             ext = 'txt'
             fn = efc.create_temp_file(c, ext, c.p)
         c_arg = '%s %s' % (' '.join(args), fn)

@@ -25,8 +25,8 @@ class Lua_Importer(Importer):
             state_class=Lua_ScanState,
             strict=False,
         )
+        # Contains entries for all constructs that end with 'end'.
         self.start_stack = []
-            # Contains entries for all constructs that end with 'end'.
 
     # Define necessary overrides.
     #@+others
@@ -44,8 +44,8 @@ class Lua_Importer(Importer):
     #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
+        # function/end's are strictly nested, so this suffices.
         assert len(stack) > 1  # Fail on entry.
-            # function/end's are strictly nested, so this suffices.
         stack.pop()
         # Restore the guard entry if necessary.
         if len(stack) == 1:
@@ -240,8 +240,7 @@ class Lua_ScanState:
     #@+node:ekr.20170530024520.8: *3* lua_state.level
     def level(self):
         """Lua_ScanState.level."""
-        return 0
-            # Never used.
+        return 0  # Never used.
     #@+node:ekr.20170530024520.9: *3* lua_state.update
     def update(self, data):
         """

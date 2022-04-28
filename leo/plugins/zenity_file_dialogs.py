@@ -57,7 +57,7 @@ def callZenity(title, multiple=False, save=False, test=False):
     if ret:
         return ''
     if multiple:
-        return filename.split('|')
+        return filename.split('|')  # type:ignore
     return filename
 #@+node:ekr.20101110095557.5894: ** runOpenFileDialog
 def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False):
@@ -65,7 +65,7 @@ def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multipl
     # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, multiple=multiple)
 #@+node:ekr.20101110095557.5896: ** runSaveFileDialog
-def runSaveFileDialog(title=None, filetypes=None, defaultextension=None):
+def runSaveFileDialog(title=None, filetypes=None, defaultextension=None) -> str:
     """Call zenity's save file dialog."""
     # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, save=True)

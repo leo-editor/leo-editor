@@ -14,6 +14,7 @@ Key bindings would be something like::
 
 """
 
+from typing import Any
 from leo.core import leoGlobals as g
 
 def init():
@@ -27,12 +28,12 @@ def markup_inline(c, kind='unknown'):
         'markup_inline', {'last': 'close'})['last']
 
     p = c.p
-
-    delim = {
+    delim: Any = {
         'bold': ('**', '**'),
         'italic': ('*', '*'),
         'underline': (':ul:`', '`'),
     }[kind]
+    text: Any
 
     if c.frame.body.bodyCtrl.hasSelection():
         c.user_dict['markup_inline']['last'] = 'close'

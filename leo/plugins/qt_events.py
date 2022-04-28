@@ -62,13 +62,13 @@ class LossageData:
         return (
             f"keynum: {self.keynum:>7x} "
             f"binding: {self.binding}"
-        )
             # f"ch: {self.ch:>7s} "
             # f"= {self.actual_ch!r}"
             # f"mods: {self.mods}, {self.mods2}, {self.mods3}\n"
             # f"stroke: {self.stroke!r}\n"
             # f"text: {self.text!r}\n"
             # f"toString: {self.toString!r}\n"
+        )
 
     __str__ = __repr__
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
@@ -139,16 +139,15 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             c.outerUpdate()
         except Exception:
             g.es_exception()
-        return True
-            # Whatever happens, suppress all other Qt key handling.
+        return True  # Whatever happens, suppress all other Qt key handling.
     #@+node:ekr.20110605195119.16937: *4* filter.createKeyEvent
     def createKeyEvent(self, event, c, w, ch, binding):
 
         return leoGui.LeoKeyEvent(
             c=self.c,
+            # char = None doesn't work at present.
+            # But really, the binding should suffice.
             char=ch,
-                # char = None doesn't work at present.
-                # But really, the binding should suffice.
             event=event,
             binding=binding,
             w=w,
@@ -174,8 +173,8 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
                     c.frame.top.lineEdit.restore_selection()
         elif eventType == Type.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
+        # Return True unless we have a key event.
         return eventType not in (Type.ShortcutOverride, Type.KeyPress, Type.KeyRelease)
-            # Return True unless we have a key event.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
         """
@@ -188,8 +187,8 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
         t = event.type()
         isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
         if isEditWidget:
+            # QLineEdit: ignore all key events except keyRelease events.
             return t != Type.KeyRelease
-                # QLineEdit: ignore all key events except keyRelease events.
         if t == Type.KeyPress:
             # Hack Alert!
             # On some Linux systems (Kubuntu, Debian, the Win or SHIFT-Win keys
@@ -373,8 +372,8 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             (KeyboardModifier.ControlModifier, 'Control'),
             (KeyboardModifier.MetaModifier, 'Meta'),
             (KeyboardModifier.ShiftModifier, 'Shift'),
+            # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
             (KeyboardModifier.KeypadModifier, 'KeyPad'),
-                # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         # pylint: disable=superfluous-parens.
         mods = [b for a, b in mod_table if (modifiers & a)]

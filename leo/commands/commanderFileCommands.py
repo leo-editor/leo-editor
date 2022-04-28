@@ -181,8 +181,8 @@ def importAnyFile(self, event=None):
             ic.importFilesCommand(
                 files=[fn],
                 parent=parent,
+                # Experimental: attempt to use permissive section ref logic.
                 treeType='@auto',  # was '@clean'
-                    # Experimental: attempt to use permissive section ref logic.
             )
             c.redraw()
     c.raise_error_dialogs(kind='read')
@@ -243,8 +243,8 @@ def new(self, event=None, gui=None):
         # g.app.restoreWindowState(c)
     frame.deiconify()
     frame.lift()
+    # Resize the _new_ frame.
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-        # Resize the _new_ frame.
     c.frame.createFirstTreeNode()
     lm.createMenu(c)
     lm.finishOpen(c)
@@ -269,7 +269,7 @@ def new(self, event=None, gui=None):
 def open_outline(self, event=None):
     """Open a Leo window containing the contents of a .leo file."""
     c = self
-    #@+others
+    #@+others  # Defines open_completer function.
     #@+node:ekr.20190518121302.1: *4* function: open_completer
     def open_completer(c, closeFlag, fileName):
 
@@ -280,8 +280,8 @@ def open_outline(self, event=None):
             if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
+                    # Fix #579: Key bindings don't take for commands defined in plugins.
                     c2.k.makeAllBindings()
-                        # Fix #579: Key bindings don't take for commands defined in plugins.
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
                 if c2 and closeFlag:
@@ -299,18 +299,16 @@ def open_outline(self, event=None):
         if not ok:
             c.initialFocusHelper()
     #@-others
-        # Defines open_completer function.
 
     #
     # Close the window if this command completes successfully?
 
     closeFlag = (
-        c.frame.startupWindow and
-            # The window was open on startup
+        c.frame.startupWindow and  # The window was open on startup
+        # The window has never been changed
         not c.changed and not c.frame.saved and
-            # The window has never been changed
+        # Only one untitled window has ever been opened
         g.app.numberOfUntitledWindows == 1
-            # Only one untitled window has ever been opened
     )
     table = [
         ("Leo files", "*.leo *.db"),
@@ -348,8 +346,8 @@ def refreshFromDisk(self, event=None):
     b = u.beforeChangeTree(p)
     redraw_flag = True
     at = c.atFileCommands
+    # Fix bug 1090950 refresh from disk: cut node ressurection.
     c.recreateGnxDict()
-        # Fix bug 1090950 refresh from disk: cut node ressurection.
     i = g.skip_id(p.h, 0, chars='@')
     word = p.h[0:i]
     if word == '@auto':
@@ -374,12 +372,10 @@ def refreshFromDisk(self, event=None):
             p.v._deleteAllChildren()
         at.read(p)
     elif word == '@edit':
-        at.readOneAtEditNode(fn, p)
-            # Always deletes children.
+        at.readOneAtEditNode(fn, p)  # Always deletes children.
     elif word == '@asis':
         # Fix #1067.
-        at.readOneAtAsisNode(fn, p)
-            # Always deletes children.
+        at.readOneAtAsisNode(fn, p)  # Always deletes children.
     else:
         g.es_print(f"can not refresh from disk\n{p.h!r}")
         redraw_flag = False
@@ -968,12 +964,11 @@ def openRecentFile(self, event=None, fn=None):
     c = self
     # Automatically close the previous window if...
     closeFlag = (
-        c.frame.startupWindow and
-            # The window was open on startup
+        c.frame.startupWindow and  # The window was open on startup
+        # The window has never been changed
         not c.changed and not c.frame.saved and
-            # The window has never been changed
+        # Only one untitled window has ever been opened.
         g.app.numberOfUntitledWindows == 1)
-            # Only one untitled window has ever been opened.
     if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
         return
     c2 = g.openWithFileName(fn, old_c=c)

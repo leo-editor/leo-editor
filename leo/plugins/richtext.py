@@ -86,152 +86,150 @@ def init():
         print('richtext.py plugin not loading because gui is not Qt')
     return ok
 #@+node:tbrown.20130813134319.5691: ** class CKEEditor
-if QtWidgets:
+class CKEEditor(QtWidgets.QWidget):  # type:ignore
+    #@+others
+    #@+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
+    def __init__(self, *args, **kwargs):
 
-    class CKEEditor(QtWidgets.QWidget):
-        #@+others
-        #@+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
-        def __init__(self, *args, **kwargs):
+        self.c = kwargs['c']
+        del kwargs['c']
+        super().__init__(*args, **kwargs)
+        # were we opened by an @ rich node? Calling code will set
+        self.at_rich = False
+        # are we being closed by leaving an @ rich node? Calling code will set
+        self.at_rich_close = False
+        # read settings.
+        self.reloadSettings()
+        # load HTML template
+        template_path = g.os_path_join(g.computeLeoDir(), 'plugins', 'cke_template.html')
+        self.template = open(template_path).read()
+        path = g.os_path_join(g.computeLeoDir(), 'external', 'ckeditor')
+        self.template = self.template.replace(
+            '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
+        # make widget containing QWebView
+        self.setLayout(QtWidgets.QVBoxLayout())
+        self.layout().setSpacing(0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        # enable inspector, if this really is QtWebKit
+        if real_webkit:
+            QtWebKit.QWebSettings.globalSettings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        self.webview = QtWebKitWidgets.QWebView()
+        self.layout().addWidget(self.webview)
+        g.registerHandler('select3', self.select_node)
+        g.registerHandler('unselect1', self.unselect_node)
+        # load current node
+        self.select_node('', {'c': self.c, 'new_p': self.c.p})
 
-            self.c = kwargs['c']
-            del kwargs['c']
-            super().__init__(*args, **kwargs)
-            # were we opened by an @ rich node? Calling code will set
-            self.at_rich = False
-            # are we being closed by leaving an @ rich node? Calling code will set
-            self.at_rich_close = False
-            # read settings.
-            self.reloadSettings()
-            # load HTML template
-            template_path = g.os_path_join(g.computeLeoDir(), 'plugins', 'cke_template.html')
-            self.template = open(template_path).read()
-            path = g.os_path_join(g.computeLeoDir(), 'external', 'ckeditor')
-            self.template = self.template.replace(
-                '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
-            # make widget containing QWebView
-            self.setLayout(QtWidgets.QVBoxLayout())
-            self.layout().setSpacing(0)
-            self.layout().setContentsMargins(0, 0, 0, 0)
-            # enable inspector, if this really is QtWebKit
-            if real_webkit:
-                QtWebKit.QWebSettings.globalSettings().setAttribute(
-                    QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-            self.webview = QtWebKitWidgets.QWebView()
-            self.layout().addWidget(self.webview)
-            g.registerHandler('select3', self.select_node)
-            g.registerHandler('unselect1', self.unselect_node)
-            # load current node
-            self.select_node('', {'c': self.c, 'new_p': self.c.p})
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        # read autosave preference
+        if not hasattr(self.c, '_ckeeditor_autosave'):
+            auto = self.c.config.getBool("richtext-cke-autosave") or False
+            self.c._ckeeditor_autosave = auto
+            if auto:
+                g.es("NOTE: automatic saving of rich text edits")
+        # load config
+        self.config = self.c.config.getData("richtext_cke_config")
+        if self.config:
+            self.config = '\n'.join(self.config).strip()
+    #@+node:tbrown.20130813134319.7226: *3* select_node
+    def select_node(self, tag, kwargs):
+        c = kwargs['c']
+        if c != self.c:
+            return
 
-        def reloadSettings(self):
-            c = self.c
-            c.registerReloadSettings(self)
-            # read autosave preference
-            if not hasattr(self.c, '_ckeeditor_autosave'):
-                auto = self.c.config.getBool("richtext-cke-autosave") or False
-                self.c._ckeeditor_autosave = auto
-                if auto:
-                    g.es("NOTE: automatic saving of rich text edits")
-            # load config
-            self.config = self.c.config.getData("richtext_cke_config")
-            if self.config:
-                self.config = '\n'.join(self.config).strip()
-        #@+node:tbrown.20130813134319.7226: *3* select_node
-        def select_node(self, tag, kwargs):
-            c = kwargs['c']
-            if c != self.c:
-                return
+        p = kwargs['new_p']
 
-            p = kwargs['new_p']
+        self.v = p.v  # to ensure unselect_node is working on the right node
+        # currently (20130814) insert doesn't trigger unselect/select, but
+        # even if it did, this would be safest
 
-            self.v = p.v  # to ensure unselect_node is working on the right node
-            # currently (20130814) insert doesn't trigger unselect/select, but
-            # even if it did, this would be safest
+        data = self.template
+        if p.b.startswith('<'):  # already rich text, probably
+            content = p.b
+            self.was_rich = True
+        else:
+            self.was_rich = p.b.strip() == ''
+            # put anything except whitespace in a <pre/>
+            content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
 
-            data = self.template
-            if p.b.startswith('<'):  # already rich text, probably
-                content = p.b
-                self.was_rich = True
-            else:
-                self.was_rich = p.b.strip() == ''
-                # put anything except whitespace in a <pre/>
-                content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
+        data = data.replace('[CONTENT]', content)
 
-            data = data.replace('[CONTENT]', content)
+        # replace textarea with CKEditor, with or without config.
+        if self.config:
+            data = data.replace('[CONFIG]', ', ' + self.config)
+        else:
+            data = data.replace('[CONFIG]', '')
 
-            # replace textarea with CKEditor, with or without config.
-            if self.config:
-                data = data.replace('[CONFIG]', ', ' + self.config)
-            else:
-                data = data.replace('[CONFIG]', '')
+        # try and make the path for URL evaluation relative to the node's path
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if p.h.startswith('@'):  # see if it's a @<file> node of some sort
+            nodepath = p.h.split(None, 1)[-1]
+            nodepath = g.os_path_join(path, nodepath)
+            if not g.os_path_isdir(nodepath):  # remove filename
+                nodepath = g.os_path_dirname(nodepath)
+            if g.os_path_isdir(nodepath):  # append if it's a directory
+                path = nodepath
 
-            # try and make the path for URL evaluation relative to the node's path
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            if p.h.startswith('@'):  # see if it's a @<file> node of some sort
-                nodepath = p.h.split(None, 1)[-1]
-                nodepath = g.os_path_join(path, nodepath)
-                if not g.os_path_isdir(nodepath):  # remove filename
-                    nodepath = g.os_path_dirname(nodepath)
-                if g.os_path_isdir(nodepath):  # append if it's a directory
-                    path = nodepath
+        self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
+    #@+node:tbrown.20130813134319.7228: *3* unselect_node
+    def unselect_node(self, tag, kwargs):
 
-            self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
-        #@+node:tbrown.20130813134319.7228: *3* unselect_node
-        def unselect_node(self, tag, kwargs):
-
-            c = kwargs['c']
-            if c != self.c:
-                return None
-            # read initial content and request and wait for final content
-            frame = self.webview.page().mainFrame()
-            ele = frame.findFirstElement("#initial")
-            text = str(ele.toPlainText()).strip()
-            if text == '[empty]':
-                return None  # no edit
-            frame.evaluateJavaScript('save_final();')
-            ele = frame.findFirstElement("#final")
-            for attempt in range(10):  # wait for up to 1 second
-                new_text = str(ele.toPlainText()).strip()
-                if new_text == '[empty]':
-                    time.sleep(0.1)
-                    continue
-                break
-            if new_text == '[empty]':
-                print("Didn't get new text")
-                return None
-            text = unquote(str(text))
-            new_text = unquote(str(new_text))
-            if new_text != text:
-                if self.c._ckeeditor_autosave:
-                    ans = 'yes'
-                else:
-                    text = "Save edits?"
-                    if not self.was_rich:
-                        text += " *converting plain text to rich*"
-                    ans = g.app.gui.runAskYesNoCancelDialog(
-                        self.c,
-                        "Save edits?",
-                        text
-                    )
-                if ans == 'yes':
-                    c.vnode2position(self.v).b = new_text
-                    c.redraw()  # but node has content marker still doesn't appear?
-                elif ans == 'cancel':
-                    return 'STOP'
-                else:
-                    pass  # discard edits
+        c = kwargs['c']
+        if c != self.c:
             return None
-        #@+node:tbrown.20130813134319.7229: *3* close
-        def close(self):
-            if self.c and not self.at_rich_close:
-                # save changes?
-                self.unselect_node('', {'c': self.c, 'old_p': self.c.p})
-            self.c = None
-            g.unregisterHandler('select3', self.select_node)
-            g.unregisterHandler('unselect1', self.unselect_node)
-            return QtWidgets.QWidget.close(self)
-        #@-others
+        # read initial content and request and wait for final content
+        frame = self.webview.page().mainFrame()
+        ele = frame.findFirstElement("#initial")
+        text = str(ele.toPlainText()).strip()
+        if text == '[empty]':
+            return None  # no edit
+        frame.evaluateJavaScript('save_final();')
+        ele = frame.findFirstElement("#final")
+        for attempt in range(10):  # wait for up to 1 second
+            new_text = str(ele.toPlainText()).strip()
+            if new_text == '[empty]':
+                time.sleep(0.1)
+                continue
+            break
+        if new_text == '[empty]':
+            print("Didn't get new text")
+            return None
+        text = unquote(str(text))
+        new_text = unquote(str(new_text))
+        if new_text != text:
+            if self.c._ckeeditor_autosave:
+                ans = 'yes'
+            else:
+                text = "Save edits?"
+                if not self.was_rich:
+                    text += " *converting plain text to rich*"
+                ans = g.app.gui.runAskYesNoCancelDialog(
+                    self.c,
+                    "Save edits?",
+                    text
+                )
+            if ans == 'yes':
+                c.vnode2position(self.v).b = new_text
+                c.redraw()  # but node has content marker still doesn't appear?
+            elif ans == 'cancel':
+                return 'STOP'
+            else:
+                pass  # discard edits
+        return None
+    #@+node:tbrown.20130813134319.7229: *3* close
+    def close(self):
+        if self.c and not self.at_rich_close:
+            # save changes?
+            self.unselect_node('', {'c': self.c, 'old_p': self.c.p})
+        self.c = None
+        g.unregisterHandler('select3', self.select_node)
+        g.unregisterHandler('unselect1', self.unselect_node)
+        return QtWidgets.QWidget.close(self)
+    #@-others
 #@+node:tbrown.20130813134319.5694: ** class CKEPaneProvider
 class CKEPaneProvider:
     ns_id = '_add_cke_pane'

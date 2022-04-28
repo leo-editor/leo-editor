@@ -56,6 +56,7 @@ process for each one.
 #@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)
 import os
 import time
+from typing import Any, Dict
 #
 # Third-party imports.
 try:
@@ -72,30 +73,27 @@ except ImportError:
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Weight
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
-# Aliases...
-#
-QFont = QtGui.QFont
-QInputDialog = QtWidgets.QInputDialog
-QLineEdit = QtWidgets.QLineEdit
-QMainWindow = QtWidgets.QMainWindow
-QMdiArea = QtWidgets.QMdiArea
-QTextCharFormat = QtGui.QTextCharFormat
-QTextEdit = QtWidgets.QTextEdit
-QTimer = QtCore.QTimer
 #@-<< imports >>
 
+# Aliases...
+# These can *not* be used as the base classes.
+QInputDialog = QtWidgets.QInputDialog
+QLineEdit = QtWidgets.QLineEdit
+QMdiArea = QtWidgets.QMdiArea
+QTextCharFormat = QtGui.QTextCharFormat
+QTimer = QtCore.QTimer
+
 # Keys are commanders. Values are inner dicts: keys are gnx's; values are widgets.
-outer_dict = {}  # #2471
+outer_dict: Dict[Any, Dict[str, Any]] = {}  # #2471
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
+    # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     g.app.gui.attachLeoIcon(w)
-        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init():
@@ -149,7 +147,7 @@ def stickynoter_f(event):
     v = p.v
     # #2471: Just show the node if it already exists.
     d = outer_dict.get(c.hash(), {})
-    nf = d.get(p.gnx)
+    nf: Any = d.get(p.gnx)
     if nf:
         nf.show()
         nf.raise_()
@@ -251,7 +249,7 @@ if encOK:
                 return
         else:
             decoded = v.b
-        nf = mknote(c, p,
+        nf: Any = mknote(c, p,
             focusin=stickynoteenc_focusin,
             focusout=stickynoteenc_focusout)
         nf.setPlainText(decoded)
@@ -263,9 +261,9 @@ if encOK:
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
             # pylint: disable=no-member
+            # #1265: When in doubt, use MODE_EAX.
+            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
-                # #1265: When in doubt, use MODE_EAX.
-                # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
         # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 
@@ -282,8 +280,8 @@ if encOK:
         s1 = s.encode('utf8')
         pad = b' ' * (16 - len(s1) % 16)
         txta = get_AES().encrypt(s1 + pad)
-        txt = base64.b64encode(txta)
-        txt = str(txt, 'utf-8')
+        txt_b = base64.b64encode(txta)
+        txt = str(txt_b, 'utf-8')
         wrapped = textwrap.wrap(txt, break_long_words=True)
         return '\n'.join(wrapped)
 
@@ -307,7 +305,7 @@ if encOK:
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
 #@+node:tbrown.20141214173054.3: ** class TextEditSearch
-class TextEditSearch(QtWidgets.QWidget):
+class TextEditSearch(QtWidgets.QWidget):  # type:ignore
     """A QTextEdit with a search box
 
     Used to make decoded encoded body text searchable, so when you've decoded
@@ -331,7 +329,7 @@ class TextEditSearch(QtWidgets.QWidget):
             self.textedit.focusInEvent, self.focusin)
         self.textedit.focusOutEvent = self._call_old_first(
             self.textedit.focusOutEvent, self.focusout)
-        self.searchbox = QtWidgets.QLineEdit()
+        self.searchbox = QLineEdit()
         self.searchbox.focusInEvent = self._call_old_first(
             self.searchbox.focusInEvent, self.focusin)
         self.searchbox.focusOutEvent = self._call_old_first(
@@ -384,7 +382,7 @@ class FocusingPlaintextEdit(TextEditSearch):
             self.closed()
         self.focusout()
 #@+node:ville.20091023181249.5264: ** class SimpleRichText
-class SimpleRichText(QTextEdit):
+class SimpleRichText(QtWidgets.QTextEdit):  # type:ignore
 
     # pylint: disable=method-hidden
 
@@ -607,7 +605,7 @@ def tabula_subtree_f(event):
         t.add_note(p)
 
 #@+node:ville.20100703194946.5584: *3* class Tabula(QMainWindow)
-class Tabula(QMainWindow):
+class Tabula(QtWidgets.QMainWindow):  # type:ignore
 
     #@+others
     #@+node:ekr.20101114061906.5445: *4* __init__

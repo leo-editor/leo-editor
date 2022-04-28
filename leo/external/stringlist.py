@@ -72,7 +72,7 @@ class SList(list):
             except IndexError:
                 return ""
 
-        if isinstance(pattern, basestring):
+        if isinstance(pattern, str):  # str was basestring
             pred = lambda x: re.search(pattern, x, re.IGNORECASE)
         else:
             pred = pattern
@@ -155,7 +155,7 @@ def shcmd(cmd):
 
     out = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]
 
-    sl = SList(out.split('\n'))
+    sl = SList(out.split('\n'))  # type:ignore
     return sl
 #@-node:ville.20090720134348.1860:shcmd
 #@-others

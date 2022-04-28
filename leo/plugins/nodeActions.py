@@ -204,6 +204,7 @@ execute a command in the first line of the body of a double-clicked node::
 import fnmatch
 import os
 import re
+from typing import Any
 from leo.core import leoGlobals as g
 #@-<< imports >>
 
@@ -316,6 +317,7 @@ def doNodeAction(pClicked, c):
                         g.blue("nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
             #Check for pattern match to clicked node's header
+            match: Any
             if useRegEx:
                 match = re.search(pattern, hClicked)
             else:

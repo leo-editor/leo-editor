@@ -1311,8 +1311,7 @@ def init():
     """Return True if the plugin has loaded successfully."""
     #global got_docutils
     if g.app.gui.guiName() != 'qt':
-        return False
-            # #1248.
+        return False  # #1248.
     # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (not g.unitTesting\

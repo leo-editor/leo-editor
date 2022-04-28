@@ -128,6 +128,7 @@ import configparser as ConfigParser
 import os
 import subprocess
 import tempfile
+from typing import List
 import webbrowser
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -341,7 +342,7 @@ class Leo_to_HTML:
         wraper code to turn it into a file.
         """
 
-        self.xhtml = xhtml = []
+        xhtml: List[str] = []
 
         if node:
             root = self.c.p
@@ -369,8 +370,6 @@ class Leo_to_HTML:
             xhtml.append(self.closeLevelString)
 
         self.xhtml = '\n'.join(xhtml)
-
-
     #@+node:bob.20080107160008: *4* doItemHeadlineTags
     def doItemHeadlineTags(self, p, level=1):
         """" Recursivley proccess an outline node into an xhtml list."""

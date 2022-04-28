@@ -13,8 +13,7 @@ class NodeHistory:
     def __init__(self, c):
         """Ctor for NodeHistory class."""
         self.c = c
-        self.beadList = []
-            # a list of (position,chapter) tuples.
+        self.beadList = []  # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump

@@ -465,7 +465,7 @@ def convert_at_test_nodes(c, converter, root, copy_tree=False):  # pragma: no co
     c.redraw(target)
     print(f"converted {count} @test nodes")
 #@+node:ekr.20220416082017.1: ** class AnnotationError
-class AnnotationError (Exception):
+class AnnotationError(Exception):
     pass
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
@@ -515,6 +515,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def __init__(self, c):
             self.c = c
+
+        class AnnotationError(Exception):
+            pass
 
         #@+others
         #@+node:ekr.20220105154019.1: *5* ama.init_types_d
@@ -747,10 +750,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             super().__init__(c)
             #
             # Internal state...
+            # The class name for the present function.  Used to modify ivars.
             self.class_name = ''
-                # The class name for the present function.  Used to modify ivars.
+            # List of ivars to be converted to self.ivar
             self.ivars = []
-                # List of ivars to be converted to self.ivar
             self.get_user_types()
         #@+node:ekr.20150514063305.162: *6* get_user_types (C_To_Python)
         def get_user_types(self):
@@ -825,8 +828,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Next...
             self.handle_all_keywords(aList)
             self.insert_not(aList)
+            # after processing for keywords
             self.removeSemicolonsAtEndOfLines(aList)
-                # after processing for keywords
             # Last...
             # if firstPart and leoFlag: removeLeadingAtCode(aList)
             self.removeBlankLines(aList)
@@ -2055,7 +2058,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Rearrange the lines.
                 lines[i - 1 : k + 1] = lines[j : k + 1] + [lines[i - 1]]
                 i = k + 1
-            ### return lines
         #@+node:ekr.20211016200908.1: *7* py2ts.post_pass & helpers
         def post_pass(self, lines):
 
@@ -2125,8 +2127,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     # These comments quickly become annoying.
                     # Add the original line as a comment as a check.
-                    lines[i] = f"{lws}// {s.strip()}\n"
-                        # Add the replacement line.
+                    lines[i] = f"{lws}// {s.strip()}\n"  # Add the replacement line.
                     lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
                     i += 2
                 assert i > progress
@@ -2204,8 +2205,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c):
                 """Ctor for TS_To_Python class."""
                 super().__init__(c)
+                # The class name for the present function.  Used to modify ivars.
                 self.class_name = ''
-                    # The class name for the present function.  Used to modify ivars.
             #@+node:ekr.20150514063305.178: *5* convertCodeList (TS_To_Python) & helpers
             def convertCodeList(self, aList):
                 r, sr = self.replace, self.safe_replace
@@ -2238,8 +2239,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Third...
                 self.handle_all_keywords(aList)
                 self.insert_not(aList)
+                # after processing for keywords
                 self.removeSemicolonsAtEndOfLines(aList)
-                    # after processing for keywords
                 self.comment_scope_ids(aList)
                 # Last...
                 self.removeBlankLines(aList)

@@ -1,9 +1,8 @@
-import whoosh
+import os
 from whoosh.index import create_in, open_dir
-from whoosh.fields import *
+from whoosh.fields import ID, TEXT, Schema
 from whoosh.qparser import MultifieldParser
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
-import os
 
 g = None
 
@@ -82,8 +81,12 @@ class LeoFts:
 
     def schema(self):
         my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
-        schema = Schema(h=TEXT(stored=True, analyzer=my_analyzer), gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer), parent=ID(stored=True),
-                        doc=ID(stored=True))
+        schema = Schema(
+            h=TEXT(stored=True, analyzer=my_analyzer),
+            gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer),
+            parent=ID(stored=True),
+            doc=ID(stored=True),
+        )
         return schema
 
     def create(self):
@@ -102,7 +105,7 @@ class LeoFts:
             else:
                 par = c.mFileName
 
-            writer.add_document(h=p.h, b=p.b, gnx=unicode(p.gnx), parent=par, doc=doc)
+            writer.add_document(h=p.h, b=p.b, gnx=p.gnx, parent=par, doc=doc)
 
         writer.commit()
         g._gnxcache.clear()
@@ -116,7 +119,7 @@ class LeoFts:
     def statistics(self):
         r = {}
         with self.ix.searcher() as s:
-            r['documents'] = list(s.lexicon("doc"))
+            r['documents'] = list(s.lexicon("doc"))  # pylint:disable=no-member
         print("stats", r)
         return r
 

@@ -258,7 +258,7 @@ class OrderedDefaultDict(OrderedDict):
         args = (self.default_factory,) if self.default_factory else ()
         return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
-class QuickSearchEventFilter(QtCore.QObject):
+class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
@@ -295,7 +295,7 @@ class QuickSearchEventFilter(QtCore.QObject):
         return False
     #@-others
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
-class LeoQuickSearchWidget(QtWidgets.QWidget):
+class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     """ 'Find in files'/grep style search widget """
 
@@ -336,11 +336,9 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
         else:
             self.scon.doSearch(t)
         if self.scon.its:
-            w.blockSignals(True)
-                # don't jump to first hit
+            w.blockSignals(True)  # don't jump to first hit
             w.setFocus()
-            w.blockSignals(False)
-                # ok, respond if user moves
+            w.blockSignals(False)  # ok, respond if user moves
     #@+node:ville.20121118193144.3622: *3* quick_w.liveUpdate
     def liveUpdate(self):
 
@@ -544,14 +542,12 @@ class QuickSearchController:
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
-            # in python 3.6 there is no (?ms) at the end
-            # only \Z
             bpat = bpat.replace(r'\Z', '')
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -643,7 +639,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             # bpat = pat[2:]
-            flags = 0
+            flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
         if combo == "All":
             hNodes = self.c.all_positions()

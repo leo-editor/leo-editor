@@ -45,8 +45,8 @@ class Elisp_Importer(Importer):
                 # "'":    [('len', "'",    context == "'"),],
             }
             if block1 and block2:
+                # Bug fix: 2016/12/04: the tuple contained block1, not block2.
                 add_key(d, block2, ('len', block2, True))
-                    # Bug fix: 2016/12/04: the tuple contained block1, not block2.
         else:
             # Not in any context.
             d = {
@@ -139,8 +139,7 @@ class Elisp_ScanState:
     #@-others
 #@-others
 importer_dict = {
-    'func': Elisp_Importer.do_import(),
-        # Also clojure, clojurescript
+    'func': Elisp_Importer.do_import(),  # Also clojure, clojurescript
     'extensions': ['.el', '.clj', '.cljs', '.cljc',],
 }
 #@@language python

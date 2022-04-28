@@ -318,11 +318,11 @@ def pasteAsTemplate(self, event=None):
     bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
 
     root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
+    # outside will contain gnxes of nodes that are outside the copied tree
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
-        # outside will contain gnxes of nodes that are outside the copied tree
 
+    # we generate new gnx for each node in the copied tree
     translation = {x: translate_gnx(x) for x in bodies}
-        # we generate new gnx for each node in the copied tree
 
     seen = set(outside)  # required for the treatment of local clones inside the copied tree
 
@@ -1290,8 +1290,7 @@ def moveMarked(self, event=None):
         if p.isMarked() and not parent.isAncestorOf(p):
             moved.append(p.copy())
             next = p.positionAfterDeletedTree()
-            p.moveToLastChildOf(parent)
-                # This does not change parent's position.
+            p.moveToLastChildOf(parent)  # This does not change parent's position.
             p = next
         else:
             p.moveToThreadNext()

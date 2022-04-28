@@ -149,8 +149,8 @@ class BridgeController:
         lm.computeStandardDirectories()
         # #2519: Call sys.exit if leoID does not exist.
         g.app.setLeoID(useDialog=False, verbose=True)
+        # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         lm.createAllImporterData()  # #1965.
-            # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         g.app.inBridge = True  # Support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
@@ -161,10 +161,10 @@ class BridgeController:
             g.app.commander_cacher = g.NullObject()
             g.app.global_cacher = g.NullObject()
         if self.readSettings:
+            # reads only standard settings files, using a null gui.
+            # uses lm.files[0] to compute the local directory
+            # that might contain myLeoSettings.leo.
             lm.readGlobalSettingsFiles()
-                # reads only standard settings files, using a null gui.
-                # uses lm.files[0] to compute the local directory
-                # that might contain myLeoSettings.leo.
         else:
             # Bug fix: 2012/11/26: create default global settings dicts.
             settings_d, bindings_d = lm.createDefaultSettingsDicts()

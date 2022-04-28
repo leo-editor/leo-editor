@@ -1,8 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210407010914.1: * @file leoQt5.py
 """Import wrapper for pyQt5"""
+
+# For now, suppress all mypy checks
+# type:ignore
+
 # pylint: disable=import-error,no-name-in-module,unused-import
-#
+
 # Required imports
 from PyQt5 import Qt
 from PyQt5 import QtCore

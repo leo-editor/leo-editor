@@ -35,6 +35,7 @@ Example client::
 import os
 import socket  # For a test of its capabilities.
 import tempfile
+from typing import Any
 from leo.external import lproto
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -71,6 +72,7 @@ def leoserv_start(event):
 
     lps.set_receiver(dispatch_script)
     # EKR: 2011/10/12
+    uniqid: Any
     if hasattr(socket, 'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
     else:

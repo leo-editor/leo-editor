@@ -18,14 +18,14 @@ the left side of toolbar.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >> (nav_qt.py)
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-controllers = {}
-    # keys are c.hash(), values are NavControllers
+controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 #@+others
 #@+node:ville.20090518182905.5423: ** init
 def init():

@@ -40,6 +40,7 @@ Requires `pexpect` module.
 
 import os
 import time
+from typing import Any
 # By Terry Brown, 2009-05-12
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
@@ -87,6 +88,7 @@ class InteractPSQL(Interact):
     #@+node:tbrown.20090603104805.4947: *3* __init__
     def __init__(self, c):
         super().__init__(c)
+        self.leftover: Any = None
         prompts = ' '.join(['--set PROMPT%d=%s' % (i, self.prompt) for i in range(1, 4)])
         prompts += ' --pset pager=off'
         self._available = True
@@ -184,6 +186,7 @@ class InteractBASH(Interact):
     def __init__(self, c):
         super().__init__(c)
         self._available = True
+        self.leftover: Any = None
         try:
             self.bashLink = pexpect.spawn('bash -i')
             self.bashLink.setwinsize(30, 256)
@@ -192,8 +195,9 @@ class InteractBASH(Interact):
             self.bashLink.send("unalias ls\n")
             self.leftover = ''
             for i in self.bashReader(self.bashLink):
-                pass  # eat the initial output as it isn't interesting
-                      # and in includes chrs leo can't encode currently
+                # eat the initial output as it isn't interesting
+                # and in includes chrs leo can't encode currently
+                pass
         except pexpect.ExceptionPexpect:
             self._available = False
 

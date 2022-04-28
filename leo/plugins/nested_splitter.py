@@ -383,8 +383,8 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         """Ctor for NestedSplitter class."""
         if orientation is None:
             orientation = Orientation.Horizontal
+        # This creates a NestedSplitterHandle.
         super().__init__(orientation, parent)
-            # This creates a NestedSplitterHandle.
         if root is None:
             root = self.top(local=True)
             if root == self:

@@ -29,8 +29,8 @@
 """
 
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:vitalije.20190928154420.3: ** << imports >>
+#@+<< imports: history_tracer.py >>
+#@+node:vitalije.20190928154420.3: ** << imports: history_tracer.py >>
 import datetime
 import time
 import threading
@@ -41,7 +41,7 @@ from leo.core.leoQt import QtCore
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
+#@-<< imports: history_tracer.py >>
 
 idle_checker = None
 
@@ -62,7 +62,9 @@ def c12_hook(tag, keys):
 #@+node:vitalije.20190928160510.1: ** IdleChecker
 def init_idle_checker(tag, keys):
     global idle_checker
-    class IdleChecker(QtCore.QObject):
+
+
+    class IdleChecker(QtCore.QObject):  # type:ignore
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)

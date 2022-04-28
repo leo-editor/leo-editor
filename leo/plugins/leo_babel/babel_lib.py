@@ -259,7 +259,7 @@ class MenuPopUp(QtWidgets.QMenu):
             None
 
         """
-        LabelActionHint = collections.namedtuple('labelActionHint', 'label action hint')
+        LabelActionHint = collections.namedtuple('LabelActionHint', 'label action hint')
 
         super(MenuPopUp, self).__init__(parent=parent)
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)

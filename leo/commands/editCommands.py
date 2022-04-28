@@ -266,8 +266,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = 0  # For comment column functions.
-        self.cursorStack = []
-            # Values are tuples, (i, j, ins)
+        self.cursorStack = []  # Values are tuples, (i, j, ins)
         self.extendMode = False  # True: all cursor move commands extend the selection.
         self.fillPrefix = ''  # For fill prefix functions.
         # Set by the set-fill-column command.
@@ -628,8 +627,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def ctrlClickIconBox(self, event=None):  # pragma: no cover
         """Simulate a ctrl-click in the icon box of the presently selected node."""
         c = self.c
-        c.frame.tree.OnIconCtrlClick(c.p)
-            # Calls the base LeoTree method.
+        c.frame.tree.OnIconCtrlClick(c.p)  # Calls the base LeoTree method.
 
     @cmd('click-icon-box')
     def clickIconBox(self, event=None):  # pragma: no cover
@@ -1409,8 +1407,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     w.setSelectionRange(i, i, insert=i)
                     #@-<< backspace with negative tab_width >>
             finally:
+                # Necessary to make text changes stick.
                 self.endCommand(changed=changed, setLabel=False)
-                    # Necessary to make text changes stick.
         else:
             # No undo in this widget.
             s = w.getAllText()
@@ -1994,8 +1992,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i = w.getInsertPoint()
             w.insert(i, ws)
             w.setInsertPoint(i + len(ws))
-            w.seeInsertPoint()
-                # 2011/10/02: Fix cursor-movement bug.
+            w.seeInsertPoint()  # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20150514063305.276: *5* ec.updateAutomatchBracket
     def updateAutomatchBracket(self, p, w, ch, oldSel):
 
@@ -3674,8 +3671,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             def lower(s):
                 return s.lower() if ignoreCase else s
 
-            aList.sort(key=lower)
-                # key is a function that extracts args.
+            aList.sort(key=lower)  # key is a function that extracts args.
             if reverse:
                 aList.reverse()
             s = ''.join(aList)

@@ -10,6 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 import os
+from typing import Any, Callable
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -18,7 +19,9 @@ from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.core import leoNodes
 get_input = input
+
 #@-<< imports >>
+Widget = Any
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
 #@@nocolor-node
@@ -109,7 +112,9 @@ class textGui(leoGui.LeoGui):
     def runMainLoop(self):
         self.text_run()
     #@+node:ekr.20150107090324.16: *3* runOpenFileDialog
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+    def runOpenFileDialog(self,
+        c, title, filetypes, defaultextension, multiple=False, startpath=None,
+    ) -> str:
         initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
         ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
         if multiple:
@@ -248,7 +253,7 @@ class TextFrame(leoFrame.LeoFrame):
     def update(self):
         pass
 
-    def resizePanesToRatio(self, ratio, ratio2):
+    def resizePanesToRatio(self, ratio: float, ratio2: float) -> None:
         pass  # N/A
     #@-others
 #@+node:ekr.20150107090324.31: ** class textBody
@@ -332,19 +337,25 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent, tearoff=0, label=''):
+    def new_menu(self, parent: Widget, tearoff: int=0, labe: str=''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)
         menu.entries = []
         return menu
     #@+node:ekr.20150107090324.49: *3* add_cascade
-    def add_cascade(self, parent, label, menu, underline):
+    def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
         if parent is None:
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
-    #@+node:ekr.20150107090324.50: *3* add_command
-    def add_command(self, **keys):
+    #@+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
+    def add_command(self, menu: Widget,
+        accelerator: str='',
+        command: Callable=None,
+        commandName: str=None,
+        label: str=None,
+        underline: int=0,
+    ) -> None:
         # ?
         # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
         # accelerator - For display only; these are implemented by Leo's key handling.
@@ -353,10 +364,13 @@ class textLeoMenu(leoMenu.LeoMenu):
         def doNothingCallback():
             pass
 
-        label = keys.get('label') or 'no label'
-        underline = keys.get('underline') or 0
-        accelerator = keys.get('accelerator') or ''
-        command = keys.get('command') or doNothingCallback
+        if not command:
+            command = doNothingCallback
+
+        # label = keys.get('label') or 'no label'
+        # underline = keys.get('underline') or 0
+        # accelerator = keys.get('accelerator') or ''
+        # command = keys.get('command') or doNothingCallback
         entry = textMenuEntry(label, underline, accelerator, command)
         menu.entries.append(entry)
     #@+node:ekr.20150107090324.51: *3* add_separator
@@ -433,14 +447,10 @@ class textTree(leoFrame.LeoTree):
     def setBindings(self):
         pass
     #@+node:ekr.20150107090324.62: *3* begin/endUpdate & redraw/now
-    def redraw(self, p=None, scroll=True, forceDraw=False):
+    def redraw(self, p=None):
         self.text_draw_tree()
 
     redraw_now = redraw
-
-    # def redraw_now(self, p=None, scroll=True, forceDraw=False):
-        # if forceDraw:
-            # self.redraw()
     #@+node:ekr.20150107090324.63: *3* endUpdate
     #@+node:ekr.20150107090324.64: *3* __init__
     def __init__(self, frame):

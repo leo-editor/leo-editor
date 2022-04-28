@@ -55,25 +55,24 @@ class ExternalFilesController:
     #@+node:ekr.20150404083533.1: *3* efc.ctor
     def __init__(self, c=None):
         """Ctor for ExternalFiles class."""
-        self.checksum_d = {}
-            # Keys are full paths, values are file checksums.
+        self.checksum_d = {}  # Keys are full paths, values are file checksums.
+        # For efc.on_idle.
+        # Keys are commanders.
+        # Values are cached @bool check-for-changed-external-file settings.
         self.enabled_d = {}
-            # For efc.on_idle.
-            # Keys are commanders.
-            # Values are cached @bool check-for-changed-external-file settings.
+        # List of ExternalFile instances created by self.open_with.
         self.files = []
-            # List of ExternalFile instances created by self.open_with.
+        # Keys are commanders. Values are bools.
+        # Used only to limit traces.
         self.has_changed_d = {}
-            # Keys are commanders. Values are bools.
-            # Used only to limit traces.
+        # Copy of g.app.commanders()
         self.unchecked_commanders = []
-            # Copy of g.app.commanders()
+        # Copy of self file. Only one files is checked at idle time.
         self.unchecked_files = []
-            # Copy of self file. Only one files is checked at idle time.
+        # Keys are full paths, values are modification times.
+        # DO NOT alter directly, use set_time(path) and
+        # get_time(path), see set_time() for notes.
         self._time_d = {}
-            # Keys are full paths, values are modification times.
-            # DO NOT alter directly, use set_time(path) and
-            # get_time(path), see set_time() for notes.
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20150405105938.1: *3* efc.entries
@@ -427,9 +426,9 @@ class ExternalFilesController:
             elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0])
                 vtuple = arg_tuple[1:]
+                # add the name of the program as the first argument.
+                # Change suggested by Jim Sizelove.
                 vtuple.insert(0, filename)
-                    # add the name of the program as the first argument.
-                    # Change suggested by Jim Sizelove.
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:

@@ -76,6 +76,7 @@ where the extra information is the name of the linked node's parent.
 # - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB. Revised for Qt6 by EKR.
+from typing import List
 from leo.core import leoGlobals as g
 try:  # #2343
     from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
@@ -349,7 +350,7 @@ class backlinkController:
         self.updateTabInt()
     #@+node:ekr.20090616105756.3953: *3* bc.linksFrom
     def linksFrom(self, v, type_='S'):
-        ans = []
+        ans: List = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             return ans
 
@@ -495,7 +496,7 @@ class backlinkController:
         """
 
         c = self.c
-        hits = [[]]  # hits/including before the current node
+        hits: List[List] = [[]]  # hits/including before the current node
 
         current = c.p.v
 
@@ -578,9 +579,9 @@ class backlinkController:
                     dests.append((linkType, otherP))
             if dests:
                 g.es("- link info -")
-                for i in dests:
-                    g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[i[0]],
-                        i[1].h))
+                for dest in dests:
+                    g.es("%s %s" % ({'S': '->', 'D': '<-', 'U': '--'}[dest[0]],
+                        dest[1].h))
     #@+node:ekr.20090616105756.3965: *3* bc.showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
@@ -625,7 +626,7 @@ class backlinkController:
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             links = v.u['_bklnk']['links']
-            dests = []
+            dests: List = []
             self.dests = dests
             for data in links[:]:  # Must use a copy.
                 linkType, other = data
@@ -691,7 +692,7 @@ class backlinkController:
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if QtWidgets:
 
-    class backlinkQtUI(QtWidgets.QWidget):
+    class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:ekr.20140920145803.17987: *3* __init__
         def __init__(self, owner):

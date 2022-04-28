@@ -44,6 +44,7 @@ import os
 import subprocess
 import threading
 import time
+from typing import Any, List
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< globals >>
@@ -57,7 +58,7 @@ else:
 
 # misc global variables...
 RunNode = None
-RunList = None
+RunList: List[Any] = None  # List of Positions.
 WorkDir = None
 ExitCode = None
 
@@ -313,8 +314,8 @@ def OpenProcess(p):
 
     proc = subprocess.Popen(command, shell=True)
     In = proc.stdin
-    OutThread.File = proc.stdout
-    ErrThread.File = proc.stderr
+    OutThread.File = proc.stdout  # type:ignore
+    ErrThread.File = proc.stderr  # type:ignore
     OutThread.start()
     ErrThread.start()
     # Mark and select the node.

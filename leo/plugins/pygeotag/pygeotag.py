@@ -1,31 +1,17 @@
-# coding=utf8
-
-import sys
-isPython3 = sys.version_info >= (3, 0, 0)
-
+# -*- coding: utf-8 -*-
+# 4/23/2022: Modified by EKR. Support only Python 3. Fix mypy complaints.
 import cgi
 import json
 import os
+import sys
 import threading
 import time
+from typing import Any
 import webbrowser
-
-if isPython3:
-    import http.server as BaseHTTPServer
-else:
-    import BaseHTTPServer
-
-if isPython3:
-    import queue as Queue
-else:
-    import Queue
-
-if isPython3:
-    import urllib.request as urllib
-    import urllib.parse as urlparse
-else:
-    import urllib2 as urllib
-    import urlparse
+import http.server as BaseHTTPServer
+import queue as Queue
+import urllib.request as urllib
+import urllib.parse as urlparse
 
 class QueueTimeout(Queue.Queue):
     """from http://stackoverflow.com/questions/1564501/add-timeout-argument-to-pythons-queue-join
@@ -50,15 +36,16 @@ class PyGeoTag(object):
     def __init__(self, callback=None, synchronous=False):
 
         self.basedir = os.path.dirname(__file__)
-
         self.synchronous = synchronous
+
+
         if callback is not None:
-            self.callback = callback
+            self.callback = callback  # type:ignore
 
         if synchronous:
-            self.callback = self._store
+            self.callback = self._store  # type:ignore
 
-        self.server_thread = None
+        self.server_thread: threading.Thread = None
         self.running = False
         self.address = ''
         self.port = 8008
@@ -164,7 +151,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         return
 
     def do_GET(self):
-
+        data: Any
         if self.path.startswith("/QUIT"):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')

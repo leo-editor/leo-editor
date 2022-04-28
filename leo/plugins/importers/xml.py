@@ -70,8 +70,8 @@ class Xml_Importer(Importer):
         Scan s from i, within the given context.
         Return (context, i)
         """
+        # Only double-quoted strings are valid strings in xml/html.
         assert context in ('"', '<!--'), repr(context)
-            # Only double-quoted strings are valid strings in xml/html.
         if context == '"' and self.match(s, i, '"'):
             context = ''
             i += 1

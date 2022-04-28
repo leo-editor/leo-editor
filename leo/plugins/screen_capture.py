@@ -68,7 +68,7 @@ class Recorder:
         self.frame = 0
         self.pointer_pmap = self.make_pointer()
         self.pointer_img = self.pointer_pmap.toImage()
-        self.last_time = 0
+        self.last_time: float = 0.0
         c = g.app.commanders()[0]
         w = c.frame.body.wrapper.widget
         while w.parent():

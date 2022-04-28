@@ -527,20 +527,19 @@ class CPrettyPrinter:
             i = j  # Advance.
         return result
 
-
-    #@+at The following could be added to the 'else' clause::
-    #     # Accumulate everything else.
-    #     while (
-    #         j < n and
-    #         not s[j].isspace() and
-    #         not s[j].isalpha() and
-    #         not s[j] in '"\'_@' and
-    #             # start of strings, identifiers, and single-character tokens.
-    #         not g.match(s,j,'//') and
-    #         not g.match(s,j,'/*') and
-    #         not g.match(s,j,'-->')
-    #     ):
-    #         j += 1
+    # The following could be added to the 'else' clause::
+        # Accumulate everything else.
+        # while (
+            # j < n and
+            # not s[j].isspace() and
+            # not s[j].isalpha() and
+            # # start of strings, identifiers, and single-character tokens.
+            # not s[j] in '"\'_@' and
+            # not g.match(s,j,'//') and
+            # not g.match(s,j,'/*') and
+            # not g.match(s,j,'-->')
+        # ):
+            # j += 1
     #@+node:ekr.20110917193725.6974: *4* cpp.skip_block_comment
     def skip_block_comment(self, s, i):
         assert g.match(s, i, "/*")

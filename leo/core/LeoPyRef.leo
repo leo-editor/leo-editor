@@ -16,7 +16,10 @@
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
-<v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh></v>
+<v t="ekr.20211011090013.1"><vh>@button cvt-comments</vh>
+<v t="ekr.20220425184232.1"><vh>compute_lws</vh></v>
+<v t="ekr.20220425052306.1"><vh>convert</vh></v>
+</v>
 <v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
@@ -86,8 +89,17 @@
 </v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
+<v t="ekr.20220207070921.1"><vh>@@button test-findUNL</vh>
+<v t="tbrown.20140311095634.15188"><vh>g.findUNL &amp; helpers</vh>
+<v t="ekr.20220213142925.1"><vh>function: convert_unl_list</vh></v>
+<v t="ekr.20220213142735.1"><vh>function: full_match</vh></v>
+</v>
+</v>
 <v t="ekr.20201013034742.25"><vh>@@button test-jup-export</vh></v>
 <v t="ekr.20201013034742.26"><vh>@@button test-jup-import</vh></v>
+<v t="ekr.20220211154839.1"><vh>@@button test-show-clones</vh>
+<v t="ekr.20191010112910.1"><vh>@g.command('show-clone-ancestors')</vh></v>
+</v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 </v>
 </v>
@@ -187,7 +199,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
+<v t="ekr.20170302123956.1" descendentVnodeUnknownAttributes="7d71005805000000302e352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -213,7 +225,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31372e3071057d710668037d7107735806000000302e31392e3171087d710968037d710a735806000000302e32302e31710b7d710c68037d710d73752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d710668037d7107735806000000302e32302e3171087d710968037d710a735806000000302e32312e31710b7d710c68037d710d735806000000302e32322e31710e7d710f5808000000616e6e6f7461746571107d711173752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -414,6 +426,7 @@
 <v t="danr7.20060912105041.1"><vh>@file ../plugins/paste_as_headlines.py</vh></v>
 <v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file ../plugins/setHomeDirectory.py</vh></v>
+<v t="ajones.20070122160142"><vh>@file ../plugins/textnode.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file ../plugins/word_count.py</vh></v>
 </v>
 <v t="edream.110203113231.729"><vh>Debugging</vh>
@@ -532,23 +545,6 @@
 <v t="bob.20180206123613.1"><vh>@file ../plugins/leo_babel/tests/idle_time.py</vh></v>
 <v t="bob.20180205135005.1"><vh>@file ../plugins/leo_babel/tests/lib_test.py</vh></v>
 <v t="bob.20180125160225.1"><vh>@file ../plugins/leo_babel/tests/tests.py</vh></v>
-</v>
-</v>
-<v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
-<v t="ajones.20070122160142"><vh>@file ../plugins/textnode.py</vh></v>
-<v t="ekr.20190410171646.1"><vh>Unused: pyzo_support.py</vh>
-<v t="ekr.20190412042616.1"><vh>&lt;&lt; copyright &gt;&gt;</vh></v>
-<v t="ekr.20190410171905.1"><vh>init (pyzo_support.py)</vh></v>
-<v t="ekr.20190418161712.1"><vh>class PyzoInterface</vh>
-<v t="ekr.20190803175344.1"><vh>pyzo_x.patch_pyzo</vh></v>
-</v>
-</v>
-<v t="ekr.20190805022257.1"><vh>Unused: @file ../plugins/file pyzo_file_browser.py</vh>
-<v t="ekr.20190809093446.1"><vh> &lt;&lt; pyzo_file_browser imports &gt;&gt;</vh></v>
-<v t="ekr.20190809093459.1"><vh> top-level Leo functions</vh>
-<v t="ekr.20190809093459.3"><vh>init (pyzo_file_browser)</vh></v>
-<v t="ekr.20190809093459.4"><vh>onCreate</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
@@ -675,7 +671,7 @@
 <v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
 <v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
 <v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
-<v t="ekr.20140907131341.18707" descendentVnodeUnknownAttributes="7d71005809000000302e312e322e322e3271017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323032312d30332d323971077573732e"><vh>@file ../plugins/qt_tree.py</vh></v>
+<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
 <v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
@@ -731,10 +727,10 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">restart-leo
+<t tx="ekr.20150425145248.1">cvt-comments
+pylint
 test-one
 test-import
-pylint
 backup</t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
 # Format: language-name: command
@@ -807,34 +803,110 @@ actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20211011090013.1">"""Find hanging comments."""
+<t tx="ekr.20211011090013.1">"""Find and convert hanging comments."""
+# https://github.com/leo-editor/leo-editor/pull/2622
+g.cls()
 import re
-pat = re.compile(r'^(\s*)(.*?)\n(\s*)(.*?)\n')
+from typing import Any, List
 
-# Find:  ^(\s*)(.*?)\n(\s*)(.*?)\n
-# Repl: \1\2  \4\n      Single line (best)
-# Repl: \1\2\n\1\4\n
-    
-def predicate(p):
-    for m in pat.finditer(p.b):
-        if (
-            not m.group(2).startswith('def ')
-            and not m.group(2).startswith('#')
-            and m.group(4).startswith('#')
-            and len(m.group(1)) &lt; len(m.group(3))
-            and not (m.group(4).startswith('"""'))
-        ):
-            g.trace('Found', p.h)
-            return True
-    return False
+trace = True  # It's useful to trace even when also replacing.
+replace = True  # Replace body text.
+max_line_length = 70  # Maximum line length for lines containing trailing comments.
 
-c.cloneFindByPredicate(p.self_and_subtree, predicate, flatten=True)
+@others
+
+for p in c.p.self_and_subtree():
+    convert(p)
 print('done')
+</t>
+<t tx="ekr.20220425184232.1">def compute_lws(s: str) -&gt; int:
+    """Return the leading whitespace of s."""
+    n = len(s) - len(s.lstrip())
+    return s[:n]
+</t>
+<t tx="ekr.20220425052306.1">compound_statement = (
+    # Leo doesn't use 'match'
+    'async ', 'class ', 'def ', 'else:', 'elif ', 'except',
+    'finally:', 'for ', 'if ', 'try:', 'while ', 'with ',
+)
+pat = re.compile(r'\)\s*-&gt;.*:\s*$')  # End of multiline def.
+
+def convert(p: Any) -&gt; None:
+    """Convert all hanging comments in p.b."""
+    if p.isAnyAtFileNode():
+        print('   Scan:', p.h)
+    changed, last, result = False, '', []
+    i, lines = 0, p.b.split('\n')
+    sep = '-' * 40
+    while i &lt; len(lines):
+        progress = i
+        more_lines = []
+        s = lines[i]
+        s_s = s.lstrip()
+        last_s = last.lstrip()
+        lws_s = compute_lws(s)
+        lws_last = compute_lws(last)
+        if (
+            last_s and s_s.startswith('#')
+            and not pat.match(last_s)
+            and not last_s.startswith(('#', '"""', "'''"))
+            and not last_s.endswith(('[', '(', '{', '):'))
+            and not last_s.startswith(compound_statement)
+            and lws_last &lt; lws_s
+        ):
+            changed = True
+            result.pop()  # Discard the last line!
+            j = i + 1  # Look for more indented lines.
+            while j &lt; len(lines):
+                s2 = lines[j]
+                s2_s = s2.strip()
+                lws_s2 = compute_lws(s2)
+                if lws_s2 &gt;= lws_s and s2_s.startswith('#'):
+                    more_lines.append(s2)
+                    j += 1
+                else:
+                    break
+            if not more_lines and len(last_s) + len(s_s) &lt; max_line_length:
+                # Emit one line.
+                result.append(f"{last}  {s_s}")
+                if trace:
+                    g.printObj([last, s, sep, f"{last}  {s_s}\n"], tag=p.h)
+            else:
+                # Emit the first comment line.
+                result.append(f"{lws_last}{s_s}")
+                # Emit any additional comment lines.
+                for z in more_lines:
+                    result.append(f"{lws_last}{z.lstrip()}")
+                # Emit the last (non-comment) line.
+                result.append(last)
+                if trace:
+                    added_lines = [f"{lws_last}{z.lstrip()}" for z in more_lines]
+                    g.printObj(
+                        [last, s] + more_lines + [sep] +
+                        [f"{lws_last}{s_s}"] + added_lines + [last], tag=p.h)
+            i += 1 + len(more_lines)
+            last = lines[i]
+        else:
+            result.append(s)
+            last = s
+            i += 1
+        assert progress &lt; i
+    if changed:
+        print('Changed:', p.h)
+        if replace:
+            p.b = '\n'.join(result)
 </t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
-<t tx="ekr.20220306092217.1">command = 'python -m unittest leo.unittests.core.test_leoNodes.TestNodes.test_p_nearest'
-g.execute_shell_commands(command, trace=False)</t>
+<t tx="ekr.20220306092217.1">g.cls()
+import os
+leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+prolog = 'python -m unittest leo.unittests'
+# command = f"{prolog}.core.test_leoAst.TestOrange.test_star_star_operator"
+# command = f"{prolog}.test_gui.TestQtGui.test_create_html_links"
+command = f"{prolog}.commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606"
+g.execute_shell_commands(command)</t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20170811173924.1">@language python
@@ -1637,6 +1709,24 @@ if c.isChanged():
 c.k.simulateCommand('pylint')
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
+<t tx="ekr.20220207070921.1"># Do NOT try to reload g!
+g.cls()
+import re
+from typing import Any, List, Optional
+Cmdr = Pos = VNode = Any
+    
+@others  # g.findUNL should be a cloned child.
+
+unlList = [
+    # Old-style.
+    'Code:3,0',
+    'Plugins:4,0',
+    'Auto completion',  # Plain.
+    '@file ../plugins/ctagscompleter.py::-8'  # Was -44
+]
+
+p = findUNL(unlList, c)
+print(p and p.h or '&lt;None&gt;')</t>
 <t tx="ekr.20201013034742.25"># g.cls()
 import re
 import sys
@@ -1678,6 +1768,11 @@ if not g.unitTesting:
     c.redraw() 
     g.es_print('done')
 </t>
+<t tx="ekr.20220211154839.1">g.cls()
+@others
+p = c.lastTopLevel()
+c.selectPosition(p)
+show_clone_ancestors(event={'c':c})</t>
 <t tx="ekr.20131121084830.16362">@language python
 
 # Toggle the settings.
@@ -2121,10 +2216,13 @@ path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
 print('path:', path)
 os.chdir(path)
 
+# Any revspec is valid as an argument to the "branch1" and "branch2" args.
+# See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
+
 efc.GitDiffController(c).diff_two_branches(
     branch1='devel', # old branch/rev
-    branch2='ekr-git-diff', # new branch/rev
-    fn='leo/commands/editFileCommands.py',  # Don't use back slashes.
+    branch2='ekr-6.6.1-devel', # new branch/rev
+    fn='leo/core/leoAst.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
@@ -3164,98 +3262,6 @@ These plugins create new kinds of nodes, some of which affect the file system.</
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
-<t tx="ekr.20130927050813.13031"></t>
-<t tx="ekr.20190410171646.1">@first # -*- coding: utf-8 -*-
-"""
-pyzo_support.py: Will probably be deleted.
-"""
-&lt;&lt; copyright &gt;&gt;
-from leo.core import leoGlobals as g
-assert g
-@others
-</t>
-<t tx="ekr.20190412042616.1">@
-This file uses code from pyzo. Here is the pyzo copyright notice:
-
-Copyright (C) 2013-2018, the Pyzo development team
-
-Pyzo is distributed under the terms of the (new) BSD License.
-The full license can be found in 'license.txt'.
-
-Yoton is distributed under the terms of the (new) BSD License.
-The full license can be found in 'license.txt'.
-</t>
-<t tx="ekr.20190410171905.1">def init():
-    print('pyzo_support.py is not a real plugin')
-    return False
-</t>
-<t tx="ekr.20190418161712.1">class PyzoInterface:
-    """
-    A class representing the singleton running instance of pyzo.
-
-    Instantiated in the top-level init() function.
-    """
-
-    @others
-</t>
-<t tx="ekr.20190803175344.1">def patch_pyzo(self):
-    """
-    Called at the end of pyzo.start to embed Leo into pyzo.
-    """
-</t>
-<t tx="ekr.20190805022257.1">@first # -*- coding: utf-8 -*-
-"""pyzo_file_browser.py: Experimental plugin that adds pyzo's file browser dock to Leo."""
-&lt;&lt; pyzo_file_browser imports &gt;&gt;
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20190809093446.1">import sys
-from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore
-#
-# Must patch sys.path here.
-plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-sys.path.insert(0, plugins_dir)
-#
-# Start pyzo, de-fanged.
-import pyzo
-# pylint: disable=no-member
-</t>
-<t tx="ekr.20190809093459.1"></t>
-<t tx="ekr.20190809093459.3">init_warning_given = False
-
-def init(): # pyzo_file_browser.py
-    """Return True if this plugin can be loaded."""
-
-    def oops(message):
-        global init_warning_given
-        if not init_warning_given:
-            init_warning_given = True
-            print('%s %s' % (__name__, message))
-        return False
-
-    if g.app.gui.guiName() != "qt":
-        return oops('requires Qt gui')
-     if not getattr(g.app, 'dock'):
-        return oops('requires Qt Docks')
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    return True
-</t>
-<t tx="ekr.20190809093459.4">def onCreate(tag, keys): # pyzo_file_browser.py
-    """Create a pyzo file browser in c's outline."""
-    c = keys.get('c')
-    dw = c and c.frame and c.frame.top
-    if not dw:
-        return
-    pyzo.start_pyzo_in_leo(c, pyzo)
-    from pyzo.tools.pyzoFileBrowser import PyzoFileBrowser
-    make_dock(c,
-        name="File Browser",
-        widget=PyzoFileBrowser(parent=None),
-    )
-</t>
 <t tx="ekr.20041001210557"></t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20050111122605"></t>

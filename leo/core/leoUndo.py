@@ -1801,10 +1801,10 @@ class Undoer:
             cc.selectChapterByName('main')
         u.newP.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.newP)
+        # Bug fix: 2016/03/30.
+        # This always selects the proper new position.
+        # c.selectPosition(u.p)
         c.deleteOutline()
-            # Bug fix: 2016/03/30.
-            # This always selects the proper new position.
-            # c.selectPosition(u.p)
         if u.pasteAsClone:
             for bunch in u.beforeTree:
                 v = bunch.v

@@ -6,8 +6,12 @@ Import wrapper for pyQt6.
 For Qt6, plugins are responsible for loading all optional modules.
 
 """
+
+# For now, suppress all mypy checks
+# type: ignore
+
 # pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
-#
+
 # Required imports
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl

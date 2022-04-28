@@ -51,11 +51,11 @@ Type False, followed by two commas.
 
 4. You will then be prompted for the last field::
 
+    ### Examples:
+    # self.indent # for python, coffeescript.
+    # self.curlies
+    # (self, curlies, self.parens)
     return level
-        ### Examples:
-        # self.indent # for python, coffeescript.
-        # self.curlies
-        # (self, curlies, self.parens)
 
 Only "level" is highlighted. The comments provide some hints about what to type.
 
@@ -267,8 +267,8 @@ class Importer:
 
         This method handles caching.  x.get_new_table returns the actual table.
         """
+        # Bug fix: must keep tables separate.
         key = '%s.%s' % (self.name, context)
-            # Bug fix: must keep tables separate.
         table = self.cached_scan_tables.get(key)
         if table:
             return table

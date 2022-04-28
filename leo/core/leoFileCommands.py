@@ -88,8 +88,8 @@ class FastRead:
         v, g_element = self.readWithElementTree(path, s)
         if not v:  # #1510.
             return None
+        # #1047: only this method changes splitter sizes.
         self.scanGlobals(g_element)
-            # #1047: only this method changes splitter sizes.
         #
         # #1111: ensure that all outlines have at least one node.
         if not v.children:
@@ -1200,9 +1200,9 @@ class FileCommands:
         self.descendentTnodeUaDictList = []
         self.descendentVnodeUaDictList = []
         self.descendentExpandedList = []
+        # 2011/12/10: never re-init this dict.
+        # self.gnxDict = {}
         self.descendentMarksList = []
-            # 2011/12/10: never re-init this dict.
-            # self.gnxDict = {}
         self.c.nodeConflictList = []  # 2010/01/05
         self.c.nodeConflictFileName = None  # 2010/01/05
     #@+node:ekr.20100124110832.6212: *5* fc.propagateDirtyNodes
@@ -1270,9 +1270,9 @@ class FileCommands:
         if marks or expanded:
             for p in c.all_unique_positions():
                 if marks.get(p.v):
+                    # This was the problem: was p.setMark.
+                    # There was a big performance bug in the mark hook in the Node Navigator plugin.
                     p.v.initMarkedBit()
-                        # This was the problem: was p.setMark.
-                        # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes

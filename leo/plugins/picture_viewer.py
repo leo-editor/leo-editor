@@ -63,6 +63,7 @@ import pathlib
 import sys
 import random
 import textwrap
+from typing import List
 # Leo imports
 from leo.core import leoGlobals as g
 try:
@@ -203,10 +204,14 @@ def main():
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
-    class Slides(QtWidgets.QWidget):
+    class Slides(QtWidgets.QWidget):  # type:ignore
 
+        files_list: List[str]
+        scale: float = 1.0
         slide_number = -1
+        starting_directory: str = None
         timer = QtCore.QBasicTimer()
+        verbose: bool = False
 
         #@+others
         #@+node:ekr.20211024030844.1: *3* Slides.closeEvent
@@ -316,12 +321,12 @@ if QtWidgets:
         def move_to(self):
             """Issue a prompt and move the file if the user agrees."""
             file_name = self.files_list[self.slide_number]
-            path = QtWidgets.QFileDialog().getExistingDirectory()
+            path: str = QtWidgets.QFileDialog().getExistingDirectory()
             if path:
                 new_path = os.path.join(path, os.path.basename(file_name))
                 if os.path.exists(new_path):
                     print("File exists:", new_path)
-                    pathlib.Path(file_name).unlink(new_path)
+                    pathlib.Path(file_name).unlink(new_path)  # type:ignore
                 else:
                     pathlib.Path(file_name).rename(new_path)
                 del self.files_list[self.slide_number]

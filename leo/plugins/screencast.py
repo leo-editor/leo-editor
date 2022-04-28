@@ -359,9 +359,9 @@ class ScreenCastController:
         """Execute the command whose name is given and update the screen immediately."""
         m = self
         c = m.c
+        # Named commands handle their own undo!
+        # The undo handling in m.next should suffice.
         c.k.simulateCommand(command_name)
-            # Named commands handle their own undo!
-            # The undo handling in m.next should suffice.
         c.redraw()
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
@@ -664,8 +664,8 @@ class ScreenCastController:
         m.clear_state()
         p.contract()
         c.redraw(p)
+        # Clear widgets left over from previous, unfinished, slideshows.
         m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
     #@+node:ekr.20170128184559.1: *4* sc.start_commands (new)
     def start_commands(self, commands):
@@ -685,8 +685,8 @@ class ScreenCastController:
         m.clear_state()
         # p.contract()
         # c.redraw(p)
+        # Clear widgets left over from previous, unfinished, slideshows.
         m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
     #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):

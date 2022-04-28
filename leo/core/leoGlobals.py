@@ -295,19 +295,18 @@ def new_cmd_decorator(name: str, ivars: List[str]) -> Callable:
                 c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
+                # Don't use a keyword for self.
+                # This allows the VimCommands class to use vc instead.
                 func(self, event=event)
-                    # Don't use a keyword for self.
-                    # This allows the VimCommands class to use vc instead.
             except Exception:
                 g.es_exception()
 
         new_cmd_wrapper.__func_name__ = func.__name__  # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
+        # Put the *wrapper* into the global dict.
         global_commands_dict[name] = new_cmd_wrapper
-            # Put the *wrapper* into the global dict.
-        return func
-            # The decorator must return the func itself.
+        return func  # The decorator must return the func itself.
 
     return _decorator
 #@-others
@@ -892,8 +891,8 @@ class KeyStroke:
             ['ctrl', 'control',],  # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
+            # 868: Allow alternative spellings.
             ['keypad', 'key_pad', 'numpad', 'num_pad'],
-                # 868: Allow alternative spellings.
         )
         result = []
         for aList in table:
@@ -2125,12 +2124,12 @@ class Tracer:
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
     def __init__(self, limit: int=0, trace: bool=False, verbose: bool=False) -> None:
+        # Keys are function names.
+        # Values are the number of times the function was called by the caller.
         self.callDict: Dict[str, Any] = {}
-            # Keys are function names.
-            # Values are the number of times the function was called by the caller.
+        # Keys are function names.
+        # Values are the total number of times the function was called.
         self.calledDict: Dict[str, int] = {}
-            # Keys are function names.
-            # Values are the total number of times the function was called.
         self.count = 0
         self.inited = False
         self.limit = limit  # 0: no limit, otherwise, limit trace to n entries deep.
@@ -2631,8 +2630,7 @@ class LinterTable():
         paths = []
         if functions:
             for func in functions:
-                files = [func] if isinstance(func, str) else func()
-                    # Bug fix: 2016/10/15
+                files = [func] if isinstance(func, str) else func()  # Bug fix: 2016/10/15
                 for fn in files:
                     fn = g.os_path_abspath(fn)
                     if scope != 'file' and g.shortFileName(fn) in suppress_list:
@@ -2688,7 +2686,6 @@ class LinterTable():
             'leofts.py',  # Not (yet) in leoPlugins.leo.
             'qtGui.py',  # Dummy file
             'qt_main.py',  # Created automatically.
-            'viewrendered2.py',  # To be removed.
             'rst3.py',  # Obsolete
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
@@ -2780,9 +2777,9 @@ def _callerName(n: int, verbose: bool=False) -> str:
             return f"line {line:4} {sfn:>30} {full_name}"
         return name
     except ValueError:
+        # The stack is not deep enough OR
+        # sys._getframe does not exist on this platform.
         return ''
-            # The stack is not deep enough OR
-            # sys._getframe does not exist on this platform.
     except Exception:
         es_exception()
         return ''  # "<no caller name>"
@@ -3330,9 +3327,9 @@ def get_directives_dict(p: Pos, root: Any=None) -> Dict[str, str]:
                 continue
             j = i + len(word)
             if j < len(s) and s[j] not in ' \t\n':
+                # Not a valid directive: just ignore it.
+                # A unit test tests that @path:any is invalid.
                 continue
-                    # Not a valid directive: just ignore it.
-                    # A unit test tests that @path:any is invalid.
             k = g.skip_line(s, j)
             val = s[j:k].strip()
             d[word] = val
@@ -3650,8 +3647,7 @@ def set_delims_from_language(language: str) -> Tuple[str, str, str]:
             return '', delim1, delim2
         # 0,1 or 3 params.
         return delim1, delim2, delim3
-    return '', '', ''
-        # Indicate that no change should be made
+    return '', '', ''  # Indicate that no change should be made
 #@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
 def set_delims_from_string(s: str) -> Tuple[str, str, str]:
     """
@@ -3815,7 +3811,7 @@ def create_temp_file(textMode: bool=False) -> Tuple[Any, str]:
         theFile, theFileName = None, ''
     return theFile, theFileName
 #@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
-def createHiddenCommander(fn: str) -> Optional[Cmdr]:
+def createHiddenCommander(fn: str) -> Cmdr:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
@@ -3906,7 +3902,7 @@ def getBaseDirectory(c: Cmdr) -> str:
         return base  # base need not exist yet.
     return ""  # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
-def getEncodingAt(p: Pos, s: str=None) -> str:
+def getEncodingAt(p: Pos, s: bytes=None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -4031,7 +4027,7 @@ def openWithFileName(fileName: str, old_c: Cmdr=None, gui: str=None) -> Cmdr:
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
-def readFileIntoEncodedString(fn: str, silent: bool=False) -> Optional[bytes]:
+def readFileIntoEncodedString(fn: str, silent: bool=False) -> bytes:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -4256,7 +4252,7 @@ def findAncestorVnodeByPredicate(p: Pos, v_predicate: Any) -> Optional["VNode"]:
                 parents.append(grand_parent_v)
     return None
 #@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
-def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Any=None) -> List[Pos]:
+def findRootsWithPredicate(c: Cmdr, root: Pos, predicate: Callable=None) -> List[Pos]:
     """
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
@@ -5466,7 +5462,7 @@ def getLine(s: str, i: int) -> Tuple[int, int]:
         k = k + 1
     return j, k
 #@+node:ekr.20111114151846.9847: *4* g.toPythonIndex
-def toPythonIndex(s: str, index: int) -> int:
+def toPythonIndex(s: str, index: Union[int, str]) -> int:
     """
     Convert index to a Python int.
 
@@ -5482,8 +5478,8 @@ def toPythonIndex(s: str, index: int) -> int:
         return len(s)
     data = index.split('.')
     if len(data) == 2:
-        row, col = data
-        row, col = int(row), int(col)
+        row1, col1 = data
+        row, col = int(row1), int(col1)
         i = g.convertRowColToPythonIndex(s, row - 1, col)
         return i
     g.trace(f"bad string index: {index}")
@@ -5676,7 +5672,7 @@ def isWordChar(ch: str) -> bool:
 def isWordChar1(ch: str) -> bool:
     return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s: str) -> Tuple[Optional[str], str]:
+def stripBOM(s: bytes) -> Tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -6901,8 +6897,7 @@ def os_startfile(fname: str) -> None:
         quoted_fname = f'"{fname}"'
     if sys.platform.startswith('win'):
         # pylint: disable=no-member
-        os.startfile(quoted_fname)
-            # Exists only on Windows.
+        os.startfile(quoted_fname)  # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
@@ -7035,7 +7030,7 @@ def python_tokenize(s: str) -> List:
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
 #@+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: Dict[str, str], script: str=None) -> None:
+def exec_file(path: str, d: Dict[str, Any], script: str=None) -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:

@@ -35,42 +35,38 @@ except Exception:
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c, widget, wrapper):
+def make_colorizer(c, widget):
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
     if use_pygments:
-        return PygmentsColorizer(c, widget, wrapper)
-    return JEditColorizer(c, widget, wrapper)
+        return PygmentsColorizer(c, widget)
+    return JEditColorizer(c, widget)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
     #@+node:ekr.20220317050513.1: *3* BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
-    def __init__(self, c, widget=None, wrapper=None):
+    def __init__(self, c, widget=None):
         """ctor for BaseColorizer class."""
-        #
         # Copy args...
         self.c = c
         self.widget = widget
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
-        self.wrapper = wrapper
-        # This assert is not true when using multiple body editors
-            # assert(wrapper == self.c.frame.body.wrapper)
-        #
+        # Configuration dicts...
+        self.configDict: Dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict: Dict[str, bool] = {}  # Keys are tags, values are bools.
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev = None  # Used by setTag.
         self.showInvisibles = False
-        #
         # Statistics....
         self.count = 0
         self.full_recolor_count = 0  # For unit tests.
         self.recolorCount = 0
-        #
         # For traces...
         self.matcher_name = ''
         self.rulesetName = ''
@@ -82,18 +78,16 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18578: *4* BaseColorizer.configureTags & helpers
     def configureTags(self):
         """Configure all tags."""
-        wrapper = self.wrapper
-        if wrapper and hasattr(wrapper, 'start_tag_configure'):
-            wrapper.start_tag_configure()
         self.configure_fonts()
         self.configure_colors()
         self.configure_variable_tags()
-        if wrapper and hasattr(wrapper, 'end_tag_configure'):
-            wrapper.end_tag_configure()
+        if 'coloring' in g.app.debug:
+            g.printObj(self.configDict, tag='configDict')
+            g.printObj(self.configUnderlineDict, tag='configUnderlineDict')
     #@+node:ekr.20190324172632.1: *5* BaseColorizer.configure_colors
     def configure_colors(self):
         """Configure all colors in the default colors dict."""
-        c, wrapper = self.c, self.wrapper
+        c = self.c
         # getColor puts the color name in standard form:
         # color = color.replace(' ', '').lower().strip()
         getColor = c.config.getColor
@@ -104,18 +98,12 @@ class BaseColorizer:
                 getColor(option_name) or
                 default_color
             )
-            # Must use foreground, not fg.
-            try:
-                wrapper.tag_configure(key, foreground=color)
-            except Exception:  # Recover after a user settings error.
-                g.es_exception()
-                wrapper.tag_configure(key, foreground=default_color)
+            self.configDict[key] = color
     #@+node:ekr.20190324172242.1: *5* BaseColorizer.configure_fonts & helper
     def configure_fonts(self):
         """Configure all fonts in the default fonts dict."""
         c = self.c
         isQt = g.app.gui.guiName().startswith('qt')
-        wrapper = self.wrapper
         #
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
@@ -141,7 +129,6 @@ class BaseColorizer:
                 font = self.find_font(key, name)
                 if font:
                     self.fonts[key] = font
-                    wrapper.tag_configure(key, font=font)
                     if isQt and key == 'url':
                         font.setUnderline(True)
                     # #1919: This really isn't correct.
@@ -150,10 +137,9 @@ class BaseColorizer:
             else:
                 # Neither setting exists.
                 self.fonts[key] = None  # Essential
-                wrapper.tag_configure(key, font=defaultBodyfont)
     #@+node:ekr.20190326034006.1: *6* BaseColorizer.find_font
+    # Keys are key::settings_names, values are cumulative font size.
     zoom_dict: Dict[str, int] = {}
-        # Keys are key::settings_names, values are cumulative font size.
 
     def find_font(self, key, setting_name):
         """
@@ -236,11 +222,9 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18579: *5* BaseColorizer.configure_variable_tags
     def configure_variable_tags(self):
         c = self.c
-        wrapper = self.wrapper
-        wrapper.tag_configure("link", underline=0)
         use_pygments = pygments and c.config.getBool('use-pygments', default=False)
         name = 'name.other' if use_pygments else 'name'
-        wrapper.tag_configure(name, underline=1 if self.underline_undefined else 0)
+        self.configUnderlineDict[name] = self.underline_undefined
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
@@ -249,17 +233,8 @@ class BaseColorizer:
             if self.showInvisibles:
                 color = c.config.getColor(option_name) if option_name else default_color
             else:
-                option_name, default_color = self.default_colors_dict.get(
-                    name, (None, None),)
+                option_name, default_color = self.default_colors_dict.get(name, (None, None))
                 color = c.config.getColor(option_name) if option_name else ''
-            try:
-                wrapper.tag_configure(name, background=color)
-            except Exception:  # A user error.
-                wrapper.tag_configure(name, background=default_color)
-                g.es_print(f"invalid setting: {name!r} = {default_color!r}")
-        # Special case:
-        if not self.showInvisibles:
-            wrapper.tag_configure("elide", elide="1")
     #@+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     #@@nobeautify
 
@@ -343,8 +318,8 @@ class BaseColorizer:
             'name.label'            :('name.label',         '#A0A000'),
             'name.namespace'        :('name.namespace',     '#0000FF'), # bold
             'name.other'            :('name.other',         'red'),
+            # A hack: getLegacyFormat returns name.pygments instead of name.
             'name.pygments'         :('name.pygments',      'white'),
-                # A hack: getLegacyFormat returns name.pygments instead of name.
             'name.tag'              :('name.tag',               '#008000'), # bold
             'name.variable'         :('name.variable',          '#19177C'),
             'name.variable.class'   :('name.variable.class',    '#19177C'),
@@ -628,7 +603,7 @@ class BaseColorizer:
             "blank",  # show_invisibles_space_color
             "docpart",
             "leokeyword",
-            "link",
+            "link",  # section reference.
             "name",
             "namebrackets",
             "tab",  # show_invisibles_space_color
@@ -649,7 +624,6 @@ class BaseColorizer:
         self.n_setTag += 1
         if i == j:
             return
-        wrapper = self.wrapper  # A QTextEditWrapper
         if not tag.strip():
             return
         tag = tag.lower().strip()
@@ -657,7 +631,7 @@ class BaseColorizer:
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots') :]
-        colorName = wrapper.configDict.get(tag)  # This color name should already be valid.
+        colorName = self.configDict.get(tag)  # This color name should already be valid.
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.
@@ -674,7 +648,7 @@ class BaseColorizer:
             else:
                 g.trace('unknown color name', colorName, g.callers())
                 return
-        underline = wrapper.configUnderlineDict.get(tag)
+        underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
         font = self.fonts.get(tag)
         if font:
@@ -780,9 +754,9 @@ class JEditColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ & helpers
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget):
         """Ctor for JEditColorizer class."""
-        super().__init__(c, widget, wrapper)
+        super().__init__(c, widget)
         #
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -883,8 +857,8 @@ class JEditColorizer(BaseColorizer):
         # pylint: disable=no-member
         table = [
             # Rules added at front are added in **reverse** order.
+            # Debatable: Leo keywords override langauge keywords.
             ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
-                # Debatable: Leo keywords override langauge keywords.
             ('@', self.match_at_color, True),
             ('@', self.match_at_killcolor, True),
             ('@', self.match_at_language, True),  # 2011/01/17
@@ -934,8 +908,7 @@ class JEditColorizer(BaseColorizer):
         if not name:
             return False
         if name == 'latex':
-            name = 'tex'
-                # #1088: use tex mode for both tex and latex.
+            name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
         # if 'coloring' in g.app.debug and not g.unitTesting:
         #     print(f"language: {language!r}, rulesetName: {rulesetName!r}")
@@ -1287,8 +1260,8 @@ class JEditColorizer(BaseColorizer):
 
         This is called whenever a pattern matcher succeed.
         """
+        # setTag does most tracing.
         trace = 'coloring' in g.app.debug and not g.unitTesting
-            # setTag does most tracing.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace:
@@ -1356,8 +1329,8 @@ class JEditColorizer(BaseColorizer):
         if i == 0 and g.match_word(s, 0, '@color'):
             n = self.setRestart(self.restartColor)
             self.setState(n)  # Enable coloring of *this* line.
+            # Now required. Sets state.
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-                # Now required. Sets state.
             return len('@color')
         return 0
     #@+node:ekr.20170125140113.1: *6* restartColor
@@ -1527,12 +1500,12 @@ class JEditColorizer(BaseColorizer):
             block_n = self.currentBlockNumber()
             text_block = doc.findBlockByNumber(block_n)
             g.trace(f"block_n: {block_n:2} {s!r}")
+            # How to get the cursor of the colorized line.
+                # body = self.c.frame.body
+                # s = body.wrapper.getAllText()
+                # wrapper.delete(0, j)
+                # cursor.insertHtml(src)
             g.trace(f"block text: {repr(text_block.text())}")
-                # How to get the cursor of the colorized line.
-                    # body = self.c.frame.body
-                    # s = body.wrapper.getAllText()
-                    # wrapper.delete(0, j)
-                    # cursor.insertHtml(src)
             return j
         return 0
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
@@ -2038,13 +2011,11 @@ class JEditColorizer(BaseColorizer):
 
             def span(s):
                 # Note: bindings are frozen by this def.
-                return self.restart_match_span(s,
-                    # Positional args, in alpha order
+                return self.restart_match_span(s,  # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(span,
-                # These must be keyword args.
+            self.setRestart(span,  # These must be keyword args.
                 delegate=delegate, end=end,
                 exclude_match=exclude_match,
                 kind=kind,
@@ -2114,13 +2085,11 @@ class JEditColorizer(BaseColorizer):
         if j > len(s):
 
             def span(s):
-                return self.restart_match_span(s,
-                    # Positional args, in alpha order
+                return self.restart_match_span(s,  # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(span,
-                # These must be keywords args.
+            self.setRestart(span,  # These must be keywords args.
                 delegate=delegate, end=end, kind=kind,
                 no_escape=no_escape,
                 no_line_break=no_line_break,
@@ -2262,8 +2231,8 @@ class JEditColorizer(BaseColorizer):
                     return j
                 i = j
             return i
+        # Include the newline so we don't get a flash at the end of the line.
         return g.skip_line(s, i)
-                # Include the newline so we don't get a flash at the end of the line.
     #@+node:ekr.20110605121601.18628: *4* jedit.trace_match
     def trace_match(self, kind, s, i, j):
 
@@ -2404,8 +2373,8 @@ if QtGui:
             self.c = c
             self.colorizer = colorizer
             self.n_calls = 0
+            # Alas, a QsciDocument is not a QTextDocument.
             assert isinstance(document, QtGui.QTextDocument), document
-                # Alas, a QsciDocument is not a QTextDocument.
             self.leo_document = document
             super().__init__(document)
             self.reloadSettings()
@@ -2414,8 +2383,7 @@ if QtGui:
             """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
-            self.colorizer.recolor(s)
-                # Highlight just one line.
+            self.colorizer.recolor(s)  # Highlight just one line.
         #@+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
         def reloadSettings(self):
             """Reload all reloadable settings."""
@@ -2555,8 +2523,7 @@ if Qsci:
         """A do-nothing colorizer for Scintilla."""
 
         def __init__(self, c, parent=None):
-            super().__init__(parent)
-                # Init the pase class
+            super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
 
@@ -2586,9 +2553,9 @@ class PygmentsColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317053040.1: *3*  pyg_c: Birth
     #@+node:ekr.20190319151826.3: *4* pyg_c.__init__
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget):
         """Ctor for PygmentsColorizer class."""
-        super().__init__(c, widget, wrapper)
+        super().__init__(c, widget)
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
@@ -2781,10 +2748,10 @@ class PygmentsColorizer(BaseColorizer):
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),
                     (r'^(@language)\s+(\w+)', self.at_language_callback),
+                    # Single-line, non-greedy match.
                     (leo_sec_ref_pat, self.section_ref_callback),
-                        # Single-line, non-greedy match.
+                    # Multi-line, non-greedy match.
                     (r'(^\s*@doc|@)(\s+|\n)(.|\n)*?^@c', Comment.Leo.DocPart),
-                        # Multi-line, non-greedy match.
                    inherit,
                 ],
             }
@@ -2827,9 +2794,9 @@ class PygmentsColorizer(BaseColorizer):
         p = self.c.p
         self.recolorCount += 1
         if p.v != self.old_v:
+            # Force a full recolor
+            # sets self.language and self.enabled.
             self.updateSyntaxColorer(p)
-                # Force a full recolor
-                # sets self.language and self.enabled.
             self.color_enabled = self.enabled
             self.old_v = p.v  # Fix a major performance bug.
             self.init()
@@ -2846,7 +2813,7 @@ class QScintillaColorizer(BaseColorizer):
     """A colorizer for a QsciScintilla widget."""
     #@+others
     #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
-    def __init__(self, c, widget, wrapper):
+    def __init__(self, c, widget):
         """Ctor for QScintillaColorizer. widget is a """
         super().__init__(c)
         self.count = 0  # For unit testing.

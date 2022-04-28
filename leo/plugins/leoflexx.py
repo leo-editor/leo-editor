@@ -43,6 +43,7 @@ import os
 import re
 import sys
 import time
+from typing import Union
 
 # This is what Leo typically does.
 # pylint: disable=wrong-import-position
@@ -104,9 +105,9 @@ def info(s):
     """Send the string s to the flex logger, at level info."""
     if not isinstance(s, str):
         s = repr(s)
+    # A hack: automatically add the "Leo" prefix so
+    # the top-level suppression logic will not delete this message.
     flx.logger.info('Leo: ' + s)
-        # A hack: automatically add the "Leo" prefix so
-        # the top-level suppression logic will not delete this message.
 #@+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
@@ -125,8 +126,7 @@ def make_editor_function(name, node):
     ace.navigateFileEnd()  # otherwise all lines highlighted
     ace.setTheme("ace/theme/solarized_dark")
     if name == 'body':
-        ace.getSession().setMode("ace/mode/python")
-            # This sets soft tabs.
+        ace.getSession().setMode("ace/mode/python")  # This sets soft tabs.
     if name == 'minibuffer':
         pass  # To do: Disable line numbers.
     return ace
@@ -185,7 +185,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().setInsertPoint(pos, s)
         self.finish_set_insert('setInsertPoint')
 
-    def setSelectionRange(self, i, j, insert=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None):
         super().setSelectionRange(i, j, insert)
         self.finish_set_insert('setSelectionRange')
     #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
@@ -211,8 +211,8 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         tag = 'py.body.setter'
         if self.name == 'body':
             # print('%s: %s' % (tag, len(self.s)))
+            # p.b = self.s will cause an unbounded recursion.
             c.p.v.setBodyString(self.s)
-                # p.b = self.s will cause an unbounded recursion.
         if 0:
             print('%s: %s:  len(self.s): %s ins: %s sel: %r' % (
                 self.tag, tag, len(self.s), self.ins, self.sel))
@@ -224,7 +224,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().appendText(s)
         self.finish_setter('appendText')
 
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         super().delete(i, j)
         self.finish_setter('delete')
 
@@ -232,7 +232,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().deleteTextSelection()
         self.finish_setter('deleteTextSelection')
 
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s):
         # Called from doPlainChar, insertNewlineHelper, etc. on every keystroke.
         super().insert(i, s)
         self.finish_setter('insert')
@@ -272,8 +272,8 @@ class LeoBrowserApp(flx.PyComponent):
     #@+node:ekr.20181114015356.1: *5* app.create_all_data
     def create_gnx_to_vnode(self):
         t1 = time.process_time()
+        # This is likely the only data that ever will be needed.
         self.gnx_to_vnode = {v.gnx: v for v in self.c.all_unique_nodes()}
-            # This is likely the only data that ever will be needed.
         if 0:
             print('app.create_all_data: %5.3f sec. %s entries' % (
                 (time.process_time() - t1), len(list(self.gnx_to_vnode.keys()))))
@@ -588,8 +588,7 @@ class LeoBrowserApp(flx.PyComponent):
         c = self.c
         p = p or c.p
         t1 = time.process_time()
-        c.expandAllAncestors(c.p)
-            # Ensure that c.p will be shown.
+        c.expandAllAncestors(c.p)  # Ensure that c.p will be shown.
         d = {
             'c.p': self.p_to_ap(p),
             'items': [
@@ -611,10 +610,10 @@ class LeoBrowserApp(flx.PyComponent):
         assert p.v
         self.gnx_to_vnode[p.v.gnx] = p.v
         if 0:
+            # A superb trace. There are similar traces in:
+            # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
+            # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
             print('make_dict_for_position: %s%s' % ('  ' * p.level(), p.v.h))
-                # A superb trace. There are similar traces in:
-                # - flx_tree.redraw_with_dict  and its helper, flx_tree.create_item_with_parent.
-                # - flx_tree.populate_children and its helper, flx_tree.create_item_for_ap
         if p.isExpanded():  # Do not use p.v.isExpanded().
             children = [
                 self.make_dict_for_position(child)
@@ -687,15 +686,15 @@ class LeoBrowserApp(flx.PyComponent):
         #
         # Do the minibuffer command: like k.callAltXFunction.
         commandName, char, mods = d['commandName'], d['char'], d['mods']
+        # Same as in app.do_key.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-            # Same as in app.do_key.
         event = g.Bunch(
             c=c,
             char=char,
             stroke=binding,
             widget=w,  # Use the body pane by default.
         )
-            # Another hack.
+        # Another hack.
         k.functionTail = None
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
@@ -718,14 +717,15 @@ class LeoBrowserApp(flx.PyComponent):
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
             else:
+                # Important, so cut-text works, e.g.
                 c.widgetWantsFocusNow(event and event.widget)
-                    # Important, so cut-text works, e.g.
             try:
                 func(event)
             except Exception:
                 g.es_exception()
             return True
-        if 0:  # Not ready yet
+        if 0:
+            # Not ready yet
             # Show possible completions if the command does not exist.
             if 1:  # Useful.
                 k.doTabCompletion(list(c.commandsDict.keys()))
@@ -757,8 +757,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def complete_save_file(self, d):
-        self.update_body_from_dict_helper(d)
-            # Use the helper, to skip checks.
+        self.update_body_from_dict_helper(d)  # Use the helper, to skip checks.
         fn = d['fn']
         if 'select' in g.app.debug:
             tag = 'py.app.complete_save_file'
@@ -785,8 +784,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def complete_save_file_as(self, d):
-        self.update_body_from_dict_helper(d)
-            # Use the helper, to skip checks.
+        self.update_body_from_dict_helper(d)  # Use the helper, to skip checks.
         fn = d['fn']
         if 'select' in g.app.debug:
             tag = 'py.app.complete_save_file'
@@ -813,8 +811,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     @flx.action
     def complete_save_file_to(self, d):
-        self.update_body_from_dict_helper(d)
-            # Use the helper, to skip checks.
+        self.update_body_from_dict_helper(d)  # Use the helper, to skip checks.
         fn = d['fn']
         if 'select' in g.app.debug:
             tag = 'py.app.complete_save_file'
@@ -826,8 +823,8 @@ class LeoBrowserApp(flx.PyComponent):
     def complete_select(self, d):
         """Complete the selection of the d['new_ap']"""
         self.update_body_from_dict(d)
+        # tree.complete_select has direct ivars to tree ivars.
         self.c.frame.tree.complete_select(d)
-            # tree.complete_select has direct ivars to tree ivars.
     #@+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
@@ -844,8 +841,8 @@ class LeoBrowserApp(flx.PyComponent):
         w.status_line.update(lt, rt)
         # print('app.select_ap', repr(ap))
         w.tree.select_ap(ap)
+        # call LeoTree.select, but not self.select_p.
         c.frame.tree.super_select(p)
-            # call LeoTree.select, but not self.select_p.
     #@+node:ekr.20190506100026.1: *5* app.action.select_minibuffer
     @flx.action
     def select_minibuffer(self):
@@ -1128,8 +1125,7 @@ class LeoBrowserApp(flx.PyComponent):
             p2.expand()
         #
         # Test the code.
-        self.make_redraw_dict(p)
-            # Call this only for timing stats.
+        self.make_redraw_dict(p)  # Call this only for timing stats.
         new_flattened_outline = redrawer.flatten_outline(c)
         redraw_instructions = redrawer.make_redraw_list(
             self.old_flattened_outline,
@@ -1140,8 +1136,7 @@ class LeoBrowserApp(flx.PyComponent):
         # Restore the tree.
         for p2 in c.all_positions(copy=False):
             p2.contract()
-        c.expandAllAncestors(p)
-            # Does not do a redraw.
+        c.expandAllAncestors(p)  # Does not do a redraw.
     #@+node:ekr.20181113180246.1: *5* app.test_round_trip_positions
     def test_round_trip_positions(self):
         """Test the round tripping of p_to_ap and ap_to_p."""
@@ -1214,8 +1209,8 @@ class LeoBrowserFrame(leoFrame.NullFrame):
 class LeoBrowserGui(leoGui.NullGui):
 
     def __init__(self, gui_name='browser'):
+        # leoTest.doTest special-cases the name "browser".
         super().__init__(guiName='browser')
-            # leoTest.doTest special-cases the name "browser".
         self.gui_name = gui_name  # May specify the actual browser.
         assert gui_name.startswith('browser')
         self.logWaiting = []
@@ -1248,9 +1243,9 @@ class LeoBrowserGui(leoGui.NullGui):
         """
         gui = self
         self.lastFrame = DummyFrame(c, title, gui)
+        # A buglet in Leo's core: this is necessary.
+        # LM.doPostPluginsInit tests g.app.windowList, maybe when it shouldn't.
         g.app.windowList.append(self.lastFrame)
-            # A buglet in Leo's core: this is necessary.
-            # LM.doPostPluginsInit tests g.app.windowList, maybe when it shouldn't.
         return self.lastFrame
     #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
@@ -1328,8 +1323,7 @@ class LeoBrowserGui(leoGui.NullGui):
             s, color, newline = msg[:3]
             w.log.put(s.rstrip())
         g.app.logWaiting = []
-        g.app.setLog(None)
-            # Essential when opening multiple files...
+        g.app.setLog(None)  # Essential when opening multiple files...
     #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
     def runMainLoop(self):
         """Run the main loop from within Leo's core."""
@@ -1402,8 +1396,8 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
     """Browser wrapper for minibuffer."""
 
     def __init__(self, c, frame):
+        # Name must be minibuffer, for gui.isTextWrapper().
         super().__init__(c, name='minibuffer')
-            # Name must be minibuffer, for gui.isTextWrapper().
         assert self.c == c, repr(self.c)
         # assert c.frame == frame, (repr(c.frame), repr(frame))
             # c.frame is a NullFrame.  frame is a LeoBrowserFrame.
@@ -1447,14 +1441,14 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
 
-    def delete(self, i, j=None):
+    def delete(self, i: Union[int, str], j: Union[int, str]=None):
         super().delete(i, j)
         self.update('delete')
 
     def getAllText(self):
         return self.s
 
-    def insert(self, i, s):
+    def insert(self, i: Union[int, str], s: str) -> None:
         super().insert(i, s)
         self.update('insert')
 
@@ -1462,7 +1456,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.update('setAllText')
 
-    def setSelectionRange(self, i, j, insert=None):
+    def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
 
@@ -1581,10 +1575,8 @@ class LeoBrowserTree(leoFrame.NullTree):
         self.select_lockout = False
         #
         # Make everything official in Leo's core.
-        super().select(p)
-            # Call LeoTree.select.
-        self.root.select_p(p)
-            # Call app.select_position.
+        super().select(p)  # Call LeoTree.select.
+        self.root.select_p(p)  # Call app.select_position.
     #@+node:ekr.20190508121510.1: *5* tree.endEditLabel
     def endEditLabel(self):
         """
@@ -1632,10 +1624,8 @@ class LeoBrowserTree(leoFrame.NullTree):
             return
         if not self.root.inited:
             # Don't sync the body pane during startup.
-            super().select(p)
-                # Call LeoTree.select
-            self.root.select_p(p)
-                # Call app.select_position.
+            super().select(p)  # Call LeoTree.select
+            self.root.select_p(p)  # Call app.select_position.
             return
         #
         # Begin the selection.
@@ -1674,7 +1664,6 @@ class LeoBrowserTree(leoFrame.NullTree):
     #@+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         """This is c.frame.tree.redraw!"""
-        # print(self.tag, '(c.frame.tree) redraw')
         self.root.redraw(p)
     #@+node:ekr.20181120063844.1: *4* tree.setFocus
     def setFocus(self):
@@ -1966,8 +1955,8 @@ class LeoFlexxBody(JS_Editor):
             print('%30s: %s ==> %s' % (
                 tag, d['old_ap']['headline'], d['old_ap']['headline']))
             # self.root.dump_dict(d, tag)
+        # Sets d.s, etc., describing insert point & selection range.
         self.update_body_dict(d)
-            # Sets d.s, etc., describing insert point & selection range.
         self.root.complete_select(d)
 
     #@+node:ekr.20190510070010.1: *4* flx.body.update_body_dict
@@ -2319,8 +2308,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
-        redraw_dict = {}
-            # #1127: Remove references to deleted items.
+        redraw_dict = {}  # #1127: Remove references to deleted items.
     #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         """Create a tree item for item and all its visible children."""
@@ -2419,8 +2407,8 @@ class LeoFlexxTree(flx.Widget):
                         print('flx.tree.on_tree_event: already expanded', ap['headline'])
                 else:
                     ap['expanded'] = True
+                    # Populate children, if necessary.
                     self.start_populating_children(ap, tree_item)
-                        # Populate children, if necessary.
     #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
@@ -2441,8 +2429,8 @@ class LeoFlexxTree(flx.Widget):
         """
         parent = self.populating_tree_item
         assert parent
+        # The expansion bit may have changed?
         assert parent_ap == parent.leo_ap
-            # The expansion bit may have changed?
         # print('flx.tree.populate_children: parent: %r %s children' % (parent, len(children)))
         for child_ap in children:
             self.create_item_with_parent(child_ap, parent)
@@ -2555,12 +2543,10 @@ class LeoFlexxTree(flx.Widget):
             if ev.new_value:  # A selection event.
                 ap = ev.source.leo_ap
                 # print('on_selected_event: select:', ap['headline'])
-                self.select_ap(ap)
-                    # Selects the corresponding LeoTreeItem.
-                self.set_ap(ap)
-                    # Sets self.selected_ap.
+                self.select_ap(ap)  # Selects the corresponding LeoTreeItem.
+                self.set_ap(ap)  # Sets self.selected_ap.
+                # A helper action, calling tree.select.
                 self.root.select_tree_using_ap(ap)
-                    # A helper action, calling tree.select.
     #@-others
 #@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):

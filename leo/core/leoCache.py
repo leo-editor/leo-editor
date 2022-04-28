@@ -73,8 +73,7 @@ class CommanderCacher:
             # Null gui's don't normally set the g.app.gui.db.
             g.app.setGlobalDb()
         # Fixes bug 670108.
-        assert g.app.db is not None
-            # a PickleShareDB instance.
+        assert g.app.db is not None  # a PickleShareDB instance.
         # Make sure g.guessExternalEditor works.
         g.app.db.get("LEO_EDITOR")
         # self.initFileDB('~/testpickleshare')
@@ -132,8 +131,7 @@ class CommanderWrapper:
         del self.db[f"{self.key}:::{key}"]
 
     def __getitem__(self, key):
-        return self.db[f"{self.key}:::{key}"]
-            # May (properly) raise KeyError
+        return self.db[f"{self.key}:::{key}"]  # May (properly) raise KeyError
 
     def __setitem__(self, key, value):
         self.user_keys.add(key)
@@ -186,8 +184,7 @@ class GlobalCacher:
         """Dump the indicated cache if --trace-cache is in effect."""
         tag0 = 'Global Cache'
         tag2 = f"{tag0}: {tag}" if tag else tag0
-        dump_cache(self.db, tag2)
-            # Careful: g.app.db may not be set yet.
+        dump_cache(self.db, tag2)  # Careful: g.app.db may not be set yet.
     #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
@@ -206,9 +203,9 @@ class PickleShareDB:
         self.root = abspath(expanduser(root))
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
+        # Keys are normalized file names.
+        # Values are tuples (obj, orig_mod_time)
         self.cache = {}
-            # Keys are normalized file names.
-            # Values are tuples (obj, orig_mod_time)
 
         def loadz(fileobj):
             if fileobj:
@@ -482,9 +479,9 @@ class SqlitePickleShare:
         dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
         self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
+        # Keys are normalized file names.
+        # Values are tuples (obj, orig_mod_time)
         self.cache = {}
-            # Keys are normalized file names.
-            # Values are tuples (obj, orig_mod_time)
 
         def loadz(data):
             if data:

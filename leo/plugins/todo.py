@@ -69,6 +69,7 @@ import os
 import re
 import datetime
 import time
+from typing import Callable, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #
@@ -103,7 +104,8 @@ def popup_entry(c, p, menu):
     c.cleo.addPopupMenu(c, p, menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
-    class todoQtUI(QtWidgets.QWidget):
+
+    class todoQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
         def __init__(self, owner, logTab=True):
@@ -382,9 +384,9 @@ class todoController:
         """
         # Patch the buttons only if the pyqt version is greater than 5.12.
         from leo.core.leoQt import qt_version
-        size = QtCore.QSize(16, 16)
-        qt_version = [int(z) for z in qt_version.split('.')]
-        if qt_version[1] <= 12:
+        size = QtCore.QSize(16, 16)  # type:ignore
+        qt_version = [int(z) for z in qt_version.split('.')]  # type:ignore
+        if qt_version[1] <= 12:  # type:ignore
             return
         ui = self.ui.UI
 
@@ -503,7 +505,7 @@ class todoController:
 
         return self.menuicons[pri]
     #@+node:tbrown.20090119215428.13: *3* redrawer
-    def redrawer(fn):
+    def redrawer(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which create the need for a redraw"""
         # pylint: disable=no-self-argument
         def todo_redrawer_callback(self, *args, **kargs):
@@ -518,12 +520,12 @@ class todoController:
             return ans
         return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
-    def projectChanger(fn):
+    def projectChanger(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which change projects"""
         # pylint: disable=no-self-argument
         def project_changer_callback(self, *args, **kargs):
             # pylint: disable=not-callable
-            ans = fn(self, *args, **kargs)
+            ans = fn(self, *args, **kargs)  # type:ignore
             self.update_project()
             return ans
         return project_changer_callback
@@ -733,8 +735,8 @@ class todoController:
 
         self.updateUI()
         if not g.app.initing:
+            # This is disabled (converted to redraw_later) during startup.
             self.c.redraw()
-                # This is disabled (converted to redraw_later) during startup.
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
@@ -1131,7 +1133,7 @@ class todoController:
                     x0 = x0.replace(what, ','.join(repl))
 
                 x0 = [int(i) for i in x0.replace(',', ' ').split()]
-                      # if int(i) in self.todo_priorities]
+                    # if int(i) in self.todo_priorities]
             except Exception:
                 g.es('Not understood, no action')
                 return
@@ -1171,18 +1173,18 @@ class todoController:
         """show distribution of priority levels in subtree"""
         if p is None:
             p = self.c.currentPosition()
-        pris = {}
+        pris: Dict = {}
         for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
                 pris[pri] = 1
             else:
                 pris[pri] += 1
-        pris = sorted([(k, v) for k, v in pris.items()])
-        for pri in pris:
-            if pri[0] in self.priorities:
-                g.es('%s\t%d\t%s\t(%s)' % (self.priorities[pri[0]]['short'], pri[1],
-                    self.priorities[pri[0]]['long'], pri[0]))
+        pris_list = sorted([(k, v) for k, v in pris.items()])
+        for item in pris_list:
+            if item[0] in self.priorities:
+                g.es('%s\t%d\t%s\t(%s)' % (self.priorities[item[0]]['short'], item[1],
+                    self.priorities[item[0]]['long'], item[0]))
     #@+node:tbrown.20150605111428.1: *3* updateStyle
     def updateStyle(self, tag=None, k=None):
         """

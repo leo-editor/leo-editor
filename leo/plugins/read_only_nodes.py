@@ -63,6 +63,7 @@ import html.parser as HTMLParser
 import io
 import os
 import sys
+from typing import Any, List
 import urllib.parse as urlparse
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
@@ -109,7 +110,7 @@ class FTPurl:
     #@+node:edream.110203113231.880: *3* __init__
     def __init__(self, ftpURL, mode=''):
 
-        parse = urlparse(ftpURL)
+        parse = urlparse(ftpURL)  # type:ignore
         if parse[0] != 'ftp':
             raise IOError("error reading %s: malformed ftp URL" % ftpURL)
 
@@ -151,12 +152,12 @@ class FTPurl:
 
         try:
             if self.mode == '':  # mode='': ASCII mode
-                slist = []
-                self.ftp.retrlines('RETR %s' % self.path, slist.append)
+                slist: List = []
+                self.ftp.retrlines('RETR %s' % self.path, slist.append)  # type:ignore
                 s = '\n'.join(slist)
             else:  # mode='b': binary mode
                 file = StringIO()
-                self.ftp.retrbinary('RETR %s' % self.path, file.write)
+                self.ftp.retrbinary('RETR %s' % self.path, file.write)  # type:ignore
                 s = file.getvalue()
                 file.close()
             return s
@@ -167,6 +168,7 @@ class FTPurl:
     #@+node:edream.110203113231.883: *4* readline
     def readline(self):
         """Read one entire line from the remote file."""
+        self.lst: List
         try:
             self.lst
         except AttributeError:
@@ -189,9 +191,9 @@ class FTPurl:
         try:
             file = StringIO(s)
             if self.mode == '':  # mode='': ASCII mode
-                self.ftp.storlines('STOR %s' % self.path, file)
+                self.ftp.storlines('STOR %s' % self.path, file)  # type:ignore
             else:  # mode='b': binary mode
-                self.ftp.storbinary('STOR %s' % self.path, file)
+                self.ftp.storbinary('STOR %s' % self.path, file)  # type:ignore
             file.close()
         except Exception:
             exception, msg, tb = sys.exc_info()
@@ -206,7 +208,7 @@ class FTPurl:
     #@+node:edream.110203113231.889: *4* dir
     def dir(self, path=None):
         """Issue a LIST command passing the specified argument and return output as a string."""
-        s = []
+        s: List = []
 
         if path is None:
             path = self.dirname
@@ -281,7 +283,8 @@ def insert_read_only_node(c, p, name):
         )
         p.h = "@read-only %s" % name
         c.redraw()
-    parse = urlparse(name)
+    parse = urlparse(name)  # type:ignore
+    f: Any
     try:
         if parse[0] == 'ftp':
             f = FTPurl(name)  # FTP URL
@@ -303,7 +306,7 @@ def insert_read_only_node(c, p, name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
-            parser = HTMLParser(fmt)
+            parser = HTMLParser(fmt)  # type:ignore
 
             # send the HTML text to the parser
             parser.feed(new)

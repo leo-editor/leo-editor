@@ -95,6 +95,7 @@ whitespace (calling .strip()).
 """
 #@-<< docstring >>
 import re
+from typing import Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
@@ -161,7 +162,8 @@ class TagController:
     def show_all_tags(self):
         """Show all tags, organized by node."""
         c, tc = self.c, self
-        d = {}
+        aList: List[str]
+        d: Dict[str, List[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))
@@ -247,7 +249,7 @@ class TagController:
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
 if QtWidgets:
 
-    class LeoTagWidget(QtWidgets.QWidget):
+    class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
         def __init__(self, c, parent=None):
@@ -467,8 +469,8 @@ if QtWidgets:
         def command2_hook(self, tag, keywords):
             paste_cmds = [
                 'paste-node',
+                # strange that this one isn't canonicalized
                 'pasteOutlineRetainingClones',
-                    # strange that this one isn't canonicalized
                 'paste-retaining-clones',
             ]
             if keywords.get('label') in paste_cmds:

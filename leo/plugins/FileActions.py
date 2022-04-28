@@ -96,10 +96,10 @@ def onIconDoubleClick(tag, keywords):
     # This generates a slightly confusing warning if there are no dirty nodes.
     c.fileCommands.writeDirtyAtFileNodes()
     if doFileAction(filename, c):
+        # Action was taken - Stop other double-click handlers from running
         return True
-            # Action was taken - Stop other double-click handlers from running
+    # No action taken - Let other double-click handlers run
     return None
-        # No action taken - Let other double-click handlers run
 
 #@+node:ekr.20040915105758.15: ** doFileAction
 def doFileAction(filename, c):

@@ -29,6 +29,7 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20070119094733.2: ** <<imports>>
+import copy
 import doctest
 import os
 from leo.core import leoGlobals as g
@@ -96,13 +97,10 @@ class DT(BaseLeoPlugin):
         text = tempfile.readlines()
         tempfile.close()
         # strip trailing whitespace, an annoying source of doctest failures
-        text = [line.rstrip() for line in text]
-        text = "\n".join(text)
+        text_s = "\n".join(line.rstrip() for line in text)
         tempfile = open(tempfilename, 'w')
-        tempfile.write(text)
+        tempfile.write(text_s)
         tempfile.close()
-
-        import copy
 
         # build globals dictionary
         globals = {'c': copy.copy(self.c), 'g': g}

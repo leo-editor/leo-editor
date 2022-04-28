@@ -195,32 +195,25 @@ class JS_Importer(Importer):
         return new_state.level() < top.state.level()
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
+        # (function name (
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
-            # (function name (
+        # name: (function (
         re.compile(r'\s*(\w+\s*\:\s*\(*\s*function\s*\()'),
-            # name: (function (
+        # const|let|var name = .* =>
         re.compile(r'\s*(?:const|let|var)\s*(\w+\s*(?:=\s*.*)=>)'),
-            # const|let|var name = .* =>
     ]
     clean_regex_list2 = [
-        re.compile(r'(.*\=)(\s*function)'),
-            # .* = function
+        re.compile(r'(.*\=)(\s*function)'),  # .* = function
     ]
     clean_regex_list3 = [
-        re.compile(r'(.*\=\s*new\s*\w+)\s*\(.*(=>)'),
-            # .* = new name .* =>
-        re.compile(r'(.*)\=\s*\(.*(=>)'),
-            # .* = ( .* =>
-        re.compile(r'(.*)\((\s*function)'),
-            # .* ( function
-        re.compile(r'(.*)\(.*(=>)'),
-            # .* ( .* =>
-        re.compile(r'(.*)(\(.*\,\s*function)'),
-            # .* \( .*, function
+        re.compile(r'(.*\=\s*new\s*\w+)\s*\(.*(=>)'),  # .* = new name .* =>
+        re.compile(r'(.*)\=\s*\(.*(=>)'),  # .* = ( .* =>
+        re.compile(r'(.*)\((\s*function)'),  # .* ( function
+        re.compile(r'(.*)\(.*(=>)'),  # .* ( .* =>
+        re.compile(r'(.*)(\(.*\,\s*function)'),  # .* \( .*, function
     ]
     clean_regex_list4 = [
-        re.compile(r'(.*)\(\s*(=>)'),
-            # .* ( =>
+        re.compile(r'(.*)\(\s*(=>)'),  # .* ( =>
     ]
 
     def clean_headline(self, s, p=None, trace=False):

@@ -80,7 +80,7 @@ def main():
     fdR = codecs.open(args.fpnResults, 'w', encoding='utf-8')
     testCmdr = lib_test.TestCmdr(cmdrT, fdR)
     genFindTests = lib_test.findTests(cmdrT)
-    itPoll = leoG.IdleTime((lambda itRunTests: lib_test.runTests(itRunTests,
+    itPoll = leoG.IdleTime((lambda itRunTests: lib_test.runTests(itRunTests,  # type:ignore
         cmdrT, fdR, testCmdr, genFindTests)), delay=10)
     itPoll.start()
     idle_time.IdleTime.idle()

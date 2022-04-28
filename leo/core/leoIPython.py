@@ -148,13 +148,11 @@ class InternalIPKernel:
     #@+node:ekr.20160331083020.1: *3* ileo.pdb
     def pdb(self, message=''):
         """Fall into pdb."""
-        import pdb
-            # Required: we have just defined pdb as a function!
+        import pdb  # Required: we have just defined pdb as a function!
         pdb = pdb.Pdb(stdout=sys.__stdout__)  # type:ignore # mypy is confused.
         if message:
             self.put_stdout(message)
-        pdb.set_trace()
-            # This works, but there are no IPython sources.
+        pdb.set_trace()  # This works, but there are no IPython sources.
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
     def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
@@ -224,8 +222,7 @@ class InternalIPKernel:
     def run(self):
         """Start the IPython kernel.  This does not return."""
         self.new_qt_console(event=None)
-        self.kernelApp.start()
-            # This does not return.
+        self.kernelApp.start()  # This does not return.
     #@+node:ekr.20160329053849.1: *3* ileo.run_script
     def run_script(self, file_name, script):
         """

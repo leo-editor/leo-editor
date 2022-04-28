@@ -749,7 +749,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor_style = css
         self.editor.setStyleSheet(css)
 
-        colorizer = leoColorizer.make_colorizer(c, self.editor, wrapper)
+        colorizer = leoColorizer.make_colorizer(c, self.editor)
         colorizer.highlighter.setDocument(self.doc)
 
         # Try to get tab width from the host's body

@@ -87,10 +87,10 @@ class SettingsFinder:
             self.c.config.getOutlineData("settings-finder-menu"))
         aList = []
         self.tree_to_menulist(aList, finder_menu)
+        # #1144: Case must match.
+        # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
+        # so aList[0][1] is the list of submenus
         menu.createMenuFromConfigList("Edit Settings", aList[0][1])
-            # #1144: Case must match.
-            # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
-            # so aList[0][1] is the list of submenus
         return aList
     #@+node:tbrown.20150818162156.1: *3* sf.copy_recursively
     @staticmethod

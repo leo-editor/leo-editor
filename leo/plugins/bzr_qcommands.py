@@ -29,7 +29,9 @@ def bzr_qcommands(c, p, menu):
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         cmd = subprocess.Popen(['bzr', 'stat', path], stdin=subprocess.PIPE,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = cmd.communicate()
+        stdout_bytes, stderr_bytes = cmd.communicate()
+        stdout = g.toUnicode(stdout_bytes)
+        stderr = g.toUnicode(stderr_bytes)
         g.es("\n\n".join([stdout, stderr]))
     action = menu.addAction('stat')
     # action.connect(action, QtCore.SIGNAL("triggered()"), bzr_stat)

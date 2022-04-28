@@ -10,11 +10,9 @@ import traceback
 from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtWidgets
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-
-log = None  # log = logging.getLogger("out")
+log = None
 #@+others
 #@+node:ekr.20140911023403.17845: **  top-level
 #@+node:ekr.20121126095734.12432: *3* async_syscmd
@@ -141,7 +139,7 @@ class NowOrLater:
 
     #@-others
 #@+node:ekr.20121126095734.12427: ** class Repeater
-class Repeater(QtCore.QThread):
+class Repeater(QtCore.QThread):  # type:ignore
     """ execute f forever, signal on every run """
 
     fragment = QtCore.pyqtSignal(object)
@@ -174,7 +172,7 @@ class Repeater(QtCore.QThread):
 
     #@-others
 #@+node:ekr.20121126095734.12424: ** class RRunner
-class RRunner(QtCore.QThread):
+class RRunner(QtCore.QThread):  # type:ignore
     #@+others
     #@+node:ekr.20121126095734.12425: *3* __init__
     def __init__(self, f, parent=None):
@@ -262,7 +260,7 @@ class ThreadQueue:
 
     #@-others
 #@+node:ekr.20121126095734.12436: ** class UnitWorker
-class UnitWorker(QtCore.QThread):
+class UnitWorker(QtCore.QThread):  # type:ignore
     """ Work on one work item at a time, start new one when it's done """
 
     resultReady = QtCore.pyqtSignal()

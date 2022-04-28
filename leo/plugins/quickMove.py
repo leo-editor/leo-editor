@@ -134,6 +134,7 @@ Tags
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
+from typing import Any, List, Sequence, Tuple
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
@@ -203,7 +204,7 @@ class quickMove:
        creating buttons, and creates buttons as needed
     """
 
-    flavors = [
+    flavors: List[Tuple] = [
       # name   first/last  long  short
       ('move', True, "Move", "to"),
       ('copy', True, "Copy", "to"),
@@ -250,15 +251,16 @@ class quickMove:
             ("Clear ALL Permanent Buttons Here", None, self.clearButton),
         )
 
-        self.recent_moves = []  # recent move/copy/bookmark to commands for
-                                # top level context menu entries
-
-        self.imps = []  # implementations, (func,name,text)
-        self.txts = {}  # get short from name, for permanent buttons
-                        # filled in below
+        # recent move/copy/bookmark to commands for
+        # top level context menu entries
+        self.recent_moves = []
+        # implementations, (func,name,text)
+        self.imps = []
+        # get short from name, for permanent buttons. filled in below
+        self.txts = {}
 
         # build callables for imp list
-
+        todo: Sequence[Any]
         for name, first_last, long, short in quickMove.flavors:
             # pylint: disable=undefined-loop-variable
             self.txts[name] = short
@@ -328,7 +330,7 @@ class quickMove:
 
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
-        self.local_imps = []  # make table for createMenuItemsFromTable()
+        self.local_imps: List[Tuple] = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
 
@@ -414,8 +416,8 @@ class quickMove:
                     but = b.button
                     rc = QAction(txt, but)
                     rc.triggered.connect(cb)
+                    # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
-                        # insert rc before Remove Button
 
         self.buttons.append((mb, b))
     #@+node:tbrown.20091217114654.5372: *3* permanentButton
@@ -549,6 +551,7 @@ class quickMove:
         need_submenu = 'Move', 'Copy', 'Clone', 'Bookmark', 'Link'
         current_kind = None
         current_submenu = None
+        todo: Any
         for name, first_last, long, short in quickMove.flavors:
             if first_last:
                 todo = 'first child', 'last child', 'next sibling', 'prev sibling'
@@ -972,7 +975,7 @@ class quickMoveButton:
     def computeUNL(self, p):
 
         p = p.copy()
-        heads = []
+        heads: List[str] = []
         while p:
             heads.insert(0, p.h)
             p = p.parent()

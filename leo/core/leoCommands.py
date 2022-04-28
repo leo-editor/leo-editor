@@ -15,10 +15,11 @@ import time
 import tokenize
 from typing import Any, Dict, Callable, List, Optional, Set, Tuple
 from leo.core import leoGlobals as g
+# The leoCommands ctor now does most leo.core.leo* imports,
+# thereby breaking circular dependencies.
 from leo.core import leoNodes
-    # The leoCommands ctor now does most leo.core.leo* imports,
-    # thereby breaking circular dependencies.
 #@-<< imports >>
+Widget = Any
 
 def cmd(name) -> Callable:
     """Command decorator for the Commands class."""
@@ -423,11 +424,11 @@ class Commands:
     #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
 
-    def hash(self):
+    def hash(self) -> str:  # Leo 6.6.2: Always return a string.
         c = self
         if c.mFileName:
             return g.os_path_finalize(c.mFileName).lower()  # #1341.
-        return 0
+        return f"{id(self)!s}"
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
     idle_focus_count = 0
 
@@ -1338,8 +1339,7 @@ class Commands:
             return
         master = getattr(c.frame.top, 'leo_master', None)
         if master:
-            master.setChanged(c, changed=True)
-                # LeoTabbedTopLevel.setChanged.
+            master.setChanged(c, changed=True)  # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0] != '*':
             c.frame.setTitle("* " + s)
@@ -1920,8 +1920,7 @@ class Commands:
         def state2(event):
             d['arg2'] = k.arg
             k.extendLabel(prompt3, select=False, protect=True)
-            k.get1Arg(event, handler=state3)
-                # Restart.
+            k.get1Arg(event, handler=state3)  # Restart.
 
         def state3(event):
             args = [d.get('arg1'), d.get('arg2'), k.arg]
@@ -2073,8 +2072,7 @@ class Commands:
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
         path = g.os_path_finalize_join(*paths)  # #1341.
-        return path or g.getBaseDirectory(c)
-            # 2010/10/22: A useful default.
+        return path or g.getBaseDirectory(c)  # 2010/10/22: A useful default.
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
@@ -2624,8 +2622,7 @@ class Commands:
         if path:
             # pylint: disable=no-member
                 # Defined in commanderFileCommands.py.
-            c.saveTo(fileName=path, silent=silent)
-                # Issues saved message.
+            c.saveTo(fileName=path, silent=silent)  # Issues saved message.
             # g.es('in', theDir)
         return path
     #@+node:ekr.20180210092235.1: *4* c.backup_helper
@@ -3170,8 +3167,8 @@ class Commands:
         if c.enableRedrawFlag:
             flag = c.expandAllAncestors(p)
             if flag:
+                # This is the same as c.frame.tree.full_redraw().
                 c.frame.tree.redraw_after_select(p)
-                    # This is the same as c.frame.tree.full_redraw().
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20170908081918.1: *6* c.redraw_later
@@ -3326,11 +3323,10 @@ class Commands:
         # It's always useful to announce the level.
         # c.k.setLabelBlue('level: %s' % (max_level+1))
         # g.es('level', max_level + 1)
-        c.frame.putStatusLine(f"level: {max_level + 1}")
-            # bg='red', fg='red')
+        c.frame.putStatusLine(f"level: {max_level + 1}")  # bg='red', fg='red')
     #@+node:ekr.20141028061518.23: *4* c.Focus
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
-    def get_focus(self):
+    def get_focus(self) -> Widget:
         c = self
         w = g.app.gui and g.app.gui.get_focus(c)
         if 'focus' in g.app.debug:
@@ -3444,9 +3440,14 @@ class Commands:
         c.widgetWantsFocusNow(tree and tree.canvas)
     #@+node:ekr.20031218072017.2955: *4* c.Menus
     #@+node:ekr.20080610085158.2: *5* c.add_command
-    def add_command(self, menu, **keys):
+    def add_command(self, menu: Widget,
+        accelerator: str='',  # Not used.
+        command: Callable=None,
+        commandName: str=None,  # Not used.
+        label: str=None,  # Not used.
+        underline: int=0,
+    ) -> None:
         c = self
-        command = keys.get('command')
         if command:
             # Command is always either:
             # one of two callbacks defined in createMenuEntries or
@@ -3459,8 +3460,8 @@ class Commands:
                     c.outerUpdate()
                 return val
 
-            keys['command'] = add_commandCallback
-            menu.add_command(**keys)
+            menu.add_command(menu,
+                accelerator=accelerator, command=command, commandName=commandName, label=label, underline=underline)
         else:
             g.trace('can not happen: no "command" arg')
     #@+node:ekr.20171123203044.1: *5* c.Menu Enablers
@@ -3761,8 +3762,8 @@ class Commands:
                 g.trace('Warning: no p', g.callers())
             return
         if cc and not cc.selectChapterLockout:
+            # Calls c.redraw only if the chapter changes.
             cc.selectChapterForPosition(p)
-                # Calls c.redraw only if the chapter changes.
         # De-hoist as necessary to make p visible.
         if c.hoistStack:
             while c.hoistStack:
@@ -3782,9 +3783,9 @@ class Commands:
                         print(f"{i:>2} {command}")
                 c.hoistStack.pop()
         c.frame.tree.select(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
         c.setCurrentPosition(p)
-            # Do *not* test whether the position exists!
-            # We may be in the midst of an undo.
 
     # Compatibility, but confusing.
 
@@ -3818,8 +3819,7 @@ class Commands:
             # Do not call expandAllAncestors here.
             c.selectPosition(p)
             c.redraw_after_select(p)
-        c.treeFocusHelper()
-            # This is essential.
+        c.treeFocusHelper()  # This is essential.
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
         add_context=None,  # Override setting only if True/False
@@ -3879,12 +3879,12 @@ class Commands:
     def cloneFindByPredicate(self,
         generator,  # The generator used to traverse the tree.
         predicate,  # A function of one argument p, returning True
-                       # if p should be included in the results.
+                    # if p should be included in the results.
         failMsg=None,  # Failure message. Default is no message.
         flatten=False,  # True: Put all matches at the top level.
         iconPath=None,  # Full path to icon to attach to all matches.
         undoType=None,  # The undo name, shown in the Edit:Undo menu.
-                       # The default is 'clone-find-predicate'
+                        # The default is 'clone-find-predicate'
     ):
         """
         Traverse the tree given using the generator, cloning all positions for

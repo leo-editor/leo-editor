@@ -74,12 +74,12 @@ class BaseSpellWrapper:
         c = self.c
         join = g.os_path_finalize_join
         table = (
+            # Settings first.
             c.config.getString('enchant-local-dictionary'),
-                # Settings first.
+            # #108: then the .leo directory.
             join(g.app.homeDir, '.leo', 'spellpyx.txt'),
-                # #108: then the .leo directory.
+            # The plugins directory as a last resort.
             join(g.app.loadDir, "..", "plugins", 'spellpyx.txt'),
-                # The plugins directory as a last resort.
         )
         for path in table:
             if g.os_path_exists(path):
@@ -103,8 +103,8 @@ class BaseSpellWrapper:
         if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
+        # Remove all digits.
         word = ''.join([i for i in word if not i.isdigit()])
-            # Remove all digits.
         if d.check(word) or d.check(word.lower()):
             return None
         if word.find('_') > -1:
@@ -378,8 +378,8 @@ class EnchantWrapper(BaseSpellWrapper):
         if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
+        # Remove all digits.
         word = ''.join([i for i in word if not i.isdigit()])
-            # Remove all digits.
         if d.check(word) or d.check(word.lower()):
             return None
         if word.find('_') > -1:
@@ -522,8 +522,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     @cmd('focus-to-spell-tab')
     def focusToSpell(self, event=None):
         """Put focus in the spell tab."""
-        self.openSpellTab()
-            # Makes Spell tab visible.
+        self.openSpellTab()  # Makes Spell tab visible.
         # This is not a great idea. There is no indication of focus.
             # if self.handler and self.handler.tab:
                 # self.handler.tab.setFocus()

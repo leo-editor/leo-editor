@@ -261,10 +261,9 @@ class LeoImportCommands:
                 escaped_head_ref = head_ref.replace("@", "@@")
                 result += "@<" + escaped_head_ref + "@>=" + nl
             else:
+                # Convert the headline to an index entry.
                 result += "@^" + p.h.strip() + "@>" + nl
-                    # Convert the headline to an index entry.
-                result += "@c" + nl
-                    # @c denotes a new section.
+                result += "@c" + nl  # @c denotes a new section.
         else:
             if head_ref:
                 pass
@@ -282,8 +281,7 @@ class LeoImportCommands:
             if not file_name:
                 result += "@<root@>=" + nl
             else:
-                result += "@(" + file_name + "@>" + nl
-                    # @(...@> denotes a file.
+                result += "@(" + file_name + "@>" + nl  # @(...@> denotes a file.
         else:
             if not file_name:
                 file_name = "*"
@@ -1691,8 +1689,7 @@ class RecursiveImportController:
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-            self.post_process(parent, dir_)
-                # Fix # 1033.
+            self.post_process(parent, dir_)  # Fix # 1033.
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
@@ -2025,8 +2022,7 @@ class TabImporter:
                 parent = root.insertAsLastChild()
                 parent.h = h
                 stack = [(0, parent),]
-        assert parent and parent == stack[-1][1]
-            # An important invariant.
+        assert parent and parent == stack[-1][1]  # An important invariant.
         assert level == stack[-1][0], (level, stack[-1][0])
         if not separate:
             parent.b = parent.b + self.undent(level, s)

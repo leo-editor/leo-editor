@@ -37,6 +37,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import os
 import sys
+from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
@@ -103,10 +104,10 @@ class BigDash:
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
         if (
+            # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
             not QtWebKitWidgets
-                # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
             or isQt5 and sys.platform.startswith('win')
-                # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
         ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:
@@ -229,7 +230,7 @@ class GlobalSearch:
         """]
         fts_max_hits = self.fts_max_hits
         res = fts.search(q, fts_max_hits)
-        outlines = {}
+        outlines: Dict = {}
         for r in res:
             if '#' in r["parent"]:
                 file_name, junk = r["parent"].split('#', 1)
@@ -406,10 +407,8 @@ class GlobalSearch:
         self.bd.w.show()
     #@-others
 #@+node:ekr.20140919160020.17920: ** class LeoConnector
-if QtCore:
-
-    class LeoConnector(QtCore.QObject):
-        pass
+class LeoConnector(QtCore.QObject):  # type:ignore
+    pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
 class LeoFts:
     #@+others
