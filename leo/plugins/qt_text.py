@@ -29,6 +29,9 @@ Wrapper = Any
 #@-<< type aliases qt_text.py >>
 
 QColor = QtGui.QColor
+QFontMetrics = QtGui.QFontMetrics
+SolidLine = QtCore.Qt.PenStyle.SolidLine
+
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
 #@+others
@@ -100,6 +103,30 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 def helpForLineHighlight(self: Any, event: Event=None) -> None:
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
+
+#@+node:tom.20220424002954.1: ** Show Right Margin Settings command
+# Add item to known "help-for" commands
+rmargin_doc = r'''
+Right Margin Guidelines
+-------------------------
+
+A vertical guideline may optionally shown at the right margin of the 
+body editor.  The guideline will be shown at
+
+1. The column value of an @pagewidth directive in effect; or
+2. The column value given by the setting ``@int rguide-col = <col>``; or
+3. Column 80.
+
+The guideline will be shown if the setting ``@bool show-rmargin-guide``
+is ``True``.
+
+The color of the guideline is set based on the current text color.
+'''
+
+@g.command('help-for-right-margin-guide')
+def helpForRMarginGuides(self, event=None):
+    """Displays settings used by right margin guide lines."""
+    self.c.putHelpFor(rmargin_doc)
 
 #@+node:ekr.20140901062324.18719: **   class QTextMixin
 class QTextMixin:
@@ -372,6 +399,7 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18124: *4* qlew.see & seeInsertPoint
     def see(self, i: int) -> None:
         """QHeadlineWrapper."""
+
         pass
 
     def seeInsertPoint(self) -> None:
@@ -870,19 +898,6 @@ if QtWidgets:
 
             editor.setExtraSelections([selection])
             #@-<< Apply Highlight >>
-        #@+node:tom.20210905130804.1: *4* Add Help Menu Item
-        # Add entry to Help menu
-        new_entry = ('@item', 'help-for-&highlight-current-line', '')
-
-        if g.app.config:
-            for item in g.app.config.menusList:
-                if 'Help' in item[0]:
-                    for entry in item[1]:
-                        if entry[0].lower() == '@menu &open help topics':
-                            menu_items = entry[1]
-                            menu_items.append(new_entry)
-                            menu_items.sort()
-                            break
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self) -> int:
             """Get the horizontal scrollbar position."""
@@ -959,6 +974,7 @@ if QtWidgets:
 
             New in Leo 6.4: Draw a box around the cursor in command mode.
                             This is as close as possible to vim's look.
+            New in Leo 6.6.2: Draw right margin guideline.
             """
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
             #
@@ -970,6 +986,38 @@ if QtWidgets:
                 if self.leo_cursor_width != width:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
+
+            if w == c.frame.body.widget and \
+                    c.config.getBool('show-rmargin-guide'):
+                #@+<< paint margin guides >>
+                #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
+                # based on https://stackoverflow.com/questions/30371613/draw-vertical-lines-on-qtextedit-in-pyqt
+                # Honor @pagewidth directive if any
+                dict_list = g.get_directives_dict_list(c.p)
+                rcol = (g.scanAtPagewidthDirectives(dict_list)
+                        or c.config.getInt('rguide-col') or 80)
+
+                vp = w.viewport()
+                font = w.document().defaultFont()
+                fm = QFontMetrics(font)
+                rmargin = fm.horizontalAdvance('9' * rcol) + 2
+                if vp.width() >= rmargin:
+                    painter = QtGui.QPainter(vp)
+                    pen = QtGui.QPen(SolidLine)
+
+                    # guideline color
+                    palette = w.viewport().palette()
+                    fg_hex = palette.text().color().rgb()
+                    # Change "r" value to "88"
+                    # e.g., #bbccdd ==> #88ccdd
+                    guide_rgb = '88' + f'{fg_hex:x}'[4:]
+                    guide_color = f'#{guide_rgb}'
+
+                    pen.setColor(QtGui.QColor(guide_color))
+                    pen.setWidth(1)
+                    painter.setPen(pen)
+                    painter.drawLine(rmargin, 0, rmargin, vp.height())
+                #@-<< paint margin guides >>
 
             #
             # Are we in vim mode?
@@ -1001,6 +1049,7 @@ if QtWidgets:
             qp.begin(self.viewport())
             qp.drawRect(w.cursorRect())
             qp.end()
+            
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event: Event) -> None:
             """Handle a wheel event."""
