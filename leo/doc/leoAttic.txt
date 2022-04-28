@@ -526,8 +526,7 @@ def do_Call(self, node):
         args.append(f'**%s' % (self.visit(node.kwargs)))
     args = [z for z in args if z]  # Kludge: Defensive coding.
     s = f'%s(%s)' % (func, ','.join(args))
-    return s if self.in_expr else self.indent(s+'\n')
-        # 2017/12/15.
+    return s if self.in_expr else self.indent(s+'\n')  # 2017/12/15.
 #@+node:ekr.20141012064706.18421: *7* f.keyword
 # keyword = (identifier arg, expr value)
 
@@ -1721,8 +1720,7 @@ def __init__(self, debug=False):
     """Ctor for the NewHTMLReportTraverser class."""
     self.code_list = []
     self.debug = debug
-    self.div_stack = []
-        # A check to ensure matching div/end_div.
+    self.div_stack = []  # A check to ensure matching div/end_div.
     self.last_doc = None
     # List of divs & spans to generate...
     self.enable_list = [
@@ -3287,8 +3285,7 @@ def scan_for_values(self):  # pragma: no cover
                 # Continue scanning, ignoring the newline.
                 continue
             # The newline ends the scan.
-            values.append(value_list)
-                # Retain the tokens!
+            values.append(value_list)  # Retain the tokens!
             if not include_paren:  # Bug fix.
                 tokens.pop()  # Rescan the ')'
             break
@@ -3770,11 +3767,11 @@ assert g
 @others
 if __name__ == '__main__':
     flx.launch(LeoMainWindow)
+    # # Runs in browser.
+    # # `python -m flexx stop 49190` stops the server.
+    # flx.App(LeoWapp).launch('firefox-browser')
+    # flx.start()
     flx.run()
-        # # Runs in browser.
-        # # `python -m flexx stop 49190` stops the server.
-        # flx.App(LeoWapp).launch('firefox-browser')
-        # flx.start()
 #@+node:ekr.20181110170337.1: *4*  init
 def init():
     # At present, leoflexx is not a true plugin.
@@ -4447,47 +4444,41 @@ def init(self):
     Init all ivars of this class.
     Unit tests may call this method to ensure that this class is re-inited properly.
     '''
-    self.all_ods = []
-        # List of all od nodes.
+    self.all_ods = []  # List of all od nodes.
+    # Keys are anchoring positions, values are sorted lists of ods.
     self.anchors_d = {}
-        # Keys are anchoring positions, values are sorted lists of ods.
+    # Keys are anchoring positions, values are ints.
     self.anchor_offset_d = {}
-        # Keys are anchoring positions, values are ints.
+    # List of od instances corresponding to @existing-organizer: nodes.
     self.existing_ods = []
-        # List of od instances corresponding to @existing-organizer: nodes.
+    # List of organizers that have no parent organizer node.
+    # This list excludes existing organizer nodes.
     self.global_bare_organizer_node_list = []
-        # List of organizers that have no parent organizer node.
-        # This list excludes existing organizer nodes.
+    # Keys are vnodes; values are list of child headlines.
     self.headlines_dict = {}
-        # Keys are vnodes; values are list of child headlines.
+    # The list of nodes that have children on entry, such as class nodes.
     self.imported_organizers_list = []
-        # The list of nodes that have children on entry, such as class nodes.
-    self.n_nodes_scanned = 0
-        # Number of nodes scanned by demote.
+    self.n_nodes_scanned = 0  # Number of nodes scanned by demote.
+    # List of od instances corresponding to @organizer: nodes.
     self.organizer_ods = []
-        # List of od instances corresponding to @organizer: nodes.
+    # The list of od.unl for all od instances in self.organizer_ods.
     self.organizer_unls = []
-        # The list of od.unl for all od instances in self.organizer_ods.
-    self.root = None
-        # The position of the @auto node.
+    self.root = None  # The position of the @auto node.
+    # The list of nodes pending to be added to an organizer.
     self.pending = []
-        # The list of nodes pending to be added to an organizer.
+    # The stack containing real and virtual parent nodes during the main loop.
     self.stack = []
-        # The stack containing real and virtual parent nodes during the main loop.
-    self.temp_node = None
-        # The parent position of all holding cells.
-    self.trail_write_1 = None
-        # The trial write on entry.
-    self.views_node = None
-        # The position of the @views node.
+    self.temp_node = None  # The parent position of all holding cells.
+    self.trail_write_1 = None  # The trial write on entry.
+    self.views_node = None  # The position of the @views node.
+    # A gloal list of (parent,child) tuples for all nodes that are
+    # to be moved to **non-existing** organizer nodes.
+    # **Important**: Nodes are moved in the order they appear in this list:
+    # the tuples contain no childIndex component!
+    # This list is the "backbone" of this class:
+    # - The front end (demote and its helpers) adds items to this list.
+    # - The back end (move_nodes and its helpers) moves nodes using this list.
     self.work_list = []
-        # A gloal list of (parent,child) tuples for all nodes that are
-        # to be moved to **non-existing** organizer nodes.
-        # **Important**: Nodes are moved in the order they appear in this list:
-        # the tuples contain no childIndex component!
-        # This list is the "backbone" of this class:
-        # - The front end (demote and its helpers) adds items to this list.
-        # - The back end (move_nodes and its helpers) moves nodes using this list.
 #@+node:ekr.20150312225028.35: *5* vc.Entry points
 #@+node:ekr.20150312225028.36: *6* vc.convert_at_file_to_at_auto
 def convert_at_file_to_at_auto(self,root):
@@ -4660,9 +4651,9 @@ def pack(self):
     if not vc.has_at_views_node():
         changed = True
         bunch = u.beforeInsertNode(c.rootPosition())
+        # Creates the @views node as the *last* top-level node
+        # so that no positions become invalid as a result.
         views = vc.find_at_views_node()
-            # Creates the @views node as the *last* top-level node
-            # so that no positions become invalid as a result.
         u.afterInsertNode(views,'create-views-node',bunch)
     # Prepend @view if need.
     if not root.h.strip().startswith('@'):
@@ -4885,8 +4876,7 @@ def update_after_read_at_auto_file(self,root):
         if ok:
             vc.update_headlines_after_read(root)
         t7 = time.clock()
-        c.setChanged(old_changed if ok else False)
-            # To do: revert if not ok.
+        c.setChanged(old_changed if ok else False)  # To do: revert if not ok.
     except Exception:
         g.es_exception()
         n = 0
@@ -4980,20 +4970,17 @@ def create_organizer_nodes(self,at_organizers,root):
     c = vc.c
     trace = False and not g.unitTesting
     t1 = time.clock()
-    vc.pre_move_comments(root)
-        # Merge comment nodes with the next node.
+    vc.pre_move_comments(root)  # Merge comment nodes with the next node.
     t2 = time.clock()
+    # Init all data required for reading.
     vc.precompute_all_data(at_organizers,root)
-        # Init all data required for reading.
     t3 = time.clock()
-    vc.demote(root)
-        # Traverse root's tree, adding nodes to vc.work_list.
+    vc.demote(root)  # Traverse root's tree, adding nodes to vc.work_list.
     t4 = time.clock()
-    vc.move_nodes()
-        # Move nodes on vc.work_list to their final locations.
+    vc.move_nodes()  # Move nodes on vc.work_list to their final locations.
     t5 = time.clock()
+    # Move merged comments to parent organizer nodes.
     vc.post_move_comments(root)
-        # Move merged comments to parent organizer nodes.
     t6 = time.clock()
     if trace: g.trace(
         '\n  pre_move_comments:   %4.2f sec' % (t2-t1),
@@ -5037,25 +5024,25 @@ def precompute_all_data(self,at_organizers,root):
     trace = False and not g.unitTesting
     vc = self
     t1 = time.clock() 
+    # Put all nodes with children on vc.imported_organizer_node_list
     vc.find_imported_organizer_nodes(root)
-        # Put all nodes with children on vc.imported_organizer_node_list
     t2 = time.clock()
+    # Create OrganizerData objects for all @organizer:
+    # and @existing-organizer: nodes.
     vc.create_organizer_data(at_organizers,root)
-        # Create OrganizerData objects for all @organizer:
-        # and @existing-organizer: nodes.
     t3 = time.clock()
+    # Create the organizer nodes in holding cells so positions remain valid.
     vc.create_actual_organizer_nodes()
-        # Create the organizer nodes in holding cells so positions remain valid.
     t4 = time.clock()
+    # Set od.parent_od, od.children & od.descendants for all ods.
     vc.create_tree_structure(root)
-        # Set od.parent_od, od.children & od.descendants for all ods.
     t5 = time.clock()
+    # Compute the positions organized by each organizer.
+    # ** Most of the time is spent here **.
     vc.compute_all_organized_positions(root)
-        # Compute the positions organized by each organizer.
-        # ** Most of the time is spent here **.
     t6 = time.clock()
+    # Create the dictionary that associates positions with ods.
     vc.create_anchors_d()
-        # Create the dictionary that associates positions with ods.
     t7 = time.clock()
     if trace: g.trace(
         '\n  find_imported_organizer_nodes:   %4.2f sec' % (t2-t1),
@@ -5417,9 +5404,9 @@ def add_to_bare_list(self,data,tag):
     vc.global_bare_organizer_node_list.append(data)
     if trace:
         anchor,p,n = data
+        # '\n  anchor:',anchor.h,
+        # '\n  p:',p.h)
         g.trace('=====',tag,'n:',n,anchor.h,'==>',p.h)
-            # '\n  anchor:',anchor.h,
-            # '\n  p:',p.h)
 #@+node:ekr.20150312225028.71: *7* vc.add_to_pending
 def add_to_pending(self,active,p):
     trace = False # and not g.unitTesting
@@ -5647,8 +5634,7 @@ def move_bare_organizers(self,trace):
 def copy_tree_to_last_child_of(self,p,parent):
     '''Copy p's tree to the last child of parent.'''
     vc = self
-    assert p != parent,p
-        # A failed assert leads to unbounded recursion.
+    assert p != parent,p  # A failed assert leads to unbounded recursion.
     # print('copy_tree_to_last_child_of',p.h,parent.h)
     root = parent.insertAsLastChild()
     root.b,root.h = p.b,p.h
@@ -5799,8 +5785,7 @@ def pre_move_comments(self,root):
             next = p.next()
             if p.b: next.b = p.b + next.b
     # g.trace([z.h for z in aList])
-    c.deletePositionsInList(aList)
-        # This sets c.changed.
+    c.deletePositionsInList(aList)  # This sets c.changed.
 #@+node:ekr.20150312225028.94: *6* vc.find...
 # The find commands create the node if not found.
 #@+node:ekr.20150312225028.95: *7* vc.find_absolute_unl_node
@@ -6107,8 +6092,8 @@ def has_at_views_node(self):
 #@+node:ekr.20150312225028.111: *7* vc.is_at_auto_node
 def is_at_auto_node(self,p):
     '''Return True if p is an @auto node.'''
+    # Does not match @auto-rst, etc.
     return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
-        # Does not match @auto-rst, etc.
 
 def is_at_file_node(self,p):
     '''Return True if p is an @file node.'''
@@ -6454,9 +6439,9 @@ def prepass(self, root):
 def regularize_node(self, p, scanner):
     '''Regularize node p so that it will not cause problems.'''
     c = self.c
+    # The scanner is a callback returned by g.app.scanner_for_ext.
+    # It must have a c argument.
     ok = scanner(atAuto=True, c=c, parent=p, s=p.b)
-        # The scanner is a callback returned by g.app.scanner_for_ext.
-        # It must have a c argument.
     if not ok:
         g.es_print('please regularize:', p.h)
     return ok
@@ -6529,8 +6514,8 @@ def init(): # pyzo_in_leo.py
     g.plugin_signon(__name__)
     #
     # This replaces MainWindow.closeEvent.
+    # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.app.pyzo_close_handler = close_handler
-        # LeoApp.finishQuit calls this late in Leo's shutdown logic.
     g.registerHandler('after-create-leo-frame', onCreate) 
     return True
 #@+node:ekr.20190928061911.1: *5* onCreate
@@ -6696,17 +6681,15 @@ def init_pyzo_menu(self, c):
     Copyright (C) 2013-2019 by Almar Klein.
     """
     dw = c.frame.top
+    # Create the Pyzo menu in *Leo's* per-commander menu bar.
     leo_menu_bar = dw.leo_menubar
-        # Create the Pyzo menu in *Leo's* per-commander menu bar.
-    menuBar = pyzo.main.menuBar()
-        # Use *pyzo's* main menuBar to get data.
+    menuBar = pyzo.main.menuBar()  # Use *pyzo's* main menuBar to get data.
 
     # EKR:change-new imports.
     from pyzo import translate
-    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu
-        # Testing.
+    from pyzo.core.menu import EditMenu, FileMenu, SettingsMenu  # Testing.
+    # Permanent.
     from pyzo.core.menu import HelpMenu, RunMenu, ShellMenu, ViewMenu
-        # Permanent.
 
     # EKR:change. Create a top-level Pyzo menu.
     pyzoMenu = leo_menu_bar.addMenu("Pyzo")
@@ -6725,8 +6708,7 @@ def init_pyzo_menu(self, c):
     menuBar._menumap = {}
     menuBar._menus = menus
     for menu in menuBar._menus:
-        pyzoMenu.addMenu(menu)
-            # menuBar.addMenu(menu)
+        pyzoMenu.addMenu(menu)  # menuBar.addMenu(menu)
         menuName = menu.__class__.__name__.lower().split('menu')[0]
         menuBar._menumap[menuName] = menu
 
@@ -6872,9 +6854,9 @@ def main_window_ctor(self):
     # EKR:change.
     # Load icons and fonts
     main.loadIcons()
+    # loadIcons()
+    # loadFonts()
     main.loadFonts()
-        # loadIcons()
-        # loadFonts()
 
     # EKR:change.
         # # Set qt style and test success
@@ -6887,8 +6869,7 @@ def main_window_ctor(self):
             # time.sleep(0.05)
     # EKR:change.
     # Populate the window (imports more code)
-    self.main_window_populate()
-        # self._populate()
+    self.main_window_populate()  # self._populate()
         
     # EKR:change: new code.
     self.load_all_pyzo_docks()
@@ -6916,8 +6897,8 @@ def main_window_ctor(self):
         # if not pyzo.config.shellConfigs2:
             # from pyzo.core.kernelbroker import KernelInfo
             # pyzo.config.shellConfigs2.append( KernelInfo() )
+    # pyzo.config.shellConfigs2.append( KernelInfo() )
     from pyzo.core.kernelbroker import KernelInfo
-        # pyzo.config.shellConfigs2.append( KernelInfo() )
     pyzo.config.shellConfigs2 = [KernelInfo()]
 
     # EKR:change Set background.
@@ -6978,8 +6959,8 @@ def main_window_populate(self):
     pyzo.editors = EditorTabs(None)
     
     # EKR:change. Create an Editors dock.
+    # self.setCentralWidget(pyzo.editors)
     self.make_global_dock('Editors', pyzo.editors)
-        # self.setCentralWidget(pyzo.editors)
 
     # Create floater for shell
     # EKR:change: use a global *Leo* dock
@@ -6995,12 +6976,11 @@ def main_window_populate(self):
             # dock.setFeatures(dock.DockWidgetMovable | dock.DockWidgetFloatable)
         # else:
             # dock.setFeatures(dock.DockWidgetMovable)
-    dock.setObjectName('shells')
-        # dock.setWindowTitle('Shells')
+    dock.setObjectName('shells')  # dock.setWindowTitle('Shells')
     
     # EKR:change: Make the dock a *global* dock.
+    # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
     main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-        # self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
 
     # Create shell stack
     # EKR:change. Use None, not self.
@@ -7066,9 +7046,9 @@ def pyzo_start(self):
     """
     
     # Do some imports
+    # EKK: All print statements after this will appear in the Logger dock.
+    # Unless we change pyzoLogging itself, this import will happen soon anyway.
     from pyzo.core import pyzoLogging  # to start logging asap
-        # EKK: All print statements after this will appear in the Logger dock.
-        # Unless we change pyzoLogging itself, this import will happen soon anyway.
     assert pyzoLogging
 
     # print('\nBEGIN pyzo_start\n')
@@ -7088,10 +7068,10 @@ def pyzo_start(self):
     QtWidgets.QApplication.setDesktopSettingsAware(True)
 
     # EKR-change: the only remaining code from my_app_ctor.
+    # Instantiate the application.
+    # QtWidgets.qApp = MyApp(sys.argv)
+    # my_app_ctor(sys.argv)
     sys.argv = sys.argv[:1]
-        # Instantiate the application.
-        # QtWidgets.qApp = MyApp(sys.argv)
-        # my_app_ctor(sys.argv)
 
     # EKR:change.
         # # Choose language, get locale
