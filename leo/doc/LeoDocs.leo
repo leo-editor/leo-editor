@@ -1533,6 +1533,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
@@ -2379,8 +2380,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20211105051309.1"></v>
-<v t="ekr.20211105051031.1"></v>
+<v t="ekr.20220427143133.1"></v>
 <v t="ekr.20220401072939.1"><vh>Leo 6.6.1 release notes</vh></v>
 </vnodes>
 <tnodes>
@@ -31160,7 +31160,7 @@ For example, the UNL for the parent @rst of this node in LeoDocs.leo is:
     unl://C:/leo.repo/leo-editor/leo/doc/LeoDocs.leo#Leo's Documentation--&gt;Tutorials--&gt;@rst html\tutorial-tips.html
     
 Moving or renaming nodes may (partially) break UNL's.</t>
-<t tx="ekr.20220401072939.1">Leo http://leoeditor.com 6.6. is now available on
+<t tx="ekr.20220401072939.1">Leo http://leoeditor.com 6.6.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6.1/).
 
@@ -31169,14 +31169,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 **The highlights of Leo 6.6.1**
 
 - Improve support for Python 3.10 and PyQt6.
-- Add IterativeTokenGenerator class to leoAst.py.
+- Simplify the TokenOrderGenerator class in leoAst.py.
 - Improve argument handling when running leo.core.leoAst externally.
   Run `python -m leo.core.leoAst -h` for details.
 - Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
-- Clean all files with reindent script.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.
 - The usual minor bug fixes.
 
-**6.6 Links**
+**6.6.1 Links**
 
 - [6.6.1 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1)
 - [6.6.1 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.1)
@@ -31236,6 +31239,15 @@ I'm sure I'm not thinking of several more things here, but you get the idea.  Th
 To me, the base of Leo's versatility is the extremely good and convenient handling of its outline tree, the ability to subdivide projects into convenient pieces, combined with the ability for anyone to easily extend Leo's core capabilities with scripts and user commands of all kinds.
 
 Phenomenal!</t>
+<t tx="ekr.20220427143133.1">- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

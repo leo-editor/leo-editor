@@ -1,28 +1,25 @@
-Leo http://leoeditor.com 6.6 final is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/6.6b2/).
-
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6**
+**The highlights of Leo 6.6.1**
 
-- Replaced `@raw` and `@end_raw` with `@section-delims`.
-- Leo recognizes section references only when they appear on an otherwise blank line.
-- Many improvements to the python-to-typescript command.
-- Improved python importer.
-- Added plugins/picture_viewer.py, a stand-alone app that displays images.
-- Added plugins/remove_duplicate_pictures.py, an app that finds duplicate pictures.
-- The user may choose *other* commands after starting repeat-complex-command.
-- Improved leoserver.py to support leointeg.
-- Many bug fixes.
+- Improve support for Python 3.10 and PyQt6.
+- Simplify the TokenOrderGenerator class in leoAst.py.
+- Improve argument handling when running leo.core.leoAst externally.
+  Run `python -m leo.core.leoAst -h` for details.
+- Control-clicking on a file name searches for the corresponding @<file> node.
+- Create clickable links when copying text into the log pane.
+- Leo's mypy command runs without blocking Leo.
+- Improve the add-mypy-annotations command.
+- Clean all files with reindent.
+- The usual minor bug fixes.
 
-**6.6 Links**
+**6.6.1 Links**
 
-- [6.6 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6)
-- [6.6 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6)
-- [6.6 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6+)
-- [6.6 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6+label%3Aenhancement+)
-- [6.6 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6+label%3Acode+)
+- [6.6.1 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1)
+- [6.6.1 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.1)
+- [6.6.1 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6.1+)
+- [6.6.1 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1+label%3Aenhancement+)
+- [6.6.1 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.1+label%3Acode+)
 
 **General Links**
 
