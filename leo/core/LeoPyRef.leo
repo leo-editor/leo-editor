@@ -16,10 +16,6 @@
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
-<v t="ekr.20211011090013.1"><vh>@button cvt-comments</vh>
-<v t="ekr.20220425184232.1"><vh>compute_lws</vh></v>
-<v t="ekr.20220425052306.1"><vh>convert</vh></v>
-</v>
 <v t="ekr.20211020091540.1"><vh>@command b</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
@@ -46,6 +42,10 @@
 <v t="ekr.20150507174711.1"><vh>find_next_clone</vh></v>
 <v t="ekr.20150507175246.1"><vh>munge_lines</vh></v>
 <v t="ekr.20150508062944.1"><vh>run</vh></v>
+</v>
+<v t="ekr.20211011090013.1"><vh>@@button cvt-comments</vh>
+<v t="ekr.20220425184232.1"><vh>compute_lws</vh></v>
+<v t="ekr.20220425052306.1"><vh>convert</vh></v>
 </v>
 <v t="ekr.20150509183433.1"><vh>@@button make-decorators2</vh>
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
@@ -803,99 +803,6 @@ actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20211011090013.1">"""Find and convert hanging comments."""
-# https://github.com/leo-editor/leo-editor/pull/2622
-g.cls()
-import re
-from typing import Any, List
-
-trace = True  # It's useful to trace even when also replacing.
-replace = True  # Replace body text.
-max_line_length = 70  # Maximum line length for lines containing trailing comments.
-
-@others
-
-for p in c.p.self_and_subtree():
-    convert(p)
-print('done')
-</t>
-<t tx="ekr.20220425184232.1">def compute_lws(s: str) -&gt; int:
-    """Return the leading whitespace of s."""
-    n = len(s) - len(s.lstrip())
-    return s[:n]
-</t>
-<t tx="ekr.20220425052306.1">compound_statement = (
-    # Leo doesn't use 'match'
-    'async ', 'class ', 'def ', 'else:', 'elif ', 'except',
-    'finally:', 'for ', 'if ', 'try:', 'while ', 'with ',
-)
-pat = re.compile(r'\)\s*-&gt;.*:\s*$')  # End of multiline def.
-
-def convert(p: Any) -&gt; None:
-    """Convert all hanging comments in p.b."""
-    if p.isAnyAtFileNode():
-        print('   Scan:', p.h)
-    changed, last, result = False, '', []
-    i, lines = 0, p.b.split('\n')
-    sep = '-' * 40
-    while i &lt; len(lines):
-        progress = i
-        more_lines = []
-        s = lines[i]
-        s_s = s.lstrip()
-        last_s = last.lstrip()
-        lws_s = compute_lws(s)
-        lws_last = compute_lws(last)
-        if (
-            last_s and s_s.startswith('#')
-            and not pat.match(last_s)
-            and not last_s.startswith(('#', '"""', "'''"))
-            and not last_s.endswith(('[', '(', '{', '):'))
-            and not last_s.startswith(compound_statement)
-            and lws_last &lt; lws_s
-        ):
-            changed = True
-            result.pop()  # Discard the last line!
-            j = i + 1  # Look for more indented lines.
-            while j &lt; len(lines):
-                s2 = lines[j]
-                s2_s = s2.strip()
-                lws_s2 = compute_lws(s2)
-                if lws_s2 &gt;= lws_s and s2_s.startswith('#'):
-                    more_lines.append(s2)
-                    j += 1
-                else:
-                    break
-            if not more_lines and len(last_s) + len(s_s) &lt; max_line_length:
-                # Emit one line.
-                result.append(f"{last}  {s_s}")
-                if trace:
-                    g.printObj([last, s, sep, f"{last}  {s_s}\n"], tag=p.h)
-            else:
-                # Emit the first comment line.
-                result.append(f"{lws_last}{s_s}")
-                # Emit any additional comment lines.
-                for z in more_lines:
-                    result.append(f"{lws_last}{z.lstrip()}")
-                # Emit the last (non-comment) line.
-                result.append(last)
-                if trace:
-                    added_lines = [f"{lws_last}{z.lstrip()}" for z in more_lines]
-                    g.printObj(
-                        [last, s] + more_lines + [sep] +
-                        [f"{lws_last}{s_s}"] + added_lines + [last], tag=p.h)
-            i += 1 + len(more_lines)
-            last = lines[i]
-        else:
-            result.append(s)
-            last = s
-            i += 1
-        assert progress &lt; i
-    if changed:
-        print('Changed:', p.h)
-        if replace:
-            p.b = '\n'.join(result)
-</t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20220306092217.1">g.cls()
@@ -1290,6 +1197,103 @@ CreateDecorators(c,make_changes=False).run()
             d = self.create_d(lines,publicCommands)
             self.create_decorators(d,root)
     print('\n%s commands %s failed' % (self.n,self.n_fail))
+</t>
+<t tx="ekr.20211011090013.1">"""
+Find and convert hanging comments.
+
+Warning: do not run this script on unit testing files.
+"""
+# https://github.com/leo-editor/leo-editor/pull/2622
+g.cls()
+import re
+from typing import Any, List
+
+trace = True  # It's useful to trace even when also replacing.
+replace = True  # Replace body text.
+max_line_length = 70  # Maximum line length for lines containing trailing comments.
+
+@others
+
+for p in c.p.self_and_subtree():
+    convert(p)
+print('done')
+</t>
+<t tx="ekr.20220425184232.1">def compute_lws(s: str) -&gt; int:
+    """Return the leading whitespace of s."""
+    n = len(s) - len(s.lstrip())
+    return s[:n]
+</t>
+<t tx="ekr.20220425052306.1">compound_statement = (
+    # Leo doesn't use 'match'
+    'async ', 'class ', 'def ', 'else:', 'elif ', 'except',
+    'finally:', 'for ', 'if ', 'try:', 'while ', 'with ',
+)
+pat = re.compile(r'\)\s*-&gt;.*:\s*$')  # End of multiline def.
+
+def convert(p: Any) -&gt; None:
+    """Convert all hanging comments in p.b."""
+    if p.isAnyAtFileNode():
+        print('   Scan:', p.h)
+    changed, last, result = False, '', []
+    i, lines = 0, p.b.split('\n')
+    sep = '-' * 40
+    while i &lt; len(lines):
+        progress = i
+        more_lines = []
+        s = lines[i]
+        s_s = s.lstrip()
+        last_s = last.lstrip()
+        lws_s = compute_lws(s)
+        lws_last = compute_lws(last)
+        if (
+            last_s and s_s.startswith('#')
+            and not pat.match(last_s)
+            and not last_s.startswith(('#', '"""', "'''"))
+            and not last_s.endswith(('[', '(', '{', '):'))
+            and not last_s.startswith(compound_statement)
+            and lws_last &lt; lws_s
+        ):
+            changed = True
+            result.pop()  # Discard the last line!
+            j = i + 1  # Look for more indented lines.
+            while j &lt; len(lines):
+                s2 = lines[j]
+                s2_s = s2.strip()
+                lws_s2 = compute_lws(s2)
+                if lws_s2 &gt;= lws_s and s2_s.startswith('#'):
+                    more_lines.append(s2)
+                    j += 1
+                else:
+                    break
+            if not more_lines and len(last_s) + len(s_s) &lt; max_line_length:
+                # Emit one line.
+                result.append(f"{last}  {s_s}")
+                if trace:
+                    g.printObj([last, s, sep, f"{last}  {s_s}\n"], tag=p.h)
+            else:
+                # Emit the first comment line.
+                result.append(f"{lws_last}{s_s}")
+                # Emit any additional comment lines.
+                for z in more_lines:
+                    result.append(f"{lws_last}{z.lstrip()}")
+                # Emit the last (non-comment) line.
+                result.append(last)
+                if trace:
+                    added_lines = [f"{lws_last}{z.lstrip()}" for z in more_lines]
+                    g.printObj(
+                        [last, s] + more_lines + [sep] +
+                        [f"{lws_last}{s_s}"] + added_lines + [last], tag=p.h)
+            i += 1 + len(more_lines)
+            last = lines[i]
+        else:
+            result.append(s)
+            last = s
+            i += 1
+        assert progress &lt; i
+    if changed:
+        print('Changed:', p.h)
+        if replace:
+            p.b = '\n'.join(result)
 </t>
 <t tx="ekr.20150509183433.1">g.cls()
 
