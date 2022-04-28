@@ -172,10 +172,10 @@
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
-<v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
+<v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1542,10 +1542,10 @@ LeoPyRef.leo:
   - Tags should start with "v"
 
 git checkout master
-git tag -a v6.NNN -m "Added v6.NNN tag"
+git tag -a v6.6.2 -m "Added v6.6.2 tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout 6.6
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout 6.6.2
 git merge devel
 
 leoVersion.py:
@@ -1557,8 +1557,9 @@ git push</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches the static version added to leoversion.py earlier.
 
 git checkout devel
+Add git merge master
 update version in leoVersion.py.
-git tag -a v6.6-rc1-devel -m "Added v6.t-rc1-devel tag"
+git tag -a v6.6.2-devel -m "Added v6.6.2-devel tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
@@ -2017,12 +2018,12 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.2 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.6</t>
+- git merge 6.6.2</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -2032,7 +2033,9 @@ There is a "Draft New Release" button at the top-right of the page.
 
 Public announcements, after creating a package.
 
-- Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
+- Update version number on Wikipedia:
+  Copy Wikipedia link by hand.
+  https://en.wikipedia.org/wiki/Leo_(text_editor)
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
@@ -2049,7 +2052,8 @@ Public announcements, after creating a package.
 </t>
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout master
 
-- Run all unit tests.
+- test-all
+- mypy leo
 - Run pylint on all files.
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
@@ -2091,12 +2095,6 @@ include leo/doc/html/index.html
 
 **upload**
 
-Testing
-- python -m twine upload --repository testpypi dist/*
-
---or--
-
-Production
 python -m twine upload -r pypi dist/*
 
 username:  __token__
@@ -2105,14 +2103,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.6-2-py3-none-any.whl
-    leo-6.6-2.tar.gz
+    leo-6.6.2-2-py3-none-any.whl
+    leo-6.6.2-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.6-rc1
-
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6-rc1
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6.2
 
 **test**
 
