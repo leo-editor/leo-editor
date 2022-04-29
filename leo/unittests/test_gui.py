@@ -4,7 +4,7 @@
 #@@first
 """Tests of gui base classes"""
 
-### import textwrap
+import os
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
@@ -122,7 +122,7 @@ class TestQtGui(LeoUnitTest):
             (False, 'Hello world\n'),
         )
         for expected, s in table:
-            s = s.rstrip() + '\n'
+            s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
     #@-others
