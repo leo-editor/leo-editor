@@ -7380,7 +7380,7 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
     verbosity = '-v' if verbose else ''
-    command = f"python -m unittest {verbosity} {tests or ''} "
+    command = f"python3 -m unittest {verbosity} {tests or ''} "
     # pytest reports too many errors.
     # command = f"python -m pytest --pdb {tests or ''}"
     g.execute_shell_commands(command)
