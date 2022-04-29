@@ -105,6 +105,7 @@ class LeoFind:
         # These *must* be initially None, not False.
         self.ignore_case: bool = None
         self.node_only: bool = None
+        self.file_only: bool = None
         self.pattern_match: bool = None
         self.search_headline: bool = None
         self.search_body: bool = None
@@ -796,6 +797,35 @@ class LeoFind:
             # Start the range and set suboutline-only.
             self.root = c.p
             self.set_find_scope_suboutline_only()  # Update find-tab & status area.
+
+        elif self.file_only:
+            # Start the range and set file-only.
+            self.root = c.p
+            p = c.p
+            node = self.c.p
+            hitBase = found = False
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h in ('@file', '@clean', '@thin'):
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            self.root = node
+            # while '@file' or '@clean' or '@auto' or '@thin' not in p.h:
+                # # p1 = p.parent()
+                # # if p1 is not None and p is not p1:
+                    # # self.root = p1
+                    # # p = p1
+                # # else:
+                    # # break
+            g.es('====', self.root.h)
+            self.set_find_scope_file_only()  # Update find-tab & status area.
+            p = node
         #
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
@@ -881,11 +911,17 @@ class LeoFind:
         """Set the 'Node Only' radio button in the Find tab."""
         self.set_find_scope('node-only')
 
+    @cmd('set-find-file-only')
+    def set_find_scope_file_only(self, event: Event=None) -> None:  # pragma: no cover (cmd)
+        """Set the 'File Only' radio button in the Find tab."""
+        self.set_find_scope('file-only')
+
     @cmd('set-find-suboutline-only')
     def set_find_scope_suboutline_only(self, event: Event=None) -> None:
         """Set the 'Suboutline Only' radio button in the Find tab."""
         self.set_find_scope('suboutline-only')
 
+    @cmd('set-find-file-only')
     def set_find_scope(self, where: str) -> None:
         """Set the radio buttons to the given scope"""
         c, fc = self.c, self.c.findCommands
@@ -3020,6 +3056,7 @@ class LeoFind:
         table2 = (
             ('Suboutline', ftm.radio_button_suboutline_only),
             ('Node', ftm.radio_button_node_only),
+            ('File', ftm.radio_button_file_only),
         )
         for option, ivar in table2:
             if ivar.isChecked():
