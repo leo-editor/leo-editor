@@ -14,7 +14,7 @@ from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
-Widget = Any
+
 #@-<< imports qt_text.py >>
 #@+<< type aliases qt_text.py >>
 #@+node:ekr.20220416085945.1: ** << type aliases qt_text.py >>
@@ -23,8 +23,10 @@ if TYPE_CHECKING:  # Always False at runtime.
     # from leo.core.leoNodes import Position as Pos
 else:
     Cmdr = Any
+
 Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
+Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_text.py >>
 
@@ -803,7 +805,7 @@ if QtWidgets:
         #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
         #@@language python
         @staticmethod
-        def calc_hl(palette: QtGui.QPalette) -> QColor:
+        def calc_hl(palette: QtGui.QPalette) -> QColor:  # type:ignore
             """Return the line highlight color.
 
             ARGUMENT
