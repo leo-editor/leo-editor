@@ -13,7 +13,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
-from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
+from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 #@-<< imports qt_text.py >>
 #@+<< type aliases qt_text.py >>
@@ -30,11 +30,9 @@ Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_text.py >>
 
+FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
-SolidLine = QtCore.Qt.PenStyle.SolidLine
-
-FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands

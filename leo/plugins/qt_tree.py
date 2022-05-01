@@ -23,18 +23,16 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
     from leo.core.leoNodes import VNode
-    from PyQt6 import QtWidgets as QtWidgets6
-    Widget = QtWidgets6.QWidget
 else:
     Cmdr = Any
     Pos = Any
     VNode = Any
-    Widget = Any
 Editor = Any
 Event = Any
 Icon = Any
 Item = Any
 Selection = Tuple[int, int, int]
+Widget = Any
 Wrapper = Any
 #@-<< type aliases: qt_tree.py >>
 #@+others

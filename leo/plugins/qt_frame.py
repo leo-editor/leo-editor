@@ -38,29 +38,12 @@ from leo.plugins.nested_splitter import NestedSplitter
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
-    from PyQt6 import QtWidgets as QtWidgets6
-    Widget = QtWidgets6.QWidget
-    #~ QComboBox: TypeAlias = QtWidgets6.QComboBox
-    #~ QLineEdit: TypeAlias = QtWidgets6.QLineEdit
-    #~ QMainWindow: TypeAlias = QtWidgets6.QMainWindow
-    #~ QMenu: TypeAlias = QtWidgets.QMenu
-    #~ QTabBar: TypeAlias = QtWidgets6.QTabBar
-    #~ QTabWidget: TypeAlias = QtWidgets6.QTabWidget
-    #~ QTreeWidget: TypeAlias = QtWidgets6.QTreeWidget
-    #~ QWidgetAction: TypeAlias = QtWidgets6.QWidgetAction
 else:
     Cmdr = Any
     Pos = Any
     QComboBox = Any
-    #~ QLineEdit = Any
-    #~ QMainWindow = Any
-    #~ QMenu = Any
-    #~ QTabBar = Any
-    #~ QTabWidget = Any
-    #~ QTreeWidget = Any
-    #~ QWidgetAction = Any
-    Widget = Any
 Event = Any
+Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_frame.py >>
 #@+others
