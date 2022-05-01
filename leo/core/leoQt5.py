@@ -112,6 +112,7 @@ Shadow = QtWidgets.QFrame
 Shape = QtWidgets.QFrame
 SizeAdjustPolicy = QtWidgets.QComboBox
 SliderAction = QtWidgets.QAbstractSlider
+SolidLine = QtCore.Qt
 StandardButton = QtWidgets.QDialogButtonBox
 StandardPixmap = QtWidgets.QStyle
 Style = QtGui.QFont
