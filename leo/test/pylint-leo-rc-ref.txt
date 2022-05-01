@@ -41,9 +41,15 @@ disable=
     #
     # Always disable these. Imo, they cause more harm than good.
     # 
-        design,import,similarities, # Make work.
+        design,similarities, # Make work.
+        # import, ###
 
         # format,  # Allow bad-indentation and other checks.
+        
+        # For now, *do* suppress bad-option-value and unrecognized-option
+        
+        bad-option-value, # obsolete pylint option.
+        unrecognized-option,  # newer python.
         
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
@@ -84,6 +90,7 @@ disable=
         too-few-public-methods,
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
+        unnecessary-dunder-call,  # pylint for python 3.10 only.
         unnecessary-pass, # Can be pedantic in some situations.
         unspecified-encoding,  # Huh?
         unused-argument,
