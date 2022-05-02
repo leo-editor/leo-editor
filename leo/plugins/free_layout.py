@@ -173,8 +173,7 @@ class FreeLayoutController:
         nd.b = json.dumps(layout, indent=4)
         nd = nd.parent()
         if not nd or nd.h != "@settings":
-            g.es(
-                "WARNING: @data free-layout-layout node is not " "under an active @settings node")
+            g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter
     def get_main_splitter(self, w=None):
