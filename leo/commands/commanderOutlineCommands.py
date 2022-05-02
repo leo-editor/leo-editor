@@ -449,7 +449,7 @@ def contractNodeOrGoToParent(self, event=None):
                     child.contract()
                     if child.hasChildren():
                         redraw = True
-        if cc and cc.inChapter and parent.h.startswith('@chapter '):
+        if cc and cc.inChapter() and parent.h.startswith('@chapter '):
             pass
         else:
             c.goToParent()

@@ -240,7 +240,7 @@ def show_clones(event=None):
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):
-    """Mark the node and all its parents."""
+    """Unmark the node and all its parents."""
     c = event.get('c')
     changed: List[Any] = []
     if not c:
