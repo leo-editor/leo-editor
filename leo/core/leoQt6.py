@@ -37,6 +37,7 @@ try:
     has_WebEngineWidgets = True
 except ImportError:
     print('No Qt6 QtWebEngineWidgets')
+    print('pip install PyQt6-WebEngine')
 
 try:
     from PyQt6 import QtPrintSupport as printsupport
