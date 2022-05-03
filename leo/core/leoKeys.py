@@ -670,20 +670,33 @@ class AutoCompleterClass:
             # aList = ContextSniffer().get_classes(c.p.b, varname)
         return 'class', []
     #@+node:ekr.20110510120621.14543: *6* ac.lookup_functions/methods/modules
+    # Leo 6.6.2: These functions can fail if codewise has not been inited.
+
     def lookup_functions(self, prefix: str) -> List[str]:
-        aList = codewise.cmd_functions([prefix])
-        hits = [z.split(None, 1) for z in aList if z.strip()]
-        return self.clean(hits)
+        try:
+            aList = codewise.cmd_functions([prefix])
+            hits = [z.split(None, 1) for z in aList if z.strip()]
+            return self.clean(hits)
+        except Exception:
+            return []
 
-    def lookup_methods(self, aList: List[str], prefix: str) -> List[str]:  # prefix not used, only aList[0] used.
-        aList = codewise.cmd_members([aList[0]])
-        hits = [z.split(None, 1) for z in aList if z.strip()]
-        return self.clean(hits)
+    def lookup_methods(self, aList: List[str], prefix: str) -> List[str]:
+        # prefix not used, only aList[0] used.
+        try:
+            aList = codewise.cmd_members([aList[0]])
+            hits = [z.split(None, 1) for z in aList if z.strip()]
+            return self.clean(hits)
+        except Exception:
+            return []
 
-    def lookup_modules(self, aList: List[str], prefix: str) -> List[str]:  # prefix not used, only aList[0] used.
-        aList = codewise.cmd_functions([aList[0]])
-        hits = [z.split(None, 1) for z in aList if z.strip()]
-        return self.clean(hits)
+    def lookup_modules(self, aList: List[str], prefix: str) -> List[str]:
+        # prefix not used, only aList[0] used.
+        try:
+            aList = codewise.cmd_functions([aList[0]])
+            hits = [z.split(None, 1) for z in aList if z.strip()]
+            return self.clean(hits)
+        except Exception:
+            return []
     #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions & helper
     def get_jedi_completions(self, prefix: str) -> List[str]:
 
