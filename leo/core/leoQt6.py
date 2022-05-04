@@ -33,6 +33,7 @@ qt_version = QtCore.QT_VERSION_STR
 has_WebEngineWidgets = False
 try:
     from PyQt6 import QtWebEngineWidgets
+    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
     assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
@@ -138,6 +139,13 @@ Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
+
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
 #@-leo
