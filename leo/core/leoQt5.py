@@ -121,6 +121,13 @@ TextOption = QtGui.QTextOption
 ToolBarArea = QtCore.Qt
 Type = QtCore.QEvent
 UnderlineStyle = QtGui.QTextCharFormat
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
+    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
+
 Weight = QtGui.QFont
 WindowType = QtCore.Qt
 WindowState = QtCore.Qt

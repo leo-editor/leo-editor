@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.8
+About Viewrendered3 V3.81
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,11 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Added new command *vr3-render-html-from-clip*.
+Mathjax, html pages with script imports work with PyQt6.
 
 Previous Recent Changes
 ========================
+Added new command *vr3-render-html-from-clip*.
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
 the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.
@@ -871,6 +872,7 @@ QWebView = None
 from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
 if has_WebEngineWidgets:
     from leo.core.leoQt import QtWebEngineWidgets
+    from leo.core.leoQt import WebEngineAttribute
     QWebView = QtWebEngineWidgets.QWebEngineView
 else:
     try:
@@ -1974,23 +1976,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
 
-    #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
-    def create_base_text_widget(self):
-        """
-        Create a QWebView.
-
-        For QT5 and Qt6, this is actually a QWebEngineView.
-        """
-        c = self.c
-        w = QWebView()
-        n = c.config.getInt('qweb-view-font-size')
-        if hasattr(w, 'settings') and n is not None:
-            settings = w.settings()
-            try:
-                settings.setFontSize(settings.DefaultFontSize, n)
-            except Exception:
-                pass
-        return w
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
@@ -2013,6 +1998,26 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
         pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
+    #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
+    def create_base_text_widget(self):
+        """
+        Create a QWebView.
+
+        For QT5 and Qt6, this is actually a QWebEngineView.
+        """
+        c = self.c
+        w = QWebView()
+        n = c.config.getInt('qweb-view-font-size')
+        if hasattr(w, 'settings'):
+            settings = w.settings()
+            if n is not None:
+                try:
+                    settings.setFontSize(settings.DefaultFontSize, n)
+                except Exception:
+                    pass
+            wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+            settings.setAttribute(wa, True)
+        return w
     #@+node:TomP.20200329223820.4: *4* vr3.create_md_header
     def create_md_header(self):
         """Create a header for the md HTML output.
