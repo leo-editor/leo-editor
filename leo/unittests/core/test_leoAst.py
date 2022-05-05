@@ -1269,7 +1269,7 @@ class Optional_TestFiles(BaseTest):
             stack.append(node)
             return par_value, []
         #@-others
-        directory = r'c:\leo.repo\leo-editor\leo\core'
+        directory = r'c:\Repos\leo-editor\leo\core'
         filename = 'leoAst.py'
         filename = os.path.join(directory, filename)
         # A fair comparison omits the read time.
