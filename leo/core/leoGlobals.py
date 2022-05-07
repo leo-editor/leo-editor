@@ -21,11 +21,8 @@ import inspect
 import io
 import operator
 import os
-import sys
 from pathlib import Path
-
-# import pdb  # Do NOT import pdb here!
-              # We shall define pdb as a _function_ below.
+# import pdb  # Do NOT import pdb here! g.pdb is a *function*
 import re
 import shlex
 import string
@@ -41,6 +38,7 @@ from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Seq
 import unittest
 import urllib
 import urllib.parse as urlparse
+# Third-party tools.
 import webbrowser
 try:
     import tkinter as Tk
