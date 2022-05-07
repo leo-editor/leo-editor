@@ -170,6 +170,7 @@ class Commands:
         self.sparse_find = True
         self.sparse_move = True
         self.sparse_spell = True
+        self.sparse_goto_visible = False
         self.stayInTreeAfterSelect = False
         self.tab_width = -4
         self.tangle_batch_flag = False
@@ -510,7 +511,7 @@ class Commands:
                 g.trace(f"{count:3} no focus")
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
-        """Provide an offical hook for late inits of the commander."""
+        """Provide an official hook for late inits of the commander."""
         pass
     #@+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self):
@@ -538,7 +539,8 @@ class Commands:
         # c.putBitsFlag = getBool('put-expansion-bits-in-leo-files', default=True)
         c.sparse_move = getBool('sparse-move-outline-left')
         c.sparse_find = getBool('collapse-nodes-during-finds')
-        c.sparce_spell = getBool('collapse-nodes-while-spelling')
+        c.sparse_spell = getBool('collapse-nodes-while-spelling')
+        c.sparse_goto_visible = getBool('collapse-on-goto-first-last-visible', default=False)
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
         c.smart_tab = getBool('smart-tab')
         c.tab_width = getInt('tab-width') or -4
@@ -965,7 +967,7 @@ class Commands:
             return c._currentPosition.copy()
         return c.rootPosition()
 
-    # For compatibiility with old scripts...
+    # For compatibility with old scripts...
 
     currentVnode = currentPosition
     #@+node:ekr.20190506060937.1: *5* c.dumpExpanded
@@ -1028,7 +1030,7 @@ class Commands:
         c = self
         body = c.frame.body
         w = body.wrapper
-        oldVview = w.getYScrollPosition()
+        oldYview = w.getYScrollPosition()
         # Note: lines is the entire line containing the insert point if no selection.
         head, s, tail = body.getSelectionLines()
         lines = g.splitLines(s)  # Retain the newlines of each line.
@@ -1036,7 +1038,7 @@ class Commands:
         i = len(head)
         j = len(head) + len(s)
         oldSel = i, j
-        return head, lines, tail, oldSel, oldVview  # string,list,string,tuple,int.
+        return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
     def getTabWidth(self, p):
         """Return the tab width in effect at p."""
@@ -1152,7 +1154,7 @@ class Commands:
             return leoNodes.Position(v, childIndex=0, stack=None)
         return None
 
-    # For compatibiility with old scripts...
+    # For compatibility with old scripts...
 
     rootVnode = rootPosition
     findRootPosition = rootPosition
@@ -1361,12 +1363,12 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
-            # Don't kill unit tests for this nkind of problem.
+            # Don't kill unit tests for this kind of problem.
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position', repr(p))
             g.trace(g.callers())
 
-    # For compatibiility with old scripts.
+    # For compatibility with old scripts.
 
     setCurrentVnode = setCurrentPosition
     #@+node:ekr.20040305223225: *5* c.setHeadString
@@ -1416,14 +1418,14 @@ class Commands:
         return None
 
     def setTopPosition(self, p):
-        """Set the root positioin."""
+        """Set the root position."""
         c = self
         if p:
             c._topPosition = p.copy()
         else:
             c._topPosition = None
 
-    # Define these for compatibiility with old scripts...
+    # Define these for compatibility with old scripts...
 
     topVnode = topPosition
     setTopVnode = setTopPosition
@@ -2199,7 +2201,7 @@ class Commands:
         c:          The Commander of the outline.
         command:    The os command to execute the script.
         directory:  Optional: Change to this directory before executing command.
-        ext:        The file extention for the tempory file.
+        ext:        The file extention for the temporary file.
         language:   The language name.
         regex:      Optional regular expression describing error messages.
                     If present, group(1) should evaluate to a line number.
@@ -2433,7 +2435,7 @@ class Commands:
         """Create a universal command callback.
 
         Create and return a callback that wraps a function with an rClick
-        signature in a callback which adapts standard minibufer command
+        signature in a callback which adapts standard minibuffer command
         callbacks to a compatible format.
 
         This also serves to allow rClick callback functions to handle
@@ -3115,7 +3117,7 @@ class Commands:
 
     force_redraw = redraw
     redraw_now = redraw
-    #@+node:ekr.20090110073010.3: *6* c.redraw_afer_icons_changed
+    #@+node:ekr.20090110073010.3: *6* c.redraw_after_icons_changed
     def redraw_after_icons_changed(self):
         """Update the icon for the presently selected node"""
         c = self
