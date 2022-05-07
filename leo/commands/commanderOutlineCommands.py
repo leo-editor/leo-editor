@@ -707,7 +707,10 @@ def goToFirstVisibleNode(self, event=None):
     c = self
     p = c.firstVisible()
     if p:
-        c.expandOnlyAncestorsOfNode(p=p)
+        if c.sparse_goto_visible:
+            c.expandOnlyAncestorsOfNode(p=p)
+        else:
+            c.treeSelectHelper(p)
         c.redraw()
 #@+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
@@ -735,7 +738,10 @@ def goToLastVisibleNode(self, event=None):
     c = self
     p = c.lastVisible()
     if p:
-        c.expandOnlyAncestorsOfNode(p=p)
+        if c.sparse_goto_visible:
+            c.expandOnlyAncestorsOfNode(p=p)
+        else:
+            c.treeSelectHelper(p)
         c.redraw()
 #@+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
