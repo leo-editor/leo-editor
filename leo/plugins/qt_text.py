@@ -110,7 +110,7 @@ rmargin_doc = r'''
 Right Margin Guidelines
 -------------------------
 
-A vertical guideline may optionally shown at the right margin of the 
+A vertical guideline may optionally shown at the right margin of the
 body editor.  The guideline will be shown at
 
 1. The column value of an @pagewidth directive in effect; or
@@ -1057,7 +1057,7 @@ if QtWidgets:
             qp.begin(self.viewport())
             qp.drawRect(w.cursorRect())
             qp.end()
-            
+
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event: Event) -> None:
             """Handle a wheel event."""
