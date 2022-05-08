@@ -926,7 +926,8 @@ def dehoist(self, event=None):
         return
     bunch = c.hoistStack.pop()
     p = bunch.p
-    if not p:
+    # Checks 'expanded' property, which was preserved by 'hoist' method
+    if bunch.expanded:
         p.expand()
     else:
         p.contract()
