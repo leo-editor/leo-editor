@@ -2984,7 +2984,7 @@ class LoadManager:
         c.frame.resizePanesToRatio(r1, r2)
         c.mFileName = None
         c.wrappedFileName = None
-        c.frame.title = c.computeWindowTitle(c.mFileName)
+        # Fix a buglet: Don't call c.computeWindowTitle here.
         c.frame.setTitle(c.frame.title)
         # Late inits. Order matters.
         if c.config.getBool('use-chapters') and c.chapterController:
