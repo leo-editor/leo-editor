@@ -2246,9 +2246,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_rst_stylesheet()
         self.create_md_header()
 
-        if self.md_math_output:
+        if got_markdown:
             ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
-            ext.append('leo.extensions.mdx_math_gi')
+            if self.md_math_output:
+                ext.append('leo.extensions.mdx_math_gi')
             self.Markdown = markdown.Markdown(extensions=ext)
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
