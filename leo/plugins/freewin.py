@@ -248,6 +248,8 @@ import re
 from leo.core import leoColorizer
 from leo.plugins import qt_text
 
+# pylint: disable=ungrouped-imports
+
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
