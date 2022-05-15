@@ -1,12 +1,10 @@
-# Read me or suffer.
-
 # This is pylint settings file for Leo itself: leo/test/pylint-leo-rc-ref.txt
 
 # Place a *copy* of this file in your .leo directory.
 
 # Devs should run this with Python 3.10 and the latest version of pylint.
-# pylint 2.14.0-dev0
-# astroid 2.11.4
+    # pylint 2.14.0-dev0
+    # astroid 2.11.4
 
 # Handle message activation / deactivation at the module level
 # Nandle some basic stats data
@@ -24,9 +22,27 @@
 ignore=
     CVS
     .git
+    
+# Files or directories matching regex, in Windows or Posix format.
+ignore-paths=
+    leo\external,
+    leo\extensions,
+    leo\modes,
+    leo\plugins\obsolete,
+    leo\plugins\qt_main.py,
+        # Auto-generated, with long lines.
+    leo\plugins\examples,
+    leo\plugins\leo_babel,
+    leo\plugins\pygeotag,
+    leo\scripts,
+    leo\unittests,
+        # cyclic-import, multiple-statements
 
 # Pickle collected data for later comparisons.
 persistent=yes
+
+# Set the cache size for astng objects.
+cache-size=500
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.
@@ -35,18 +51,19 @@ load-plugins=
 [MESSAGES CONTROL]
 
 # Enable the message, report, category or checker with the given id(s).
-enable=
-    line-too-long,
-        # Enable this explicitly because this is a format test.
+# enable=
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
     #
     # Always disable these. Imo, they cause more harm than good.
     # 
-        # These categories are make work.
-        design, similarities,
-
+        design,similarities, # Make work.
+        
+        # For now, *do* suppress bad-option-value and unrecognized-option
+        bad-option-value, # obsolete pylint option.
+        unrecognized-option,  # newer python.
+        
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
@@ -60,45 +77,45 @@ disable=
         consider-using-in,
         consider-using-dict-comprehension,
         consider-using-dict-items,
+        consider-using-fstring,
         consider-using-max-builtin,
         consider-using-set-comprehension,
         consider-using-ternary,
         consider-using-with,
+        cyclic-import,
         deprecated-module,
         exec-used,
         f-string-without-interpolation,  # Useful for concatenated f-strings.
-        global-statement,  #  Assume we know what we are doing.
-        global-variable-not-assigned,  # not helpful.
-        import-outside-toplevel,  # Requires substantial code changes.
-        keyword-arg-before-vararg,  # See https://github.com/PyCQA/pylint/issues/2027
-        missing-docstring,  # Instead, use Leo's find-missing-docstrings command.
-        no-else-break,  # Affects too much existing code.
+        global-statement, #  Assume we know what we are doing.
+        global-variable-not-assigned, # not helpful.
+        import-error,  # Ignore imports of optional packages.
+        import-outside-toplevel, # Requires substantial code changes.
+        keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
+        misplaced-comparison-constant, # pedantic.
+        missing-docstring, # Instead, use Leo's find-missing-docstrings command.
+        no-elif-break, # **Possible pylint bug**
+        no-else-break, # **Possible pylint bug**
+        no-self-use, # so what?
         protected-access,
         redeclared-assigned-name,
         redefined-argument-from-local, # I do this all the time.
         redefined-builtin, # all, next, etc. so what?
         redefined-outer-name,
+        redefined-variable-type,
         too-few-public-methods,
+        trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-dunder-call,  # pylint for python 3.10 only.
-        unnecessary-pass,  # Can be pedantic in some situations.
+        unnecessary-lambda-assignment,
+        unnecessary-pass, # Can be pedantic in some situations.
         unspecified-encoding,  # Huh?
         unused-argument,
         unused-private-member, # too many false positives.
         unused-variable, # way too many false positives, esp. tuple unpacking.
-        unnecessary-lambda-assignment,  # Allow lambda's in plugins.
         use-dict-literal,
         use-list-literal,
         use-maxsplit-arg, # What is this??
         using-constant-test,
-    #
-    # Obsolete switches
-    #
-        # consider-using-fstring,
-        # misplaced-comparison-constant,
-        # no-elif-break,
-        # no-self-use,
-        # redefined-variable-type,
     #
     # Good warnings. Don't suppress these.
     #
@@ -109,6 +126,9 @@ disable=
         # len-as-condition,
         # import-error, # Warns when an import fails: useful now that we are only using python 3.
         # inconsistent-return-statements,
+        # line-too-long,
+            # Not enabled because it is a format test.
+            # Instead, use Leo's find-long-lines command.
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
@@ -122,7 +142,6 @@ disable=
         # singleton-comparison,
         # superfluous-parens,
         # trailing-comma-tuple,
-        # trailing-whitespace,  # Reasonable now that Leo uses reindent!
         # unsupported-assignment-operation,
         # unsupported-delete-operation,
         # unsubscriptable-object,
@@ -137,6 +156,11 @@ disable=
 # set the output format.
 # Available formats are text, parseable, colorized, msvs (visual studio) and html
 output-format=text
+
+# Put messages in a separate file for each module / package specified on the
+# command line instead of printing them on stdout. Reports (if any) will be
+# written in a file name "pylint_global.[txt|html]".
+files-output=no
 
 # Tells wether to display a full report or only the messages
 reports=no
@@ -155,6 +179,20 @@ score=no
 # Enable the report(s) with the given id(s).
 # enable-report=
 
+# Disable the report(s) with the given id(s).
+# R0001,Messages by category
+# R0002 % errors / warnings by module
+# R0003 Messages
+# R0004 Global evaluation
+
+# R0101 Statistics by type
+# R0401 External dependencies
+# R0402 graph ofinternal and externaldependencies
+# R0701 Raw metrics
+# R0801 Duplication
+
+disable-report=R0001,R0002,R0003,R0004,R0101,R0401,R0402,R0701,R0801
+
 [BASIC]
 
 # Regular expression which should only match functions or classes name which do
@@ -162,41 +200,67 @@ score=no
 no-docstring-rgx=__.*__
 
 # Regular expression which should only match correct module names
+# module-rgx=(([a-z_][a-z0-9_]*)|([a-zA-Z0-9]+))$
 module-rgx=[a-zA-Z][a-zA-Z0-9_]+$
 
 # Regular expression which should only match correct module level names
+#const-rgx=(([A-Z_][A-Z1-9_]*)|(__.*__))$
 const-rgx=(([a-zA-Z_][a-zA-Z0-9_]+)|(__.*__))$
 
 # Regular expression which should only match correct class names
+# class-rgx=[A-Z_][a-zA-Z0-9]+$
 class-rgx=[a-zA-Z_][a-zA-Z0-9_]+$
 
 # Regular expression which should only match correct function names
+# function-rgx=[a-z_][a-z0-9_]{2,30}$
 function-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct method names
+#method-rgx=[a-z_][a-z0-9_]{2,30}$
 method-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct instance attribute names
+#attr-rgx=[a-z_][a-z0-9_]{2,30}$
 attr-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 class-attribute-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct argument names
+#argument-rgx=[a-z_][a-z0-9_]{2,30}$
 argument-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct variable names
+#variable-rgx=[a-z_][a-z0-9_]{2,30}$
 variable-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
+
+# Regular expression which should only match correct list comprehension /
+# generator expression variable names
+#inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
+inlinvar-rgx=[a-zA-Z][a-zA-Z0-9_]*$
 
 # Good variable names which should always be accepted, separated by a comma
 good-names=_,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
 
+#__pychecker__,__version__,\
+#__not_a_plugin__,__plugin_id__,__plugin_name__,__plugin_priority__,__plugin_group__,__plugin_requires__,\
+#__revision__,__author__,__date__,__cvsid__,\
+#_emacs_cmd,_vim_cmd,_vim_exe,\
+#_AssignUniqueConstantValue,_PluginDatabase
+
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,baz,toto,tutu,tata
+
+# List of builtins function names that should not be used, separated by a comma
+bad-functions=map,filter,apply,input
 
 [TYPECHECK]
 
 # Tells wether missing members accessed in mixin class should be ignored.
 # Mixin classes have names ending in "mixin" (case insensitive).
 ignore-mixin-members=yes
+
+# Members which are usually get through zope's acquisition mecanism and
+# so shouldn't trigger E0201 when accessed (need zope=yes to be considered).
+acquired-members=REQUEST,acl_users,aq_parent
 
 # Members which are set dynamically and missed by pylint inference system...
 
@@ -288,11 +352,13 @@ int-import-graph=no
 [FORMAT]
 
 # Maximum number of characters on a single line.
+# max-line-length=80  # Set abive
 max-line-length=120 
     # Anything less than 90 is make work, except for testing the pylint test itself.
     # A script in leoPy.leo finds long lines very quickly
 
 # Maximum number of lines in a module
+#max-module-lines=1000
 max-module-lines=20000
     # Leonine code is different.
 
