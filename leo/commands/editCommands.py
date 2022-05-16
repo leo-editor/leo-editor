@@ -124,7 +124,7 @@ def mark_first_parents(event):
 @g.command('merge-node-with-next-node')
 def merge_node_with_next_node(event=None):
     """
-    Merge p.b into p.next().b and delete p.
+    Merge p.b into p.next().b and delete p, *provided* that p has no children.
     Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
     """
     c = event.get('c')
@@ -157,7 +157,7 @@ def merge_node_with_next_node(event=None):
 @g.command('merge-node-with-prev-node')
 def merge_node_with_prev_node(event=None):
     """
-    Merge p.b into p.back().b and delete p.
+    Merge p.b into p.back().b and delete p, *provided* that p has no children.
     Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
     """
     c = event.get('c')
