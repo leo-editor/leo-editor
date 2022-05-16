@@ -120,6 +120,42 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
+#@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node') (buggy)
+@g.command('merge-node-with-next-node')
+def merge_node_with_next_node(event=None):
+    c = event.get('c')
+    if not c:
+        return
+    p, u = c.p, c.undoer
+    if not p or not p.b.strip():
+        return
+    next = p.next()
+    if not next:
+        return
+    bunch = u.beforeChangeBody(next)
+    next.b = p.b.rstrip() + '\n\n' + next.b
+    c.selectPosition(next)
+    ### p.doDelete(next)
+    c.undoer.afterChangeBody(next, 'merge-node-with-next-node', bunch)
+    c.redraw(next)
+#@+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node') (not fully undoable)
+@g.command('merge-node-with-prev-node')
+def merge_node_with_prev_node(event=None):
+    c = event.get('c')
+    if not c:
+        return
+    p, u = c.p, c.undoer
+    if not p or not p.b.strip():
+        return
+    prev = p.back()
+    if not prev:
+        return
+    bunch = u.beforeChangeBody(prev)
+    prev.b = prev.b.rstrip() + '\n\n' + p.b
+    c.selectPosition(prev)
+    p.doDelete(prev)
+    c.undoer.afterChangeBody(prev, 'merge-node-with-prev-node', bunch)
+    c.redraw(prev)
 #@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.
 
@@ -2140,7 +2176,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.insert(i, ''.join(keeplines))
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (new)
+    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event):
         """Move one or *trailing* lines to the start of the next node."""
