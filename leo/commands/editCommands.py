@@ -120,41 +120,71 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
-#@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node') (buggy)
+#@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
 @g.command('merge-node-with-next-node')
 def merge_node_with_next_node(event=None):
+    """
+    Merge p.b into p.next().b and delete p.
+    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
+    """
     c = event.get('c')
     if not c:
         return
-    p, u = c.p, c.undoer
-    if not p or not p.b.strip():
+    command, p, u, w = 'merge-node-with-next-node', c.p, c.undoer, c.frame.body.wrapper
+    if not p or not p.b.strip() or p.hasChildren():
         return
     next = p.next()
     if not next:
         return
-    bunch = u.beforeChangeBody(next)
+    # Outer undo.
+    u.beforeChangeGroup(p, command)
+    # Inner undo 1: change next.b.
+    bunch1 = u.beforeChangeBody(next)
     next.b = p.b.rstrip() + '\n\n' + next.b
+    w.setAllText(next.b)
+    u.afterChangeBody(next, command, bunch1)
+    # Inner undo 2: delete p.
+    bunch2 = u.beforeDeleteNode(p)
+    p.doDelete(next)  # This adjusts next._childIndex.
     c.selectPosition(next)
-    ### p.doDelete(next)
-    c.undoer.afterChangeBody(next, 'merge-node-with-next-node', bunch)
+    u.afterDeleteNode(next, command, bunch2)
+    # End outer undo:
+    next.setDirty()
+    c.setChanged()
+    u.afterChangeGroup(next, command)
     c.redraw(next)
-#@+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node') (not fully undoable)
+#@+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
 @g.command('merge-node-with-prev-node')
 def merge_node_with_prev_node(event=None):
+    """
+    Merge p.b into p.back().b and delete p.
+    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
+    """
     c = event.get('c')
     if not c:
         return
-    p, u = c.p, c.undoer
-    if not p or not p.b.strip():
+    command, p, u, w = 'merge-node-with-prev-node', c.p, c.undoer, c.frame.body.wrapper
+    if not p or not p.b.strip() or p.hasChildren():
         return
     prev = p.back()
     if not prev:
         return
-    bunch = u.beforeChangeBody(prev)
+    # Outer undo.
+    u.beforeChangeGroup(p, command)
+    # Inner undo 1: change prev.b.
+    bunch1 = u.beforeChangeBody(prev)
     prev.b = prev.b.rstrip() + '\n\n' + p.b
+    w.setAllText(prev.b)
+    u.afterChangeBody(prev, command, bunch1)
+    # Inner undo 2: delete p.
+    bunch2 = u.beforeDeleteNode(p)
+    p.doDelete()  # No need to adjust prev._childIndex.
     c.selectPosition(prev)
-    p.doDelete(prev)
-    c.undoer.afterChangeBody(prev, 'merge-node-with-prev-node', bunch)
+    u.afterDeleteNode(prev, command, bunch2)
+    # End outer undo:
+    prev.setDirty()
+    c.setChanged()
+    u.afterChangeGroup(p, command)
     c.redraw(prev)
 #@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.
