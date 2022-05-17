@@ -2311,6 +2311,66 @@ class TestEditCommands(LeoUnitTest):
             command_name="kill-word",
         )
     #@+node:ekr.20210829062149.1: *4* Commands M-R
+    #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
+    def test_merge_node_with_next_node(self):
+        self.fail()
+
+      # before_b = """\
+    # first line
+    # line 1
+        # line a
+            # line b
+    # line c
+    # last line
+    # """
+        # after_b = """\
+    # first line
+    # line 1
+    # line c
+        # line a
+            # line b
+    # last line
+    # """
+        # self.run_test(
+            # before_b=before_b,
+            # after_b=after_b,
+            # before_sel=("3.3", "4.3"),
+            # after_sel=("4.3", "5.3"),
+            # command_name="move-lines-down",
+        # )
+    #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
+    def test_merge_node_with_prev_node(self):
+        c = self.c
+        prev_b = textwrap.dedent("""\
+    def spam():
+        pass
+    """)
+        next_b = textwrap.dedent("""\
+    spam2 = spam
+    """)
+        result_b = textwrap.dedent("""\
+    def spam():
+        pass
+
+    spam2 = spam
+    """)
+        self.before_p.b = prev_b
+        self.after_p.b = next_b
+        c.selectPosition(self.after_p)
+        c.k.simulateCommand('merge-node-with-prev-node')
+        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
+        c.undo()
+        self.assertEqual(c.p.h, 'after')
+        self.assertEqual(c.p.b, next_b)
+        self.assertEqual(c.p.back().h, 'before')
+        self.assertEqual(c.p.back().b, prev_b)
+        c.redo()
+        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
+        
     #@+node:ekr.20201130090918.86: *5* move-lines-down
     def test_move_lines_down(self):
         """Test case for move-lines-down"""
