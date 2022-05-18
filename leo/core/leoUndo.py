@@ -1407,7 +1407,10 @@ class Undoer:
         c, u = self.c, self
         # Remember these values.
         newSel = u.newSel
-        p = u.p.copy()
+        p = u.p.copy()  # Exists now, but may not exist later.
+        newP = u.newP.copy()  # May not exist now, but must exist later.
+        if g.unitTesting:
+            assert c.positionExists(p), repr(p)
         u.groupCount += 1
         bunch = u.beads[u.bead + 1]
         count = 0
@@ -1426,9 +1429,11 @@ class Undoer:
         u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
-        # The helpers should set c.p and c.p.dirty!
+        if 1: # Helpers set dirty bits.
             # p.setDirty()
-            # c.selectPosition(p)
+            if g.unitTesting:
+                assert c.positionExists(newP), repr(newP)
+            c.selectPosition(newP)  # Redo restores newP.
         if newSel:
             i, j = newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1752,7 +1757,12 @@ class Undoer:
         c, u = self.c, self
         # Remember these values.
         oldSel = u.oldSel
-        p = u.p.copy()
+        p = u.p.copy()  # May not exist now, but must exist later.
+        newP = u.newP.copy()  # Must exist now, but may not exist later.
+        if g.unitTesting:
+            assert c.positionExists(newP), repr(newP)
+        ### g.trace('   p', int(c.positionExists(p)), p.h)
+        ###g.trace('newP', int(c.positionExists(u.newP)), u.newP.h)
         u.groupCount += 1
         bunch = u.beads[u.bead]
         count = 0
@@ -1774,9 +1784,11 @@ class Undoer:
         u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
-        # The helpers should set c.p and c.p.dirty!
+        if 1: # Helpers set dirty bits.
             # p.setDirty()
-            # c.selectPosition(p)
+            if g.unitTesting:
+                assert c.positionExists(p), repr(p)
+            c.selectPosition(p)  # Undo restores original p.
         if oldSel:
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
