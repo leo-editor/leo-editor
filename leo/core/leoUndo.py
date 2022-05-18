@@ -1429,11 +1429,12 @@ class Undoer:
         u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
-        if 1: # Helpers set dirty bits.
-            # p.setDirty()
-            if g.unitTesting:
-                assert c.positionExists(newP), repr(newP)
-            c.selectPosition(newP)  # Redo restores newP.
+        # Helpers set dirty bits.
+        # Set c.p, independently of helpers.
+        if g.unitTesting:
+            assert c.positionExists(newP), repr(newP)
+        c.selectPosition(newP)
+        # Set the selection, independently of helpers.
         if newSel:
             i, j = newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1761,8 +1762,6 @@ class Undoer:
         newP = u.newP.copy()  # Must exist now, but may not exist later.
         if g.unitTesting:
             assert c.positionExists(newP), repr(newP)
-        ### g.trace('   p', int(c.positionExists(p)), p.h)
-        ###g.trace('newP', int(c.positionExists(u.newP)), u.newP.h)
         u.groupCount += 1
         bunch = u.beads[u.bead]
         count = 0
@@ -1784,11 +1783,12 @@ class Undoer:
         u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
-        if 1: # Helpers set dirty bits.
-            # p.setDirty()
-            if g.unitTesting:
-                assert c.positionExists(p), repr(p)
-            c.selectPosition(p)  # Undo restores original p.
+        # Helpers set dirty bits.
+        # Set c.p, independently of helpers.
+        if g.unitTesting:
+            assert c.positionExists(p), repr(p)
+        c.selectPosition(p)
+        # Restore the selection, independently of helpers.
         if oldSel:
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
