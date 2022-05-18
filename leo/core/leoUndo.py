@@ -1281,6 +1281,7 @@ class Undoer:
         # Init status.
         u.redoing = True
         u.groupCount = 0
+        ### if g.unitTesting: g.pdb()  ###
         if u.redoHelper:
             u.redoHelper()
         else:
@@ -1556,9 +1557,8 @@ class Undoer:
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self):
         """Redo replacement of an entire tree."""
-        u = self
-        c = u.c
-        u.p = self.undoRedoTree(u.p, u.oldTree, u.newTree)
+        c, u = self.c, self
+        u.p = self.undoRedoTree(u.oldTree, u.newTree)
         u.p.setDirty()
         c.selectPosition(u.p)  # Does full recolor.
         if u.newSel:
@@ -1936,11 +1936,10 @@ class Undoer:
         c.frame.body.recolor(p)
         w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
-    def undoRedoTree(self, p, new_data, old_data):
+    def undoRedoTree(self, new_data, old_data):
         """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
-        u = self
-        c = u.c
+        c, p, u = self.c, self.p, self
         if new_data is None:
             # This is the first time we have undone the operation.
             # Put the new data in the bead.
@@ -1963,9 +1962,8 @@ class Undoer:
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self):
         """Redo replacement of an entire tree."""
-        u = self
-        c = u.c
-        u.p = self.undoRedoTree(u.p, u.newTree, u.oldTree)
+        c, u = self.c, self
+        u.p = self.undoRedoTree(u.newTree, u.oldTree)
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)  # Does full recolor.
         if u.oldSel:
