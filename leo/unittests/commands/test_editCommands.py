@@ -2330,17 +2330,19 @@ class TestEditCommands(LeoUnitTest):
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.before_p)
+        # Delete 'before', select 'after'
         c.k.simulateCommand('merge-node-with-next-node')
-        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
+        # Restore 'before', select, 'before'.
         u.undo()
-        self.assertEqual(c.p.h, 'after')
-        self.assertEqual(c.p.b, next_b)
-        self.assertEqual(c.p.back().h, 'before')
-        self.assertEqual(c.p.back().b, prev_b)
-        u.redo()
         self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, prev_b)
+        self.assertEqual(c.p.next().h, 'after')
+        self.assertEqual(c.p.next().b, next_b)
+        u.redo()
+        self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
     #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
@@ -2362,10 +2364,12 @@ class TestEditCommands(LeoUnitTest):
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.after_p)
+        # Delete 'after', select 'before'
         c.k.simulateCommand('merge-node-with-prev-node')
         self.assertEqual(c.p.h, 'before')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
+        # Restore 'after', select, 'after'.
         u.undo()
         self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, next_b)

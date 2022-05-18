@@ -1281,7 +1281,6 @@ class Undoer:
         # Init status.
         u.redoing = True
         u.groupCount = 0
-        ### if g.unitTesting: g.pdb()  ###
         if u.redoHelper:
             u.redoHelper()
         else:
@@ -1402,9 +1401,8 @@ class Undoer:
     #@+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self):
         """Process beads until the matching 'afterGroup' bead is seen."""
-        u = self
+        c, u = self.c, self
         # Remember these values.
-        c = u.c
         newSel = u.newSel
         p = u.p.copy()
         u.groupCount += 1
@@ -1425,8 +1423,9 @@ class Undoer:
         u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
-        p.setDirty()
-        c.selectPosition(p)
+        # The helpers should set c.p and c.p.dirty!
+            # p.setDirty()
+            # c.selectPosition(p)
         if newSel:
             i, j = newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1747,9 +1746,8 @@ class Undoer:
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
         """Process beads until the matching 'beforeGroup' bead is seen."""
-        u = self
+        c, u = self.c, self
         # Remember these values.
-        c = u.c
         oldSel = u.oldSel
         p = u.p.copy()
         u.groupCount += 1
@@ -1773,8 +1771,9 @@ class Undoer:
         u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
-        p.setDirty()
-        c.selectPosition(p)
+        # The helpers should set c.p and c.p.dirty!
+            # p.setDirty()
+            # c.selectPosition(p)
         if oldSel:
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1939,7 +1938,7 @@ class Undoer:
     def undoRedoTree(self, new_data, old_data):
         """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
-        c, p, u = self.c, self.p, self
+        c, p, u = self.c, self.c.p, self
         if new_data is None:
             # This is the first time we have undone the operation.
             # Put the new data in the bead.
