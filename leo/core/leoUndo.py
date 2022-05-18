@@ -879,8 +879,8 @@ class Undoer:
         w = c.frame.body.wrapper
         return g.Bunch(
             oldMarked=p and p.isMarked(),
-            oldSel=w and w.getSelectionRange() or None,
-            p=p and p.copy(),
+            oldSel=w.getSelectionRange() if w else None,
+            p=p.copy() if p else None,
         )
     #@+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
     # Translation does not affect these routines.
