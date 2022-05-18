@@ -443,9 +443,10 @@ class Undoer:
         Create an undo node for general tree operations using d created by
         beforeChangeGroup
         """
-        u = self
-        c = self.c
+        c, u = self.c, self
         w = c.frame.body.wrapper
+        if p != c.p:  # Prepare to ignore p argument.
+            g.trace("Position mismatch", g.callers())
         if u.redoing or u.undoing:
             return  # pragma: no cover
         bunch = u.beads[u.bead]
@@ -758,7 +759,9 @@ class Undoer:
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
         """Prepare to undo a group of undoable operations."""
-        u = self
+        c, u = self.c, self
+        if p != c.p:  # Prepare to ignore p argument.
+            g.trace("Position mismatch", g.callers())
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'beforeGroup'

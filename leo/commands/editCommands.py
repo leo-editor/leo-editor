@@ -184,7 +184,7 @@ def merge_node_with_prev_node(event=None):
     w.setAllText(prev.b)
     u.afterChangeBody(prev, command, bunch1)
     # End outer undo.
-    u.afterChangeGroup(p, command)
+    u.afterChangeGroup(prev, command)
     c.redraw(prev)
 #@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.
