@@ -2312,45 +2312,27 @@ class LoadManager:
             m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
     def openEmptyWorkBook(self):
-        """Open an empty frame and paste the contents of CheatSheet.leo into it."""
-        # Create an empty frame.
+        """Save CheatSheet.leo as the workbook. Return the new commander."""
         fn = self.computeWorkbookFileName()
         if not fn:
             return None  # #1415
-        c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-        if not c:
-            return None  # #1201: AttributeError below.
-        if g.app.batchMode or g.os_path_exists(fn):
-            return c
-        # Open the cheatsheet.
-        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-        if not g.os_path_exists(fn):
-            g.es(f"file not found: {fn}")
+        # Open CheatSheet.leo.
+        fn2 = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+        if not g.os_path_exists(fn2):
             return None
-        # Paste the contents of CheetSheet.leo into c.
-        c.endEditing()
-        c2 = g.createHiddenCommander(fn)
-        # #2645: Use the threadNext pattern to create the outline!
-        p = c.rootPosition()
-        for p2 in c2.all_positions():
-            p.h = p2.h
-            p.b = p2.b
-            p.u = p2.u
-            if not p2.hasThreadNext():
-                break
-            # Like p.moveToThreadNext.
-            if p2.hasChildren():
-                p = p.insertAsLastChild()
-            elif p2.hasNext():
-                p = p.insertAfter()
-            else:
-                while p2:
-                    p2 = p2.parent()
-                    p = p.parent()
-                    if p2.hasNext():
-                        p = p.insertAfter()
-                        break
-        # Delete the dummy first node.
+        c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
+        # Save as the workbook name.
+        c.mFileName = fn
+        c.frame.title = title = c.computeWindowTitle(fn)
+        c.frame.setTitle(title)
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        if hasattr(c.frame, 'top'):
+            c.frame.top.leo_master.setTabName(c, fn)
+        c.fileCommands.saveAs(fn)
+        g.app.recentFilesManager.updateRecentFiles(fn)
+        g.chdir(fn)
+        # Finish.
+        g.app.already_open_files = []
         c.target_language = 'rest'
         c.clearChanged()
         c.redraw(c.rootPosition())  # # 1380: Select the root.
