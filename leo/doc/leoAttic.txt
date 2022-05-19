@@ -3314,6 +3314,138 @@ def scan_for_values(self):  # pragma: no cover
         else:
             value_list.append(new_token(kind, val))
     return values, tokens
+#@+node:ekr.20160518074224.1: *3* class g.LinterTable
+class LinterTable():
+    """A class to encapsulate lists of leo modules under test."""
+
+    def __init__(self) -> None:
+        """Ctor for LinterTable class."""
+        # Define self. relative to leo.core.leoGlobals
+        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+    @others
+#@+node:ekr.20160518074545.2: *4* commands
+def commands(self) -> List:
+    """Return list of all command modules in leo/commands."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
+    return self.get_files(pattern)
+#@+node:ekr.20160518074545.3: *4* core
+def core(self) -> List:
+    """Return list of all of Leo's core files."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
+    aList = self.get_files(pattern)
+    for fn in ['runLeo.py',]:
+        aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
+    return sorted(aList)
+#@+node:ekr.20160518074545.4: *4* external
+def external(self) -> List:
+    """Return list of files in leo/external"""
+    pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
+    aList = self.get_files(pattern)
+    remove = [
+        'leoSAGlobals.py',
+        'leoftsindex.py',
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
+    return sorted([z for z in aList if z not in remove])
+#@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
+def get_files(self, pattern: str) -> List:
+    """Return the list of absolute file names matching the pattern."""
+    aList = sorted([
+        fn for fn in g.glob_glob(pattern)
+            if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+    return aList
+#@+node:ekr.20160518074545.9: *4* get_files_for_scope
+def get_files_for_scope(self, scope: str, fn: str) -> List:
+    """Return a list of absolute filenames for external linters."""
+    d = {
+        'all': [self.core, self.commands, self.external, self.plugins, self.tests],
+        'commands': [self.commands],
+        'core': [self.core, self.commands, self.external, self.gui_plugins],
+        'external': [self.external],
+        'file': [fn],
+        'gui': [self.gui_plugins],
+        'modes': [self.modes],
+        'plugins': [self.plugins],
+        'tests': [self.tests],
+    }
+    suppress_list = ['freewin.py']  # No longer hangs Leo, but generates a pylint fatal error.
+    functions = d.get(scope)
+    paths = []
+    if functions:
+        for func in functions:
+            files = [func] if isinstance(func, str) else func()  # Bug fix: 2016/10/15
+            for fn in files:
+                fn = g.os_path_abspath(fn)
+                if scope != 'file' and g.shortFileName(fn) in suppress_list:
+                    print(f"\npylint-leo: skip {fn}")
+                    continue
+                if g.os_path_exists(fn):
+                    if g.os_path_isfile(fn):
+                        paths.append(fn)
+                else:
+                    print(f"does not exist: {fn}")
+        paths = sorted(set(paths))
+        return paths
+    print('LinterTable.get_table: bad scope', scope)
+    return []
+#@+node:ekr.20160518074545.5: *4* gui_plugins
+def gui_plugins(self) -> List:
+    """Return list of all of Leo's gui-related files."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
+    aList = self.get_files(pattern)
+    # These are not included, because they don't start with 'qt_':
+    add = ['free_layout.py', 'nested_splitter.py',]
+    remove = [
+        'qt_main.py',  # auto-generated file.
+    ]
+    for fn in add:
+        aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
+    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+    return sorted(set([z for z in aList if z not in remove]))
+#@+node:ekr.20160518074545.6: *4* modes
+def modes(self) -> List:
+    """Return list of all files in leo/modes"""
+    pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
+    return self.get_files(pattern)
+#@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
+def plugins(self) -> List:
+    """Return a list of all important plugins."""
+    aList = []
+    for theDir in ('', 'importers', 'writers'):
+        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+        aList.extend(self.get_files(pattern))
+        # Don't use get_files here.
+        # for fn in g.glob_glob(pattern):
+            # sfn = g.shortFileName(fn)
+            # if sfn != '__init__.py':
+                # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
+                # aList.append(sfn)
+    remove = [
+        # 2016/05/20: *do* include gui-related plugins.
+        # This allows the -a option not to doubly-include gui-related plugins.
+            # 'free_layout.py', # Gui-related.
+            # 'nested_splitter.py', # Gui-related.
+        'gtkDialogs.py',  # Many errors, not important.
+        'leofts.py',  # Not (yet) in leoPlugins.leo.
+        'qtGui.py',  # Dummy file
+        'qt_main.py',  # Created automatically.
+        'rst3.py',  # Obsolete
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+    aList = sorted([z for z in aList if z not in remove])
+    return sorted(set(aList))
+#@+node:ekr.20211115103929.1: *4* tests (LinterTable)
+def tests(self) -> List:
+    """Return list of files in leo/unittests"""
+    aList = []
+    for theDir in ('', 'commands', 'core', 'plugins'):
+        pattern = g.os_path_finalize_join(self.loadDir, 'unittests', theDir, '*.py')
+        aList.extend(self.get_files(pattern))
+    remove = [
+        'py3_test_grammar.py',
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'unittests', fn) for fn in remove]
+    return sorted([z for z in aList if z not in remove])
 #@+node:ekr.20211014154452.1: ** Abandoned files
 #@+node:ekr.20160517182239.1: *3* ../../flake8-leo.py
 """
@@ -3622,6 +3754,109 @@ def scanOptions():
     else:
         scope = 'all'
     return scope, verbose
+#@+node:ekr.20160518000549.1: *3* ../../pyflakes-leo.py
+"""
+This file runs pyflakes on predefined lists of files.
+
+On windows, the following .bat file runs this file::
+    python pyflakes-leo.py %*
+
+On Ubuntu, the following alias runs this file::
+    pyflake="python pyflake-leo.py"
+"""
+@language python
+@tabwidth -4
+# pylint: disable=invalid-name
+    # pyflakes-leo isn't a valid module name, but it isn't a module.
+import optparse
+import sys
+import time
+try:
+    # pylint: disable=import-error
+    from pyflakes import api, reporter
+except ImportError:
+    api = reporter = None
+from leo.core import leoGlobals as g
+from leo.core import leoTest
+@others
+g_option_fn = None
+scope = scanOptions()
+if scope == 'version':
+    report_version()
+else:
+    files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
+    main(files)
+#@+node:ekr.20160518000549.10: *4* main (pyflakes-leo.py)
+def main(files):
+    """Call main in all given files."""
+    t1 = time.time()
+    for fn in files:
+        # Report the file name.
+        assert g.os_path_exists(fn), fn
+        sfn = g.shortFileName(fn)
+        s = g.readFileIntoEncodedString(fn)
+        if s and s.strip():
+            r = reporter.Reporter(errorStream=sys.stderr, warningStream=sys.stderr)
+            api.check(s, sfn, r)
+    t2 = time.time()
+    n = len(files)
+    print(f"{n} file{g.plural(n)}, time: {t2 - t1:5.2f} sec.")
+#@+node:ekr.20160518000549.14: *4* report_version
+def report_version():
+    try:
+        # pylint: disable=import-error
+        import flake8
+        print(f"flake8 version: {flake8.__version__}")
+    except Exception:
+        g.trace('can not import flake8')
+#@+node:ekr.20160518000549.15: *4* scanOptions (pyflakes)
+def scanOptions():
+    """Handle all options, remove them from sys.argv."""
+    global g_option_fn
+    # This automatically implements the -h (--help) option.
+    parser = optparse.OptionParser()
+    add = parser.add_option
+    add('-a', action='store_true', help='all (default)')
+    add('-c', action='store_true', help='core')
+    add('-e', action='store_true', help='external')
+    add('-f', dest='filename', help='filename, relative to leo folder')
+    add('-g', action='store_true', help='gui plugins')
+    add('-m', action='store_true', help='modes')
+    add('-p', action='store_true', help='plugins')
+    # add('-s', action='store_true', help='silent')
+    add('-u', action='store_true', help='user commands')
+    add(
+        '-v', '--version', dest='v', action='store_true', help='report pyflakes version'
+    )
+    # Parse the options.
+    options, args = parser.parse_args()
+    # silent = options.s
+    if options.a:
+        scope = 'all'
+    elif options.c:
+        scope = 'core'
+    elif options.e:
+        scope = 'external'
+    elif options.filename:
+        fn = options.filename
+        if fn.startswith('='):
+            fn = fn[1:]
+        g_option_fn = fn.strip('"')
+        scope = 'file'
+    elif options.g:
+        scope = 'gui'
+    elif options.m:
+        scope = 'modes'
+    elif options.p:
+        scope = 'plugins'
+    # elif options.s: scope = 'silent'
+    elif options.u:
+        scope = 'commands'
+    elif options.v:
+        scope = 'version'
+    else:
+        scope = 'all'
+    return scope
 #@+node:ekr.20211014154406.1: ** Abandoned plugins
 #@+node:ekr.20211011021921.1: *3* From backlink plugin
 #@+node:ekr.20140920145803.17994: *4* class backlinkTkUI
