@@ -149,8 +149,6 @@ def merge_node_with_next_node(event=None):
     c.selectPosition(next)
     u.afterDeleteNode(next, command, bunch2)
     # End outer undo:
-    next.setDirty()
-    c.setChanged()
     u.afterChangeGroup(next, command)
     c.redraw(next)
 #@+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
@@ -176,15 +174,13 @@ def merge_node_with_prev_node(event=None):
     prev.b = prev.b.rstrip() + '\n\n' + p.b
     w.setAllText(prev.b)
     u.afterChangeBody(prev, command, bunch1)
-    # Inner undo 2: delete p.
+    # Inner undo 2: delete p, select prev.
     bunch2 = u.beforeDeleteNode(p)
     p.doDelete()  # No need to adjust prev._childIndex.
     c.selectPosition(prev)
     u.afterDeleteNode(prev, command, bunch2)
-    # End outer undo:
-    prev.setDirty()
-    c.setChanged()
-    u.afterChangeGroup(p, command)
+    # End outer undo.
+    u.afterChangeGroup(prev, command)
     c.redraw(prev)
 #@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.

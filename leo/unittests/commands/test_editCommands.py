@@ -2311,6 +2311,74 @@ class TestEditCommands(LeoUnitTest):
             command_name="kill-word",
         )
     #@+node:ekr.20210829062149.1: *4* Commands M-R
+    #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
+    def test_merge_node_with_next_node(self):
+        c, u = self.c, self.c.undoer
+        prev_b = textwrap.dedent("""\
+    def spam():
+        pass
+    """)
+        next_b = textwrap.dedent("""\
+    spam2 = spam
+    """)
+        result_b = textwrap.dedent("""\
+    def spam():
+        pass
+
+    spam2 = spam
+    """)
+        self.before_p.b = prev_b
+        self.after_p.b = next_b
+        c.selectPosition(self.before_p)
+        # Delete 'before', select 'after'
+        c.k.simulateCommand('merge-node-with-next-node')
+        self.assertEqual(c.p.h, 'after')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
+        # Restore 'before', select, 'before'.
+        u.undo()
+        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, prev_b)
+        self.assertEqual(c.p.next().h, 'after')
+        self.assertEqual(c.p.next().b, next_b)
+        u.redo()
+        self.assertEqual(c.p.h, 'after')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
+    #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
+    def test_merge_node_with_prev_node(self):
+        c, u = self.c, self.c.undoer
+        prev_b = textwrap.dedent("""\
+    def spam():
+        pass
+    """)
+        next_b = textwrap.dedent("""\
+    spam2 = spam
+    """)
+        result_b = textwrap.dedent("""\
+    def spam():
+        pass
+
+    spam2 = spam
+    """)
+        self.before_p.b = prev_b
+        self.after_p.b = next_b
+        c.selectPosition(self.after_p)
+        # Delete 'after', select 'before'
+        c.k.simulateCommand('merge-node-with-prev-node')
+        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
+        # Restore 'after', select, 'after'.
+        u.undo()
+        self.assertEqual(c.p.h, 'after')
+        self.assertEqual(c.p.b, next_b)
+        self.assertEqual(c.p.back().h, 'before')
+        self.assertEqual(c.p.back().b, prev_b)
+        u.redo()
+        self.assertEqual(c.p.h, 'before')
+        self.assertEqual(c.p.b, result_b)
+        self.assertFalse(c.p.next())
     #@+node:ekr.20201130090918.86: *5* move-lines-down
     def test_move_lines_down(self):
         """Test case for move-lines-down"""
