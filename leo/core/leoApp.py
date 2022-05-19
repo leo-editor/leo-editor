@@ -2313,12 +2313,11 @@ class LoadManager:
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
     def openEmptyWorkBook(self):
         """Open an empty frame and paste the contents of CheatSheet.leo into it."""
-        lm = self
         # Create an empty frame.
-        fn = lm.computeWorkbookFileName()
+        fn = self.computeWorkbookFileName()
         if not fn:
             return None  # #1415
-        c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+        c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         if not c:
             return None  # #1201: AttributeError below.
         if g.app.batchMode or g.os_path_exists(fn):
@@ -2329,25 +2328,32 @@ class LoadManager:
             g.es(f"file not found: {fn}")
             return None
         # Paste the contents of CheetSheet.leo into c.
-        old_clipboard = g.app.gui.getTextFromClipboard()  # #933: Save clipboard.
-        c2 = g.openWithFileName(fn, old_c=c)
-        for p2 in c2.rootPosition().self_and_siblings():
-            c2.setCurrentPosition(p2)  # 1380
-            c2.copyOutline()
-            # #1380 & #1381: Add guard & use vnode methods to prevent redraw.
-            p = c.pasteOutline()
-            if p:
-                c.setCurrentPosition(p)  # 1380
-                p.v.contract()
-                p.v.clearDirty()
-        c2.close(new_c=c)
+        c.endEditing()
+        c2 = g.createHiddenCommander(fn)
+        # #2645: Use the threadNext pattern to create the outline!
+        p = c.rootPosition()
+        for p2 in c2.all_positions():
+            p.h = p2.h
+            p.b = p2.b
+            p.u = p2.u
+            if not p2.hasThreadNext():
+                break
+            # Like p.moveToThreadNext.
+            if p2.hasChildren():
+                p = p.insertAsLastChild()
+            elif p2.hasNext():
+                p = p.insertAfter()
+            else:
+                while p2:
+                    p2 = p2.parent()
+                    p = p.parent()
+                    if p2.hasNext():
+                        p = p.insertAfter()
+                        break
         # Delete the dummy first node.
-        root = c.rootPosition()
-        root.doDelete(newNode=root.next())
         c.target_language = 'rest'
         c.clearChanged()
         c.redraw(c.rootPosition())  # # 1380: Select the root.
-        g.app.gui.replaceClipboardWith(old_clipboard)  # #933: Restore clipboard
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
