@@ -9,10 +9,14 @@ from leo.core import leoNodes
 from leo.core import leoFileCommands
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
+#@+node:ekr.20031218072017.1550: *3* c_oc.copyNode
 @g.commander_command('copy-node')
-def copyOutline(self, event=None):
-    """Copy the selected outline to the clipboard."""
+def copyNode(self, event=None):
+    """
+    Copy the selected outline to the clipboard.
+    
+    *Note*: This is not the same as c.copy_outline!
+    """
     # Copying an outline has no undo consequences.
     c = self
     c.endEditing()
