@@ -45,6 +45,7 @@ install_requires = [
     'meta',  # for livecode.py plugin, which is enabled by default
     'nbformat',  # for Jupyter notebook integration
     'pylint', 'pyflakes', 'black',  # coding syntax standards
+    'pyenchant',  # The spell tab.
     'pyshortcuts >= 1.7',  # desktop integration (#1243)
     'sphinx',  # rST plugin
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
