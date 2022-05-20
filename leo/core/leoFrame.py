@@ -1323,9 +1323,8 @@ class LeoLog:
                     return m, filename_i, line_number_i
             return None, None, None
         #@+node:ekr.20220412084258.1: *5* function: find_at_file_node
-        def find_at_file_node(c: Cmdr, filename: str) -> Pos:
+        def find_at_file_node(filename: str) -> Pos:
             """Find a position corresponding to filename s"""
-            c = self.c
             target = os.path.normpath(filename)
             parts = target.split(os.sep)
             while parts:
@@ -1377,7 +1376,7 @@ class LeoLog:
             if m:
                 filename = m.group(filename_i)
                 line_number = m.group(line_number_i)
-                p = find_at_file_node(c, filename)  # Find a corresponding @<file> node.
+                p = find_at_file_node(filename)  # Find a corresponding @<file> node.
                 if p:
                     unl = p.get_UNL()
                     found_matches += 1
