@@ -2185,6 +2185,7 @@
 <v t="nh910.20110621123823.3423"><vh>@bool collapse-nodes-after-move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse-nodes-during-finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse-nodes-while-spelling = True</vh></v>
+<v t="felix.20220506230435.1"><vh>@bool collapse-on-goto-first-last-visible = True</vh></v>
 <v t="ekr.20111109104336.12503"><vh>@bool collapse-on-lt-arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
@@ -11650,6 +11651,9 @@ w, Wrapper
 False: Use the default stylesheet at leo/plugins/viewrendered3.
        If not present, create a default stylesheet and write it to a file
        at that place.</t>
+<t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
+
+False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

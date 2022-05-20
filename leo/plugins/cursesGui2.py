@@ -133,6 +133,10 @@ class LeoBodyTextfield(npyscreen.Textfield):
             self.value = self.value[: i - 1] + self.value[i:]
         self.cursor_position -= 1
         self.begin_at -= 1
+        # #2642.
+        self.update()
+        parent_w = self.leo_parent
+        parent_w.update_body(self.cursor_position, self.value)
     #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
     def h_exit_down(self, ch_i):
         """
@@ -2858,6 +2862,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         lines = self.values
         if trace:
             g.trace(i, len(lines), s.endswith('\n'), repr(s))
+            g.trace(g.callers())
         head = lines[:i]
         tail = lines[i + 1 :]
         if i < len(lines):

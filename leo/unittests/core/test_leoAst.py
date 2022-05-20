@@ -1626,7 +1626,7 @@ class TestIterative(TestTOG):
     #@+others
     #@+node:edreamleo.20220429071246.1: *4* TestIterative.setUp
     def setUp(self):
-        
+
         if py_version < (3, 9):
             self.skipTest('Requires Python 3.9 or above')
     #@+node:ekr.20220402150424.1: *4* TestIterative.make_data (override)

@@ -2312,42 +2312,30 @@ class LoadManager:
             m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
     def openEmptyWorkBook(self):
-        """Open an empty frame and paste the contents of CheatSheet.leo into it."""
-        lm = self
-        # Create an empty frame.
-        fn = lm.computeWorkbookFileName()
+        """Save CheatSheet.leo as the workbook. Return the new commander."""
+        fn = self.computeWorkbookFileName()
         if not fn:
             return None  # #1415
-        c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-        if not c:
-            return None  # #1201: AttributeError below.
-        if g.app.batchMode or g.os_path_exists(fn):
-            return c
-        # Open the cheatsheet.
-        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
-        if not g.os_path_exists(fn):
-            g.es(f"file not found: {fn}")
+        # Open CheatSheet.leo.
+        fn2 = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+        if not g.os_path_exists(fn2):
             return None
-        # Paste the contents of CheetSheet.leo into c.
-        old_clipboard = g.app.gui.getTextFromClipboard()  # #933: Save clipboard.
-        c2 = g.openWithFileName(fn, old_c=c)
-        for p2 in c2.rootPosition().self_and_siblings():
-            c2.setCurrentPosition(p2)  # 1380
-            c2.copyOutline()
-            # #1380 & #1381: Add guard & use vnode methods to prevent redraw.
-            p = c.pasteOutline()
-            if p:
-                c.setCurrentPosition(p)  # 1380
-                p.v.contract()
-                p.v.clearDirty()
-        c2.close(new_c=c)
-        # Delete the dummy first node.
-        root = c.rootPosition()
-        root.doDelete(newNode=root.next())
+        c = self.loadLocalFile(fn2, gui=g.app.gui, old_c=None)
+        # Save as the workbook name.
+        c.mFileName = fn
+        c.frame.title = title = c.computeWindowTitle(fn)
+        c.frame.setTitle(title)
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
+        if hasattr(c.frame, 'top'):
+            c.frame.top.leo_master.setTabName(c, fn)
+        c.fileCommands.saveAs(fn)
+        g.app.recentFilesManager.updateRecentFiles(fn)
+        g.chdir(fn)
+        # Finish.
+        g.app.already_open_files = []
         c.target_language = 'rest'
         c.clearChanged()
         c.redraw(c.rootPosition())  # # 1380: Select the root.
-        g.app.gui.replaceClipboardWith(old_clipboard)  # #933: Restore clipboard
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
@@ -2984,7 +2972,7 @@ class LoadManager:
         c.frame.resizePanesToRatio(r1, r2)
         c.mFileName = None
         c.wrappedFileName = None
-        c.frame.title = c.computeWindowTitle(c.mFileName)
+        # Fix a buglet: Don't call c.computeWindowTitle here.
         c.frame.setTitle(c.frame.title)
         # Late inits. Order matters.
         if c.config.getBool('use-chapters') and c.chapterController:

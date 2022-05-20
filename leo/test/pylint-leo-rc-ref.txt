@@ -1,8 +1,10 @@
-# This is pylint settings file for Leo itself.
+# This is pylint settings file for Leo itself: leo/test/pylint-leo-rc-ref.txt
 
-# leo/test/pylint-leo-rc.txt or leo/test/pylint-leo-rc-ref.txt
+# Place a *copy* of this file in your .leo directory.
 
-# For documentation, see: https://docs.pylint.org/features.html#typecheck-checker
+# Devs should run this with Python 3.10 and the latest version of pylint.
+    # pylint 2.14.0-dev0
+    # astroid 2.11.4
 
 # Handle message activation / deactivation at the module level
 # Nandle some basic stats data
@@ -20,6 +22,21 @@
 ignore=
     CVS
     .git
+    
+# Files or directories matching regex, in Windows or Posix format.
+ignore-paths=
+    leo\external,
+    leo\extensions,
+    leo\modes,
+    leo\plugins\obsolete,
+    leo\plugins\qt_main.py,
+        # Auto-generated, with long lines.
+    leo\plugins\examples,
+    leo\plugins\leo_babel,
+    leo\plugins\pygeotag,
+    leo\scripts,
+    leo\unittests,
+        # cyclic-import, multiple-statements
 
 # Pickle collected data for later comparisons.
 persistent=yes
@@ -42,12 +59,8 @@ disable=
     # Always disable these. Imo, they cause more harm than good.
     # 
         design,similarities, # Make work.
-        # import, ###
-
-        # format,  # Allow bad-indentation and other checks.
         
         # For now, *do* suppress bad-option-value and unrecognized-option
-        
         bad-option-value, # obsolete pylint option.
         unrecognized-option,  # newer python.
         
@@ -69,11 +82,13 @@ disable=
         consider-using-set-comprehension,
         consider-using-ternary,
         consider-using-with,
+        cyclic-import,
         deprecated-module,
         exec-used,
         f-string-without-interpolation,  # Useful for concatenated f-strings.
         global-statement, #  Assume we know what we are doing.
         global-variable-not-assigned, # not helpful.
+        import-error,  # Ignore imports of optional packages.
         import-outside-toplevel, # Requires substantial code changes.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
         misplaced-comparison-constant, # pedantic.
@@ -91,6 +106,7 @@ disable=
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-dunder-call,  # pylint for python 3.10 only.
+        unnecessary-lambda-assignment,
         unnecessary-pass, # Can be pedantic in some situations.
         unspecified-encoding,  # Huh?
         unused-argument,

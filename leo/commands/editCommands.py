@@ -120,6 +120,68 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
+#@+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
+@g.command('merge-node-with-next-node')
+def merge_node_with_next_node(event=None):
+    """
+    Merge p.b into p.next().b and delete p, *provided* that p has no children.
+    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    command, p, u, w = 'merge-node-with-next-node', c.p, c.undoer, c.frame.body.wrapper
+    if not p or not p.b.strip() or p.hasChildren():
+        return
+    next = p.next()
+    if not next:
+        return
+    # Outer undo.
+    u.beforeChangeGroup(p, command)
+    # Inner undo 1: change next.b.
+    bunch1 = u.beforeChangeBody(next)
+    next.b = p.b.rstrip() + '\n\n' + next.b
+    w.setAllText(next.b)
+    u.afterChangeBody(next, command, bunch1)
+    # Inner undo 2: delete p.
+    bunch2 = u.beforeDeleteNode(p)
+    p.doDelete(next)  # This adjusts next._childIndex.
+    c.selectPosition(next)
+    u.afterDeleteNode(next, command, bunch2)
+    # End outer undo:
+    u.afterChangeGroup(next, command)
+    c.redraw(next)
+#@+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
+@g.command('merge-node-with-prev-node')
+def merge_node_with_prev_node(event=None):
+    """
+    Merge p.b into p.back().b and delete p, *provided* that p has no children.
+    Undo works, but redo doesn't: probably a bug in the u.before/AfterChangeGroup.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    command, p, u, w = 'merge-node-with-prev-node', c.p, c.undoer, c.frame.body.wrapper
+    if not p or not p.b.strip() or p.hasChildren():
+        return
+    prev = p.back()
+    if not prev:
+        return
+    # Outer undo.
+    u.beforeChangeGroup(p, command)
+    # Inner undo 1: change prev.b.
+    bunch1 = u.beforeChangeBody(prev)
+    prev.b = prev.b.rstrip() + '\n\n' + p.b
+    w.setAllText(prev.b)
+    u.afterChangeBody(prev, command, bunch1)
+    # Inner undo 2: delete p, select prev.
+    bunch2 = u.beforeDeleteNode(p)
+    p.doDelete()  # No need to adjust prev._childIndex.
+    c.selectPosition(prev)
+    u.afterDeleteNode(prev, command, bunch2)
+    # End outer undo.
+    u.afterChangeGroup(prev, command)
+    c.redraw(prev)
 #@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.
 
@@ -2140,7 +2202,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.insert(i, ''.join(keeplines))
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (new)
+    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event):
         """Move one or *trailing* lines to the start of the next node."""
