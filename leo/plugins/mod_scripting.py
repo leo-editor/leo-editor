@@ -1135,10 +1135,11 @@ class ScriptingController:
                         g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
+                        allowBinding=True,  # #2631
                         commandName=commandName2,
                         func=registerAllCommandsCallback,
                         pane=pane,
-                        shortcut=None
+                        shortcut=shortcut,  # #2631
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
