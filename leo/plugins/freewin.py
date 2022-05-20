@@ -908,7 +908,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         del instances[id_]
         self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event):  #pylint:disable=method-hidden
         """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all
