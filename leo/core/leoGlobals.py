@@ -148,6 +148,7 @@ cmd_instance_dict = {
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
 mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
+pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
 #@-<< define global error regexs >>
