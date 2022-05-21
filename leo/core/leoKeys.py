@@ -2094,21 +2094,26 @@ class KeyHandlerClass:
                 stroke=stroke)
             if shortcut:
                 k.bindKeyToDict(pane, shortcut, bi)  # Updates k.masterBindingsDict
-            if shortcut and not modeFlag:
-                aList = k.remove_conflicting_definitions(
-                    aList, commandName, pane, shortcut)
-                # 2013/03/02: a real bug fix.
-            aList.append(bi)
+                
+            if 1:  ### Experimental
+                if trace: g.printObj(aList, tag='1')
+                aList = [z for z in aList if z.pane not in (pane, 'all')]
+                aList.append(bi)
+                if trace: g.printObj(aList, tag='2')
+            else:
+                if shortcut and not modeFlag:
+                    aList = k.remove_conflicting_definitions(
+                        aList, commandName, pane, shortcut)
+                else:
+                    aList = []
+                    # 2013/03/02: a real bug fix.
+                aList.append(bi)
             if shortcut:
                 assert stroke
                 k.bindingsDict[stroke] = aList
             if trace:  ###
                 g.trace('k.bindingsDict[stroke]...')
                 print(k.bindingsDict[stroke])
-                if 0:
-                    g.trace('aList...')
-                    for z in aList:
-                        print(z)
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2135,7 +2140,7 @@ class KeyHandlerClass:
             g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
             return False
         return True
-    #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut
+    #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut  ###
     def kill_one_shortcut(self, stroke: Stroke) -> None:
         """
         Update the *configuration* dicts so that c.config.getShortcut(name)
@@ -2579,18 +2584,18 @@ class KeyHandlerClass:
             g.es('no bindings')
             return None
         legend = textwrap.dedent(legend)
-        ###
-        print('')
-        g.trace('===== bindingsDict', id(c), c.shortFileName(), g.callers(8))
-        if 0: 
-            for z in sorted(c.k.bindingsDict):
-                if 'F4' in repr(z):
-                    g.trace(z)
+        if 1: ###
+            print('')
+            g.trace('===== bindingsDict', id(c), c.shortFileName())
+        if 1: ###
+            for z in c.k.bindingsDict:
+                if 'F4' in repr(z) and "+F4" not in repr(z):
+                    ### g.trace(z)
                     print(c.k.bindingsDict[z])
-        ###
-        g.trace('===== masterBindingsDict[button]')
-        d2 = c.k.masterBindingsDict.get('button')
-        g.printObj(d2)
+        if 0: ###
+            g.trace('===== masterBindingsDict[button]')
+            d2 = c.k.masterBindingsDict.get('button')
+            g.printObj(d2)
         data = []
         for stroke in sorted(d):
             assert g.isStroke(stroke), stroke
@@ -3116,7 +3121,7 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
-        if commandName == 'binding-test':  ###
+        if False: ### commandName == 'binding-test':  ###
             g.trace(id(c), c.shortFileName(), 'stroke', repr(stroke), g.callers())
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
@@ -3604,7 +3609,7 @@ class KeyHandlerClass:
         ):
             bi = k.getBindingHelper(key, name, stroke, w)
             if bi:
-                g.trace('FOUND', key, bi.commandName)
+                ### g.trace('FOUND', key, bi.commandName)
                 return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper

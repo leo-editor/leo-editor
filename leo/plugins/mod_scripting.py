@@ -568,10 +568,9 @@ class ScriptingController:
                     func(p)
                 p.moveToThreadNext()
                 
-        ###
-        print('')
-        g.trace('=====', id(c), c.shortFileName(), g.callers(8))
-        if 0:
+        if 0:  ###
+            print('')
+            g.trace('=====', id(c), c.shortFileName())
             for z in sorted(c.k.bindingsDict):
                 if 'F4' in repr(z):
                     g.trace(z)

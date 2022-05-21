@@ -2308,7 +2308,7 @@ class LoadManager:
         print('')
         g.trace('=====', id(c), c.shortFileName(), g.callers(8))  ###
         if 1:
-            for z in sorted(c.k.bindingsDict):
+            for z in c.k.bindingsDict:
                 if 'F4' in repr(z):
                     # g.trace(z)
                     print(c.k.bindingsDict[z])
