@@ -2272,6 +2272,7 @@ class LoadManager:
             except Exception:
                 g.es_print('Can not load session')
                 g.es_exception()
+
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1:
@@ -2303,6 +2304,13 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False  # Force an immediate exit.
+        ###
+        print('')
+        g.trace('=====', c.shortFileName(), g.callers(8))  ###
+        for z in sorted(c.k.bindingsDict):
+            if 'F4' in repr(z):
+                g.trace(z)
+                print(c.k.bindingsDict[z])
         return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):

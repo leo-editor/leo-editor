@@ -2065,9 +2065,9 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
-        trace = self.c.shortFileName() == 'ekr.leo' and commandName == 'binding-test'  ###
+        trace = commandName == 'binding-test'  ### and self.c.shortFileName() == 'ekr.leo'
         if trace:
-            g.trace(commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
+            g.trace(self.c.shortFileName(), commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
         if not shortcut:
             # Don't use this method to undo bindings.
@@ -2105,6 +2105,8 @@ class KeyHandlerClass:
                     for z in aList:
                         print(z)
                 k.bindingsDict[stroke] = aList
+            if trace:
+                g.trace('RESULT', k.bindingsDict[stroke])
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2182,6 +2184,8 @@ class KeyHandlerClass:
         k = self
         assert g.isStroke(stroke), stroke
         d = k.masterBindingsDict.get(pane, {})
+        if 'F4' in repr(bi):
+            g.trace(stroke, bi) ###
         d[stroke] = bi
         k.masterBindingsDict[pane] = d
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
@@ -2574,28 +2578,41 @@ class KeyHandlerClass:
             g.es('no bindings')
             return None
         legend = textwrap.dedent(legend)
+        ###
+        print('')
+        g.trace('===== bindingsDict', c.shortFileName(), g.callers(8))
+        for z in sorted(c.k.bindingsDict):
+            if 'F4' in repr(z):
+                g.trace(z)
+                print(c.k.bindingsDict[z])
+        ###
+        g.trace('===== masterBindingsDict[button]')
+        d2 = c.k.masterBindingsDict.get('button')
+        g.printObj(d2)
         data = []
         for stroke in sorted(d):
             assert g.isStroke(stroke), stroke
             aList = d.get(stroke, [])
             for bi in aList:
-                if 'F4' in repr(stroke):  ###
-                    g.trace('=====', stroke)
-                    ### g.printObj(bi)
                 s1 = '' if bi.pane == 'all' else bi.pane
                 s2 = k.prettyPrintKey(stroke)
                 s3 = bi.commandName
                 s4 = bi.kind or '<no hash>'
                 data.append((s1, s2, s3, s4),)
-        ### g.printObj(list(sorted(d)))
+                if False and 'F4' in repr(stroke):  ###
+                    g.trace('=====', stroke)
+                    ### g.printObj(bi, tag='bi for F4')
+                    g.trace(s1, s2, s3, s4)
+        
+        #  g.printObj(d, tag='d')
         # Print keys by type.
         result = []
         result.append('\n' + legend)
         for prefix in (
-            'Alt+Ctrl+Shift', 'Alt+Ctrl', 'Alt+Shift', 'Alt',  # 'Alt+Key': done by Alt.
-            'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
-            'Meta+Key', 'Meta+Shift', 'Meta',
-            'Shift',
+            # # # 'Alt+Ctrl+Shift', 'Alt+Ctrl', 'Alt+Shift', 'Alt',  # 'Alt+Key': done by Alt.
+            # # # 'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
+            # # # 'Meta+Key', 'Meta+Shift', 'Meta',
+            # # # 'Shift',
             'F',  # #1972
             # Careful: longer prefixes must come before shorter prefixes.
         ):
@@ -2608,11 +2625,15 @@ class KeyHandlerClass:
             self.printBindingsHelper(result, data2, prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
+            
+            ### F4 not in data2
+            ### g.printObj(data2, tag='data2')  ###
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        result.append('Plain keys...\n')
-        self.printBindingsHelper(result, data, prefix=None)
+        if 0: ###
+            result.append('Plain keys...\n')
+            self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
@@ -3582,6 +3603,7 @@ class KeyHandlerClass:
         ):
             bi = k.getBindingHelper(key, name, stroke, w)
             if bi:
+                g.trace('FOUND', key, bi.commandName)
                 return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper
