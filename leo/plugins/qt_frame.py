@@ -841,11 +841,23 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             ('rb', '&Node only', 2, 1),
             # Fourth row.
             ('box', 'mark &Finds', 3, 0),
-            ('box', 'search &Headline', 3, 1),
+            ('rb', 'File &Only', 3, 1),
             # Fifth row.
             ('box', 'mark &Changes', 4, 0),
-            ('box', 'search &Body', 4, 1),
-            ('rb', 'File &Only', 5, 1),
+            ('box', 'search &Headline', 4, 1),
+            # Sixth Row
+            ('box', 'search &Body', 5, 1),
+
+            # ('box', 'rege&Xp', 2, 0),
+            # ('rb', '&Node only', 2, 1),
+            # # Fourth row.
+            # ('box', 'mark &Finds', 3, 0),
+            # ('box', 'search &Headline', 3, 1),
+            # # Fifth row.
+            # ('box', 'mark &Changes', 4, 0),
+            # ('box', 'search &Body', 4, 1),
+            # ('rb', 'File &Only', 5, 1),
+
             # Sixth row.
             # ('box', 'wrap &Around', 5, 0),
             # a,b,c,e,f,h,i,n,rs,w
@@ -863,6 +875,15 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             assert getattr(ftm, name) is None
             setattr(ftm, name, w)
         return max_row2
+    #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
+    def create_help_row(self, grid: Any, parent: Widget, row: int) -> int:
+        # Help row.
+        if False:
+            w = self.createLabel(parent,
+                'findHelp', 'For help: <alt-x>help-for-find-commands<return>')
+            grid.addWidget(w, row, 0, 1, 3)
+            row += 1
+        return row
     #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
     def create_find_buttons(self, grid: Any, parent: Widget, max_row2: int, row: int) -> int:
         """
@@ -891,15 +912,6 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             grid.addWidget(w, row + row2, col)
         row += max_row2
         row += 2
-        return row
-    #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
-    def create_help_row(self, grid: Any, parent: Widget, row: int) -> int:
-        # Help row.
-        if False:
-            w = self.createLabel(parent,
-                'findHelp', 'For help: <alt-x>help-for-find-commands<return>')
-            grid.addWidget(w, row, 0, 1, 3)
-            row += 1
         return row
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
     if 0:

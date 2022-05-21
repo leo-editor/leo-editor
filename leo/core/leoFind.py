@@ -816,14 +816,6 @@ class LeoFind:
                     else:
                         node = node.parent()
             self.root = node
-            # while '@file' or '@clean' or '@auto' or '@thin' not in p.h:
-                # # p1 = p.parent()
-                # # if p1 is not None and p is not p1:
-                    # # self.root = p1
-                    # # p = p1
-                # # else:
-                    # # break
-            g.es('====', self.root.h)
             self.set_find_scope_file_only()  # Update find-tab & status area.
             p = node
         #
@@ -2287,7 +2279,7 @@ class LeoFind:
             return True
         if self.node_only:
             return True
-        if self.suboutline_only:
+        if self.suboutline_only or self.file_only:
             if self.root and p != self.root and not self.root.isAncestorOf(p):
                 return True
         if c.hoistStack:
