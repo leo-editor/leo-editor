@@ -124,9 +124,9 @@ class TestKeys(LeoUnitTest):
             for ch in special:
                 assert not k.isPlainKey(ch), 'is plain: %s' % (ch)
     #@+node:ekr.20210909194336.54: *3* TestKeys.test_k_print_bindings
-    def test_k_print_bindings(self):
+    def test_k_show_bindings(self):
         c = self.c
-        c.k.printBindings()
+        c.k.showBindings()
     #@+node:ekr.20210909194336.55: *3* TestKeys.test_k_registerCommand
     callback_was_called = False
 

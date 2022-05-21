@@ -2065,10 +2065,6 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
-        trace = False and 'binding-test' in commandName
-        if trace:  ###
-            print('')
-            g.trace(id(self.c), self.c.shortFileName(), commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
         if not shortcut:
             # Don't use this method to undo bindings.
@@ -2094,28 +2090,16 @@ class KeyHandlerClass:
                 stroke=stroke)
             if shortcut:
                 k.bindKeyToDict(pane, shortcut, bi)  # Updates k.masterBindingsDict
-                
-            if 0:  ### Experimental
-                if trace:
-                    g.printObj(aList, tag='1')
-                aList = [z for z in aList if z.pane not in (pane, 'all')]
-                aList.append(bi)
-                if trace:
-                    g.printObj(aList, tag='2')
-            else:  ### Legacy.
-                if shortcut and not modeFlag:
-                    aList = k.remove_conflicting_definitions(
-                        aList, commandName, pane, shortcut)
-                else:
-                    aList = []
-                    # 2013/03/02: a real bug fix.
-                aList.append(bi)
+            if shortcut and not modeFlag:
+                aList = k.remove_conflicting_definitions(
+                    aList, commandName, pane, shortcut)
+            else:
+                aList = []
+                # 2013/03/02: a real bug fix.
+            aList.append(bi)
             if shortcut:
                 assert stroke
                 k.bindingsDict[stroke] = aList
-            if trace:  ###
-                g.trace('k.bindingsDict[stroke]...')
-                print(k.bindingsDict[stroke])
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2569,7 +2553,7 @@ class KeyHandlerClass:
     def showBindings(self, event: Event=None) -> List[str]:
         """Print all the bindings presently in effect."""
         c, k = self.c, self
-        d = k.masterBindingsDict  ### k.bindingsDict
+        d = k.masterBindingsDict
         tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
         legend = '''\
@@ -2626,11 +2610,10 @@ class KeyHandlerClass:
         return result  # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result: List[str], data: List[Any], prefix: str) -> None:
-        """Helper for k.printBindings"""
+        """Helper for k.showBindings"""
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
-        ### for pane, key, commandName, kind in data:
         for scope, key, commandName, kind in data:
             key = key.replace('+Key', '')
             letter = lm.computeBindingLetter(c, kind)
@@ -3068,7 +3051,7 @@ class KeyHandlerClass:
             pane=pane,
             shortcut=shortcut,
         )
-    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut ###
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
     def registerCommandShortcut(self,
         commandName: str,
         func: Callable,
@@ -3101,8 +3084,6 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
-        if False: ### commandName == 'binding-test':  ###
-            g.trace(id(c), c.shortFileName(), 'stroke', repr(stroke), g.callers())
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
@@ -3589,7 +3570,6 @@ class KeyHandlerClass:
         ):
             bi = k.getBindingHelper(key, name, stroke, w)
             if bi:
-                ### g.trace('FOUND', key, bi.commandName)
                 return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper

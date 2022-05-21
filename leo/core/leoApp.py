@@ -2237,7 +2237,7 @@ class LoadManager:
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers ###
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
     def doPostPluginsInit(self):
         """Create a Leo window for each file in the lm.files list."""
         # Clear g.app.initing _before_ creating commanders.
@@ -2304,14 +2304,6 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False  # Force an immediate exit.
-        if 0:  ###
-            print('')
-            g.trace('=====', id(c), c.shortFileName(), g.callers(8))  ###
-        if 0:  ###
-            for z in c.k.bindingsDict:
-                if 'F4' in repr(z):
-                    # g.trace(z)
-                    print(c.k.bindingsDict[z])
         return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):

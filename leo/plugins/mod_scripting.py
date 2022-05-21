@@ -520,7 +520,7 @@ class ScriptingController:
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons ###
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
     def createAllButtons(self):
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
@@ -567,15 +567,6 @@ class ScriptingController:
                     func = d.get(m.group(1))
                     func(p)
                 p.moveToThreadNext()
-                
-        if 0:  ###
-            print('')
-            g.trace('=====', id(c), c.shortFileName())
-            for z in sorted(c.k.bindingsDict):
-                if 'F4' in repr(z):
-                    g.trace(z)
-                    print(c.k.bindingsDict[z])
-
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
         kind='at-button',
@@ -1144,11 +1135,9 @@ class ScriptingController:
                         g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
-                        ### allowBinding=True,  # #2631
                         commandName=commandName2,
                         func=registerAllCommandsCallback,
                         pane=pane,
-                        ### shortcut=shortcut,  # #2631
                         shortcut=None
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
