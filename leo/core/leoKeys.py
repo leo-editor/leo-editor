@@ -2065,8 +2065,8 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
-        trace = 'binding-test' in commandName  ### and self.c.shortFileName() == 'ekr.leo'
-        if trace:
+        trace = False and 'binding-test' in commandName
+        if trace:  ###
             print('')
             g.trace(id(self.c), self.c.shortFileName(), commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
@@ -2095,12 +2095,14 @@ class KeyHandlerClass:
             if shortcut:
                 k.bindKeyToDict(pane, shortcut, bi)  # Updates k.masterBindingsDict
                 
-            if 1:  ### Experimental
-                if trace: g.printObj(aList, tag='1')
+            if 0:  ### Experimental
+                if trace:
+                    g.printObj(aList, tag='1')
                 aList = [z for z in aList if z.pane not in (pane, 'all')]
                 aList.append(bi)
-                if trace: g.printObj(aList, tag='2')
-            else:
+                if trace:
+                    g.printObj(aList, tag='2')
+            else:  ### Legacy.
                 if shortcut and not modeFlag:
                     aList = k.remove_conflicting_definitions(
                         aList, commandName, pane, shortcut)
@@ -2140,7 +2142,7 @@ class KeyHandlerClass:
             g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
             return False
         return True
-    #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut  ###
+    #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut
     def kill_one_shortcut(self, stroke: Stroke) -> None:
         """
         Update the *configuration* dicts so that c.config.getShortcut(name)
@@ -2183,7 +2185,7 @@ class KeyHandlerClass:
             else:
                 result.append(bi)
         return result
-    #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict ###
+    #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
     def bindKeyToDict(self, pane: str, stroke: Stroke, bi: Any) -> None:
         """Update k.masterBindingsDict for the stroke."""
         # New in Leo 4.4.1: Allow redefintions.
@@ -2191,7 +2193,6 @@ class KeyHandlerClass:
         k = self
         assert g.isStroke(stroke), stroke
         d = k.masterBindingsDict.get(pane, {})
-        ### if 'F4' in repr(bi): g.trace(stroke, bi) ###
         d[stroke] = bi
         k.masterBindingsDict[pane] = d
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
@@ -2563,12 +2564,12 @@ class KeyHandlerClass:
     def menuCommandKey(self, event: Event=None) -> None:
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.119: *4* k.printBindings & helper ###
+    #@+node:ekr.20061031131434.119: *4* k.showBindings & helper
     @cmd('show-bindings')
-    def printBindings(self, event: Event=None) -> List[str]:
+    def showBindings(self, event: Event=None) -> List[str]:
         """Print all the bindings presently in effect."""
         c, k = self.c, self
-        d = k.bindingsDict
+        d = k.masterBindingsDict  ### k.bindingsDict
         tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
         legend = '''\
@@ -2584,63 +2585,41 @@ class KeyHandlerClass:
             g.es('no bindings')
             return None
         legend = textwrap.dedent(legend)
-        if 1: ###
-            print('')
-            g.trace('===== bindingsDict', id(c), c.shortFileName())
-        if 1: ###
-            for z in c.k.bindingsDict:
-                if 'F4' in repr(z) and "+F4" not in repr(z):
-                    ### g.trace(z)
-                    print(c.k.bindingsDict[z])
-        if 0: ###
-            g.trace('===== masterBindingsDict[button]')
-            d2 = c.k.masterBindingsDict.get('button')
-            g.printObj(d2)
         data = []
-        for stroke in sorted(d):
-            assert g.isStroke(stroke), stroke
-            aList = d.get(stroke, [])
-            for bi in aList:
-                s1 = '' if bi.pane == 'all' else bi.pane
-                s2 = k.prettyPrintKey(stroke)
-                s3 = bi.commandName
-                s4 = bi.kind or '<no hash>'
-                data.append((s1, s2, s3, s4),)
-                if False and 'F4' in repr(stroke):  ###
-                    g.trace('=====', stroke)
-                    ### g.printObj(bi, tag='bi for F4')
-                    g.trace(s1, s2, s3, s4)
-        
-        #  g.printObj(d, tag='d')
+        # d: keys are scope names. values are interior masterBindingDicts
+        for scope in sorted(d):
+            # d2: Keys are strokes; values are BindingInfo objects.
+            d2 = d.get(scope)
+            for stroke in d2:
+                assert g.isStroke(stroke), stroke
+                bi = d2.get(stroke)
+                assert isinstance(bi, g.BindingInfo), repr(bi)
+                data.append((scope, k.prettyPrintKey(stroke), bi.commandName, bi.kind))
         # Print keys by type.
         result = []
         result.append('\n' + legend)
         for prefix in (
-            # # # 'Alt+Ctrl+Shift', 'Alt+Ctrl', 'Alt+Shift', 'Alt',  # 'Alt+Key': done by Alt.
-            # # # 'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
-            # # # 'Meta+Key', 'Meta+Shift', 'Meta',
-            # # # 'Shift',
+            'Alt+Ctrl+Shift', 'Alt+Ctrl', 'Alt+Shift', 'Alt',  # 'Alt+Key': done by Alt.
+            'Ctrl+Meta+Shift', 'Ctrl+Meta', 'Ctrl+Shift', 'Ctrl',  # Ctrl+Key: done by Ctrl.
+            'Meta+Key', 'Meta+Shift', 'Meta',
+            'Shift',
             'F',  # #1972
             # Careful: longer prefixes must come before shorter prefixes.
         ):
             data2 = []
             for item in data:
-                s1, s2, s3, s4 = item
-                if s2.startswith(prefix):
+                scope, stroke, commandName, kind = item
+                if stroke.startswith(prefix):
                     data2.append(item)
             result.append(f"{prefix} keys...\n")
-            self.printBindingsHelper(result, data2, prefix=prefix)
+            self.printBindingsHelper(result, data2, prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
-            
-            ### F4 not in data2
-            ### g.printObj(data2, tag='data2')  ###
             for item in data2:
                 data.remove(item)
         # Print all plain bindings.
-        if 0: ###
-            result.append('Plain keys...\n')
-            self.printBindingsHelper(result, data, prefix=None)
+        result.append('Plain keys...\n')
+        self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
@@ -2651,10 +2630,11 @@ class KeyHandlerClass:
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
-        for pane, key, commandName, kind in data:
+        ### for pane, key, commandName, kind in data:
+        for scope, key, commandName, kind in data:
             key = key.replace('+Key', '')
             letter = lm.computeBindingLetter(c, kind)
-            pane = f"{pane if pane else 'all':4}: "
+            pane = f"{scope if scope else 'all':>7}: "
             left = pane + key  # pane and shortcut fields
             n = max(n, len(left))
             data2.append((letter, left, commandName),)

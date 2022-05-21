@@ -2304,10 +2304,10 @@ class LoadManager:
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False  # Force an immediate exit.
-        ###
-        print('')
-        g.trace('=====', id(c), c.shortFileName(), g.callers(8))  ###
-        if 1:
+        if 0:  ###
+            print('')
+            g.trace('=====', id(c), c.shortFileName(), g.callers(8))  ###
+        if 0:  ###
             for z in c.k.bindingsDict:
                 if 'F4' in repr(z):
                     # g.trace(z)
