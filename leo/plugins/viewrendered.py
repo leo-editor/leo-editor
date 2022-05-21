@@ -1136,12 +1136,15 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert w == pc.w
         else:
             w = pc.w
+
         s = self.get_jupyter_source(c)
-        if isQt5:
-            w.hide()  # This forces a proper update.
+        w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
+
+        import pyperclip
+        pyperclip.copy(s)
     #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
     def get_jupyter_source(self, c):
         """Return the html for the @jupyer node."""
@@ -1153,7 +1156,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             # Leo 5.7.1: Allow raw JSON.
             s = body
         else:
-            url = g.getUrlFromNode(c.p)
+            url = c.p.h.split()[1]
             if not url:
                 return ''
             if not nbformat:
@@ -1162,6 +1165,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 s = urlopen(url).read().decode()
             except Exception:
                 return 'url not found: %s' % url
+
         try:
             nb = nbformat.reads(s, as_version=4)
             e = HTMLExporter()
