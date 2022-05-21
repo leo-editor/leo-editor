@@ -2065,7 +2065,8 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
-        if commandName == 'binding-test':
+        trace = self.c.shortFileName() == 'ekr.leo' and commandName == 'binding-test'  ###
+        if trace:
             g.trace(commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
         if not shortcut:
@@ -2099,12 +2100,11 @@ class KeyHandlerClass:
             aList.append(bi)
             if shortcut:
                 assert stroke
-                if 'F4' in repr(stroke):
-                    g.trace('-----', stroke)
-                    g.printObj(aList)
+                if trace: ### and 'F4' in repr(stroke) and '+' not in repr(stroke):
+                    g.trace('-----', stroke, 'aList...')
+                    for z in aList:
+                        print(z)
                 k.bindingsDict[stroke] = aList
-                if commandName == 'binding-test':
-                    g.trace('aList', aList)
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:

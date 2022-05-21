@@ -415,7 +415,7 @@ class BindingInfo:
     __str__ = __repr__
 
     def dump(self) -> str:
-        result = [f"BindingInfo {self.kind:17}"]
+        result = [f"BindingInfo kind: {self.kind}"]
         # Print all existing ivars.
         table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
         for ivar in table:
@@ -433,6 +433,7 @@ class BindingInfo:
     def isModeBinding(self) -> bool:
         return self.kind.startswith('*mode')
     #@-others
+
 def isBindingInfo(obj: Any) -> bool:
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
