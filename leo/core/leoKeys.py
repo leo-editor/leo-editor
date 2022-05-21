@@ -2065,9 +2065,10 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
-        trace = commandName == 'binding-test'  ### and self.c.shortFileName() == 'ekr.leo'
+        trace = 'binding-test' in commandName  ### and self.c.shortFileName() == 'ekr.leo'
         if trace:
-            g.trace(self.c.shortFileName(), commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
+            print('')
+            g.trace(id(self.c), self.c.shortFileName(), commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
         if not shortcut:
             # Don't use this method to undo bindings.
@@ -2100,13 +2101,14 @@ class KeyHandlerClass:
             aList.append(bi)
             if shortcut:
                 assert stroke
-                if trace: ### and 'F4' in repr(stroke) and '+' not in repr(stroke):
-                    g.trace('-----', stroke, 'aList...')
+                k.bindingsDict[stroke] = aList
+            if trace:  ###
+                g.trace('k.bindingsDict[stroke]...')
+                print(k.bindingsDict[stroke])
+                if 0:
+                    g.trace('aList...')
                     for z in aList:
                         print(z)
-                k.bindingsDict[stroke] = aList
-            if trace:
-                g.trace('RESULT', k.bindingsDict[stroke])
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2176,7 +2178,7 @@ class KeyHandlerClass:
             else:
                 result.append(bi)
         return result
-    #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
+    #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict ###
     def bindKeyToDict(self, pane: str, stroke: Stroke, bi: Any) -> None:
         """Update k.masterBindingsDict for the stroke."""
         # New in Leo 4.4.1: Allow redefintions.
@@ -2184,8 +2186,7 @@ class KeyHandlerClass:
         k = self
         assert g.isStroke(stroke), stroke
         d = k.masterBindingsDict.get(pane, {})
-        if 'F4' in repr(bi):
-            g.trace(stroke, bi) ###
+        ### if 'F4' in repr(bi): g.trace(stroke, bi) ###
         d[stroke] = bi
         k.masterBindingsDict[pane] = d
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
@@ -2580,11 +2581,12 @@ class KeyHandlerClass:
         legend = textwrap.dedent(legend)
         ###
         print('')
-        g.trace('===== bindingsDict', c.shortFileName(), g.callers(8))
-        for z in sorted(c.k.bindingsDict):
-            if 'F4' in repr(z):
-                g.trace(z)
-                print(c.k.bindingsDict[z])
+        g.trace('===== bindingsDict', id(c), c.shortFileName(), g.callers(8))
+        if 0: 
+            for z in sorted(c.k.bindingsDict):
+                if 'F4' in repr(z):
+                    g.trace(z)
+                    print(c.k.bindingsDict[z])
         ###
         g.trace('===== masterBindingsDict[button]')
         d2 = c.k.masterBindingsDict.get('button')
@@ -3081,7 +3083,7 @@ class KeyHandlerClass:
             pane=pane,
             shortcut=shortcut,
         )
-    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut ###
     def registerCommandShortcut(self,
         commandName: str,
         func: Callable,
@@ -3114,9 +3116,8 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
-        if commandName == 'binding-test':
-            g.trace(c.fileName(), repr(stroke))
-            # g.pdb()
+        if commandName == 'binding-test':  ###
+            g.trace(id(c), c.shortFileName(), 'stroke', repr(stroke), g.callers())
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.

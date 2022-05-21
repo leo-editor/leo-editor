@@ -428,7 +428,7 @@ class BindingInfo:
                     s = f"{ivar}: {val!r}"
                     result.append(s)
         # Clearer w/o f-string.
-        return "[%s]" % ' '.join(result).strip()
+        return "<%s>" % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self) -> bool:
         return self.kind.startswith('*mode')

@@ -570,11 +570,12 @@ class ScriptingController:
                 
         ###
         print('')
-        g.trace('=====', c.shortFileName(), g.callers(8))
-        for z in sorted(c.k.bindingsDict):
-            if 'F4' in repr(z):
-                g.trace(z)
-                print(c.k.bindingsDict[z])
+        g.trace('=====', id(c), c.shortFileName(), g.callers(8))
+        if 0:
+            for z in sorted(c.k.bindingsDict):
+                if 'F4' in repr(z):
+                    g.trace(z)
+                    print(c.k.bindingsDict[z])
 
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
