@@ -248,6 +248,8 @@ import re
 from leo.core import leoColorizer
 from leo.plugins import qt_text
 
+# pylint: disable=ungrouped-imports
+
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
@@ -906,7 +908,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         del instances[id_]
         self.deleteLater()
     #@+node:tom.20210619000302.1: *3* keyPressEvent
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event):  #pylint:disable=method-hidden
         """Take action on keypresses.
 
         A method of this name receives keystrokes for most or all

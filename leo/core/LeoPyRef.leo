@@ -184,6 +184,12 @@
 <v t="ekr.20220319152417.1"><vh>function: strip_comments</vh></v>
 </v>
 <v t="ekr.20220318085657.1"><vh>script: find trailing comments</vh></v>
+<v t="ekr.20220503081113.1"><vh>script: find-non-calls</vh>
+<v t="ekr.20220503193901.1"><vh>old suppressions</vh></v>
+<v t="ekr.20220503084900.1"><vh>&lt;&lt; init core_p, command_p and globals_p &gt;&gt;</vh></v>
+<v t="ekr.20220503084230.1"><vh>function: check</vh></v>
+<v t="ekr.20220503084045.1"><vh>function: scan</vh></v>
+</v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
 <v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
 <v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
@@ -727,7 +733,7 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">cvt-comments
+<t tx="ekr.20150425145248.1">find-non-calls
 pylint
 test-one
 test-import
@@ -809,7 +815,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 import os
 leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
 os.chdir(leo_editor_dir)
-prolog = 'python -m unittest leo.unittests'
+prolog = 'python3 -m unittest leo.unittests'
 # command = f"{prolog}.core.test_leoAst.TestOrange.test_star_star_operator"
 # command = f"{prolog}.test_gui.TestQtGui.test_create_html_links"
 command = f"{prolog}.commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606"
@@ -2331,6 +2337,143 @@ for p in c.all_unique_positions():
     do_node(p)
 print(f"found {count} nodes.")
 </t>
+<t tx="ekr.20220503081113.1">g.cls()
+import re
+&lt;&lt; init core_p, command_p and globals_p &gt;&gt;
+d = {}  # Dict[func-name, True]
+# If I were going to do more work I would do the following:
+# exclusions: Dict[str, List[str]] = {}
+exclusions = set()  # Set[func-name]
+@others
+# Create d...
+scan(core_p)
+scan(command_p)
+scan(globals_p)
+suppress = ('c',)  # 'g', 'p',
+count = 0
+words = list(sorted(z for z in d.keys() if z not in suppress))
+functions_pat = re.compile(fr".*\b({'|'.join(words)})\b\s*[^(]")
+# Check functions...
+check(core_p)
+check(command_p)
+check(globals_p)
+print('Found', count)
+g.printObj(list(sorted(exclusions)), tag='Function appearing in special contexts')
+</t>
+<t tx="ekr.20220503193901.1"># 'exception',
+# Imports...
+    # 'commands', 'cmd', 'core', 'external', 'gui_plugins', 'import_module',
+    # 'modes', 'modules',
+    # 'os', 'pickle', 'plugins', 'rst3', 'test', 'tests',
+# Functions/methods...
+# 'caller', 'callers', 'copy', 'count', 'end', 'fileName',
+# 'ivars', 'key', 'kind', 'level', 'match', 'remove', 'trace',
+    # 'add', 'add_to_dot', 'backup', 'blank',
+    # 'caller', 'callers', 'children', 'clone', 'cls', 'command_name', 'commanders',
+    # 'commit', 'convert', 'copy', 'count',
+    # 'delegate', 'do', 'done', 'dump', 'encode', 'end', 'error', 'es', 'exists', 'expand',
+    # 'filename', 'fileName', 'find', 'flush', 'get',
+    # 'handler', 'handler1', 'handler2', 'hash',
+    # 'IdleTime', 'ignore', 'indent', 'it', 'items', 'ivars', 'join', 'key', 'keys', 'kind',
+    # 'level', 'lt', 'lower', 'lws', 'match', 'message', 'name', 'new', 'next', 'nodes', 'note',
+    # 'on_idle', 'open', 'parents', 'path', 'predicate', 'put',
+    # 'read', 'readline', 'red', 'redoHelper', 'remove', 'replace', 'report', 'rt',
+    # 'scan', 'select', 'set', 'show', 'start', 'stop',
+    # 'toString', 'toUnicode', 'trace', 'translateString',
+    # 'underline', 'undoHelper', 'unl', 'values', 'visit',
+    # 'warn', 'warning', 'word',</t>
+<t tx="ekr.20220503084900.1">core_p = g.findNodeAnywhere(c, 'Core classes')
+command_p = g.findNodeAnywhere(c, 'Command classes')
+globals_p = g.findNodeAnywhere(c, '@file leoGlobals.py')
+assert core_p and command_p and globals_p
+</t>
+<t tx="ekr.20220503084230.1">def check(root: "Position") -&gt; None:
+    """Print any functions in d that don't look like a function call."""
+    global count
+    print('Check:', root.h)
+    skipping = None
+    for p in root.subtree():
+        skipping = False
+        if '@language rest' in p.b:
+            continue
+        for s in p.b.split('\n'):
+            ss = s.strip()
+            # Handle skipping modes...
+            if skipping == '@':
+                if ss.startswith('@c'):
+                    skipping = None
+                continue
+            if skipping:
+                for skipping in ('"""', "'''"):
+                    if skipping in ss:
+                        skipping = None
+                        continue
+                continue
+            # Not skipping strings. Ignore comments.
+            assert not skipping, repr(skipping)
+            i = ss.find('#')
+            if i &gt; -1:
+                ss = ss[:i].strip()
+            if not ss:
+                continue
+            # Start skipping modes.
+            if ss.startswith('@ ') or ss=='@':
+                skipping = '@'
+                continue
+            if ss.count('"""') == 1:
+                skipping = '"""'
+                continue
+            if ss.count("'''") == 1:
+                skipping = "'''"
+                continue
+            if '"' in ss or "'" in ss:  # Ignore lines containing strings.
+                continue
+            # Skip special cases.
+            if ss.startswith((
+                '&lt;&lt;', '@cmd', '@g.command',
+                'def', 'from', 'import', 'print',
+            )):
+                continue
+            m = functions_pat.match(ss)
+            if not m:
+                continue
+            # The function is in the line.
+            # Ignore if it is within any kind of special context.
+            h = g.truncate(p.h, 25)
+            func = m.group(1)
+            args_pat = re.compile(rf".*?[\w_]+\s*\(.*?\b{func}\b.*?\)")
+            array_pat = re.compile(rf".*?\b{func}\b\s*(\[|\])")
+            op_pat = re.compile(
+                rf".*?\b{func}\b\s*(\=|\&lt;|\&gt;|\+|\-|\,|\)|\:|\!|\%|"
+                rf"in\b|is\b|and\b|or\b|else\b|if\b|not\b)"
+            )
+            attr_pat = re.compile(rf".*\b{func}\.")
+            if args_pat.match(ss):
+                if 0: print(f"  Arg: {h:30} {func:20} {ss}")
+                exclusions.add(func)
+            elif array_pat.match(ss):
+                if 0: print(f"Array: {h:30} {func:20} {ss}")
+                exclusions.add(func)
+            elif op_pat.match(ss):
+                if 0: print(f"   OP: {h:30} {func:20} {ss}")
+                exclusions.add(func)
+            elif attr_pat.match(ss):
+                if 0: print(f" Attr: {h:30} {func:20} {ss}")
+                exclusions.add(func)
+            else:
+                count += 1
+                print(f"Found: {h:30} {func:20} {ss}")</t>
+<t tx="ekr.20220503084045.1">def_pat = re.compile(r'^\s*def ([\w_]+)\s*\(')
+
+def scan(root: "Position") -&gt; None:
+    """Add entries in d for all function/method definitions."""
+    for p in root.subtree():
+        for s in p.b.split('\n'):
+            m = def_pat.match(s)
+            if m:
+                name = m.group(1)
+                if not name.startswith('__'):
+                    d [m.group(1)] = True</t>
 <t tx="ekr.20201015145257.1">import leo.core.leoImport as leoImport
 import importlib
 importlib.reload(leoImport)

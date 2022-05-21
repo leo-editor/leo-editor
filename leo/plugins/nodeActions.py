@@ -366,7 +366,7 @@ def doNodeAction(pClicked, c):
     #
     # nodeActions plugin enabled without a 'nodeActions' node
     if messageLevel >= 4:
-        g.blue("nA: The " "nodeActions" " node does not exist")
+        g.blue("nA: The nodeActions node does not exist")
     return False  #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):

@@ -33,10 +33,12 @@ qt_version = QtCore.QT_VERSION_STR
 has_WebEngineWidgets = False
 try:
     from PyQt6 import QtWebEngineWidgets
+    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
     assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
     print('No Qt6 QtWebEngineWidgets')
+    print('pip install PyQt6-WebEngine')
 
 try:
     from PyQt6 import QtPrintSupport as printsupport
@@ -131,11 +133,19 @@ Shadow = QtWidgets.QFrame.Shadow
 Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
+SolidLine = QtCore.Qt.PenStyle.SolidLine
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
 Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
+
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
 #@-leo

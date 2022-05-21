@@ -449,7 +449,7 @@ def contractNodeOrGoToParent(self, event=None):
                     child.contract()
                     if child.hasChildren():
                         redraw = True
-        if cc and cc.inChapter and parent.h.startswith('@chapter '):
+        if cc and cc.inChapter() and parent.h.startswith('@chapter '):
             pass
         else:
             c.goToParent()
@@ -707,7 +707,10 @@ def goToFirstVisibleNode(self, event=None):
     c = self
     p = c.firstVisible()
     if p:
-        c.expandOnlyAncestorsOfNode(p=p)
+        if c.sparse_goto_visible:
+            c.expandOnlyAncestorsOfNode(p=p)
+        else:
+            c.treeSelectHelper(p)
         c.redraw()
 #@+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
@@ -735,7 +738,10 @@ def goToLastVisibleNode(self, event=None):
     c = self
     p = c.lastVisible()
     if p:
-        c.expandOnlyAncestorsOfNode(p=p)
+        if c.sparse_goto_visible:
+            c.expandOnlyAncestorsOfNode(p=p)
+        else:
+            c.treeSelectHelper(p)
         c.redraw()
 #@+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
@@ -920,7 +926,8 @@ def dehoist(self, event=None):
         return
     bunch = c.hoistStack.pop()
     p = bunch.p
-    if not p:
+    # Checks 'expanded' property, which was preserved by 'hoist' method
+    if bunch.expanded:
         p.expand()
     else:
         p.contract()

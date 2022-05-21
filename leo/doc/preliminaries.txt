@@ -44,7 +44,7 @@ Vadim Zeitlin.
 
 The following have contributed plugins to Leo:
 
-Rodrigo Benenson, Pierre Bidon, Felix Breuer, Terry Brown,
+Rodrigo Benenson, Félix Malboeuf, Felix Breuer, Terry Brown,
 Mike Crowe,
 Josef Dalcolmo, Michael Dawson,
 e, Roger Erens, 

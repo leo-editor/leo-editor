@@ -380,8 +380,8 @@ class TestTOG(BaseTest):
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'py3_test_grammar.py'))
         assert os.path.exists(path), path
-        if py_version < (3, 8):
-            self.skipTest('Requires Python 3.8 or above')  # pragma: no cover
+        if py_version < (3, 9):
+            self.skipTest('Requires Python 3.9 or above')  # pragma: no cover
         # Verify that leoAst can parse the file.
         contents = read_file(path)
         self.make_data(contents)
@@ -1269,7 +1269,7 @@ class Optional_TestFiles(BaseTest):
             stack.append(node)
             return par_value, []
         #@-others
-        directory = r'c:\leo.repo\leo-editor\leo\core'
+        directory = r'c:\Repos\leo-editor\leo\core'
         filename = 'leoAst.py'
         filename = os.path.join(directory, filename)
         # A fair comparison omits the read time.
@@ -1624,6 +1624,11 @@ class TestIterative(TestTOG):
     debug_list = []  # 'full-traceback', 'tokens', 'tree'
 
     #@+others
+    #@+node:edreamleo.20220429071246.1: *4* TestIterative.setUp
+    def setUp(self):
+
+        if py_version < (3, 9):
+            self.skipTest('Requires Python 3.9 or above')
     #@+node:ekr.20220402150424.1: *4* TestIterative.make_data (override)
     def make_data(self, contents, description=None):  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""

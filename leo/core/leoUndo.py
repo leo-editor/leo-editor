@@ -443,9 +443,12 @@ class Undoer:
         Create an undo node for general tree operations using d created by
         beforeChangeGroup
         """
-        u = self
-        c = self.c
+        c, u = self.c, self
         w = c.frame.body.wrapper
+        if p != c.p:  # Prepare to ignore p argument.
+            if not u.changeGroupWarning:
+                u.changeGroupWarning = True
+                g.trace("Position mismatch", g.callers())
         if u.redoing or u.undoing:
             return  # pragma: no cover
         bunch = u.beads[u.bead]
@@ -756,9 +759,15 @@ class Undoer:
         bunch.oldYScroll = w.getYScrollPosition()
         return bunch
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
+    changeGroupWarning = False
+
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
         """Prepare to undo a group of undoable operations."""
-        u = self
+        c, u = self.c, self
+        if p != c.p:  # Prepare to ignore p argument.
+            if not u.changeGroupWarning:
+                u.changeGroupWarning = True
+                g.trace("Position mismatch", g.callers())
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'beforeGroup'
@@ -876,8 +885,8 @@ class Undoer:
         w = c.frame.body.wrapper
         return g.Bunch(
             oldMarked=p and p.isMarked(),
-            oldSel=w and w.getSelectionRange() or None,
-            p=p and p.copy(),
+            oldSel=w.getSelectionRange() if w else None,
+            p=p.copy() if p else None,
         )
     #@+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
     # Translation does not affect these routines.
@@ -1401,11 +1410,13 @@ class Undoer:
     #@+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self):
         """Process beads until the matching 'afterGroup' bead is seen."""
-        u = self
+        c, u = self.c, self
         # Remember these values.
-        c = u.c
         newSel = u.newSel
-        p = u.p.copy()
+        p = u.p.copy()  # Exists now, but may not exist later.
+        newP = u.newP.copy()  # May not exist now, but must exist later.
+        if g.unitTesting:
+            assert c.positionExists(p), repr(p)
         u.groupCount += 1
         bunch = u.beads[u.bead + 1]
         count = 0
@@ -1424,8 +1435,12 @@ class Undoer:
         u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
-        p.setDirty()
-        c.selectPosition(p)
+        # Helpers set dirty bits.
+        # Set c.p, independently of helpers.
+        if g.unitTesting:
+            assert c.positionExists(newP), repr(newP)
+        c.selectPosition(newP)
+        # Set the selection, independently of helpers.
         if newSel:
             i, j = newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1556,9 +1571,8 @@ class Undoer:
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self):
         """Redo replacement of an entire tree."""
-        u = self
-        c = u.c
-        u.p = self.undoRedoTree(u.p, u.oldTree, u.newTree)
+        c, u = self.c, self
+        u.p = self.undoRedoTree(u.oldTree, u.newTree)
         u.p.setDirty()
         c.selectPosition(u.p)  # Does full recolor.
         if u.newSel:
@@ -1747,11 +1761,13 @@ class Undoer:
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
         """Process beads until the matching 'beforeGroup' bead is seen."""
-        u = self
+        c, u = self.c, self
         # Remember these values.
-        c = u.c
         oldSel = u.oldSel
-        p = u.p.copy()
+        p = u.p.copy()  # May not exist now, but must exist later.
+        newP = u.newP.copy()  # Must exist now, but may not exist later.
+        if g.unitTesting:
+            assert c.positionExists(newP), repr(newP)
         u.groupCount += 1
         bunch = u.beads[u.bead]
         count = 0
@@ -1773,8 +1789,12 @@ class Undoer:
         u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
-        p.setDirty()
+        # Helpers set dirty bits.
+        # Set c.p, independently of helpers.
+        if g.unitTesting:
+            assert c.positionExists(p), repr(p)
         c.selectPosition(p)
+        # Restore the selection, independently of helpers.
         if oldSel:
             i, j = oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1936,11 +1956,10 @@ class Undoer:
         c.frame.body.recolor(p)
         w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
-    def undoRedoTree(self, p, new_data, old_data):
+    def undoRedoTree(self, new_data, old_data):
         """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
-        u = self
-        c = u.c
+        c, p, u = self.c, self.c.p, self
         if new_data is None:
             # This is the first time we have undone the operation.
             # Put the new data in the bead.
@@ -1963,9 +1982,8 @@ class Undoer:
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self):
         """Redo replacement of an entire tree."""
-        u = self
-        c = u.c
-        u.p = self.undoRedoTree(u.p, u.newTree, u.oldTree)
+        c, u = self.c, self
+        u.p = self.undoRedoTree(u.newTree, u.oldTree)
         u.p.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.p)  # Does full recolor.
         if u.oldSel:

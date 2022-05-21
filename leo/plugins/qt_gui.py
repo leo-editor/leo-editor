@@ -32,13 +32,11 @@ assert qt_commands
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
-    from PyQt6 import QtWidgets as QtWidgets6
-    Widget = QtWidgets6.QWidget
 else:
     Cmdr = Any
     Pos = Any
-    Widget = Any
 Event = Any
+Widget = Any
 Wrapper = Any
 
 #@-<< type aliases qt_gui.py >>

@@ -317,7 +317,7 @@ def open_outline(self, event=None):
     ]
     fileName = ''.join(c.k.givenArgs)
     if fileName:
-        c.open_completer(c, closeFlag, fileName)
+        open_completer(c, closeFlag, fileName)
         return
     # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,
@@ -512,15 +512,19 @@ def saveAs(self, event=None, fileName=None):
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save As",
-            filetypes=[("Leo files", "*.leo *.db"),],
+            filetypes=[("Leo files", "*.leo *.db *.leojs"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
-        # Fix bug 998090: save file as doesn't remove entry from open file list.
+        # #998090: save file as doesn't remove entry from open file list.
+        g.trace(fileName)
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
         # Don't change mFileName until the dialog has suceeded.
-        c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
+        if fileName.endswith(('.leo', '.db', '.leojs')):
+            c.mFileName = fileName
+        else:
+            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
         # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
         c.frame.title = title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(title)

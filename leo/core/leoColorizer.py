@@ -235,6 +235,7 @@ class BaseColorizer:
             else:
                 option_name, default_color = self.default_colors_dict.get(name, (None, None))
                 color = c.config.getColor(option_name) if option_name else ''
+            self.configDict[name] = color  # 2022/05/20: Discovered by pyflakes.
     #@+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     #@@nobeautify
 

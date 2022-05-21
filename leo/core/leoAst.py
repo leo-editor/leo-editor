@@ -3127,7 +3127,6 @@ class IterativeTokenGenerator:
 
     def do_MatchClass(self, node: Node) -> ActionList:
 
-        cls = node.cls
         patterns = getattr(node, 'patterns', [])
         kwd_attrs = getattr(node, 'kwd_attrs', [])
         kwd_patterns = getattr(node, 'kwd_patterns', [])
@@ -5739,7 +5738,6 @@ class TokenOrderGenerator:
 
     def do_MatchClass(self, node: Node) -> None:
 
-        cls = node.cls
         patterns = getattr(node, 'patterns', [])
         kwd_attrs = getattr(node, 'kwd_attrs', [])
         kwd_patterns = getattr(node, 'kwd_patterns', [])

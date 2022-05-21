@@ -4,7 +4,7 @@
 #@@first
 """Tests of gui base classes"""
 
-### import textwrap
+import os
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
@@ -98,8 +98,8 @@ class TestQtGui(LeoUnitTest):
         )
         for ivar in table:
             assert hasattr(QtCore.Qt, ivar), repr(ivar)
-    #@+node:ekr.20220411165627.1: *3* TestQtGui.test_create_html_links
-    def test_create_html_links(self):
+    #@+node:ekr.20220411165627.1: *3* TestQtGui.test_put_html_links
+    def test_put_html_links(self):
 
         c, p = self.c, self.c.p
         # Create a test outline.
@@ -113,6 +113,8 @@ class TestQtGui(LeoUnitTest):
             (True, 'File "test_file.py", line 5'),
             # pylint.
             (True, r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)'),
+            # pyflakes.
+            (True, r"test_file.py:51:13 'leo.core.leoQt5.*' imported but unused"),
             # mypy...
             (True, 'test_file.py:116: error: Function is missing a return type annotation  [no-untyped-def]'),
             (True, r'leo\core\test_file.py:116: note: Use "-> None" if function does not return a value'),
@@ -122,7 +124,7 @@ class TestQtGui(LeoUnitTest):
             (False, 'Hello world\n'),
         )
         for expected, s in table:
-            s = s.rstrip() + '\n'
+            s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
     #@-others

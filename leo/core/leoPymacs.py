@@ -18,8 +18,8 @@ Notes:
 - As of Leo 4.5, the following code, when executed from an Emacs buffer,
   will open trunk/leo/test.leo::
 
-      (pymacs-load "c:\\leo.repo\\trunk\\leo\\core\\leoPymacs" "leo-")
-      (setq c (leo-open "c:\\leo.repo\\trunk\\leo\\test\\test.leo"))
+      (pymacs-load "c:\\Repos\\leo-editor\\leo\\core\\leoPymacs" "leo-")
+      (setq c (leo-open "c:\\Repos\\leo-editor\\leo\\test\\test.leo"))
 
   Note that full path names are required in each case.
 

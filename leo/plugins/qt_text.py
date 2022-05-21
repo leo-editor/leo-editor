@@ -13,8 +13,8 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
-from leo.core.leoQt import Shadow, Shape, SliderAction, WindowType, WrapMode
-Widget = Any
+from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
+
 #@-<< imports qt_text.py >>
 #@+<< type aliases qt_text.py >>
 #@+node:ekr.20220416085945.1: ** << type aliases qt_text.py >>
@@ -23,16 +23,16 @@ if TYPE_CHECKING:  # Always False at runtime.
     # from leo.core.leoNodes import Position as Pos
 else:
     Cmdr = Any
+
 Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
+Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_text.py >>
 
+FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
-SolidLine = QtCore.Qt.PenStyle.SolidLine
-
-FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
@@ -110,7 +110,7 @@ rmargin_doc = r'''
 Right Margin Guidelines
 -------------------------
 
-A vertical guideline may optionally shown at the right margin of the 
+A vertical guideline may optionally shown at the right margin of the
 body editor.  The guideline will be shown at
 
 1. The column value of an @pagewidth directive in effect; or
@@ -803,27 +803,31 @@ if QtWidgets:
         #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
         #@@language python
         @staticmethod
-        def calc_hl(bg_color: str) -> str:
+        def calc_hl(palette: QtGui.QPalette) -> QColor:  # type:ignore
             """Return the line highlight color.
 
             ARGUMENT
-            bg_color -- a QColor object for the background color
+            palette -- a QPalette object for the body
 
             RETURNS
             a QColor object for the highlight color
             """
-            h, s, v, a = bg_color.getHsv()
-            if v < 40:
-                v = 60
-                bg_color.setHsv(h, s, v, a)
-            elif v > 240:
-                v = 220
-                bg_color.setHsv(h, s, v, a)
-            elif v < 128:
-                bg_color = bg_color.lighter(130)
+            fg = palette.text().color()
+            bg = palette.window().color()
+            hsv_fg = fg.getHsv()
+            hsv_bg = bg.getHsv()
+            v_fg = hsv_fg[2]
+            v_bg = hsv_bg[2]
+            is_dark_on_light = v_fg < v_bg
+            if is_dark_on_light:
+                hl = bg.darker(110)
             else:
-                bg_color = bg_color.darker(130)
-            return bg_color
+                if v_bg < 20:
+                    hl = QColor(bg)
+                    hl.setHsv(360, 0, 30, hsv_bg[3])
+                else:
+                    hl = bg.lighter(140)
+            return hl
         #@+node:tom.20210827225119.2: *4* lqtb.highlightCurrentLine
         #@@language python
         def highlightCurrentLine(self) -> None:
@@ -871,16 +875,16 @@ if QtWidgets:
                 # Get current colors from the body editor widget
                 wrapper = c.frame.body.wrapper
                 w = wrapper.widget
-                pallete = w.viewport().palette()
-                fg_hex = pallete.text().color().rgb()
-                bg_hex = pallete.window().color().rgb()
+                palette = w.viewport().palette()
+
+                fg_hex = palette.text().color().rgb()
+                bg_hex = palette.window().color().rgb()
                 fg = f'#{fg_hex:x}'
                 bg = f'#{bg_hex:x}'
 
                 if (params['last_fg'] != fg or params['last_bg'] != bg):
-                    bg_color = QColor(bg) if bg else self.assign_bg(fg)
-                    hl_color = self.calc_hl(bg_color)
-                    #g.trace(f'fg: {fg}, bg: {bg}, hl_color: {hl_color.name()}')
+                    #bg_color = QColor(bg) if bg else self.assign_bg(fg)
+                    hl_color = self.calc_hl(palette)
                     params['last_hl_color'] = hl_color
                     params['last_fg'] = fg
                     params['last_bg'] = bg
@@ -998,6 +1002,7 @@ if QtWidgets:
                         or c.config.getInt('rguide-col') or 80)
 
                 vp = w.viewport()
+                palette = vp.palette()
                 font = w.document().defaultFont()
                 fm = QFontMetrics(font)
                 rmargin = fm.horizontalAdvance('9' * rcol) + 2
@@ -1006,14 +1011,17 @@ if QtWidgets:
                     pen = QtGui.QPen(SolidLine)
 
                     # guideline color
-                    palette = w.viewport().palette()
-                    fg_hex = palette.text().color().rgb()
-                    # Change "r" value to "88"
-                    # e.g., #bbccdd ==> #88ccdd
-                    guide_rgb = '88' + f'{fg_hex:x}'[4:]
-                    guide_color = f'#{guide_rgb}'
+                    fg = palette.text().color()
+                    bg = palette.window().color()
+                    hsv_fg = fg.getHsv()[2]
+                    hsv_bg = bg.getHsv()[2]
+                    is_dark_on_light = hsv_fg < hsv_bg
+                    if is_dark_on_light:
+                        fg = fg.lighter()
+                    else:
+                        fg = fg.darker()
+                    pen.setColor(fg)
 
-                    pen.setColor(QtGui.QColor(guide_color))
                     pen.setWidth(1)
                     painter.setPen(pen)
                     painter.drawLine(rmargin, 0, rmargin, vp.height())
@@ -1049,7 +1057,7 @@ if QtWidgets:
             qp.begin(self.viewport())
             qp.drawRect(w.cursorRect())
             qp.end()
-            
+
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event: Event) -> None:
             """Handle a wheel event."""
