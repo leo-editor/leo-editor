@@ -415,10 +415,9 @@ class BindingInfo:
     __str__ = __repr__
 
     def dump(self) -> str:
-        # result = [f"BindingInfo kind: {self.kind}"]
-        result = ['BindingInfo']
+        result = [f"BindingInfo kind: {self.kind}"]
         # Print all existing ivars.
-        table = ('commandName', 'stroke') # 'pane', 'func', 'nextMode',
+        table = ('pane', 'commandName', 'func', 'stroke') # 'nextMode',
         for ivar in table:
             if hasattr(self, ivar):
                 val = getattr(self, ivar)
@@ -426,8 +425,7 @@ class BindingInfo:
                     if ivar == 'func':
                         # pylint: disable=no-member
                         val = val.__name__
-                    # s = f"{ivar}: {val!r}"
-                    s = repr(val)
+                    s = f"{ivar}: {val!r}"
                     result.append(s)
         # Clearer w/o f-string.
         return "<%s>" % ' '.join(result).strip()
