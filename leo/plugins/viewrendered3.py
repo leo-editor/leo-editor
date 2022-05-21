@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.81
+About Viewrendered3 V3.82
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,11 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Mathjax, html pages with script imports work with PyQt6.
+Correct handling of case when markdown package is not installed.
 
 Previous Recent Changes
 ========================
+Mathjax, html pages with script imports work with PyQt6.
 Added new command *vr3-render-html-from-clip*.
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
@@ -859,7 +860,7 @@ from leo.core.leoApp import LoadManager as LM
 try:
     from leo.plugins import qt_text
     from leo.plugins import free_layout
-    from leo.core.leoQt import isQt6, isQt5, QtCore, QtWidgets
+    from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
@@ -867,37 +868,66 @@ except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
 
-QWebView = None
-# Not imported above because we might have PyQt without QWebEngineWidgets
-from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
-if has_WebEngineWidgets:
+has_webengineview = False
+try:
     from leo.core.leoQt import QtWebEngineWidgets
+    has_webengineview = True
+except ImportError:
+    # Might have Qt without QtWebEngineWidgets
+    if not g.unitTesting:
+        g.trace("Can't import QtWebEngineWidgets")
+
+qwv = None
+if has_webengineview:
+    qwv = QtWebEngineWidgets.QWebEngineView
+    try:
+        from leo.core.leoQt import QtWebEngineCore
+        QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    except:
+        QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
     from leo.core.leoQt import WebEngineAttribute
-    QWebView = QtWebEngineWidgets.QWebEngineView
 else:
     try:
-        from leo.core.leoQt import QtWebKitWidgets
-        QWebView = QtWebKitWidgets.QWebView
-    except ImportError:
+        qwv = QtWidgets.QTextBrowser
         if not g.unitTesting:
-            g.trace("Can't import QtWebKitWidgets")
-    except AttributeError:
-        if not g.unitTesting:
-            g.trace('No QWebView')
+            print("vr4: *** limited RsT rendering in effect")
+            print('vr4" *** For full rendering capability,')
+            print('vr4:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
+            print('vr4:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
     except Exception as e:
         g.trace(e)
 
-if not QWebView:
-    try:
-        QWebView = QtWidgets.QTextBrowser
-        if not g.unitTesting:
-            print("VR3: *** limited RsT rendering in effect")
-            print('VR3" *** For full rendering capability,')
-            print('VR3:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
-            print('VR3:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
-    except Exception as e:
-        g.trace(e)
-        # The top-level init function gives the error.
+# QWebView = None
+# # Not imported above because we might have PyQt without QWebEngineWidgets
+# from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
+# if has_WebEngineWidgets:
+    # from leo.core.leoQt import QtWebEngineWidgets
+    # from leo.core.leoQt import WebEngineAttribute
+    # QWebView = QtWebEngineWidgets.QWebEngineView
+# else:
+    # try:
+        # from leo.core.leoQt import QtWebKitWidgets
+        # QWebView = QtWebKitWidgets.QWebView
+    # except ImportError:
+        # if not g.unitTesting:
+            # g.trace("Can't import QtWebKitWidgets")
+    # except AttributeError:
+        # if not g.unitTesting:
+            # g.trace('No QWebView')
+    # except Exception as e:
+        # g.trace(e)
+
+# if not QWebView:
+    # try:
+        # QWebView = QtWidgets.QTextBrowser
+        # if not g.unitTesting:
+            # print("VR3: *** limited RsT rendering in effect")
+            # print('VR3" *** For full rendering capability,')
+            # print('VR3:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
+            # print('VR3:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
+    # except Exception as e:
+        # g.trace(e)
+        # # The top-level init function gives the error.
 
 if QtSvg:
     if hasattr(QtSvg, 'QSvgWidget'):
@@ -1322,8 +1352,8 @@ def init():
            ):
             g.es_print('viewrendered3 requires Qt')
         return False
-    if not QWebView:
-        g.es_print('viewrendered3.py requires QtWebKitWidgets.QWebView')
+    if not has_webengineview:
+        g.es_print('viewrendered3.py requires PyQtWebEngine')
         g.es_print('pip install PyQtWebEngine')
         return False
     if not got_docutils:
@@ -2001,12 +2031,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
-        Create a QWebView.
-
-        For QT5 and Qt6, this is actually a QWebEngineView.
+        Create a QWebEngineView.
         """
         c = self.c
-        w = QWebView()
+        w = qwv()
         n = c.config.getInt('qweb-view-font-size')
         if hasattr(w, 'settings'):
             settings = w.settings()
@@ -2246,9 +2274,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_rst_stylesheet()
         self.create_md_header()
 
-        if self.md_math_output:
+        if got_markdown:
             ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
-            ext.append('leo.extensions.mdx_math_gi')
+            if self.md_math_output:
+                ext.append('leo.extensions.mdx_math_gi')
             self.Markdown = markdown.Markdown(extensions=ext)
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
@@ -3201,14 +3230,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Update html in the vr3 pane."""
         pc = self
         c = pc.c
-        if pc.must_change_widget(QWebView):
+        if pc.must_change_widget(has_webengineview):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert w == pc.w
         else:
             w = pc.w
-        if isQt5 or isQt6:
-            w.hide()  # This forces a proper update.
+        w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -3264,7 +3292,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Update @jupyter node in the vr3 pane."""
         pc = self
         c = pc.c
-        if pc.must_change_widget(QWebView):
+        if pc.must_change_widget(has_webengineview):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert w == pc.w
@@ -3318,7 +3346,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setPlainText(s)
             c.bodyWantsFocusNow()
             return
-        if pc.must_change_widget(QWebView):
+        if pc.must_change_widget(has_webengineview):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert w == pc.w
@@ -4291,7 +4319,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Swap a webengineview widget into the rendering pane if necessary."""
         pc = self
         w = self.qwev
-        if pc.must_change_widget(QWebView):
+        if pc.must_change_widget(has_webengineview):
             pc.embed_widget(w)  # Creates w.wrapper
             assert w == pc.w
         return pc.w
@@ -4585,7 +4613,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             url_base = QtCore.QUrl('file:///' + path + '/')
             w.setHtml(s, url_base)
         except Exception as e:
-            # Oops, don't have a QWebviewEngine
+            # Oops, don't have a QWebEngineView
             g.es(e)
             w.setHtml(s)
 
