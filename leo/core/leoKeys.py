@@ -2065,6 +2065,8 @@ class KeyHandlerClass:
 
         Return True if the binding was made successfully.
         """
+        if commandName == 'binding-test':
+            g.trace(commandName, shortcut, 'pane', pane, 'modeFlag', modeFlag, 'tag', tag)   ###
         k = self
         if not shortcut:
             # Don't use this method to undo bindings.
@@ -2097,7 +2099,12 @@ class KeyHandlerClass:
             aList.append(bi)
             if shortcut:
                 assert stroke
+                if 'F4' in repr(stroke):
+                    g.trace('-----', stroke)
+                    g.printObj(aList)
                 k.bindingsDict[stroke] = aList
+                if commandName == 'binding-test':
+                    g.trace('aList', aList)
             return True
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2546,7 +2553,7 @@ class KeyHandlerClass:
     def menuCommandKey(self, event: Event=None) -> None:
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
+    #@+node:ekr.20061031131434.119: *4* k.printBindings & helper ###
     @cmd('show-bindings')
     def printBindings(self, event: Event=None) -> List[str]:
         """Print all the bindings presently in effect."""
@@ -2572,11 +2579,15 @@ class KeyHandlerClass:
             assert g.isStroke(stroke), stroke
             aList = d.get(stroke, [])
             for bi in aList:
+                if 'F4' in repr(stroke):  ###
+                    g.trace('=====', stroke)
+                    ### g.printObj(bi)
                 s1 = '' if bi.pane == 'all' else bi.pane
                 s2 = k.prettyPrintKey(stroke)
                 s3 = bi.commandName
                 s4 = bi.kind or '<no hash>'
                 data.append((s1, s2, s3, s4),)
+        ### g.printObj(list(sorted(d)))
         # Print keys by type.
         result = []
         result.append('\n' + legend)
@@ -3082,6 +3093,9 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
+        if commandName == 'binding-test':
+            g.trace(c.fileName(), repr(stroke))
+            # g.pdb()
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
