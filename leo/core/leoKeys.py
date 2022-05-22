@@ -2573,7 +2573,7 @@ class KeyHandlerClass:
         # d: keys are scope names. values are interior masterBindingDicts
         for scope in sorted(d):
             # d2: Keys are strokes; values are BindingInfo objects.
-            d2 = d.get(scope)
+            d2 = d.get(scope, {})
             for stroke in d2:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
@@ -2672,13 +2672,12 @@ class KeyHandlerClass:
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
-                pane, key = z
-                pane = f"{pane} " if pane != 'all:' else ''
-                key = k.prettyPrintKey(key).replace('+Key', '')
-                s1 = pane + key
-                s2 = commandName
-                n = max(n, len(s1))
-                data.append((s1, s2),)
+                pane, stroke = z
+                pane_s = ' '*7 if pane == 'all' else f"{pane:>7}"
+                key = k.prettyPrintKey(stroke).replace('+Key', '')
+                pane_key = f"{pane_s}: {key}"
+                n = max(n, len(pane_key))
+                data.append((pane_key, commandName))
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es_print('', ''.join(lines), tabName=tabName)
@@ -4025,22 +4024,25 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self) -> Dict[str, List[Tuple[str, str]]]:
+        """
+        Return a dictionary whose keys are command names,
+        values are lists of tuples(pane, stroke).
+        """
         k = self
-        d = {}  # keys are minibuffer command names, values are shortcuts.
-        for stroke in k.bindingsDict:
-            assert g.isStroke(stroke), repr(stroke)
-            aList = k.bindingsDict.get(stroke, [])
-            for bi in aList:
-                shortcutList = k.bindingsDict.get(bi.commandName, [])
-                bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
-                # Important: only bi.pane is required below.
-                for bi in bi_list:
-                    pane = f"{bi.pane}:"
-                    data = (pane, stroke)
-                    if data not in shortcutList:
-                        shortcutList.append(data)
-                d[bi.commandName] = shortcutList
-        return d
+        d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
+        result_d = {}  # Dict[command-name, Tuple[pane, stroke]]
+        for scope in sorted(d):
+            d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
+            for stroke in d2:
+                assert g.isStroke(stroke), stroke
+                bi = d2.get(stroke)
+                assert isinstance(bi, g.BindingInfo), repr(bi)
+                aList = result_d.get(bi.commandName, [])
+                data = (bi.pane, stroke)
+                if data not in aList:
+                    aList.append(data)
+                    result_d [bi.commandName] = aList
+        return result_d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName: str) -> Optional[Stroke]:
         c, k = self.c, self
