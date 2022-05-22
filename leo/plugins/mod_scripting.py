@@ -1138,7 +1138,7 @@ class ScriptingController:
                         commandName=commandName2,
                         func=registerAllCommandsCallback,
                         pane=pane,
-                        shortcut=None
+                        shortcut=None,
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
