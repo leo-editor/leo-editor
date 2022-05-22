@@ -915,7 +915,6 @@ class LeoFind:
         """Set the 'Suboutline Only' radio button in the Find tab."""
         self.set_find_scope('suboutline-only')
 
-    @cmd('set-find-file-only')
     def set_find_scope(self, where: str) -> None:
         """Set the radio buttons to the given scope"""
         c, fc = self.c, self.c.findCommands
