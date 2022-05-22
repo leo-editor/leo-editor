@@ -808,7 +808,9 @@ class LeoFind:
                 h = node.h
                 if h:
                     h = h.split()[0]
-                if h in ('@file', '@clean', '@thin'):
+                if h in ("@clean", "@file", "@asis", "@thin", "@edit",
+                         "@auto", "@auto-md", "@auto-org",
+                         "@auto-otl", "@auto-rst"):
                     found = True
                 else:
                     if node.level() == 0:
