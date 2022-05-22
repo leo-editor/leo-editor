@@ -1648,16 +1648,15 @@ class GetArg:
             dataList = d.get(commandName, [])
             if dataList:
                 for z in dataList:
-                    pane, key = z
-                    s1a = '' if pane in ('all:', 'button:') else f"{pane} "
-                    s1b = k.prettyPrintKey(key)
-                    s1 = s1a + s1b
-                    s2 = self.command_source(commandName)
-                    if s2 != ' ':
+                    pane, stroke = z
+                    pane_s = '' if pane == 'all' else pane
+                    key = k.prettyPrintKey(stroke)
+                    pane_key = f"{pane_s} {key}"
+                    source = self.command_source(commandName)
+                    if source != ' ':
                         legend = True
-                    s3 = commandName
-                    data.append((s1, s2, s3),)
-                    n = max(n, len(s1))
+                    data.append((pane_key, source, commandName))
+                    n = max(n, len(pane_key))
             else:
                 # Bug fix: 2017/03/26
                 data.append(('', ' ', commandName),)
@@ -2673,9 +2672,9 @@ class KeyHandlerClass:
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
                 pane, stroke = z
-                pane_s = ' '*7 if pane == 'all' else f"{pane:>7}"
+                pane_s = ' '*8 if pane in ('', 'all') else f"{pane:>7}:"
                 key = k.prettyPrintKey(stroke).replace('+Key', '')
-                pane_key = f"{pane_s}: {key}"
+                pane_key = f"{pane_s}{key}"
                 n = max(n, len(pane_key))
                 data.append((pane_key, commandName))
         # This isn't perfect in variable-width fonts.
