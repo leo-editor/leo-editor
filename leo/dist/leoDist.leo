@@ -2076,7 +2076,8 @@ include pyproject.toml
 
 # Exclusions
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
-# Issue #2633: leo/test *must* exist!
+# Issue #2633: execute-script requires that leo/test exist.
+#              test-all requires that leo/test/test.leo exist.
 # prune leo/test
 prune leo/doc/html
 # EKR: 2021/08/14: further exclusions.
