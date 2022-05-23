@@ -1,4 +1,4 @@
-Leo http://leoeditor.com 6.6.2-b1 is now available on
+Leo http://leoeditor.com 6.6.2b1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/6.6.1/).
 
