@@ -841,7 +841,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             ('rb', '&Node only', 2, 1),
             # Fourth row.
             ('box', 'mark &Finds', 3, 0),
-            ('rb', 'File &Only', 3, 1),
+            ('rb', 'file &only', 3, 1),
             # Fifth row.
             ('box', 'mark &Changes', 4, 0),
             ('box', 'search &Headline', 4, 1),
