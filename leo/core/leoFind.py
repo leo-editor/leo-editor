@@ -105,6 +105,7 @@ class LeoFind:
         # These *must* be initially None, not False.
         self.ignore_case: bool = None
         self.node_only: bool = None
+        self.file_only: bool = None
         self.pattern_match: bool = None
         self.search_headline: bool = None
         self.search_body: bool = None
@@ -796,6 +797,29 @@ class LeoFind:
             # Start the range and set suboutline-only.
             self.root = c.p
             self.set_find_scope_suboutline_only()  # Update find-tab & status area.
+
+        elif self.file_only:
+            # Start the range and set file-only.
+            self.root = c.p
+            p = c.p
+            node = self.c.p
+            hitBase = found = False
+            while not found and not hitBase:
+                h = node.h
+                if h:
+                    h = h.split()[0]
+                if h in ("@clean", "@file", "@asis", "@thin", "@edit",
+                         "@auto", "@auto-md", "@auto-org",
+                         "@auto-otl", "@auto-rst"):
+                    found = True
+                else:
+                    if node.level() == 0:
+                        hitBase = True
+                    else:
+                        node = node.parent()
+            self.root = node
+            self.set_find_scope_file_only()  # Update find-tab & status area.
+            p = node
         #
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
@@ -880,6 +904,11 @@ class LeoFind:
     def set_find_scope_node_only(self, event: Event=None) -> None:  # pragma: no cover (cmd)
         """Set the 'Node Only' radio button in the Find tab."""
         self.set_find_scope('node-only')
+
+    @cmd('set-find-file-only')
+    def set_find_scope_file_only(self, event: Event=None) -> None:  # pragma: no cover (cmd)
+        """Set the 'File Only' radio button in the Find tab."""
+        self.set_find_scope('file-only')
 
     @cmd('set-find-suboutline-only')
     def set_find_scope_suboutline_only(self, event: Event=None) -> None:
@@ -2251,7 +2280,7 @@ class LeoFind:
             return True
         if self.node_only:
             return True
-        if self.suboutline_only:
+        if self.suboutline_only or self.file_only:
             if self.root and p != self.root and not self.root.isAncestorOf(p):
                 return True
         if c.hoistStack:
@@ -3020,6 +3049,7 @@ class LeoFind:
         table2 = (
             ('Suboutline', ftm.radio_button_suboutline_only),
             ('Node', ftm.radio_button_node_only),
+            ('File', ftm.radio_button_file_only),
         )
         for option, ivar in table2:
             if ivar.isChecked():

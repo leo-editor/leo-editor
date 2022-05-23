@@ -841,10 +841,23 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             ('rb', '&Node only', 2, 1),
             # Fourth row.
             ('box', 'mark &Finds', 3, 0),
-            ('box', 'search &Headline', 3, 1),
+            ('rb', 'File &Only', 3, 1),
             # Fifth row.
             ('box', 'mark &Changes', 4, 0),
-            ('box', 'search &Body', 4, 1),
+            ('box', 'search &Headline', 4, 1),
+            # Sixth Row
+            ('box', 'search &Body', 5, 1),
+
+            # ('box', 'rege&Xp', 2, 0),
+            # ('rb', '&Node only', 2, 1),
+            # # Fourth row.
+            # ('box', 'mark &Finds', 3, 0),
+            # ('box', 'search &Headline', 3, 1),
+            # # Fifth row.
+            # ('box', 'mark &Changes', 4, 0),
+            # ('box', 'search &Body', 4, 1),
+            # ('rb', 'File &Only', 5, 1),
+
             # Sixth row.
             # ('box', 'wrap &Around', 5, 0),
             # a,b,c,e,f,h,i,n,rs,w
@@ -862,6 +875,15 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             assert getattr(ftm, name) is None
             setattr(ftm, name, w)
         return max_row2
+    #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
+    def create_help_row(self, grid: Any, parent: Widget, row: int) -> int:
+        # Help row.
+        if False:
+            w = self.createLabel(parent,
+                'findHelp', 'For help: <alt-x>help-for-find-commands<return>')
+            grid.addWidget(w, row, 0, 1, 3)
+            row += 1
+        return row
     #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
     def create_find_buttons(self, grid: Any, parent: Widget, max_row2: int, row: int) -> int:
         """
@@ -890,15 +912,6 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             grid.addWidget(w, row + row2, col)
         row += max_row2
         row += 2
-        return row
-    #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
-    def create_help_row(self, grid: Any, parent: Widget, row: int) -> int:
-        # Help row.
-        if False:
-            w = self.createLabel(parent,
-                'findHelp', 'For help: <alt-x>help-for-find-commands<return>')
-            grid.addWidget(w, row, 0, 1, 3)
-            row += 1
         return row
     #@+node:ekr.20150618072619.1: *6* dw.create_find_status
     if 0:
@@ -1107,6 +1120,7 @@ class FindTabManager:
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
         self.radio_button_suboutline_only = None
+        self.radio_button_file_only = None
         # Push buttons
         self.find_next_button = None
         self.find_prev_button = None
@@ -1216,6 +1230,7 @@ class FindTabManager:
             ('node_only', 'node_only', self.radio_button_node_only),
             ('entire_outline', None, self.radio_button_entire_outline),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
+            ('file_only', 'file_only', self.radio_button_file_only)
         )
         for setting_name, ivar, w in table3:
             val = c.config.getBool(setting_name, default=False)
@@ -1233,7 +1248,7 @@ class FindTabManager:
 
             w.toggled.connect(radio_button_callback)
         # Ensure one radio button is set.
-        if not find.node_only and not find.suboutline_only:
+        if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
             w.toggle()
     #@+node:ekr.20210923060904.1: *3* ftm.init_widgets_from_dict (new)
@@ -1271,6 +1286,7 @@ class FindTabManager:
             ('node_only', 'node_only', self.radio_button_node_only),
             ('entire_outline', None, self.radio_button_entire_outline),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
+            ('file_only', 'file_only', self.radio_button_file_only),
         )
         for setting_name, ivar, w in table2:
             val = d.get(setting_name, False)
@@ -1280,7 +1296,7 @@ class FindTabManager:
                 setattr(find, setting_name, val)
                 w.setChecked(val)
         # Ensure one radio button is set.
-        if not find.node_only and not find.suboutline_only:
+        if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
             w.setChecked(val)
     #@+node:ekr.20210312120503.1: *3* ftm.set_body_and_headline_checkbox
@@ -1318,6 +1334,7 @@ class FindTabManager:
             'node-only': self.radio_button_node_only,
             'entire-outline': self.radio_button_entire_outline,
             'suboutline-only': self.radio_button_suboutline_only,
+            'file-only': self.radio_button_file_only,
         }
         w = d.get(name)
         # Most of the work will be done in the radio button callback.
