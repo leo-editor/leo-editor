@@ -415,9 +415,9 @@ class BindingInfo:
     __str__ = __repr__
 
     def dump(self) -> str:
-        result = [f"BindingInfo {self.kind:17}"]
+        result = [f"BindingInfo kind: {self.kind}"]
         # Print all existing ivars.
-        table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
+        table = ('pane', 'commandName', 'func', 'stroke') # 'nextMode',
         for ivar in table:
             if hasattr(self, ivar):
                 val = getattr(self, ivar)
@@ -428,11 +428,12 @@ class BindingInfo:
                     s = f"{ivar}: {val!r}"
                     result.append(s)
         # Clearer w/o f-string.
-        return "[%s]" % ' '.join(result).strip()
+        return "<%s>" % ' '.join(result).strip()
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self) -> bool:
         return self.kind.startswith('*mode')
     #@-others
+
 def isBindingInfo(obj: Any) -> bool:
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
@@ -7245,7 +7246,7 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     Run *all* unit tests if "tests" is not given.
     """
     # Note: `pip install leo` does not create a leo-editor folder, so this code will fail.
-    #       The workaround: run `python -m unittest` from python/Lib/sitecustomize/leo.   
+    #       The workaround: run `python -m unittest` from python/Lib/sitecustomize/leo.
     leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
     verbosity = '-v' if verbose else ''

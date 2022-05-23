@@ -1648,16 +1648,15 @@ class GetArg:
             dataList = d.get(commandName, [])
             if dataList:
                 for z in dataList:
-                    pane, key = z
-                    s1a = '' if pane in ('all:', 'button:') else f"{pane} "
-                    s1b = k.prettyPrintKey(key)
-                    s1 = s1a + s1b
-                    s2 = self.command_source(commandName)
-                    if s2 != ' ':
+                    pane, stroke = z
+                    pane_s = '' if pane == 'all' else pane
+                    key = k.prettyPrintKey(stroke)
+                    pane_key = f"{pane_s} {key}"
+                    source = self.command_source(commandName)
+                    if source != ' ':
                         legend = True
-                    s3 = commandName
-                    data.append((s1, s2, s3),)
-                    n = max(n, len(s1))
+                    data.append((pane_key, source, commandName))
+                    n = max(n, len(pane_key))
             else:
                 # Bug fix: 2017/03/26
                 data.append(('', ' ', commandName),)
@@ -2093,6 +2092,8 @@ class KeyHandlerClass:
             if shortcut and not modeFlag:
                 aList = k.remove_conflicting_definitions(
                     aList, commandName, pane, shortcut)
+            else:
+                aList = []
                 # 2013/03/02: a real bug fix.
             aList.append(bi)
             if shortcut:
@@ -2546,12 +2547,12 @@ class KeyHandlerClass:
     def menuCommandKey(self, event: Event=None) -> None:
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
+    #@+node:ekr.20061031131434.119: *4* k.showBindings & helper
     @cmd('show-bindings')
-    def printBindings(self, event: Event=None) -> List[str]:
+    def showBindings(self, event: Event=None) -> List[str]:
         """Print all the bindings presently in effect."""
         c, k = self.c, self
-        d = k.bindingsDict
+        d = k.masterBindingsDict
         tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
         legend = '''\
@@ -2568,15 +2569,15 @@ class KeyHandlerClass:
             return None
         legend = textwrap.dedent(legend)
         data = []
-        for stroke in sorted(d):
-            assert g.isStroke(stroke), stroke
-            aList = d.get(stroke, [])
-            for bi in aList:
-                s1 = '' if bi.pane == 'all' else bi.pane
-                s2 = k.prettyPrintKey(stroke)
-                s3 = bi.commandName
-                s4 = bi.kind or '<no hash>'
-                data.append((s1, s2, s3, s4),)
+        # d: keys are scope names. values are interior masterBindingDicts
+        for scope in sorted(d):
+            # d2: Keys are strokes; values are BindingInfo objects.
+            d2 = d.get(scope, {})
+            for stroke in d2:
+                assert g.isStroke(stroke), stroke
+                bi = d2.get(stroke)
+                assert isinstance(bi, g.BindingInfo), repr(bi)
+                data.append((scope, k.prettyPrintKey(stroke), bi.commandName, bi.kind))
         # Print keys by type.
         result = []
         result.append('\n' + legend)
@@ -2590,11 +2591,11 @@ class KeyHandlerClass:
         ):
             data2 = []
             for item in data:
-                s1, s2, s3, s4 = item
-                if s2.startswith(prefix):
+                scope, stroke, commandName, kind = item
+                if stroke.startswith(prefix):
                     data2.append(item)
             result.append(f"{prefix} keys...\n")
-            self.printBindingsHelper(result, data2, prefix=prefix)
+            self.printBindingsHelper(result, data2, prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
             for item in data2:
@@ -2608,14 +2609,14 @@ class KeyHandlerClass:
         return result  # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result: List[str], data: List[Any], prefix: str) -> None:
-        """Helper for k.printBindings"""
+        """Helper for k.showBindings"""
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
-        for pane, key, commandName, kind in data:
+        for scope, key, commandName, kind in data:
             key = key.replace('+Key', '')
             letter = lm.computeBindingLetter(c, kind)
-            pane = f"{pane if pane else 'all':4}: "
+            pane = f"{scope if scope else 'all':>7}: "
             left = pane + key  # pane and shortcut fields
             n = max(n, len(left))
             data2.append((letter, left, commandName),)
@@ -2670,13 +2671,12 @@ class KeyHandlerClass:
         for commandName in sorted(c.commandsDict):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
-                pane, key = z
-                pane = f"{pane} " if pane != 'all:' else ''
-                key = k.prettyPrintKey(key).replace('+Key', '')
-                s1 = pane + key
-                s2 = commandName
-                n = max(n, len(s1))
-                data.append((s1, s2),)
+                pane, stroke = z
+                pane_s = ' '*8 if pane in ('', 'all') else f"{pane:>7}:"
+                key = k.prettyPrintKey(stroke).replace('+Key', '')
+                pane_key = f"{pane_s}{key}"
+                n = max(n, len(pane_key))
+                data.append((pane_key, commandName))
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
         g.es_print('', ''.join(lines), tabName=tabName)
@@ -4023,22 +4023,25 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self) -> Dict[str, List[Tuple[str, str]]]:
+        """
+        Return a dictionary whose keys are command names,
+        values are lists of tuples(pane, stroke).
+        """
         k = self
-        d = {}  # keys are minibuffer command names, values are shortcuts.
-        for stroke in k.bindingsDict:
-            assert g.isStroke(stroke), repr(stroke)
-            aList = k.bindingsDict.get(stroke, [])
-            for bi in aList:
-                shortcutList = k.bindingsDict.get(bi.commandName, [])
-                bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
-                # Important: only bi.pane is required below.
-                for bi in bi_list:
-                    pane = f"{bi.pane}:"
-                    data = (pane, stroke)
-                    if data not in shortcutList:
-                        shortcutList.append(data)
-                d[bi.commandName] = shortcutList
-        return d
+        d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
+        result_d = {}  # Dict[command-name, Tuple[pane, stroke]]
+        for scope in sorted(d):
+            d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
+            for stroke in d2:
+                assert g.isStroke(stroke), stroke
+                bi = d2.get(stroke)
+                assert isinstance(bi, g.BindingInfo), repr(bi)
+                aList = result_d.get(bi.commandName, [])
+                data = (bi.pane, stroke)
+                if data not in aList:
+                    aList.append(data)
+                    result_d [bi.commandName] = aList
+        return result_d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName: str) -> Optional[Stroke]:
         c, k = self.c, self

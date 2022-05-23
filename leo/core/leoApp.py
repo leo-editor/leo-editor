@@ -2272,6 +2272,7 @@ class LoadManager:
             except Exception:
                 g.es_print('Can not load session')
                 g.es_exception()
+
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1:

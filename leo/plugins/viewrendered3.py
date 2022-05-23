@@ -883,7 +883,7 @@ if has_webengineview:
     try:
         from leo.core.leoQt import QtWebEngineCore
         QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
-    except:
+    except Exception:
         QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
     from leo.core.leoQt import WebEngineAttribute
 else:
