@@ -56,7 +56,7 @@
 </v>
 <v t="ekr.20201013034742.2"><vh>@@button make-importer</vh>
 <v t="ekr.20201013034742.3"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
-<v t="ekr.20201013034742.4"><vh>copy_tree</vh></v>
+<v t="ekr.20201013034742.4"><vh>copy_tree (make-importer)</vh></v>
 <v t="ekr.20201013034742.5"><vh>make_substitutions</vh></v>
 <v t="ekr.20201013034742.6"><vh>run</vh></v>
 <v t="ekr.20201013034742.7"><vh>substitue</vh></v>
@@ -683,8 +683,6 @@
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
-<v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
-<v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
@@ -733,7 +731,9 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">find-non-calls
+<t tx="ekr.20150425145248.1">show-bindings
+show-commands
+find-non-calls
 pylint
 test-one
 test-import
@@ -816,9 +816,11 @@ import os
 leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
 os.chdir(leo_editor_dir)
 prolog = 'python3 -m unittest leo.unittests'
-# command = f"{prolog}.core.test_leoAst.TestOrange.test_star_star_operator"
-# command = f"{prolog}.test_gui.TestQtGui.test_create_html_links"
-command = f"{prolog}.commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606"
+# command = f"{prolog}.commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606"
+# command = f"{prolog}.commands.test_editCommands.TestEditCommands.test_merge_node_with_prev_node"
+# command = f"{prolog}.commands.test_editCommands.TestEditCommands.test_merge_node_with_next_node"
+# command = f"{prolog}.test_gui.TestQtGui.test_put_html_links"
+command = f"{prolog}.core.test_leoserver.TestLeoServer.test_find_commands"
 g.execute_shell_commands(command)</t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
@@ -830,10 +832,10 @@ import time
 win = sys.platform.startswith('win')
 old_dir = os.getcwd()
 if win:
-    new_dir = r'C:\leo.repo\leo-editor'
+    new_dir = r'C:\Repos\leo-editor'
     path = r'C:\Users\Edward~1\Backup'
 else:
-    new_dir = '/home/edward/leo.repo/leo-editor'
+    new_dir = '/home/edward/Repos/leo-editor'
     path = '/home/edward/Backup'
 assert g.os_path_exists(new_dir), repr(new_dir)
 assert g.os_path_exists(path), repr(path)
@@ -2970,9 +2972,9 @@ files:
     # Files to be used *only* if no files are given on the command line.
     # glob.glob wildcards are supported.
 
-    # c:/leo.repo/leo-editor/leo/core/leoAst.py
-    # c:/leo.repo/leo-editor/leo/core/*.py
-    # c:/leo.repo/leo-editor/plugins/*.py
+    # c:/Repos/leo-editor/leo/core/leoAst.py
+    # c:/Repos/leo-editor/leo/core/*.py
+    # c:/Repos/leo-editor/plugins/*.py
 
 output_directory: ~/stubs
 
