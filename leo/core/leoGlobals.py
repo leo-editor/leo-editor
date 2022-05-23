@@ -417,7 +417,7 @@ class BindingInfo:
     def dump(self) -> str:
         result = [f"BindingInfo kind: {self.kind}"]
         # Print all existing ivars.
-        table = ('pane', 'commandName', 'func', 'stroke') # 'nextMode',
+        table = ('pane', 'commandName', 'func', 'stroke')  # 'nextMode',
         for ivar in table:
             if hasattr(self, ivar):
                 val = getattr(self, ivar)

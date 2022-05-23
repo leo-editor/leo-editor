@@ -2672,7 +2672,7 @@ class KeyHandlerClass:
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
                 pane, stroke = z
-                pane_s = ' '*8 if pane in ('', 'all') else f"{pane:>7}:"
+                pane_s = ' ' * 8 if pane in ('', 'all') else f"{pane:>7}:"
                 key = k.prettyPrintKey(stroke).replace('+Key', '')
                 pane_key = f"{pane_s}{key}"
                 n = max(n, len(pane_key))
@@ -4040,7 +4040,7 @@ class KeyHandlerClass:
                 data = (bi.pane, stroke)
                 if data not in aList:
                     aList.append(data)
-                    result_d [bi.commandName] = aList
+                    result_d[bi.commandName] = aList
         return result_d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
     def getStrokeForCommandName(self, commandName: str) -> Optional[Stroke]:
