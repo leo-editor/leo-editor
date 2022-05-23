@@ -228,7 +228,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6.1
+Version: 6.6.1-b1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -247,28 +247,26 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.2-b1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/6.6.1/).
 
-**The highlights of Leo 6.6.1**
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-- Improve support for Python 3.10 and PyQt6.
-- Simplify the TokenOrderGenerator class in leoAst.py.
-- Improve argument handling when running leo.core.leoAst externally.
-  Run `python -m leo.core.leoAst -h` for details.
-- Control-clicking on a file name searches for the corresponding @&lt;file&gt; node.
-- Create clickable links when copying text into the log pane.
-- Leo's mypy command runs without blocking Leo.
-- Improve the add-mypy-annotations command.
-- Clean all files with reindent.
-- The usual minor bug fixes.
+**The highlights of Leo 6.6.2**
 
-**6.6.1 Links**
+- Add a "File only" option to the Find Panel.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
+- Add mypy annotations for Leo's most important files.
+- Fixed 9 minor bugs.
 
-- [6.6.1 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1)
-- [6.6.1 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.1)
-- [6.6.1 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=label%3Abug+milestone%3A6.6.1+)
-- [6.6.1 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.1+label%3Aenhancement+)
-- [6.6.1 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.1+label%3Acode+)
+**6.6.2 Links**
+
+- [6.6.2 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2)
+- [6.6.2 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.2)
+- [6.6.2 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Abug+is%3Aclosed)
+- [6.6.2 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Aenhancement+)
+- [6.6.2 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.2+label%3Acode+)
 
 **General Links**
 
@@ -283,9 +281,6 @@ Download-URL: https://github.com/leo-editor/leo-editor/releases
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
-
-@nowrap
-@language md
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
