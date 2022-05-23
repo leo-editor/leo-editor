@@ -31258,6 +31258,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6.2**
 
+- Add a "File only" option to the Find Panel.
 - Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.
 - Fixed 9 minor bugs.
@@ -31287,7 +31288,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
-<t tx="ekr.20220523145755.1">- Remove pylint-leo.py, pyflakes-leo.py and related code.
+<t tx="ekr.20220523145755.1">- Add a "File only" option to the Find Panel.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
