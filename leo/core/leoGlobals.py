@@ -7246,16 +7246,22 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     Run *all* unit tests if "tests" is not given.
     """
     if 'site-packages' in __file__:
+        # Add site-packages to sys.path.
+        parent_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+        if parent_dir.endswith('site-packages'):
+            if parent_dir not in sys.path:
+                g.trace(f"Append {parent_dir!r} to sys.path")
+                sys.path.append(parent_dir)
+        else:
+            g.trace('Can not happen: wrong parent directory', parent_dir)
+            return
         # Run tests in site-packages/leo
-        base_dir = g.os_path_finalize_join(g.app.loadDir, '..')
+        os.chdir(g.os_path_finalize_join(g.app.loadDir, '..'))
     else:
         # Run tests in leo-editor.
-        base_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-    os.chdir(base_dir)
+        os.chdir(g.os_path_finalize_join(g.app.loadDir, '..', '..'))
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
-    # pytest reports too many errors.
-    # command = f"python -m pytest --pdb {tests or ''}"
     g.execute_shell_commands(command)
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
 unl_regex = re.compile(r'\bunl:.*$')
