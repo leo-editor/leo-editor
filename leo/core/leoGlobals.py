@@ -7245,10 +7245,13 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
 
     Run *all* unit tests if "tests" is not given.
     """
-    # Note: `pip install leo` does not create a leo-editor folder, so this code will fail.
-    #       The workaround: run `python -m unittest` from python/Lib/sitecustomize/leo.
-    leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-    os.chdir(leo_editor_dir)
+    if 'site-packages' in __file__:
+        # Run tests in site-packages/leo
+        base_dir = g.os_path_finalize_join(g.app.loadDir, '..')
+    else:
+        # Run tests in leo-editor.
+        base_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    os.chdir(base_dir)
     verbosity = '-v' if verbose else ''
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     # pytest reports too many errors.
