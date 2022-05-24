@@ -162,17 +162,17 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
+<v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
-<v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
-<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
+<v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1460,35 +1460,22 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create a release branch.
+Create a release branch: 6.6.3
 
-*Never* merge devel into this branch!
+*Never* merge devel into 6.6.3!
 
-It's OK to merge the release branch into devel after the release.
-
-Update leoVersion.py in devel after the release.
+It's OK to merge the 6.63 into devel after the release.
 
 @language rest
 </t>
-<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
-- Run reindent leo.
-- Run Leo's beautify-files command on the following nodes:
-  - Core classes
-  - Command classes
-  - Gui base classes
-  - Qt gui
-
-LeoDocs.leo:
+<t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
-- Update the version numbers in index.html.
+- Update the version numbers in index.html, index.html and conf.py:
   Search for 6.6.
-- Update the "last updated" text in index.html.
-- Update version numbers in html/conf.py
 - Update the release notes.
-- Remove @language rest where possible in new nodes.
 - Create new "what's new" section.
 - Remove top-level clones.
-- Spell check entire file.
+- Spell check entire file, starting at the "Web pages" node.
 - Copy release notes to leoDist.leo.
 - Copy release notes to LeoReleaseNotes.leo
 
@@ -1502,13 +1489,7 @@ LeoDist.leo:
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
-  
-LeoSettings.leo:
-- Run all "check" buttons in leoSettings.leo.
-
-LeoPyRef.leo:
-- run write-LeoPyRef button in LeoPy.leo.
-- Run `script: check-files`.</t>
+</t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
   - Run rst3 command in LeoDocs.leo.
   - In leo/doc/html run:
@@ -1519,34 +1500,40 @@ LeoPyRef.leo:
 - Copy leo/doc/html/index.html to web (FileZilla)
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run test-all command.
-- Run mypy leo.
-- Run pylint on all files.</t>
-<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
-- Create a full (annotated) tag:
-  - Do not use the -f option.
-  - Tags should start with "v"
+- Run Leo's beautify-files command on the following nodes:
+  - Core classes
+  - Command classes
+  - Gui base classes
+  - Qt gui
+
+- Run the following checks:
+    - reindent leo.
+    - Run test-all command.
+    - mypy leo.
+    - Run pylint on all files.
+
+LeoSettings.leo:
+- Run all "check" buttons in leoSettings.leo.
+
+LeoPyRef.leo:
+- run write-LeoPyRef button in LeoPy.leo.
+- Run `script: check-files`.</t>
+<t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
 git tag -a v6.6.2 -m "Added v6.6.2 tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout 6.6.2
-git merge devel
-
-leoVersion.py:
+<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 - Update static date.
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
-
-git push</t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">After merge, create dev tag that matches the static version added to leoversion.py earlier.
-
-git checkout devel
-Add git merge master
+</t>
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
+git merge 6.6.3
 update version in leoVersion.py.
-git tag -a v6.6.2-devel -m "Added v6.6.2-devel tag"
+git tag -a v6.6.4-devel -m "Added v6.6.4-devel tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
@@ -2005,7 +1992,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.2 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.3 branch:
 
 - git merge master
 - Fix any conflicts and push.
