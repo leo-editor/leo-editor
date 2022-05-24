@@ -1,6 +1,6 @@
 Leo http://leoeditor.com 6.6.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/6.6.1/).
+[pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 

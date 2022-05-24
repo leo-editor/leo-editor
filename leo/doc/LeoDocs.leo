@@ -31252,7 +31252,7 @@ Phenomenal!</t>
 - Clean all files with reindent.</t>
 <t tx="ekr.20220523084825.1">Leo http://leoeditor.com 6.6.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/6.6.2/).
+[pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
