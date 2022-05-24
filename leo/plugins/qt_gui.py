@@ -2133,7 +2133,7 @@ class StyleSheetManager:
         """
         RE = r'([=:])[ ]*([.1234567890]+)(p[tx])'
 
-        def scale(matchobj: re.Match, scale: float=factor) -> str:
+        def scale(matchobj: Any, scale: float=factor) -> str:
             prefix = matchobj.group(1)
             sz = matchobj.group(2)
             units = matchobj.group(3)

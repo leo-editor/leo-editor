@@ -20,7 +20,7 @@ else:
 #@-<< leoBackground.py imports >>
 
 Event = Any
-Pattern = Union[re.Pattern, str]
+Pattern = Union[Any, str]
 
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status

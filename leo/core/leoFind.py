@@ -95,7 +95,7 @@ class LeoFind:
         self.ftm: Any = None  # Created by dw.createFindTab.
         self.frame: Wrapper = None
         self.k: Any = c.k
-        self.re_obj: re.Pattern = None
+        self.re_obj: Any = None
         #
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
@@ -140,7 +140,7 @@ class LeoFind:
         self.findAllUniqueFlag = False
         self.find_def_data: Any = None  # A g.Bunch.
         self.in_headline = False
-        self.match_obj: re.Match = None
+        self.match_obj: Any = None
         self.reverse = False
         self.root: Pos = None  # The start of the search, especially for suboutline-only.
         self.unique_matches: Set = set()
@@ -2495,7 +2495,7 @@ class LeoFind:
 
         # g.printObj(list(groups), tag=f"groups in {change_text!r}")
 
-        def repl(match_object: re.Match) -> str:
+        def repl(match_object: Any) -> str:
             """re.sub calls this function once per group."""
             # # 1494...
             n = int(match_object.group(1)) - 1

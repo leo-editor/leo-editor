@@ -8,7 +8,6 @@ These classes should be overridden to create frames for a particular gui.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import os
-import re
 import string
 from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
@@ -1292,7 +1291,7 @@ class LeoLog:
     # This table encodes which groups extract the filename and line_number from global regex patterns.
     # This is the *only* method that should need to know this information!
 
-    link_table: List[Tuple[int, int, re.Pattern]] = [
+    link_table: List[Tuple[int, int, Any]] = [
         # (filename_i, line_number_i, pattern)
         (1, 2, g.mypy_pat),
         (1, 2, g.pyflakes_pat),
@@ -1311,7 +1310,7 @@ class LeoLog:
 
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match
-        def find_match(line: str) -> Tuple[re.Match, int, int]:
+        def find_match(line: str) -> Tuple[Any, int, int]:
             """Search line for any pattern in link_table."""
             if not line.strip():
                 return None, None, None

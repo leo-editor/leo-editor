@@ -1556,7 +1556,7 @@ class Fstringify:
 
     format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
 
-    def scan_format_string(self, s: str) -> List[re.Match]:
+    def scan_format_string(self, s: str) -> List[Any]:
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
@@ -1586,7 +1586,7 @@ class Fstringify:
         tokens = tokens_for_node(self.filename, node, self.tokens)
         return [tokens]
     #@+node:ekr.20191226155316.1: *5* fs.substitute_values
-    def substitute_values(self, lt_s: str, specs: List[re.Match], values: List) -> List["Token"]:
+    def substitute_values(self, lt_s: str, specs: List[Any], values: List) -> List["Token"]:
         """
         Replace specifiers with values in lt_s string.
 
