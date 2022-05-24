@@ -2075,6 +2075,7 @@
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
+<v t="ekr.20220524035531.1"><vh>@int rguide-col = 80</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
@@ -11651,6 +11652,7 @@ w, Wrapper
 False: Use the default stylesheet at leo/plugins/viewrendered3.
        If not present, create a default stylesheet and write it to a file
        at that place.</t>
+<t tx="ekr.20220524035531.1">Column number for right margin guidelines.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
