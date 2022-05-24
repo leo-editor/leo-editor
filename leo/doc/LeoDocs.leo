@@ -1533,6 +1533,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
 <v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
@@ -1698,6 +1699,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20220401072939.1"><vh>Leo 6.6.1 release notes</vh></v>
 <v t="ekr.20211105051031.1"><vh>Leo 6.6 release notes</vh></v>
 <v t="ekr.20210921102613.1"><vh>Leo 6.5 release notes</vh>
 <v t="ekr.20210921102613.13"><vh>6.5: Commands</vh></v>
@@ -2380,8 +2382,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20220427143133.1"></v>
-<v t="ekr.20220401072939.1"><vh>Leo 6.6.1 release notes</vh></v>
+<v t="ekr.20220523145755.1"></v>
 <v t="ekr.20220523084825.1"><vh>Leo 6.6.2-b1 release nodes</vh></v>
 </vnodes>
 <tnodes>
@@ -31286,6 +31287,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
+<t tx="ekr.20220523145755.1">- Remove pylint-leo.py, pyflakes-leo.py and related code.
+- Add mypy annotations for Leo's most important files.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

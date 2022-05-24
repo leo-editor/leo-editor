@@ -13,6 +13,7 @@ For Qt6, plugins are responsible for loading all optional modules.
 # pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
 
 # Required imports
+from typing import Any
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
@@ -139,6 +140,8 @@ Style = QtGui.QFont.Style
 TextOption = QtGui.QTextOption
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+QWebEngineSettings: Any
+WebEngineAttribute: Any
 if has_WebEngineWidgets:
     QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
     WebEngineAttribute = QWebEngineSettings.WebAttribute
