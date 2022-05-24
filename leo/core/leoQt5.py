@@ -125,8 +125,8 @@ if has_WebEngineWidgets:
     QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
     WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
 else:
-    QWebEngineSettings = None
-    WebEngineAttribute = None
+    QWebEngineSettings = None  # type:ignore
+    WebEngineAttribute = None  # type:ignore
 
 Weight = QtGui.QFont
 WindowType = QtCore.Qt

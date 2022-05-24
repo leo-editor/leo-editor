@@ -143,8 +143,8 @@ if has_WebEngineWidgets:
     QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
     WebEngineAttribute = QWebEngineSettings.WebAttribute
 else:
-    QWebEngineSettings = None
-    WebEngineAttribute = None
+    QWebEngineSettings = None  # type:ignore
+    WebEngineAttribute = None  # type:ignore
 
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode

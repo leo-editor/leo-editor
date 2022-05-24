@@ -4022,21 +4022,21 @@ class KeyHandlerClass:
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
-    def computeInverseBindingDict(self) -> Dict[str, List[Tuple[str, str]]]:
+    def computeInverseBindingDict(self) -> Dict[str, List[Tuple[str, Any]]]:
         """
         Return a dictionary whose keys are command names,
         values are lists of tuples(pane, stroke).
         """
         k = self
         d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
-        result_d = {}  # Dict[command-name, Tuple[pane, stroke]]
+        result_d: Dict[str, List[Tuple[str,Any]]] = {}  # Dict[command-name, Tuple[pane, stroke]]
         for scope in sorted(d):
             d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
             for stroke in d2:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
                 assert isinstance(bi, g.BindingInfo), repr(bi)
-                aList = result_d.get(bi.commandName, [])
+                aList: List = result_d.get(bi.commandName, [])
                 data = (bi.pane, stroke)
                 if data not in aList:
                     aList.append(data)
