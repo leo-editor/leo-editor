@@ -1462,21 +1462,14 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create a release branch:
-- This branch hold the proper version for the release.
+Create a release branch.
 
-Update and test all files (in devel):
-- Beautify all files before running tests.
-- Update all release files.
-- Update web docs.
-- Run all checks in devel.
-- Fix any late bugs, possibly in a separate branch.
+*Never* merge devel into this branch!
 
-Merge devel into 6.6.
-
-Merge 6.6 into master
+It's OK to merge the release branch into devel after the release.
 
 Update leoVersion.py in devel after the release.
+
 @language rest
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">All files:
