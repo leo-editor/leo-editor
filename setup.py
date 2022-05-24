@@ -48,6 +48,7 @@ install_requires = [
     'pyenchant',  # The spell tab.
     'pyshortcuts >= 1.7',  # desktop integration (#1243)
     'sphinx',  # rST plugin
+    'tk',  # tkinter.
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
 ]
 #@-<< define install_requires >>
