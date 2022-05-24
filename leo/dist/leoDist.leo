@@ -255,6 +255,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6.2**
 
+- Add "File Only" option in Leo's Find Pane.
 - Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.
 - Fixed 9 minor bugs.

@@ -2383,7 +2383,7 @@
 </v>
 </v>
 <v t="ekr.20220523145755.1"></v>
-<v t="ekr.20220523084825.1"><vh>Leo 6.6.2-b1 release nodes</vh></v>
+<v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31258,6 +31258,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.6.2**
 
+- Add "File Only" option in Leo's Find Pane.
 - Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.
 - Fixed 9 minor bugs.
@@ -31287,7 +31288,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
-<t tx="ekr.20220523145755.1">- Remove pylint-leo.py, pyflakes-leo.py and related code.
+<t tx="ekr.20220523145755.1">- Add "File Only" option in Leo's Find Pane.
+- Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
