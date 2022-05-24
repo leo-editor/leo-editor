@@ -160,9 +160,6 @@
 <v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
-<v t="mhw.20190718140254.1"><vh>Travis</vh>
-<v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
-</v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
@@ -2495,36 +2492,6 @@ deploy:
       branch: master
 </t>
 <t tx="mhw-nc.20190126223741.1"></t>
-<t tx="mhw.20190718140254.1"></t>
-<t tx="mhw.20190718140259.1">language: python
-python:
-  - "3.6"
-git:
-    ## Clone depth, must be big enough to include a tag
-    depth: 500
-install:
-    - python -m pip install --upgrade pip
-    - pip --version
-    - pip install setupext-janitor asttokens
-script:
-    ## Test: Unit tests
-    - python run_travis_unit_tests.py
-
-    ## Test: Build python wheel, install, and run Leo in console mode
-    - python setup.py --quiet bdist_wheel
-    - pip install dist/*.whl
-    - leo-console --version
-    
-deploy:
-  - provider: pypi
-    user: maphew
-    password:
-      secure: pZeDQzNu1XKDcGVEELttI/NqXMP5b5e99DgNzgTG+DVWU76sQ2wf4Jb1opIriHFQhN1etlndxVxp6YkugHDnu/B5rRklx+6WdAgHrIKcmbKzw86BsCzIwWqn1BqRlNT3mHo6uz1eQwQfJ/0/wptB5nougn8Z/E+hEIWbNgpu4CYr2TTa+9aWEpkg2h2ogOzZ1brp4hW2bJ0xW6XWBj+/bOsrgVKEmBvTZHkqFQSlODgHMJwsU3BWe/ntZ0J4QvLxseBSZM5tJTIG3w0pvGydGqxxAzbg1IY/4HZZFAttLGTr5ZJPBI2gPmz9FxmvJrWeV2iqkmMo8/OACqzSKYnMc2s8ACwUILNEZMSW+Z3IzFIUmomee3XKkkCCfbMi6eGHGYH2SFJLMnH11hGbr3yKY60FlWx8Hhds/aliGeEUdd6VqKfFeUgxcA4eDVSaAZCDFO9UWaFgrWdxEsi5aK+ElvrV/WYstouCOeMsfPIQREN8CPhQyvL4Q/gndLW904pmUkRQb9QMDzevL0gsBcP2I0mq742MmX3Kwk2gDyVxu1KafF1J6lFCBTWNyWqE18+CJxW/Qe7t1Qx7PPpDMf5kJwGtgOwg4hLELvSrA2hDL5h2kRtDoE1jkX0U5OLK2XWSHzFLLKt1VBNAal2JtJB1ii/7pC38jxFm/ZFRnOtJU0I=
-    distributions: sdist bdist_wheel
-    on:
-      tags: true
-      branch: master
-</t>
 <t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
 scripts held in Scripts.leo. My current thinking is the scripts should be moved
 to or at least managed from Dist.
