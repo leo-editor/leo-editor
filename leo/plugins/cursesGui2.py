@@ -890,6 +890,7 @@ class StringFindTabManager:
         # self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_entire_outline = None
+        self.radio_button_file_only = None
         self.radio_button_node_only = None
         self.radio_button_suboutline_only = None
         # Push buttons
@@ -977,8 +978,9 @@ class StringFindTabManager:
 
         # Radio buttons
         table = (
-            ('node_only', 'node_only', self.radio_button_node_only),
             ('entire_outline', None, self.radio_button_entire_outline),
+            ('file_only', 'file_only', self.radio_button_file_only),
+            ('node_only', 'node_only', self.radio_button_node_only),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
         )
         for setting_name, ivar, w in table:
@@ -1008,9 +1010,9 @@ class StringFindTabManager:
         fc = c.findCommands
         d = {
             # commandName       fc.ivar            # radio button.
+            'entire-outline':  (None,              self.radio_button_entire_outline),
             'file-only':       ('file_only',       self.radio_button_file_only),
             'node-only':       ('node_only',       self.radio_button_node_only),
-            'entire-outline':  (None,              self.radio_button_entire_outline),
             'suboutline-only': ('suboutline_only', self.radio_button_suboutline_only),
         }
         ivar, w = d.get(name)
