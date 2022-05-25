@@ -1117,10 +1117,10 @@ class FindTabManager:
         self.check_box_whole_word = None
         # self.check_box_wrap_around = None
         # Radio buttons
+        self.radio_button_file_only = None
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
         self.radio_button_suboutline_only = None
-        self.radio_button_file_only = None
         # Push buttons
         self.find_next_button = None
         self.find_prev_button = None
@@ -1161,7 +1161,7 @@ class FindTabManager:
             find_text=self.find_findbox.text(),
             change_text=self.find_replacebox.text(),
             # Find options...
-            file_only=self.check_box_file_only.isChecked(), ###
+            file_only=self.radio_button_file_only.isChecked(),
             ignore_case=self.check_box_ignore_case.isChecked(),
             mark_changes=self.check_box_mark_changes.isChecked(),
             mark_finds=self.check_box_mark_finds.isChecked(),
