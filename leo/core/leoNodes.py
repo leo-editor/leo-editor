@@ -2204,7 +2204,7 @@ class VNode:
         v = self
         # Allocate a new vnode and gnx with empty children & parents.
         v2 = VNode(context=v.context, gnx=None)
-        assert v2.parents == [], v2.parents
+        assert v2.parents == [], v2.parents  # pylint: disable=use-implicit-booleaness-not-comparison
         assert v2.gnx
         assert v.gnx != v2.gnx
         # Copy vnode fields. Do **not** set v2.parents.
