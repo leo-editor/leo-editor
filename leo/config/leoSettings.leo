@@ -3387,6 +3387,7 @@ replace-all                         = None  # Not recommended to bind this to a 
 replace-then-find                   = Ctrl--
 
 set-find-everywhere                 = Alt-Ctrl-e
+set-find-file-only                  = Alt-Ctrl-l
 set-find-node-only                  = Alt-Ctrl-n
 set-find-suboutline-only            = Alt-Ctrl-s
 toggle-find-ignore-case-option      = Alt-Ctrl-i
