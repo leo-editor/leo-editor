@@ -1501,6 +1501,8 @@ LeoDist.leo:
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
+- Make sure Leo runs with Python 3.6.
+
 - Run Leo's beautify-files command on the following nodes:
   - Core classes
   - Command classes
@@ -2057,7 +2059,8 @@ prune leo/doc/html
 # EKR: 2021/08/14: further exclusions.
 prune leo/core/.mypy_cache
 prune leo/core/mypy_stubs
-print leo/core/.gitattributes
+prune leo/core/.gitattributes
+prune leo/unittests/htmlcov
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
