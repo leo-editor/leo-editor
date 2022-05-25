@@ -29,7 +29,7 @@ class TestFind(LeoUnitTest):
         """Make a test tree for other tests"""
         c = self.c
         root = c.rootPosition()
-        root.h = 'Root'
+        root.h = '@file test.py'
         root.b = "def root():\n    pass\n"
         last = root
 
@@ -295,6 +295,16 @@ class TestFind(LeoUnitTest):
         self.assertEqual(p.h, 'Node 1')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
+    #@+node:ekr.20220525100840.1: *4* TestFind.find-next (file-only)
+    def test_find_next_file_only(self):
+        settings, x = self.settings, self.x
+        settings.file_only = True  # init_ivars_from_settings will set the ivar.
+        settings.find_text = 'def root()'
+        p, pos, newpos = x.do_find_next(settings)
+        assert p
+        self.assertEqual(p.h, '@file test.py')
+        s = p.b[pos:newpos]
+        self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210220072631.1: *4* TestFind.find-next (suboutline-only)
     def test_find_next_suboutline_only(self):
         settings, x = self.settings, self.x
@@ -302,7 +312,7 @@ class TestFind(LeoUnitTest):
         settings.suboutline_only = True  # init_ivars_from_settings will set the ivar.
         p, pos, newpos = x.do_find_next(settings)
         assert p
-        self.assertEqual(p.h, 'Root')
+        self.assertEqual(p.h, '@file test.py')
         s = p.b[pos:newpos]
         self.assertEqual(s, settings.find_text)
     #@+node:ekr.20210924032146.1: *4* TestFind.change-then-find (headline)
@@ -478,7 +488,7 @@ class TestFind(LeoUnitTest):
     def test_tree(self):
         c = self.c
         table = (
-            (0, 'Root'),
+            (0, '@file test.py'),
             (0, 'Node 1'),
             (1, 'child 2'),
             (2, 'child 3'),

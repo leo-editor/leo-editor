@@ -1008,9 +1008,10 @@ class StringFindTabManager:
         fc = c.findCommands
         d = {
             # commandName       fc.ivar            # radio button.
+            'file-only':       ('file_only',       self.radio_button_file_only),
             'node-only':       ('node_only',       self.radio_button_node_only),
             'entire-outline':  (None,              self.radio_button_entire_outline),
-            'suboutline-only': ('suboutline_only', self.radio_button_suboutline_only)
+            'suboutline-only': ('suboutline_only', self.radio_button_suboutline_only),
         }
         ivar, w = d.get(name)
         assert w, repr(w)

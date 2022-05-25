@@ -583,6 +583,7 @@ class StringFindTabManager:
         self.find_findbox = StringLineEdit('find_text')
         self.find_replacebox = StringLineEdit('change_text')
         # Check boxes...
+        self.check_box_file_only        = StringCheckBox('file_only')
         self.check_box_ignore_case      = StringCheckBox('ignore_case')
         self.check_box_mark_changes     = StringCheckBox('mark_changes')
         self.check_box_mark_finds       = StringCheckBox('mark_finds')
@@ -620,6 +621,7 @@ class StringFindTabManager:
             find_text   = self.find_findbox.text(),
             change_text = self.find_replacebox.text(),
             # Find options...
+            file_only       = self.check_box_file_only.isChecked(),
             ignore_case     = self.check_box_ignore_case.isChecked(),
             mark_changes    = self.check_box_mark_changes.isChecked(),
             mark_finds      = self.check_box_mark_finds.isChecked(),
@@ -703,6 +705,7 @@ class StringFindTabManager:
     def set_radio_button(self, name: str) -> None:
         """Set the value of the radio buttons"""
         d = {
+            'file-only':       self.radio_button_file_only,
             'node-only':       self.radio_button_node_only,
             'entire-outline':  self.radio_button_entire_outline,
             'suboutline-only': self.radio_button_suboutline_only,

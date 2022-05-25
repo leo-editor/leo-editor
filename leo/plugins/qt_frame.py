@@ -1161,6 +1161,7 @@ class FindTabManager:
             find_text=self.find_findbox.text(),
             change_text=self.find_replacebox.text(),
             # Find options...
+            file_only=self.check_box_file_only.isChecked(), ###
             ignore_case=self.check_box_ignore_case.isChecked(),
             mark_changes=self.check_box_mark_changes.isChecked(),
             mark_finds=self.check_box_mark_finds.isChecked(),
@@ -1331,10 +1332,10 @@ class FindTabManager:
         find = c.findCommands
         d = {
             # Name is not an ivar. Set by find.setFindScope... commands.
+            'file-only': self.radio_button_file_only,
             'node-only': self.radio_button_node_only,
             'entire-outline': self.radio_button_entire_outline,
             'suboutline-only': self.radio_button_suboutline_only,
-            'file-only': self.radio_button_file_only,
         }
         w = d.get(name)
         # Most of the work will be done in the radio button callback.

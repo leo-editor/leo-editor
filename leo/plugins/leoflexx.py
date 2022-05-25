@@ -1023,6 +1023,7 @@ class LeoBrowserApp(flx.PyComponent):
                     find_text=pattern,
                     change_text='',
                     # Find options...
+                    file_only=False,
                     ignore_case=True,
                     mark_changes=False,
                     mark_finds=False,

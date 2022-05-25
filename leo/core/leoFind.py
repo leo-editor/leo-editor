@@ -14,8 +14,8 @@ from leo.core import leoGlobals as g
 #@+<< type aliases leoFind.py >>
 #@+node:ekr.20220415005920.1: ** << type aliases leoFind.py >>
 if TYPE_CHECKING:  # Always False at runtime.
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoCommands import Commands as Cmdr  # pragma: no cover
+    from leo.core.leoNodes import Position as Pos  # pragma: no cover
 else:
     Cmdr = Pos = Any
 Event = Any
@@ -160,6 +160,7 @@ class LeoFind:
             find_text='',
             change_text='',
             # Find options...
+            file_only=False,
             ignore_case=False,
             mark_changes=False,
             mark_finds=False,
@@ -203,6 +204,7 @@ class LeoFind:
         self.find_text = settings.find_text
         #
         # Init find options.
+        self.file_only = settings.file_only
         self.ignore_case = settings.ignore_case
         self.mark_changes = settings.mark_changes
         self.mark_finds = settings.mark_finds
@@ -812,7 +814,7 @@ class LeoFind:
                          "@auto", "@auto-md", "@auto-org",
                          "@auto-otl", "@auto-rst"):
                     found = True
-                else:
+                else:  # pragma: no cover
                     if node.level() == 0:
                         hitBase = True
                     else:
