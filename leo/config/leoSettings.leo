@@ -6585,6 +6585,7 @@ set-comment-column                  = None
 set-extend-mode                     = None
 set-fill-column                     = None
 set-fill-prefix                     = None
+set-file-only                       = None
 set-find-everywhere                 = None
 set-find-node-only                  = None
 set-find-suboutline-only            = None
