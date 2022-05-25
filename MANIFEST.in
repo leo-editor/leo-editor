@@ -24,7 +24,8 @@ prune leo/doc/html
 # EKR: 2021/08/14: further exclusions.
 prune leo/core/.mypy_cache
 prune leo/core/mypy_stubs
-print leo/core/.gitattributes
+prune leo/core/.gitattributes
+prune leo/unittests/htmlcov
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
 include leo/doc/html/conf.py
