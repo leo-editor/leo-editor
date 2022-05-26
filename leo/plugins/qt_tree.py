@@ -1224,7 +1224,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 delta = hScroll.pageStep()
             else:
                 delta = -hScroll.pageStep()
-            hScroll.setValue(hScroll.value() + delta)
+            hScroll.setValue(int(hScroll.value() + delta))
         else:
             vScroll = w.verticalScrollBar()
             h = w.size().height()
@@ -1246,7 +1246,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 delta = 0
                 g.trace('bad kind:', kind)
             val = vScroll.value()
-            vScroll.setValue(val + delta)
+            vScroll.setValue(int(val + delta))
         c.treeWantsFocus()
     #@+node:ekr.20110605121601.18435: *4* qtree.setH/VScroll
     def setHScroll(self, hPos: int) -> None:
