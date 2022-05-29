@@ -304,11 +304,10 @@ def open_outline(self, event=None):
     # Close the window if this command completes successfully?
 
     closeFlag = (
-        c.frame.startupWindow and  # The window was open on startup
-        # The window has never been changed
-        not c.changed and not c.frame.saved and
-        # Only one untitled window has ever been opened
-        g.app.numberOfUntitledWindows == 1
+        # The window has never been changed.
+        not c.changed and not c.frame.saved
+        # Only one untitled window has ever been opened.
+        and g.app.numberOfUntitledWindows == 1
     )
     table = [
         ("Leo files", "*.leo *.db"),
@@ -968,11 +967,10 @@ def openRecentFile(self, event=None, fn=None):
     c = self
     # Automatically close the previous window if...
     closeFlag = (
-        c.frame.startupWindow and  # The window was open on startup
         # The window has never been changed
-        not c.changed and not c.frame.saved and
+        not c.changed and not c.frame.saved
         # Only one untitled window has ever been opened.
-        g.app.numberOfUntitledWindows == 1)
+        and g.app.numberOfUntitledWindows == 1)
     if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
         return
     c2 = g.openWithFileName(fn, old_c=c)
