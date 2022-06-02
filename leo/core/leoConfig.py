@@ -873,7 +873,7 @@ class ParserBaseClass:
         # Note: when kind is 'shortcut', name is a command name.
         key = self.munge(name)
         if key is None:
-            g.es_print('Empty setting name in', p.h in c.fileName())
+            g.es_print(f"Empty setting name in {p.h} in {c.fileName()}")
             parent = p.parent()
             while parent:
                 g.trace('parent', parent.h)
