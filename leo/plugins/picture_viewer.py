@@ -273,7 +273,10 @@ if QtWidgets:
 
             i = event.key()
             s = event.text()
-            # mods = event.modifiers()
+            mods = event.modifiers()
+            if mods and 'ShiftModifier' not in repr(mods):
+                print(f"picture_viewer.py: ignoring modified key: {s!r} {i}")
+                return
             if s == 'd':
                 self.delete()
             elif s == 'f':
@@ -509,14 +512,25 @@ if QtWidgets:
             pixmap = QtGui.QPixmap(file_name)
             try:
                 TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
-                image = pixmap.scaledToHeight(
-                    int(self.height() * self.scale),
-                    TransformationMode.SmoothTransformation,  # pylint: disable=no-member
-                )
+                AspectRatioMode = QtCore.Qt if isQt5 else QtCore.Qt.AspectRatioMode
+                if 0:
+                    w = self.scroll_area.width()
+                    h = self.scroll_area.height()
+                    pixmap1 = pixmap.scaled(w, h, AspectRatioMode.KeepAspectRatio)
+                    ### Not yet.
+                    image = pixmap1.scaledToHeight(
+                        int(self.height() * self.scale),
+                        TransformationMode.SmoothTransformation,  # pylint: disable=no-member
+                    )
+                else:  # Legacy
+                    image = pixmap.scaledToHeight(
+                        int(self.height() * self.scale),
+                        TransformationMode.SmoothTransformation,  # pylint: disable=no-member
+                    )
                 self.picture.setPixmap(image)
                 self.picture.adjustSize()
             except Exception:
-                self.next_slide()
+                g.es_exception()
         #@+node:ekr.20211021200821.15: *3* Slides.sort
         def sort(self, sort_kind):
             """sort files_list based on sort_kind."""
