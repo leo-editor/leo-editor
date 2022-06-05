@@ -1671,14 +1671,14 @@ class SherlockTracer:
     def __init__(
         self,
         patterns: List[Any],
-        dots: bool=True,
+        indent: bool=True,
         show_args: bool=True,
         show_return: bool=True,
         verbose: bool=True,
     ) -> None:
         """SherlockTracer ctor."""
         self.bad_patterns: List[str] = []  # List of bad patterns.
-        self.dots = dots  # True: print level dots.
+        self.indent = indent  # True: indent calls and returns.
         self.contents_d: Dict[str, List] = {}  # Keys are file names, values are file lines.
         self.n = 0  # The frame level on entry to run.
         self.stats: Dict[str, Dict] = {}  # Keys are full file names, values are dicts.
@@ -1689,10 +1689,13 @@ class SherlockTracer:
         self.trace_lines = True  # True: trace lines in enabled functions.
         self.verbose = verbose  # True: print filename:func
         self.set_patterns(patterns)
-        from leo.core.leoQt import QtCore
-        if QtCore:
-            # pylint: disable=no-member
-            QtCore.pyqtRemoveInputHook()
+        try:  # Don't assume g.app exists.
+            from leo.core.leoQt import QtCore
+            if QtCore:
+                # pylint: disable=no-member
+                QtCore.pyqtRemoveInputHook()
+        except Exception:
+            pass
     #@+node:ekr.20140326100337.16844: *4* __call__
     def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
         """Exists so that self.dispatch can return self."""
@@ -1746,18 +1749,27 @@ class SherlockTracer:
         while frame:
             frame = frame.f_back
             n += 1
-        dots = '.' * max(0, n - self.n) if self.dots else ''
+        indent = ' ' * max(0, n - self.n) if self.indent else ''
         path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
         leadin = '+' if self.show_return else ''
-        args = "(%s)" % self.get_args(frame1) if self.show_args else ''
-        print(f"{path}:{dots}{leadin}{full_name}{args}")
+        args_list = self.get_args(frame1)
+        if self.show_args and args_list:
+            args_s = ','.join(args_list)
+            args_s2 = f"({args_s})"
+            if len(args_s2) > 100:
+                print(f"{path}:{indent}{leadin}{full_name}")
+                g.printObj(args_list, indent=indent+' '*22)
+            else:
+                print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
+        else:
+            print(f"{path}:{indent}{leadin}{full_name}")
         # Always update stats.
         d = self.stats.get(file_name, {})
         d[full_name] = 1 + d.get(full_name, 0)
         self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
-    def get_args(self, frame: Any) -> str:
-        """Return name=val for each arg in the function call."""
+    def get_args(self, frame: Any) -> List[str]:
+        """Return a List of string "name=val" for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
@@ -1773,14 +1785,13 @@ class SherlockTracer:
                 arg = locals_.get(name, '*undefined*')
                 if arg:
                     if isinstance(arg, (list, tuple)):
-                        # Clearer w/o f-string
-                        val = "[%s]" % ','.join(
-                            [self.show(z) for z in arg if self.show(z)])
+                        val_s = ','.join([self.show(z) for z in arg if self.show(z)])
+                        val = f"[{val_s}]"
                     else:
                         val = self.show(arg)
                     if val:
                         result.append(f"{name}={val}")
-        return ','.join(result)
+        return result
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
     bad_fns: List[str] = []
 
@@ -1822,46 +1833,53 @@ class SherlockTracer:
         fn = code.co_filename
         locals_ = frame.f_locals
         name = code.co_name
-        full_name = self.get_full_name(locals_, name)
-        if self.is_enabled(fn, full_name, self.patterns):
-            n = 0
-            while frame:
-                frame = frame.f_back
-                n += 1
-            dots = '.' * max(0, n - self.n) if self.dots else ''
-            path = f"{os.path.basename(fn):>20}" if self.verbose else ''
-            if name and name == '__init__':
-                try:
-                    ret1 = locals_ and locals_.get('self', None)
-                    ret = self.format_ret(ret1)
-                except NameError:
-                    ret = f"<{ret1.__class__.__name__}>"
-            else:
-                ret = self.format_ret(arg)
-            print(f"{path}{dots}-{full_name}{ret}")
-    #@+node:ekr.20130111120935.10192: *5* sherlock.format_ret
-    def format_ret(self, arg: Any) -> str:
-        """Format arg, the value returned by a "return" statement."""
+        self.full_name = self.get_full_name(locals_, name)
+        if not self.is_enabled(fn, self.full_name, self.patterns):
+            return
+        n = 0
+        while frame:
+            frame = frame.f_back
+            n += 1
+        path = f"{os.path.basename(fn):>20}" if self.verbose else ''
+        if name and name == '__init__':
+            try:
+                ret1 = locals_ and locals_.get('self', None)
+                self.put_ret(ret1, n, path)
+            except NameError:
+                self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
+        else:
+            self.put_ret(arg, n, path)
+    #@+node:ekr.20220605141445.1: *5* sherlock.put_ret (new)
+    def put_ret(self, arg: Any, n: int, path: str) -> str:
+        """Print arg, the value returned by a "return" statement."""
+        indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
         try:
             if isinstance(arg, types.GeneratorType):
                 ret = '<generator>'
             elif isinstance(arg, (tuple, list)):
-                # Clearer w/o f-string.
-                ret = "[%s]" % ','.join([self.show(z) for z in arg])
-                if len(ret) > 40:
-                    # Clearer w/o f-string.
-                    ret = "[\n%s]" % ('\n,'.join([self.show(z) for z in arg]))
+                ret_s = ','.join([self.show(z) for z in arg])
+                if len(ret_s) > 40:
+                    g.printObj(arg, indent=indent)
+                    ret = ''
+                else:
+                    ret = f"[{ret_s}]"
             elif arg:
                 ret = self.show(arg)
-                if len(ret) > 40:
+                if len(ret) > 100:
                     ret = f"\n    {ret}"
             else:
                 ret = '' if arg is None else repr(arg)
+            print(f"{path}:{indent}-{self.full_name}{ret}")
         except Exception:
             exctype, value = sys.exc_info()[:2]
-            s = f"<**exception: {exctype.__name__}, {value} arg: {arg !r}**>"
-            ret = f" ->\n    {s}" if len(s) > 40 else f" -> {s}"
-        return f" -> {ret}"
+            try:  # Be extra careful.
+                arg_s = f"arg: {arg!r}"
+            except Exception:
+                arg_s = ''  # arg.__class__.__name__
+            print(
+                f"{path}:{indent}-{self.full_name} -> "
+                f"{exctype.__name__}, {value} {arg_s}"
+            )
     #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
     def fn_is_enabled(self, func: Any, patterns: List[str]) -> bool:
         """Return True if tracing for the given function is enabled."""
@@ -2830,8 +2848,8 @@ def dictToString(d: Dict[str, str], indent: str='', tag: str=None) -> str:
 def listToString(obj: Any, indent: str='', tag: str=None) -> str:
     """Pretty print a Python list to a string."""
     if not obj:
-        return '[]'
-    result = ['[']
+        return indent + '[]'
+    result = [indent, '[']
     indent2 = indent + ' ' * 4
     # I prefer not to compress lists.
     for i, obj2 in enumerate(obj):
