@@ -1787,6 +1787,8 @@ class SherlockTracer:
                     if isinstance(arg, (list, tuple)):
                         val_s = ','.join([self.show(z) for z in arg if self.show(z)])
                         val = f"[{val_s}]"
+                    elif isinstance(arg, str):
+                        val = arg
                     else:
                         val = self.show(arg)
                     if val:
@@ -1869,7 +1871,7 @@ class SherlockTracer:
                     ret = f"\n    {ret}"
             else:
                 ret = '' if arg is None else repr(arg)
-            print(f"{path}:{indent}-{self.full_name}{ret}")
+            print(f"{path}:{indent}-{self.full_name} -> {ret}")
         except Exception:
             exctype, value = sys.exc_info()[:2]
             try:  # Be extra careful.
