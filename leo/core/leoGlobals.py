@@ -1852,7 +1852,7 @@ class SherlockTracer:
         else:
             self.put_ret(arg, n, path)
     #@+node:ekr.20220605141445.1: *5* sherlock.put_ret (new)
-    def put_ret(self, arg: Any, n: int, path: str) -> str:
+    def put_ret(self, arg: Any, n: int, path: str) -> None:
         """Print arg, the value returned by a "return" statement."""
         indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
         try:
@@ -2083,7 +2083,11 @@ class SherlockTracer:
             if len(s) <= 20:
                 return s
             return s[:17] + '...'
-        return repr(item)
+        s = repr(item)
+        # A Hack for mypy:
+        if s.startswith("<object object"):
+            s = "_dummy"
+        return s
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self) -> None:
         """Stop all tracing."""
