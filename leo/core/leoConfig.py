@@ -1415,10 +1415,13 @@ class GlobalConfigManager:
         - Called from c.initSettings with c = None to init g.app.config ivars.
         - Called from c.initSettings to init corresponding commmander ivars.
         """
-        if g.app.loadedThemes:
-            return
+        ### if g.app.loadedThemes:
+        ###    return
         if not self.inited:
             return
+        ### This trace never fires.
+        print('')
+        g.trace(g.callers())
         # Ignore temporary commanders created by readSettingsFiles.
         d = self.ivarsDict
         keys = list(d.keys())
