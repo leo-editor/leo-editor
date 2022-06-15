@@ -257,9 +257,13 @@ if QtWidgets:
                 send2trash(file_name)
                 del self.files_list[self.slide_number]
                 print(f"Deleted {file_name}")
-                self.slide_number = max(0, self.slide_number - 1)
-                self.next_slide()
-                self.raise_()
+                if self.files_list:
+                    self.slide_number = max(0, self.slide_number - 1)
+                    self.next_slide()
+                    self.raise_()
+                else:
+                    print('No more slides')
+                    self.quit()
         #@+node:ekr.20211021200821.2: *3* Slides.get_files
         def get_files(self, path):
             """Return all files in path, including all subdirectories."""
@@ -339,10 +343,11 @@ if QtWidgets:
         #@+node:ekr.20211021200821.8: *3* Slides.next_slide
         def next_slide(self):
 
-            if not self.files_list:
-                self.quit()
             if self.slide_number + 1 < len(self.files_list):
                 self.slide_number += 1  # Don't wrap.
+            else:
+                print('No more slides')
+                self.quit()
             if self.reset_zoom:
                 self.scale = 1.0
             self.show_slide()
