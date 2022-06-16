@@ -2236,6 +2236,26 @@ class LeoServer:
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
         return self._make_response()
+    #@+node:felix.20220616010755.1: *5* server.select_first_visible
+    def select_first_visible(self, param):
+        """
+        Utility method for connected clients to simulate scroll to the top
+        """
+        c = self._check_c()
+        p = c.firstVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
+    #@+node:felix.20220616010756.1: *5* server.select_last_visible
+    def select_last_visible(self, param):
+        """
+        Utility method for connected clients to simulate scroll to bottom
+        """
+        c = self._check_c()
+        p = c.lastVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
     #@+node:felix.20210621233316.57: *5* server.page_down
     def page_down(self, param):
         """
@@ -2534,7 +2554,7 @@ class LeoServer:
     #@+node:felix.20220326190000.1: *5* server.get_leoid
     def get_leoid(self, param):
         """
-        returns g.app.leoID
+        Returns g.app.leoID
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         result = {"leoID": g.app.leoID}
@@ -2542,7 +2562,7 @@ class LeoServer:
     #@+node:felix.20220326190008.1: *5* server.set_leoid
     def set_leoid(self, param):
         """
-        sets g.app.leoID
+        Sets g.app.leoID
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         leoID = param.get('leoID', '')
