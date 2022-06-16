@@ -1655,8 +1655,7 @@ class SherlockTracer:
 
     This enables tracing for everything, then disables tracing for all
     library modules, except for all rope modules. Finally, it disables the
-    tracing for Rope's worder, prefs and resources modules. Btw, this is
-    one of the best uses for regular expressions that I know of.
+    tracing for Rope's worder, prefs and resources modules.
 
     Being able to zero in on the code of interest can be a big help in
     studying other people's code. This is a non-invasive method: no tracing
@@ -1667,7 +1666,7 @@ class SherlockTracer:
     g.SherlockTracer(patterns).run()
     """
     #@+others
-    #@+node:ekr.20121128031949.12602: *4* __init__
+    #@+node:ekr.20121128031949.12602: *4* sherlock.__init__
     def __init__(
         self,
         patterns: List[Any],
@@ -1696,7 +1695,7 @@ class SherlockTracer:
                 QtCore.pyqtRemoveInputHook()
         except Exception:
             pass
-    #@+node:ekr.20140326100337.16844: *4* __call__
+    #@+node:ekr.20140326100337.16844: *4* sherlock.__call__
     def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
         """Exists so that self.dispatch can return self."""
         return self.dispatch(frame, event, arg)
@@ -1851,7 +1850,7 @@ class SherlockTracer:
                 self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
         else:
             self.put_ret(arg, n, path)
-    #@+node:ekr.20220605141445.1: *5* sherlock.put_ret (new)
+    #@+node:ekr.20220605141445.1: *5* sherlock.put_ret
     def put_ret(self, arg: Any, n: int, path: str) -> None:
         """Print arg, the value returned by a "return" statement."""
         indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
@@ -1882,7 +1881,7 @@ class SherlockTracer:
                 f"{path}:{indent}-{self.full_name} -> "
                 f"{exctype.__name__}, {value} {arg_s}"
             )
-    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
+    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
     def fn_is_enabled(self, func: Any, patterns: List[str]) -> bool:
         """Return True if tracing for the given function is enabled."""
         if func in self.ignored_functions:
@@ -1929,7 +1928,7 @@ class SherlockTracer:
         except Exception:
             self.bad_pattern(pattern)
             return False
-    #@+node:ekr.20130112093655.10195: *4* get_full_name
+    #@+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
     def get_full_name(self, locals_: Any, name: str) -> str:
         """Return class_name::name if possible."""
         full_name = name
@@ -2018,7 +2017,7 @@ class SherlockTracer:
             except Exception:
                 self.bad_pattern(pattern)
         return enabled
-    #@+node:ekr.20121128111829.12182: *4* print_stats
+    #@+node:ekr.20121128111829.12182: *4* sherlock.print_stats
     def print_stats(self, patterns: List[str]=None) -> None:
         """Print all accumulated statisitics."""
         print('\nSherlock statistics...')
@@ -2038,7 +2037,7 @@ class SherlockTracer:
                 print('/'.join(parts[-2:]))
                 for key in result:
                     print(f"{d.get(key):4} {key}")
-    #@+node:ekr.20121128031949.12614: *4* run
+    #@+node:ekr.20121128031949.12614: *4* sherlock.run
     # Modified from pdb.Pdb.set_trace.
 
     def run(self, frame: Any=None) -> None:
@@ -2053,7 +2052,7 @@ class SherlockTracer:
             self.n += 1
         # Pass self to sys.settrace to give easy access to all methods.
         sys.settrace(self)
-    #@+node:ekr.20140322090829.16834: *4* push & pop
+    #@+node:ekr.20140322090829.16834: *4* sherlock.push & pop
     def push(self, patterns: List[str]) -> None:
         """Push the old patterns and set the new."""
         self.pattern_stack.append(self.patterns)  # type:ignore
@@ -2067,11 +2066,11 @@ class SherlockTracer:
             print(f"SherlockTracer.pop: {self.patterns}")
         else:
             print('SherlockTracer.pop: pattern stack underflow')
-    #@+node:ekr.20140326100337.16845: *4* set_patterns
+    #@+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
     def set_patterns(self, patterns: List[str]) -> None:
         """Set the patterns in effect."""
         self.patterns = [z for z in patterns if self.check_pattern(z)]
-    #@+node:ekr.20140322090829.16831: *4* show
+    #@+node:ekr.20140322090829.16831: *4* sherlock.show
     def show(self, item: Any) -> str:
         """return the best representation of item."""
         if not item:
@@ -2088,7 +2087,7 @@ class SherlockTracer:
         if s.startswith("<object object"):
             s = "_dummy"
         return s
-    #@+node:ekr.20121128093229.12616: *4* stop
+    #@+node:ekr.20121128093229.12616: *4* sherlock.stop
     def stop(self) -> None:
         """Stop all tracing."""
         sys.settrace(None)
