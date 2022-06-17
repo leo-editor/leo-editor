@@ -45,7 +45,10 @@ from leo.core.leoNodes import Position, PosList
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-version_tuple = (1, 0, 1)
+version_tuple = (1, 0, 2)
+# Version History
+# 1.0.1 Initial commit
+# 1.0.2 Félix on June 2022: Adding ui-scroll, ua's & node_tags utilities
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -2037,7 +2040,7 @@ class LeoServer:
         except Exception:  # pragma: no cover
             response = {"ua": repr(p.v.u)}
         # _make_response adds all the cheap redraw data.
-        return self._make_response(response)
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.48: *5* server.get_ui_states
     def get_ui_states(self, param):
         """
@@ -2236,8 +2239,8 @@ class LeoServer:
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
         return self._make_response()
-    #@+node:felix.20220616010755.1: *5* server.select_first_visible
-    def select_first_visible(self, param):
+    #@+node:felix.20220616010755.1: *5* server.scroll_top
+    def scroll_top(self, param):
         """
         Utility method for connected clients to simulate scroll to the top
         """
@@ -2246,8 +2249,8 @@ class LeoServer:
         if p:
             c.treeSelectHelper(p)
         return self._make_response()
-    #@+node:felix.20220616010756.1: *5* server.select_last_visible
-    def select_last_visible(self, param):
+    #@+node:felix.20220616010756.1: *5* server.scroll_bottom
+    def scroll_bottom(self, param):
         """
         Utility method for connected clients to simulate scroll to bottom
         """
@@ -4188,11 +4191,23 @@ class LeoServer:
         d['headline'] = p.h
         d['level'] = p.level()
         if p.v.u:
-            if g.leoServer.leoServerConfig and g.leoServer.leoServerConfig.get("uAsBoolean", False):
-                # uAsBoolean is 'thruthy'
-                d['u'] = True
+            # tags quantity first if any ua's present
+            tagsQty = len(p.v.u.get("__node_tags", []))
+            # Tags only if there are some present.
+            if tagsQty>0:
+                d['nodeTags'] = tagsQty
+
+            # Check for flag to send ua quantity instead of full ua's
+            uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
+            uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
+            if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
+                uaQty = len(p.v.u) # number will be 'true' any keys are present
+                if tagsQty>0 and uaQty > 0:
+                    uaQty = uaQty -1
+                # set number pre-decremented if __node_tags were present
+                d['u'] = uaQty
             else:
-                # Normal output if no options set
+                # Normal output if no tags set
                 d['u'] = p.v.u
         if bool(p.b):
             d['hasBody'] = True
@@ -4784,7 +4799,7 @@ def main():  # pragma: no cover (tested in client)
 
     # Sets sHost, wsPort, wsLimit, wsPersist, wsSkipDirty fileArg and traces
     get_args()  # Set global values from the command line arguments
-    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
+    print(f"Starting LeoBridge Server {v1}.{v2}.{v3} (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
     controller = LeoServer()  # Single instance of LeoServer, i.e., an instance of leoBridge
