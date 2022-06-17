@@ -4198,8 +4198,11 @@ class LeoServer:
                 d['nodeTags'] = tagsQty
 
             # Check for flag to send ua quantity instead of full ua's
-            uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
-            uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
+            uAsBoolean = False;
+            uAsNumber = False;
+            if g.leoServer.leoServerConfig:
+                uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
+                uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
             if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
                 uaQty = len(p.v.u) # number will be 'true' any keys are present
                 if tagsQty>0 and uaQty > 0:
