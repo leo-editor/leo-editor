@@ -1865,6 +1865,21 @@ class LeoServer:
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_minimal_response({"position-data-list": result})
+    #@+node:felix.20220617184559.1: *5* server.get_structure
+    def get_structure(self, param):
+            """
+            Returns an array of ap's, the direct descendants of the hidden root node.
+            Each having required 'children' array, to give the whole structure of ap's.
+            """
+            c = self._check_c()
+            result = []
+            p = c.rootPosition() # first child of hidden root node as first item in top array
+            while p:
+                result.append(self._get_position_d(p, includeChildren=True))
+                p.moveToNodeAfterTree()
+            # return selected node either ways
+            return self._make_minimal_response({"structure": result})
+
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
     def get_all_gnx(self, param):
         """Get gnx array from all unique nodes"""
@@ -4180,7 +4195,7 @@ class LeoServer:
 
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p):
+    def _get_position_d(self, p, includeChildren = False):
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4204,7 +4219,7 @@ class LeoServer:
                 uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
                 uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
             if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
-                uaQty = len(p.v.u) # number will be 'true' any keys are present
+                uaQty = len(p.v.u) # number will be 'true' if any keys are present
                 if tagsQty>0 and uaQty > 0:
                     uaQty = uaQty -1
                 # set number pre-decremented if __node_tags were present
@@ -4216,6 +4231,12 @@ class LeoServer:
             d['hasBody'] = True
         if p.hasChildren():
             d['hasChildren'] = True
+            # includeChildren flag is used by get_structure
+            if includeChildren:
+                d['children'] = [
+                    self._get_position_d(child, includeChildren= True) for child in p.children()
+                ]
+
         if p.isCloned():
             d['cloned'] = True
         if p.isDirty():
