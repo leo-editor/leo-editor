@@ -1519,6 +1519,9 @@ class LeoCursesGui(leoGui.LeoGui):
         Leo's core calls this only if the user agrees to terminate the app.
         """
         sys.exit(0)
+    #@+node:ekr.20220618070256.1: *5* CGui.getFullVersion
+    def getFullVersion(self, c=None) -> str:
+        return 'Leo Console Gui (npyscreen)'
     #@+node:ekr.20170501032447.1: *5* CGui.init_logger
     def init_logger(self):
 
@@ -2213,23 +2216,19 @@ class CoreFrame(leoFrame.LeoFrame):
             'rb': self.createRadioButton,
         }
         table = (
-            # First row.
+            # Left column.
             ('box', 'whole &Word'),
-            ('rb', '&Entire outline'),
-            # Second row.
             ('box', '&Ignore case'),
-            ('rb', '&Suboutline only'),
-            # Third row.
-            # ('box', 'wrap &Around'),  # #1824.
-            ('rb', '&Node only'),
-            # Fourth row.
             ('box', 'rege&Xp'),
-            ('box', 'search &Headline'),
-            # Fifth row.
             ('box', 'mark &Finds'),
-            ('box', 'search &Body'),
-            # Sixth row.
             ('box', 'mark &Changes'),
+            # Right colunn.
+            ('rb', '&Entire outline'),
+            ('rb', '&Suboutline only'),
+            ('rb', '&Node only'),
+            ('rb', 'fi&Le only'),  # #2684.
+            ('box', 'search &Headline'),
+            ('box', 'search &Body'),
         )
         for kind, label in table:
             name = mungeName(kind, label)
