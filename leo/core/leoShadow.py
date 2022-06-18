@@ -173,7 +173,7 @@ class ShadowController:
             # On Windows incorporate the drive letter to the private file path
             if os.name == "nt":
                 fileDir = fileDir.replace(':', '%')
-            # build the chache path as a subdir of the base dir
+            # build the cache path as a subdir of the base dir
             fileDir = "/".join([baseDir, fname, fileDir])
         return baseDir and g.os_path_finalize_join(  # 1341
                 baseDir,
@@ -201,7 +201,7 @@ class ShadowController:
             x.show_error(
                 lines1=sents1,
                 lines2=sents2,
-                message="Sentinals not preserved!",
+                message="Sentinels not preserved!",
                 lines1_message="old sentinels",
                 lines2_message="new sentinels")
         return ok

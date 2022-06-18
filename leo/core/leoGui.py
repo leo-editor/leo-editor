@@ -164,7 +164,7 @@ class LeoGui:
         callback: Callable=None,
         buttons: str=None,
     ) -> Any:
-        """Dispay a modal TkPropertiesDialog"""
+        """Display a modal TkPropertiesDialog"""
         self.oops()
     #@+node:ekr.20031218072017.3731: *4* LeoGui.file dialogs
     def runOpenFileDialog(self,

@@ -176,7 +176,7 @@ class Command:
     A global decorator for creating commands.
 
     This is the recommended way of defining all new commands, including
-    commands that could befined inside a class. The typical usage is:
+    commands that could be defined inside a class. The typical usage is:
 
         @g.command('command-name')
         def A_Command(event):
@@ -1021,7 +1021,7 @@ class MatchBrackets:
     A class implementing the match-brackets command.
 
     In the interest of speed, the code assumes that the user invokes the
-    match-bracket command ouside of any string, comment or (for perl or
+    match-bracket command outside of any string, comment or (for perl or
     javascript) regex.
     """
     #@+others
@@ -1325,7 +1325,7 @@ class MatchBrackets:
         """
         if s[i] == '\n':
             # This is the hard (dubious) case.
-            # Let w, x, y and z stand for any strings not containg // or quotes.
+            # Let w, x, y and z stand for any strings not containing // or quotes.
             # Case 1: w"x//y"z Assume // is inside a string.
             # Case 2: x//y"z Assume " is inside the comment.
             # Case 3: w//x"y"z Assume both quotes are inside the comment.
@@ -2246,7 +2246,7 @@ class Tracer:
         if not self.stack:
             return
         caller = self.stack[-1]
-        # d is a dict reprenting the called functions.
+        # d is a dict representing the called functions.
         # Keys are called functions, values are counts.
         d: Dict[str, int] = self.callDict.get(caller, {})
         d[name] = 1 + d.get(name, 0)
@@ -2992,7 +2992,7 @@ def printGcObjects() -> int:
 def printGcRefs() -> None:
 
     refs = gc.get_referrers(app.windowList[0])
-    print(f"{len(refs):d} referers")
+    print(f"{len(refs):d} referrers")
 #@+node:ekr.20060205043324.1: *4* g.printGcSummary
 def printGcSummary() -> None:
 
@@ -3228,7 +3228,7 @@ def get_directives_dict(p: Pos, root: Any=None) -> Dict[str, str]:
         anIter = g_noweb_root.finditer(p.b)
         for m in anIter:
             if root_node:
-                d["root"] = 0  # value not immportant
+                d["root"] = 0  # value not important
             else:
                 g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
             break
@@ -4092,7 +4092,7 @@ def writeFile(contents: Union[bytes, str], encoding: str, fileName: str) -> bool
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s: str, word: str, i: int=0) -> int:
     """
-    Return the index of the first occurance of word in s, or -1 if not found.
+    Return the index of the first occurrence of word in s, or -1 if not found.
 
     g.find_word is *not* the same as s.find(i,word);
     g.find_word ensures that only word-matches are reported.
@@ -4624,7 +4624,7 @@ def skip_id(s: str, i: int, chars: str=None) -> int:
     return i
 #@+node:ekr.20031218072017.3187: *4* g.skip_line, skip_to_start/end_of_line
 #@+at These methods skip to the next newline, regardless of whether the
-# newline may be preceeded by a backslash. Consequently, they should be
+# newline may be preceded by a backslash. Consequently, they should be
 # used only when we know that we are not in a preprocessor directive or
 # string.
 #@@c
@@ -5146,7 +5146,7 @@ def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
         return f(tag, keywords)
     except Exception:
         g.es_exception()
-        g.app.hookError = True  # Supress this function.
+        g.app.hookError = True  # Suppress this function.
         g.app.idle_time_hooks_enabled = False
         return None
 #@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
@@ -5278,7 +5278,7 @@ def import_module(name: str, package: str=None) -> Any:
         if trace:
             t, v, tb = sys.exc_info()
             del tb  # don't need the traceback
-            # In case v is empty, we'll at least have the execption type
+            # In case v is empty, we'll at least have the exception type
             v = v or str(t)  # type:ignore
             if v not in exceptions:
                 exceptions.append(v)
@@ -5507,7 +5507,7 @@ def checkUnicode(s: str, encoding: str=None) -> str:
         g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
     except Exception:
         g.trace(g.callers())
-        g.es_excption()
+        g.es_exception()
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
     return s
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
@@ -5538,7 +5538,7 @@ def getPythonEncodingFromString(s: str) -> str:
     return encoding
 #@+node:ekr.20031218072017.1500: *4* g.isValidEncoding
 def isValidEncoding(encoding: str) -> bool:
-    """Return True if the encooding is valid."""
+    """Return True if the encoding is valid."""
     if not encoding:
         return False
     if sys.platform == 'cli':
@@ -5681,7 +5681,7 @@ def computeWidth(s: str, tab_width: int) -> int:
 # leading whitespace wanted, then add that whitespace to the lines
 # returned here.
 #
-# The key to this code is the invarient that line never ends in whitespace.
+# The key to this code is the invariant that line never ends in whitespace.
 #@@c
 #@@language python
 
@@ -5725,7 +5725,7 @@ def wrap_lines(lines: List[str], pageWidth: int, firstLineWidth: int=None) -> Li
                     #@+<< place blank and word on the present line >>
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
                     if line:
-                        # Add the word, preceeded by a blank.
+                        # Add the word, preceded by a blank.
                         line = space.join((line, word))
                     else:
                         # Just add the word to the start of the line.

@@ -424,7 +424,7 @@ class LeoPluginsController:
             # A module name. Return it unchanged.
             return moduleOrFileName
         #
-        # 1880: The legacy code implictly assumed that os.path.dirname(fn) was empty!
+        # 1880: The legacy code implicitly assumed that os.path.dirname(fn) was empty!
         #       The new code explicitly ignores any directories in the path.
         fn = g.os_path_basename(moduleOrFileName)
         return "leo.plugins." + fn[:-3]

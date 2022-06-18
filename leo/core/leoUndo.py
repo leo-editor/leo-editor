@@ -54,7 +54,7 @@ class Undoer:
     """A class that implements unlimited undo and redo."""
     # pylint: disable=not-an-iterable
     # pylint: disable=unsubscriptable-object
-    # So that ivars can be inited to None rather thatn [].
+    # So that ivars can be inited to None rather than [].
     #@+others
     #@+node:ekr.20150509193307.1: *3* u.Birth
     #@+node:ekr.20031218072017.3606: *4* u.__init__

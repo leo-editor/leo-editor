@@ -566,7 +566,7 @@ class LeoImportCommands:
     # This does not handle @nonl properly, but that no longer matters.
 
     def removeSentinelLines(self, s, line_delim, start_delim, unused_end_delim):
-        """Properly remove all sentinle lines in s."""
+        """Properly remove all sentinel lines in s."""
         delim = (line_delim or start_delim or '') + '@'
         verbatim = delim + 'verbatim'
         verbatimFlag = False
@@ -2332,7 +2332,7 @@ class ZimImportController:
                 ) and p.h.startswith("@rst-no-head") and not p.b.strip():
                 child = p.getFirstChild()
                 p_no_head = p.h.replace("@rst-no-head", "").strip()
-                # Replace empty @rst-no-head by its same named chidren
+                # Replace empty @rst-no-head by its same named children
                 if child.h.strip() == p_no_head and not child.hasFirstChild():
                     p.h = p_no_head
                     p.b = child.b

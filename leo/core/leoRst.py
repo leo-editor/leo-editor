@@ -247,7 +247,7 @@ class RstCommands:
         self.result_list.append(f"{title}\n{'#' * width}")
     #@+node:ekr.20090502071837.85: *5* rst.writeNode & helper
     def writeNode(self, p):
-        """Append the rst srouces to self.result_list."""
+        """Append the rst sources to self.result_list."""
         c = self.c
         if self.is_ignore_node(p) or self.in_ignore_tree(p):
             return
