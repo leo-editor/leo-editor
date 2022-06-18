@@ -568,7 +568,7 @@ class StringCheckBox:
 
     def toggle(self) -> None:
         self.value = not self.value
-#@+node:ekr.20210221130549.1: ** class StringFindTabManager (leoGui.py) (new)
+#@+node:ekr.20210221130549.1: ** class StringFindTabManager (leoGui.py)
 class StringFindTabManager:
     """A string-based FindTabManager class for unit tests."""
     #@+others
@@ -665,6 +665,7 @@ class StringFindTabManager:
                 w.toggle()
         # Radio buttons
         table3 = (
+            ('file_only', 'file_only', 'radio_button_file_only'),  # #2684.
             ('node_only', 'node_only', 'radio_button_node_only'),
             ('entire_outline', None, 'radio_button_entire_outline'),
             ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
