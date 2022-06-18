@@ -40,7 +40,7 @@ class ConvertAtRoot:
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
     def check_clone_move(self, p, parent):
         """
-        Return False if p or any of p's descendents is a clone of parent
+        Return False if p or any of p's descendants is a clone of parent
         or any of parents ancestors.
         """
         # Like as checkMoveWithParentWithWarning without warning.
@@ -88,7 +88,7 @@ class ConvertAtRoot:
     #@+node:ekr.20210307075117.1: *3* atRoot.do_root
     def do_root(self, p):
         """
-        Make all necessary clones for section defintions.
+        Make all necessary clones for section definitions.
         """
         for p in p.self_and_subtree():
             self.make_clones(p)
@@ -743,7 +743,7 @@ class GitDiffController:
             devel_rev = devel_rev[:8]
             self.diff_two_revs(
                 rev1=devel_rev,  # Before: Latest devel commit.
-                rev2='HEAD',  # After: Lastest branch commit
+                rev2='HEAD',  # After: Latest branch commit
             )
         else:
             g.es_print('FAIL: git rev-parse devel')

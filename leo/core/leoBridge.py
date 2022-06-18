@@ -232,7 +232,7 @@ class BridgeController:
             print("isValidPython: can not import leoGlobals")
             return 0
         except Exception:
-            print("isValidPytyhon: unexpected exception importing leoGlobals")
+            print("isValidPython: unexpected exception importing leoGlobals")
             traceback.print_exc()
             return 0
         try:

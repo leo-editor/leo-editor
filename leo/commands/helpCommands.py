@@ -848,7 +848,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             \\              Matches a literal '\'.
             |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
             (...)           Matches any RE inside (), and delimits a group.
-            (?:...)         Mathces RE inside (), but doesn't delimit a group.
+            (?:...)         Matches RE inside (), but doesn't delimit a group.
             (?P<name>...)   Matches any RE inside (), and delimits a named group.
                             r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
             (?P=name)       Matches whatever text was matched by the earlier group named name.
@@ -946,7 +946,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             c.frame.iconBar         The icon bar.
             c.frame.log             The log pane.
             c.frame.log.widget      The gui widget for the log pane.
-            c.frame.log.wrapper     The high-level inteface for the log pane.
+            c.frame.log.wrapper     The high-level interface for the log pane.
             c.frame.tree            The tree pane.
 
         VNode class
@@ -1121,7 +1121,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
         leoSettings.leo is Leo's main settings file. myLeoSettings.leo contains
         your personal settings. Settings in myLeoSettings.leo override the settings
-        in leoSettings.leo. Put myLeoSettigns.leo in your home `~` directory or in
+        in leoSettings.leo. Put myLeoSettings.leo in your home `~` directory or in
         the `~/.leo` directory. Any other .leo file may contain an \@settings tree.
         Such settings apply only to that file.
 

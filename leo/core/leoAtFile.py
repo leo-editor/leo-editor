@@ -1831,7 +1831,7 @@ class AtFile:
         """
         Return n1, n2 representing a section name.
 
-        Return the reference, *including* brackes.
+        Return the reference, *including* brackets.
         """
         at = self
 
@@ -2670,7 +2670,7 @@ class AtFile:
             at.outputFile = None
         at.remove(fileName)
         at.addToOrphanList(root)
-    #@+node:ekr.20041005105605.219: *3* at.Utilites
+    #@+node:ekr.20041005105605.219: *3* at.Utilities
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args):  # pragma: no cover
         at = self
@@ -2901,7 +2901,7 @@ class AtFile:
         if efc:
             # Like c.checkFileTimeStamp.
             if c.sqlite_connection and c.mFileName == fn:
-                # sqlite database file is never actually overwriten by Leo,
+                # sqlite database file is never actually overwritten by Leo,
                 # so do *not* check its timestamp.
                 pass
             elif efc.has_changed(fn):
@@ -2942,7 +2942,7 @@ atFile = AtFile  # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead:
     """
-    Read an exteral file, created from an @file tree.
+    Read an external file, created from an @file tree.
     This is Vitalije's code, edited by EKR.
     """
 
@@ -3121,7 +3121,7 @@ class FastAtRead:
                 if m.group(2) == '+':  # opening sentinel
                     body.append(f"{m.group(1)}@others{m.group(3) or ''}\n")
                     stack.append((gnx, indent, body))
-                    indent += m.end(1)  # adjust current identation
+                    indent += m.end(1)  # adjust current indentation
                 else:  # closing sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     try:

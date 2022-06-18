@@ -3781,9 +3781,8 @@ class LeoServer:
 
             'chapter-back',
             'chapter-next',
-            'chapter-select',
-            'chapter-select-main',
-            'create-def-list',  # ?
+            #'chapter-select', #
+            'chapter-select-main'
         ]
         return good_list
     #@+node:felix.20210621233316.75: *5* server.get_all_server_commands & helpers

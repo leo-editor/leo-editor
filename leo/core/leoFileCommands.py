@@ -83,7 +83,7 @@ class FastRead:
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile
     def readFile(self, theFile, path):
-        """Read the file, change splitter ratiors, and return its hidden vnode."""
+        """Read the file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_element = self.readWithElementTree(path, s)
         if not v:  # #1510.
@@ -131,7 +131,7 @@ class FastRead:
             if path:
                 message = f"bad .leo file: {g.shortFileName(path)}"
             else:
-                message = 'The clipboard is not a vaild .leo file'
+                message = 'The clipboard is not a valid .leo file'
             g.es_print('\n' + message, color='red')
             g.es_print(g.toUnicode(e))
             print('')
@@ -1507,7 +1507,7 @@ class FileCommands:
         return p
     #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
     def encodePosition(self, p):
-        """New schema for encoding current position hopefully simplier one."""
+        """New schema for encoding current position hopefully simpler one."""
         jn = '<->'
         mk = '%s,%s'
         res = [mk % (x.gnx, y) for x, y in p.stack]
@@ -1817,7 +1817,7 @@ class FileCommands:
         """
         #
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
-        # Create dictionary: keys are vnodes, values are corresonding archived positions.
+        # Create dictionary: keys are vnodes, values are corresponding archived positions.
         aList = []
         pDict = {}
         for p2 in p.self_and_subtree(copy=False):
@@ -1916,7 +1916,7 @@ class FileCommands:
         Put the xml stylesheet line.
 
         Leo 5.3:
-        - Use only the stylesheet setting, ignoreing c.frame.stylesheet.
+        - Use only the stylesheet setting, ignoring c.frame.stylesheet.
         - Write no stylesheet element if there is no setting.
 
         The old way made it almost impossible to delete stylesheet element.

@@ -891,7 +891,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         return self.findCharacterHelper(event, backward=False, extend=True)
     #@+node:ekr.20150514063305.222: *5* ec.findCharacterHelper
     def findCharacterHelper(self, event, backward, extend):
-        """Put the cursor at the next occurance of a character on a line."""
+        """Put the cursor at the next occurrence of a character on a line."""
         k = self.c.k
         self.w = self.editWidget(event)
         if not self.w:
@@ -1124,7 +1124,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def _setIconListHelper(self, p, subl, uaLoc, setDirty):
         """icon setting code common between v and t nodes
 
-        p - postion
+        p - position
         subl - list of icons for the v or t node
         uaLoc - the v or t node
         """
@@ -1870,7 +1870,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if ch == '\t':
             self.updateTab(event, p, w, smartTab=True)
         elif ch == '\b':
-            # This is correct: we only come here if there no bindngs for this key.
+            # This is correct: we only come here if there no bindings for this key.
             self.backwardDeleteCharacter(event)
         elif ch in ('\r', '\n'):
             ch = '\n'

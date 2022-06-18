@@ -683,9 +683,7 @@ def goPrevVisitedNode(self, event=None):
 def goToFirstNode(self, event=None):
     """
     Select the first node of the entire outline.
-
-    But (#2167), go to the first node of a chapter or hoist
-    if Leo is hoisted or within a chapter.
+    Or the first visible node if Leo is hoisted or within a chapter.
     """
     c = self
     p = c.rootPosition()

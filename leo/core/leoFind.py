@@ -28,7 +28,7 @@ Wrapper = Any
 #@@language rest
 #@@nosearch
 #@+at
-# LeoFind.py contains the gui-independant part of all of Leo's
+# LeoFind.py contains the gui-independent part of all of Leo's
 # find/change code. Such code is tricky, which is why it should be
 # gui-independent code! Here are the governing principles:
 #
@@ -651,7 +651,7 @@ class LeoFind:
                 if found or not g.inAtNosearch(p):  # do *not* use c.p.
                     break
             if not found and def_flag and not strict:
-                # Leo 5.7.3: Look for an alternative defintion of function/methods.
+                # Leo 5.7.3: Look for an alternative definition of function/methods.
                 word2 = self._switch_style(word)
                 if self.reverse_find_defs:
                     # #2161: start at the last position.
@@ -708,7 +708,7 @@ class LeoFind:
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
-        Switch between camelCase and underscore_style function defintiions.
+        Switch between camelCase and underscore_style function definitions.
         Return None if there would be no change.
         """
         s = word
@@ -973,7 +973,7 @@ class LeoFind:
         return part1, part2
     #@+node:ekr.20131117164142.16919: *4* find.toggle-find-*
     @cmd('toggle-find-collapses-nodes')
-    def toggle_find_collapes_nodes(self, event: Event) -> None:  # pragma: no cover (cmd)
+    def toggle_find_collapses_nodes(self, event: Event) -> None:  # pragma: no cover (cmd)
         """Toggle the 'Collapse Nodes' checkbox in the find tab."""
         c = self.c
         c.sparse_find = not c.sparse_find
@@ -3085,7 +3085,7 @@ class LeoFind:
         k.getArgEscapes = ['\t'] if escape_handler else []
         self.handler = handler
         self.escape_handler = escape_handler
-        # Start the state maching!
+        # Start the state matching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
 
     def state0(self, event: Event) -> None:  # pragma: no cover (cmd)

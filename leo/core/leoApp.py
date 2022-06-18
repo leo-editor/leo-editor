@@ -134,8 +134,8 @@ class LeoApp:
         #@-<< LeoApp: Debugging & statistics >>
         #@+<< LeoApp: error messages >>
         #@+node:ekr.20161028035902.1: *5* << LeoApp: error messages >>
-        self.menuWarningsGiven = False  # True: supress warnings in menu code.
-        self.unicodeErrorGiven = True  # True: suppres unicode tracebacks.
+        self.menuWarningsGiven = False  # True: suppress warnings in menu code.
+        self.unicodeErrorGiven = True  # True: suppress unicode tracebacks.
         #@-<< LeoApp: error messages >>
         #@+<< LeoApp: global directories >>
         #@+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
@@ -201,7 +201,7 @@ class LeoApp:
         self.dragging = False  # True: dragging.
         self.inBridge = False  # True: running from leoBridge module.
         self.inScript = False  # True: executing a script.
-        self.initing = True  # True: we are initiing the app.
+        self.initing = True  # True: we are initing the app.
         self.initComplete = False  # True: late bindings are not allowed.
         self.initStyleFlag = False  # True: setQtStyle called.
         self.killed = False  # True: we are about to destroy the root window.

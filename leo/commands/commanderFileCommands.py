@@ -323,7 +323,7 @@ def refreshFromDisk(self, event=None):
     b = u.beforeChangeTree(p)
     redraw_flag = True
     at = c.atFileCommands
-    # Fix bug 1090950 refresh from disk: cut node ressurection.
+    # Fix bug 1090950 refresh from disk: cut node resurrection.
     c.recreateGnxDict()
     i = g.skip_id(p.h, 0, chars='@')
     word = p.h[0:i]
@@ -424,7 +424,7 @@ def save(self, event=None, fileName=None):
                     defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
-            # Don't change mFileName until the dialog has suceeded.
+            # Don't change mFileName until the dialog has succeeded.
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             c.frame.title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(c.computeWindowTitle(c.mFileName))
@@ -497,7 +497,7 @@ def saveAs(self, event=None, fileName=None):
         g.trace(fileName)
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
-        # Don't change mFileName until the dialog has suceeded.
+        # Don't change mFileName until the dialog has succeeded.
         if fileName.endswith(('.leo', '.db', '.leojs')):
             c.mFileName = fileName
         else:
