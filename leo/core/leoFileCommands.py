@@ -876,8 +876,6 @@ class FileCommands:
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             elif fileName.endswith('.leojs'):
                 v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
-                # v = fc.read_leojs(theFile, fileName)
-                # readAtFileNodesFlag = False  # Suppress post-processing.
             else:
                 v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
@@ -1208,120 +1206,6 @@ class FileCommands:
             fc.getLeoFile(theFile, fname, checkOpenFiles=False)
         restore_priv(privnodes, toppriv)
         c.redraw()
-    #@+node:ekr.20210316043902.1: *5* fc.read_leojs & helpers
-    def read_leojs(self, theFile, fileName):
-        """Read a JSON (.leojs) file and create the outline."""
-        c = self.c
-        s = theFile.read()
-        try:
-            d = json.loads(s)
-        except Exception:
-            g.trace(f"Error reading .leojs file: {fileName}")
-            g.es_exception()
-            return None
-        #
-        # Get the top-level dicts.
-        tnodes_dict = d.get('tnodes')
-        vnodes_list = d.get('vnodes')
-        if not tnodes_dict:
-            g.trace(f"Bad .leojs file: no tnodes dict: {fileName}")
-            return None
-        if not vnodes_list:
-            g.trace(f"Bad .leojs file: no vnodes list: {fileName}")
-            return None
-        #
-        # Define function: create_vnode_from_dicts.
-        #@+others
-        #@+node:ekr.20210317155137.1: *6* function: create_vnode_from_dicts
-        def create_vnode_from_dicts(i, parent_v, v_dict):
-            """Create a new vnode as the i'th child of the parent vnode."""
-            #
-            # Get the gnx.
-            gnx = v_dict.get('gnx')
-            if not gnx:
-                g.trace(f"Bad .leojs file: no gnx in v_dict: {fileName}")
-                g.printObj(v_dict)
-                return
-            #
-            # Create the vnode.
-            assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
-
-            v = leoNodes.VNode(context=c, gnx=gnx)
-            parent_v.children.append(v)
-            v._headString = v_dict.get('vh', '')
-            v._bodyString = tnodes_dict.get(gnx, '')
-            #
-            # Recursively create the children.
-            for i2, v_dict2 in enumerate(v_dict.get('children', [])):
-                create_vnode_from_dicts(i2, v, v_dict2)
-        #@+node:ekr.20210318125522.1: *6* function: scan_leojs_globals
-        def scan_leojs_globals(json_d):
-            """Set the geometries from the globals dict."""
-
-            def toInt(x, default):
-                try:
-                    return int(x)
-                except Exception:
-                    return default
-
-            # Priority 1: command-line args
-            windowSize = g.app.loadManager.options.get('windowSize')
-            windowSpot = g.app.loadManager.options.get('windowSpot')
-            #
-            # Priority 2: The cache.
-            db_top, db_left, db_height, db_width = c.db.get('window_position', (None, None, None, None))
-            #
-            # Priority 3: The globals dict in the .leojs file.
-            #             Leo doesn't write the globals element, but leoInteg might.
-            d = json_d.get('globals', {})
-            #
-            # height & width
-            height, width = windowSize or (None, None)
-            if height is None:
-                height, width = d.get('height'), d.get('width')
-            if height is None:
-                height, width = db_height, db_width
-            height, width = toInt(height, 500), toInt(width, 800)
-            #
-            # top, left.
-            top, left = windowSpot or (None, None)
-            if top is None:
-                top, left = d.get('top'), d.get('left')
-            if top is None:
-                top, left = db_top, db_left
-            top, left = toInt(top, 50), toInt(left, 50)
-            #
-            # r1, r2.
-            r1 = float(c.db.get('body_outline_ratio', '0.5'))
-            r2 = float(c.db.get('body_secondary_ratio', '0.5'))
-            if 'size' in g.app.debug:
-                g.trace(width, height, left, top, c.shortFileName())
-            # c.frame may be a NullFrame.
-            c.frame.setTopGeometry(width, height, left, top)
-            c.frame.resizePanesToRatio(r1, r2)
-            frameFactory = getattr(g.app.gui, 'frameFactory', None)
-            if not frameFactory:
-                return
-            assert frameFactory is not None
-            mf = frameFactory.masterFrame
-            if g.app.start_minimized:
-                mf.showMinimized()
-            elif g.app.start_maximized:
-                # #1189: fast.scanGlobals calls showMaximized later.
-                mf.showMaximized()
-            elif g.app.start_fullscreen:
-                mf.showFullScreen()
-            else:
-                mf.show()
-        #@-others
-        #
-        # Start the recursion by creating the top-level vnodes.
-        c.hiddenRootNode.children = []  # Necessary.
-        parent_v = c.hiddenRootNode
-        for i, v_dict in enumerate(vnodes_list):
-            create_vnode_from_dicts(i, parent_v, v_dict)
-        scan_leojs_globals(d)
-        return c.hiddenRootNode.children[0]
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
