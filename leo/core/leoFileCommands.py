@@ -139,16 +139,6 @@ class FastRead:
             new_vnode.h = 'newHeadline'
             v.children = [new_vnode]
         return v
-    #@+node:ekr.20180624125321.1: *3* fast.handleBits (reads c.db)
-    def handleBits(self):
-        """Restore the expanded and marked bits from c.db."""
-        c, fc = self.c, self.c.fileCommands
-        expanded = c.db.get('expanded')
-        marked = c.db.get('marked')
-        expanded = expanded.split(',') if expanded else []
-        marked = marked.split(',') if marked else []
-        fc.descendentExpandedList = expanded
-        fc.descendentMarksList = marked
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
@@ -177,6 +167,16 @@ class FastRead:
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
         return hidden_v, g_element
+    #@+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
+    def handleBits(self):
+        """Restore the expanded and marked bits from c.db."""
+        c, fc = self.c, self.c.fileCommands
+        expanded = c.db.get('expanded')
+        marked = c.db.get('marked')
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
+        fc.descendentExpandedList = expanded
+        fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa & helper
     def resolveUa(self, attr, val, kind=None):  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
@@ -528,6 +528,10 @@ class FastRead:
                 v._headString = v_dict.get('vh', '')
                 v._bodyString = gnx2body.get(gnx, '')
                 v.statusBits = v_dict.get('status', 0)
+                if v.isExpanded():
+                    fc.descendentExpandedList.append(gnx)
+                if v.isMarked():
+                    fc.descendentMarksList.append(gnx)
                 #
 
                 # Handle vnode uA's
