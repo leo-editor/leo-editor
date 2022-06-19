@@ -4212,8 +4212,8 @@ class LeoServer:
                 d['nodeTags'] = tagsQty
 
             # Check for flag to send ua quantity instead of full ua's
-            uAsBoolean = False;
-            uAsNumber = False;
+            uAsBoolean = False
+            uAsNumber = False
             if g.leoServer.leoServerConfig:
                 uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
                 uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
