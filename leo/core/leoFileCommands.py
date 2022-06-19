@@ -414,7 +414,7 @@ class FastRead:
         gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
         gnx2body = self.scanJsonTnodes(t_elements)
         hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-        self.handleBits()
+        # self.handleBits()
         return hidden_v, g_element
 
     #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
@@ -494,12 +494,6 @@ class FastRead:
 
         def create_vnode_from_dicts(i, parent_v, v_dict):
             """Create a new vnode as the i'th child of the parent vnode."""
-            # leojs file format omits empty members to optimize top level structure size
-            # (so add them back)
-            if "status" not in v_dict:
-                v_dict["status"] = 0
-            if "children" not in v_dict:
-                v_dict["children"] = []
             #
             # Get the gnx.
             gnx = v_dict.get('gnx')
@@ -533,6 +527,7 @@ class FastRead:
 
                 v._headString = v_dict.get('vh', '')
                 v._bodyString = gnx2body.get(gnx, '')
+                v.statusBits = v_dict.get('status', 0)
                 #
 
                 # Handle vnode uA's
