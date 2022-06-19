@@ -202,6 +202,7 @@ def computeVnodeInfoDict(c):
 #@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self, event=None):
+    """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
     #@+others

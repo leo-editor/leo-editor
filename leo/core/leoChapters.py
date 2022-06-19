@@ -102,6 +102,7 @@ class ChapterController:
     #@+node:ekr.20170202061705.1: *3* cc.selectNext/Back
     @cmd('chapter-back')
     def backChapter(self, event=None):
+        """Select the previous chapter"""
         cc = self
         names = sorted(cc.setAllChapterNames())
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
@@ -111,6 +112,7 @@ class ChapterController:
 
     @cmd('chapter-next')
     def nextChapter(self, event=None):
+        """Select the next chapter"""
         cc = self
         names = sorted(cc.setAllChapterNames())
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
