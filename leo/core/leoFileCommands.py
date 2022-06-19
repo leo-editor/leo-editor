@@ -56,6 +56,13 @@ def dump_gnx_dict(event):
         return
     d = c.fileCommands.gnxDict
     g.printObj(d, tag='gnxDict')
+#@+node:felix.20220618222639.1: ** class SetEncoder
+class SetJSONEncoder(json.JSONEncoder):
+    # Used to encode JSON in leojs files
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
 
@@ -98,6 +105,23 @@ class FastRead:
             v.children = [new_vnode]
         return v
 
+    #@+node:felix.20220618164929.1: *3* fast.readJsonFile
+    def readJsonFile(self, theFile, path):
+        """Read the leojs JSON file, change splitter ratios, and return its hidden vnode."""
+        s = theFile.read()
+        v, g_dict = self.readWithJsonTree(path, s)
+        if not v:  # #1510.
+            return None
+        # #1047: only this method changes splitter sizes.
+        self.scanJsonGlobals(g_dict)
+        #
+        # #1111: ensure that all outlines have at least one node.
+        if not v.children:
+            new_vnode = leoNodes.VNode(context=self.c)
+            new_vnode.h = 'newHeadline'
+            v.children = [new_vnode]
+        return v
+
     #@+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
     def readFileFromClipboard(self, s):
         """
@@ -115,6 +139,16 @@ class FastRead:
             new_vnode.h = 'newHeadline'
             v.children = [new_vnode]
         return v
+    #@+node:ekr.20180624125321.1: *3* fast.handleBits (reads c.db)
+    def handleBits(self):
+        """Restore the expanded and marked bits from c.db."""
+        c, fc = self.c, self.c.fileCommands
+        expanded = c.db.get('expanded')
+        marked = c.db.get('marked')
+        expanded = expanded.split(',') if expanded else []
+        marked = marked.split(',') if marked else []
+        fc.descendentExpandedList = expanded
+        fc.descendentMarksList = marked
     #@+node:ekr.20180602062323.7: *3* fast.readWithElementTree & helpers
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
@@ -143,16 +177,6 @@ class FastRead:
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
         return hidden_v, g_element
-    #@+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
-    def handleBits(self):
-        """Restore the expanded and marked bits from c.db."""
-        c, fc = self.c, self.c.fileCommands
-        expanded = c.db.get('expanded')
-        marked = c.db.get('marked')
-        expanded = expanded.split(',') if expanded else []
-        marked = marked.split(',') if marked else []
-        fc.descendentExpandedList = expanded
-        fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa & helper
     def resolveUa(self, attr, val, kind=None):  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
@@ -375,6 +399,161 @@ class FastRead:
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
+    #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
+    def readWithJsonTree(self, path, s):
+        try:
+            d = json.loads(s)
+        except Exception:
+            g.trace(f"Error reading .leojs file: {path}")
+            g.es_exception()
+            return None
+        g_element = d.get('globals', {})
+        v_elements = d.get('vnodes')
+        t_elements = d.get('tnodes')
+        gnx2ua = defaultdict(dict)
+        gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
+        gnx2body = self.scanJsonTnodes(t_elements)
+        hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+        self.handleBits()
+        return hidden_v, g_element
+
+    #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
+    def scanJsonGlobals(self, json_d):
+        """Set the geometries from the globals dict."""
+        c = self.c
+
+        def toInt(x, default):
+            try:
+                return int(x)
+            except Exception:
+                return default
+
+        # Priority 1: command-line args
+        windowSize = g.app.loadManager.options.get('windowSize')
+        windowSpot = g.app.loadManager.options.get('windowSpot')
+        #
+        # Priority 2: The cache.
+        db_top, db_left, db_height, db_width = c.db.get('window_position', (None, None, None, None))
+        #
+        # Priority 3: The globals dict in the .leojs file.
+        #             Leo doesn't write the globals element, but leoInteg might.
+
+        # height & width
+        height, width = windowSize or (None, None)
+        if height is None:
+            height, width = json_d.get('height'), json_d.get('width')
+        if height is None:
+            height, width = db_height, db_width
+        height, width = toInt(height, 500), toInt(width, 800)
+        #
+        # top, left.
+        top, left = windowSpot or (None, None)
+        if top is None:
+            top, left = json_d.get('top'), json_d.get('left')
+        if top is None:
+            top, left = db_top, db_left
+        top, left = toInt(top, 50), toInt(left, 50)
+        #
+        # r1, r2.
+        r1 = float(c.db.get('body_outline_ratio', '0.5'))
+        r2 = float(c.db.get('body_secondary_ratio', '0.5'))
+        if 'size' in g.app.debug:
+            g.trace(width, height, left, top, c.shortFileName())
+        # c.frame may be a NullFrame.
+        c.frame.setTopGeometry(width, height, left, top)
+        c.frame.resizePanesToRatio(r1, r2)
+        frameFactory = getattr(g.app.gui, 'frameFactory', None)
+        if not frameFactory:
+            return
+        assert frameFactory is not None
+        mf = frameFactory.masterFrame
+        if g.app.start_minimized:
+            mf.showMinimized()
+        elif g.app.start_maximized:
+            # #1189: fast.scanGlobals calls showMaximized later.
+            mf.showMaximized()
+        elif g.app.start_fullscreen:
+            mf.showFullScreen()
+        else:
+            mf.show()
+
+    #@+node:felix.20220618174623.1: *4* fast.scanJsonTnodes
+    def scanJsonTnodes(self, t_elements):
+
+        gnx2body: Dict[str, str] = {}
+
+        for gnx, body in t_elements.items():
+            gnx2body[gnx] = body or ''
+
+        return gnx2body
+
+    #@+node:felix.20220618174639.1: *4* scanJsonVnodes & helper
+    def scanJsonVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
+
+        c, fc = self.c, self.c.fileCommands
+
+        def create_vnode_from_dicts(i, parent_v, v_dict):
+            """Create a new vnode as the i'th child of the parent vnode."""
+            # leojs file format omits empty members to optimize top level structure size
+            # (so add them back)
+            if "status" not in v_dict:
+                v_dict["status"] = 0
+            if "children" not in v_dict:
+                v_dict["children"] = []
+            #
+            # Get the gnx.
+            gnx = v_dict.get('gnx')
+            if not gnx:
+                g.trace(f"Bad .leojs file: no gnx in v_dict")
+                g.printObj(v_dict)
+                return
+            #
+            # Create the vnode.
+            assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
+
+            try:
+                v = gnx2vnode.get(gnx)
+            except KeyError:
+                # g.trace('no "t" attrib')
+                gnx = None
+                v = None
+            if v:
+                # A clone
+                parent_v.children.append(v)
+                v.parents.append(parent_v)
+                # The body overrides any previous body text.
+                body = g.toUnicode(gnx2body.get(gnx) or '')
+                assert isinstance(body, str), body.__class__.__name__
+                v._bodyString = body
+            else:
+                v = leoNodes.VNode(context=c, gnx=gnx)
+                gnx2vnode[gnx] = v
+                parent_v.children.append(v)
+                v.parents.append(parent_v)
+
+                v._headString = v_dict.get('vh', '')
+                v._bodyString = gnx2body.get(gnx, '')
+                #
+
+                # Handle vnode uA's
+                uaDict = gnx2ua[gnx]  # A defaultdict(dict)
+
+                if uaDict:
+                    v.unknownAttributes = uaDict
+
+                # Recursively create the children.
+                for i2, v_dict2 in enumerate(v_dict.get('children', [])):
+                    create_vnode_from_dicts(i2, v, v_dict2)
+
+
+        # Start the recursion by creating the top-level vnodes.
+        c.hiddenRootNode.children = []  # Necessary.
+        parent_v = c.hiddenRootNode
+        for i, v_dict in enumerate(v_elements):
+            create_vnode_from_dicts(i, parent_v, v_dict)
+
+        return c.hiddenRootNode.children[0]
+
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
 class FileCommands:
@@ -696,8 +875,9 @@ class FileCommands:
             if fileName.endswith('.db'):
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             elif fileName.endswith('.leojs'):
-                v = fc.read_leojs(theFile, fileName)
-                readAtFileNodesFlag = False  # Suppress post-processing.
+                v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
+                # v = fc.read_leojs(theFile, fileName)
+                # readAtFileNodesFlag = False  # Suppress post-processing.
             else:
                 v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
@@ -1065,6 +1245,7 @@ class FileCommands:
             #
             # Create the vnode.
             assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
+
             v = leoNodes.VNode(context=c, gnx=gnx)
             parent_v.children.append(v)
             v._headString = v_dict.get('vh', '')
@@ -1655,7 +1836,7 @@ class FileCommands:
             # Create the dict corresponding to the JSON.
             d = self.leojs_file()
             # Convert the dict to JSON.
-            json_s = json.dumps(d, indent=2)
+            json_s = json.dumps(d, indent=2, cls=SetJSONEncoder)
             s = bytes(json_s, self.leo_file_encoding, 'replace')
             f.write(s)
             f.close()
@@ -1673,14 +1854,19 @@ class FileCommands:
     def leojs_file(self):
         """Return a dict representing the outline."""
         c = self.c
-        return {
-            'leoHeader': {'fileFormat': 2},
-            'globals': self.leojs_globals(),
-            'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes()},
-            'vnodes': [
-                self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
-            ],
-        }
+        uas = {v.gnx: v.unknownAttributes for v in c.all_unique_nodes() if v.unknownAttributes}
+        result = {
+                'leoHeader': {'fileFormat': 2},
+                'globals': self.leojs_globals(),
+                'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes()},
+                'vnodes': [
+                    self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
+                ]
+            }
+        # uas could be empty. Only add it if needed
+        if uas:
+            result["uas"] = uas
+        return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
     def leojs_globals(self):
         """Put json representation of Leo's cached globals."""
@@ -1708,12 +1894,17 @@ class FileCommands:
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
     def leojs_vnode(self, v):
         """Return a jsonized vnode."""
-        return {
+        status = v.statusBits
+        children = [self.leojs_vnode(child) for child in v.children]
+        result = {
             'gnx': v.fileIndex,
             'vh': v._headString,
-            'status': v.statusBits,
-            'children': [self.leojs_vnode(child) for child in v.children]
         }
+        if status:
+            result['status'] = status
+        if children:
+            result['children'] = children
+        return result
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
         """Write the outline in .leo (XML) format."""
