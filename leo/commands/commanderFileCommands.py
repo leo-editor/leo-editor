@@ -12,11 +12,11 @@ from leo.core import leoImport
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
-    """Reload settings in all commanders, or just c."""
+    """Reload settings in all commanders, saving all existing opened files first"""
     lm = g.app.loadManager
-    # Save any changes so they can be seen.
+    # Save any changes so they can be seen, for existing files that are not new/untitled.
     for c2 in g.app.commanders():
-        if c2.isChanged():
+        if c2.isChanged() and c2.mFileName:
             c2.save()
     # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
     lm.readGlobalSettingsFiles()
