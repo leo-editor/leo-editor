@@ -1511,6 +1511,7 @@ class LeoServer:
             # Radio buttons
             table3 = (
                 ('node_only', 'node_only', 'radio_button_node_only'),
+                ('file_only', 'file_only', 'radio_button_file_only'),
                 ('entire_outline', None, 'radio_button_entire_outline'),
                 ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
             )
@@ -1525,8 +1526,9 @@ class LeoServer:
             # Ensure one radio button is set.
             w = ftm.radio_button_entire_outline
             nodeOnly = searchSettings.get('node_only', False)
+            fileOnly = searchSettings.get('file_only', False)
             suboutlineOnly = searchSettings.get('suboutline_only', False)
-            if not nodeOnly and not suboutlineOnly:
+            if not nodeOnly and not suboutlineOnly and not fileOnly:
                 setattr(find, 'entire_outline', True)
                 if not w.isChecked():
                     w.toggle()
