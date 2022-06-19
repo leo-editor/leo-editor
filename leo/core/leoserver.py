@@ -1867,18 +1867,18 @@ class LeoServer:
         return self._make_minimal_response({"position-data-list": result})
     #@+node:felix.20220617184559.1: *5* server.get_structure
     def get_structure(self, param):
-            """
-            Returns an array of ap's, the direct descendants of the hidden root node.
-            Each having required 'children' array, to give the whole structure of ap's.
-            """
-            c = self._check_c()
-            result = []
-            p = c.rootPosition() # first child of hidden root node as first item in top array
-            while p:
-                result.append(self._get_position_d(p, includeChildren=True))
-                p.moveToNodeAfterTree()
-            # return selected node either ways
-            return self._make_minimal_response({"structure": result})
+        """
+        Returns an array of ap's, the direct descendants of the hidden root node.
+        Each having required 'children' array, to give the whole structure of ap's.
+        """
+        c = self._check_c()
+        result = []
+        p = c.rootPosition() # first child of hidden root node as first item in top array
+        while p:
+            result.append(self._get_position_d(p, includeChildren=True))
+            p.moveToNodeAfterTree()
+        # return selected node either ways
+        return self._make_minimal_response({"structure": result})
 
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
     def get_all_gnx(self, param):
@@ -4212,8 +4212,8 @@ class LeoServer:
                 d['nodeTags'] = tagsQty
 
             # Check for flag to send ua quantity instead of full ua's
-            uAsBoolean = False;
-            uAsNumber = False;
+            uAsBoolean = False
+            uAsNumber = False
             if g.leoServer.leoServerConfig:
                 uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
                 uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
