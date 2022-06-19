@@ -81,7 +81,7 @@ Wrapper = Any
 #    tree widget, a 'tree' binding has top priority. There are many other
 #    details encapsulated in the table. The exactly details of the binding
 #    priority table are open to debate, but in practice the resulting
-#    bindings are as expeced.
+#    bindings are as expected.
 #
 # B. If k.getPaneBinding finds a command associated with the incoming
 #    keystroke, k.masterKeyHandler executes the command.
@@ -1737,7 +1737,7 @@ class KeyHandlerClass:
         self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
         self.getArgEscapes: List[str] = []
         self.inputModeName = ''  # The name of the input mode, or None.
-        self.modePrompt = ''  # The mode promopt.
+        self.modePrompt = ''  # The mode prompt.
         self.state: Any = g.bunch(kind=None, n=None, handler=None)
 
         # Remove ???
@@ -2171,7 +2171,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
     def bindKeyToDict(self, pane: str, stroke: Stroke, bi: Any) -> None:
         """Update k.masterBindingsDict for the stroke."""
-        # New in Leo 4.4.1: Allow redefintions.
+        # New in Leo 4.4.1: Allow redefinitions.
         # Called from makeBindingsFromCommandsDict.
         k = self
         assert g.isStroke(stroke), stroke
@@ -3765,7 +3765,7 @@ class KeyHandlerClass:
         """
         Set the label to s.
 
-        Use k.setStatusLabel, not k.setLael, to report the status of a Leo
+        Use k.setStatusLabel, not k.setLabel, to report the status of a Leo
         command. This allows the option to use g.es instead of the minibuffer
         to report status.
         """

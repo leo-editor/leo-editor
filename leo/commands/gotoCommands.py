@@ -36,7 +36,7 @@ class GoToCommands:
                 # All sentinels count as real lines.
                 gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
             else:
-                # Not all sentinels cound as real lines.
+                # Not all sentinels count as real lines.
                 gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
             p, found = self.find_gnx(root, gnx, h)
             if gnx and found:
@@ -265,7 +265,7 @@ class GoToCommands:
         return None, None
     #@+node:ekr.20150625123747.1: *4* goto.get_delims
     def get_delims(self, root):
-        """Return the deliminters in effect at root."""
+        """Return the delimiters in effect at root."""
         c = self.c
         old_target_language = c.target_language
         try:

@@ -32,7 +32,7 @@ class Commands:
     A per-outline class that implements most of Leo's commands. The
     "c" predefined object is an instance of this class.
 
-    c.initObjects() creates sucommanders corresponding to files in the
+    c.initObjects() creates subcommanders corresponding to files in the
     leo/core and leo/commands. All of Leo's core code is accessible
     via this class and its subcommanders.
 
@@ -568,7 +568,7 @@ class Commands:
 
         Create a temp file if c.p is not an @<file> node.
 
-        @data exec-script-commands associates commands with langauges.
+        @data exec-script-commands associates commands with languages.
 
         @data exec-script-patterns provides patterns to create clickable
         links for error messages.
@@ -596,7 +596,7 @@ class Commands:
             return
         ext = g.app.language_extension_dict.get(language)
         if not ext:
-            print(f"{tag}: No extention for {language}")
+            print(f"{tag}: No extension for {language}")
             return
         # Get the command.
         command = get_setting_for_language('exec-script-commands')
@@ -1018,7 +1018,7 @@ class Commands:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
-        - head: string containg all the lines before the selected text (or the
+        - head: string containing all the lines before the selected text (or the
           text before the insert point if no selection)
         - lines: list of lines containing the selected text
           (or the line containing the insert point if no selection)
@@ -1610,7 +1610,7 @@ class Commands:
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root, parent, warningFlag):
         """
-        Return False if root or any of root's descendents is a clone of parent
+        Return False if root or any of root's descendants is a clone of parent
         or any of parents ancestors.
         """
         c = self
@@ -2201,7 +2201,7 @@ class Commands:
         c:          The Commander of the outline.
         command:    The os command to execute the script.
         directory:  Optional: Change to this directory before executing command.
-        ext:        The file extention for the temporary file.
+        ext:        The file extension for the temporary file.
         language:   The language name.
         regex:      Optional regular expression describing error messages.
                     If present, group(1) should evaluate to a line number.

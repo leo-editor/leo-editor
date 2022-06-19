@@ -1413,7 +1413,7 @@ class GlobalConfigManager:
         Init g.app.config ivars or c's ivars from settings.
 
         - Called from c.initSettings with c = None to init g.app.config ivars.
-        - Called from c.initSettings to init corresponding commmander ivars.
+        - Called from c.initSettings to init corresponding commander ivars.
         """
         ### if g.app.loadedThemes:
         ###    return
@@ -1505,7 +1505,7 @@ class GlobalConfigManager:
     #@+node:ekr.20051015093141: *5* gcm.typesMatch
     def typesMatch(self, type1: str, type2: str) -> bool:
         """
-        Return True if type1, the actual type, matches type2, the requeseted type.
+        Return True if type1, the actual type, matches type2, the requested type.
 
         The following equivalences are allowed:
 
@@ -1672,7 +1672,7 @@ class GlobalConfigManager:
         d = c.config.settingsDict if c else lm.globalSettingsDict
         limit = c.config.getInt('print-settings-at-data-limit')
         if limit is None:
-            limit = 20  # A resonable default.
+            limit = 20  # A reasonable default.
         # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
@@ -1895,7 +1895,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12521: *6* c.config.typesMatch
     def typesMatch(self, type1: str, type2: str) -> bool:
         """
-        Return True if type1, the actual type, matches type2, the requeseted type.
+        Return True if type1, the actual type, matches type2, the requested type.
 
         The following equivalences are allowed:
 

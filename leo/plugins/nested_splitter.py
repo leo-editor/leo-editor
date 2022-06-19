@@ -341,6 +341,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
 
         :param QMouseEvent event: mouse event
         """
+        super().mousePressEvent(event)
         self.splitter()._splitter_clicked(self, event, release=False, double=False)
 
     def mouseReleaseEvent(self, event):
@@ -349,6 +350,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
 
         :param QMouseEvent event: mouse event
         """
+        super().mouseReleaseEvent(event)
         self.splitter()._splitter_clicked(self, event, release=True, double=False)
 
     def mouseDoubleClickEvent(self, event):
@@ -357,6 +359,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
 
         :param QMouseEvent event: mouse event
         """
+        super().mouseDoubleClickEvent(event)
         self.splitter()._splitter_clicked(self, event, release=True, double=True)
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)

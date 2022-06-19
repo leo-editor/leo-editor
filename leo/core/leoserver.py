@@ -45,7 +45,10 @@ from leo.core.leoNodes import Position, PosList
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-version_tuple = (1, 0, 1)
+version_tuple = (1, 0, 2)
+# Version History
+# 1.0.1 Initial commit
+# 1.0.2 Félix on June 2022: Adding ui-scroll, ua's & node_tags utilities
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -1862,6 +1865,21 @@ class LeoServer:
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_minimal_response({"position-data-list": result})
+    #@+node:felix.20220617184559.1: *5* server.get_structure
+    def get_structure(self, param):
+        """
+        Returns an array of ap's, the direct descendants of the hidden root node.
+        Each having required 'children' array, to give the whole structure of ap's.
+        """
+        c = self._check_c()
+        result = []
+        p = c.rootPosition() # first child of hidden root node as first item in top array
+        while p:
+            result.append(self._get_position_d(p, includeChildren=True))
+            p.moveToNodeAfterTree()
+        # return selected node either ways
+        return self._make_minimal_response({"structure": result})
+
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
     def get_all_gnx(self, param):
         """Get gnx array from all unique nodes"""
@@ -2037,7 +2055,7 @@ class LeoServer:
         except Exception:  # pragma: no cover
             response = {"ua": repr(p.v.u)}
         # _make_response adds all the cheap redraw data.
-        return self._make_response(response)
+        return self._make_minimal_response(response)
     #@+node:felix.20210621233316.48: *5* server.get_ui_states
     def get_ui_states(self, param):
         """
@@ -2235,6 +2253,26 @@ class LeoServer:
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
+        return self._make_response()
+    #@+node:felix.20220616010755.1: *5* server.scroll_top
+    def scroll_top(self, param):
+        """
+        Utility method for connected clients to simulate scroll to the top
+        """
+        c = self._check_c()
+        p = c.firstVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
+    #@+node:felix.20220616010756.1: *5* server.scroll_bottom
+    def scroll_bottom(self, param):
+        """
+        Utility method for connected clients to simulate scroll to bottom
+        """
+        c = self._check_c()
+        p = c.lastVisible()
+        if p:
+            c.treeSelectHelper(p)
         return self._make_response()
     #@+node:felix.20210621233316.57: *5* server.page_down
     def page_down(self, param):
@@ -2534,7 +2572,7 @@ class LeoServer:
     #@+node:felix.20220326190000.1: *5* server.get_leoid
     def get_leoid(self, param):
         """
-        returns g.app.leoID
+        Returns g.app.leoID
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         result = {"leoID": g.app.leoID}
@@ -2542,7 +2580,7 @@ class LeoServer:
     #@+node:felix.20220326190008.1: *5* server.set_leoid
     def set_leoid(self, param):
         """
-        sets g.app.leoID
+        Sets g.app.leoID
         """
         # uses the __version__ global constant and the v1, v2, v3 global version numbers
         leoID = param.get('leoID', '')
@@ -3743,9 +3781,8 @@ class LeoServer:
 
             'chapter-back',
             'chapter-next',
-            'chapter-select',
-            'chapter-select-main',
-            'create-def-list',  # ?
+            #'chapter-select', #
+            'chapter-select-main'
         ]
         return good_list
     #@+node:felix.20210621233316.75: *5* server.get_all_server_commands & helpers
@@ -4157,7 +4194,7 @@ class LeoServer:
 
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p):
+    def _get_position_d(self, p, includeChildren = False):
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4168,16 +4205,37 @@ class LeoServer:
         d['headline'] = p.h
         d['level'] = p.level()
         if p.v.u:
-            if g.leoServer.leoServerConfig and g.leoServer.leoServerConfig.get("uAsBoolean", False):
-                # uAsBoolean is 'thruthy'
-                d['u'] = True
+            # tags quantity first if any ua's present
+            tagsQty = len(p.v.u.get("__node_tags", []))
+            # Tags only if there are some present.
+            if tagsQty>0:
+                d['nodeTags'] = tagsQty
+
+            # Check for flag to send ua quantity instead of full ua's
+            uAsBoolean = False
+            uAsNumber = False
+            if g.leoServer.leoServerConfig:
+                uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
+                uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
+            if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
+                uaQty = len(p.v.u) # number will be 'true' if any keys are present
+                if tagsQty>0 and uaQty > 0:
+                    uaQty = uaQty -1
+                # set number pre-decremented if __node_tags were present
+                d['u'] = uaQty
             else:
-                # Normal output if no options set
+                # Normal output if no tags set
                 d['u'] = p.v.u
         if bool(p.b):
             d['hasBody'] = True
         if p.hasChildren():
             d['hasChildren'] = True
+            # includeChildren flag is used by get_structure
+            if includeChildren:
+                d['children'] = [
+                    self._get_position_d(child, includeChildren= True) for child in p.children()
+                ]
+
         if p.isCloned():
             d['cloned'] = True
         if p.isDirty():
@@ -4764,7 +4822,7 @@ def main():  # pragma: no cover (tested in client)
 
     # Sets sHost, wsPort, wsLimit, wsPersist, wsSkipDirty fileArg and traces
     get_args()  # Set global values from the command line arguments
-    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
+    print(f"Starting LeoBridge Server {v1}.{v2}.{v3} (Launch with -h for help)", flush=True)
 
     # Open leoBridge.
     controller = LeoServer()  # Single instance of LeoServer, i.e., an instance of leoBridge

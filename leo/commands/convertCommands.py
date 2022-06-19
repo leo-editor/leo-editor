@@ -2372,7 +2372,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return i
             #@+node:ekr.20150514063305.183: *6* mungeAllClasses
             def mungeAllClasses(self, aList):
-                """Scan for a '{' at the top level that is preceeded by ')' """
+                """Scan for a '{' at the top level that is preceded by ')' """
                 i = 0
                 while i < len(aList):
                     progress = i
@@ -2402,7 +2402,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     assert i > progress
             #@+node:ekr.20150514063305.184: *6* mungeAllFunctions & helpers
             def mungeAllFunctions(self, aList):
-                """Scan for a '{' at the top level that is preceeded by ')' """
+                """Scan for a '{' at the top level that is preceded by ')' """
                 prevSemi = 0  # Previous semicolon: header contains all previous text
                 i = 0
                 firstOpen = None

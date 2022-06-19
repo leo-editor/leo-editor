@@ -85,7 +85,7 @@ class ExternalFilesController:
         since Leo read it or if the user agrees to overwrite it.
         """
         if c.sqlite_connection and c.mFileName == path:
-            # sqlite database file is never actually overwriten by Leo
+            # sqlite database file is never actually overwritten by Leo
             # so no need to check its timestamp. It is modified through
             # sqlite methods.
             return True
@@ -310,13 +310,13 @@ class ExternalFilesController:
     #@+node:ekr.20150406055221.2: *6* efc.clean_file_name
     def clean_file_name(self, c, ext, p):
         """Compute the file name when subdirectories mirror the node's hierarchy in Leo."""
-        use_extentions = c.config.getBool('open-with-uses-derived-file-extensions')
+        use_extensions = c.config.getBool('open-with-uses-derived-file-extensions')
         ancestors, found = [], False
         for p2 in p.self_and_parents(copy=False):
             h = p2.anyAtFileNodeName()
             if not h:
                 h = p2.h  # Not an @file node: use the entire header
-            elif use_extentions and not found:
+            elif use_extensions and not found:
                 # Found the nearest ancestor @<file> node.
                 found = True
                 base, ext2 = g.os_path_splitext(h)
@@ -518,7 +518,7 @@ class ExternalFilesController:
             no_all=is_external_file,
         )
         #
-        # #1961. Re-init the checksum to suppress concurent dialogs.
+        # #1961. Re-init the checksum to suppress concurrent dialogs.
         self.checksum_d[path] = self.checksum(path)
         #
         # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')

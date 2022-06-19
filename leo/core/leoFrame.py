@@ -52,7 +52,7 @@ Wrapper = Any
 # convenience methods exists:
 #
 # - body.updateBody & tree.updateBody:
-#     These are suprising complex.
+#     These are surprisingly complex.
 #
 # - body.bodyChanged & tree.headChanged:
 #     Called by commands throughout Leo's core that change the body or headline.
@@ -768,7 +768,7 @@ class LeoFrame:
         self.title = title
     #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
     def initAfterLoad(self) -> None:
-        """Provide offical hooks for late inits of components of Leo frames."""
+        """Provide official hooks for late inits of components of Leo frames."""
         frame = self
         frame.body.initAfterLoad()
         frame.log.initAfterLoad()
@@ -1330,7 +1330,7 @@ class LeoLog:
             while parts:
                 target = os.sep.join(parts)
                 parts.pop(0)
-                # Search twice, prefering exact matches.
+                # Search twice, preferring exact matches.
                 for p in at_file_nodes:
                     if target == os.path.normpath(p.anyAtFileNodeName()):
                         return p
@@ -2098,7 +2098,7 @@ class NullLog(LeoLog):
     #@+node:ekr.20041012083237.1: *4* NullLog.createControl
     def createControl(self, parentFrame: Widget) -> Wrapper:
         return self.createTextWidget(parentFrame)
-    #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
+    #@+node:ekr.20070302095121: *4* NullLog.createTextWidget
     def createTextWidget(self, parentFrame: Widget) -> Wrapper:
         self.logNumber += 1
         c = self.c

@@ -210,7 +210,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             # Show the line in Leo.
             if stop:
                 self.select_line(self.saved_frame, self.saved_traceback)
-    #@+node:ekr.20180701050839.6: *4* xdb.do_clear (overides Pdb)
+    #@+node:ekr.20180701050839.6: *4* xdb.do_clear (overrides Pdb)
     def do_clear(self, arg=None):
         """cl(ear) filename:lineno\ncl(ear) [bpnumber [bpnumber...]]
         With a space separated list of breakpoint numbers, clear
