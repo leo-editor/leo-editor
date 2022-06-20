@@ -89,6 +89,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             # Other methods
+            'remove_tag', 'tag_node',
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
             'paste_node', 'paste_as_clone_node',  # New exclusion.
@@ -105,8 +106,8 @@ class TestLeoServer(LeoUnitTest):
         ]
         expected = ['error']
         param_d = {
-            "remove_tag": {"tag": "testTag"},
-            "tag_node": {"tag": "testTag"},
+            # "remove_tag": {"tag": "testTag"},
+            # "tag_node": {"tag": "testTag"},
             # "apply_config": {"config": {"whatever": True}},
             "get_focus": {"log": False},
             "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},

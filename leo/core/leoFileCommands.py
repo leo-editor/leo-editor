@@ -1737,7 +1737,11 @@ class FileCommands:
     def leojs_file(self):
         """Return a dict representing the outline."""
         c = self.c
-        uas = {v.gnx: v.unknownAttributes for v in c.all_unique_nodes() if v.unknownAttributes}
+        uas = {}
+        # build uas dict
+        for v in c.all_unique_nodes():
+            if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
+                uas[v.gnx] = v.unknownAttributes
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
@@ -1778,6 +1782,7 @@ class FileCommands:
     def leojs_vnode(self, v):
         """Return a jsonized vnode."""
         status = v.statusBits
+        status &= ~v.dirtyBit # Clear dirty bit
         children = [self.leojs_vnode(child) for child in v.children]
         result = {
             'gnx': v.fileIndex,
