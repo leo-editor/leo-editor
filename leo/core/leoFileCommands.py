@@ -1745,10 +1745,10 @@ class FileCommands:
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
-                'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes()},
                 'vnodes': [
                     self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
-                ]
+                ],
+                'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
             }
         # uas could be empty. Only add it if needed
         if uas:
@@ -1781,8 +1781,14 @@ class FileCommands:
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
     def leojs_vnode(self, v):
         """Return a jsonized vnode."""
-        status = v.statusBits
-        status &= ~v.dirtyBit # Clear dirty bit
+        status = 0
+        if v.isMarked():
+            status |= v.markedBit
+        if v.isExpanded():
+            status |= v.expandedBit
+        if v.isSelected():
+            status |= v.selectedBit
+
         children = [self.leojs_vnode(child) for child in v.children]
         result = {
             'gnx': v.fileIndex,
