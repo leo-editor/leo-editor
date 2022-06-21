@@ -288,7 +288,7 @@ def open_outline(self, event=None):
         g.app.numberOfUntitledWindows == 1
     )
     table = [
-        ("Leo files", "*.leo *.db"),
+        ("Leo files", "*.leo *.leojs *.db"),
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
@@ -420,7 +420,7 @@ def save(self, event=None, fileName=None):
             if not fileName:
                 fileName = g.app.gui.runSaveFileDialog(c,
                     title="Save",
-                    filetypes=[("Leo files", "*.leo *.db"),],
+                    filetypes=[("Leo files", "*.leo *.leojs *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
@@ -489,7 +489,7 @@ def saveAs(self, event=None, fileName=None):
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save As",
-            filetypes=[("Leo files", "*.leo *.db *.leojs"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -548,7 +548,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save To",
-            filetypes=[("Leo files", "*.leo *.db"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -1032,7 +1032,7 @@ def setReferenceFile(self, event=None):
     c = self
     fileName = g.app.gui.runOpenFileDialog(c,
             title="Select reference Leo file",
-            filetypes=[("Leo files", "*.leo *.db"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     if not fileName:
         return
@@ -1050,7 +1050,7 @@ def open_theme_file(self, event):
     fn = g.app.gui.runOpenFileDialog(c,
         title="Open Theme File",
         filetypes=[
-            ("Leo files", "*.leo *.db"),
+            ("Leo files", "*.leo *.leojs *.db"),
             ("All files", "*"),
         ],
         defaultextension=g.defaultLeoFileExtension(c),
