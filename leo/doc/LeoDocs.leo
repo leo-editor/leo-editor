@@ -2384,6 +2384,7 @@
 </v>
 <v t="ekr.20220523145755.1"></v>
 <v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
+<v t="ekr.20050903074833.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4758,8 +4759,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
 'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
 'openwith2'                            after  Open With command            c,p,v,(note 14)
-'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
-'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
+'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName
+'recentfiles2'                         after  Recent Files command         c,p,v,fileName
 'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
 'save1'                        yes     before any Save command             c,p,v,fileName
 'save2'                                after  any Save command             c,p,v,fileName
@@ -4773,8 +4774,8 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'start2'                               after opening first Leo window      c,p,v,fileName
 'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
 'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
-'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
-'\@url2'                                after  double-click @url node       c,p,v(note 5)
+'\@url1'                       yes     before double-click @url node       c,p,v,url (note 5)
+'\@url2'                               after  double-click @url node       c,p,v(note 5)
 ============================= ======== =================================== =============================
 
 **Notes**:

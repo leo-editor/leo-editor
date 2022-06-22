@@ -241,14 +241,14 @@ def new(self, event=None, gui=None):
             f"total: {t4-t1:5.2f}"
         )
     return c  # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open_outline
+#@+node:ekr.20031218072017.2821: *3* c_file.open_outline & helper
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
     """Open a Leo window containing the contents of a .leo file."""
     c = self
     #@+others  # Defines open_completer function.
     #@+node:ekr.20190518121302.1: *4* function: open_completer
-    def open_completer(c, closeFlag, fileName):
+    def open_completer(c, fileName):
 
         c.bringToFront()
         c.init_error_dialogs()
@@ -261,8 +261,6 @@ def open_outline(self, event=None):
                     c2.k.makeAllBindings()
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
-                if c2 and closeFlag:
-                    g.app.destroyWindow(c.frame)
             elif c.looksLikeDerivedFile(fileName):
                 # Create an @file node for files containing Leo sentinels.
                 ok = c.importCommands.importDerivedFiles(parent=c.p,
@@ -276,17 +274,6 @@ def open_outline(self, event=None):
         if not ok:
             c.initialFocusHelper()
     #@-others
-
-    #
-    # Close the window if this command completes successfully?
-
-    closeFlag = (
-        c.frame.startupWindow and  # The window was open on startup
-        # The window has never been changed
-        not c.changed and not c.frame.saved and
-        # Only one untitled window has ever been opened
-        g.app.numberOfUntitledWindows == 1
-    )
     table = [
         ("Leo files", "*.leo *.db"),
         ("Python files", "*.py"),
@@ -294,7 +281,7 @@ def open_outline(self, event=None):
     ]
     fileName = ''.join(c.k.givenArgs)
     if fileName:
-        open_completer(c, closeFlag, fileName)
+        open_completer(c, fileName)
         return
     # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,
@@ -302,7 +289,7 @@ def open_outline(self, event=None):
         filetypes=table,
         title="Open",
     )
-    open_completer(c, closeFlag, fileName)
+    open_completer(c, fileName)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 # refresh_pattern = re.compile(r'^(@[\w-]+)')
 
@@ -943,23 +930,12 @@ def editRecentFiles(self, event=None):
 @g.commander_command('open-recent-file')
 def openRecentFile(self, event=None, fn=None):
     c = self
-    # Automatically close the previous window if...
-    closeFlag = (
-        c.frame.startupWindow and  # The window was open on startup
-        # The window has never been changed
-        not c.changed and not c.frame.saved and
-        # Only one untitled window has ever been opened.
-        g.app.numberOfUntitledWindows == 1)
-    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
+    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
         return
     c2 = g.openWithFileName(fn, old_c=c)
     if c2:
         g.app.makeAllBindings()
-    if closeFlag and c2 and c2 != c:
-        g.app.destroyWindow(c.frame)
-        c2.setLog()
-        g.doHook("recentfiles2",
-            c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
+        g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 #@+node:tbrown.20080509212202.8: *3* c_file.sortRecentFiles
 @g.commander_command('sort-recent-files')
 def sortRecentFiles(self, event=None):
