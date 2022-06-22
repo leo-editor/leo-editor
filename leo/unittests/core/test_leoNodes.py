@@ -768,7 +768,6 @@ class TestNodes(LeoUnitTest):
             p.isAtThinFileNode,
             p.isMarked,
             p.isOrphan,
-            p.isTopBitSet,
             p.isVisited,
         )
         for func in table1:
@@ -1034,7 +1033,6 @@ class TestNodes(LeoUnitTest):
             v.isAtThinFileNode,
             v.isMarked,
             v.isOrphan,
-            v.isTopBitSet,
             v.isVisited,
         )
         for func in table1:

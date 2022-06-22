@@ -2313,7 +2313,7 @@ class LoadManager:
             m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
     def openEmptyWorkBook(self):
-        """Save CheatSheet.leo as the workbook. Return the new commander."""
+        """Open CheatSheet.leo as the workbook. Return the new commander."""
         fn = self.computeWorkbookFileName()
         if not fn:
             return None  # #1415
