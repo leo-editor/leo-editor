@@ -12,7 +12,6 @@ class TestChecker(LeoUnitTest):
     #@+others
     #@+node:ekr.20210904031436.1: *3* test_regex_for_pylint
     def test_regex_for_pylint(self):
-        c = self.c
         pattern = g.pylint_pat
         table = (
             r'c:\test\pylint_links_test2.py:5:4: R1705: Unnecessary "else" after "return" (no-else-return)',

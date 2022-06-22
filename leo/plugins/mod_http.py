@@ -1229,11 +1229,10 @@ def poll(timeout=0.0):
     if not map:
         return False
     e: Any
-    f: Any
     r: Any = []
     w: Any
     while 1:
-        e = f = w = []
+        e = w = []
         for fd, obj in map.items():
             if obj.readable():
                 r.append(fd)
