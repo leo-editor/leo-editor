@@ -706,9 +706,6 @@ class Position:
     def isSelected(self) -> bool:
         return self.v.isSelected()
 
-    def isTopBitSet(self) -> bool:
-        return self.v.isTopBitSet()
-
     def isVisited(self) -> bool:
         return self.v.isVisited()
 
@@ -1967,21 +1964,28 @@ class VNode:
     ]
     #@+<< VNode constants >>
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
+    #@@nobeautify
+
     # Define the meaning of status bits in new vnodes.
-    # Archived...
-    clonedBit = 0x01  # True: VNode has clone mark.
-    # unused      0x02
+
+    # Unused bits.
+    # 0x01: was clonedBit
+    # 0x02
+    # 0x10
+    # 0x40: was topBit
+    # 0x010
+
+    # Archived bits...
     expandedBit = 0x04  # True: VNode is expanded.
-    markedBit = 0x08  # True: VNode is marked
-    # unused    = 0x10 # (was orphanBit)
-    selectedBit = 0x20  # True: VNode is current VNode.
-    topBit = 0x40  # True: VNode was top VNode when saved.
+    markedBit   = 0x08  # True: VNode is marked
+    selectedBit = 0x20  # True: VNode is current vnode.
+
     # Not archived...
     richTextBit = 0x080  # Determines whether we use <bt> or <btr> tags.
-    visitedBit = 0x100
-    dirtyBit = 0x200
-    writeBit = 0x400
-    orphanBit = 0x800  # True: error in @<file> tree prevented it from being written.
+    visitedBit  = 0x100
+    dirtyBit    = 0x200
+    writeBit    = 0x400
+    orphanBit   = 0x800  # True: error in @<file> tree prevented it from being written.
     #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
@@ -2302,9 +2306,6 @@ class VNode:
     #@+node:ekr.20031218072017.3373: *5* v.isSelected
     def isSelected(self) -> bool:
         return (self.statusBits & VNode.selectedBit) != 0
-    #@+node:ekr.20031218072017.3374: *5* v.isTopBitSet
-    def isTopBitSet(self) -> bool:
-        return (self.statusBits & self.topBit) != 0
     #@+node:ekr.20031218072017.3376: *5* v.isVisited
     def isVisited(self) -> bool:
         return (self.statusBits & VNode.visitedBit) != 0
@@ -2317,9 +2318,6 @@ class VNode:
         return self.statusBits
     #@+node:ekr.20031218072017.3384: *3* v.Setters
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
-    #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
-    def clearClonedBit(self) -> None:
-        self.statusBits &= ~self.clonedBit
     #@+node:ekr.20031218072017.3390: *5* v.clearDirty
     def clearDirty(self) -> None:
         """Clear the vnode dirty bit."""
@@ -2356,15 +2354,6 @@ class VNode:
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus(self, status: int) -> None:
         self.statusBits = status
-    #@+node:ekr.20031218072017.3397: *5* v.setClonedBit & initClonedBit
-    def setClonedBit(self) -> None:
-        self.statusBits |= self.clonedBit
-
-    def initClonedBit(self, val: bool) -> None:
-        if val:
-            self.statusBits |= self.clonedBit
-        else:
-            self.statusBits &= ~self.clonedBit
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self) -> None:
         """
