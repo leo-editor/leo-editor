@@ -3629,6 +3629,9 @@ class Commands:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
+        # check for JSON
+        if s and s.lstrip().startswith("{"):
+            return True
         if s and g.match(s, 0, g.app.prolog_prefix_string):
             return True
         return False

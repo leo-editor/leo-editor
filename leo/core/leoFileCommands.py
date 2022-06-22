@@ -399,6 +399,21 @@ class FastRead:
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
+    #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
+    def readFileFromJsonClipboard(self, s):
+        """
+        Recreate a file from a JSON string s, and return its hidden vnode.
+        """
+        v, g_element = self.readWithJsonTree(path=None, s=s)
+        if not v:  # #1510.
+            return None
+        #
+        # #1111: ensure that all outlines have at least one node.
+        if not v.children:
+            new_vnode = leoNodes.VNode(context=self.c)
+            new_vnode.h = 'newHeadline'
+            v.children = [new_vnode]
+        return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
     def readWithJsonTree(self, path, s):
         try:
@@ -492,67 +507,77 @@ class FastRead:
 
         c, fc = self.c, self.c.fileCommands
 
-        def create_vnode_from_dicts(i, parent_v, v_dict):
-            """Create a new vnode as the i'th child of the parent vnode."""
-            #
-            # Get the gnx.
-            gnx = v_dict.get('gnx')
-            if not gnx:
-                g.trace(f"Bad .leojs file: no gnx in v_dict")
-                g.printObj(v_dict)
-                return
-            #
-            # Create the vnode.
-            assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
-
-            try:
-                v = gnx2vnode.get(gnx)
-            except KeyError:
-                # g.trace('no "t" attrib')
-                gnx = None
-                v = None
-            if v:
-                # A clone
-                parent_v.children.append(v)
-                v.parents.append(parent_v)
-                # The body overrides any previous body text.
-                body = g.toUnicode(gnx2body.get(gnx) or '')
-                assert isinstance(body, str), body.__class__.__name__
-                v._bodyString = body
-            else:
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                gnx2vnode[gnx] = v
-                parent_v.children.append(v)
-                v.parents.append(parent_v)
-
-                v._headString = v_dict.get('vh', '')
-                v._bodyString = gnx2body.get(gnx, '')
-                v.statusBits = v_dict.get('status', 0)
-                if v.isExpanded():
-                    fc.descendentExpandedList.append(gnx)
-                if v.isMarked():
-                    fc.descendentMarksList.append(gnx)
+        def v_element_visitor(parent_e, parent_v):
+            """Visit the given element, creating or updating the parent vnode."""
+            for i, v_dict in enumerate(parent_e):
+                # Get the gnx.
+                gnx = v_dict.get('gnx')
+                if not gnx:
+                    g.trace(f"Bad .leojs file: no gnx in v_dict")
+                    g.printObj(v_dict)
+                    return
                 #
+                # Create the vnode.
+                assert len(parent_v.children) == i, (i, parent_v, parent_v.children)
 
-                # Handle vnode uA's
-                uaDict = gnx2ua[gnx]  # A defaultdict(dict)
+                try:
+                    v = gnx2vnode.get(gnx)
+                except KeyError:
+                    # g.trace('no "t" attrib')
+                    gnx = None
+                    v = None
+                if v:
+                    # A clone
+                    parent_v.children.append(v)
+                    v.parents.append(parent_v)
+                    # The body overrides any previous body text.
+                    body = g.toUnicode(gnx2body.get(gnx) or '')
+                    assert isinstance(body, str), body.__class__.__name__
+                    v._bodyString = body
+                else:
+                    v = leoNodes.VNode(context=c, gnx=gnx)
+                    gnx2vnode[gnx] = v
+                    parent_v.children.append(v)
+                    v.parents.append(parent_v)
 
-                if uaDict:
-                    v.unknownAttributes = uaDict
+                    v._headString = v_dict.get('vh', '')
+                    v._bodyString = gnx2body.get(gnx, '')
+                    v.statusBits = v_dict.get('status', 0)
+                    if v.isExpanded():
+                        fc.descendentExpandedList.append(gnx)
+                    if v.isMarked():
+                        fc.descendentMarksList.append(gnx)
+                    #
 
-                # Recursively create the children.
-                for i2, v_dict2 in enumerate(v_dict.get('children', [])):
-                    create_vnode_from_dicts(i2, v, v_dict2)
+                    # Handle vnode uA's
+                    uaDict = gnx2ua[gnx]  # A defaultdict(dict)
+
+                    if uaDict:
+                        v.unknownAttributes = uaDict
+
+                    # Recursively create the children.
+                    # for i2, v_dict2 in enumerate(v_dict.get('children', [])):
+                    v_element_visitor(v_dict.get('children', []), v)
 
 
         # Start the recursion by creating the top-level vnodes.
-        c.hiddenRootNode.children = []  # Necessary.
-        parent_v = c.hiddenRootNode
-        for i, v_dict in enumerate(v_elements):
-            create_vnode_from_dicts(i, parent_v, v_dict)
+        # c.hiddenRootNode.children = []  # Necessary.
+        # parent_v = c.hiddenRootNode
+        # for i, v_dict in enumerate(v_elements):
+        #     create_vnode_from_dicts(i, parent_v, v_dict)
 
-        return c.hiddenRootNode.children[0]
+        # return c.hiddenRootNode.children[0]
 
+        # Create the hidden root vnode.
+
+        gnx = 'hidden-root-vnode-gnx'
+        hidden_v = leoNodes.VNode(context=c, gnx=gnx)
+        hidden_v._headString = '<hidden root vnode>'
+        gnx2vnode[gnx] = hidden_v
+        #
+        # Traverse the tree of v elements.
+        v_element_visitor(v_elements, hidden_v)
+        return hidden_v
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands
 class FileCommands:
@@ -763,9 +788,13 @@ class FileCommands:
         # Save and clear gnxDict.
         oldGnxDict = self.gnxDict
         self.gnxDict = {}
-        # This encoding must match the encoding used in outline_to_clipboard_string.
-        s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+        if s.lstrip().startswith("{"):
+            # Maybe JSON
+            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+        else:
+            # This encoding must match the encoding used in outline_to_clipboard_string.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
@@ -875,6 +904,8 @@ class FileCommands:
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             elif fileName.endswith('.leojs'):
                 v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
+                if v:
+                    c.hiddenRootNode = v
             else:
                 v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
