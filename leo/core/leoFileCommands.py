@@ -556,19 +556,7 @@ class FastRead:
                         v.unknownAttributes = uaDict
 
                     # Recursively create the children.
-                    # for i2, v_dict2 in enumerate(v_dict.get('children', [])):
                     v_element_visitor(v_dict.get('children', []), v)
-
-
-        # Start the recursion by creating the top-level vnodes.
-        # c.hiddenRootNode.children = []  # Necessary.
-        # parent_v = c.hiddenRootNode
-        # for i, v_dict in enumerate(v_elements):
-        #     create_vnode_from_dicts(i, parent_v, v_dict)
-
-        # return c.hiddenRootNode.children[0]
-
-        # Create the hidden root vnode.
 
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
