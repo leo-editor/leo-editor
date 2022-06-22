@@ -1761,11 +1761,12 @@ class FileCommands:
         for v in c.all_unique_nodes():
             if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                 uas[v.gnx] = v.unknownAttributes
+        gnxSet = set() # hods all gnx found so far, to exclude adding headlines of already defined gnx.
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
                 'vnodes': [
-                    self.leojs_vnode(p.v) for p in c.rootPosition().self_and_siblings()
+                    self.leojs_vnode(p.v, gnxSet) for p in c.rootPosition().self_and_siblings()
                 ],
                 'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
             }
@@ -1798,7 +1799,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, v):
+    def leojs_vnode(self, v, gnxSet):
         """Return a jsonized vnode."""
         status = 0
         if v.isMarked():
@@ -1808,11 +1809,13 @@ class FileCommands:
         if v.isSelected():
             status |= v.selectedBit
 
-        children = [self.leojs_vnode(child) for child in v.children]
+        children = [self.leojs_vnode(child, gnxSet) for child in v.children]
         result = {
             'gnx': v.fileIndex,
-            'vh': v._headString,
         }
+        if v.fileIndex not in gnxSet:
+            result['vh']= v._headString # Not a clone so far so add his headline text
+        gnxSet.add(v.fileIndex)
         if status:
             result['status'] = status
         if children:
