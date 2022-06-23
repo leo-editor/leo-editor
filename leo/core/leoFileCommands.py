@@ -421,15 +421,20 @@ class FastRead:
         except Exception:
             g.trace(f"Error reading .leojs file: {path}")
             g.es_exception()
-            return None
-        g_element = d.get('globals', {})
-        v_elements = d.get('vnodes')
-        t_elements = d.get('tnodes')
-        gnx2ua = defaultdict(dict)
-        gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
-        gnx2body = self.scanJsonTnodes(t_elements)
-        hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-        # self.handleBits()
+            return None, None
+
+        try:
+            g_element = d.get('globals', {})
+            v_elements = d.get('vnodes')
+            t_elements = d.get('tnodes')
+            gnx2ua = defaultdict(dict)
+            gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
+            gnx2body = self.scanJsonTnodes(t_elements)
+            hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
+            # self.handleBits()
+        except:
+            return None, None
+
         return hidden_v, g_element
 
     #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
