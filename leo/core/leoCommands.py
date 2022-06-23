@@ -68,7 +68,7 @@ class Commands:
         c.initFileIvars(fileName, relativeFileName)
         c.initOptionsIvars()
         c.initObjectIvars()
-        # Init the settings *before* initing the objects.
+        # Instantiate c.config *before* initing objects.
         c.initSettings(previousSettings)
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
@@ -351,11 +351,10 @@ class Commands:
             self.styleSheetManager = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings):
-        """Init the settings *before* initing the objects."""
+        """Instantiate c.config from previous settings."""
         c = self
         from leo.core import leoConfig
         c.config = leoConfig.LocalConfigManager(c, previousSettings)
-        g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self):
         return f"Commander {id(self)}: {repr(self.mFileName)}"

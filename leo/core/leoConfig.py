@@ -1349,7 +1349,6 @@ class GlobalConfigManager:
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
-        self.inited = False
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
         self.menusFileName = ''
         self.modeCommandsDict = g.TypedDict(
@@ -1407,39 +1406,43 @@ class GlobalConfigManager:
     #@+node:ekr.20041117083202.2: *4* gcm.initRecentFiles
     def initRecentFiles(self) -> None:
         self.recentFiles = []
-    #@+node:ekr.20041228042224: *4* gcm.setIvarsFromSettings
-    def setIvarsFromSettings(self, c: Cmdr) -> None:
+    #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
+    def config_iter(self, c: Cmdr) -> Generator:
+        """Letters:
+          leoSettings.leo
+        D default settings
+        F loaded .leo File
+        M myLeoSettings.leo
+        @ @button, @command, @mode.
         """
-        Init g.app.config ivars or c's ivars from settings.
-
-        - Called from c.initSettings with c = None to init g.app.config ivars.
-        - Called from c.initSettings to init corresponding commander ivars.
-        """
-        ### if g.app.loadedThemes:
-        ###    return
-        if not self.inited:
-            return
-        ### This trace never fires.
-        print('')
-        g.trace(g.callers())
-        # Ignore temporary commanders created by readSettingsFiles.
-        d = self.ivarsDict
-        keys = list(d.keys())
-        keys.sort()
-        for key in keys:
+        lm = g.app.loadManager
+        d = c.config.settingsDict if c else lm.globalSettingsDict
+        limit = c.config.getInt('print-settings-at-data-limit')
+        if limit is None:
+            limit = 20  # A reasonable default.
+        # pylint: disable=len-as-condition
+        for key in sorted(list(d.keys())):
             gs = d.get(key)
-            if gs:
-                assert isinstance(gs, g.GeneralSetting)
-                ivar = gs.ivar  # The actual name of the ivar.
-                kind = gs.kind
-                if c:
-                    val = c.config.get(key, kind)
-                else:
-                    val = self.get(key, kind)  # Don't use bunch.val!
-                if c:
-                    setattr(c, ivar, val)
-                if True:  # Always set the global ivars.
-                    setattr(self, ivar, val)
+            assert isinstance(gs, g.GeneralSetting), repr(gs)
+            if gs and gs.kind:
+                letter = lm.computeBindingLetter(c, gs.path)
+                val = gs.val
+                if gs.kind == 'data':
+                    # #748: Remove comments
+                    aList = [' ' * 8 + z.rstrip() for z in val
+                        if z.strip() and not z.strip().startswith('#')]
+                    if not aList:
+                        val = '[]'
+                    elif limit == 0 or len(aList) < limit:
+                        val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
+                        # The following doesn't work well.
+                        # val = g.objToString(aList, indent=' '*4)
+                    else:
+                        val = f"<{len(aList)} non-comment lines>"
+                elif isinstance(val, str) and val.startswith('<?xml'):
+                    val = '<xml>'
+                key2 = f"@{gs.kind:>6} {key}"
+                yield key2, val, c, letter
     #@+node:ekr.20041117081009: *3* gcm.Getters...
     #@+node:ekr.20041123070429: *4* gcm.canonicalizeSettingName (munge)
     def canonicalizeSettingName(self, name: str) -> str:
@@ -1659,43 +1662,6 @@ class GlobalConfigManager:
     def getString(self, setting: str) -> str:
         """Return the value of @string setting."""
         return self.get(setting, "string")
-    #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
-    def config_iter(self, c: Cmdr) -> Generator:
-        """Letters:
-          leoSettings.leo
-        D default settings
-        F loaded .leo File
-        M myLeoSettings.leo
-        @ @button, @command, @mode.
-        """
-        lm = g.app.loadManager
-        d = c.config.settingsDict if c else lm.globalSettingsDict
-        limit = c.config.getInt('print-settings-at-data-limit')
-        if limit is None:
-            limit = 20  # A reasonable default.
-        # pylint: disable=len-as-condition
-        for key in sorted(list(d.keys())):
-            gs = d.get(key)
-            assert isinstance(gs, g.GeneralSetting), repr(gs)
-            if gs and gs.kind:
-                letter = lm.computeBindingLetter(c, gs.path)
-                val = gs.val
-                if gs.kind == 'data':
-                    # #748: Remove comments
-                    aList = [' ' * 8 + z.rstrip() for z in val
-                        if z.strip() and not z.strip().startswith('#')]
-                    if not aList:
-                        val = '[]'
-                    elif limit == 0 or len(aList) < limit:
-                        val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
-                        # The following doesn't work well.
-                        # val = g.objToString(aList, indent=' '*4)
-                    else:
-                        val = f"<{len(aList)} non-comment lines>"
-                elif isinstance(val, str) and val.startswith('<?xml'):
-                    val = '<xml>'
-                key2 = f"@{gs.kind:>6} {key}"
-                yield key2, val, c, letter
     #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName: str) -> Any:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
