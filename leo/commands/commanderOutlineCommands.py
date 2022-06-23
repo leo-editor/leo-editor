@@ -94,7 +94,7 @@ def pasteOutline(self, event=None, s=None, undoFlag=True):
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
-    isLeo = g.match(s, 0, g.app.prolog_prefix_string)
+    isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
     # Get *position* to be pasted.
@@ -137,7 +137,7 @@ def pasteOutlineRetainingClones(self, event=None, s=None, undoFlag=True):
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
-    isLeo = g.match(s, 0, g.app.prolog_prefix_string)
+    isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
     if not isLeo:
         return None
     # Get *position* to be pasted.
@@ -202,6 +202,7 @@ def computeVnodeInfoDict(c):
 #@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
 @g.commander_command('paste-as-template')
 def pasteAsTemplate(self, event=None):
+    """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
     #@+others

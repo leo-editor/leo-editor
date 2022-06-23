@@ -727,6 +727,12 @@ class QuickSearchController:
         res = PosList()
 
         tc = getattr(c, 'theTagController', None)
+        if not tc:
+            print("In find_tag: No 'theTagController' on commander.")
+            print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+            print("", flush = True)
+            return []
+
         gnxDict = c.fileCommands.gnxDict
         key = pat.strip()
 
@@ -1511,6 +1517,7 @@ class LeoServer:
             # Radio buttons
             table3 = (
                 ('node_only', 'node_only', 'radio_button_node_only'),
+                ('file_only', 'file_only', 'radio_button_file_only'),
                 ('entire_outline', None, 'radio_button_entire_outline'),
                 ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
             )
@@ -1525,8 +1532,9 @@ class LeoServer:
             # Ensure one radio button is set.
             w = ftm.radio_button_entire_outline
             nodeOnly = searchSettings.get('node_only', False)
+            fileOnly = searchSettings.get('file_only', False)
             suboutlineOnly = searchSettings.get('suboutline_only', False)
-            if not nodeOnly and not suboutlineOnly:
+            if not nodeOnly and not suboutlineOnly and not fileOnly:
                 setattr(find, 'entire_outline', True)
                 if not w.isChecked():
                     w.toggle()
@@ -1802,6 +1810,10 @@ class LeoServer:
         try:
             p = self._get_p(param)
             tc = getattr(c, 'theTagController', None)
+            if not tc:
+                print("In tag_node. No 'theTagController' on commander.")
+                print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                print("", flush = True)
             if hasattr(tc, 'add_tag'):
                 tc.add_tag(p, tag_param)
         except Exception as e:
@@ -1820,8 +1832,13 @@ class LeoServer:
             p = self._get_p(param)
             v = p.v
             tc = getattr(c, 'theTagController', None)
-            if v.u and '__node_tags' in v.u:
-                tc.remove_tag(p, tag_param)
+            if not tc:
+                print("In remove_tag. No 'theTagController' on commander.")
+                print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                print("", flush = True)
+            if hasattr(tc, 'remove_tag'):
+                if v.u and '__node_tags' in v.u:
+                    tc.remove_tag(p, tag_param)
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
         return self._make_response()
@@ -1837,7 +1854,12 @@ class LeoServer:
             if v.u and '__node_tags' in v.u:
                 del v.u['__node_tags']
                 tc = getattr(c, 'theTagController', None)
-                tc.initialize_taglist()  # reset tag list: some may have been removed
+                if not tc:
+                    print("In remove_tags. No 'theTagController' on commander.")
+                    print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
+                    print("", flush = True)
+                if hasattr(tc, 'initialize_taglist'):
+                    tc.initialize_taglist()  # reset tag list: some may have been removed
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()

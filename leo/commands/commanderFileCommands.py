@@ -12,11 +12,11 @@ from leo.core import leoImport
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
-    """Reload settings in all commanders, or just c."""
+    """Reload settings in all commanders, saving all existing opened files first"""
     lm = g.app.loadManager
-    # Save any changes so they can be seen.
+    # Save any changes so they can be seen, for existing files that are not new/untitled.
     for c2 in g.app.commanders():
-        if c2.isChanged():
+        if c2.isChanged() and c2.mFileName:
             c2.save()
     # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
     lm.readGlobalSettingsFiles()
@@ -275,7 +275,7 @@ def open_outline(self, event=None):
             c.initialFocusHelper()
     #@-others
     table = [
-        ("Leo files", "*.leo *.db"),
+        ("Leo files", "*.leo *.leojs *.db"),
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
@@ -407,7 +407,7 @@ def save(self, event=None, fileName=None):
             if not fileName:
                 fileName = g.app.gui.runSaveFileDialog(c,
                     title="Save",
-                    filetypes=[("Leo files", "*.leo *.db"),],
+                    filetypes=[("Leo files", "*.leo *.leojs *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
@@ -476,7 +476,7 @@ def saveAs(self, event=None, fileName=None):
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save As",
-            filetypes=[("Leo files", "*.leo *.db *.leojs"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -535,7 +535,7 @@ def saveTo(self, event=None, fileName=None, silent=False):
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save To",
-            filetypes=[("Leo files", "*.leo *.db"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     c.bringToFront()
     if fileName:
@@ -1008,7 +1008,7 @@ def setReferenceFile(self, event=None):
     c = self
     fileName = g.app.gui.runOpenFileDialog(c,
             title="Select reference Leo file",
-            filetypes=[("Leo files", "*.leo *.db"),],
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
     if not fileName:
         return
@@ -1026,7 +1026,7 @@ def open_theme_file(self, event):
     fn = g.app.gui.runOpenFileDialog(c,
         title="Open Theme File",
         filetypes=[
-            ("Leo files", "*.leo *.db"),
+            ("Leo files", "*.leo *.leojs *.db"),
             ("All files", "*"),
         ],
         defaultextension=g.defaultLeoFileExtension(c),
