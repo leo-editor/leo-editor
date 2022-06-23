@@ -520,7 +520,7 @@ class FastRead:
                 # Get the gnx.
                 gnx = v_dict.get('gnx')
                 if not gnx:
-                    g.trace(f"Bad .leojs file: no gnx in v_dict")
+                    g.trace("Bad .leojs file: no gnx in v_dict")
                     g.printObj(v_dict)
                     return
                 #
