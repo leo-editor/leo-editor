@@ -7734,6 +7734,39 @@ def reloadSettingsHelper(c):
         c.initConfigSettings()
         # Reload settings in all configurable classes
         c.reloadConfigurableSettings()
+#@+node:ekr.20041228042224: *3* gcm.setIvarsFromSettings (no longer used
+trace_set = set()
+
+def setIvarsFromSettings(self, c: Cmdr) -> None:
+    """
+    Init g.app.config ivars or c's ivars from settings.
+
+    - Called from c.initSettings with c = None to init g.app.config ivars.
+    - Called from c.initSettings to init corresponding commander ivars.
+    """
+    trace_tag = 'GCM'
+    # Ignore temporary commanders created by readSettingsFiles.
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        gs = d.get(key)
+        if gs:
+            assert isinstance(gs, g.GeneralSetting)
+            ivar = gs.ivar  # The actual name of the ivar.
+            kind = gs.kind
+            if c:
+                val = c.config.get(key, kind)
+            else:
+                val = self.get(key, kind)  # Don't use bunch.val!
+            if c:
+                print(f"{trace_tag} {c.shortFileName():20} {val!r:10} {ivar}")
+                setattr(c, ivar, val)
+            # Always set the global ivars.
+            if ivar not in self.trace_set:
+                self.trace_set.add(ivar)
+                print(f"{trace_tag} {'global':20} {val!r:10} {ivar}")
+            setattr(self, ivar, val)
 #@-all
 #@@nosearch
 #@-leo
