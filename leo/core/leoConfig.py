@@ -1506,8 +1506,7 @@ class GlobalConfigManager:
 class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
-    #@+node:ekr.20120215072959.12472: *3* c.config.Birth
-    #@+node:ekr.20041118104831.2: *4* c.config.ctor
+    #@+node:ekr.20041118104831.2: *3*  c.config.ctor
     def __init__(self, c: Cmdr, previousSettings: str=None) -> None:
         self.c = c
         lm = g.app.loadManager
