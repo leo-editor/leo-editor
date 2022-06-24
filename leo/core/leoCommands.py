@@ -774,7 +774,7 @@ class Commands:
     def redirectScriptOutput(self):
         c = self
         ### if c.config.redirect_execute_script_output_to_log_pane:
-        if c.config.getBool('redirect-execute-script-output-to-log-pane'):
+        if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
     #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
@@ -791,7 +791,8 @@ class Commands:
     #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
     def unredirectScriptOutput(self):
         c = self
-        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+        ### if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+        if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.restoreStderr()
             g.restoreStdout()
     #@+node:ekr.20080514131122.12: *3* @cmd recolor

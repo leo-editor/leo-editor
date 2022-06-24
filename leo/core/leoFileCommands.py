@@ -432,7 +432,7 @@ class FastRead:
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
             # self.handleBits()
-        except:
+        except Exception:
             g.trace(f"Error .leojs JSON is not valid: {path}")
             g.es_exception()
             return None, None

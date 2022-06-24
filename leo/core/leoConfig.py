@@ -1211,13 +1211,16 @@ class GlobalConfigManager:
     # Class data...
     #@+<< gcm.defaultsDict >>
     #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
-    #@+at This contains only the "interesting" defaults.
+    # This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
-    #@@c
+
+    ### To do: Move these to c.config.__init__
+
     defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
     defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
     defaultMenuFontSize = 12  # 9 if sys.platform == "win32" else 12
     defaultTreeFontSize = 12  # 9 if sys.platform == "win32" else 12
+
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
         keyType=str,
@@ -1225,39 +1228,44 @@ class GlobalConfigManager:
     )
     defaultsData = (
         # compare options...
-        ("ignore_blank_lines", "bool", True),
-        ("limit_count", "int", 9),
-        ("print_mismatching_lines", "bool", True),
-        ("print_trailing_lines", "bool", True),
+        ### ("ignore_blank_lines", "bool", True),
+        ### ("limit_count", "int", 9),
+        ### ("print_mismatching_lines", "bool", True),
+        ### ("print_trailing_lines", "bool", True),
         # find/change options...
+
         ("search_body", "bool", True),
         ("whole_word", "bool", True),
+        
         # Prefs panel.
         # ("default_target_language","language","python"),
-        ("target_language", "language", "python"),  # Bug fix: 6/20,2005.
-        ("tab_width", "int", -4),
+        ### ("target_language", "language", "python"),  # Bug fix: 6/20,2005.
+        ### ("tab_width", "int", -4),
         ### ("page_width", "int", 132),
-        ("output_doc_chunks", "bool", True),
-        ("tangle_outputs_header", "bool", True),
+        ### ("output_doc_chunks", "bool", True),
+        ### ("tangle_outputs_header", "bool", True),
+        
         # Syntax coloring options...
         # Defaults for colors are handled by leoColor.py.
-        ("color_directives_in_plain_text", "bool", True),
-        ("underline_undefined_section_names", "bool", True),
+        ### ("color_directives_in_plain_text", "bool", True),
+        ### ("underline_undefined_section_names", "bool", True),
+        
         # Window options...
-        ("body_pane_wraps", "bool", True),
-        ("body_text_font_family", "family", "Courier"),
-        ("body_text_font_size", "size", defaultBodyFontSize),
-        ("body_text_font_slant", "slant", "roman"),
-        ("body_text_font_weight", "weight", "normal"),
-        ("enable_drag_messages", "bool", True),
-        ("headline_text_font_family", "string", None),
-        ("headline_text_font_size", "size", defaultLogFontSize),
-        ("headline_text_font_slant", "slant", "roman"),
-        ("headline_text_font_weight", "weight", "normal"),
-        ("log_text_font_family", "string", None),
-        ("log_text_font_size", "size", defaultLogFontSize),
-        ("log_text_font_slant", "slant", "roman"),
-        ("log_text_font_weight", "weight", "normal"),
+        ### ("body_pane_wraps", "bool", True),
+        ### ("body_text_font_family", "family", "Courier"),
+        ### ("body_text_font_size", "size", defaultBodyFontSize),
+        ###
+            # # # ("body_text_font_slant", "slant", "roman"),
+            # # # ("body_text_font_weight", "weight", "normal"),
+            # # # ("enable_drag_messages", "bool", True),
+            # # # ("headline_text_font_family", "string", None),
+            # # # ("headline_text_font_size", "size", defaultLogFontSize),
+            # # # ("headline_text_font_slant", "slant", "roman"),
+            # # # ("headline_text_font_weight", "weight", "normal"),
+            # # # ("log_text_font_family", "string", None),
+            # # # ("log_text_font_size", "size", defaultLogFontSize),
+            # # # ("log_text_font_slant", "slant", "roman"),
+            # # # ("log_text_font_weight", "weight", "normal"),
         ("initial_window_height", "int", 600),
         ("initial_window_width", "int", 800),
         ("initial_window_left", "int", 10),
@@ -1315,12 +1323,12 @@ class GlobalConfigManager:
         ### ("stylesheet", "string", None),
         ### ("tab_width", "int", -4),
         # Bug fix: added: 6/20/2005.
-        ("target_language", "language", "python"),
-        ("trailing_body_newlines", "string", "asis"),
+        ### ("target_language", "language", "python"),
+        ### ("trailing_body_newlines", "string", "asis"),
         # New in 4.3: use_plugins = True by default.
-        ("use_plugins", "bool", True),
-        ("undo_granularity", "string", "word"),  # "char","word","line","node"
-        ("write_strips_blank_lines", "bool", False),
+        ### ("use_plugins", "bool", True),
+        ### ("undo_granularity", "string", "word"),  # "char","word","line","node"
+        ### ("write_strips_blank_lines", "bool", False),
     )
     #@-<< gcm.ivarsDict >>
     #@+others
@@ -1335,7 +1343,7 @@ class GlobalConfigManager:
             ### self.output_newline = 'nl'
             self.redirect_execute_script_output_to_log_pane = True
             ### self.relative_path_base_directory = '!'
-        self.use_plugins = False  # Required to keep pylint happy.
+        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
         ### self.create_nonexistent_directories = False  # Required to keep pylint happy.
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
