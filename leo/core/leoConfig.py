@@ -1209,18 +1209,12 @@ class ActiveSettingsOutline:
 class GlobalConfigManager:
     """A class to manage configuration settings."""
     # Class data...
-   
+
     #@+others
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
     def __init__(self) -> None:
-        ### if 0:  # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
-            ### self.at_root_bodies_start_in_doc_mode = True
-            ### self.output_newline = 'nl'
-            ###self.redirect_execute_script_output_to_log_pane = True
-            ### self.relative_path_base_directory = '!'
-        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
-        ### self.create_nonexistent_directories = False  # Required to keep pylint happy.
+
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
         self.atCommonButtonsList: List[Tuple[Cmdr, str, Any]] = []
@@ -1230,22 +1224,19 @@ class GlobalConfigManager:
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
-        
-        ### Experimental.
-        self.defaultsDict = g.TypedDict(
-            name='g.app.config.defaultsDict',
-            keyType=str,
-            valType=g.GeneralSetting,
-        )
-        self.ivarsDict = g.TypedDict(
-            name='g.app.config.ivarsDict',
-            keyType=str,
-            valType=g.GeneralSetting,
-        )
-        self.ivarsData = ()
-        
+
+        if 0: ### Temporary
+            self.ivarsDict = g.TypedDict(
+                name='g.app.config.ivarsDict',
+                keyType=str,
+                valType=g.GeneralSetting,
+            )
+            self.ivarsData = ()
+
         self.default_derived_file_encoding = 'utf-8'
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
+
+
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
@@ -1254,6 +1245,8 @@ class GlobalConfigManager:
             name='modeCommandsDict',
             keyType=str,
             valType=g.TypedDict)  # was TypedDictOfLists.
+        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
+
         # Inited later...
         self.panes = None
         self.recentFiles: List[str] = []
@@ -1262,33 +1255,6 @@ class GlobalConfigManager:
         ### self.initDicts()
         ### self.initIvarsFromDicts()
         self.initRecentFiles()
-    #@+node:ekr.20041117065611.2: *4* gcm.initIvarsFromDicts & helpers
-    def initIvarsFromDicts(self) -> None:
-        for ivar in sorted(list(self.encodingIvarsDict.keys())):
-            self.initEncoding(ivar)
-        for ivar in sorted(list(self.ivarsDict.keys())):
-            self.initIvar(ivar)
-    #@+node:ekr.20041117065611.1: *5* initEncoding
-    def initEncoding(self, key: str) -> None:
-        """Init g.app.config encoding ivars during initialization."""
-        # Important: The key is munged.
-        gs = self.encodingIvarsDict.get(key)
-        setattr(self, gs.ivar, gs.encoding)
-        if gs.encoding and not g.isValidEncoding(gs.encoding):
-            g.es('g.app.config: bad encoding:', f"{gs.ivar}: {gs.encoding}")
-    #@+node:ekr.20041117065611: *5* initIvar
-    def initIvar(self, key: str) -> None:
-        """
-        Init g.app.config ivars during initialization.
-
-        This does NOT init the corresponding commander ivars.
-
-        Such initing must be done in setIvarsFromSettings.
-        """
-        # Important: the key is munged.
-        d = self.ivarsDict
-        gs = d.get(key)
-        setattr(self, gs.ivar, gs.val)
     #@+node:ekr.20041117083202.2: *4* gcm.initRecentFiles
     def initRecentFiles(self) -> None:
         self.recentFiles = []
@@ -1565,7 +1531,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
-    #@+node:ekr.20041118104831.2: *4* c.config.ctor (*** changed)
+    #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__(self, c: Cmdr, previousSettings: str=None) -> None:
 
         self.c = c
@@ -1591,12 +1557,12 @@ class LocalConfigManager:
             ### self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
             ### self.redirect_execute_script_output_to_log_pane = \
             ### g.app.config.redirect_execute_script_output_to_log_pane
-        
+
         # Default encodings.
         self.default_at_auto_file_encoding = 'utf-8'
         self.default_derived_file_encoding = 'utf-8'
         self.new_leo_file_encoding = 'utf-8'
-        
+
         # Default fonts.
         self.defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
         self.defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
@@ -1608,20 +1574,6 @@ class LocalConfigManager:
                 # self.initEncoding(key)
             # for key in sorted(list(g.app.config.ivarsDict.keys())):
                 # self.initIvar(key)
-    #@+node:ekr.20041118104414: *4* c.config.initEncoding
-    def initEncoding(self, key: str) -> None:
-        # Important: the key is munged.
-        gs = g.app.config.encodingIvarsDict.get(key)
-        encodingName = gs.ivar
-        encoding = self.get(encodingName, kind='string')
-        # Use the global setting as a last resort.
-        if encoding:
-            setattr(self, encodingName, encoding)
-        else:
-            encoding = getattr(g.app.config, encodingName)
-            setattr(self, encodingName, encoding)
-        if encoding and not g.isValidEncoding(encoding):
-            g.es('bad', f"{encodingName}: {encoding}")
     #@+node:ekr.20041118104240: *4* c.config.initIvar
     def initIvar(self, key: str) -> None:
 
