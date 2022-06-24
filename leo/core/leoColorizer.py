@@ -155,7 +155,6 @@ class BaseColorizer:
             slant = get(name + '_slant', 'slant')
             weight = get(name + '_weight', 'weight')
             if family or slant or weight or size:
-                family = family or g.app.config.defaultFontFamily
                 key = f"{key}::{setting_name}"
                 if key in self.zoom_dict:
                     old_size = self.zoom_dict.get(key)

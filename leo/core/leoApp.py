@@ -1868,8 +1868,11 @@ class LoadManager:
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
         """Create lm.globalSettingsDict & lm.globalBindingsDict."""
-        settings_d = g.app.config.defaultsDict
-        assert isinstance(settings_d, g.TypedDict), settings_d
+        settings_d = g.TypedDict(
+            name='g.app.config.defaultsDict',
+            keyType=str,
+            valType=g.GeneralSetting,
+        )
         settings_d.setName('lm.globalSettingsDict')
         bindings_d = g.TypedDict(  # was TypedDictOfLists.
             name='lm.globalBindingsDict',

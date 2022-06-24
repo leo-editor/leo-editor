@@ -477,7 +477,7 @@ class NullGui(LeoGui):
         pass
 
     def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> Any:
-        return g.app.config.defaultFont
+        return None
 
     def getIconImage(self, name: str) -> None:
         return None

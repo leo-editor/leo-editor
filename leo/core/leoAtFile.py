@@ -136,7 +136,7 @@ class AtFile:
         at, c = self, self.c
         if not c and c.config:
             return None  # pragma: no cover
-        make_dirs = c.config.create_nonexistent_directories
+        make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
@@ -2459,8 +2459,8 @@ class AtFile:
     #@+node:ekr.20041005105605.211: *5* at.putInitialComment
     def putInitialComment(self):  # pragma: no cover
         c = self.c
-        s2 = c.config.output_initial_comment
-        if s2:
+        s2 = c.config.getString('output-initial-comment') or ''
+        if s2.strip():
             lines = s2.split("\\n")
             for line in lines:
                 line = line.replace("@date", time.asctime())

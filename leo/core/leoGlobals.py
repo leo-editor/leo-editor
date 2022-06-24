@@ -3339,9 +3339,9 @@ def getOutputNewline(c: Cmdr=None, name: str=None) -> str:
     if name:
         s = name
     elif c:
-        s = c.config.output_newline
+        s = c.config.getString('output-newline')
     else:
-        s = app.config.output_newline
+        s = 'nl'  # Legacy value. Perhaps dubious.
     if not s:
         s = ''
     s = s.lower()
@@ -3778,12 +3778,18 @@ def get_files_in_directory(directory: str, kinds: List=None, recursive: bool=Tru
 
 def getBaseDirectory(c: Cmdr) -> str:
     """Convert '!' or '.' to proper directory references."""
-    base = app.config.relative_path_base_directory
+    if not c:
+        return ''  # No relative base given.
+    base = c.config.getBool('relative-path-base-directory')
     if base and base == "!":
         base = app.loadDir
     elif base and base == ".":
         base = c.openDirectory
-    if base and g.os_path_isabs(base):
+    else:
+        return ''  # Settings error.
+    if not base:
+        return ''
+    if g.os_path_isabs(base):
         # Set c.chdir_to_relative_path as needed.
         if not hasattr(c, 'chdir_to_relative_path'):
             c.chdir_to_relative_path = c.config.getBool('chdir-to-relative-path')
@@ -3791,7 +3797,7 @@ def getBaseDirectory(c: Cmdr) -> str:
         if c.chdir_to_relative_path:
             os.chdir(base)
         return base  # base need not exist yet.
-    return ""  # No relative base given.
+    return ''  # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncodingAt
 def getEncodingAt(p: Pos, s: bytes=None) -> str:
     """

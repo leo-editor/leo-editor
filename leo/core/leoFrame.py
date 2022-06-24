@@ -786,7 +786,7 @@ class LeoFrame:
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self) -> Tuple[bool, float, float]:
         c = self.c
-        s = c.config.get("initial_split_orientation", "string")
+        s = c.config.getString("initial_split_orientation")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
             r = c.config.getRatio("initial-vertical-ratio")

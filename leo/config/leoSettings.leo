@@ -541,6 +541,7 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
+<v t="ekr.20220624062948.1"><vh>@bool redirect-execute-script-output-to-log_pane = False</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
@@ -2312,6 +2313,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20220624062948.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11655,6 +11657,7 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
        If not present, create a default stylesheet and write it to a file
        at that place.</t>
 <t tx="ekr.20220524035531.1">Column number for right margin guidelines.</t>
+<t tx="ekr.20220624062948.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

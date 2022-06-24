@@ -356,7 +356,7 @@ class LeoImportCommands:
         c = self.c
         if not v or not c:
             return ""
-        startInCode = not c.config.at_root_bodies_start_in_doc_mode
+        startInCode = c.config.getBool('at-root-bodies-start-in-doc-mode')
         nl = self.output_newline
         docstart = nl + "@ " if self.webType == "cweb" else nl + "@" + nl
         s = v.b
@@ -539,7 +539,7 @@ class LeoImportCommands:
                 line_delim, start_delim = start_delim, None
             #@-<< set delims from the header line >>
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
-            ext = c.config.remove_sentinels_extension
+            ext = c.config.getString('remove-sentinels-extension')
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
