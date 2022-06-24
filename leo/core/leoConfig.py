@@ -1208,11 +1208,9 @@ class ActiveSettingsOutline:
 #@+node:ekr.20041119203941: ** class GlobalConfigManager
 class GlobalConfigManager:
     """A class to manage configuration settings."""
-    # Class data...
 
     #@+others
-    #@+node:ekr.20041117083202: *3* gcm.Birth...
-    #@+node:ekr.20041117062717.2: *4* gcm.ctor
+    #@+node:ekr.20041117062717.2: *3*  gcm.ctor
     def __init__(self) -> None:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.
@@ -1239,10 +1237,6 @@ class GlobalConfigManager:
         self.sc = None
         self.tree = None
         self.use_plugins = True  # Leo 4.3+: Use plugins by default.
-        self.initRecentFiles()
-    #@+node:ekr.20041117083202.2: *4* gcm.initRecentFiles
-    def initRecentFiles(self) -> None:
-        self.recentFiles = []
     #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
     def config_iter(self, c: Cmdr) -> Generator:
         """Letters:
@@ -1303,9 +1297,8 @@ class GlobalConfigManager:
     #@+node:ekr.20041117083141: *4* gcm.get & allies
     def get(self, setting: str, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
-        lm = g.app.loadManager
-        #
         # It *is* valid to call this method: it returns the global settings.
+        lm = g.app.loadManager
         d = lm.globalSettingsDict
         if d:
             assert isinstance(d, g.TypedDict), repr(d)
