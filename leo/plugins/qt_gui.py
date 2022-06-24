@@ -945,8 +945,6 @@ class LeoQtGui(leoGui.LeoGui):
         }
         weight_val = d.get(weight.lower(), Weight.Normal)
         italic = slant == 'italic'
-        # # # if not family:
-            # # # family = g.app.config.defaultFontFamily
         if not family:
             family = 'DejaVu Sans Mono'
         try:
