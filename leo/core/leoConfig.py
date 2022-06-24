@@ -1266,19 +1266,22 @@ class GlobalConfigManager:
             # # # ("log_text_font_size", "size", defaultLogFontSize),
             # # # ("log_text_font_slant", "slant", "roman"),
             # # # ("log_text_font_weight", "weight", "normal"),
-        ("initial_window_height", "int", 600),
-        ("initial_window_width", "int", 800),
-        ("initial_window_left", "int", 10),
-        ("initial_window_top", "int", 10),
-        ("initial_split_orientation", "string", "vertical"),  # was initial_splitter_orientation.
-        ("initial_vertical_ratio", "ratio", 0.5),
-        ("initial_horizontal_ratio", "ratio", 0.3),
-        ("initial_horizontal_secondary_ratio", "ratio", 0.5),
-        ("initial_vertical_secondary_ratio", "ratio", 0.7),
+        ###
+            # ("initial_window_height", "int", 600),
+            # ("initial_window_width", "int", 800),
+            # ("initial_window_left", "int", 10),
+            # ("initial_window_top", "int", 10),
+        ###
+            # ("initial_split_orientation", "string", "vertical"),  # was initial_splitter_orientation.
+            # ("initial_vertical_ratio", "ratio", 0.5),
+            # ("initial_horizontal_ratio", "ratio", 0.3),
+            # ("initial_horizontal_secondary_ratio", "ratio", 0.5),
+            # ("initial_vertical_secondary_ratio", "ratio", 0.7),
         # ("outline_pane_scrolls_horizontally","bool",False),
-        ("split_bar_color", "color", "LightSteelBlue2"),
-        ("split_bar_relief", "relief", "groove"),
-        ("split_bar_width", "int", 7),
+        ###
+            # ("split_bar_color", "color", "LightSteelBlue2"),
+            # ("split_bar_relief", "relief", "groove"),
+            # ("split_bar_width", "int", 7),
     )
     #@-<< gcm.defaultsDict >>
     #@+<< gcm.encodingIvarsDict >>
