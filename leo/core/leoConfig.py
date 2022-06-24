@@ -1209,142 +1209,15 @@ class ActiveSettingsOutline:
 class GlobalConfigManager:
     """A class to manage configuration settings."""
     # Class data...
-    #@+<< gcm.defaultsDict >>
-    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
-    # This contains only the "interesting" defaults.
-    # Ints and bools default to 0, floats to 0.0 and strings to "".
-
-    ### To do: Move these to c.config.__init__
-
-    defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
-    defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
-    defaultMenuFontSize = 12  # 9 if sys.platform == "win32" else 12
-    defaultTreeFontSize = 12  # 9 if sys.platform == "win32" else 12
-
-    defaultsDict = g.TypedDict(
-        name='g.app.config.defaultsDict',
-        keyType=str,
-        valType=g.GeneralSetting,
-    )
-    defaultsData = (
-        # compare options...
-        ### ("ignore_blank_lines", "bool", True),
-        ### ("limit_count", "int", 9),
-        ### ("print_mismatching_lines", "bool", True),
-        ### ("print_trailing_lines", "bool", True),
-        # find/change options...
-
-        ("search_body", "bool", True),
-        ("whole_word", "bool", True),
-        
-        # Prefs panel.
-        # ("default_target_language","language","python"),
-        ### ("target_language", "language", "python"),  # Bug fix: 6/20,2005.
-        ### ("tab_width", "int", -4),
-        ### ("page_width", "int", 132),
-        ### ("output_doc_chunks", "bool", True),
-        ### ("tangle_outputs_header", "bool", True),
-        
-        # Syntax coloring options...
-        # Defaults for colors are handled by leoColor.py.
-        ### ("color_directives_in_plain_text", "bool", True),
-        ### ("underline_undefined_section_names", "bool", True),
-        
-        # Window options...
-        ### ("body_pane_wraps", "bool", True),
-        ### ("body_text_font_family", "family", "Courier"),
-        ### ("body_text_font_size", "size", defaultBodyFontSize),
-        ###
-            # # # ("body_text_font_slant", "slant", "roman"),
-            # # # ("body_text_font_weight", "weight", "normal"),
-            # # # ("enable_drag_messages", "bool", True),
-            # # # ("headline_text_font_family", "string", None),
-            # # # ("headline_text_font_size", "size", defaultLogFontSize),
-            # # # ("headline_text_font_slant", "slant", "roman"),
-            # # # ("headline_text_font_weight", "weight", "normal"),
-            # # # ("log_text_font_family", "string", None),
-            # # # ("log_text_font_size", "size", defaultLogFontSize),
-            # # # ("log_text_font_slant", "slant", "roman"),
-            # # # ("log_text_font_weight", "weight", "normal"),
-        ###
-            # ("initial_window_height", "int", 600),
-            # ("initial_window_width", "int", 800),
-            # ("initial_window_left", "int", 10),
-            # ("initial_window_top", "int", 10),
-        ###
-            # ("initial_split_orientation", "string", "vertical"),  # was initial_splitter_orientation.
-            # ("initial_vertical_ratio", "ratio", 0.5),
-            # ("initial_horizontal_ratio", "ratio", 0.3),
-            # ("initial_horizontal_secondary_ratio", "ratio", 0.5),
-            # ("initial_vertical_secondary_ratio", "ratio", 0.7),
-        # ("outline_pane_scrolls_horizontally","bool",False),
-        ###
-            # ("split_bar_color", "color", "LightSteelBlue2"),
-            # ("split_bar_relief", "relief", "groove"),
-            # ("split_bar_width", "int", 7),
-    )
-    #@-<< gcm.defaultsDict >>
-    #@+<< gcm.encodingIvarsDict >>
-    #@+node:ekr.20041118062709: *3* << gcm.encodingIvarsDict >>
-    encodingIvarsDict = g.TypedDict(
-        name='g.app.config.encodingIvarsDict',
-        keyType=str,
-        valType=g.GeneralSetting,
-    )
-    encodingIvarsData = (
-        ("default_at_auto_file_encoding", "string", "utf-8"),
-        ("default_derived_file_encoding", "string", "utf-8"),
-        # Upper case for compatibility with previous versions.
-        ("new_leo_file_encoding", "string", "UTF-8"),
-        #
-        # The defaultEncoding ivar is no longer used,
-        # so it doesn't override better defaults.
-    )
-    #@-<< gcm.encodingIvarsDict >>
-    #@+<< gcm.ivarsDict >>
-    #@+node:ekr.20041117072055: *3* << gcm.ivarsDict >>
-    # Each of these settings sets the corresponding ivar.
-    # Also, the LocalConfigManager class inits the corresponding commander ivar.
-    ivarsDict = g.TypedDict(
-        name='g.app.config.ivarsDict',
-        keyType=str,
-        valType=g.GeneralSetting,
-    )
-    ivarsData = (
-        # For compatibility with previous versions.
-        ### ("at_root_bodies_start_in_doc_mode", "bool", True),
-        ### ("create_nonexistent_directories", "bool", False),
-        # "" for compatibility with previous versions.
-        ### ("output_initial_comment", "string", ""),
-        ### ("output_newline", "string", "nl"),
-        ### ("page_width", "int", "132"),
-        ### ("read_only", "bool", True),
-        ### ("redirect_execute_script_output_to_log_pane", "bool", False),
-        ### ("relative_path_base_directory", "string", "!"),
-        ### ("remove_sentinels_extension", "string", ".txt"),
-        ### ("save_clears_undo_buffer", "bool", False),
-        ### ("stylesheet", "string", None),
-        ### ("tab_width", "int", -4),
-        # Bug fix: added: 6/20/2005.
-        ### ("target_language", "language", "python"),
-        ### ("trailing_body_newlines", "string", "asis"),
-        # New in 4.3: use_plugins = True by default.
-        ### ("use_plugins", "bool", True),
-        ### ("undo_granularity", "string", "word"),  # "char","word","line","node"
-        ### ("write_strips_blank_lines", "bool", False),
-    )
-    #@-<< gcm.ivarsDict >>
+   
     #@+others
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
     def __init__(self) -> None:
-        #
-        # Set later.  To keep pylint happy.
-        if 0:  # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
+        ### if 0:  # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
             ### self.at_root_bodies_start_in_doc_mode = True
-            self.default_derived_file_encoding = 'utf-8'
             ### self.output_newline = 'nl'
-            self.redirect_execute_script_output_to_log_pane = True
+            ###self.redirect_execute_script_output_to_log_pane = True
             ### self.relative_path_base_directory = '!'
         self.use_plugins = True  # Leo 4.3+: Use plugins by default.
         ### self.create_nonexistent_directories = False  # Required to keep pylint happy.
@@ -1357,6 +1230,21 @@ class GlobalConfigManager:
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
+        
+        ### Experimental.
+        self.defaultsDict = g.TypedDict(
+            name='g.app.config.defaultsDict',
+            keyType=str,
+            valType=g.GeneralSetting,
+        )
+        self.ivarsDict = g.TypedDict(
+            name='g.app.config.ivarsDict',
+            keyType=str,
+            valType=g.GeneralSetting,
+        )
+        self.ivarsData = ()
+        
+        self.default_derived_file_encoding = 'utf-8'
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
@@ -1371,24 +1259,11 @@ class GlobalConfigManager:
         self.recentFiles: List[str] = []
         self.sc = None
         self.tree = None
-        self.initDicts()
-        self.initIvarsFromSettings()
+        ### self.initDicts()
+        ### self.initIvarsFromDicts()
         self.initRecentFiles()
-    #@+node:ekr.20041227063801.2: *4* gcm.initDicts
-    def initDicts(self) -> None:
-        # Only the settings parser needs to search all dicts.
-        self.dictList = [self.defaultsDict]
-        for key, kind, val in self.defaultsData:
-            self.defaultsDict[self.munge(key)] = g.GeneralSetting(
-                kind, setting=key, val=val, tag='defaults')
-        for key, kind, val in self.ivarsData:
-            self.ivarsDict[self.munge(key)] = g.GeneralSetting(
-                kind, ivar=key, val=val, tag='ivars')
-        for key, kind, val in self.encodingIvarsData:
-            self.encodingIvarsDict[self.munge(key)] = g.GeneralSetting(
-                kind, encoding=val, ivar=key, tag='encoding')
-    #@+node:ekr.20041117065611.2: *4* gcm.initIvarsFromSettings & helpers
-    def initIvarsFromSettings(self) -> None:
+    #@+node:ekr.20041117065611.2: *4* gcm.initIvarsFromDicts & helpers
+    def initIvarsFromDicts(self) -> None:
         for ivar in sorted(list(self.encodingIvarsDict.keys())):
             self.initEncoding(ivar)
         for ivar in sorted(list(self.ivarsDict.keys())):
@@ -1690,7 +1565,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
-    #@+node:ekr.20041118104831.2: *4* c.config.ctor
+    #@+node:ekr.20041118104831.2: *4* c.config.ctor (*** changed)
     def __init__(self, c: Cmdr, previousSettings: str=None) -> None:
 
         self.c = c
@@ -1710,20 +1585,29 @@ class LocalConfigManager:
             assert d2 is None or isinstance(
                 d2, g.TypedDict), repr(d2)  # was TypedDictOfLists.
         # Define these explicitly to eliminate a pylint warning.
-        if 0:
+        ### if 0:
             # No longer needed now that c.config.initIvar always sets
             # both c and c.config ivars.
-            self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
+            ### self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
             ### self.redirect_execute_script_output_to_log_pane = \
             ### g.app.config.redirect_execute_script_output_to_log_pane
-        self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-        self.defaultLogFontSize = g.app.config.defaultLogFontSize
-        self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-        self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-        for key in sorted(list(g.app.config.encodingIvarsDict.keys())):
-            self.initEncoding(key)
-        for key in sorted(list(g.app.config.ivarsDict.keys())):
-            self.initIvar(key)
+        
+        # Default encodings.
+        self.default_at_auto_file_encoding = 'utf-8'
+        self.default_derived_file_encoding = 'utf-8'
+        self.new_leo_file_encoding = 'utf-8'
+        
+        # Default fonts.
+        self.defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
+        self.defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
+        self.defaultMenuFontSize = 12  # 9 if sys.platform == "win32" else 12
+        self.defaultTreeFontSize = 12  # 9 if sys.platform == "win32" else 12
+
+        ### To be removed???
+            # for key in sorted(list(g.app.config.encodingIvarsDict.keys())):
+                # self.initEncoding(key)
+            # for key in sorted(list(g.app.config.ivarsDict.keys())):
+                # self.initIvar(key)
     #@+node:ekr.20041118104414: *4* c.config.initEncoding
     def initEncoding(self, key: str) -> None:
         # Important: the key is munged.
