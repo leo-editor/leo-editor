@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Dict
+from typing import Dict, Set
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -427,7 +427,7 @@ class FastRead:
             g_element = d.get('globals', {})
             v_elements = d.get('vnodes')
             t_elements = d.get('tnodes')
-            gnx2ua = defaultdict(dict)
+            gnx2ua: Dict = defaultdict(dict)
             gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
@@ -1768,7 +1768,7 @@ class FileCommands:
         for v in c.all_unique_nodes():
             if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                 uas[v.gnx] = v.unknownAttributes
-        gnxSet = set() # hods all gnx found so far, to exclude adding headlines of already defined gnx.
+        gnxSet: Set[str] = set() # hods all gnx found so far, to exclude adding headlines of already defined gnx.
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
