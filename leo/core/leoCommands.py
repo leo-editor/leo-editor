@@ -5,6 +5,7 @@
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import itertools
+import json
 import os
 import re
 import subprocess
@@ -3630,6 +3631,12 @@ class Commands:
             s = g.app.gui.getTextFromClipboard()
         # check for JSON
         if s and s.lstrip().startswith("{"):
+            try:
+                d = json.loads(s)
+                v_junk = d.get('vnodes')
+                t_junk = d.get('tnodes')
+            except:
+                return False
             return True
         if s and g.match(s, 0, g.app.prolog_prefix_string):
             return True

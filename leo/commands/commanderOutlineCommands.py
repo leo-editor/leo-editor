@@ -137,9 +137,6 @@ def pasteOutlineRetainingClones(self, event=None, s=None, undoFlag=True):
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
-    isLeo = s.lstrip().startswith("{") or g.match(s, 0, g.app.prolog_prefix_string)
-    if not isLeo:
-        return None
     # Get *position* to be pasted.
     pasted = c.fileCommands.getLeoOutlineFromClipboardRetainingClones(s)
     if not pasted:
