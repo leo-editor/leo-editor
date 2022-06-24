@@ -3633,8 +3633,8 @@ class Commands:
         if s and s.lstrip().startswith("{"):
             try:
                 d = json.loads(s)
-                v_junk = d.get('vnodes')
-                t_junk = d.get('tnodes')
+                if not d.get('vnodes') or not d.get('tnodes'):
+                    return False
             except:
                 return False
             return True
