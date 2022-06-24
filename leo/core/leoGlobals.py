@@ -3339,10 +3339,8 @@ def getOutputNewline(c: Cmdr=None, name: str=None) -> str:
     if name:
         s = name
     elif c:
-        ### s = c.config.output_newline
         s = c.config.getString('output-newline')
     else:
-        ### s = app.config.output_newline
         s = 'nl'  # Legacy value. Perhaps dubious.
     if not s:
         s = ''
@@ -3782,7 +3780,6 @@ def getBaseDirectory(c: Cmdr) -> str:
     """Convert '!' or '.' to proper directory references."""
     if not c:
         return ''  # No relative base given.
-    ### base = app.config.relative_path_base_directory
     base = c.config.getBool('relative-path-base-directory')
     if base and base == "!":
         base = app.loadDir

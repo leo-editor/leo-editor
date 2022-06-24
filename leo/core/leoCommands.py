@@ -773,7 +773,6 @@ class Commands:
     #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
     def redirectScriptOutput(self):
         c = self
-        ### if c.config.redirect_execute_script_output_to_log_pane:
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
@@ -791,7 +790,6 @@ class Commands:
     #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
     def unredirectScriptOutput(self):
         c = self
-        ### if c.exists and c.config.redirect_execute_script_output_to_log_pane:
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.restoreStderr()
             g.restoreStdout()
@@ -2048,7 +2046,6 @@ class Commands:
         if c.openDirectory:  # Bug fix: 2008/9/18
             base = c.openDirectory
         else:
-            ### base = g.app.config.relative_path_base_directory  ### Always '!'
             base = c.config.getBool('relative-path-base-directory')
             if base and base == "!":
                 base = g.app.loadDir

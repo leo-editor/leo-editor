@@ -1224,19 +1224,8 @@ class GlobalConfigManager:
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.defaultFont = None  # Set in gui.getDefaultConfigFont.
-
-        if 0: ### Temporary
-            self.ivarsDict = g.TypedDict(
-                name='g.app.config.ivarsDict',
-                keyType=str,
-                valType=g.GeneralSetting,
-            )
-            self.ivarsData = ()
-
         self.default_derived_file_encoding = 'utf-8'
         self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
-
-
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
@@ -1245,15 +1234,11 @@ class GlobalConfigManager:
             name='modeCommandsDict',
             keyType=str,
             valType=g.TypedDict)  # was TypedDictOfLists.
-        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
-
-        # Inited later...
         self.panes = None
         self.recentFiles: List[str] = []
         self.sc = None
         self.tree = None
-        ### self.initDicts()
-        ### self.initIvarsFromDicts()
+        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
         self.initRecentFiles()
     #@+node:ekr.20041117083202.2: *4* gcm.initRecentFiles
     def initRecentFiles(self) -> None:
@@ -1533,59 +1518,27 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__(self, c: Cmdr, previousSettings: str=None) -> None:
-
         self.c = c
         lm = g.app.loadManager
-        #
-        # c.__init__ and helpers set the shortcuts and settings dicts for local files.
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            # was TypedDictOfLists.
             assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
-            assert d2 is None or isinstance(
-                d2, g.TypedDict), repr(d2)  # was TypedDictOfLists.
-        # Define these explicitly to eliminate a pylint warning.
-        ### if 0:
-            # No longer needed now that c.config.initIvar always sets
-            # both c and c.config ivars.
-            ### self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
-            ### self.redirect_execute_script_output_to_log_pane = \
-            ### g.app.config.redirect_execute_script_output_to_log_pane
-
+            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2)
         # Default encodings.
         self.default_at_auto_file_encoding = 'utf-8'
         self.default_derived_file_encoding = 'utf-8'
         self.new_leo_file_encoding = 'utf-8'
-
         # Default fonts.
         self.defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
         self.defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
         self.defaultMenuFontSize = 12  # 9 if sys.platform == "win32" else 12
         self.defaultTreeFontSize = 12  # 9 if sys.platform == "win32" else 12
-
-        ### To be removed???
-            # for key in sorted(list(g.app.config.encodingIvarsDict.keys())):
-                # self.initEncoding(key)
-            # for key in sorted(list(g.app.config.ivarsDict.keys())):
-                # self.initIvar(key)
-    #@+node:ekr.20041118104240: *4* c.config.initIvar
-    def initIvar(self, key: str) -> None:
-
-        c = self.c
-        # Important: the key is munged.
-        gs = g.app.config.ivarsDict.get(key)
-        ivarName = gs.ivar
-        val = self.get(ivarName, kind=None)
-        if val or not hasattr(self, ivarName):
-            # Set *both* the commander ivar and the c.config ivar.
-            setattr(self, ivarName, val)
-            setattr(c, ivarName, val)
     #@+node:ekr.20190831030206.1: *3* c.config.createActivesSettingsOutline (new: #852)
     def createActivesSettingsOutline(self) -> None:
         """
