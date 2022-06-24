@@ -773,7 +773,8 @@ class Commands:
     #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
     def redirectScriptOutput(self):
         c = self
-        if c.config.redirect_execute_script_output_to_log_pane:
+        ### if c.config.redirect_execute_script_output_to_log_pane:
+        if c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
     #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
@@ -2046,11 +2047,14 @@ class Commands:
         if c.openDirectory:  # Bug fix: 2008/9/18
             base = c.openDirectory
         else:
-            base = g.app.config.relative_path_base_directory
+            ### base = g.app.config.relative_path_base_directory  ### Always '!'
+            base = c.config.getBool('relative-path-base-directory')
             if base and base == "!":
                 base = g.app.loadDir
             elif base and base == ".":
                 base = c.openDirectory
+            else:
+                base = None  # Settings error.
         base = c.expand_path_expression(base)  # #1341.
         base = g.os_path_expanduser(base)  # #1889.
         absbase = g.os_path_finalize_join(g.app.loadDir, base)  # #1341.

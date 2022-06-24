@@ -131,7 +131,8 @@ def applyFileAction(p, filename, c):
         script += '\n'
         #@+<< redirect output >>
         #@+node:ekr.20040915105758.17: *3* << redirect output >>
-        if c.config.redirect_execute_script_output_to_log_pane:
+        ### if c.config.redirect_execute_script_output_to_log_pane:
+        if c.config.getBool('redirect-execute-script-output-to-log_pane'):
 
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr

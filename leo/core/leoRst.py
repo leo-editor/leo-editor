@@ -352,7 +352,8 @@ class RstCommands:
         theDir = g.os_path_finalize(theDir)  # 1341
         if g.os_path_exists(theDir):
             return True
-        if c and c.config and c.config.create_nonexistent_directories:
+        ### if c and c.config and c.config.create_nonexistent_directories:
+        if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
             theDir = c.expand_path_expression(theDir)
             ok = g.makeAllNonExistentDirectories(theDir)  # type:ignore
             if not ok:

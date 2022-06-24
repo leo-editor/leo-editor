@@ -536,7 +536,6 @@ if docutils:
             self.story = []
             # Some of these may be needed, even though they are not referenced directly.
             self.settings = doctree.settings
-            # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
             super().__init__(doctree)  # Init the base class.
             self.language = get_language(doctree)

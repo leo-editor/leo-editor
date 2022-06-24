@@ -1405,7 +1405,8 @@ class FileCommands:
                 if not silent:
                     self.putSavedMessage(fileName)
                 c.clearChanged()  # Clears all dirty bits.
-                if c.config.save_clears_undo_buffer:
+                ### if c.config.save_clears_undo_buffer:
+                if c.config.getBool('save-clears-undo-buffer'):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw_after_icons_changed()

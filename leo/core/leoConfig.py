@@ -1236,7 +1236,7 @@ class GlobalConfigManager:
         # ("default_target_language","language","python"),
         ("target_language", "language", "python"),  # Bug fix: 6/20,2005.
         ("tab_width", "int", -4),
-        ("page_width", "int", 132),
+        ### ("page_width", "int", 132),
         ("output_doc_chunks", "bool", True),
         ("tangle_outputs_header", "bool", True),
         # Syntax coloring options...
@@ -1301,19 +1301,19 @@ class GlobalConfigManager:
     )
     ivarsData = (
         # For compatibility with previous versions.
-        ("at_root_bodies_start_in_doc_mode", "bool", True),
-        ("create_nonexistent_directories", "bool", False),
+        ### ("at_root_bodies_start_in_doc_mode", "bool", True),
+        ### ("create_nonexistent_directories", "bool", False),
         # "" for compatibility with previous versions.
-        ("output_initial_comment", "string", ""),
-        ("output_newline", "string", "nl"),
-        ("page_width", "int", "132"),
-        ("read_only", "bool", True),
-        ("redirect_execute_script_output_to_log_pane", "bool", False),
-        ("relative_path_base_directory", "string", "!"),
-        ("remove_sentinels_extension", "string", ".txt"),
-        ("save_clears_undo_buffer", "bool", False),
-        ("stylesheet", "string", None),
-        ("tab_width", "int", -4),
+        ### ("output_initial_comment", "string", ""),
+        ### ("output_newline", "string", "nl"),
+        ### ("page_width", "int", "132"),
+        ### ("read_only", "bool", True),
+        ### ("redirect_execute_script_output_to_log_pane", "bool", False),
+        ### ("relative_path_base_directory", "string", "!"),
+        ### ("remove_sentinels_extension", "string", ".txt"),
+        ### ("save_clears_undo_buffer", "bool", False),
+        ### ("stylesheet", "string", None),
+        ### ("tab_width", "int", -4),
         # Bug fix: added: 6/20/2005.
         ("target_language", "language", "python"),
         ("trailing_body_newlines", "string", "asis"),
@@ -1330,13 +1330,13 @@ class GlobalConfigManager:
         #
         # Set later.  To keep pylint happy.
         if 0:  # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
-            self.at_root_bodies_start_in_doc_mode = True
+            ### self.at_root_bodies_start_in_doc_mode = True
             self.default_derived_file_encoding = 'utf-8'
-            self.output_newline = 'nl'
+            ### self.output_newline = 'nl'
             self.redirect_execute_script_output_to_log_pane = True
-            self.relative_path_base_directory = '!'
+            ### self.relative_path_base_directory = '!'
         self.use_plugins = False  # Required to keep pylint happy.
-        self.create_nonexistent_directories = False  # Required to keep pylint happy.
+        ### self.create_nonexistent_directories = False  # Required to keep pylint happy.
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
         self.atCommonButtonsList: List[Tuple[Cmdr, str, Any]] = []
@@ -1703,7 +1703,8 @@ class LocalConfigManager:
             # No longer needed now that c.config.initIvar always sets
             # both c and c.config ivars.
             self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
-            self.redirect_execute_script_output_to_log_pane = g.app.config.redirect_execute_script_output_to_log_pane
+            ### self.redirect_execute_script_output_to_log_pane = \
+            ### g.app.config.redirect_execute_script_output_to_log_pane
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
