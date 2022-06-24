@@ -1221,9 +1221,7 @@ class GlobalConfigManager:
         self.atLocalCommandsList: List[Pos] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
-        self.defaultFont = None  # Set in gui.getDefaultConfigFont.
         self.default_derived_file_encoding = 'utf-8'
-        self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
@@ -1274,8 +1272,7 @@ class GlobalConfigManager:
                     val = '<xml>'
                 key2 = f"@{gs.kind:>6} {key}"
                 yield key2, val, c, letter
-    #@+node:ekr.20041117081009: *3* gcm.Getters...
-    #@+node:ekr.20041123070429: *4* gcm.canonicalizeSettingName (munge)
+    #@+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
     def canonicalizeSettingName(self, name: str) -> str:
         if name is None:
             return None
@@ -1285,6 +1282,7 @@ class GlobalConfigManager:
         return name if name else None
 
     munge = canonicalizeSettingName
+    #@+node:ekr.20041117081009: *3* gcm.Getters...
     #@+node:ekr.20051011105014: *4* gcm.exists
     def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
@@ -1435,7 +1433,7 @@ class GlobalConfigManager:
         Return None if there is no family setting so we can use system default fonts."""
         family = self.get(family, "family")
         if family in (None, ""):
-            family = self.defaultFontFamily
+            family = None
         size = self.get(size, "size")
         if size in (None, 0):
             size = str(defaultSize)  # type:ignore
@@ -1765,8 +1763,6 @@ class LocalConfigManager:
         Return None if there is no family setting so we can use system default fonts.
         """
         family = self.get(family, "family")
-        if family in (None, ""):
-            family = g.app.config.defaultFontFamily
         size = self.get(size, "size")
         if size in (None, 0):
             size = str(defaultSize)  # type:ignore

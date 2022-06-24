@@ -945,8 +945,8 @@ class LeoQtGui(leoGui.LeoGui):
         }
         weight_val = d.get(weight.lower(), Weight.Normal)
         italic = slant == 'italic'
-        if not family:
-            family = g.app.config.defaultFontFamily
+        # # # if not family:
+            # # # family = g.app.config.defaultFontFamily
         if not family:
             family = 'DejaVu Sans Mono'
         try:
@@ -963,7 +963,7 @@ class LeoQtGui(leoGui.LeoGui):
                 f" slant: {slant}\n"
                 f"weight: {weight}")
             # g.es_exception() # This just confuses people.
-            return g.app.config.defaultFont
+            return None
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
     def getFullVersion(self, c: Cmdr=None) -> str:
         """Return the PyQt version (for signon)"""
