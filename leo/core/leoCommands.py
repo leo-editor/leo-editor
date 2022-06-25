@@ -3637,7 +3637,7 @@ class Commands:
                 d = json.loads(s)
                 if not d.get('vnodes') or not d.get('tnodes'):
                     return False
-            except:
+            except Exception:
                 return False
             return True
         if s and g.match(s, 0, g.app.prolog_prefix_string):
