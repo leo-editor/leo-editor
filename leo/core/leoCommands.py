@@ -2046,7 +2046,7 @@ class Commands:
         if c.openDirectory:  # Bug fix: 2008/9/18
             base = c.openDirectory
         else:
-            base = c.config.getBool('relative-path-base-directory')
+            base = c.config.getString('relative-path-base-directory')
             if base and base == "!":
                 base = g.app.loadDir
             elif base and base == ".":
