@@ -3780,7 +3780,7 @@ def getBaseDirectory(c: Cmdr) -> str:
     """Convert '!' or '.' to proper directory references."""
     if not c:
         return ''  # No relative base given.
-    base = c.config.getBool('relative-path-base-directory')
+    base = c.config.getString('relative-path-base-directory')
     if base and base == "!":
         base = app.loadDir
     elif base and base == ".":
