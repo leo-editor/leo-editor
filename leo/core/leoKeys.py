@@ -2138,11 +2138,6 @@ class KeyHandlerClass:
         if stroke in (None, 'None', 'none'):
             return
         assert g.isStroke(stroke), stroke
-        ###
-            # d = c.config.shortcutsDict
-            # if d is None:
-                # # Suppress mypy warning about redefining d.
-                # d: Dict[str, List[g.BindingInfo]] = g.TypedDict('empty shortcuts dict')  # type:ignore
         inv_d = lm.invert(c.config.shortcutsDict)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
@@ -2303,7 +2298,7 @@ class KeyHandlerClass:
         d = c.commandsDict
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2: Dict[g.KeyStroke, g.BindingInfo] = g.TypedDict('binding helper dict')
+        d2: Dict[g.KeyStroke, List[g.BindingInfo]] = g.TypedDict('binding helper dict')
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)

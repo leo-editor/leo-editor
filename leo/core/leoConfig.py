@@ -891,7 +891,7 @@ class ParserBaseClass:
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict: Dict[str, g.GeneralSetting] = g.TypedDict(f"settingsDict for {c.shortFileName()}")
+        self.settingsDict: Dict[str, List[g.GeneralSetting]] = g.TypedDict(f"settingsDict for {c.shortFileName()}")
         self.shortcutsDict = g.TypedDict(f"shortcutsDict for {c.shortFileName()}")
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot()

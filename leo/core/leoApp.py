@@ -15,7 +15,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -1866,7 +1866,7 @@ class LoadManager:
             bindings_d = lm.mergeShortcutsDicts(c, bindings_d, shortcuts_d2, localFlag)
         return settings_d, bindings_d
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
-    def createDefaultSettingsDicts(self):
+    def createDefaultSettingsDicts(self) -> Tuple[g.TypedDict, g.TypedDict]:
         """Create lm.globalSettingsDict & lm.globalBindingsDict."""
         settings_d = g.TypedDict('lm.globalSettingsDict')
         bindings_d = g.TypedDict('lm.globalBindingsDict')
@@ -2006,7 +2006,7 @@ class LoadManager:
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
     #@+node:ekr.20120214132927.10724: *5* LM.invert
-    def invert(self, d):
+    def invert(self, d: Dict) -> g.TypedDict:
         """
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
@@ -2022,7 +2022,7 @@ class LoadManager:
                 result.add_to_list(stroke, bi)
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
-    def uninvert(self, d):
+    def uninvert(self, d: g.TypedDict) -> g.TypedDict:
         """
         Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.
