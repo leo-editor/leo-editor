@@ -78,12 +78,9 @@ class ParserBaseClass:
         # True if this is the .leo file being opened,
         # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
-        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
-            name='parser.shortcutsDict',
-            keyType=type('shortcutName'),
-            valType=g.BindingInfo,
-        )
-        self.openWithList: List[Dict[str, Any]] = []  # A list of dicts containing 'name','shortcut','command' keys.
+        self.shortcutsDict: Dict[str, List[g.BindingInfo]] = g.TypedDict('parser.shortcutsDict')
+        # A list of dicts containing 'name','shortcut','command' keys.
+        self.openWithList: List[Dict[str, Any]] = []
         # Keys are canonicalized names.
         self.dispatchDict = {
             'bool':         self.doBool,
@@ -555,10 +552,7 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d = g.TypedDict(
-            name=f"modeDict for {modeName}",
-            keyType=type('commandName'),
-            valType=g.BindingInfo)
+        d: Dict[str, List[g.BindingInfo]] = g.TypedDict(f"modeDict for {modeName}")
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -571,7 +565,7 @@ class ParserBaseClass:
                 elif bi is not None:
                     # A regular shortcut.
                     bi.pane = modeName
-                    aList = d.get(name, [])
+                    aList: List[g.BindingInfo] = d.get(name, [])
                     # Important: use previous bindings if possible.
                     key2, aList2 = c.config.getShortcut(name)
                     aList3 = [z for z in aList2 if z.pane != modeName]
@@ -666,7 +660,7 @@ class ParserBaseClass:
     def doOneShortcut(self, bi: Any, commandName: str, p: Pos) -> None:
         """Handle a regular shortcut."""
         d = self.shortcutsDict
-        aList = d.get(commandName, [])
+        aList: List[g.BindingInfo] = d.get(commandName, [])
         aList.append(bi)
         d[commandName] = aList
     #@+node:ekr.20041217132028: *4* pbc.doString
@@ -897,14 +891,8 @@ class ParserBaseClass:
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict = g.TypedDict(  # type:ignore
-            name=f"settingsDict for {c.shortFileName()}",
-            keyType=type('settingName'),
-            valType=g.GeneralSetting)
-        self.shortcutsDict = g.TypedDict(  # was TypedDictOfLists.
-            name=f"shortcutsDict for {c.shortFileName()}",
-            keyType=str,
-            valType=g.BindingInfo)
+        self.settingsDict: Dict[str, g.GeneralSetting] = g.TypedDict(f"settingsDict for {c.shortFileName()}")
+        self.shortcutsDict = g.TypedDict(f"shortcutsDict for {c.shortFileName()}")
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot()
         if not p:
@@ -1226,10 +1214,7 @@ class GlobalConfigManager:
         self.enabledPluginsString = ''
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
         self.menusFileName = ''
-        self.modeCommandsDict = g.TypedDict(
-            name='modeCommandsDict',
-            keyType=str,
-            valType=g.TypedDict)  # was TypedDictOfLists.
+        self.modeCommandsDict: Dict[str, g.TypedDict] = g.TypedDict('modeCommandsDict')
         self.panes = None
         self.recentFiles: List[str] = []
         self.sc = None
@@ -1299,7 +1284,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         d = lm.globalSettingsDict
         if d:
-            assert isinstance(d, g.TypedDict), repr(d)
+            assert isinstance(d, g.TypedDict), d.__class__.__name__
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1494,7 +1479,7 @@ class GlobalConfigManager:
     def valueInMyLeoSettings(self, settingName: str) -> Any:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
-        d = lm.globalSettingsDict.d
+        d = lm.globalSettingsDict
         gs = d.get(self.munge(settingName))  # A GeneralSetting.
         if gs:
             path = gs.path
@@ -1507,19 +1492,19 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: str=None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: Any=None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
-            assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)
+            assert isinstance(self.settingsDict, g.TypedDict), self.settingsDict.__class__.__name__
+            assert isinstance(self.shortcutsDict, g.TypedDict), self.shortcutsDict.__class__.__name__
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
-            assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
-            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2)
+            assert d1 is None or isinstance(d1, g.TypedDict), d1.__class__.__name__
+            assert d2 is None or isinstance(d2, g.TypedDict), d2.__class__.__name__
         # Default encodings.
         self.default_at_auto_file_encoding = 'utf-8'
         self.default_derived_file_encoding = 'utf-8'

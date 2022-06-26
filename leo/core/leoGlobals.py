@@ -11,6 +11,7 @@ Important: This module imports no other Leo module.
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
 import binascii
 import codecs
+import copy
 import fnmatch
 from functools import reduce
 import gc
@@ -2429,105 +2430,38 @@ def null_object_print(id_: int, kind: Any, *args: Any) -> None:
         # Print each signature once.
         tracing_signatures[signature] = True
         g.pr(f"{s:40} {callers}")
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict
-class TypedDict:
-    """
-    A class providing additional dictionary-related methods:
+#@+node:ekr.20120129181245.10220: *3* class g.TypedDict(dict)
+class TypedDict(dict):
+    """A subclass of dict providing settings-related methods."""
 
-    __init__:     Specifies types and the dict's name.
-    __repr__:     Compatible with g.printObj, based on g.objToString.
-    __setitem__:  Type checks its arguments.
-    __str__:      A concise summary of the inner dict.
-    add_to_list:  A convenience method that adds a value to its key's list.
-    name:         The dict's name.
-    setName:      Sets the dict's name, for use by __repr__.
-
-    Overrides the following standard methods:
-
-    copy:         A thin wrapper for copy.deepcopy.
-    get:          Returns self.d.get
-    items:        Returns self.d.items
-    keys:         Returns self.d.keys
-    update:       Updates self.d from either a dict or a TypedDict.
-    """
-
-    def __init__(self, name: str, keyType: Any, valType: Any) -> None:
-        self.d: Dict[str, Any] = {}
+    def __init__(self, name: str) -> None:
+        super().__init__()
         self._name = name  # For __repr__ only.
-        self.keyType = keyType
-        self.valType = valType
-    #@+others
-    #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
-    def __str__(self) -> str:
-        """Concise: used by repr."""
-        return (
-            f"<TypedDict name:{self._name} "
-            f"keys:{self.keyType.__name__} "
-            f"values:{self.valType.__name__} "
-            f"len(keys): {len(list(self.keys()))}>"
-        )
 
     def __repr__(self) -> str:
-        """Suitable for g.printObj"""
-        return f"{g.dictToString(self.d)}\n{str(self)}\n"
-    #@+node:ekr.20120205022040.17774: *4* td.__setitem__
-    def __setitem__(self, key: Any, val: Any) -> None:
-        """Allow d[key] = val"""
-        if key is None:
-            g.trace('TypeDict: None is not a valid key', g.callers())
-            return
-        self._checkKeyType(key)
-        try:
-            for z in val:
-                self._checkValType(z)
-        except TypeError:
-            self._checkValType(val)  # val is not iterable.
-        self.d[key] = val
+        return f"<TypedDict name:{self._name} "
+       
+    __str__ = __repr__
+       
+    #@+others
+    #@+node:ekr.20120223062418.10422: *4* td.copy
+    def copy(self, name: str=None) -> Any:
+        """Return a new dict with the same contents."""
+        # The result is a g.TypedDict.
+        return copy.deepcopy(self)
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
     def add_to_list(self, key: Any, val: Any) -> None:
         """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
             return
-        self._checkKeyType(key)
-        self._checkValType(val)
-        aList = self.d.get(key, [])
+        aList = self.get(key, [])
         if val not in aList:
             aList.append(val)
-            self.d[key] = aList
-    #@+node:ekr.20120206134955.10150: *4* td.checking
-    def _checkKeyType(self, key: str) -> None:
-        if key and key.__class__ != self.keyType:
-            self._reportTypeError(key, self.keyType)
-
-    def _checkValType(self, val: Any) -> None:
-        if val.__class__ != self.valType:
-            self._reportTypeError(val, self.valType)
-
-    def _reportTypeError(self, obj: Any, objType: Any) -> str:
-        return (
-            f"{self._name}\n"
-            f"expected: {obj.__class__.__name__}\n"
-            f"     got: {objType.__name__}")
-    #@+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name: str=None) -> Any:
-        """Return a new dict with the same contents."""
-        import copy
-        return copy.deepcopy(self)
-    #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
-    def get(self, key: Any, default: Any=None) -> Any:
-        return self.d.get(key, default)
-
-    def items(self) -> Any:
-        return self.d.items()
-
-    def keys(self) -> Any:
-        return self.d.keys()
-
-    def values(self) -> Any:
-        return self.d.values()
+            self[key] = aList
     #@+node:ekr.20190903181030.1: *4* td.get_setting & get_string_setting
     def get_setting(self, key: str) -> Any:
+        """Return the canonical setting name."""
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
         val = gs and gs.val
@@ -2542,13 +2476,6 @@ class TypedDict:
 
     def setName(self, name: str) -> None:
         self._name = name
-    #@+node:ekr.20120205022040.17807: *4* td.update
-    def update(self, d: Dict[Any, Any]) -> None:
-        """Update self.d from a the appropriate dict."""
-        if isinstance(d, TypedDict):
-            self.d.update(d.d)
-        else:
-            self.d.update(d)
     #@-others
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):

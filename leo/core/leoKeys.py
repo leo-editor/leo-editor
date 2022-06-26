@@ -2133,23 +2133,17 @@ class KeyHandlerClass:
         """
         c = self.c
         lm = g.app.loadManager
-        if 0:
-            # This does not fix 327: Create a way to unbind bindings
-            assert stroke in (None, 'None', 'none') or g.isStroke(stroke), repr(stroke)
-        else:
-            # A crucial shortcut: inverting and uninverting dictionaries is slow.
-            # Important: the comparison is valid regardless of the type of stroke.
-            if stroke in (None, 'None', 'none'):
-                return
-            assert g.isStroke(stroke), stroke
-        d = c.config.shortcutsDict
-        if d is None:
-            d = g.TypedDict(  # was TypedDictOfLists.
-                name='empty shortcuts dict',
-                keyType=type('commandName'),
-                valType=g.BindingInfo,
-            )
-        inv_d = lm.invert(d)
+        # A crucial shortcut: inverting and uninverting dictionaries is slow.
+        # Important: the comparison is valid regardless of the type of stroke.
+        if stroke in (None, 'None', 'none'):
+            return
+        assert g.isStroke(stroke), stroke
+        ###
+            # d = c.config.shortcutsDict
+            # if d is None:
+                # # Suppress mypy warning about redefining d.
+                # d: Dict[str, List[g.BindingInfo]] = g.TypedDict('empty shortcuts dict')  # type:ignore
+        inv_d = lm.invert(c.config.shortcutsDict)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
@@ -2307,14 +2301,9 @@ class KeyHandlerClass:
         """Add bindings for all entries in c.commandsDict."""
         c, k = self.c, self
         d = c.commandsDict
-        #
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2 = g.TypedDict(  # was TypedDictOfLists.
-            name='makeBindingsFromCommandsDict helper dict',
-            keyType=g.KeyStroke,
-            valType=g.BindingInfo,
-        )
+        d2: Dict[g.KeyStroke, g.BindingInfo] = g.TypedDict('binding helper dict')
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -2325,7 +2314,6 @@ class KeyHandlerClass:
                 if stroke:
                     assert g.isStroke(stroke)
                     d2.add_to_list(stroke, bi)
-        #
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
             aList2 = d2.get(stroke)

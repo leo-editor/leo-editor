@@ -1854,7 +1854,7 @@ class LoadManager:
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
-                val = settings_d2.d.get(key)
+                val = settings_d2.get(key)
                 if val:
                     fn = g.shortFileName(val.path)
                     g.es_print(
@@ -1868,17 +1868,8 @@ class LoadManager:
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
         """Create lm.globalSettingsDict & lm.globalBindingsDict."""
-        settings_d = g.TypedDict(
-            name='g.app.config.defaultsDict',
-            keyType=str,
-            valType=g.GeneralSetting,
-        )
-        settings_d.setName('lm.globalSettingsDict')
-        bindings_d = g.TypedDict(  # was TypedDictOfLists.
-            name='lm.globalBindingsDict',
-            keyType=type('s'),
-            valType=g.BindingInfo,
-        )
+        settings_d = g.TypedDict('lm.globalSettingsDict')
+        bindings_d = g.TypedDict('lm.globalBindingsDict')
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag):
@@ -2020,11 +2011,9 @@ class LoadManager:
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         """
-        result = g.TypedDict(  # was TypedDictOfLists.
-            name=f"inverted {d.name()}",
-            keyType=g.KeyStroke,
-            valType=g.BindingInfo,
-        )
+        if d is None:
+            d = {}
+        result = g.TypedDict(f"inverted {d.name()}")
         for commandName in d.keys():
             for bi in d.get(commandName, []):
                 stroke = bi.stroke  # This is canonicalized.
@@ -2038,12 +2027,7 @@ class LoadManager:
         Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.
         """
-        assert d.keyType == g.KeyStroke, d.keyType
-        result = g.TypedDict(  # was TypedDictOfLists.
-            name=f"uninverted {d.name()}",
-            keyType=type('commandName'),
-            valType=g.BindingInfo,
-        )
+        result = g.TypedDict(f"uninverted {d.name()}")
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName
