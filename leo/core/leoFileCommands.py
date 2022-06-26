@@ -428,7 +428,7 @@ class FastRead:
             v_elements = d.get('vnodes')
             t_elements = d.get('tnodes')
             gnx2ua: Dict = defaultdict(dict)
-            gnx2ua.update(d.get('uas', {})) # User attributes in their own dict for leojs files
+            gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
             # self.handleBits()
@@ -1768,7 +1768,7 @@ class FileCommands:
         for v in c.all_unique_nodes():
             if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                 uas[v.gnx] = v.unknownAttributes
-        gnxSet: Set[str] = set() # hods all gnx found so far, to exclude adding headlines of already defined gnx.
+        gnxSet: Set[str] = set()  # hods all gnx found so far, to exclude adding headlines of already defined gnx.
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
@@ -1821,7 +1821,7 @@ class FileCommands:
             'gnx': v.fileIndex,
         }
         if v.fileIndex not in gnxSet:
-            result['vh']= v._headString # Not a clone so far so add his headline text
+            result['vh'] = v._headString  # Not a clone so far so add his headline text
         gnxSet.add(v.fileIndex)
         if status:
             result['status'] = status

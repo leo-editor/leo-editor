@@ -730,7 +730,7 @@ class QuickSearchController:
         if not tc:
             print("In find_tag: No 'theTagController' on commander.")
             print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
-            print("", flush = True)
+            print("", flush=True)
             return []
 
         gnxDict = c.fileCommands.gnxDict
@@ -1813,7 +1813,7 @@ class LeoServer:
             if not tc:
                 print("In tag_node. No 'theTagController' on commander.")
                 print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
-                print("", flush = True)
+                print("", flush=True)
             if hasattr(tc, 'add_tag'):
                 tc.add_tag(p, tag_param)
         except Exception as e:
@@ -1835,7 +1835,7 @@ class LeoServer:
             if not tc:
                 print("In remove_tag. No 'theTagController' on commander.")
                 print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
-                print("", flush = True)
+                print("", flush=True)
             if hasattr(tc, 'remove_tag'):
                 if v.u and '__node_tags' in v.u:
                     tc.remove_tag(p, tag_param)
@@ -1857,7 +1857,7 @@ class LeoServer:
                 if not tc:
                     print("In remove_tags. No 'theTagController' on commander.")
                     print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
-                    print("", flush = True)
+                    print("", flush=True)
                 if hasattr(tc, 'initialize_taglist'):
                     tc.initialize_taglist()  # reset tag list: some may have been removed
         except Exception as e:
@@ -1895,7 +1895,7 @@ class LeoServer:
         """
         c = self._check_c()
         result = []
-        p = c.rootPosition() # first child of hidden root node as first item in top array
+        p = c.rootPosition()  # first child of hidden root node as first item in top array
         while p:
             result.append(self._get_position_d(p, includeChildren=True))
             p.moveToNodeAfterTree()
@@ -4216,7 +4216,7 @@ class LeoServer:
 
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
-    def _get_position_d(self, p, includeChildren = False):
+    def _get_position_d(self, p, includeChildren=False):
         """
         Return a python dict that is adding
         graphical representation data and flags
@@ -4230,7 +4230,7 @@ class LeoServer:
             # tags quantity first if any ua's present
             tagsQty = len(p.v.u.get("__node_tags", []))
             # Tags only if there are some present.
-            if tagsQty>0:
+            if tagsQty > 0:
                 d['nodeTags'] = tagsQty
 
             # Check for flag to send ua quantity instead of full ua's
@@ -4240,9 +4240,9 @@ class LeoServer:
                 uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
                 uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
             if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
-                uaQty = len(p.v.u) # number will be 'true' if any keys are present
-                if tagsQty>0 and uaQty > 0:
-                    uaQty = uaQty -1
+                uaQty = len(p.v.u)  # number will be 'true' if any keys are present
+                if tagsQty > 0 and uaQty > 0:
+                    uaQty = uaQty - 1
                 # set number pre-decremented if __node_tags were present
                 d['u'] = uaQty
             else:
@@ -4255,7 +4255,7 @@ class LeoServer:
             # includeChildren flag is used by get_structure
             if includeChildren:
                 d['children'] = [
-                    self._get_position_d(child, includeChildren= True) for child in p.children()
+                    self._get_position_d(child, includeChildren=True) for child in p.children()
                 ]
 
         if p.isCloned():

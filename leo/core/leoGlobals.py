@@ -1758,7 +1758,7 @@ class SherlockTracer:
             args_s2 = f"({args_s})"
             if len(args_s2) > 100:
                 print(f"{path}:{indent}{leadin}{full_name}")
-                g.printObj(args_list, indent=indent+' '*22)
+                g.printObj(args_list, indent=indent + ' ' * 22)
             else:
                 print(f"{path}:{indent}{leadin}{full_name}{args_s2}")
         else:
@@ -2440,9 +2440,9 @@ class SettingsDict(dict):
 
     def __repr__(self) -> str:
         return f"<SettingsDict name:{self._name} "
-       
+
     __str__ = __repr__
-       
+
     #@+others
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name: str=None) -> Any:
