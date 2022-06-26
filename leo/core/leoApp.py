@@ -1507,9 +1507,9 @@ class LoadManager:
         # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
 
-        # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
+        # A g.SettingsDict: the join of settings in leoSettings.leo & myLeoSettings.leo
         self.globalSettingsDict = None
-        # A g.TypedDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
+        # A g.SettingsDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
         self.globalBindingsDict = None
 
         # LoadManager ivars corresponding to user options...
@@ -1866,10 +1866,10 @@ class LoadManager:
             bindings_d = lm.mergeShortcutsDicts(c, bindings_d, shortcuts_d2, localFlag)
         return settings_d, bindings_d
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
-    def createDefaultSettingsDicts(self) -> Tuple[g.TypedDict, g.TypedDict]:
+    def createDefaultSettingsDicts(self) -> Tuple[g.SettingsDict, g.SettingsDict]:
         """Create lm.globalSettingsDict & lm.globalBindingsDict."""
-        settings_d = g.TypedDict('lm.globalSettingsDict')
-        bindings_d = g.TypedDict('lm.globalBindingsDict')
+        settings_d = g.SettingsDict('lm.globalSettingsDict')
+        bindings_d = g.SettingsDict('lm.globalBindingsDict')
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag):
@@ -2006,14 +2006,14 @@ class LoadManager:
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
     #@+node:ekr.20120214132927.10724: *5* LM.invert
-    def invert(self, d: Dict) -> g.TypedDict:
+    def invert(self, d: Dict) -> g.SettingsDict:
         """
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         """
         if d is None:
             d = {}
-        result = g.TypedDict(f"inverted {d.name()}")
+        result = g.SettingsDict(f"inverted {d.name()}")
         for commandName in d.keys():
             for bi in d.get(commandName, []):
                 stroke = bi.stroke  # This is canonicalized.
@@ -2022,12 +2022,12 @@ class LoadManager:
                 result.add_to_list(stroke, bi)
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
-    def uninvert(self, d: g.TypedDict) -> g.TypedDict:
+    def uninvert(self, d: g.SettingsDict) -> g.SettingsDict:
         """
         Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.
         """
-        result = g.TypedDict(f"uninverted {d.name()}")
+        result = g.SettingsDict(f"uninverted {d.name()}")
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName

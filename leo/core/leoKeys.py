@@ -2298,7 +2298,7 @@ class KeyHandlerClass:
         d = c.commandsDict
         # Step 1: Create d2.
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2: Dict[g.KeyStroke, List[g.BindingInfo]] = g.TypedDict('binding helper dict')
+        d2: Dict[g.KeyStroke, List[g.BindingInfo]] = g.SettingsDict('binding helper dict')
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)

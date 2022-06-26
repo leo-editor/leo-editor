@@ -78,7 +78,7 @@ class ParserBaseClass:
         # True if this is the .leo file being opened,
         # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
-        self.shortcutsDict: Dict[str, List[g.BindingInfo]] = g.TypedDict('parser.shortcutsDict')
+        self.shortcutsDict: Dict[str, List[g.BindingInfo]] = g.SettingsDict('parser.shortcutsDict')
         # A list of dicts containing 'name','shortcut','command' keys.
         self.openWithList: List[Dict[str, Any]] = []
         # Keys are canonicalized names.
@@ -552,7 +552,7 @@ class ParserBaseClass:
         c = self.c
         name1 = name
         modeName = self.computeModeName(name)
-        d: Dict[str, List[g.BindingInfo]] = g.TypedDict(f"modeDict for {modeName}")
+        d: Dict[str, List[g.BindingInfo]] = g.SettingsDict(f"modeDict for {modeName}")
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -891,8 +891,8 @@ class ParserBaseClass:
     def traverse(self) -> Tuple[Any, Any]:
         """Traverse the entire settings tree."""
         c = self.c
-        self.settingsDict: Dict[str, List[g.GeneralSetting]] = g.TypedDict(f"settingsDict for {c.shortFileName()}")
-        self.shortcutsDict = g.TypedDict(f"shortcutsDict for {c.shortFileName()}")
+        self.settingsDict: Dict[str, List[g.GeneralSetting]] = g.SettingsDict(f"settingsDict for {c.shortFileName()}")
+        self.shortcutsDict = g.SettingsDict(f"shortcutsDict for {c.shortFileName()}")
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot()
         if not p:
@@ -936,8 +936,8 @@ class ActiveSettingsOutline:
         c = self.c
         settings = c.config.settingsDict
         shortcuts = c.config.shortcutsDict
-        assert isinstance(settings, g.TypedDict), repr(settings)
-        assert isinstance(shortcuts, g.TypedDict), repr(shortcuts)
+        assert isinstance(settings, g.SettingsDict), repr(settings)
+        assert isinstance(shortcuts, g.SettingsDict), repr(shortcuts)
         settings_copy = settings.copy()
         shortcuts_copy = shortcuts.copy()
         # Create the new commander.
@@ -1214,7 +1214,7 @@ class GlobalConfigManager:
         self.enabledPluginsString = ''
         self.menusList: List[Any] = []  # pbc.doMenu comment: likely buggy.
         self.menusFileName = ''
-        self.modeCommandsDict: Dict[str, g.TypedDict] = g.TypedDict('modeCommandsDict')
+        self.modeCommandsDict: Dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
         self.panes = None
         self.recentFiles: List[str] = []
         self.sc = None
@@ -1284,7 +1284,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         d = lm.globalSettingsDict
         if d:
-            assert isinstance(d, g.TypedDict), d.__class__.__name__
+            assert isinstance(d, g.SettingsDict), d.__class__.__name__
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1498,13 +1498,13 @@ class LocalConfigManager:
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
-            assert isinstance(self.settingsDict, g.TypedDict), self.settingsDict.__class__.__name__
-            assert isinstance(self.shortcutsDict, g.TypedDict), self.shortcutsDict.__class__.__name__
+            assert isinstance(self.settingsDict, g.SettingsDict), self.settingsDict.__class__.__name__
+            assert isinstance(self.shortcutsDict, g.SettingsDict), self.shortcutsDict.__class__.__name__
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
-            assert d1 is None or isinstance(d1, g.TypedDict), d1.__class__.__name__
-            assert d2 is None or isinstance(d2, g.TypedDict), d2.__class__.__name__
+            assert d1 is None or isinstance(d1, g.SettingsDict), d1.__class__.__name__
+            assert d2 is None or isinstance(d2, g.SettingsDict), d2.__class__.__name__
         # Default encodings.
         self.default_at_auto_file_encoding = 'utf-8'
         self.default_derived_file_encoding = 'utf-8'
@@ -1600,7 +1600,7 @@ class LocalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         d = self.settingsDict
         if d:
-            assert isinstance(d, g.TypedDict), repr(d)
+            assert isinstance(d, g.SettingsDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
@@ -1802,7 +1802,7 @@ class LocalConfigManager:
         """return the name of the file responsible for setting."""
         d = self.settingsDict
         if d:
-            assert isinstance(d, g.TypedDict), repr(d)
+            assert isinstance(d, g.SettingsDict), repr(d)
             bi = d.get(setting)
             if bi is None:
                 return 'unknown setting', None
@@ -1825,7 +1825,7 @@ class LocalConfigManager:
                 g.trace(f"no menu: {c.shortFileName()}:{commandName}")
             return None, []
         if d:
-            assert isinstance(d, g.TypedDict), repr(d)  # was TypedDictOfLists.
+            assert isinstance(d, g.SettingsDict), repr(d)  # was TypedDictOfLists.
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '')  # Allow '&' in names.
             aList = d.get(commandName, [])
@@ -1939,7 +1939,7 @@ class LocalConfigManager:
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)
         d = self.settingsDict
-        assert isinstance(d, g.TypedDict), repr(d)
+        assert isinstance(d, g.SettingsDict), repr(d)
         gs = d.get(key)
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)

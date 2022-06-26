@@ -1878,19 +1878,14 @@ class StyleSheetManager:
     #@+node:ekr.20180316091943.1: *3* ssm.Stylesheet
     # Computations on stylesheets themeselves.
     #@+node:ekr.20140915062551.19510: *4* ssm.expand_css_constants & helpers
-    css_warning_given = False
+    css_warning_given = False  # For do_pass.
 
-    def expand_css_constants(self, sheet: str, settingsDict: Dict=None) -> str:
+    def expand_css_constants(self, sheet: str, settingsDict: g.SettingsDict=None) -> str:
         """Expand @ settings into their corresponding constants."""
         c = self.c
         trace = 'zoom' in g.app.debug
-        # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
-            settingsDict = c.config.settingsDict  # A TypedDict.
-        if 0:
-            g.trace('===== settingsDict...')
-            for key in settingsDict.keys():
-                print(f"{key:40}: {settingsDict.get(key)}")
+            settingsDict = c.config.settingsDict  # A g.SettingsDict.
         constants, deltas = self.adjust_sizes(settingsDict)
         if trace:
             print('')

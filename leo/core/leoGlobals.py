@@ -2430,8 +2430,8 @@ def null_object_print(id_: int, kind: Any, *args: Any) -> None:
         # Print each signature once.
         tracing_signatures[signature] = True
         g.pr(f"{s:40} {callers}")
-#@+node:ekr.20120129181245.10220: *3* class g.TypedDict(dict)
-class TypedDict(dict):
+#@+node:ekr.20120129181245.10220: *3* class g.SettingsDict(dict)
+class SettingsDict(dict):
     """A subclass of dict providing settings-related methods."""
 
     def __init__(self, name: str) -> None:
@@ -2439,7 +2439,7 @@ class TypedDict(dict):
         self._name = name  # For __repr__ only.
 
     def __repr__(self) -> str:
-        return f"<TypedDict name:{self._name} "
+        return f"<SettingsDict name:{self._name} "
        
     __str__ = __repr__
        
@@ -2447,7 +2447,7 @@ class TypedDict(dict):
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name: str=None) -> Any:
         """Return a new dict with the same contents."""
-        # The result is a g.TypedDict.
+        # The result is a g.SettingsDict.
         return copy.deepcopy(self)
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
     def add_to_list(self, key: Any, val: Any) -> None:
