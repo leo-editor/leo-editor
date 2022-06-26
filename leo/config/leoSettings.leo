@@ -2313,7 +2313,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20220624062948.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3554,7 +3553,7 @@ edit-setting        = Ctrl+Key-0
 </t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 chapter-select              = None
-contract-node               = None
+contract-node               = Alt-[
 copy-node                   = Shift-Ctrl-c
 cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
@@ -6587,7 +6586,7 @@ set-comment-column                  = None
 set-extend-mode                     = None
 set-fill-column                     = None
 set-fill-prefix                     = None
-set-file-only                       = None
+set-find-file-only                  = None
 set-find-everywhere                 = None
 set-find-node-only                  = None
 set-find-suboutline-only            = None
