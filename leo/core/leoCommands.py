@@ -521,6 +521,7 @@ class Commands:
         getColor = c.config.getColor
         getData = c.config.getData
         getInt = c.config.getInt
+        getString = c.config.getString
         c.autoindent_in_nocolor = getBool('autoindent-in-nocolor-mode')
         c.collapse_nodes_after_move = getBool('collapse-nodes-after-move')
         c.collapse_on_lt_arrow = getBool('collapse-on-lt-arrow', default=True)
@@ -544,6 +545,7 @@ class Commands:
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
         c.smart_tab = getBool('smart-tab')
         c.tab_width = getInt('tab-width') or -4
+        c.target_language = getString('target-language') or 'python'
         c.verbose_check_outline = getBool('verbose-check-outline', default=False)
         c.vim_mode = getBool('vim-mode', default=False)
         c.write_script_file = getBool('write-script-file')
