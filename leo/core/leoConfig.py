@@ -1219,7 +1219,6 @@ class GlobalConfigManager:
         self.recentFiles: List[str] = []
         self.sc = None
         self.tree = None
-        self.use_plugins = True  # Leo 4.3+: Use plugins by default.
     #@+node:ekr.20120222103014.10314: *3* gcm.config_iter
     def config_iter(self, c: Cmdr) -> Generator:
         """Letters:

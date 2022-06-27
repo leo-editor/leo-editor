@@ -3701,7 +3701,7 @@ def get_files_in_directory(directory: str, kinds: List=None, recursive: bool=Tru
         g.es_exception()
         return []
 #@+node:ekr.20031218072017.1264: *3* g.getBaseDirectory
-# Handles the conventions applying to the "relative_path_base_directory" configuration option.
+# Handles the conventions applying to the "relative-path-base- directory" configuration option.
 
 def getBaseDirectory(c: Cmdr) -> str:
     """Convert '!' or '.' to proper directory references."""
@@ -5063,7 +5063,7 @@ def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
     if args:
         # A minor error in Leo's core.
         g.pr(f"***ignoring args param.  tag = {tag}")
-    if not g.app.config.use_plugins:
+    if not g.app.enablePlugins:
         if tag in ('open0', 'start1'):
             g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
         return None
