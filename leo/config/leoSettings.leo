@@ -649,6 +649,7 @@
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
+<v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
@@ -11660,6 +11661,10 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
+<t tx="felix.20220628162804.1">This option dictates that the clipboard content is to be generated as JSON
+(In the same format as the .leojs file format)
+
+Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

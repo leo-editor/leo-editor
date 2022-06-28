@@ -1687,15 +1687,18 @@ class FileCommands:
         gnxDict = self.gnxDict
         vnodesDict = self.vnodesDict
         try:
-            self.outputFile = io.StringIO()
             self.usingClipboard = True
-            self.putProlog()
-            self.putHeader()
-            self.put_v_elements(p or self.c.p)
-            self.put_t_elements()
-            self.putPostlog()
-            s = self.outputFile.getvalue()
-            self.outputFile = None
+            if self.c.config.getBool('json-outline-clipboard', default=False):
+                s = self.leojs_file(p or self.c.p)
+            else:
+                self.outputFile = io.StringIO()
+                self.putProlog()
+                self.putHeader()
+                self.put_v_elements(p or self.c.p)
+                self.put_t_elements()
+                self.putPostlog()
+                s = self.outputFile.getvalue()
+                self.outputFile = None
         finally:  # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
@@ -1760,26 +1763,49 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_file
-    def leojs_file(self):
+    def leojs_file(self, p):
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
-        # build uas dict
-        for v in c.all_unique_nodes():
-            if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
-                uas[v.gnx] = v.unknownAttributes
         gnxSet: Set[str] = set()  # holds all gnx found so far, to exclude adding headlines of already defined gnx.
-        result = {
-                'leoHeader': {'fileFormat': 2},
-                'globals': self.leojs_globals(),
-                'vnodes': [
-                    self.leojs_vnode(p.v, gnxSet) for p in c.rootPosition().self_and_siblings()
-                ],
-                'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
-            }
+
+        if self.usingClipboard:  # write the current tree.
+            # Node to be root of tree to be put on clipboard
+            sp = p or c.p
+            # build uas dict
+            for p in sp.self_and_subtree():
+                if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
+                    uas[p.v.gnx] = p.v.unknownAttributes
+            # result for specific starting p
+            result = {
+                    'leoHeader': {'fileFormat': 2},
+                    'globals': self.leojs_globals(),
+                    'vnodes': [
+                        self.leojs_vnode(p.v, gnxSet) for p in sp.self_and_subtree()
+                    ],
+                    'tnodes': {p.v.gnx: p.v._bodyString for p in sp.self_and_subtree() if p.v._bodyString}
+                }
+
+        else:  # write everything
+            # build uas dict
+            for v in c.all_unique_nodes():
+                if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
+                    uas[v.gnx] = v.unknownAttributes
+            # result for whole outline
+            result = {
+                    'leoHeader': {'fileFormat': 2},
+                    'globals': self.leojs_globals(),
+                    'vnodes': [
+                        self.leojs_vnode(p.v, gnxSet) for p in c.rootPosition().self_and_siblings()
+                    ],
+                    'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
+                }
+
         # uas could be empty. Only add it if needed
         if uas:
             result["uas"] = uas
+
+        self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
     def leojs_globals(self):
