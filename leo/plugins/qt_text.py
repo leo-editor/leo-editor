@@ -1793,6 +1793,17 @@ class QTextEditWrapper(QTextMixin):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op, mode)
+            if kind == 'down':
+                # If cursor is at start of last row of body,
+                # extend selection to end of that row.
+                cursor = w.textCursor()
+                lastrow = w.document().blockCount() - 1
+                block = w.toPlainText()
+                ins = self.getInsertPoint()
+                row, col = g.convertPythonIndexToRowCol(block, ins)
+                if row == lastrow and col == 0:
+                    w.moveCursor(MoveOperation.EndOfLine, mode)
+
         self.seeInsertPoint()
         self.rememberSelectionAndScroll()
         # #218.
