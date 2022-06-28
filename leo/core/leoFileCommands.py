@@ -1768,7 +1768,7 @@ class FileCommands:
         for v in c.all_unique_nodes():
             if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                 uas[v.gnx] = v.unknownAttributes
-        gnxSet: Set[str] = set()  # hods all gnx found so far, to exclude adding headlines of already defined gnx.
+        gnxSet: Set[str] = set()  # holds all gnx found so far, to exclude adding headlines of already defined gnx.
         result = {
                 'leoHeader': {'fileFormat': 2},
                 'globals': self.leojs_globals(),
