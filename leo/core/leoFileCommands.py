@@ -1689,7 +1689,8 @@ class FileCommands:
         try:
             self.usingClipboard = True
             if self.c.config.getBool('json-outline-clipboard', default=False):
-                s = self.leojs_file(p or self.c.p)
+                d = self.leojs_file(p or self.c.p)
+                s = json.dumps(d, indent=2, cls=SetJSONEncoder)
             else:
                 self.outputFile = io.StringIO()
                 self.putProlog()
@@ -1763,7 +1764,7 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_file
-    def leojs_file(self, p):
+    def leojs_file(self, p=None):
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
@@ -1771,6 +1772,7 @@ class FileCommands:
 
         if self.usingClipboard:  # write the current tree.
             # Node to be root of tree to be put on clipboard
+            g.es('using clipboard')
             sp = p or c.p
             # build uas dict
             for p in sp.self_and_subtree():
@@ -1805,6 +1807,7 @@ class FileCommands:
         if uas:
             result["uas"] = uas
 
+        self.currentPosition = p or c.p
         self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
