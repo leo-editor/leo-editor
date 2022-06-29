@@ -1787,21 +1787,20 @@ class QTextEditWrapper(QTextMixin):
             cursor.setPosition(anchor, MoveOperation.KeepAnchor)
             w.setTextCursor(cursor)
         else:
+            cursor = w.textCursor()
             if not extend:
                 # Fix an annoyance. Make sure to clear the selection.
-                cursor = w.textCursor()
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
+            prev_row = cursor.blockNumber()
             w.moveCursor(op, mode)
             if kind == 'down':
                 # If cursor is at start of last row of body,
                 # extend selection to end of that row.
-                cursor = w.textCursor()
                 lastrow = w.document().blockCount() - 1
-                block = w.toPlainText()
-                ins = self.getInsertPoint()
-                row, col = g.convertPythonIndexToRowCol(block, ins)
-                if row == lastrow and col == 0:
+                col = cursor.columnNumber()
+                row = cursor.blockNumber()
+                if row == lastrow and prev_row == row and col == 0:
                     w.moveCursor(MoveOperation.EndOfLine, mode)
 
         self.seeInsertPoint()
