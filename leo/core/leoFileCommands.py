@@ -825,9 +825,15 @@ class FileCommands:
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
-        # This encoding must match the encoding used in outline_to_clipboard_string.
-        s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+
+        if s.lstrip().startswith("{"):
+            # Maybe JSON
+            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+        else:
+            # This encoding must match the encoding used in outline_to_clipboard_string.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
         # Restore the hidden root's children
