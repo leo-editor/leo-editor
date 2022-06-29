@@ -431,7 +431,7 @@ class FastRead:
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-            # self.handleBits()
+            self.handleBits()
         except Exception:
             g.trace(f"Error .leojs JSON is not valid: {path}")
             g.es_exception()
@@ -549,7 +549,7 @@ class FastRead:
 
                     v._headString = v_dict.get('vh', '')
                     v._bodyString = gnx2body.get(gnx, '')
-                    v.statusBits = v_dict.get('status', 0)
+                    v.statusBits = v_dict.get('status', 0)  # Needed ?
                     if v.isExpanded():
                         fc.descendentExpandedList.append(gnx)
                     if v.isMarked():
@@ -1772,8 +1772,7 @@ class FileCommands:
 
         if self.usingClipboard:  # write the current tree.
             # Node to be root of tree to be put on clipboard
-            g.es('using clipboard')
-            sp = p or c.p
+            sp = p or c.p # Selected Position: sp
             # build uas dict
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
@@ -1783,7 +1782,7 @@ class FileCommands:
                     'leoHeader': {'fileFormat': 2},
                     'globals': self.leojs_globals(),
                     'vnodes': [
-                        self.leojs_vnode(p.v, gnxSet) for p in sp.self_and_subtree()
+                        self.leojs_vnode(sp.v, gnxSet)
                     ],
                     'tnodes': {p.v.gnx: p.v._bodyString for p in sp.self_and_subtree() if p.v._bodyString}
                 }
