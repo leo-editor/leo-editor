@@ -254,11 +254,20 @@ def pasteAsTemplate(self, event=None):
             yield parent_gnx, gnx, heads.get(gnx), b
         else:
             seen.add(gnx)
-            h = xv[0].text
+            if not isJson:
+                h = xv[0].text
+            else:
+                h = xv.get('vh', '')
             heads[gnx] = h
             yield parent_gnx, gnx, h, b
-            for xch in xv[1:]:
-                yield from viter(gnx, xch)
+            if not isJson:
+                for xch in xv[1:]:
+                    yield from viter(gnx, xch)
+            else:
+                if xv.get('children'):
+                    for xch in xv['children']:
+                        yield from viter(gnx, xch)
+
     #@+node:vitalije.20200529114857.1: *4* getv
     gnx2v = c.fileCommands.gnxDict
     def getv(gnx):
@@ -338,6 +347,16 @@ def pasteAsTemplate(self, event=None):
         xtelements = xroot.get('tnodes')  # <t> elements.
         # bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
         bodies = leoFileCommands.FastRead(c, {}).scanJsonTnodes(xtelements)
+
+        def addBody(node):
+            if not hasattr(bodies, node['gnx']):
+                bodies[node['gnx']] = ''
+            if node.get('children'):
+                for child in node['children']:
+                    addBody(child)
+
+        # generate bodies for all possible nodes, not just non-empty bodies.
+        addBody(xvelements[0])
         uas = defaultdict(dict)
         uas.update(xroot.get('uas', {}))
         root_gnx = xvelements[0].get('gnx') # the gnx of copied node
