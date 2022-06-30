@@ -4,6 +4,8 @@
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
 import xml.etree.ElementTree as ElementTree
+import json
+from collections import defaultdict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -202,6 +204,15 @@ def pasteAsTemplate(self, event=None):
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
+
+    s = g.app.gui.getTextFromClipboard()
+    if not s or not c.canPasteOutline(s):
+        return None  # This should never happen.
+
+    isJson = False
+    if s.lstrip().startswith("{"):
+        isJson = True;
+
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
     def skip_root(v):
@@ -231,7 +242,12 @@ def pasteAsTemplate(self, event=None):
 
         skipping the descendants of already seen nodes.
         """
-        chgnx = xv.attrib.get('t')
+
+        if not isJson:
+            chgnx = xv.attrib.get('t')
+        else:
+            chgnx = xv.get('gnx')
+
         b = bodies[chgnx]
         gnx = translation.get(chgnx)
         if gnx in seen:
@@ -309,13 +325,23 @@ def pasteAsTemplate(self, event=None):
         pasted.parents.append(vpar)
         c.redraw(newp)
     #@-others
-    xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
-    xvelements = xroot.find('vnodes')  # <v> elements.
-    xtelements = xroot.find('tnodes')  # <t> elements.
 
-    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+    if not isJson:
+        xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
+        xvelements = xroot.find('vnodes')  # <v> elements.
+        xtelements = xroot.find('tnodes')  # <t> elements.
+        bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+        root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
+    else:
+        xroot = json.loads(g.app.gui.getTextFromClipboard())
+        xvelements = xroot.get('vnodes')  # <v> elements.
+        xtelements = xroot.get('tnodes')  # <t> elements.
+        # bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+        bodies = leoFileCommands.FastRead(c, {}).scanJsonTnodes(xtelements)
+        uas = defaultdict(dict)
+        uas.update(xroot.get('uas', {}))
+        root_gnx = xvelements[0].get('gnx') # the gnx of copied node
 
-    root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     # outside will contain gnxes of nodes that are outside the copied tree
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
 
