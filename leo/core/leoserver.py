@@ -2083,16 +2083,33 @@ class LeoServer:
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
-        c = self._check_c()
         tag = 'get_ui_states'
+        c = self._check_c()
+        p = self._get_p(param)
+
+        w_canHoist = True
+        if c.hoistStack:
+            bunch = c.hoistStack[len(c.hoistStack) - 1]
+            w_ph = bunch.p
+            if p == w_ph:
+                # p is already the hoisted node
+                w_canHoist = False
+        else:
+            # not hoisted, was it the single top child of the real root?
+            if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
+                w_canHoist = False
+
         try:
             states = {
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
+                "canGoBack": c and c.nodeHistory.beadPointer > 0,
+                "canGoNext": c and c.nodeHistory.beadPointer + 1 < len(c.nodeHistory.beadList),
                 "canDemote": c and c.canDemote(),
                 "canPromote": c and c.canPromote(),
                 "canDehoist": c and c.canDehoist(),
+                "canHoist": w_canHoist
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
