@@ -3126,7 +3126,7 @@ class FastAtRead:
                     # m.group(2) is '-' because the pattern matched.
                     try:
                         gnx, indent, body = stack.pop()
-                    except IndexError:
+                    except IndexError:  # pragma: no cover
                         # #2624: This can happen during git-diff.
                         pass
                 continue

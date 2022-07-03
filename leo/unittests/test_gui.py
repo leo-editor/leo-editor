@@ -60,7 +60,7 @@ class TestQtGui(LeoUnitTest):
         assert option.ShowTabsAndSpaces is not None  # pragma: no cover
     #@+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
     # These tests exist to test the startup logic.
-    if 0:
+    if 0:  # pragma: no cover
 
         def test_do_nothing1(self):
             time.sleep(0.1)
