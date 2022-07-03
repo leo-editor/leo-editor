@@ -10,7 +10,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20211209052710.1: ** do_import
 def do_import(c, s, parent):
 
-    if sys.version_info < (3, 7, 0):
+    if sys.version_info < (3, 7, 0):  # pragma: no cover
         g.es_print('The python importer requires python 3.7 or above')
         return False
     split_root(parent, s.splitlines(True))
@@ -279,7 +279,8 @@ def split_root(root, lines):
             if s and not s.startswith('#'):
                 # A non-trivial non-comment.
                 return s
-        return "...some declarations"  # Return legacy headline.
+        # Return legacy headline.
+        return "...some declarations"  # pragma: no cover
     #@-others
     # rawtokens is a list of all tokens found in input lines
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
