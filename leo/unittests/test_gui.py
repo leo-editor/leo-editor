@@ -53,8 +53,7 @@ class TestQtGui(LeoUnitTest):
         if isQt6:
             # Skip this test when using PyQt5.
             with self.assertRaises(AttributeError):
-                flag = option.ShowTabsAndSpaces  # As in the old code.
-                assert flag is not None
+                option.ShowTabsAndSpaces  # pylint: disable=pointless-statement
             return
         # Test the new code.
         assert option.ShowTabsAndSpaces is not None  # pragma: no cover
