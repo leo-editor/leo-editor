@@ -56,7 +56,7 @@ def create_app(gui_name='null'):
         g.app.gui = NullGui()
     elif gui_name == 'qt':
         g.app.gui = LeoQtGui()
-    else:
+    else:  # pragma: no cover
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
@@ -76,7 +76,7 @@ def create_app(gui_name='null'):
     #         gui: 0.000
     #   commander: 0.469
     #       total: 0.484
-    if trace and t4 - t3 > 0.1:
+    if trace and t4 - t3 > 0.1:  # pragma: no cover
         print('create_app:\n'
             f"  imports: {(t2-t1):.3f}\n"
             f"      gui: {(t3-t2):.3f}\n"
