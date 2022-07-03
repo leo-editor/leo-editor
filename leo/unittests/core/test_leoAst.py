@@ -398,9 +398,9 @@ class TestTOG(BaseTest):
     f(1, x=2,
         *[3, 4], y=5)
     '''
-        elif 1:  # Expected order.
+        elif 1:  # pragma: no cover
             contents = '''f(1, *[a, 3], x=2, y=5)'''  # pragma: no cover
-        else:  # Legacy.
+        else:  # pragma: no cover
             contents = '''f(a, *args, **kwargs)'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320095504.8: *5* test_line_337
@@ -1058,7 +1058,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20220329095904.1: *5* test_Match
     def test_Match(self):
 
-        if py_version < (3, 10):
+        if py_version < (3, 10):  # pragma: no cover
             self.skipTest('Require python 3.10')
         contents = r"""\
     match node:
@@ -1627,7 +1627,7 @@ class TestIterative(TestTOG):
     #@+node:edreamleo.20220429071246.1: *4* TestIterative.setUp
     def setUp(self):
 
-        if py_version < (3, 9):
+        if py_version < (3, 9):  # pragma: no cover
             self.skipTest('Requires Python 3.9 or above')
     #@+node:ekr.20220402150424.1: *4* TestIterative.make_data (override)
     def make_data(self, contents, description=None):  # pragma: no cover
@@ -1803,18 +1803,18 @@ class TestIterative(TestTOG):
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20220403062532.1: *5* TestIterative.blacken
-    def blacken(self, contents, line_length=None):
+    def blacken(self, contents, line_length=None):  # pragma: no cover
         """Return the results of running black on contents"""
         # A copy of TestOrange.blacken
         if not black:
-            self.skipTest('Can not import black')  # pragma: no cover
+            self.skipTest('Can not import black')
         # Suppress string normalization!
         try:
             mode = black.FileMode()
             mode.string_normalization = False
             if line_length is not None:
                 mode.line_length = line_length
-        except TypeError:  # pragma: no cover
+        except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
     #@-others
