@@ -578,17 +578,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p):
             """Convert p.b in place."""
             c = self.c
-            if not p.b.strip():
-                return  # pragma: no cover
+            if not p.b.strip():  # pragma: no cover
+                return
             try:
                 s = self.def_pat.sub(self.do_def, p.b)
-            except AnnotationError as e:
+            except AnnotationError as e:  # pragma: no cover
                 print(f"Unchanged: {p.h}: {e!r}")
                 return
             if p.b != s:
                 self.changed_lines += 1
-                if not g.unitTesting:
-                    print(f"changed {p.h}")  # pragma: no cover
+                if not g.unitTesting:  # pragma: no cover
+                    print(f"changed {p.h}")
                 p.setDirty()
                 c.setChanged()
                 p.b = s
@@ -657,7 +657,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         result.append(f"{lws}{name}{comma}")
                         if i < len(args) and args[i] == ',':
                             i += 1
-                elif tail == ':':
+                elif tail == ':':  # pragma: no cover
                     # Never change an already-annotated arg.
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}{comma}")
@@ -707,7 +707,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch == ',' and level == 0:
                     # Skip the comma, but don't include it in the result.
                     break
-            if level > 0:
+            if level > 0:  # pragma: no cover
                 raise AnnotationError(f"Bad level: {level}, {s!r}")
             result = s[i1:i].strip()
             if result.endswith(','):
