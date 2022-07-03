@@ -40,7 +40,7 @@ class Csharp_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Csharp_ScanState.__repr__"""
         return "Csharp_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
