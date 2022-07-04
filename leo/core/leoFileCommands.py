@@ -1788,7 +1788,7 @@ class FileCommands:
                     'leoHeader': {'fileFormat': 2},
                     'globals': self.leojs_globals(),
                     'vnodes': [
-                        self.leojs_vnode(sp.v, gnxSet)
+                        self.leojs_vnode(sp, gnxSet)
                     ],
                     'tnodes': {p.v.gnx: p.v._bodyString for p in sp.self_and_subtree() if p.v._bodyString}
                 }
@@ -1803,9 +1803,11 @@ class FileCommands:
                     'leoHeader': {'fileFormat': 2},
                     'globals': self.leojs_globals(),
                     'vnodes': [
-                        self.leojs_vnode(p.v, gnxSet) for p in c.rootPosition().self_and_siblings()
+                        self.leojs_vnode(p, gnxSet) for p in c.rootPosition().self_and_siblings()
                     ],
-                    'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
+                    'tnodes': {
+                        v.gnx: v._bodyString for v in c.all_unique_nodes() if (v._bodyString and v.isWriteBit())
+                    }
                 }
 
         # uas could be empty. Only add it if needed
@@ -1840,28 +1842,67 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, v, gnxSet):
+    def leojs_vnode(self, p, gnxSet, isIgnore=False):
         """Return a jsonized vnode."""
+        c = self.c
+        fc = self
+        v = p.v
+        # Precompute constants.
+        # Write the entire @edit tree if it has children.
+        isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+        isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        isFile = p.isAtFileNode()
+        isShadow = p.isAtShadowFileNode()
+        isThin = p.isAtThinFileNode()
+        # Set forceWrite.
+        if isIgnore or p.isAtIgnoreNode():
+            forceWrite = True
+        elif isAuto or isEdit or isFile or isShadow or isThin:
+            forceWrite = False
+        else:
+            forceWrite = True
+        # Set the write bit if necessary.
+        if forceWrite or self.usingClipboard:
+            v.setWriteBit()  # 4.2: Indicate we wrote the body text.
+
         status = 0
         if v.isMarked():
             status |= v.markedBit
-        if v.isExpanded():
+        if p.isExpanded():
             status |= v.expandedBit
-        if v.isSelected():
+        if p == c.p:
             status |= v.selectedBit
 
-        children = [self.leojs_vnode(child, gnxSet) for child in v.children]
+        children = [] # Start empty
+
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                children.append(fc.leojs_vnode(p, gnxSet, isIgnore))
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    break
+            p.moveToParent()  # Restore p in the caller.
+
+        # At least will contain  the gnx
         result = {
             'gnx': v.fileIndex,
         }
+
         if v.fileIndex not in gnxSet:
             result['vh'] = v._headString  # Not a clone so far so add his headline text
-        gnxSet.add(v.fileIndex)
+            gnxSet.add(v.fileIndex)
+            if children:
+                result['children'] = children
+
+        # Else, just add status if needed
         if status:
             result['status'] = status
-        if children:
-            result['children'] = children
+
         return result
+
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
         """Write the outline in .leo (XML) format."""
