@@ -27,7 +27,6 @@ def copyOutline(self, event=None):
 def copyOutlineAsJSON(self, event=None):
     """Copy the selected outline to the clipboard in json format."""
     # Copying an outline has no undo consequences.
-    import json
     #@+others  # Define helper functions
     #@+node:ekr.20220314072801.1: *4* function: json_globals
     def json_globals(c):
@@ -212,7 +211,7 @@ def pasteAsTemplate(self, event=None):
 
     isJson = False
     if s.lstrip().startswith("{"):
-        isJson = True;
+        isJson = True
 
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
@@ -335,7 +334,7 @@ def pasteAsTemplate(self, event=None):
         pasted.parents.append(vpar)
         c.redraw(newp)
     #@-others
-    
+
     xvelements: Any
     xtelements: Any
 
