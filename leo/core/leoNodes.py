@@ -354,7 +354,7 @@ class Position:
     # - moreBody could be anywhere: it may as well be a position method.
     #@+node:ekr.20040315023430.1: *4* p.convertTreeToString
     def convertTreeToString(self) -> str:
-        """Convert a positions  suboutline to a string in MORE format."""
+        """Convert a positions suboutline to a string in MORE format."""
         p = self
         level1 = p.level()
         array = []

@@ -431,7 +431,7 @@ class FastRead:
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
             hidden_v = self.scanJsonVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
-            # self.handleBits()
+            self.handleBits()
         except Exception:
             g.trace(f"Error .leojs JSON is not valid: {path}")
             g.es_exception()
@@ -549,7 +549,7 @@ class FastRead:
 
                     v._headString = v_dict.get('vh', '')
                     v._bodyString = gnx2body.get(gnx, '')
-                    v.statusBits = v_dict.get('status', 0)
+                    v.statusBits = v_dict.get('status', 0)  # Needed ?
                     if v.isExpanded():
                         fc.descendentExpandedList.append(gnx)
                     if v.isMarked():
@@ -825,9 +825,15 @@ class FileCommands:
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
-        # This encoding must match the encoding used in outline_to_clipboard_string.
-        s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-        hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+
+        if s.lstrip().startswith("{"):
+            # Maybe JSON
+            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
+        else:
+            # This encoding must match the encoding used in outline_to_clipboard_string.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
         # Restore the hidden root's children
@@ -1687,15 +1693,19 @@ class FileCommands:
         gnxDict = self.gnxDict
         vnodesDict = self.vnodesDict
         try:
-            self.outputFile = io.StringIO()
             self.usingClipboard = True
-            self.putProlog()
-            self.putHeader()
-            self.put_v_elements(p or self.c.p)
-            self.put_t_elements()
-            self.putPostlog()
-            s = self.outputFile.getvalue()
-            self.outputFile = None
+            if self.c.config.getBool('json-outline-clipboard', default=False):
+                d = self.leojs_file(p or self.c.p)
+                s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+            else:
+                self.outputFile = io.StringIO()
+                self.putProlog()
+                self.putHeader()
+                self.put_v_elements(p or self.c.p)
+                self.put_t_elements()
+                self.putPostlog()
+                s = self.outputFile.getvalue()
+                self.outputFile = None
         finally:  # Restore
             self.descendentTnodeUaDictList = tua
             self.descendentVnodeUaDictList = vua
@@ -1760,26 +1770,52 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_file
-    def leojs_file(self):
+    def leojs_file(self, p=None):
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
-        # build uas dict
-        for v in c.all_unique_nodes():
-            if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
-                uas[v.gnx] = v.unknownAttributes
         gnxSet: Set[str] = set()  # holds all gnx found so far, to exclude adding headlines of already defined gnx.
-        result = {
-                'leoHeader': {'fileFormat': 2},
-                'globals': self.leojs_globals(),
-                'vnodes': [
-                    self.leojs_vnode(p.v, gnxSet) for p in c.rootPosition().self_and_siblings()
-                ],
-                'tnodes': {v.gnx: v._bodyString for v in c.all_unique_nodes() if v._bodyString}
-            }
+
+        if self.usingClipboard:  # write the current tree.
+            # Node to be root of tree to be put on clipboard
+            sp = p or c.p # Selected Position: sp
+            # build uas dict
+            for p in sp.self_and_subtree():
+                if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
+                    uas[p.v.gnx] = p.v.unknownAttributes
+            # result for specific starting p
+            result = {
+                    'leoHeader': {'fileFormat': 2},
+                    'globals': self.leojs_globals(),
+                    'vnodes': [
+                        self.leojs_vnode(sp, gnxSet)
+                    ],
+                    'tnodes': {p.v.gnx: p.v._bodyString for p in sp.self_and_subtree() if p.v._bodyString}
+                }
+
+        else:  # write everything
+            # build uas dict
+            for v in c.all_unique_nodes():
+                if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
+                    uas[v.gnx] = v.unknownAttributes
+            # result for whole outline
+            result = {
+                    'leoHeader': {'fileFormat': 2},
+                    'globals': self.leojs_globals(),
+                    'vnodes': [
+                        self.leojs_vnode(p, gnxSet) for p in c.rootPosition().self_and_siblings()
+                    ],
+                    'tnodes': {
+                        v.gnx: v._bodyString for v in c.all_unique_nodes() if (v._bodyString and v.isWriteBit())
+                    }
+                }
+
         # uas could be empty. Only add it if needed
         if uas:
             result["uas"] = uas
+
+        self.currentPosition = p or c.p
+        self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
     def leojs_globals(self):
@@ -1806,28 +1842,67 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, v, gnxSet):
+    def leojs_vnode(self, p, gnxSet, isIgnore=False):
         """Return a jsonized vnode."""
+        c = self.c
+        fc = self
+        v = p.v
+        # Precompute constants.
+        # Write the entire @edit tree if it has children.
+        isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+        isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        isFile = p.isAtFileNode()
+        isShadow = p.isAtShadowFileNode()
+        isThin = p.isAtThinFileNode()
+        # Set forceWrite.
+        if isIgnore or p.isAtIgnoreNode():
+            forceWrite = True
+        elif isAuto or isEdit or isFile or isShadow or isThin:
+            forceWrite = False
+        else:
+            forceWrite = True
+        # Set the write bit if necessary.
+        if forceWrite or self.usingClipboard:
+            v.setWriteBit()  # 4.2: Indicate we wrote the body text.
+
         status = 0
         if v.isMarked():
             status |= v.markedBit
-        if v.isExpanded():
+        if p.isExpanded():
             status |= v.expandedBit
-        if v.isSelected():
+        if p == c.p:
             status |= v.selectedBit
 
-        children = [self.leojs_vnode(child, gnxSet) for child in v.children]
+        children = [] # Start empty
+
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                children.append(fc.leojs_vnode(p, gnxSet, isIgnore))
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    break
+            p.moveToParent()  # Restore p in the caller.
+
+        # At least will contain  the gnx
         result = {
             'gnx': v.fileIndex,
         }
+
         if v.fileIndex not in gnxSet:
             result['vh'] = v._headString  # Not a clone so far so add his headline text
-        gnxSet.add(v.fileIndex)
+            gnxSet.add(v.fileIndex)
+            if children:
+                result['children'] = children
+
+        # Else, just add status if needed
         if status:
             result['status'] = status
-        if children:
-            result['children'] = children
+
         return result
+
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName):
         """Write the outline in .leo (XML) format."""
