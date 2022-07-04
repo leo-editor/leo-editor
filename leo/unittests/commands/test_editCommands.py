@@ -3967,25 +3967,13 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.2: *4* TestEditCommands.test_abbrevCommands_next_place
     def test_abbrevCommands_next_place(self):
         c = self.c
-        p = c.p
         ac = c.abbrevCommands
         assert ac
-        # pylint: disable=no-member
-        if c.abbrev_place_start is None or c.abbrev_place_end is None:
-            self.skipTest('no abbreviation settings')  # #1345.
-        child = g.findNodeInTree(c, p, 'child')
-        assert child
-        i, j = 0, 0
-        # ac.make_script_substitutions(i,j,val)
-        # ac.find_place_holder(child,True)
-        new_s, i, j = ac.next_place(child.b, offset=0)
-        self.assertEqual(p.b, new_s)
-        self.assertEqual(i, 34)
-        self.assertEqual(j, 40)
-        new_s2, i, j = ac.next_place(new_s, offset=40)
-        self.assertEqual(i, 54)
-        self.assertEqual(j, 58)
-
+        c.abbrev_place_start = '<|'
+        c.abbrev_place_end = '|>'
+        s = '123<| sub |>456'
+        new_s, i, j = ac.next_place(s, offset=0)
+        assert new_s == s.replace('<|', '').replace('|>', '')
     #@+node:ekr.20210905064816.3: *4* TestEditCommands.test_addAbbrevHelper
     def test_addAbbrevHelper(self):
         c = self.c
@@ -4108,9 +4096,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.9: *4* TestEditCommands.test_helpForMinibuffer
     def test_helpForMinibuffer(self):
         c = self.c
-        vr = c.helpCommands.helpForMinibuffer()
-        if not vr:
-            self.skipTest('no vr plugin')
+        c.helpCommands.helpForMinibuffer()
     #@+node:ekr.20210914154830.1: *4* TestEditCommands.test_helpForPython
     def test_helpForPthon(self):
         c, k = self.c, self.c.k
@@ -4199,83 +4185,58 @@ class TestEditCommands(LeoUnitTest):
 
     #@+node:ekr.20210905064816.21: *4* TestEditCommands.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
-        c = self.c
-        k = c.keyHandler
+        c, k = self.c, self.c.k
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redrawAndEdit(p)  # To make node visible
+        c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
         w.setSelectionRange('end', 'end')
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('end', 'end')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            stroke = k.getStrokeForCommandName('paste-text')
-            if stroke is None:
-                self.skipTest('no binding for paste-text')  # #1345
-            k.manufactureKeyPressForCommandName(w, 'paste-text')
-            g.app.gui.event_generate(c, '\n', 'Return', w)
+        c.frame.pasteText(event=g.Bunch(widget=w))
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
         k.manufactureKeyPressForCommandName(w, 'undo')
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.22: *4* TestEditCommands.test_paste_and_undo_in_headline__with_selection
     def test_paste_and_undo_in_headline__with_selection(self):
-        c = self.c
-        k = c.keyHandler
-        frame = c.frame
-        tree = frame.tree
+        c, k = self.c, self.c.k
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p)  # To make node visible
-        tree.editLabel(p)
+        c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('1.1', '1.2')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            stroke = k.getStrokeForCommandName('paste-text')
-            if stroke is None:
-                self.skipTest('no binding for paste-text')  # #1345
-            k.manufactureKeyPressForCommandName(w, 'paste-text')
-            g.app.gui.event_generate(c, '\n', 'Return', w)
+        c.frame.pasteText(event=g.Bunch(widget=w))
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h[0] + paste + h[2:])
         k.manufactureKeyPressForCommandName(w, 'undo')
         self.assertEqual(p.h, h)
-
     #@+node:ekr.20210905064816.23: *4* TestEditCommands.test_paste_at_end_of_headline
     def test_paste_at_end_of_headline(self):
         c = self.c
-        k = c.keyHandler
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redrawAndEdit(p)  # To make node visible
+        c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        g.app.gui.set_focus(c, w)
         assert w
+        g.app.gui.set_focus(c, w)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         g.app.gui.set_focus(c, w)
         w.setSelectionRange('end', 'end')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            stroke = k.getStrokeForCommandName('paste-text')
-            if stroke is None:
-                self.skipTest('no binding for paste-text')  # #1345
-            k.manufactureKeyPressForCommandName(w, 'paste-text')
-            g.app.gui.event_generate(c, '\n', 'Return', w)
+        c.frame.pasteText(event=g.Bunch(widget=w))
+        g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
     #@+node:ekr.20210905064816.24: *4* TestEditCommands.test_paste_from_menu_into_headline_sticks
     def test_paste_from_menu_into_headline_sticks(self):
@@ -4349,17 +4310,14 @@ class TestEditCommands(LeoUnitTest):
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.27: *4* TestEditCommands.test_selecting_new_node_retains_typing_in_headline
     def test_selecting_new_node_retains_typing_in_headline(self):
-        c = self.c
-        k = c.k
-        if k.defaultUnboundKeyAction != 'insert':
-            return
-        tree = c.frame.tree
+        c, k = self.c, self.c.k
+        k.defaultUnboundKeyAction = 'insert'
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)
-        c.redraw(p)  # To make node visible
-        tree.editLabel(p)
+        c.redraw(p)  # Required
+        c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         w.setSelectionRange('end', 'end')
         # char, shortcut.
@@ -4435,17 +4393,14 @@ class TestEditCommands(LeoUnitTest):
             c.keyHandler.simulateCommand(commandName)
             # i, j = w.getSelectionRange()
             # self.assertNotEqual(i, j, msg=commandName)
-    #@+node:ekr.20210905064816.28: *4* TestEditCommands.test_typing_and_undo_in_headline__at_end
-    def test_typing_and_undo_in_headline__at_end(self):
+    #@+node:ekr.20210905064816.28: *4* TestEditCommands.test_typing_and_undo_in_headline_at_end
+    def test_typing_and_undo_in_headline_at_end(self):
         c, k = self.c, self.c.k
-        if k.defaultUnboundKeyAction != 'insert':
-            self.skipTest('defaultUnboundKeyAction != insert')
-        if not k.getStrokeForCommandName('undo'):
-            self.skipTest('no settings')
+        k.defaultUnboundKeyAction = 'insert'
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
-        c.redrawAndEdit(p)  # To make the node visible.
+        c.redrawAndEdit(p)  # Required
         w = c.edit_widget(p)
         assert w
         wName = g.app.gui.widget_name(w)
@@ -4456,11 +4411,9 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + 'XYZ')
-        if g.app.gui.guiName() != 'nullGui':
-            self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
+        self.assertEqual(c.undoer.undoMenuLabel, 'Undo Typing')
         k.manufactureKeyPressForCommandName(w, 'undo')
-        if g.app.gui.guiName() != 'nullGui':
-            self.assertEqual(c.undoer.redoMenuLabel, 'Redo Typing')
+        self.assertEqual(c.undoer.redoMenuLabel, 'Redo Typing')
         self.assertEqual(p.h, h)
     #@+node:ekr.20210905064816.29: *4* TestEditCommands.test_typing_in_non_empty_body_text_does_not_redraw_the_screen
     def test_typing_in_non_empty_body_text_does_not_redraw_the_screen(self):
