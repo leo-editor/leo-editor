@@ -78,6 +78,7 @@ disable=
         consider-using-dict-comprehension,
         consider-using-dict-items,
         consider-using-fstring,
+        consider-using-generator,
         consider-using-max-builtin,
         consider-using-set-comprehension,
         consider-using-ternary,
