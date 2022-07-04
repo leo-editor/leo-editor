@@ -6,6 +6,7 @@
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -334,6 +335,9 @@ def pasteAsTemplate(self, event=None):
         pasted.parents.append(vpar)
         c.redraw(newp)
     #@-others
+    
+    xvelements: Any
+    xtelements: Any
 
     if not isJson:
         xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
