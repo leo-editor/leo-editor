@@ -35,7 +35,7 @@ class BaseEditCommandsClass:
             b.undoType = undoType
             b.undoer_bunch = u.beforeChangeBody(p)  # #1733.
         else:
-            self.undoData = None
+            self.undoData = None  # pragma: no cover
         return w
     #@+node:ekr.20150514043714.6: *4* BaseEdit.endCommand
     def endCommand(self, label=None, changed=True, setLabel=True):
@@ -61,7 +61,7 @@ class BaseEditCommandsClass:
         # Warning: basic editing commands **must not** set the label.
         if setLabel:
             if label:
-                k.setLabelGrey(label)
+                k.setLabelGrey(label)  # pragma: no cover
             else:
                 k.resetLabel()
     #@+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
@@ -79,11 +79,11 @@ class BaseEditCommandsClass:
         self.w = w
         return w
     #@+node:ekr.20150514043714.8: *3* BaseEdit.getWSString
-    def getWSString(self, s):
+    def getWSString(self, s):  # pragma: no cover
         """Return s with all characters replaced by tab or space."""
         return ''.join([ch if ch == '\t' else ' ' for ch in s])
     #@+node:ekr.20150514043714.9: *3* BaseEdit.oops
-    def oops(self):
+    def oops(self):  # pragma: no cover
         """Return a "must be overridden" message"""
         g.pr("BaseEditCommandsClass oops:",
             g.callers(),
@@ -94,8 +94,7 @@ class BaseEditCommandsClass:
         """Return True if there is a selection in the edit widget."""
         w = self.editWidget(event)
         val = w and w.hasSelection()
-        if warning and not val:
-            # k.setLabelGrey(warning)
+        if warning and not val:  # pragma: no cover
             g.es(warning, color='red')
         return val
     #@+node:ekr.20150514043714.13: *4* BaseEdit.getRectanglePoints
@@ -109,7 +108,7 @@ class BaseEditCommandsClass:
         r3, r4 = g.convertPythonIndexToRowCol(s, j)
         return r1 + 1, r2, r3 + 1, r4
     #@+node:ekr.20150514043714.14: *4* BaseEdit.keyboardQuit
-    def keyboardQuit(self, event=None):
+    def keyboardQuit(self, event=None):  # pragma: no cover
         """Clear the state and the minibuffer label."""
         return self.c.k.keyboardQuit()
     #@-others
