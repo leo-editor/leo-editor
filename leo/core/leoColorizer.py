@@ -1335,8 +1335,12 @@ class JEditColorizer(BaseColorizer):
         n = self.match_compiled_regexp_helper(s, i, g.url_regex)
         if n <= 0:
             return 0
-        # Special case for trailing ')'.
+        # Special case for trailing period.
         s2 = s[i: i+n]
+        if s2.endswith('.'):
+            n -= 1
+            s2 = s[i: i+n]
+        # Special case for trailing ')'
         if s2.endswith(')') and '(' not in s2:
             n -= 1
         j = i + n

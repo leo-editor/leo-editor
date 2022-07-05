@@ -7479,17 +7479,23 @@ def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
+    # These two special cases should match the hacks in jedit.match_any_url.
+    if url.endswith('.'):
+        url = url[:-1]
+    if '(' not in url and url.endswith(')'):
+        url = url[:-1]
+    # Lower the url.
     urll = url.lower()
     if urll.startswith('@url'):
         url = url[4:].lstrip()
     if (
-        urll.startswith('unl://') or
-        urll.startswith('file://') and url.find('-->') > -1 or
-        urll.startswith('#')
+        urll.startswith(('#', 'unl://')) or
+        urll.startswith('file://') and '-->' in urll
     ):
         return g.handleUnl(url, c)
     try:
-        return g.handleUrlHelper(url, c, p)
+        g.handleUrlHelper(url, c, p)
+        return urll  # For unit tests.
     except Exception:
         g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
