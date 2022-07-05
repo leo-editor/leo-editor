@@ -854,7 +854,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict):
         """Put Leo-specific rules to theList."""
-        # pylint: disable=no-member
         table = [
             # Rules added at front are added in **reverse** order.
             # Debatable: Leo keywords override langauge keywords.
@@ -866,16 +865,15 @@ class JEditColorizer(BaseColorizer):
             ('@', self.match_at_nocolor_node, True),
             ('@', self.match_at_wrap, True),  # 2015/06/22
             ('@', self.match_doc_part, True),
-            ('f', self.match_url_f, True),
-            ('g', self.match_url_g, True),
-            ('h', self.match_url_h, True),
-            ('m', self.match_url_m, True),
-            ('n', self.match_url_n, True),
-            ('p', self.match_url_p, True),
-            ('t', self.match_url_t, True),
+            ('f', self.match_any_url, True),
+            ('g', self.match_any_url, True),
+            ('h', self.match_any_url, True),
+            ('m', self.match_any_url, True),
+            ('n', self.match_any_url, True),
+            ('p', self.match_any_url, True),
+            ('t', self.match_any_url, True),
             ('u', self.match_unl, True),
-            ('w', self.match_url_w, True),
-            # ('<', self.match_image, True),
+            ('w', self.match_any_url, True),
             ('<', self.match_section_ref, True),  # Called **first**.
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
@@ -886,8 +884,8 @@ class JEditColorizer(BaseColorizer):
                 (' ', self.match_trailing_ws, True),
                 ('\t', self.match_trailing_ws, True),
             ]
+        # Replace the bound method by an unbound method.
         for ch, rule, atFront, in table:
-            # Replace the bound method by an unbound method.
             rule = rule.__func__
             theList = theDict.get(ch, [])
             if rule not in theList:
@@ -1321,6 +1319,9 @@ class JEditColorizer(BaseColorizer):
             return s
         return '\n' + s + '\n'
     #@+node:ekr.20110605121601.18592: *4* jedit.Leo rule functions
+    #@+node:ekr.20110605121601.18608: *5* jedit.match_any_url
+    def match_any_url(self, s, i):
+        return self.match_compiled_regexp(s, i, kind='url', regexp=g.url_regex)
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
     def match_at_color(self, s, i):
         if self.trace_leo_matches:
@@ -1630,47 +1631,6 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(s, i, j, 'url')
             return j
         return 0
-    #@+node:ekr.20110605121601.18608: *5* jedit.match_url_any/f/h
-    # Fix bug 893230: URL coloring does not work for many Internet protocols.
-    # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
-
-    url_regex_f = re.compile(r"""(file|ftp)://[^\s'"`>]+[\w=/]""")
-    url_regex_g = re.compile(r"""gopher://[^\s'"`>]+[\w=/]""")
-    url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
-    url_regex_h = re.compile(r"""(http|https)://[^\s'"`>]+[\w=/]""")
-    url_regex_m = re.compile(r"""mailto://[^\s'"`>]+[\w=/]""")
-    url_regex_n = re.compile(r"""(news|nntp)://[^\s'"`>]+[\w=/]""")
-    url_regex_p = re.compile(r"""prospero://[^\s'"`>]+[\w=/]""")
-    url_regex_t = re.compile(r"""telnet://[^\s'"`>]+[\w=/]""")
-    url_regex_w = re.compile(r"""wais://[^\s'"`>]+[\w=/]""")
-    url_regex = g.url_regex
-
-    def match_any_url(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex)
-
-    def match_url_f(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_f)
-
-    def match_url_g(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_g)
-
-    def match_url_h(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_h)
-
-    def match_url_m(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_m)
-
-    def match_url_n(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_n)
-
-    def match_url_p(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_p)
-
-    def match_url_t(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_t)
-
-    def match_url_w(self, s, i):
-        return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_w)
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
         """Succeed if the compiled regular expression regexp matches at s[i:]."""
