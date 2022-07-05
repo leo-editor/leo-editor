@@ -1252,7 +1252,7 @@ class JEditColorizer(BaseColorizer):
     #                         by the indicated ruleset.
     # - exclude_match         If True, the actual text that matched will not be colored.
     # - kind                  The color tag to be applied to colored text.
-    #@+node:ekr.20110605121601.18637: *4* 
+    #@+node:ekr.20110605121601.18637: *4* jedit.colorRangeWithTag
     def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
         """
         Actually colorize the selected range.
