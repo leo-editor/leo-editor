@@ -316,23 +316,27 @@ def new_cmd_decorator(name: str, ivars: List[str]) -> Callable:
 #@+node:ekr.20200810093517.1: ** << define regex's >>
 # Regex used by this module, and in leoColorizer.py.
 g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
-#
-# Patterns used only in this module...
 
 # g_is_directive_pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
 g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
 g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
+
 # #2267: Support for @section-delims.
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
 
-# Regex to find GNX
-USERCHAR = r"""[^.,"'\s]"""  # from LeoApp.cleanLeoID()
-USERID = f'{USERCHAR}{{2}}{USERCHAR}+'  # At least three USERCHARs
-GNXre = re.compile(rf"""{USERID}\.
-    [0-9]+\.                     # timestamp
-    [0-9]+""", re.VERBOSE)  # NodeIndices.lastIndex
+# Leo 6.6.3: To avoid clashes, gnx patterns must start with 'gnx:'
+gnx_char = r"""[^.,"'\s]"""  # LeoApp.cleanLeoID() removes these characters.
+gnx_id = fr'{gnx_char}{{2}}{gnx_char}+'  # id's must have at least three characters.
+gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
+
+unl_regex = re.compile(r'\bunl:.*$')
+
+# Url's end *only* at space, quotes, or close parens.
+url_kinds = '(http|https|file|ftp|gopher|mailto|news|nntp|prospero|telnet|wais)'
+url_regex = re.compile(fr"""\b{url_kinds}://[^\s'")]+""")
+
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
@@ -7220,10 +7224,6 @@ def run_unit_tests(tests: str=None, verbose: bool=False) -> None:
     command = f"{sys.executable} -m unittest {verbosity} {tests or ''} "
     g.execute_shell_commands(command)
 #@+node:ekr.20120311151914.9916: ** g.Urls & UNLs
-unl_regex = re.compile(r'\bunl:.*$')
-
-kinds = '(http|https|file|mailto|ftp|gopher|news|nntp|prospero|telnet|wais)'
-url_regex = re.compile(fr"""{kinds}://[^\s'"`>]+[\w=/]""")
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn: str, c: Cmdr=None, p: Pos=None) -> str:
     """
@@ -7471,7 +7471,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     c2.bringToFront()
     c2.bodyWantsFocusNow()
     return c2
-#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers (traced)
 def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     """Open a url or a unl."""
     if c and not p:
@@ -7551,6 +7551,8 @@ def isValidUrl(url: str) -> bool:
         'mailto', 'mms', 'news', 'nntp', 'prospero', 'rsync', 'rtsp', 'rtspu',
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
+    if not url:
+        return False
     if url.lower().startswith('unl://') or url.startswith('#'):
         # All Leo UNL's.
         return True
@@ -7585,9 +7587,9 @@ def openUrlOnClick(event: Any, url: str=None) -> Optional[str]:
     except Exception:
         g.es_exception()
         return None
-#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper (traced)
 def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
-    """Open the UNL or URL under the cursor.  Return it for unit testing."""
+    """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
     if not c:
         return None
@@ -7606,35 +7608,9 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i:j]
-
-        # Navigation target types:
-        #@+<< gnx >>
-        #@+node:tom.20220328142302.1: *5* << gnx >>
-        match = target = None
-        for match in GNXre.finditer(line):
-            # Don't open if we click after the gnx.
-            if match.start() <= col < match.end():
-                target = match.group()
-                break
-
-        if target:
-            # pylint: disable=undefined-loop-variable
-            found_gnx = target_is_self = False
-            if c.p.gnx == target:
-                found_gnx = target_is_self = True
-            else:
-                for p in c.all_unique_positions():
-                    if p.v.gnx == target:
-                        found_gnx = True
-                        break
-            if found_gnx:
-                if not target_is_self:
-                    c.selectPosition(p)
-                    c.redraw()
-            return target
-        #@-<< gnx >>
-        #@+<< section ref >>
-        #@+node:tom.20220328141455.1: *5* << section ref >>
+        # Order is important.
+        #@+<< look for section ref >>
+        #@+node:tom.20220328141455.1: *5* << look for section ref >>
         # Navigate to section reference if one was clicked.
         l_ = line.strip()
         if l_.startswith('<<') and l_.endswith('>>'):
@@ -7647,26 +7623,51 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
             if px:
                 c.selectPosition(px)
                 c.redraw()
-        #@-<< section ref >>
-        #@+<< url or unl >>
-        #@+node:tom.20220328141544.1: *5* << url or unl >>
+            return None
+        #@-<< look for section ref >>
+        url = unl = None
+        #@+<< look for url >>
+        #@+node:tom.20220328141544.1: *5* << look for url  >> (traced)
         # Find the url on the line.
         for match in g.url_regex.finditer(line):
             # Don't open if we click after the url.
             if match.start() <= col < match.end():
-                url = match.group()
+                url = match.group(0)
                 if g.isValidUrl(url):
                     break
-        else:
-            # Look for the unl:
+        #@-<< look for url >>
+        if not url:
+            #@+<< look for unl >>
+            #@+node:ekr.20220704211851.1: *5* << look for unl >>
             for match in g.unl_regex.finditer(line):
                 # Don't open if we click after the unl.
                 if match.start() <= col < match.end():
                     unl = match.group()
                     g.handleUnl(unl, c)
                     return None
-        #@-<< url or unl >>
+            #@-<< look for unl >>
+            if not unl:
+                #@+<< look for gnx >>
+                #@+node:tom.20220328142302.1: *5* << look for gnx >> (traced)
+                target = None
+                for match in gnx_regex.finditer(line):
+                    # Don't open if we click after the gnx.
+                    if match.start() <= col < match.end():
+                        target = match.group(0)[4:]  # Strip the leading 'gnx:'
+                        break
 
+                if target:
+                    if c.p.gnx == target:
+                        return target
+                    for p in c.all_unique_positions():
+                        if p.v.gnx == target:
+                            found_gnx = True
+                            break
+                    if found_gnx:
+                        c.selectPosition(p)
+                        c.redraw()
+                    return target
+                #@-<< look for gnx >>
     elif not isinstance(url, str):
         url = url.toString()
         url = g.toUnicode(url)  # #571
