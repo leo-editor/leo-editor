@@ -330,7 +330,7 @@ g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^
 
 # New in Leo 6.6.4: gnxs must start with 'gnx:'
 gnx_char = r"""[^.,"'\s]"""  # LeoApp.cleanLeoID() removes these characters.
-gnx_id = fr'{gnx_char}{{2}}{gnx_char}+'  # id's must have at least three characters.
+gnx_id = fr"{gnx_char}{{3,}}"  # id's must have at least three characters.
 gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
 
 # Unls end with quotes.
