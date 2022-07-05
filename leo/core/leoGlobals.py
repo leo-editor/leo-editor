@@ -337,7 +337,8 @@ gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
 unl_regex = re.compile(r"""\bunl:[^`'")]+""")
 
 # Urls end at space or quotes.
-url_kinds = '(http|https|file|ftp|gopher|mailto|news|nntp|prospero|telnet|wais)'
+url_leadins = 'fghmnptw'
+url_kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.

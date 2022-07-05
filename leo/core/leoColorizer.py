@@ -1252,7 +1252,7 @@ class JEditColorizer(BaseColorizer):
     #                         by the indicated ruleset.
     # - exclude_match         If True, the actual text that matched will not be colored.
     # - kind                  The color tag to be applied to colored text.
-    #@+node:ekr.20110605121601.18637: *4* jedit.colorRangeWithTag
+    #@+node:ekr.20110605121601.18637: *4* 
     def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
         """
         Actually colorize the selected range.
@@ -1308,15 +1308,20 @@ class JEditColorizer(BaseColorizer):
                 ch = s[i].lower()
                 if ch == 'g':
                     n = self.match_gnx(s, i)
-                    i += max(1, n)
-                elif ch == 'u':
+                    if n > 0:
+                        i += n
+                        continue
+                if ch == 'u':
                     n = self.match_unl(s, i)
-                    i += max(1, n)
-                elif ch in 'fh':  # file|ftp|http|https
+                    if n > 0:
+                        i += n
+                        continue
+                if ch in g.url_leadins:
                     n = self.match_any_url(s, i)
-                    i += max(1, n)
-                else:
-                    i += 1
+                    if n > 0:
+                        i += n
+                        continue
+                i += 1
     #@+node:ekr.20110605121601.18591: *4* jedit.dump
     def dump(self, s):
         if s.find('\n') == -1:
@@ -1325,8 +1330,21 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18592: *4* jedit.Leo rule functions
     #@+node:ekr.20110605121601.18608: *5* jedit.match_any_url
     def match_any_url(self, s, i):
+        """Like match_compiled_regexp, but with special case for trailing ')'"""
         # Called by the main colorizer loop and colorRangeWithTag.
-        return self.match_compiled_regexp(s, i, kind='url', regexp=g.url_regex)
+        n = self.match_compiled_regexp_helper(s, i, g.url_regex)
+        if n <= 0:
+            return 0
+        # Special case for trailing ')'.
+        s2 = s[i: i+n]
+        if s2.endswith(')') and '(' not in s2:
+            n -= 1
+        j = i + n
+        kind = 'url'
+        self.colorRangeWithTag(s, i, j, kind)
+        self.prev = (i, j, kind)
+        self.trace_match(kind, s, i, j)
+        return n
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
     def match_at_color(self, s, i):
         if self.trace_leo_matches:
