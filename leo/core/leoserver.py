@@ -2391,11 +2391,13 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.59: *5* server.redo
     def redo(self, param):
-        """Undo last un-doable operation"""
+        """Undo last un-doable operation with optional redo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canRedo():
-            u.redo()
+        total = param.get('repeat', 1)  # Facultative repeat redo count
+        for i in total:
+            if u.canRedo():
+                u.redo()
         return self._make_response()
     #@+node:felix.20210621233316.60: *5* server.set_body
     def set_body(self, param):
@@ -2591,11 +2593,13 @@ class LeoServer:
             return self.toggle_mark(param)
     #@+node:felix.20210621233316.67: *5* server.undo
     def undo(self, param):
-        """Undo last un-doable operation"""
+        """Undo last un-doable operation with optional undo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canUndo():
-            u.undo()
+        total = param.get('repeat', 1)  # Facultative repeat undo count
+        for i in total:
+            if u.canUndo():
+                u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server:server commands
