@@ -1325,6 +1325,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18592: *4* jedit.Leo rule functions
     #@+node:ekr.20110605121601.18608: *5* jedit.match_any_url
     def match_any_url(self, s, i):
+        # Called by the main colorizer loop and colorRangeWithTag.
         return self.match_compiled_regexp(s, i, kind='url', regexp=g.url_regex)
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
     def match_at_color(self, s, i):
@@ -1494,6 +1495,7 @@ class JEditColorizer(BaseColorizer):
         return len(s)
     #@+node:ekr.20220704215504.1: *5* jedit.match_gnx
     def match_gnx(self, s, i):
+        # Called by the main colorizer loop and colorRangeWithTag.
         return self.match_compiled_regexp(s, i, kind='url', regexp=g.gnx_regex)
     #@+node:ekr.20170204072452.1: *5* jedit.match_image
     image_url = re.compile(r'^\s*<\s*img\s+.*src=\"(.*)\".*>\s*$')
@@ -1626,18 +1628,8 @@ class JEditColorizer(BaseColorizer):
         return 0
     #@+node:ekr.20170225103140.1: *5* jedit.match_unl
     def match_unl(self, s, i):
-        if g.match(s.lower(), i, 'unl://'):
-            j = len(s)  # By default, color the whole line.
-            # #2410: Limit the coloring if possible.
-            if i > 0:
-                ch = s[i - 1]
-                if ch in ('"', "'", '`'):
-                    k = s.find(ch, i)
-                    if k > -1:
-                        j = k
-            self.colorRangeWithTag(s, i, j, 'url')
-            return j
-        return 0
+        # Called by the main colorizer loop and colorRangeWithTag.
+        return self.match_compiled_regexp(s, i, kind='url', regexp=g.unl_regex)
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
         """Succeed if the compiled regular expression regexp matches at s[i:]."""

@@ -326,17 +326,19 @@ g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 # #2267: Support for @section-delims.
 g_section_delims_pat = re.compile(r'^@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*$')
 
-# Leo 6.6.3: To avoid clashes, gnx patterns must start with 'gnx:'
+# Patterns used by the colorizer...
+
+# New in Leo 6.6.4: gnxs must start with 'gnx:'
 gnx_char = r"""[^.,"'\s]"""  # LeoApp.cleanLeoID() removes these characters.
 gnx_id = fr'{gnx_char}{{2}}{gnx_char}+'  # id's must have at least three characters.
 gnx_regex = re.compile(fr"\bgnx:{gnx_id}\.[0-9]+\.[0-9]+")
 
-unl_regex = re.compile(r'\bunl:.*$')
+# Unls end with quotes.
+unl_regex = re.compile(r"""\bunl:[^`'")]+""")
 
-# Url's end *only* at space, quotes, or close parens.
+# Urls end at space or quotes.
 url_kinds = '(http|https|file|ftp|gopher|mailto|news|nntp|prospero|telnet|wais)'
-url_regex = re.compile(fr"""\b{url_kinds}://[^\s'")]+""")
-
+url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
 #@-<< define regex's >>
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
