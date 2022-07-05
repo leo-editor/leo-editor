@@ -866,6 +866,7 @@ class JEditColorizer(BaseColorizer):
             ('@', self.match_at_wrap, True),  # 2015/06/22
             ('@', self.match_doc_part, True),
             ('f', self.match_any_url, True),
+            ('g', self.match_gnx, True),  # Leo 6.6.3.
             ('g', self.match_any_url, True),
             ('h', self.match_any_url, True),
             ('m', self.match_any_url, True),
@@ -1301,11 +1302,14 @@ class JEditColorizer(BaseColorizer):
         elif not exclude_match:
             self.setTag(tag, s, i, j)
         if tag != 'url':
-            # Allow UNL's and URL's *everywhere*.
+            # Allow UNL's, URL's, and GNX's *everywhere*.
             j = min(j, len(s))
             while i < j:
                 ch = s[i].lower()
-                if ch == 'u':
+                if ch == 'g':
+                    n = self.match_gnx(s, i)
+                    i += max(1, n)
+                elif ch == 'u':
                     n = self.match_unl(s, i)
                     i += max(1, n)
                 elif ch in 'fh':  # file|ftp|http|https
@@ -1488,6 +1492,9 @@ class JEditColorizer(BaseColorizer):
             return 0
         self.colorRangeWithTag(s, 0, len(s), 'docpart')
         return len(s)
+    #@+node:ekr.20220704215504.1: *5* jedit.match_gnx
+    def match_gnx(self, s, i):
+        return self.match_compiled_regexp(s, i, kind='url', regexp=g.gnx_regex)
     #@+node:ekr.20170204072452.1: *5* jedit.match_image
     image_url = re.compile(r'^\s*<\s*img\s+.*src=\"(.*)\".*>\s*$')
 
