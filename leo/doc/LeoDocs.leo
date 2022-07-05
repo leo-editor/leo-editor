@@ -22117,7 +22117,7 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references:
+**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references::
 
     # &lt;&lt; reference 1 &gt;&gt;
     " &lt;&lt; reference 2 &gt;&gt;
