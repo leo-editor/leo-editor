@@ -7471,7 +7471,7 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
     c2.bringToFront()
     c2.bodyWantsFocusNow()
     return c2
-#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers (traced)
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url: str, c: Cmdr=None, p: Pos=None) -> Any:
     """Open a url or a unl."""
     if c and not p:
@@ -7587,7 +7587,7 @@ def openUrlOnClick(event: Any, url: str=None) -> Optional[str]:
     except Exception:
         g.es_exception()
         return None
-#@+node:ekr.20170216091704.1: *4* g.openUrlHelper (traced)
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
@@ -7627,7 +7627,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         #@-<< look for section ref >>
         url = unl = None
         #@+<< look for url >>
-        #@+node:tom.20220328141544.1: *5* << look for url  >> (traced)
+        #@+node:tom.20220328141544.1: *5* << look for url  >>
         # Find the url on the line.
         for match in g.url_regex.finditer(line):
             # Don't open if we click after the url.
@@ -7648,7 +7648,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
             #@-<< look for unl >>
             if not unl:
                 #@+<< look for gnx >>
-                #@+node:tom.20220328142302.1: *5* << look for gnx >> (traced)
+                #@+node:tom.20220328142302.1: *5* << look for gnx >>
                 target = None
                 for match in gnx_regex.finditer(line):
                     # Don't open if we click after the gnx.
