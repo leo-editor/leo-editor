@@ -2395,7 +2395,7 @@ class LeoServer:
         c = self._check_c()
         u = c.undoer
         total = param.get('repeat', 1)  # Facultative repeat redo count
-        for i in total:
+        for i in range(total):
             if u.canRedo():
                 u.redo()
         return self._make_response()
@@ -2597,7 +2597,7 @@ class LeoServer:
         c = self._check_c()
         u = c.undoer
         total = param.get('repeat', 1)  # Facultative repeat undo count
-        for i in total:
+        for i in range(total):
             if u.canUndo():
                 u.undo()
         # Félix: Caller can get focus using other calls.
