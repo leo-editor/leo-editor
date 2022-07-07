@@ -5,7 +5,7 @@
 """Leo's file-conversion commands."""
 
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -1498,6 +1498,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except Exception:
                     g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
                     g.es_print(repr(line))
+            # Create the list of patterns.
+            self.patterns = (
+                # Head: order matters.
+                (self.comment_pat, self.do_comment),
+                (self.docstring_pat, self.do_docstring),
+                (self.section_ref_pat, self.do_section_ref),
+                # Middle: order doesn't matter.
+                (self.class_pat, self.do_class),
+                (self.def_pat, self.do_def),
+                (self.elif_pat, self.do_elif),
+                (self.else_pat, self.do_else),
+                (self.except_pat, self.do_except),
+                (self.finally_pat, self.do_finally),
+                (self.for_pat, self.do_for),
+                (self.if_pat, self.do_if),
+                (self.import_pat, self.do_import),
+                (self.try_pat, self.do_try),
+                (self.while_pat, self.do_while),
+                (self.with_pat, self.do_with),
+                # Tail: order matters.
+                (self.trailing_comment_pat, self.do_trailing_comment)
+            )
         #@+node:ekr.20211013081549.1: *5* py2ts.convert
         def convert(self, p):
             """
@@ -1532,37 +1554,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        patterns: Optional[Tuple] = None
-
         def convert_body(self, p, target):
             """
             Convert p.b into target.b.
 
             This is the heart of the algorithm.
             """
-            # Calculate this table only once.
-            if not self.patterns:
-                self.patterns = (
-                    # Head: order matters.
-                    (self.comment_pat, self.do_comment),
-                    (self.docstring_pat, self.do_docstring),
-                    (self.section_ref_pat, self.do_section_ref),
-                    # Middle: order doesn't matter.
-                    (self.class_pat, self.do_class),
-                    (self.def_pat, self.do_def),
-                    (self.elif_pat, self.do_elif),
-                    (self.else_pat, self.do_else),
-                    (self.except_pat, self.do_except),
-                    (self.finally_pat, self.do_finally),
-                    (self.for_pat, self.do_for),
-                    (self.if_pat, self.do_if),
-                    (self.import_pat, self.do_import),
-                    (self.try_pat, self.do_try),
-                    (self.while_pat, self.do_while),
-                    (self.with_pat, self.do_with),
-                    # Tail: order matters.
-                    (self.trailing_comment_pat, self.do_trailing_comment)
-                )
+            trace = False
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(self.pre_pass(p.b))
             old_lines = lines[:]
@@ -1579,7 +1577,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.do_semicolon(i, lines, p)
                     i += 1
                 assert progress < i
-            if False and g.unitTesting and lines != old_lines:
+            if trace and g.unitTesting and lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
