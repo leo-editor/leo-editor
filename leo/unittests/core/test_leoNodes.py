@@ -26,6 +26,18 @@ class TestNodes(LeoUnitTest):
         self.create_test_outline()
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210902022909.1: *3* TestNodes.tests...
+    #@+node:ekr.20220708123656.1: *4* TestNodes:  Special methods
+    #@+node:ekr.20220708123731.1: *5* TestNodes.test_archivedPosition
+    def test_archivedPosition(self):
+        c, fc = self.c, self.c.fileCommands
+        root_p, root_v = c.rootPosition(), c.rootPosition().v
+        for p in c.all_positions():
+            ap1 = p.archivedPosition()
+            ap2 = p.archivedPosition(root_p=root_p)
+            self.assertEqual(ap1, ap2, msg=p.h)
+            p1 = fc.resolveArchivedPosition(ap1, root_v)
+            p2 = fc.resolveArchivedPosition(ap2, root_v)
+            self.assertEqual(p1, p2, msg=p.h)
     #@+node:ekr.20220306073015.1: *4* TestNodes: Commander methods
     #@+node:ekr.20210830095545.6: *5* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
