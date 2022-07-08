@@ -637,6 +637,7 @@ class TestNodes(LeoUnitTest):
         p = self.c.p
         sib = p.next()
         self.assertTrue(sib)
+        sib.b = f"body: {sib.h}"
         s = sib.convertTreeToString()
         for p2 in sib.self_and_subtree():
             self.assertTrue(p2.h in s)
