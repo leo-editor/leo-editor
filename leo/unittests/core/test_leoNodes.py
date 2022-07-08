@@ -34,6 +34,7 @@ class TestNodes(LeoUnitTest):
         for p in c.all_positions():
             ap1 = p.archivedPosition()
             ap2 = p.archivedPosition(root_p=root_p)
+            self.assertTrue(bool(ap1), msg=p.h)
             self.assertEqual(ap1, ap2, msg=p.h)
             p1 = fc.resolveArchivedPosition(ap1, root_v)
             p2 = fc.resolveArchivedPosition(ap2, root_v)
