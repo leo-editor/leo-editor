@@ -1072,13 +1072,13 @@ class Position:
         Return the hiddenRootNode if there is no other parent.
         """
         p = self
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                return v
-            return p.v.context.hiddenRootNode
-        return None
+        if not p.v:
+            return None  # pragma: no cover
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        return p.v.context.hiddenRootNode
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: "Position") -> None:
         """A low-level method to replace p.v by a p2.v."""
@@ -1289,7 +1289,7 @@ class Position:
                         return val  # A position or None
                 if p.isVisible(c):
                     return p
-        return p
+        return p  # pragma: no cover (defensive)
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self,
         limit: "Position",

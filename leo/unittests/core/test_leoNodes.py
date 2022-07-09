@@ -888,6 +888,15 @@ class TestNodes(LeoUnitTest):
         self.assertTrue(c.positionExists(p2))
         p2.moveToLastChildOf(root2)
         self.assertTrue(c.positionExists(p2))
+    #@+node:ekr.20220708201845.1: *5* TestNodes.test_p_moveToVisBack
+    def test_p_moveToVisBack_Next(self):
+        c = self.c
+        for p in c.all_positions():
+            p.expand()
+        for p in c.all_positions():
+            next = p.visNext(c)
+            if next:
+                self.assertEqual(p, next.visBack(c), msg=p.h)
     #@+node:ekr.20210830095545.34: *5* TestNodes.test_p_moveToVisBack_in_a_chapter
     def test_p_moveToVisBack_in_a_chapter(self):
         # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
