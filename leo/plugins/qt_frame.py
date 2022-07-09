@@ -3761,16 +3761,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         self.c = c
         self.was_alt_drag = False
         self.was_control_drag = False
-
-        # Experimental
-        if 1:
-            # https://stackoverflow.com/questions/6625188/
-            header_view = self.header()
-            ### header_view.setSectionResizeMode(QHeaderView.ResizeToContents)
-            ### header_view.setSectionResizeMode(header_view.ResizeMode.ResizeToContents)
-            header_view.setStretchLastSection(True)
-        if 1:  # #2463
-            self.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
+        # #2463.
+        header = self.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(header.ResizeMode.ResizeToContents)
 
     def __repr__(self) -> str:
         return f"LeoQTreeWidget: {id(self)}"
