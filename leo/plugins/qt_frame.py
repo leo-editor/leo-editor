@@ -3762,6 +3762,16 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         self.was_alt_drag = False
         self.was_control_drag = False
 
+        # Experimental
+        if 1:
+            # https://stackoverflow.com/questions/6625188/
+            header_view = self.header()
+            ### header_view.setSectionResizeMode(QHeaderView.ResizeToContents)
+            ### header_view.setSectionResizeMode(header_view.ResizeMode.ResizeToContents)
+            header_view.setStretchLastSection(True)
+        if 1:  # #2463
+            self.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAsNeeded)
+
     def __repr__(self) -> str:
         return f"LeoQTreeWidget: {id(self)}"
 
@@ -4575,7 +4585,7 @@ class TabbedFrameFactory:
         self.leoFrames: Dict[Any, Widget] = {}  # Keys are DynamicWindows, values are frames.
         self.masterFrame: Widget = None
         self.createTabCommands()
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
     def createFrame(self, leoFrame: Widget) -> Widget:
 
         c = leoFrame.c
