@@ -5,7 +5,7 @@
 """Leo's file-conversion commands."""
 
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -578,17 +578,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def convert_body(self, p):
             """Convert p.b in place."""
             c = self.c
-            if not p.b.strip():
-                return  # pragma: no cover
+            if not p.b.strip():  # pragma: no cover
+                return
             try:
                 s = self.def_pat.sub(self.do_def, p.b)
-            except AnnotationError as e:
+            except AnnotationError as e:  # pragma: no cover
                 print(f"Unchanged: {p.h}: {e!r}")
                 return
             if p.b != s:
                 self.changed_lines += 1
-                if not g.unitTesting:
-                    print(f"changed {p.h}")  # pragma: no cover
+                if not g.unitTesting:  # pragma: no cover
+                    print(f"changed {p.h}")
                 p.setDirty()
                 c.setChanged()
                 p.b = s
@@ -657,7 +657,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         result.append(f"{lws}{name}{comma}")
                         if i < len(args) and args[i] == ',':
                             i += 1
-                elif tail == ':':
+                elif tail == ':':  # pragma: no cover
                     # Never change an already-annotated arg.
                     arg, i = self.find_arg(args, i)
                     result.append(f"{lws}{name}: {arg}{comma}")
@@ -707,7 +707,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif ch == ',' and level == 0:
                     # Skip the comma, but don't include it in the result.
                     break
-            if level > 0:
+            if level > 0:  # pragma: no cover
                 raise AnnotationError(f"Bad level: {level}, {s!r}")
             result = s[i1:i].strip()
             if result.endswith(','):
@@ -1498,6 +1498,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except Exception:
                     g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
                     g.es_print(repr(line))
+            # Create the list of patterns.
+            self.patterns = (
+                # Head: order matters.
+                (self.comment_pat, self.do_comment),
+                (self.docstring_pat, self.do_docstring),
+                (self.section_ref_pat, self.do_section_ref),
+                # Middle: order doesn't matter.
+                (self.class_pat, self.do_class),
+                (self.def_pat, self.do_def),
+                (self.elif_pat, self.do_elif),
+                (self.else_pat, self.do_else),
+                (self.except_pat, self.do_except),
+                (self.finally_pat, self.do_finally),
+                (self.for_pat, self.do_for),
+                (self.if_pat, self.do_if),
+                (self.import_pat, self.do_import),
+                (self.try_pat, self.do_try),
+                (self.while_pat, self.do_while),
+                (self.with_pat, self.do_with),
+                # Tail: order matters.
+                (self.trailing_comment_pat, self.do_trailing_comment)
+            )
         #@+node:ekr.20211013081549.1: *5* py2ts.convert
         def convert(self, p):
             """
@@ -1532,37 +1554,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        patterns: Optional[Tuple] = None
-
         def convert_body(self, p, target):
             """
             Convert p.b into target.b.
 
             This is the heart of the algorithm.
             """
-            # Calculate this table only once.
-            if not self.patterns:
-                self.patterns = (
-                    # Head: order matters.
-                    (self.comment_pat, self.do_comment),
-                    (self.docstring_pat, self.do_docstring),
-                    (self.section_ref_pat, self.do_section_ref),
-                    # Middle: order doesn't matter.
-                    (self.class_pat, self.do_class),
-                    (self.def_pat, self.do_def),
-                    (self.elif_pat, self.do_elif),
-                    (self.else_pat, self.do_else),
-                    (self.except_pat, self.do_except),
-                    (self.finally_pat, self.do_finally),
-                    (self.for_pat, self.do_for),
-                    (self.if_pat, self.do_if),
-                    (self.import_pat, self.do_import),
-                    (self.try_pat, self.do_try),
-                    (self.while_pat, self.do_while),
-                    (self.with_pat, self.do_with),
-                    # Tail: order matters.
-                    (self.trailing_comment_pat, self.do_trailing_comment)
-                )
+            trace = False
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, g.splitLines(self.pre_pass(p.b))
             old_lines = lines[:]
@@ -1579,7 +1577,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     self.do_semicolon(i, lines, p)
                     i += 1
                 assert progress < i
-            if False and g.unitTesting and lines != old_lines:
+            if trace and g.unitTesting and lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())

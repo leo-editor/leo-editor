@@ -4,6 +4,9 @@
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
 import xml.etree.ElementTree as ElementTree
+import json
+from collections import defaultdict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -24,7 +27,6 @@ def copyOutline(self, event=None):
 def copyOutlineAsJSON(self, event=None):
     """Copy the selected outline to the clipboard in json format."""
     # Copying an outline has no undo consequences.
-    import json
     #@+others  # Define helper functions
     #@+node:ekr.20220314072801.1: *4* function: json_globals
     def json_globals(c):
@@ -202,6 +204,15 @@ def pasteAsTemplate(self, event=None):
     """Paste as template clones only nodes that were already clones"""
     c = self
     p = c.p
+
+    s = g.app.gui.getTextFromClipboard()
+    if not s or not c.canPasteOutline(s):
+        return None  # This should never happen.
+
+    isJson = False
+    if s.lstrip().startswith("{"):
+        isJson = True
+
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
     def skip_root(v):
@@ -231,18 +242,32 @@ def pasteAsTemplate(self, event=None):
 
         skipping the descendants of already seen nodes.
         """
-        chgnx = xv.attrib.get('t')
+
+        if not isJson:
+            chgnx = xv.attrib.get('t')
+        else:
+            chgnx = xv.get('gnx')
+
         b = bodies[chgnx]
         gnx = translation.get(chgnx)
         if gnx in seen:
             yield parent_gnx, gnx, heads.get(gnx), b
         else:
             seen.add(gnx)
-            h = xv[0].text
+            if not isJson:
+                h = xv[0].text
+            else:
+                h = xv.get('vh', '')
             heads[gnx] = h
             yield parent_gnx, gnx, h, b
-            for xch in xv[1:]:
-                yield from viter(gnx, xch)
+            if not isJson:
+                for xch in xv[1:]:
+                    yield from viter(gnx, xch)
+            else:
+                if xv.get('children'):
+                    for xch in xv['children']:
+                        yield from viter(gnx, xch)
+
     #@+node:vitalije.20200529114857.1: *4* getv
     gnx2v = c.fileCommands.gnxDict
     def getv(gnx):
@@ -309,13 +334,36 @@ def pasteAsTemplate(self, event=None):
         pasted.parents.append(vpar)
         c.redraw(newp)
     #@-others
-    xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
-    xvelements = xroot.find('vnodes')  # <v> elements.
-    xtelements = xroot.find('tnodes')  # <t> elements.
 
-    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+    xvelements: Any
+    xtelements: Any
 
-    root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
+    if not isJson:
+        xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
+        xvelements = xroot.find('vnodes')  # <v> elements.
+        xtelements = xroot.find('tnodes')  # <t> elements.
+        bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+        root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
+    else:
+        xroot = json.loads(g.app.gui.getTextFromClipboard())
+        xvelements = xroot.get('vnodes')  # <v> elements.
+        xtelements = xroot.get('tnodes')  # <t> elements.
+        # bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtelements)
+        bodies = leoFileCommands.FastRead(c, {}).scanJsonTnodes(xtelements)
+
+        def addBody(node):
+            if not hasattr(bodies, node['gnx']):
+                bodies[node['gnx']] = ''
+            if node.get('children'):
+                for child in node['children']:
+                    addBody(child)
+
+        # generate bodies for all possible nodes, not just non-empty bodies.
+        addBody(xvelements[0])
+        uas = defaultdict(dict)
+        uas.update(xroot.get('uas', {}))
+        root_gnx = xvelements[0].get('gnx') # the gnx of copied node
+
     # outside will contain gnxes of nodes that are outside the copied tree
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
 

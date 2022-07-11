@@ -26,6 +26,83 @@ class TestNodes(LeoUnitTest):
         self.create_test_outline()
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210902022909.1: *3* TestNodes.tests...
+    #@+node:ekr.20220708123656.1: *4* TestNodes:  Special methods
+    #@+node:ekr.20220708123731.1: *5* TestNodes.test_archivedPosition
+    def test_archivedPosition(self):
+        c, fc = self.c, self.c.fileCommands
+        root_p, root_v = c.rootPosition(), c.rootPosition().v
+        for p in c.all_positions():
+            ap1 = p.archivedPosition()
+            ap2 = p.archivedPosition(root_p=root_p)
+            self.assertTrue(bool(ap1), msg=p.h)
+            self.assertEqual(ap1, ap2, msg=p.h)
+            p1 = fc.resolveArchivedPosition(ap1, root_v)
+            p2 = fc.resolveArchivedPosition(ap2, root_v)
+            self.assertEqual(p1, p2, msg=p.h)
+    #@+node:ekr.20210830095545.21: *5* TestNodes.test_p__eq_
+    def test_p__eq_(self):
+        c, p = self.c, self.c.p
+        # These must not return NotImplemented!
+        root = c.rootPosition()
+        self.assertFalse(p.__eq__(None))
+        self.assertTrue(p.__ne__(None))
+        self.assertTrue(p.__eq__(root))
+        self.assertFalse(p.__ne__(root))
+    #@+node:ekr.20220306092728.1: *5* TestNodes.test_p__gt__
+    def test_p__gt__(self):
+
+        # p.__gt__ is the foundation for >, <, >=, <=.
+        p = self.c.rootPosition()
+        n = 0
+        # Test all possible comparisons.
+        while p:
+            prev = p.threadBack()  # Make a copy.
+            next = p.threadNext()  # Make a copy.
+            while prev:
+                n += 1
+                self.assertTrue(p != prev)
+                self.assertTrue(prev < p)
+                self.assertTrue(p > prev)
+                prev.moveToThreadBack()
+            while next:
+                n += 1
+                self.assertTrue(p != prev)
+                self.assertTrue(next > p)
+                self.assertTrue(p < next)
+                next.moveToThreadNext()
+            p.moveToThreadNext()
+    #@+node:ekr.20220307045746.1: *5* TestNodes.test_p_key
+    def test_p__key__(self):
+
+        c = self.c
+        child = c.p.firstChild()
+        child.key()
+        child.sort_key(child)
+    #@+node:ekr.20210830095545.24: *5* TestNodes.test_p_comparisons
+    def test_p_comparisons(self):
+
+        c, p = self.c, self.c.p
+        root = c.rootPosition()
+        self.assertEqual(root, p)
+        child = p.firstChild()
+        self.assertTrue(child)
+        grandChild = child.firstChild()
+        self.assertTrue(grandChild)
+        copy = p.copy()
+        self.assertEqual(p, copy)
+        self.assertNotEqual(p, p.threadNext())
+        self.assertTrue(p.__eq__(p))
+        self.assertFalse(p.__ne__(copy))
+        self.assertTrue(p.__eq__(root))
+        self.assertFalse(p.__ne__(root))
+        self.assertTrue(p.threadNext().__gt__(p))
+        self.assertTrue(p.threadNext() > p)
+        self.assertTrue(p.threadNext().__ge__(p))
+        self.assertFalse(p.threadNext().__lt__(p))
+        self.assertFalse(p.threadNext().__le__(p))
+        self.assertTrue(child.__gt__(p))
+        self.assertTrue(child > p)
+        self.assertTrue(grandChild > child)
     #@+node:ekr.20220306073015.1: *4* TestNodes: Commander methods
     #@+node:ekr.20210830095545.6: *5* TestNodes.test_c_positionExists
     def test_c_positionExists(self):
@@ -631,117 +708,10 @@ class TestNodes(LeoUnitTest):
         self.assertEqual(p.next().h, 'child 1')
         self.assertEqual(p.next().next().h, 'child 2')
         self.assertEqual(p.next().next().next().h, 'C')
-    #@+node:ekr.20220306072850.1: *4* TestNodes: Positions methods
-    #@+node:ekr.20210830095545.17: *5* TestNodes.test_p_convertTreeToString_and_allies
-    def test_convertTreeToString_and_allies(self):
-        p = self.c.p
-        sib = p.next()
-        self.assertTrue(sib)
-        s = sib.convertTreeToString()
-        for p2 in sib.self_and_subtree():
-            self.assertTrue(p2.h in s)
-    #@+node:ekr.20210830095545.21: *5* TestNodes.test_p__eq_
-    def test_p__eq_(self):
-        c, p = self.c, self.c.p
-        # These must not return NotImplemented!
-        root = c.rootPosition()
-        self.assertFalse(p.__eq__(None))
-        self.assertTrue(p.__ne__(None))
-        self.assertTrue(p.__eq__(root))
-        self.assertFalse(p.__ne__(root))
-    #@+node:ekr.20220306092728.1: *5* TestNodes.test_p__gt__
-    def test_p__gt__(self):
-
-        # p.__gt__ is the foundation for >, <, >=, <=.
-        p = self.c.rootPosition()
-        n = 0
-        # Test all possible comparisons.
-        while p:
-            prev = p.threadBack()  # Make a copy.
-            next = p.threadNext()  # Make a copy.
-            while prev:
-                n += 1
-                self.assertTrue(p != prev)
-                self.assertTrue(prev < p)
-                self.assertTrue(p > prev)
-                prev.moveToThreadBack()
-            while next:
-                n += 1
-                self.assertTrue(p != prev)
-                self.assertTrue(next > p)
-                self.assertTrue(p < next)
-                next.moveToThreadNext()
-            p.moveToThreadNext()
-    #@+node:ekr.20220307045746.1: *5* TestNodes.test_p_key
-    def test_p__key__(self):
-
-        c = self.c
-        child = c.p.firstChild()
-        child.key()
-        child.sort_key(child)
-    #@+node:ekr.20210830095545.24: *5* TestNodes.test_p_comparisons
-    def test_p_comparisons(self):
-
-        c, p = self.c, self.c.p
-        root = c.rootPosition()
-        self.assertEqual(root, p)
-        child = p.firstChild()
-        self.assertTrue(child)
-        grandChild = child.firstChild()
-        self.assertTrue(grandChild)
-        copy = p.copy()
-        self.assertEqual(p, copy)
-        self.assertNotEqual(p, p.threadNext())
-        self.assertTrue(p.__eq__(p))
-        self.assertFalse(p.__ne__(copy))
-        self.assertTrue(p.__eq__(root))
-        self.assertFalse(p.__ne__(root))
-        self.assertTrue(p.threadNext().__gt__(p))
-        self.assertTrue(p.threadNext() > p)
-        self.assertTrue(p.threadNext().__ge__(p))
-        self.assertFalse(p.threadNext().__lt__(p))
-        self.assertFalse(p.threadNext().__le__(p))
-        self.assertTrue(child.__gt__(p))
-        self.assertTrue(child > p)
-        self.assertTrue(grandChild > child)
-    #@+node:ekr.20210830095545.25: *5* TestNodes.test_p_deletePositionsInList
-    def test_p_deletePositionsInList(self):
-        c, p = self.c, self.c.p
-        root = p.insertAsLastChild()
-        root.h = 'root'
-        # Top level
-        a1 = root.insertAsLastChild()
-        a1.h = 'a'
-        a1.clone()
-        d1 = a1.insertAfter()
-        d1.h = 'd'
-        b1 = root.insertAsLastChild()
-        b1.h = 'b'
-        # Children of a.
-        b11 = b1.clone()
-        b11.moveToLastChildOf(a1)
-        b11.clone()
-        c2 = b11.insertAfter()
-        c2.h = 'c'
-        # Children of d
-        b11 = b1.clone()
-        b11.moveToLastChildOf(d1)
-        # Count number of 'b' nodes.
-        aList = []
-        nodes = 0
-        for p in root.subtree():
-            nodes += 1
-            if p.h == 'b':
-                aList.append(p.copy())
-        self.assertEqual(len(aList), 6)
-        c.deletePositionsInList(aList)
-        c.redraw()
-
+    #@+node:ekr.20220708131426.1: *4* TestNodes: Getters
     #@+node:ekr.20220307043449.1: *5* TestNodes.test_p_getters
     def test_p_getters(self):
-
-        p = self.c.p
-
+        c, p = self.c, self.c.p
         table1 = (
             p.anyAtFileNodeName,
             p.atAutoNodeName,
@@ -772,27 +742,37 @@ class TestNodes(LeoUnitTest):
         )
         for func in table1:
             self.assertFalse(func(), msg=func.__name__)
-        table2 = (
+        table2 = (  # Proxies for vnode methods: don't care about result.
             p.bodyString,
+            p.directParents,
+            p.findRootPosition,
+            p.getLastChild,
+            p.getLastNode,
             p.headString,
             p.isDirty,
             p.isSelected,
             p.status,
         )
         for func in table2:
-            func()  # Don't care about result.
+            func()
+        # More proxies, with various arguments.
+        p.getNthChild(0)
+        p.matchHeadline('xyzz')
+        self.assertTrue(c.p.isRoot())
     #@+node:ekr.20210830095545.26: *5* TestNodes.test_p_hasNextBack
     def test_p_hasNextBack(self):
         c, p = self.c, self.c.p
         for p in c.all_positions():
             back = p.back()
             next = p.next()
-            assert(
+            self.assertTrue(
                 (back and p.hasBack()) or
                 (not back and not p.hasBack()))
-            assert(
+            self.assertTrue(
                 (next and p.hasNext()) or
                 (not next and not p.hasNext()))
+        p.v = None
+        self.assertFalse(p.hasThreadNext())
     #@+node:ekr.20210830095545.27: *5* TestNodes.test_p_hasParentChild
     def test_p_hasParentChild(self):
         c, p = self.c, self.c.p
@@ -833,6 +813,64 @@ class TestNodes(LeoUnitTest):
         c, p = self.c, self.c.p
         self.assertFalse(c.isCurrentPosition(None))
         self.assertTrue(c.isCurrentPosition(p))
+    #@+node:ekr.20220708132658.1: *5* TestNodes.test_p_isVisible
+    def test_p_isVisible(self):
+        c = self.c
+        for p in c.all_positions():
+            p.expand()
+        for p in c.all_positions():
+            self.assertTrue(p.isVisible(c), msg=p.h)
+        for p in c.all_positions():
+            p.contract()
+            p.v.expandedPositions = []
+        for p in c.all_positions():
+            if p.level() == 0:
+                self.assertTrue(p.isVisible(c), msg=p.h)
+            else:
+                self.assertFalse(p.isVisible(c), msg=p.h)
+    #@+node:ekr.20220306072850.1: *4* TestNodes: Positions methods
+    #@+node:ekr.20210830095545.17: *5* TestNodes.test_p_convertTreeToString_and_allies
+    def test_convertTreeToString_and_allies(self):
+        p = self.c.p
+        sib = p.next()
+        self.assertTrue(sib)
+        sib.b = f"- {sib.h}"  # Test moreBody.
+        s = sib.convertTreeToString()
+        for p2 in sib.self_and_subtree():
+            self.assertTrue(p2.h in s)
+    #@+node:ekr.20210830095545.25: *5* TestNodes.test_p_deletePositionsInList
+    def test_p_deletePositionsInList(self):
+        c, p = self.c, self.c.p
+        root = p.insertAsLastChild()
+        root.h = 'root'
+        # Top level
+        a1 = root.insertAsLastChild()
+        a1.h = 'a'
+        a1.clone()
+        d1 = a1.insertAfter()
+        d1.h = 'd'
+        b1 = root.insertAsLastChild()
+        b1.h = 'b'
+        # Children of a.
+        b11 = b1.clone()
+        b11.moveToLastChildOf(a1)
+        b11.clone()
+        c2 = b11.insertAfter()
+        c2.h = 'c'
+        # Children of d
+        b11 = b1.clone()
+        b11.moveToLastChildOf(d1)
+        # Count number of 'b' nodes.
+        aList = []
+        nodes = 0
+        for p in root.subtree():
+            nodes += 1
+            if p.h == 'b':
+                aList.append(p.copy())
+        self.assertEqual(len(aList), 6)
+        c.deletePositionsInList(aList)
+        c.redraw()
+
     #@+node:ekr.20210830095545.31: *5* TestNodes.test_p_isRootPosition
     def test_p_isRootPosition(self):
         c, p = self.c, self.c.p
@@ -939,6 +977,11 @@ class TestNodes(LeoUnitTest):
             assert False, 'Adding position to set should throw exception'  # pragma: no cover
         except TypeError:
             pass
+    #@+node:ekr.20220708134418.1: *5* TestNodes.test_validateOutlineWithParent
+    def test_validateOutlineWithParent(self):
+        c = self.c
+        for p in c.all_positions():
+            self.assertTrue(p.validateOutlineWithParent(p.parent()), msg=p.h)
     #@+node:ekr.20220307043258.1: *4* TestNodes: Position properties
     #@+node:ekr.20210830095545.20: *5* TestNodes.test_p_h_with_newlines
     def test_p_h_with_newlines(self):

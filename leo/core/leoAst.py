@@ -337,51 +337,55 @@ class LeoGlobals:  # pragma: no cover
         return s2 + '\n' if s.endswith('\n') else s2
     #@-others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
-#@+node:ekr.20200702114557.1: *3* command: fstringify_command
-def fstringify_command(files: List[str]) -> None:
-    """
-    Entry point for --fstringify.
+# Don't bother covering top-level commands.
+if 1:  # pragma: no cover
+    #@+others
+    #@+node:ekr.20200702114557.1: *3* command: fstringify_command
+    def fstringify_command(files: List[str]) -> None:
+        """
+        Entry point for --fstringify.
 
-    Fstringify the given file, overwriting the file.
-    """
-    for filename in files:  # pragma: no cover
-        if os.path.exists(filename):
-            print(f"fstringify {filename}")
-            Fstringify().fstringify_file_silent(filename)
-        else:
-            print(f"file not found: {filename}")
-#@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
-def fstringify_diff_command(files: List[str]) -> None:
-    """
-    Entry point for --fstringify-diff.
+        Fstringify the given file, overwriting the file.
+        """
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"fstringify {filename}")
+                Fstringify().fstringify_file_silent(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
+    def fstringify_diff_command(files: List[str]) -> None:
+        """
+        Entry point for --fstringify-diff.
 
-    Print the diff that would be produced by fstringify.
-    """
-    for filename in files:  # pragma: no cover
-        if os.path.exists(filename):
-            print(f"fstringify-diff {filename}")
-            Fstringify().fstringify_file_diff(filename)
-        else:
-            print(f"file not found: {filename}")
-#@+node:ekr.20200702115002.1: *3* command: orange_command
-def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
+        Print the diff that would be produced by fstringify.
+        """
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"fstringify-diff {filename}")
+                Fstringify().fstringify_file_diff(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@+node:ekr.20200702115002.1: *3* command: orange_command
+    def orange_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
-    for filename in files:  # pragma: no cover
-        if os.path.exists(filename):
-            # print(f"orange {filename}")
-            Orange(settings).beautify_file(filename)
-        else:
-            print(f"file not found: {filename}")
-    print(f"Beautify done: {len(files)} files")
-#@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
+        for filename in files:
+            if os.path.exists(filename):
+                # print(f"orange {filename}")
+                Orange(settings).beautify_file(filename)
+            else:
+                print(f"file not found: {filename}")
+        print(f"Beautify done: {len(files)} files")
+    #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
+    def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
-    for filename in files:  # pragma: no cover
-        if os.path.exists(filename):
-            print(f"orange-diff {filename}")
-            Orange(settings).beautify_file_diff(filename)
-        else:
-            print(f"file not found: {filename}")
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"orange-diff {filename}")
+                Orange(settings).beautify_file_diff(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@-others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
@@ -3609,12 +3613,12 @@ class Orange:
         """Handle indent token."""
         # #2578: Refuse to beautify files containing leading tabs or unusual indentation.
         consider_message = 'consider using python/Tools/scripts/reindent.py'
-        if '\t' in self.val:
+        if '\t' in self.val:  # pragma: no cover
             message = f"Leading tabs found: {self.filename}"
             print(message)
             print(consider_message)
             raise BeautifyError(message)
-        if (len(self.val) % self.tab_width) != 0:
+        if (len(self.val) % self.tab_width) != 0:  # pragma: no cover
             message = f" Indentation error: {self.filename}"
             print(message)
             print(consider_message)

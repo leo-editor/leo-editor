@@ -41,7 +41,7 @@ class Dart_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Dart_ScanState.__repr__"""
         return "Dart_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

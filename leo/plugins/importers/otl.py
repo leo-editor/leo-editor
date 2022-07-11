@@ -48,7 +48,7 @@ class Otl_Importer(Importer):
                     self.find_parent(
                         level=level,
                         h=m.group(2).strip())
-                else:
+                else:  # pragma: no cover
                     self.error('Bad otl line: %r' % line)
     #@+node:ekr.20161124035243.2: *4* otl_i.find_parent
     def find_parent(self, level, h):

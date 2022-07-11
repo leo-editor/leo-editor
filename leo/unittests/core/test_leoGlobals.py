@@ -226,13 +226,33 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.22: *3* TestGlobals.test_g_handleUrl
     def test_g_handleUrl(self):
         c = self.c
+        # Part 1: general urls, paying attention to trailing ')' and '.'.
+        #         See the hacks in jedit.match_any_url and g.handleUrl.
+        table1 = (
+            (
+                "http://leoeditor.com/preface.html).",
+                "http://leoeditor.com/preface.html",
+            ),
+            (
+                "http://leoeditor.com/leo_toc.html)",
+                "http://leoeditor.com/leo_toc.html",
+            ),
+            (
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+                "https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+",
+            ),
+        )
+        for url, expected in table1:
+            got = g.handleUrl(c=c, p=c.p, url=url)
+            self.assertEqual(expected.lower(), got, msg=url)
+        # Part 2: file-oriented urls.
         if sys.platform.startswith('win'):
             file_, http, unl1 = 'file://', 'http://', 'unl://'
             fn1 = 'LeoDocs.leo#'
             fn2 = 'doc/LeoDocs.leo#'
             unl2 = '@settings-->Plugins-->wikiview plugin'
             unl3 = '@settings-->Plugins-->wikiview%20plugin'
-            table = (
+            table2 = (
                 (http + 'writemonkey.com/index.php', ['browser']),
                 (file_ + 'x.py', ['os_startfile']),
                 (file_ + fn1, ['g.findUNL']),
@@ -244,7 +264,7 @@ class TestGlobals(LeoUnitTest):
                 (unl1 + unl2, ['g.findUNL']),
                 (unl1 + unl3, ['g.findUNL']),
             )
-            for url, aList in table:
+            for url, aList in table2:
                 g.handleUrl(c=c, p=c.p, url=url)
     #@+node:ekr.20210905203541.23: *3* TestGlobals.test_g_import_module
     def test_g_import_module(self):

@@ -2083,16 +2083,33 @@ class LeoServer:
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
-        c = self._check_c()
         tag = 'get_ui_states'
+        c = self._check_c()
+        p = self._get_p(param)
+
+        w_canHoist = True
+        if c.hoistStack:
+            bunch = c.hoistStack[len(c.hoistStack) - 1]
+            w_ph = bunch.p
+            if p == w_ph:
+                # p is already the hoisted node
+                w_canHoist = False
+        else:
+            # not hoisted, was it the single top child of the real root?
+            if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
+                w_canHoist = False
+
         try:
             states = {
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
+                "canGoBack": c and c.nodeHistory.beadPointer > 0,
+                "canGoNext": c and c.nodeHistory.beadPointer + 1 < len(c.nodeHistory.beadList),
                 "canDemote": c and c.canDemote(),
                 "canPromote": c and c.canPromote(),
                 "canDehoist": c and c.canDehoist(),
+                "canHoist": w_canHoist
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
@@ -2374,11 +2391,13 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.59: *5* server.redo
     def redo(self, param):
-        """Undo last un-doable operation"""
+        """Undo last un-doable operation with optional redo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canRedo():
-            u.redo()
+        total = param.get('repeat', 1)  # Facultative repeat redo count
+        for i in range(total):
+            if u.canRedo():
+                u.redo()
         return self._make_response()
     #@+node:felix.20210621233316.60: *5* server.set_body
     def set_body(self, param):
@@ -2574,11 +2593,13 @@ class LeoServer:
             return self.toggle_mark(param)
     #@+node:felix.20210621233316.67: *5* server.undo
     def undo(self, param):
-        """Undo last un-doable operation"""
+        """Undo last un-doable operation with optional undo repeat count"""
         c = self._check_c()
         u = c.undoer
-        if u.canUndo():
-            u.undo()
+        total = param.get('repeat', 1)  # Facultative repeat undo count
+        for i in range(total):
+            if u.canUndo():
+                u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server:server commands

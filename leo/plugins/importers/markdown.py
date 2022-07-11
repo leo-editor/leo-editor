@@ -23,7 +23,7 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, lines, parent):
         """Node generator for markdown importer."""
-        if all(s.isspace() for s in lines):
+        if all(s.isspace() for s in lines):  # pragma: no cover
             return
         self.vnode_info = {
             # Keys are vnodes, values are inner dicts.
@@ -69,7 +69,7 @@ class Markdown_Importer(Importer):
             self.stack.pop()
         top = self.stack[-1]
         if 1:  # Experimental fix for #877.
-            if level > len(self.stack):
+            if level > len(self.stack):  # pragma: no cover
                 print('')
                 g.trace('Unexpected markdown level for: %s' % h)
                 print('')

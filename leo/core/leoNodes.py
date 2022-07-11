@@ -349,12 +349,11 @@ class Position:
     # #1557: To keep mypy happy, don't define __hash__ at all.
     # __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
-    #@+at
-    # - convertTreeToString and moreHead can't be VNode methods because they uses level().
+    # - convertTreeToString and moreHead can't be VNode methods because they use level().
     # - moreBody could be anywhere: it may as well be a position method.
     #@+node:ekr.20040315023430.1: *4* p.convertTreeToString
     def convertTreeToString(self) -> str:
-        """Convert a positions  suboutline to a string in MORE format."""
+        """Convert a positions suboutline to a string in MORE format."""
         p = self
         level1 = p.level()
         array = []
@@ -1531,7 +1530,7 @@ class Position:
             p.moveToRoot()
         return p
     #@+node:ekr.20040310062332.1: *4* p.invalidOutline
-    def invalidOutline(self, message: str) -> None:
+    def invalidOutline(self, message: str) -> None:  # pragma: no cover
         p = self
         if p.hasParent():
             node = p.parent()
@@ -1597,37 +1596,27 @@ class Position:
             child.parents.append(parent_v)
     #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent
     # This routine checks the structure of the receiver's tree.
-
     def validateOutlineWithParent(self, pv: "Position") -> bool:
         p = self
         result = True  # optimists get only unpleasant surprises.
         parent = p.getParent()
         childIndex = p._childIndex
-        #@+<< validate parent ivar >>
-        #@+node:ekr.20040303175026.14: *5* << validate parent ivar >>
         if parent != pv:
-            p.invalidOutline("Invalid parent link: " + repr(parent))
-        #@-<< validate parent ivar >>
-        #@+<< validate childIndex ivar >>
-        #@+node:ekr.20040303175026.15: *5* << validate childIndex ivar >>
+            p.invalidOutline("Invalid parent link: " + repr(parent))  # pragma: no cover
         if pv:
             if childIndex < 0:
-                p.invalidOutline(f"missing childIndex: {childIndex!r}")
+                p.invalidOutline(f"missing childIndex: {childIndex!r}")  # pragma: no cover
             elif childIndex >= pv.numberOfChildren():
-                p.invalidOutline("missing children entry for index: {childIndex!r}")
+                p.invalidOutline("missing children entry for index: {childIndex!r}")  # pragma: no cover
         elif childIndex < 0:
-            p.invalidOutline("negative childIndex: {childIndex!r}")
-        #@-<< validate childIndex ivar >>
-        #@+<< validate x ivar >>
-        #@+node:ekr.20040303175026.16: *5* << validate x ivar >>
+            p.invalidOutline("negative childIndex: {childIndex!r}")  # pragma: no cover
         if not p.v and pv:
-            self.invalidOutline("Empty t")
-        #@-<< validate x ivar >>
+            self.invalidOutline("Empty p.v")  # pragma: no cover
         # Recursively validate all the children.
         for child in p.children():
             r = child.validateOutlineWithParent(p)
             if not r:
-                result = False
+                result = False  # pragma: no cover
         return result
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property

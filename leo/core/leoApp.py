@@ -2569,7 +2569,7 @@ class LoadManager:
     def scanOptions(self, fileName, pymacs):
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
-        table = (
+        obsolete_options = (
             '--dock',
             '--global-docks',  # #1643. use --use-docks instead.
             '--init-docks',
@@ -2584,7 +2584,7 @@ class LoadManager:
             importers, ipython, keys, layouts, plugins, save, select, sections,
             shutdown, size, speed, startup, themes, undo, verbose, zoom
         """)
-        for bad_option in table:
+        for bad_option in obsolete_options:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
                 print(f"Ignoring the unused/deprecated {bad_option} option")

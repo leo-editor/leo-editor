@@ -29,7 +29,7 @@ class OrgModeWriter(basewriter.BaseWriter):
         root_level = root.level()
         self.write_root(root)
         for p in root.subtree():
-            if hasattr(self.at, 'force_sentinels'):
+            if hasattr(self.at, 'force_sentinels'):  # pragma: no cover
                 self.put_node_sentinel(p, '#')
             indent = p.level() - root_level
             self.put('%s %s' % ('*' * indent, p.h))

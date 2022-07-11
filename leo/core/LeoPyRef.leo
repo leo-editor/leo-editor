@@ -2263,8 +2263,8 @@ convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
 efc.GitDiffController(c).diff_two_revs(
     # rev1='f85969ae8cb',  # Before.
     # rev2='dd0fadf7b15',  # After.
-    rev1='devel',  # Before.
-    rev2='ekr-gcm-init',  # After
+    rev1='devel',               # Old
+    rev2='ekr-6.6.4-convert',   # New
 )
 </t>
 <t tx="ekr.20180816105258.1">g.cls()

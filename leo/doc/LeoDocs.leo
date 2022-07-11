@@ -2384,7 +2384,7 @@
 </v>
 <v t="ekr.20220523145755.1"></v>
 <v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
-<v t="ekr.20050903074833.1"></v>
+<v t="ekr.20220704113115.1"><vh>Leo 6.6.3 release nodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22117,7 +22117,7 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references:
+**(New in Leo 6.6)**: Leo recognizes section references only if they appear *alone* on a line.  Therefore the following are *not* section references::
 
     # &lt;&lt; reference 1 &gt;&gt;
     " &lt;&lt; reference 2 &gt;&gt;
@@ -31292,6 +31292,31 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 <t tx="ekr.20220523145755.1">- Add "File Only" option in Leo's Find Pane.
 - Remove pylint-leo.py, pyflakes-leo.py and related code.
 - Add mypy annotations for Leo's most important files.</t>
+<t tx="ekr.20220704113115.1">Leo http://leoeditor.com 6.6.3 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6.3**
+
+**Links**
+
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
