@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.82
+About Viewrendered3 V3.83
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,11 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Correct handling of case when markdown package is not installed.
+Correct Asciidoc rendering bug when rendering entire tree.
 
 Previous Recent Changes
 ========================
+Correct handling of case when markdown package is not installed.
 Mathjax, html pages with script imports work with PyQt6.
 Added new command *vr3-render-html-from-clip*.
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
@@ -2995,10 +2996,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
                 # Process node's entire body text; handle @language directives
                 sproc, codelines = sm.runMachine(lines)
-                result += sproc
+                result += sproc + '\n'
+                sm.reset(sm.tag, sm.lang)
             if codelines:
                 codelist.extend(codelines)
-                sm.reset(sm.tag, sm.lang)
 
         # Execute code blocks; capture and insert execution results.
         # This means anything written to stdout or stderr.
