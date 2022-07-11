@@ -3761,6 +3761,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         self.c = c
         self.was_alt_drag = False
         self.was_control_drag = False
+        # #2463.
+        header = self.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(header.ResizeMode.ResizeToContents)
 
     def __repr__(self) -> str:
         return f"LeoQTreeWidget: {id(self)}"
@@ -4575,7 +4579,7 @@ class TabbedFrameFactory:
         self.leoFrames: Dict[Any, Widget] = {}  # Keys are DynamicWindows, values are frames.
         self.masterFrame: Widget = None
         self.createTabCommands()
-    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
+    #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
     def createFrame(self, leoFrame: Widget) -> Widget:
 
         c = leoFrame.c
