@@ -2236,30 +2236,55 @@ class LeoServer:
     #@+node:felix.20210621233316.55: *5* server.insert_node
     def insert_node(self, param):
         """
-        Insert a node at given node, then select it once created, and finally return it
+        Insert a node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline()  # Handles undo, sets c.p
+
+        if p == c.p:
+            c.insertHeadline()  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline()  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
     def insert_child_node(self, param):
         """
-        Insert a child node at given node, then select it once created, and finally return it
+        Insert a child node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline(op_name='Insert Child', as_child=True)
+
+        if p == c.p:
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
         """
-        Insert a node at given node, set its headline, select it and finally return it
+        Insert a node at given node, set its headline. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
+
+        if p == c.p:
+            oldPosition = False
+        else:
+            oldPosition = c.p
+
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
@@ -2269,7 +2294,12 @@ class LeoServer:
         c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
+
         c.selectPosition(newNode)
+        if oldPosition:
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+
         c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
