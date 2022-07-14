@@ -83,7 +83,7 @@ class ChapterController:
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
-    #@+node:ekr.20070604165126: *3* cc.selectChapter
+    #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
     def selectChapter(self, event=None):
         """Use the minibuffer to get a chapter name, then create the chapter."""
@@ -99,7 +99,7 @@ class ChapterController:
         k.resetLabel()
         if k.arg:
             cc.selectChapterByName(k.arg)
-    #@+node:ekr.20170202061705.1: *3* cc.selectNext/Back
+    #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
     def backChapter(self, event=None):
         """Select the previous chapter"""
