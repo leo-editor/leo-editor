@@ -20,7 +20,7 @@ def do_import(c, s, parent):
             if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
                 p.h = f'class {p.h}'
     return True
-#@+node:vitalije.20211201230203.1: ** split_root
+#@+node:vitalije.20211201230203.1: ** split_root & helpers
 SPLIT_THRESHOLD = 10
 def split_root(root, lines):
     '''
@@ -33,73 +33,7 @@ def split_root(root, lines):
     above the definition.
     '''
     #@+others
-    #@+node:vitalije.20211208183603.1: *3* is_intro_line
-    def is_intro_line(n, col):
-        """
-        Intro line is either a comment line that starts at the same column as the
-        def/class line or a decorator line
-        """
-        # first we filter list of all tokens in the line n. We don't want white space tokens
-        # we are interested only in the tokens containing some text.
-        xs = [x for x in lntokens[n] if x[0] not in (token.DEDENT, token.INDENT, token.NL)]
-
-        if not xs:
-            # all tokens in this line are white space, therefore we
-            # have a blank line. We want to allow a blank line in the
-            # block of comments, so we return True
-            return True
-
-        t = xs[0]  # this is the first non blank token in the line n
-        if t[2][1] != col:
-            # if it isn't at the same column as the definition, it can't be
-            # considered as a `intro` line
-            return False
-        if t[0] == token.OP and t[1] == '@':
-            # this lines starts with `@`, which means it is the decorator
-            return True
-        if t[0] == token.COMMENT:
-            # this line starts with the comment at the same column as the definition
-            return True
-
-        # in all other cases this isn't an `intro` line
-        return False
-    #@+node:vitalije.20211208084231.1: *3* get_intro
-    def get_intro(row, col):
-        """
-        Returns the number of preceeding lines that can be considered as an `intro`
-        to this funciton/class/method definition.
-        """
-        last = row
-        for i in range(row - 1, 0, -1):
-            if is_intro_line(i, col):
-                last = i
-            else:
-                break
-        # we don't want `intro` to start with the bunch of blank lines
-        # they better be added to the end of the preceeding node.
-        for i in range(last, row):
-            if lines[i - 1].isspace():
-                last = i + 1
-        return row - last
-    #@+node:vitalije.20211206182505.1: *3* mkreadline
-    def mkreadline(lines):
-        # tokenize uses readline for its input
-        itlines = iter(lines)
-        def nextline():
-            try:
-                return next(itlines)
-            except StopIteration:
-                return ''
-        return nextline
-    #@+node:vitalije.20211208092828.1: *3* itoks
-    def itoks(i):
-        yield from enumerate(rawtokens[i:], start=i)
-    #@+node:vitalije.20211208092833.1: *3* search
-    def search(i, k):
-        for j, t in itoks(i):
-            if t[0] == k:
-                yield j, t
-    #@+node:vitalije.20211208092910.1: *3* getdefn
+    #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def getdefn(start):
 
         # pylint: disable=undefined-loop-variable
@@ -172,20 +106,75 @@ def split_root(root, lines):
         # Compute the number of `intro` lines
         intro = get_intro(a, col)
         return col, a - intro, end_h, start_b, kind, name, c_ind, end_b
-    #@+node:vitalije.20211208101750.1: *3* body
-    def bodyLine(x, ind):
-        if ind == 0 or x[:ind].isspace():
-            return x[ind:] or '\n'
-        n = len(x) - len(x.lstrip())
-        return f'\\\\-{ind-n}.{x[n:]}'
+    #@+node:vitalije.20211208084231.1: *4* get_intro & helper
+    def get_intro(row, col):
+        """
+        Returns the number of preceeding lines that can be considered as an `intro`
+        to this funciton/class/method definition.
+        """
+        last = row
+        for i in range(row - 1, 0, -1):
+            if is_intro_line(i, col):
+                last = i
+            else:
+                break
+        # we don't want `intro` to start with the bunch of blank lines
+        # they better be added to the end of the preceeding node.
+        for i in range(last, row):
+            if lines[i - 1].isspace():
+                last = i + 1
+        return row - last
+    #@+node:vitalije.20211208183603.1: *5* is_intro_line
+    def is_intro_line(n, col):
+        """
+        Intro line is either a comment line that starts at the same column as the
+        def/class line or a decorator line
+        """
+        # first we filter list of all tokens in the line n. We don't want white space tokens
+        # we are interested only in the tokens containing some text.
+        xs = [x for x in lntokens[n] if x[0] not in (token.DEDENT, token.INDENT, token.NL)]
 
-    def body(a, b, ind):
-        xlines = (bodyLine(x, ind) for x in lines[a - 1 : b and (b - 1)])
-        return ''.join(xlines)
-    #@+node:vitalije.20211208110301.1: *3* indent
-    def indent(x, n):
-        return x.rjust(len(x) + n)
-    #@+node:vitalije.20211208104408.1: *3* mknode
+        if not xs:
+            # all tokens in this line are white space, therefore we
+            # have a blank line. We want to allow a blank line in the
+            # block of comments, so we return True
+            return True
+
+        t = xs[0]  # this is the first non blank token in the line n
+        if t[2][1] != col:
+            # if it isn't at the same column as the definition, it can't be
+            # considered as a `intro` line
+            return False
+        if t[0] == token.OP and t[1] == '@':
+            # this lines starts with `@`, which means it is the decorator
+            return True
+        if t[0] == token.COMMENT:
+            # this line starts with the comment at the same column as the definition
+            return True
+
+        # in all other cases this isn't an `intro` line
+        return False
+    #@+node:vitalije.20211208092828.1: *4* itoks
+    def itoks(i):
+        yield from enumerate(rawtokens[i:], start=i)
+    #@+node:vitalije.20211208092833.1: *4* search
+    def search(i, k):
+        for j, t in itoks(i):
+            if t[0] == k:
+                yield j, t
+    #@+node:vitalije.20211206182505.1: *3* mkreadline
+    def mkreadline(lines):
+        # tokenize uses readline for its input
+        itlines = iter(lines)
+
+        def nextline():
+            try:
+                return next(itlines)
+            except StopIteration:
+                return ''
+
+        return nextline
+    #@+node:vitalije.20211208104408.1: *3* mknode & helpers
     def mknode(p, start, start_b, end, l_ind, col, xdefs):
         # start   - first line of this node
         # start_b - first line of this node's function/class body
@@ -266,7 +255,17 @@ def split_root(root, lines):
                 p1.b = body(h1, end_b, col)
 
             last = end_b
-    #@+node:ekr.20220320055103.1: *3* declaration_headline
+    #@+node:vitalije.20211208101750.1: *4* body & bodyLine
+    def bodyLine(x, ind):
+        if ind == 0 or x[:ind].isspace():
+            return x[ind:] or '\n'
+        n = len(x) - len(x.lstrip())
+        return f'\\\\-{ind-n}.{x[n:]}'
+
+    def body(a, b, ind):
+        xlines = (bodyLine(x, ind) for x in lines[a - 1 : b and (b - 1)])
+        return ''.join(xlines)
+    #@+node:ekr.20220320055103.1: *4* declaration_headline
     def declaration_headline(body_string):  # #2500
         """
         Return an informative headline for s, a group of declarations.
@@ -281,6 +280,9 @@ def split_root(root, lines):
                 return s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
+    #@+node:vitalije.20211208110301.1: *4* indent
+    def indent(x, n):
+        return x.rjust(len(x) + n)
     #@-others
     # rawtokens is a list of all tokens found in input lines
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
