@@ -3761,7 +3761,7 @@ class Commands:
         # Update the focus immediately.
         if not keepMinibuffer:
             c.outerUpdate()
-    #@+node:ekr.20031218072017.2997: *5* c.selectPosition (trace of unexpected de-hoists)
+    #@+node:ekr.20031218072017.2997: *5* c.selectPosition
     def selectPosition(self, p, **kwargs):
         """
         Select a new position, redrawing the screen *only* if we must
@@ -3777,7 +3777,7 @@ class Commands:
                 g.trace('Warning: no p', g.callers())
             return
         if cc and not cc.selectChapterLockout:
-            # Calls c.redraw only if the chapter changes.
+            # Calls c.redraw_later if the chapter changes.
             cc.selectChapterForPosition(p)
         # De-hoist as necessary to make p visible.
         if c.hoistStack:
