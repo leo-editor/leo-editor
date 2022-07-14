@@ -160,12 +160,11 @@ class ChapterController:
             pass  # Do not use c.p.
         else:
             chapter.p = chapter.findRootNode()
-        g.es(f"select chapter: {chapter.name}")
         chapter.select()
         c.contractAllHeadlines()
         chapter.p.v.expand()
         c.selectPosition(chapter.p)
-        c.redraw_later()  # #2718: Do *not* call c.redraw here.
+        c.redraw()  # #2718.
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):
