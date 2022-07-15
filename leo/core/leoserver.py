@@ -1342,15 +1342,25 @@ class LeoServer:
     #@+node:felix.20220309010334.1: *4* server.nav commands
     #@+node:felix.20220714000930.1: *5* server.chapter_main
     def chapter_main(self, param):
+        tag = 'chapter_main'
         c = self._check_c()
-        cc = c.chapterController
-        #
+        try:
+            cc = c.chapterController
+            cc.selectChapterByName('main')
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting main chapter: {e}")
         return self._make_response()
     #@+node:felix.20220714000942.1: *5* server.chapter_select
     def chapter_select(self, param):
+        tag = 'chapter_select'
         c = self._check_c()
-        cc = c.chapterController
-        #
+        try:
+            cc = c.chapterController
+            chapter = param.get('name', 'main')
+            cc.selectChapterByName(chapter)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a chapter: {chapter}, {e}")
+
         return self._make_response()
     #@+node:felix.20220305211743.1: *5* server.nav_headline_search
     def nav_headline_search(self, param):
@@ -2027,8 +2037,10 @@ class LeoServer:
     def get_chapters(self, param):
         c = self._check_c()
         cc = c.chapterController
-        #
-        return self._make_response()
+        chapters = []
+        if cc:
+            chapters = cc.setAllChapterNames()
+        return self._make_minimal_response({"chapters": chapters})
     #@+node:felix.20210621233316.42: *5* server.get_children
     def get_children(self, param):
         """
@@ -2409,7 +2421,7 @@ class LeoServer:
                     # additional try with higher childIndex
                     c.selectPosition(oldPosition)
         return self._make_response()
-    #@+node:felix.20220222173707.1: *5* paste_as_clone_node
+    #@+node:felix.20220222173707.1: *5* server.paste_as_clone_node
     def paste_as_clone_node(self, param):
         """
         Pastes a node as a clone,
@@ -2768,7 +2780,7 @@ class LeoServer:
             'delete-last-icon',
             'delete-node-icons',
             'insert-icon',
-            'set-ua',  # TODO : Should be easy to implement
+
             'export-headlines',  # export TODO
             'export-jupyter-notebook',  # export TODO
             'outline-to-cweb',  # export TODO
@@ -3605,14 +3617,14 @@ class LeoServer:
 
             #'insert-icon', # ? maybe move to bad commands?
 
-            #'set-ua',
+            'set-ua',
 
             'show-all-uas',
             'show-bindings',
             'show-clone-ancestors',
             'show-clone-parents',
 
-            # Export files...
+            # TODO Export files...
             #'export-headlines', # export
             #'export-jupyter-notebook', # export
             #'outline-to-cweb', # export
