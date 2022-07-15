@@ -86,7 +86,7 @@ class ChapterController:
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
     def selectChapter(self, event=None):
-        """Use the minibuffer to get a chapter name, then create the chapter."""
+        """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
         g.es('Chapters:\n' + '\n'.join(names))
