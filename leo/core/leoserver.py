@@ -2061,8 +2061,9 @@ class LeoServer:
                 topHoistPos = c.hoistStack[-1].p
                 if g.match_word(topHoistPos.h, 0, '@chapter'):
                     children = [self._get_position_d(child) for child in topHoistPos.children()]
-                # start hoisted tree with single hoisted root node
-                children = [self._get_position_d(topHoistPos)]
+                else:
+                    # start hoisted tree with single hoisted root node
+                    children = [self._get_position_d(topHoistPos)]
             else:
                 # this outputs all Root Children
                 children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
@@ -2080,9 +2081,14 @@ class LeoServer:
         Return the node data for the parent of position p,
         where p is c.p if param["ap"] is missing.
         """
-        self._check_c()
+        c = self._check_c()
         p = self._get_p(param)
         parent = p.parent()
+        if c.hoistStack:
+                topHoistPos = c.hoistStack[-1].p
+                if parent == topHoistPos:
+                    parent = False
+
         data = self._get_position_d(parent) if parent else None
         return self._make_minimal_response({"node": data})
     #@+node:felix.20210621233316.45: *5* server.get_position_data
