@@ -2058,8 +2058,11 @@ class LeoServer:
                 children = [self._get_position_d(child) for child in p.children()]
         else:
             if c.hoistStack:
-                # Always start hoisted tree with single hoisted root node
-                children = [self._get_position_d(c.hoistStack[-1].p)]
+                topHoistPos = c.hoistStack[-1].p
+                if g.match_word(topHoistPos.h, 0, '@chapter'):
+                    children = [self._get_position_d(child) for child in topHoistPos.children()]
+                # start hoisted tree with single hoisted root node
+                children = [self._get_position_d(topHoistPos)]
             else:
                 # this outputs all Root Children
                 children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
@@ -2318,7 +2321,7 @@ class LeoServer:
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
@@ -2345,7 +2348,7 @@ class LeoServer:
             newNode = p.insertAsLastChild()
         else:
             newNode = p.insertAsNthChild(0)
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
