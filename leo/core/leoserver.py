@@ -1340,6 +1340,18 @@ class LeoServer:
                 )
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20220309010334.1: *4* server.nav commands
+    #@+node:felix.20220714000930.1: *5* server.chapter_main
+    def chapter_main(self, param):
+        c = self._check_c()
+        cc = c.chapterController
+        #
+        return self._make_response()
+    #@+node:felix.20220714000942.1: *5* server.chapter_select
+    def chapter_select(self, param):
+        c = self._check_c()
+        cc = c.chapterController
+        #
+        return self._make_response()
     #@+node:felix.20220305211743.1: *5* server.nav_headline_search
     def nav_headline_search(self, param):
         """
@@ -2011,6 +2023,12 @@ class LeoServer:
                 }
             }
         return self._make_minimal_response(states)
+    #@+node:felix.20220714001051.1: *5* server.get_chapters
+    def get_chapters(self, param):
+        c = self._check_c()
+        cc = c.chapterController
+        #
+        return self._make_response()
     #@+node:felix.20210621233316.42: *5* server.get_children
     def get_children(self, param):
         """
