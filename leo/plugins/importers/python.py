@@ -43,8 +43,6 @@ def split_root(root, lines):
         'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
     ])
 
-    end_b_offset = 7  ### Temp.
-
     def getdefn(start):
         """
         Look for a def or class found at rawtokens[start].
@@ -242,7 +240,7 @@ def split_root(root, lines):
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1][end_b_offset]
+        last_offset = inner_defs[-1].end_b
         tail = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
 
