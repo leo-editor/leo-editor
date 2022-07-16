@@ -236,7 +236,7 @@ def split_root(root, lines):
                 xdefs: The list of the definitions covering p.
         """
 
-        # Find all defs with the inner indentation.
+        # Find all defs with the given inner indentation.
         inner_defs = [x for x in definitions if x[0] == inner_indent]
 
         if not inner_defs or end - start < SPLIT_THRESHOLD:
@@ -248,7 +248,8 @@ def split_root(root, lines):
         last = start
 
         # Calculate b1, the lines preceding the @others.
-        inner_indent, h1, _, _, _, _, _, _ = inner_defs[0]
+        _inner_indent2, h1, _, _, _, _, _, _ = inner_defs[0]
+        assert _inner_indent2 == inner_indent
         b1 = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
@@ -259,7 +260,8 @@ def split_root(root, lines):
 
         # Add a child for each inner definition.
         last = h1
-        for inner_indent, h1, _, _, _, name, c_ind, end_b in inner_defs:
+        for _inner_indent3, h1, _, _, _, name, c_ind, end_b in inner_defs:
+            assert _inner_indent3 == inner_indent
             if h1 > last:
                 # There are declaration lines between two inner definitions.
                 new_body = body(last, h1, inner_indent)  # #2500.
@@ -267,8 +269,8 @@ def split_root(root, lines):
                 p1.h = declaration_headline(new_body)  # #2500
                 p1.b = new_body
                 last = h1
-            p1 = p.insertAsLastChild()
-            p1.h = name
+            child = p.insertAsLastChild()
+            child.h = name
 
             # Next-level inner definitions are definitions whose
             # starting and end line contained in this node.
@@ -276,7 +278,7 @@ def split_root(root, lines):
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
-                    p=p1,
+                    p=child,
                     start=h1,
                     start_b=start_b,
                     end=end_b,
@@ -286,7 +288,7 @@ def split_root(root, lines):
                 )
             else:
                 # Just set the body.
-                p1.b = body(h1, end_b, inner_indent)
+                child.b = body(h1, end_b, inner_indent)
             last = end_b
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(x, ind):
