@@ -55,6 +55,8 @@ def split_root(root: Any, lines: List[str]) -> None:
         Look for a def or class found at rawtokens[start].
         Return None or a def_tuple.
         """
+        nonlocal lines
+
         # pylint: disable=undefined-loop-variable
         # tok will never be empty, but pylint is not to know that.
 
@@ -270,6 +272,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         return f'\\\\-{i-n}.{s[n:]}'
 
     def body(a: int, b: int, i: int) -> str:
+        nonlocal lines  # 'lines' is a kwarg to split_root.
         xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
         return ''.join(xlines)
     #@+node:ekr.20220320055103.1: *4* declaration_headline
