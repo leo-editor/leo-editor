@@ -223,7 +223,7 @@ def split_root(root, lines):
             if t.type == k:
                 yield j, t
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
-    def mknode(p, start, start_b, end, others_indent, inner_indent, xdefs):
+    def mknode(p, start, start_b, end, others_indent, inner_indent, definitions):
         """
         Set p.b and add children recursively using the arguments.
 
@@ -237,7 +237,7 @@ def split_root(root, lines):
         """
 
         # Find all defs with the inner indentation.
-        inner_defs = [x for x in xdefs if x[0] == inner_indent]
+        inner_defs = [x for x in definitions if x[0] == inner_indent]
 
         if not inner_defs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
@@ -257,12 +257,12 @@ def split_root(root, lines):
         b2 = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{b1}{others_line}{b2}'
 
-        # Add children for each inner definition.
+        # Add a child for each inner definition.
         last = h1
         for inner_indent, h1, _, _, _, name, c_ind, end_b in inner_defs:
             if h1 > last:
+                # There are declaration lines between two inner definitions.
                 new_body = body(last, h1, inner_indent)  # #2500.
-                # there are some declaration lines in between two inner definitions
                 p1 = p.insertAsLastChild()
                 p1.h = declaration_headline(new_body)  # #2500
                 p1.b = new_body
@@ -272,8 +272,8 @@ def split_root(root, lines):
 
             # Next-level inner definitions are definitions whose
             # starting and end line contained in this node.
-            subdefs = [x for x in xdefs if x[1] > h1 and x[-1] <= end_b]
-            if subdefs:
+            inner_definitions = [x for x in definitions if x[1] > h1 and x[-1] <= end_b]
+            if inner_definitions:
                 # Recursively split this node.
                 mknode(
                     p=p1,
@@ -282,7 +282,7 @@ def split_root(root, lines):
                     end=end_b,
                     others_indent=others_indent + inner_indent,
                     inner_indent=c_ind,
-                    xdefs=subdefs,
+                    definitions=inner_definitions,
                 )
             else:
                 # Just set the body.
@@ -327,15 +327,15 @@ def split_root(root, lines):
         row = t.start[0]
         lntokens[row].append(t)
 
-    # xdefs is a list of *all* definitions.
+    # Make a list of *all* definitions.
     aList = [getdefn(i) for i, z in enumerate(rawtokens)]
-    xdefs = [z for z in aList if z]
+    all_definitions = [z for z in aList if z]
 
     # Start the recursion.
     root.deleteAllChildren()
     mknode(
         p=root, start=1, start_b=1, end=len(lines)+1,
-        others_indent=0, inner_indent=0, xdefs=xdefs)
+        others_indent=0, inner_indent=0, definitions=all_definitions)
 #@-others
 importer_dict = {
     'func': do_import,
