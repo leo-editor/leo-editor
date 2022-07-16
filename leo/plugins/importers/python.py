@@ -211,7 +211,7 @@ def split_root(root, lines):
             if t.type == k:
                 yield j, t
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
-    def mknode(p, start, start_b, end, l_ind, col, xdefs):
+    def mknode(p, start, start_b, end, l_ind, indent, xdefs):
         """
         Set p.b and add children recursively using the arguments.
 
@@ -221,12 +221,12 @@ def split_root(root, lines):
             end: The line number of the first line after this node.
           l_ind: The amount of white space to strip from left.
                  This is the acccumated at-others indentation.
-            col: The column at which start all of the inner definitions.
+         indent: The column at which start all of the inner definitions.
           xdefs: The list of the definitions covering p.
         """
 
         # Find all defs with the same indentation as our function/method/class body.
-        tdefs = [x for x in xdefs if x[0] == col]
+        tdefs = [x for x in xdefs if x[0] == indent]
 
         if not tdefs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
@@ -237,14 +237,14 @@ def split_root(root, lines):
         last = start
 
         # Calculate b1, the lines preceding the @others.
-        col, h1, h2, start_b, kind, name, c_ind, end_b = tdefs[0]
+        indent, h1, h2, start_b, kind, name, c_ind, end_b = tdefs[0]
         if h1 > start:
             # The first inner definition starts later.
             b1 = body(start, h1, l_ind)
         else:
             # The inner definitions start at the beginning of our body.
             b1 = ''
-        others_line = indent('@others\n', col - l_ind)
+        others_line = calculate_indent('@others\n', indent - l_ind)
 
         # Calculate b2, the lines following the @others line.
         if tdefs[-1][-1] < end:
@@ -255,9 +255,9 @@ def split_root(root, lines):
 
         # Add children for each inner definition.
         last = h1
-        for col, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
+        for indent, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
             if h1 > last:
-                new_body = body(last, h1, col)  # #2500.
+                new_body = body(last, h1, indent)  # #2500.
                 # there are some declaration lines in between two inner definitions
                 p1 = p.insertAsLastChild()
                 p1.h = declaration_headline(new_body)  # #2500
@@ -276,13 +276,13 @@ def split_root(root, lines):
                     start=h1,
                     start_b=start_b,
                     end=end_b,
-                    l_ind=l_ind + col,  # increase indentation for at-others
-                    col=c_ind,
+                    l_ind=l_ind + indent,  # increase indentation for at-others
+                    indent=c_ind,
                     xdefs=subdefs,
                 )
             else:
                 # Just set the body.
-                p1.b = body(h1, end_b, col)
+                p1.b = body(h1, end_b, indent)
             last = end_b
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(x, ind):
@@ -310,7 +310,7 @@ def split_root(root, lines):
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
     #@+node:vitalije.20211208110301.1: *4* indent
-    def indent(x, n):
+    def calculate_indent(x, n):
         return x.rjust(len(x) + n)
     #@-others
 
@@ -329,7 +329,7 @@ def split_root(root, lines):
 
     # Start the recursion.
     root.deleteAllChildren()
-    mknode(p=root, start=1, start_b=1, end=len(lines)+1, l_ind=0, col=0, xdefs=xdefs)
+    mknode(p=root, start=1, start_b=1, end=len(lines)+1, l_ind=0, indent=0, xdefs=xdefs)
 
 #@-others
 importer_dict = {
