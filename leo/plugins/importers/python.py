@@ -270,7 +270,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'  # Return the representation of an underindented strings.
+        return f'\\\\-{i-n}.{s[n:]}'  # Return the representation of an underindented string.
 
     def body(a: int, b: Optional[int], i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
