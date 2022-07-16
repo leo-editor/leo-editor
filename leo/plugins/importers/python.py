@@ -40,7 +40,7 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'name', 'kind', 'decl_indent', 'decl_line1', 'decl_line2', 'start_b',  'c_ind', 'end_b',
+        'name', 'kind', 'decl_indent', 'decl_line1',  'start_b',  'c_ind', 'end_b',
     ])
 
     def getdefn(start):
@@ -52,7 +52,6 @@ def split_root(root, lines):
         decl_indent: Indentation of the class or def.
          decl_line1: Line number of the first line of this node.
                      This line may be a comment or decorator.
-         decl_line2: The line number of the last line of the declaration (contains ':').
         start_b line number of the first indented line of the function/class body.
         kind    'def' or 'class'
         name    name of the function, class or method
@@ -74,22 +73,13 @@ def split_root(root, lines):
         if kind == 'def' and rawtokens[start - 1][1] == 'async':
             return None
 
-        #
         decl_line, decl_indent = tok.start
 
-        # now we are searching for the end of the definition line
-        # this one logical line may be divided in several physical
-        # lines. At the end of this logical line, there will be a
-        # NEWLINE token
+        # Find the end of the definition line, ending in a NEWLINE token.
+        # This one logical line may span several physical lines.
         for i, t in search(start + 1, token.NEWLINE):
-            # The last of the `header lines`.
-            # These lines should not be indented in the node body.
-            # The body lines *will* be indented.
-            decl_line2 = t.start[0]
-            # In case we have a oneliner, let's define end_b here
-            end_b = decl_line2
-            # indented body starts on the next line
-            start_b = decl_line2 + 1
+            end_b = t.start[0]
+            start_b = end_b + 1
             break
 
         # Look ahead to check if we have a oneline definition or not.
@@ -129,9 +119,9 @@ def split_root(root, lines):
                 break
 
         # This is the only instantiation of def_tuple.
-        decl_line1 = decl_line - get_intro(decl_line, decl_indent)
         return def_tuple(name, kind,
-            decl_indent=decl_indent, decl_line1=decl_line1, decl_line2=decl_line2,
+            decl_indent=decl_indent,
+            decl_line1=decl_line - get_intro(decl_line, decl_indent),
             start_b=start_b,
             c_ind=c_ind,
             end_b=end_b,
