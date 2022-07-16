@@ -5,7 +5,7 @@ import sys
 import tokenize
 import token
 from typing import Any, Dict
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20211209052710.1: ** do_import
@@ -26,24 +26,29 @@ SPLIT_THRESHOLD = 10
 def split_root(root, lines):
     """
     Create direct children of root for all top level function definitions and class definitions.
-    
+
     For longer class nodes, create separate child nodes for each method.
-    
+
     This function uses a token-oriented "parse" of the lines.
     Tokens are named 5-tuples, but this code uses only three fields:
-    
+
     t.type:   token type
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
+
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
+    def_tuple = namedtuple('def_tuple', [
+        'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
+    ])
+
     def getdefn(start):
         """
         Look for a def or class found at rawtokens[start].
-        
-        Return None or the tuple (col, h1, h2, start_b, kind, name, c_ind, end_b):
-        
+
+        Return None or named tuple with the following fields:
+
         col     column where the definition starts
         h1      line number of the first line of this node
                 this line may be above the starting line if comments or decorators
@@ -124,9 +129,16 @@ def split_root(root, lines):
             else:
                 break
 
-        # Compute the number of `intro` lines
-        intro = get_intro(a, col)
-        return col, a - intro, end_h, start_b, kind, name, c_ind, end_b
+        return def_tuple(
+            col=col,
+            h1=a - get_intro(a, col),
+            h2=end_h,
+            start_b=start_b,
+            kind=kind,
+            name=name,
+            c_ind=c_ind,
+            end_b=end_b,
+        )
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row, col):
         """
@@ -202,7 +214,7 @@ def split_root(root, lines):
     def mknode(p, start, start_b, end, l_ind, col, xdefs):
         """
         Set p.b and add children recursively using the arguments.
-        
+
               p: The current node.
           start: The line number of the first line of this node
         start_b: The line number of first line of this node's function/class body
@@ -233,7 +245,7 @@ def split_root(root, lines):
             # The inner definitions start at the beginning of our body.
             b1 = ''
         others_line = indent('@others\n', col - l_ind)
-        
+
         # Calculate b2, the lines following the @others line.
         if tdefs[-1][-1] < end:
             b2 = body(tdefs[-1][-1], end, l_ind)
@@ -254,19 +266,18 @@ def split_root(root, lines):
             p1 = p.insertAsLastChild()
             p1.h = name
 
-            # let's find all next level inner definitions
-            # those are the definitions whose starting and end line are
-            # between the start and the end of this node
+            # Next-level inner definitions are definitions whose
+            # starting and end line contained in this node.
             subdefs = [x for x in xdefs if x[1] > h1 and x[-1] <= end_b]
             if subdefs:
                 # Recursively split this node.
                 mknode(
-                    p=p1, 
+                    p=p1,
                     start=h1,
                     start_b=start_b,
                     end=end_b,
                     l_ind=l_ind + col,  # increase indentation for at-others
-                    col=c_ind, 
+                    col=c_ind,
                     xdefs=subdefs,
                 )
             else:
@@ -302,25 +313,24 @@ def split_root(root, lines):
     def indent(x, n):
         return x.rjust(len(x) + n)
     #@-others
-    
+
     # Create rawtokens: a list of all tokens found in input lines
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
-    
+
     # lntokens groups tokens by line number.
     lntokens: Dict[int, Any] = defaultdict(list)
     for t in rawtokens:
         row = t.start[0]
         lntokens[row].append(t)
 
-    ### definitions = list(filter(None, map(getdefn, range(len(rawtokens) - 1))))
+    # xdefs is a list of *all* definitions.
     aList = [getdefn(i) for i, z in enumerate(rawtokens)]
     xdefs = [z for z in aList if z]
-   
-    root.deleteAllChildren()
 
     # Start the recursion.
+    root.deleteAllChildren()
     mknode(p=root, start=1, start_b=1, end=len(lines)+1, l_ind=0, col=0, xdefs=xdefs)
-  
+
 #@-others
 importer_dict = {
     'func': do_import,
