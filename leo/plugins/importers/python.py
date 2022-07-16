@@ -249,12 +249,7 @@ def split_root(root, lines):
 
         # Calculate b1, the lines preceding the @others.
         inner_indent, h1, h2, start_b, kind, name, c_ind, end_b = inner_defs[0]
-        if h1 > start:
-            # The first inner definition starts later.
-            b1 = body(start, h1, others_indent)
-        else:
-            # The inner definitions start at the beginning of our body.
-            b1 = ''
+        b1 = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate b2, the lines following the @others line.
