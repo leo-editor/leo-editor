@@ -40,23 +40,24 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'body_indent', 'body_line1', 'decl_indent', 'decl_line1', 'kind', 'name'])
+        'body_indent',  # Indentation of body.
+        'body_line1',  # Line number of the first line after the definition.
+        'decl_indent',  # Indentation of the class or def line.
+        'decl_line1',  # Line number of the first line of this node.
+                       # This line may be a comment or decorator.
+        'kind',  # 'def' or 'class'.
+        'name',  # name of the function, class or method.
+    ])
 
     def getdefn(start):
         """
         Look for a def or class found at rawtokens[start].
-
-        Return None or named tuple with the following fields:
-
-               kind: 'def' or 'class'
-               name: name of the function, class or method
-        body_indent: Indentation of body.
-         body_line1: line number of the first line after the definition
-        decl_indent: Indentation of the class or def.
-         decl_line1: Line number of the first line of this node.
-                     This line may be a comment or decorator.
+        Return None or def_tuple.
         """
         # pylint: disable=undefined-loop-variable
+        # tok will never be empty, but pylint is not to know that.
+
+        # Ignore all tokens except 'async', 'def', 'class'
         tok = rawtokens[start]
         if tok.type != token.NAME or tok.string not in ('async', 'def', 'class'):
             return None
@@ -68,6 +69,8 @@ def split_root(root, lines):
         else:
             kind = tok.string
             name = rawtokens[start + 1][1]
+
+        # Don't include 'async def' twice.
         if kind == 'def' and rawtokens[start - 1][1] == 'async':
             return None
 
@@ -79,25 +82,21 @@ def split_root(root, lines):
             body_line1 = t.start[0] + 1
             break
 
-        # Look ahead to check if we have a oneline definition or not.
-        # That is, see which whether INDENT or NEWLINE will come first.
+        # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
         oneliner = True
-        for (i1, t), (i2, t1) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
-            # INDENT comes after the NEWLINE, means the definition is in a single line
+        for (i1, t), (i2, t2) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
             oneliner = i1 > i2
             break
 
         # Find the end of this definition
         if oneliner:
-            # The following lines will not be indented
-            # because the definition was in the same line.
+            # The entire decl is on the same line.
             body_indent = decl_indent
         else:
             # We have some body lines. Presumably the next token is INDENT.
-            i += 1
-            # This is the indentation of the first function/method/class body line
             body_indent = len(t.string) + decl_indent
-            # Now search to find the end of this function/method/body
+            i += 1
+            # Find the end of the body.
             for i, t in itoks(i + 1):
                 col2 = t.start[1]
                 if col2 > decl_indent:
@@ -106,7 +105,7 @@ def split_root(root, lines):
                     body_line1 = t.start[0]
                     break
 
-        # Increase end_b to include all following blank lines
+        # Increase body_line1 to include all following blank lines.
         for j in range(body_line1, len(lines) + 1):
             if lines[j - 1].isspace():
                 body_line1 = j + 1
@@ -122,6 +121,12 @@ def split_root(root, lines):
             kind = kind,
             name = name,
         )
+    #@+node:vitalije.20211208092833.1: *4* find and search
+    def search(i, k):
+        """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
+        for j, t in itoks(i):
+            if t.type == k:
+                yield j, t
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row, col):
         """
@@ -187,12 +192,6 @@ def split_root(root, lines):
                 return ''
 
         return nextline
-    #@+node:vitalije.20211208092833.1: *4* search
-    def search(i, k):
-        """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
-        for j, t in itoks(i):
-            if t.type == k:
-                yield j, t
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
     def mknode(p, start, start_b, end, others_indent, inner_indent, definitions):
         """
