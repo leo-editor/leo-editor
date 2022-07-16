@@ -40,7 +40,7 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
+        'name', 'kind', 'col', 'h1', 'h2', 'start_b',  'c_ind', 'end_b',
     ])
 
     def getdefn(start):
@@ -128,13 +128,12 @@ def split_root(root, lines):
             else:
                 break
 
-        return def_tuple(
+        # This is the only instantiation of def_tuple.
+        return def_tuple(name, kind,
             col=col,
             h1=a - get_intro(a, col),
             h2=end_h,
             start_b=start_b,
-            kind=kind,
-            name=name,
             c_ind=c_ind,
             end_b=end_b,
         )
