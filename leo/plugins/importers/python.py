@@ -219,15 +219,15 @@ def split_root(root, lines):
                 start: The line number of the first line of this node
               start_b: The line number of first line of this node's function/class body
                   end: The line number of the first line after this node.
-        others_indent: The amount of white space to strip from left.
+        others_indent: Accumulated @others indentation (to be stripped from left).
          inner_indent: The column at which start all of the inner definitions.
                 xdefs: The list of the definitions covering p.
         """
 
-        # Find all defs with the same indentation as our function/method/class body.
-        tdefs = [x for x in xdefs if x[0] == inner_indent]
+        # Find all defs with the inner indentation.
+        inner_defs = [x for x in xdefs if x[0] == inner_indent]
 
-        if not tdefs or end - start < SPLIT_THRESHOLD:
+        if not inner_defs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
             p.b = body(start, end, others_indent)
             return
@@ -236,7 +236,7 @@ def split_root(root, lines):
         last = start
 
         # Calculate b1, the lines preceding the @others.
-        inner_indent, h1, h2, start_b, kind, name, c_ind, end_b = tdefs[0]
+        inner_indent, h1, h2, start_b, kind, name, c_ind, end_b = inner_defs[0]
         if h1 > start:
             # The first inner definition starts later.
             b1 = body(start, h1, others_indent)
@@ -246,15 +246,15 @@ def split_root(root, lines):
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate b2, the lines following the @others line.
-        if tdefs[-1][-1] < end:
-            b2 = body(tdefs[-1][-1], end, others_indent)
+        if inner_defs[-1][-1] < end:
+            b2 = body(inner_defs[-1][-1], end, others_indent)
         else:
             b2 = ''
         p.b = f'{b1}{others_line}{b2}'
 
         # Add children for each inner definition.
         last = h1
-        for inner_indent, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
+        for inner_indent, h1, h2, start_b, kind, name, c_ind, end_b in inner_defs:
             if h1 > last:
                 new_body = body(last, h1, inner_indent)  # #2500.
                 # there are some declaration lines in between two inner definitions
@@ -275,7 +275,7 @@ def split_root(root, lines):
                     start=h1,
                     start_b=start_b,
                     end=end_b,
-                    others_indent=others_indent + inner_indent,  # increase indentation for at-others
+                    others_indent=others_indent + inner_indent,
                     inner_indent=c_ind,
                     xdefs=subdefs,
                 )
