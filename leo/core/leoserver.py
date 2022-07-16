@@ -2138,6 +2138,16 @@ class LeoServer:
             if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
                 w_canHoist = False
 
+        inChapter = False
+        topHoistChapter = False
+        if c.config.getBool('use-chapters') and c.chapterController:
+            cc = c.chapterController
+            inChapter = cc.inChapter()
+            if c.hoistStack:
+                bunch = c.hoistStack[len(c.hoistStack) - 1]
+                if g.match_word(bunch.p.h, 0, '@chapter'):
+                    topHoistChapter = True
+
         try:
             states = {
                 "changed": c and c.changed,
@@ -2148,7 +2158,9 @@ class LeoServer:
                 "canDemote": c and c.canDemote(),
                 "canPromote": c and c.canPromote(),
                 "canDehoist": c and c.canDehoist(),
-                "canHoist": w_canHoist
+                "canHoist": w_canHoist,
+                "inChapter": inChapter,
+                "topHoistChapter": topHoistChapter
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
