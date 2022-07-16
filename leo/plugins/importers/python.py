@@ -235,7 +235,8 @@ def split_root(root, lines):
         last = start
 
         # Calculate head, the lines preceding the @others.
-        _, h1, _, _, _, _, _, _ = inner_defs[0]
+        ### _, h1, _, _, _, _, _, _ = inner_defs[0]
+        h1 = inner_defs[0].h1
         head = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
@@ -246,7 +247,12 @@ def split_root(root, lines):
 
         # Add a child for each inner definition.
         last = h1
-        for _, h1, _, _, _, name, c_ind, end_b in inner_defs:
+        # for _, h1, _, _, _, name, c_ind, end_b in inner_defs:
+        for inner_def in inner_defs:
+            c_ind = inner_def.c_ind
+            h1 = inner_def.h1
+            end_b = inner_def.end_b
+            
             if h1 > last:
                 # There are declaration lines between two inner definitions.
                 new_body = body(last, h1, inner_indent)  # #2500.
@@ -255,7 +261,7 @@ def split_root(root, lines):
                 p1.b = new_body
                 last = h1
             child = p.insertAsLastChild()
-            child.h = name
+            child.h = inner_def.name
 
             # Next-level inner definitions are definitions whose
             # starting and end line contained in this node.
