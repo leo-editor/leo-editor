@@ -4,7 +4,7 @@
 import sys
 import tokenize
 import token
-from typing import Any, Dict
+from typing import Any, Dict, List
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
@@ -23,6 +23,17 @@ def do_import(c, s, parent):
     return True
 #@+node:vitalije.20211201230203.1: ** split_root & helpers
 SPLIT_THRESHOLD = 10
+
+def_tuple = namedtuple('def_tuple', [
+    'body_indent',  # Indentation of body.
+    'body_line1',  # Line number of the first line after the definition.
+    'decl_indent',  # Indentation of the class or def line.
+    'decl_line1',  # Line number of the first line of this node.
+                   # This line may be a comment or decorator.
+    'kind',  # 'def' or 'class'.
+    'name',  # name of the function, class or method.
+])
+
 def split_root(root, lines):
     """
     Create direct children of root for all top level function definitions and class definitions.
@@ -39,20 +50,10 @@ def split_root(root, lines):
 
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
-    def_tuple = namedtuple('def_tuple', [
-        'body_indent',  # Indentation of body.
-        'body_line1',  # Line number of the first line after the definition.
-        'decl_indent',  # Indentation of the class or def line.
-        'decl_line1',  # Line number of the first line of this node.
-                       # This line may be a comment or decorator.
-        'kind',  # 'def' or 'class'.
-        'name',  # name of the function, class or method.
-    ])
-
-    def getdefn(start):
+    def getdefn(start: int) -> def_tuple:
         """
         Look for a def or class found at rawtokens[start].
-        Return None or def_tuple.
+        Return None or a def_tuple.
         """
         # pylint: disable=undefined-loop-variable
         # tok will never be empty, but pylint is not to know that.
@@ -82,7 +83,7 @@ def split_root(root, lines):
         body_line1 = t.start[0] + 1
 
         # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
-        i1, t = find(i + 1, token.INDENT)
+        i1, t = find(i + 1, token.INDENT)  # t is used below.
         i2, t2 = find(i + 1, token.NEWLINE)
         oneliner = i1 > i2 if t and t2 else False
 
@@ -197,7 +198,14 @@ def split_root(root, lines):
 
         return nextline
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
-    def mknode(p, start, start_b, end, others_indent, inner_indent, definitions):
+    def mknode(p,
+        start: int,
+        start_b: int,
+        end: int,
+        others_indent: int,
+        inner_indent: int,
+        definitions: List[def_tuple],
+    ) -> None:
         """
         Set p.b and add children recursively using the arguments.
 
