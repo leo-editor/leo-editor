@@ -55,7 +55,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         Look for a def or class found at rawtokens[start].
         Return None or a def_tuple.
         """
-        nonlocal lines
+        nonlocal lines  # 'lines' is a kwarg to split_root.
 
         # pylint: disable=undefined-loop-variable
         # tok will never be empty, but pylint is not to know that.
@@ -266,12 +266,14 @@ def split_root(root: Any, lines: List[str]) -> None:
             last = body_line1
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(s: str, i: int) -> str:
+        """Massage line s."""
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
         n = len(s) - len(s.lstrip())
         return f'\\\\-{i-n}.{s[n:]}'
 
     def body(a: int, b: int, i: int) -> str:
+        """Return the (massaged) concatentation of lines[a: b]"""
         nonlocal lines  # 'lines' is a kwarg to split_root.
         xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
         return ''.join(xlines)
