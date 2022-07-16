@@ -83,10 +83,15 @@ def split_root(root, lines):
             break
 
         # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
-        oneliner = True
-        for (i1, t), (i2, t2) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
-            oneliner = i1 > i2
-            break
+        if 1:
+            i1, t = find(i + 1, token.INDENT)
+            i2, t2 = find(i + 1, token.NEWLINE)
+            oneliner = i1 > i2 if t and t2 else False
+        else:
+            oneliner = True
+            for (i1, t), (i2, t2) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
+                oneliner = i1 > i2
+                break
 
         # Find the end of this definition
         if oneliner:
@@ -122,6 +127,12 @@ def split_root(root, lines):
             name = name,
         )
     #@+node:vitalije.20211208092833.1: *4* find and search
+    def find(i, k):
+        for j, t in itoks(i):
+            if t.type == k:
+                return j, t
+        return None, None
+
     def search(i, k):
         """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
         for j, t in itoks(i):
