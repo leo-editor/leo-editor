@@ -40,7 +40,8 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'name', 'kind', 'decl_indent', 'decl_line1',  'start_b',  'c_ind', 'end_b',
+        'name', 'kind', 'decl_indent', 'decl_line1', 'c_ind', 'end_b',
+        #'body_line1',
     ])
 
     def getdefn(start):
@@ -49,12 +50,11 @@ def split_root(root, lines):
 
         Return None or named tuple with the following fields:
 
+               kind: 'def' or 'class'
+               name: name of the function, class or method
         decl_indent: Indentation of the class or def.
          decl_line1: Line number of the first line of this node.
                      This line may be a comment or decorator.
-        start_b line number of the first indented line of the function/class body.
-        kind    'def' or 'class'
-        name    name of the function, class or method
         c_ind   column of the indented body
         end_b   line number of the first line after the definition
         """
@@ -79,7 +79,7 @@ def split_root(root, lines):
         # This one logical line may span several physical lines.
         for i, t in search(start + 1, token.NEWLINE):
             end_b = t.start[0]
-            start_b = end_b + 1
+            body_line1 = end_b + 1
             break
 
         # Look ahead to check if we have a oneline definition or not.
@@ -96,7 +96,7 @@ def split_root(root, lines):
             # because the definition was in the same line.
             c_ind = decl_indent
             # The end of the body is the same as the start of the body
-            end_b = start_b
+            end_b = body_line1
         else:
             # We have some body lines. Presumably the next token is INDENT.
             i += 1
@@ -122,7 +122,6 @@ def split_root(root, lines):
         return def_tuple(name, kind,
             decl_indent=decl_indent,
             decl_line1=decl_line - get_intro(decl_line, decl_indent),
-            start_b=start_b,
             c_ind=c_ind,
             end_b=end_b,
         )
