@@ -248,8 +248,7 @@ def split_root(root, lines):
         last = start
 
         # Calculate b1, the lines preceding the @others.
-        _inner_indent2, h1, _, _, _, _, _, _ = inner_defs[0]
-        assert _inner_indent2 == inner_indent
+        _, h1, _, _, _, _, _, _ = inner_defs[0]
         b1 = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
@@ -260,8 +259,7 @@ def split_root(root, lines):
 
         # Add a child for each inner definition.
         last = h1
-        for _inner_indent3, h1, _, _, _, name, c_ind, end_b in inner_defs:
-            assert _inner_indent3 == inner_indent
+        for _, h1, _, _, _, name, c_ind, end_b in inner_defs:
             if h1 > last:
                 # There are declaration lines between two inner definitions.
                 new_body = body(last, h1, inner_indent)  # #2500.
