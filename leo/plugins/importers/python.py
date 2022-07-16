@@ -4,7 +4,7 @@
 import sys
 import tokenize
 import token
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, Generator, List, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
@@ -34,7 +34,7 @@ def_tuple = namedtuple('def_tuple', [
     'name',  # name of the function, class or method.
 ])
 
-def split_root(root: Any, lines: List[str]):
+def split_root(root: Any, lines: List[str]) -> None:
     """
     Create direct children of root for all top level function definitions and class definitions.
 
@@ -121,19 +121,19 @@ def split_root(root: Any, lines: List[str]):
             name = name,
         )
     #@+node:vitalije.20211208092833.1: *4* find and search
-    def find(i, k):
+    def find(i: int, k: int) -> Tuple[int, int]:
         for j, t in itoks(i):
             if t.type == k:
                 return j, t
         return None, None
 
-    def search(i, k):
+    def search(i: int, k: int) -> Generator:
         """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
         for j, t in itoks(i):
             if t.type == k:
                 yield j, t
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
-    def get_intro(row, col):
+    def get_intro(row: int, col: int) -> int:
         """
         Returns the number of preceeding lines that can be considered as an `intro`
         to this funciton/class/method definition.
@@ -151,7 +151,7 @@ def split_root(root: Any, lines: List[str]):
                 last = i + 1
         return row - last
     #@+node:vitalije.20211208183603.1: *5* is_intro_line
-    def is_intro_line(n, col):
+    def is_intro_line(n: int, col: int) -> bool:
         """
         Return True if line n is either:
         - a comment line that starts at the same column as the def/class line,
@@ -159,7 +159,7 @@ def split_root(root: Any, lines: List[str]):
         """
         # first we filter list of all tokens in the line n. We don't want white space tokens
         # we are interested only in the tokens containing some text.
-        xs = [x for x in lntokens[n] if x[0] not in (token.DEDENT, token.INDENT, token.NL)]
+        xs = [z for z in lntokens[n] if z[0] not in (token.DEDENT, token.INDENT, token.NL)]
 
         if not xs:
             # all tokens in this line are white space, therefore we
@@ -182,11 +182,11 @@ def split_root(root: Any, lines: List[str]):
         # in all other cases this isn't an `intro` line
         return False
     #@+node:vitalije.20211208092828.1: *4* itoks
-    def itoks(i):
+    def itoks(i: int) -> Generator:
         """Generate (n, rawtokens[n]) starting with i."""
         yield from enumerate(rawtokens[i:], start=i)
     #@+node:vitalije.20211206182505.1: *4* mkreadline
-    def mkreadline(lines):
+    def mkreadline(lines: List[str]) -> Callable:
         """Return an readline-like interface for tokenize."""
         itlines = iter(lines)
 
@@ -273,17 +273,17 @@ def split_root(root: Any, lines: List[str]):
                 child.b = body(decl_line1, body_line1, inner_indent)
             last = body_line1
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
-    def bodyLine(x, ind):
-        if ind == 0 or x[:ind].isspace():
-            return x[ind:] or '\n'
-        n = len(x) - len(x.lstrip())
-        return f'\\\\-{ind-n}.{x[n:]}'
+    def bodyLine(s: str, i: int) -> str:
+        if i == 0 or s[:i].isspace():
+            return s[i:] or '\n'
+        n = len(s) - len(s.lstrip())
+        return f'\\\\-{i-n}.{s[n:]}'
 
-    def body(a, b, ind):
-        xlines = (bodyLine(x, ind) for x in lines[a - 1 : b and (b - 1)])
+    def body(a: int, b: int, i: int) -> str:
+        xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
         return ''.join(xlines)
     #@+node:ekr.20220320055103.1: *4* declaration_headline
-    def declaration_headline(body_string):  # #2500
+    def declaration_headline(body_string: str) -> str:  # #2500
         """
         Return an informative headline for s, a group of declarations.
         """
@@ -298,8 +298,8 @@ def split_root(root: Any, lines: List[str]):
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
     #@+node:vitalije.20211208110301.1: *4* calculate_indent
-    def calculate_indent(x, n):
-        return x.rjust(len(x) + n)
+    def calculate_indent(s: str, n: int) -> str:
+        return s.rjust(len(s) + n)
     #@-others
 
     # Create rawtokens: a list of all tokens found in input lines
