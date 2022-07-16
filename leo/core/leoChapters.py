@@ -104,7 +104,7 @@ class ChapterController:
     def backChapter(self, event=None):
         """Select the previous chapter"""
         cc = self
-        names = sorted(cc.setAllChapterNames())
+        names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
         i = names.index(sel_name)
         new_name = names[i - 1 if i > 0 else len(names) - 1]
@@ -114,7 +114,7 @@ class ChapterController:
     def nextChapter(self, event=None):
         """Select the next chapter"""
         cc = self
-        names = sorted(cc.setAllChapterNames())
+        names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
         i = names.index(sel_name)
         new_name = names[i + 1 if i + 1 < len(names) else 0]
