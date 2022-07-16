@@ -5,7 +5,7 @@ import sys
 import tokenize
 import token
 from typing import Any, Dict
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20211209052710.1: ** do_import
@@ -39,9 +39,9 @@ def split_root(root, lines):
 
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
-    # def_tuple = namedtuple('def_tuple', [
-        # 'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
-    # ])
+    def_tuple = namedtuple('def_tuple', [
+        'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
+    ])
 
     end_b_offset = 7  ### Temp.
 
@@ -130,27 +130,16 @@ def split_root(root, lines):
             else:
                 break
 
-        return (
-            col,
-            a - get_intro(a, col),
-            end_h,
-            start_b,
-            kind,
-            name,
-            c_ind,
-            end_b,
+        return def_tuple(
+            col=col,
+            h1=a - get_intro(a, col),
+            h2=end_h,
+            start_b=start_b,
+            kind=kind,
+            name=name,
+            c_ind=c_ind,
+            end_b=end_b,
         )
-
-        # return def_tuple(
-            # col=col,
-            # h1=a - get_intro(a, col),
-            # h2=end_h,
-            # start_b=start_b,
-            # kind=kind,
-            # name=name,
-            # c_ind=c_ind,
-            # end_b=end_b,
-        # )
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row, col):
         """
