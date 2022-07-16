@@ -40,7 +40,7 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'name', 'kind', 'body_indent', 'decl_indent', 'decl_line1', 'end_b',
+        'name', 'kind', 'body_indent', 'body_line1', 'decl_indent', 'decl_line1',
     ])
 
     def getdefn(start):
@@ -51,11 +51,11 @@ def split_root(root, lines):
 
                kind: 'def' or 'class'
                name: name of the function, class or method
-         body_line1: Indentation of body.
+        body_indent: Indentation of body.
+         body_line1: line number of the first line after the definition
         decl_indent: Indentation of the class or def.
          decl_line1: Line number of the first line of this node.
                      This line may be a comment or decorator.
-        end_b   line number of the first line after the definition
         """
         # pylint: disable=undefined-loop-variable
         tok = rawtokens[start]
@@ -77,8 +77,7 @@ def split_root(root, lines):
         # Find the end of the definition line, ending in a NEWLINE token.
         # This one logical line may span several physical lines.
         for i, t in search(start + 1, token.NEWLINE):
-            end_b = t.start[0]
-            body_line1 = end_b + 1
+            body_line1 = t.start[0] + 1
             break
 
         # Look ahead to check if we have a oneline definition or not.
@@ -94,8 +93,6 @@ def split_root(root, lines):
             # The following lines will not be indented
             # because the definition was in the same line.
             body_indent = decl_indent
-            # The end of the body is the same as the start of the body
-            end_b = body_line1
         else:
             # We have some body lines. Presumably the next token is INDENT.
             i += 1
@@ -107,22 +104,22 @@ def split_root(root, lines):
                 if col2 > decl_indent:
                     continue
                 if t.type in (token.DEDENT, token.COMMENT):
-                    end_b = t.start[0]
+                    body_line1 = t.start[0]
                     break
 
         # Increase end_b to include all following blank lines
-        for j in range(end_b, len(lines) + 1):
+        for j in range(body_line1, len(lines) + 1):
             if lines[j - 1].isspace():
-                end_b = j + 1
+                body_line1 = j + 1
             else:
                 break
 
         # This is the only instantiation of def_tuple.
         return def_tuple(name, kind,
             body_indent=body_indent,
+            body_line1 = body_line1,
             decl_indent=decl_indent,
             decl_line1=decl_line - get_intro(decl_line, decl_indent),
-            end_b=end_b,
         )
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row, col):
@@ -226,16 +223,16 @@ def split_root(root, lines):
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].end_b
+        last_offset = inner_defs[-1].body_line1
         tail = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
 
         # Add a child for each inner definition.
         last = decl_line1
         for inner_def in inner_defs:
-
-            body_indent, end_b, decl_line1 = inner_def.body_indent, inner_def.end_b, inner_def.decl_line1
-
+            body_indent = inner_def.body_indent
+            body_line1 = inner_def.body_line1
+            decl_line1 = inner_def.decl_line1
             if decl_line1 > last:
                 # There are declaration lines between two inner definitions.
                 new_body = body(last, decl_line1, inner_indent)  # #2500.
@@ -247,22 +244,22 @@ def split_root(root, lines):
             child.h = inner_def.name
 
             # Compute inner definitions.
-            inner_definitions = [z for z in definitions if z.decl_line1 > decl_line1 and z.end_b <= end_b]
+            inner_definitions = [z for z in definitions if z.decl_line1 > decl_line1 and z.body_line1 <= body_line1]
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    end=end_b,
+                    end=body_line1,
                     others_indent=others_indent + inner_indent,
                     inner_indent=body_indent,
                     definitions=inner_definitions,
                 )
             else:
                 # Just set the body.
-                child.b = body(decl_line1, end_b, inner_indent)
-            last = end_b
+                child.b = body(decl_line1, body_line1, inner_indent)
+            last = body_line1
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(x, ind):
         if ind == 0 or x[:ind].isspace():
