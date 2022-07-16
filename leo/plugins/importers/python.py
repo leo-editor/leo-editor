@@ -247,15 +247,15 @@ def split_root(root, lines):
         # last keeps track of the last used line
         last = start
 
-        # Calculate b1, the lines preceding the @others.
+        # Calculate head, the lines preceding the @others.
         _, h1, _, _, _, _, _, _ = inner_defs[0]
-        b1 = body(start, h1, others_indent) if h1 > start else ''
+        head = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
-        # Calculate b2, the lines following the @others line.
+        # Calculate tail, the lines following the @others line.
         last_offset = inner_defs[-1][end_b_offset]
-        b2 = body(last_offset, end, others_indent) if last_offset < end else ''
-        p.b = f'{b1}{others_line}{b2}'
+        tail = body(last_offset, end, others_indent) if last_offset < end else ''
+        p.b = f'{head}{others_line}{tail}'
 
         # Add a child for each inner definition.
         last = h1
