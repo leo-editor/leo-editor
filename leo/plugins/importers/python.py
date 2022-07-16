@@ -127,7 +127,7 @@ def split_root(root: Any, lines: List[str]) -> None:
                 return j, t
         return None, None
 
-    def search(i: int, k: int) -> Generator:
+    def search(i: int, k: int) -> Generator:  # Not used at present.
         """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
         for j, t in itoks(i):
             if t.type == k:
@@ -135,8 +135,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row: int, col: int) -> int:
         """
-        Returns the number of preceeding lines that can be considered as an `intro`
-        to this funciton/class/method definition.
+        Return the number of preceeding lines that should be added to this class or def.
         """
         last = row
         for i in range(row - 1, 0, -1):
@@ -144,8 +143,8 @@ def split_root(root: Any, lines: List[str]) -> None:
                 last = i
             else:
                 break
-        # we don't want `intro` to start with the bunch of blank lines
-        # they better be added to the end of the preceeding node.
+        # Remove blank lines from the start of the intro.
+        # Leading blank lines should be added to the end of the preceeding node.
         for i in range(last, row):
             if lines[i - 1].isspace():
                 last = i + 1
@@ -157,29 +156,20 @@ def split_root(root: Any, lines: List[str]) -> None:
         - a comment line that starts at the same column as the def/class line,
         - a decorator line
         """
-        # first we filter list of all tokens in the line n. We don't want white space tokens
-        # we are interested only in the tokens containing some text.
+        # Filter out all whitespace tokens.
         xs = [z for z in lntokens[n] if z[0] not in (token.DEDENT, token.INDENT, token.NL)]
-
-        if not xs:
-            # all tokens in this line are white space, therefore we
-            # have a blank line. We want to allow a blank line in the
-            # block of comments, so we return True
-            return True
-
-        t = xs[0]  # this is the first non blank token in the line n
+        if not xs:  # A blank line.
+            return True  # Allow blank lines in a block of comments.
+        t = xs[0]  # The first non blank token in line n.
         if t.start[1] != col:
-            # if it isn't at the same column as the definition, it can't be
-            # considered as a `intro` line
+            # Not the same indentation as the definition.
             return False
         if t.type == token.OP and t.string == '@':
-            # this lines starts with `@`, which means it is the decorator
+            # A decorator.
             return True
         if t.type == token.COMMENT:
-            # this line starts with the comment at the same column as the definition
+            # A comment at the same indentation as the definition.
             return True
-
-        # in all other cases this isn't an `intro` line
         return False
     #@+node:vitalije.20211208092828.1: *4* itoks
     def itoks(i: int) -> Generator:
