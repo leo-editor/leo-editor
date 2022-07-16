@@ -248,12 +248,13 @@ def split_root(root, lines):
         last = start
 
         # Calculate b1, the lines preceding the @others.
-        inner_indent, h1, h2, start_b, kind, name, c_ind, end_b = inner_defs[0]
+        # inner_indent, h1, h2, start_b, kind, name, c_ind, end_b = inner_defs[0]
+        inner_def0 = inner_defs[0]
+        inner_indent, h1 = inner_def0[0], inner_def0[1]
         b1 = body(start, h1, others_indent) if h1 > start else ''
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate b2, the lines following the @others line.
-        ### if inner_defs[-1][-1] < end:
         last_offset = inner_defs[-1][end_b_offset]
         b2 = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{b1}{others_line}{b2}'
