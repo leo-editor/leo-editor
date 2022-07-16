@@ -78,20 +78,13 @@ def split_root(root, lines):
 
         # Find the end of the definition line, ending in a NEWLINE token.
         # This one logical line may span several physical lines.
-        for i, t in search(start + 1, token.NEWLINE):
-            body_line1 = t.start[0] + 1
-            break
+        i, t = find(start + 1, token.NEWLINE)
+        body_line1 = t.start[0] + 1
 
         # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
-        if 1:
-            i1, t = find(i + 1, token.INDENT)
-            i2, t2 = find(i + 1, token.NEWLINE)
-            oneliner = i1 > i2 if t and t2 else False
-        else:
-            oneliner = True
-            for (i1, t), (i2, t2) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
-                oneliner = i1 > i2
-                break
+        i1, t = find(i + 1, token.INDENT)
+        i2, t2 = find(i + 1, token.NEWLINE)
+        oneliner = i1 > i2 if t and t2 else False
 
         # Find the end of this definition
         if oneliner:
