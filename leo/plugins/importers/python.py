@@ -224,7 +224,7 @@ def split_root(root, lines):
         """
 
         # Find all defs with the given inner indentation.
-        inner_defs = [x for x in definitions if x[0] == inner_indent]
+        inner_defs = [x for x in definitions if x.col == inner_indent]
 
         if not inner_defs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
@@ -260,10 +260,8 @@ def split_root(root, lines):
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
-            # Next-level inner definitions are definitions whose
-            # starting and end lines are contained in this node.
-            ### inner_definitions = [x for x in definitions if x[1] > h1 and x[-1] <= end_b]
-            inner_definitions = [x for x in definitions if x.h1 > h1 and x.end_b <= end_b]
+            # Compute inner definitions.
+            inner_definitions = [z for z in definitions if z.h1 > h1 and z.end_b <= end_b]
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
