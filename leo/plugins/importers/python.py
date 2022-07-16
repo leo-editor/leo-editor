@@ -43,6 +43,8 @@ def split_root(root, lines):
         # 'col', 'h1', 'h2', 'start_b', 'kind', 'name', 'c_ind', 'end_b',
     # ])
 
+    end_b_offset = 7  ### Temp.
+
     def getdefn(start):
         """
         Look for a def or class found at rawtokens[start].
@@ -61,7 +63,6 @@ def split_root(root, lines):
         c_ind   column of the indented body
         end_b   line number of the first line after the definition
         """
-        #  b_ind   minimal number of leading spaces in each line of the function, method or class body
         # pylint: disable=undefined-loop-variable
         tok = rawtokens[start]
         if tok.type != token.NAME or tok.string not in ('async', 'def', 'class'):
@@ -257,8 +258,9 @@ def split_root(root, lines):
         others_line = calculate_indent('@others\n', inner_indent - others_indent)
 
         # Calculate b2, the lines following the @others line.
-        if inner_defs[-1][-1] < end:
-            b2 = body(inner_defs[-1][-1], end, others_indent)
+        ### if inner_defs[-1][-1] < end:
+        if inner_defs[-1][end_b_offset] < end:
+            b2 = body(inner_defs[-1][end_b_offset], end, others_indent)
         else:
             b2 = ''
         p.b = f'{b1}{others_line}{b2}'
