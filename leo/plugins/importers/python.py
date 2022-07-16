@@ -261,8 +261,9 @@ def split_root(root, lines):
             child.h = inner_def.name
 
             # Next-level inner definitions are definitions whose
-            # starting and end line contained in this node.
-            inner_definitions = [x for x in definitions if x[1] > h1 and x[-1] <= end_b]
+            # starting and end lines are contained in this node.
+            ### inner_definitions = [x for x in definitions if x[1] > h1 and x[-1] <= end_b]
+            inner_definitions = [x for x in definitions if x.h1 > h1 and x.end_b <= end_b]
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
