@@ -34,7 +34,7 @@ def_tuple = namedtuple('def_tuple', [
     'name',  # name of the function, class or method.
 ])
 
-def split_root(root, lines):
+def split_root(root: Any, lines: List[str]):
     """
     Create direct children of root for all top level function definitions and class definitions.
 
@@ -198,7 +198,7 @@ def split_root(root, lines):
 
         return nextline
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
-    def mknode(p,
+    def mknode(p: Any,
         start: int,
         start_b: int,
         end: int,
