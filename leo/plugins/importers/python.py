@@ -4,7 +4,7 @@
 import sys
 import tokenize
 import token
-from typing import Any, Callable, Dict, Generator, List, Tuple
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
@@ -270,9 +270,9 @@ def split_root(root: Any, lines: List[str]) -> None:
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'
+        return f'\\\\-{i-n}.{s[n:]}'  # Return the representation of an underindented strings.
 
-    def body(a: int, b: int, i: int) -> str:
+    def body(a: int, b: Optional[int], i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
         nonlocal lines  # 'lines' is a kwarg to split_root.
         xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
