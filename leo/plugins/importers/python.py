@@ -259,8 +259,9 @@ def split_root(root, lines):
 
         # Calculate b2, the lines following the @others line.
         ### if inner_defs[-1][-1] < end:
-        if inner_defs[-1][end_b_offset] < end:
-            b2 = body(inner_defs[-1][end_b_offset], end, others_indent)
+        last_offset = inner_defs[-1][end_b_offset]
+        if last_offset < end:
+            b2 = body(last_offset, end, others_indent)
         else:
             b2 = ''
         p.b = f'{b1}{others_line}{b2}'
