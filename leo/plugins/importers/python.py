@@ -40,7 +40,7 @@ def split_root(root, lines):
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
     def_tuple = namedtuple('def_tuple', [
-        'name', 'kind', 'col', 'h1', 'h2', 'start_b',  'c_ind', 'end_b',
+        'name', 'kind', 'decl_indent', 'h1', 'h2', 'start_b',  'c_ind', 'end_b',
     ])
 
     def getdefn(start):
@@ -49,7 +49,22 @@ def split_root(root, lines):
 
         Return None or named tuple with the following fields:
 
-        col     column where the definition starts
+        NEW:
+
+        decl_indent: Indentation of the class or def.
+        h1      line number of the first line of this node
+                this line may be above the starting line if comments or decorators
+                precede the 'def' or 'class' line.
+        h2      line number of the last line of the declaration
+                (the line number containing the colon).
+        start_b line number of the first indented line of the function/class body.
+        kind    'def' or 'class'
+        name    name of the function, class or method
+        c_ind   column of the indented body
+        end_b   line number of the first line after the definition
+
+        OLD:
+
         h1      line number of the first line of this node
                 this line may be above the starting line if comments or decorators
                 precede the 'def' or 'class' line.
@@ -66,7 +81,7 @@ def split_root(root, lines):
         if tok.type != token.NAME or tok.string not in ('async', 'def', 'class'):
             return None
 
-        # The following few values are easy to get
+        # Compute 'kind' and 'name'.
         if tok.string == 'async':
             kind = rawtokens[start + 1][1]
             name = rawtokens[start + 2][1]
@@ -75,7 +90,9 @@ def split_root(root, lines):
             name = rawtokens[start + 1][1]
         if kind == 'def' and rawtokens[start - 1][1] == 'async':
             return None
-        a, col = tok.start
+
+        #
+        decl_line, decl_indent = tok.start
 
         # now we are searching for the end of the definition line
         # this one logical line may be divided in several physical
@@ -104,18 +121,18 @@ def split_root(root, lines):
         if oneliner:
             # The following lines will not be indented
             # because the definition was in the same line.
-            c_ind = col
+            c_ind = decl_indent
             # The end of the body is the same as the start of the body
             end_b = start_b
         else:
             # We have some body lines. Presumably the next token is INDENT.
             i += 1
             # This is the indentation of the first function/method/class body line
-            c_ind = len(t.string) + col
+            c_ind = len(t.string) + decl_indent
             # Now search to find the end of this function/method/body
             for i, t in itoks(i + 1):
                 col2 = t.start[1]
-                if col2 > col:
+                if col2 > decl_indent:
                     continue
                 if t.type in (token.DEDENT, token.COMMENT):
                     end_b = t.start[0]
@@ -130,8 +147,8 @@ def split_root(root, lines):
 
         # This is the only instantiation of def_tuple.
         return def_tuple(name, kind,
-            col=col,
-            h1=a - get_intro(a, col),
+            decl_indent=decl_indent,
+            h1=decl_line - get_intro(decl_line, decl_indent),
             h2=end_h,
             start_b=start_b,
             c_ind=c_ind,
@@ -223,7 +240,7 @@ def split_root(root, lines):
         """
 
         # Find all defs with the given inner indentation.
-        inner_defs = [x for x in definitions if x.col == inner_indent]
+        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
         if not inner_defs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
