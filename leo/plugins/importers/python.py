@@ -4,7 +4,8 @@
 import sys
 import tokenize
 import token
-from collections import defaultdict
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
+from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20211209052710.1: ** do_import
@@ -20,54 +21,114 @@ def do_import(c, s, parent):
             if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
                 p.h = f'class {p.h}'
     return True
-#@+node:vitalije.20211201230203.1: ** split_root
+#@+node:vitalije.20211201230203.1: ** split_root & helpers
 SPLIT_THRESHOLD = 10
-def split_root(root, lines):
-    '''
-    Parses given lines and separates all top level function
-    definitions and class definitions in separate nodes which
-    are all direct children of the root. All longer class
-    nodes are further divided, each method in a separate node.
 
-    This function puts comments and decorators in the same node
-    above the definition.
-    '''
+# This named tuple contains all data relating to one declaration of a class or def.
+def_tuple = namedtuple('def_tuple', [
+    'body_indent',  # Indentation of body.
+    'body_line1',  # Line number of the first line after the definition.
+    'decl_indent',  # Indentation of the class or def line.
+    'decl_line1',  # Line number of the first line of this node.
+                   # This line may be a comment or decorator.
+    'kind',  # 'def' or 'class'.
+    'name',  # name of the function, class or method.
+])
+
+def split_root(root: Any, lines: List[str]) -> None:
+    """
+    Create direct children of root for all top level function definitions and class definitions.
+
+    For longer class nodes, create separate child nodes for each method.
+
+    Helpers use a token-oriented "parse" of the lines.
+    Tokens are named 5-tuples, but this code uses only three fields:
+
+    t.type:   token type
+    t.string: the token string;
+    t.start:  a tuple (srow, scol) of starting row/column numbers.
+    """
+
+    rawtokens: List
+
     #@+others
-    #@+node:vitalije.20211208183603.1: *3* is_intro_line
-    def is_intro_line(n, col):
+    #@+node:vitalije.20211208092910.1: *3* getdefn & helper
+    def getdefn(start: int) -> def_tuple:
         """
-        Intro line is either a comment line that starts at the same column as the
-        def/class line or a decorator line
+        Look for a def or class found at rawtokens[start].
+        Return None or a def_tuple describing the def or class.
         """
-        # first we filter list of all tokens in the line n. We don't want white space tokens
-        # we are interested only in the tokens containing some text.
-        xs = [x for x in lntokens[n] if x[0] not in (token.DEDENT, token.INDENT, token.NL)]
+        nonlocal lines  # 'lines' is a kwarg to split_root.
+        nonlocal rawtokens
 
-        if not xs:
-            # all tokens in this line are white space, therefore we
-            # have a blank line. We want to allow a blank line in the
-            # block of comments, so we return True
-            return True
+        # pylint: disable=undefined-loop-variable
+        # tok will never be empty, but pylint doesn't know that.
 
-        t = xs[0]  # this is the first non blank token in the line n
-        if t[2][1] != col:
-            # if it isn't at the same column as the definition, it can't be
-            # considered as a `intro` line
-            return False
-        if t[0] == token.OP and t[1] == '@':
-            # this lines starts with `@`, which means it is the decorator
-            return True
-        if t[0] == token.COMMENT:
-            # this line starts with the comment at the same column as the definition
-            return True
+        # Ignore all tokens except 'async', 'def', 'class'
+        tok = rawtokens[start]
+        if tok.type != token.NAME or tok.string not in ('async', 'def', 'class'):
+            return None
 
-        # in all other cases this isn't an `intro` line
-        return False
-    #@+node:vitalije.20211208084231.1: *3* get_intro
-    def get_intro(row, col):
+        # Compute 'kind' and 'name'.
+        if tok.string == 'async':
+            kind = rawtokens[start + 1][1]
+            name = rawtokens[start + 2][1]
+        else:
+            kind = tok.string
+            name = rawtokens[start + 1][1]
+
+        # Don't include 'async def' twice.
+        if kind == 'def' and rawtokens[start - 1][1] == 'async':
+            return None
+
+        decl_line, decl_indent = tok.start
+
+        # Find the end of the definition line, ending in a NEWLINE token.
+        # This one logical line may span several physical lines.
+        i, t = find_token(start + 1, token.NEWLINE)
+        body_line1 = t.start[0] + 1
+
+        # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
+        i1, t = find_token(i + 1, token.INDENT)  # t is used below.
+        i2, t2 = find_token(i + 1, token.NEWLINE)
+        oneliner = i1 > i2 if t and t2 else False
+
+        # Find the end of this definition
+        if oneliner:
+            # The entire decl is on the same line.
+            body_indent = decl_indent
+        else:
+            body_indent = len(t.string) + decl_indent
+            # Skip the INDENT token.
+            assert t.type == token.INDENT, t.type
+            i += 1
+            # The body ends at the next DEDENT or COMMENT token with less indentation.
+            for i, t in itoks(i + 1):
+                col2 = t.start[1]
+                if col2 <= decl_indent and t.type in (token.DEDENT, token.COMMENT):
+                    body_line1 = t.start[0]
+                    break
+
+        # Increase body_line1 to include all following blank lines.
+        for j in range(body_line1, len(lines) + 1):
+            if lines[j - 1].isspace():
+                body_line1 = j + 1
+            else:
+                break
+
+        # This is the only instantiation of def_tuple.
+        return def_tuple(
+            body_indent = body_indent,
+            body_line1 = body_line1,
+            decl_indent = decl_indent,
+            decl_line1 = decl_line - get_intro(decl_line, decl_indent),
+            kind = kind,
+            name = name,
+        )
+    #@+node:vitalije.20211208084231.1: *4* get_intro & helper
+    def get_intro(row: int, col: int) -> int:
         """
-        Returns the number of preceeding lines that can be considered as an `intro`
-        to this funciton/class/method definition.
+        Return the number of preceeding lines that should be added to this class or def.
         """
         last = row
         for i in range(row - 1, 0, -1):
@@ -75,199 +136,123 @@ def split_root(root, lines):
                 last = i
             else:
                 break
-        # we don't want `intro` to start with the bunch of blank lines
-        # they better be added to the end of the preceeding node.
+        # Remove blank lines from the start of the intro.
+        # Leading blank lines should be added to the end of the preceeding node.
         for i in range(last, row):
             if lines[i - 1].isspace():
                 last = i + 1
         return row - last
-    #@+node:vitalije.20211206182505.1: *3* mkreadline
-    def mkreadline(lines):
-        # tokenize uses readline for its input
-        itlines = iter(lines)
-        def nextline():
-            try:
-                return next(itlines)
-            except StopIteration:
-                return ''
-        return nextline
-    #@+node:vitalije.20211208092828.1: *3* itoks
-    def itoks(i):
-        yield from enumerate(rawtokens[i:], start=i)
-    #@+node:vitalije.20211208092833.1: *3* search
-    def search(i, k):
-        for j, t in itoks(i):
-            if t[0] == k:
-                yield j, t
-    #@+node:vitalije.20211208092910.1: *3* getdefn
-    def getdefn(start):
+    #@+node:vitalije.20211208183603.1: *5* is_intro_line
+    def is_intro_line(n: int, col: int) -> bool:
+        """
+        Return True if line n is either:
+        - a comment line that starts at the same column as the def/class line,
+        - a decorator line
+        """
+        # Filter out all whitespace tokens.
+        xs = [z for z in lntokens[n] if z[0] not in (token.DEDENT, token.INDENT, token.NL)]
+        if not xs:  # A blank line.
+            return True  # Allow blank lines in a block of comments.
+        t = xs[0]  # The first non blank token in line n.
+        if t.start[1] != col:
+            # Not the same indentation as the definition.
+            return False
+        if t.type == token.OP and t.string == '@':
+            # A decorator.
+            return True
+        if t.type == token.COMMENT:
+            # A comment at the same indentation as the definition.
+            return True
+        return False
+    #@+node:vitalije.20211208104408.1: *3* mknode & helpers
+    def mknode(p: Any,
+        start: int,
+        start_b: int,
+        end: int,
+        others_indent: int,
+        inner_indent: int,
+        definitions: List[def_tuple],
+    ) -> None:
+        """
+        Set p.b and add children recursively using the tokens described by the arguments.
 
-        # pylint: disable=undefined-loop-variable
-        tok = rawtokens[start]
-        if tok[0] != token.NAME or tok[1] not in ('async', 'def', 'class'):
-            return None
+                    p: The current node.
+                start: The line number of the first line of this node
+              start_b: The line number of first line of this node's function/class body
+                  end: The line number of the first line after this node.
+        others_indent: Accumulated @others indentation (to be stripped from left).
+         inner_indent: The indentation of all of the inner definitions.
+          definitions: The list of the definitions covering p.
+        """
 
-        # The following few values are easy to get
-        if tok[1] == 'async':
-            kind = rawtokens[start + 1][1]
-            name = rawtokens[start + 2][1]
-        else:
-            kind = tok[1]
-            name = rawtokens[start + 1][1]
-        if kind == 'def' and rawtokens[start - 1][1] == 'async':
-            return None
-        a, col = tok[2]
+        # Find all defs with the given inner indentation.
+        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
-        # now we are searching for the end of the definition line
-        # this one logical line may be divided in several physical
-        # lines. At the end of this logical line, there will be a
-        # NEWLINE token
-        for i, t in search(start + 1, token.NEWLINE):
-            # The last of the `header lines`.
-            # These lines should not be indented in the node body.
-            # The body lines *will* be indented.
-            end_h = t[2][0]
-            # In case we have a oneliner, let's define end_b here
-            end_b = end_h
-            # indented body starts on the next line
-            start_b = end_h + 1
-            break
-
-        # Look ahead to check if we have a oneline definition or not.
-        # That is, see which whether INDENT or NEWLINE will come first.
-        oneliner = True
-        for (i1, t), (i2, t1) in zip(search(i + 1, token.INDENT), search(i + 1, token.NEWLINE)):
-            # INDENT comes after the NEWLINE, means the definition is in a single line
-            oneliner = i1 > i2
-            break
-
-        # Find the end of this definition
-        if oneliner:
-            # The following lines will not be indented
-            # because the definition was in the same line.
-            c_ind = col
-            # The end of the body is the same as the start of the body
-            end_b = start_b
-        else:
-            # We have some body lines. Presumably the next token is INDENT.
-            i += 1
-            # This is the indentation of the first function/method/class body line
-            c_ind = len(t[1]) + col
-            # Now search to find the end of this function/method/body
-            for i, t in itoks(i + 1):
-                col2 = t[2][1]
-                if col2 > col:
-                    continue
-                if t[0] in (token.DEDENT, token.COMMENT):
-                    end_b = t[2][0]
-                    break
-
-        # Increase end_b to include all following blank lines
-        for j in range(end_b, len(lines) + 1):
-            if lines[j - 1].isspace():
-                end_b = j + 1
-            else:
-                break
-
-        # Compute the number of `intro` lines
-        intro = get_intro(a, col)
-        return col, a - intro, end_h, start_b, kind, name, c_ind, end_b
-    #@+node:vitalije.20211208101750.1: *3* body
-    def bodyLine(x, ind):
-        if ind == 0 or x[:ind].isspace():
-            return x[ind:] or '\n'
-        n = len(x) - len(x.lstrip())
-        return f'\\\\-{ind-n}.{x[n:]}'
-
-    def body(a, b, ind):
-        xlines = (bodyLine(x, ind) for x in lines[a - 1 : b and (b - 1)])
-        return ''.join(xlines)
-    #@+node:vitalije.20211208110301.1: *3* indent
-    def indent(x, n):
-        return x.rjust(len(x) + n)
-    #@+node:vitalije.20211208104408.1: *3* mknode
-    def mknode(p, start, start_b, end, l_ind, col, xdefs):
-        # start   - first line of this node
-        # start_b - first line of this node's function/class body
-        # end     - first line after this node
-        # l_ind   - amount of white space to strip from left
-        # col     - column start of child nodes
-        # xdefs   - all definitions inside this node
-
-        # first let's find all defs that start at the same column
-        # as our indented function/method/class body
-        tdefs = [x for x in xdefs if x[0] == col]
-
-        if not tdefs or end - start < SPLIT_THRESHOLD:
-            # if there are no inner definitions or the total number of
-            # lines is less than threshold, all lines should be added
-            # to this node and no further splitting is necessary
-            p.b = body(start, end, l_ind)
+        if not inner_defs or end - start < SPLIT_THRESHOLD:
+            # Don't split the body.
+            p.b = body(start, end, others_indent)
             return
 
-        # last keeps track of the last used line
-        last = start
+        last = start  # The last used line.
 
-        # lets check the first inner definition
-        col, h1, h2, start_b, kind, name, c_ind, end_b = tdefs[0]
-        if h1 > start:
-            # first inner definition starts later
-            # so we have some content before at-others
-            b1 = body(start, h1, l_ind)
-        else:
-            # inner definitions start at the beginning of our body
-            # so at-others will be the first line in our body
-            b1 = ''
-        o = indent('@others\n', col - l_ind)
+        # Calculate head, the lines preceding the @others.
+        decl_line1 = inner_defs[0].decl_line1
+        head = body(start, decl_line1, others_indent) if decl_line1 > start else ''
+        others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
-        # now for the part after at-others we need to check the
-        # last of inner definitions
-        if tdefs[-1][-1] < end:
-            # there are some lines after at-others
-            b2 = body(tdefs[-1][-1], end, l_ind)
-        else:
-            # there are no lines after at-others
-            b2 = ''
-        # finally we can set our body
-        p.b = f'{b1}{o}{b2}'
+        # Calculate tail, the lines following the @others line.
+        last_offset = inner_defs[-1].body_line1
+        tail = body(last_offset, end, others_indent) if last_offset < end else ''
+        p.b = f'{head}{others_line}{tail}'
 
-        # now we can continue to add children for each of the inner definitions
-        last = h1
-        for col, h1, h2, start_b, kind, name, c_ind, end_b in tdefs:
-            if h1 > last:
-                new_body = body(last, h1, col)  # #2500.
-                # there are some declaration lines in between two inner definitions
-                p1 = p.insertAsLastChild()
-                p1.h = declaration_headline(new_body)  # #2500
-                p1.b = new_body
-                last = h1
-            p1 = p.insertAsLastChild()
-            p1.h = name
+        # Add a child of p for each inner definition.
+        last = decl_line1
+        for inner_def in inner_defs:
+            body_indent = inner_def.body_indent
+            body_line1 = inner_def.body_line1
+            decl_line1 = inner_def.decl_line1
+            # Add a child for declaration lines between two inner definitions.
+            if decl_line1 > last:
+                new_body = body(last, decl_line1, inner_indent)  # #2500.
+                child1 = p.insertAsLastChild()
+                child1.h = declaration_headline(new_body)  # #2500
+                child1.b = new_body
+                last = decl_line1
+            child = p.insertAsLastChild()
+            child.h = inner_def.name
 
-            # let's find all next level inner definitions
-            # those are the definitions whose starting and end line are
-            # between the start and the end of this node
-            subdefs = [x for x in xdefs if x[1] > h1 and x[-1] <= end_b]
-            if subdefs:
-                # there are some next level inner definitions
-                # so let's split this node
-                mknode(p=p1
-                      , start=h1
-                      , start_b=start_b
-                      , end=end_b
-                      , l_ind=l_ind + col  # increase indentation for at-others
-                      , col=c_ind
-                      , xdefs=subdefs
-                      )
+            # Compute inner definitions.
+            inner_definitions = [z for z in definitions if z.decl_line1 > decl_line1 and z.body_line1 <= body_line1]
+            if inner_definitions:
+                # Recursively split this node.
+                mknode(
+                    p=child,
+                    start=decl_line1,
+                    start_b=start_b,
+                    end=body_line1,
+                    others_indent=others_indent + inner_indent,
+                    inner_indent=body_indent,
+                    definitions=inner_definitions,
+                )
             else:
-                # there are no next level inner definitions
-                # so we can just set the body and continue
-                # to the next definition
-                p1.b = body(h1, end_b, col)
+                # Just set the body.
+                child.b = body(decl_line1, body_line1, inner_indent)
+            last = body_line1
+    #@+node:vitalije.20211208101750.1: *4* body & bodyLine
+    def bodyLine(s: str, i: int) -> str:
+        """Massage line s, adding the underindent string if necessary."""
+        if i == 0 or s[:i].isspace():
+            return s[i:] or '\n'
+        n = len(s) - len(s.lstrip())
+        return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
 
-            last = end_b
-    #@+node:ekr.20220320055103.1: *3* declaration_headline
-    def declaration_headline(body_string):  # #2500
+    def body(a: int, b: Optional[int], i: int) -> str:
+        """Return the (massaged) concatentation of lines[a: b]"""
+        nonlocal lines  # 'lines' is a kwarg to split_root.
+        xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
+        return ''.join(xlines)
+    #@+node:ekr.20220320055103.1: *4* declaration_headline
+    def declaration_headline(body_string: str) -> str:  # #2500
         """
         Return an informative headline for s, a group of declarations.
         """
@@ -281,68 +266,58 @@ def split_root(root, lines):
                 return s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
+    #@+node:ekr.20220717080934.1: *3* utils
+    #@+node:vitalije.20211208092833.1: *4* find_token
+    def find_token(i: int, k: int) -> Tuple[int, int]:
+        """
+        Return (j, t), the first token in "rawtokens[i:] with t.type == k.
+        Return (None, None) if there is no such token.
+        """
+        for j, t in itoks(i):
+            if t.type == k:
+                return j, t
+        return None, None
+    #@+node:vitalije.20211208092828.1: *4* itoks
+    def itoks(i: int) -> Generator:
+        """Generate (n, rawtokens[n]) starting with i."""
+        nonlocal rawtokens
+
+        # Same as `enumerate(rawtokens[i:], start=i)` without allocating substrings.
+        while i < len(rawtokens):
+            yield (i, rawtokens[i])
+            i += 1
+    #@+node:vitalije.20211206182505.1: *4* mkreadline
+    def mkreadline(lines: List[str]) -> Callable:
+        """Return an readline-like interface for tokenize."""
+        itlines = iter(lines)
+
+        def nextline():
+            try:
+                return next(itlines)
+            except StopIteration:
+                return ''
+
+        return nextline
     #@-others
-    # rawtokens is a list of all tokens found in input lines
+
+    # Create rawtokens: a list of all tokens found in input lines
     rawtokens = list(tokenize.generate_tokens(mkreadline(lines)))
 
-    # lntokens - line tokens are tokens groupped by the line number
-    #            from which they originate.
-    lntokens = defaultdict(list)
+    # lntokens groups tokens by line number.
+    lntokens: Dict[int, Any] = defaultdict(list)
     for t in rawtokens:
-        row = t[2][0]
+        row = t.start[0]
         lntokens[row].append(t)
 
-    # we create list of all definitions in the token list
-    #           both `def` and `class` definitions
-    #  each definition is a tuple with the following values
-    #
-    #  0: col     - column where the definition starts
-    #  1: h1      - line number of the first line of this node
-    #               this line may be above the starting line
-    #               (comment lines and decorators are in these lines)
-    #  2: h2      - line number of the last line of the declaration
-    #               it is the line number where the `:` (colon) is.
-    #  3: start_b - line number of the first indented line of the
-    #               function/class body.
-    #  4: kind    - can be 'def' or 'class'
-    #  5: name    - name of the function, class or method
-    #  6: c_ind   - column of the indented body
-    #  7: b_ind   - minimal number of leading spaces in each line of the
-    #               function, method or class body
-    #  8: end_b   - line number of the first line after the definition
-    #
-    # function getdefn returns None if the token at this index isn't start
-    # of a definition, or if it isn't possible to calculate all the values
-    # mentioned earlier. Therefore, we filter the list.
-    definitions = list(filter(None, map(getdefn, range(len(rawtokens) - 1))))
+    # Make a list of *all* definitions.
+    aList = [getdefn(i) for i, z in enumerate(rawtokens)]
+    all_definitions = [z for z in aList if z]
 
-    # a preparation step
+    # Start the recursion.
     root.deleteAllChildren()
-
-    # function mknode, sets the body and adds children recursively using
-    # precalculated definitions list.
-    # parameters are:
-    # p     - current node
-    # start - line number of the first line of this node
-    # end   - line number of the first line after this node
-    # l_ind - this is the accumulated indentation through at-others
-    #         it is the number of spaces that should be stripped from
-    #         the beginning of each line in this node
-    # ind   - number of leading white spaces common to all indented
-    #         body lines of this node. It is the indentation at which
-    #         we should put the at-others directive in this body
-    # col   - the column at which start all of the inner definitions
-    #         like methods or inner functions and classes
-    # xdefs - list of the definitions covering this node
-    mknode(p=root
-          , start=1
-          , start_b=1
-          , end=len(lines) + 1
-          , l_ind=0
-          , col=0
-          , xdefs=definitions
-          )
-    return definitions
+    mknode(
+        p=root, start=1, start_b=1, end=len(lines)+1,
+        others_indent=0, inner_indent=0, definitions=all_definitions)
 #@-others
 importer_dict = {
     'func': do_import,
