@@ -147,6 +147,7 @@ class ChapterController:
             return
         if chapter == cc.selectedChapter:
             chapter.p = c.p
+            g.trace('shortcut', c.p.h)
             return
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
@@ -160,9 +161,10 @@ class ChapterController:
             pass  # Do not use c.p.
         else:
             chapter.p = chapter.findRootNode()
+        # #2718: Leave the expansion state of all nodes strictly unchanged!
+        #        - c.contractAllHeadlines can change c.p!
+        #        - Expanding chapter.p would be confusing and annoying.
         chapter.select()
-        c.contractAllHeadlines()
-        chapter.p.v.expand()
         c.selectPosition(chapter.p)
         c.redraw()  # #2718.
     #@+node:ekr.20070317130648: *3* cc.Utils
