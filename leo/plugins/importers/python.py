@@ -96,10 +96,11 @@ def split_root(root: Any, lines: List[str]) -> None:
             # The entire decl is on the same line.
             body_indent = decl_indent
         else:
-            # We have some body lines. Presumably the next token is INDENT.
             body_indent = len(t.string) + decl_indent
+            # Skip the INDENT token.
+            assert t.type == token.INDENT, t.type
             i += 1
-            # Find the end of the body.
+            # The body ends at the next DEDENT or COMMENT token with less indentation.
             for i, t in itoks(i + 1):
                 col2 = t.start[1]
                 if col2 > decl_indent:
