@@ -147,7 +147,6 @@ class ChapterController:
             return
         if chapter == cc.selectedChapter:
             chapter.p = c.p
-            g.trace('shortcut', c.p.h)
             return
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
