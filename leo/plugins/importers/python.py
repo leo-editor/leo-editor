@@ -41,7 +41,7 @@ def split_root(root: Any, lines: List[str]) -> None:
 
     For longer class nodes, create separate child nodes for each method.
 
-    This function uses a token-oriented "parse" of the lines.
+    Helpers use a token-oriented "parse" of the lines.
     Tokens are named 5-tuples, but this code uses only three fields:
 
     t.type:   token type
@@ -56,7 +56,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     def getdefn(start: int) -> def_tuple:
         """
         Look for a def or class found at rawtokens[start].
-        Return None or a def_tuple.
+        Return None or a def_tuple describing the def or class.
         """
         nonlocal lines  # 'lines' is a kwarg to split_root.
         nonlocal rawtokens
@@ -174,7 +174,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         definitions: List[def_tuple],
     ) -> None:
         """
-        Set p.b and add children recursively using the arguments.
+        Set p.b and add children recursively using the tokens described by the arguments.
 
                     p: The current node.
                 start: The line number of the first line of this node
