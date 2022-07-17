@@ -24,6 +24,7 @@ def do_import(c, s, parent):
 #@+node:vitalije.20211201230203.1: ** split_root & helpers
 SPLIT_THRESHOLD = 10
 
+# This named tuple contains all data relating to one declaration of a class or def.
 def_tuple = namedtuple('def_tuple', [
     'body_indent',  # Indentation of body.
     'body_line1',  # Line number of the first line after the definition.
@@ -47,7 +48,8 @@ def split_root(root: Any, lines: List[str]) -> None:
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-
+    
+    rawtokens: List
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helper
     def getdefn(start: int) -> def_tuple:
@@ -58,7 +60,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         nonlocal lines  # 'lines' is a kwarg to split_root.
 
         # pylint: disable=undefined-loop-variable
-        # tok will never be empty, but pylint is not to know that.
+        # tok will never be empty, but pylint doesn't know that.
 
         # Ignore all tokens except 'async', 'def', 'class'
         tok = rawtokens[start]
