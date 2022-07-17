@@ -48,7 +48,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-    
+
     rawtokens: List
 
     #@+others
