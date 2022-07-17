@@ -81,12 +81,12 @@ def split_root(root: Any, lines: List[str]) -> None:
 
         # Find the end of the definition line, ending in a NEWLINE token.
         # This one logical line may span several physical lines.
-        i, t = find(start + 1, token.NEWLINE)
+        i, t = find_token(start + 1, token.NEWLINE)
         body_line1 = t.start[0] + 1
 
         # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
-        i1, t = find(i + 1, token.INDENT)  # t is used below.
-        i2, t2 = find(i + 1, token.NEWLINE)
+        i1, t = find_token(i + 1, token.INDENT)  # t is used below.
+        i2, t2 = find_token(i + 1, token.NEWLINE)
         oneliner = i1 > i2 if t and t2 else False
 
         # Find the end of this definition
@@ -122,18 +122,16 @@ def split_root(root: Any, lines: List[str]) -> None:
             kind = kind,
             name = name,
         )
-    #@+node:vitalije.20211208092833.1: *4* find and search
-    def find(i: int, k: int) -> Tuple[int, int]:
+    #@+node:vitalije.20211208092833.1: *4* find_token
+    def find_token(i: int, k: int) -> Tuple[int, int]:
+        """
+        Return (j, t), the first token in "rawtokens[i:] with t.type == k.
+        Return (None, None) if there is no such token.
+        """
         for j, t in itoks(i):
             if t.type == k:
                 return j, t
         return None, None
-
-    def search(i: int, k: int) -> Generator:  # Not used at present.
-        """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
-        for j, t in itoks(i):
-            if t.type == k:
-                yield j, t
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row: int, col: int) -> int:
         """
@@ -176,7 +174,11 @@ def split_root(root: Any, lines: List[str]) -> None:
     #@+node:vitalije.20211208092828.1: *4* itoks
     def itoks(i: int) -> Generator:
         """Generate (n, rawtokens[n]) starting with i."""
-        yield from enumerate(rawtokens[i:], start=i)
+        nonlocal rawtokens
+        # Same as `enumerate(rawtokens[i:], start=i)` without allocating substrings.
+        while i < len(rawtokens):
+            yield (i, rawtokens[i])
+            i += 1
     #@+node:vitalije.20211206182505.1: *4* mkreadline
     def mkreadline(lines: List[str]) -> Callable:
         """Return an readline-like interface for tokenize."""
@@ -189,6 +191,12 @@ def split_root(root: Any, lines: List[str]) -> None:
                 return ''
 
         return nextline
+    #@+node:ekr.20220717074317.1: *4* search_token (not used)
+    def search_token(i: int, k: int) -> Generator:
+        """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
+        for j, t in itoks(i):
+            if t.type == k:
+                yield j, t
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
     def mknode(p: Any,
         start: int,
@@ -266,11 +274,11 @@ def split_root(root: Any, lines: List[str]) -> None:
             last = body_line1
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(s: str, i: int) -> str:
-        """Massage line s."""
+        """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'  # Return the representation of an underindented string.
+        return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
 
     def body(a: int, b: Optional[int], i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
