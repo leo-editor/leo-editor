@@ -49,7 +49,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     """
 
     #@+others
-    #@+node:vitalije.20211208092910.1: *3* getdefn & helpers
+    #@+node:vitalije.20211208092910.1: *3* getdefn & helper
     def getdefn(start: int) -> def_tuple:
         """
         Look for a def or class found at rawtokens[start].
@@ -122,16 +122,6 @@ def split_root(root: Any, lines: List[str]) -> None:
             kind = kind,
             name = name,
         )
-    #@+node:vitalije.20211208092833.1: *4* find_token
-    def find_token(i: int, k: int) -> Tuple[int, int]:
-        """
-        Return (j, t), the first token in "rawtokens[i:] with t.type == k.
-        Return (None, None) if there is no such token.
-        """
-        for j, t in itoks(i):
-            if t.type == k:
-                return j, t
-        return None, None
     #@+node:vitalije.20211208084231.1: *4* get_intro & helper
     def get_intro(row: int, col: int) -> int:
         """
@@ -171,32 +161,6 @@ def split_root(root: Any, lines: List[str]) -> None:
             # A comment at the same indentation as the definition.
             return True
         return False
-    #@+node:vitalije.20211208092828.1: *4* itoks
-    def itoks(i: int) -> Generator:
-        """Generate (n, rawtokens[n]) starting with i."""
-        nonlocal rawtokens
-        # Same as `enumerate(rawtokens[i:], start=i)` without allocating substrings.
-        while i < len(rawtokens):
-            yield (i, rawtokens[i])
-            i += 1
-    #@+node:vitalije.20211206182505.1: *4* mkreadline
-    def mkreadline(lines: List[str]) -> Callable:
-        """Return an readline-like interface for tokenize."""
-        itlines = iter(lines)
-
-        def nextline():
-            try:
-                return next(itlines)
-            except StopIteration:
-                return ''
-
-        return nextline
-    #@+node:ekr.20220717074317.1: *4* search_token (not used)
-    def search_token(i: int, k: int) -> Generator:
-        """Generate (n, rawtokens[n]), starting with i, for all tokens with type k."""
-        for j, t in itoks(i):
-            if t.type == k:
-                yield j, t
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
     def mknode(p: Any,
         start: int,
@@ -214,8 +178,8 @@ def split_root(root: Any, lines: List[str]) -> None:
               start_b: The line number of first line of this node's function/class body
                   end: The line number of the first line after this node.
         others_indent: Accumulated @others indentation (to be stripped from left).
-         inner_indent: The column at which start all of the inner definitions.
-                xdefs: The list of the definitions covering p.
+         inner_indent: The indentation of all of the inner definitions.
+          definitions: The list of the definitions covering p.
         """
 
         # Find all defs with the given inner indentation.
@@ -226,31 +190,30 @@ def split_root(root: Any, lines: List[str]) -> None:
             p.b = body(start, end, others_indent)
             return
 
-        # last keeps track of the last used line
-        last = start
+        last = start  # The last used line.
 
         # Calculate head, the lines preceding the @others.
         decl_line1 = inner_defs[0].decl_line1
         head = body(start, decl_line1, others_indent) if decl_line1 > start else ''
-        others_line = calculate_indent('@others\n', inner_indent - others_indent)
+        others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
         last_offset = inner_defs[-1].body_line1
         tail = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
 
-        # Add a child for each inner definition.
+        # Add a child of p for each inner definition.
         last = decl_line1
         for inner_def in inner_defs:
             body_indent = inner_def.body_indent
             body_line1 = inner_def.body_line1
             decl_line1 = inner_def.decl_line1
+            # Add a child for declaration lines between two inner definitions.
             if decl_line1 > last:
-                # There are declaration lines between two inner definitions.
                 new_body = body(last, decl_line1, inner_indent)  # #2500.
-                p1 = p.insertAsLastChild()
-                p1.h = declaration_headline(new_body)  # #2500
-                p1.b = new_body
+                child1 = p.insertAsLastChild()
+                child1.h = declaration_headline(new_body)  # #2500
+                child1.b = new_body
                 last = decl_line1
             child = p.insertAsLastChild()
             child.h = inner_def.name
@@ -300,9 +263,38 @@ def split_root(root: Any, lines: List[str]) -> None:
                 return s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:vitalije.20211208110301.1: *4* calculate_indent
-    def calculate_indent(s: str, n: int) -> str:
-        return s.rjust(len(s) + n)
+    #@+node:ekr.20220717080934.1: *3* utils
+    #@+node:vitalije.20211208092833.1: *4* find_token
+    def find_token(i: int, k: int) -> Tuple[int, int]:
+        """
+        Return (j, t), the first token in "rawtokens[i:] with t.type == k.
+        Return (None, None) if there is no such token.
+        """
+        for j, t in itoks(i):
+            if t.type == k:
+                return j, t
+        return None, None
+    #@+node:vitalije.20211208092828.1: *4* itoks
+    def itoks(i: int) -> Generator:
+        """Generate (n, rawtokens[n]) starting with i."""
+        nonlocal rawtokens
+
+        # Same as `enumerate(rawtokens[i:], start=i)` without allocating substrings.
+        while i < len(rawtokens):
+            yield (i, rawtokens[i])
+            i += 1
+    #@+node:vitalije.20211206182505.1: *4* mkreadline
+    def mkreadline(lines: List[str]) -> Callable:
+        """Return an readline-like interface for tokenize."""
+        itlines = iter(lines)
+
+        def nextline():
+            try:
+                return next(itlines)
+            except StopIteration:
+                return ''
+
+        return nextline
     #@-others
 
     # Create rawtokens: a list of all tokens found in input lines
