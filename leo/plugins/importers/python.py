@@ -50,6 +50,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     """
     
     rawtokens: List
+
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helper
     def getdefn(start: int) -> def_tuple:
@@ -58,6 +59,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         Return None or a def_tuple.
         """
         nonlocal lines  # 'lines' is a kwarg to split_root.
+        nonlocal rawtokens
 
         # pylint: disable=undefined-loop-variable
         # tok will never be empty, but pylint doesn't know that.
@@ -103,9 +105,7 @@ def split_root(root: Any, lines: List[str]) -> None:
             # The body ends at the next DEDENT or COMMENT token with less indentation.
             for i, t in itoks(i + 1):
                 col2 = t.start[1]
-                if col2 > decl_indent:
-                    continue
-                if t.type in (token.DEDENT, token.COMMENT):
+                if col2 <= decl_indent and t.type in (token.DEDENT, token.COMMENT):
                     body_line1 = t.start[0]
                     break
 
