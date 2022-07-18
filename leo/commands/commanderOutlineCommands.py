@@ -960,13 +960,13 @@ def selectVisNext(self, event=None):
 @g.commander_command('dehoist')
 def dehoist(self, event=None):
     """Undo a previous hoist of an outline."""
-    c = self
+    c, cc, tag = self, self.chapterController, '@chapter '
     if not c.p or not c.hoistStack:
         return
-    # Don't de-hoist an @chapter node.
-    if c.chapterController and c.p.h.startswith('@chapter '):
-        if not g.unitTesting:
-            g.es('can not de-hoist an @chapter node.', color='blue')
+    # #2718: de-hoisting an @chapter node is equivalent to selecting the main chapter.
+    if c.p.h.startswith(tag) or c.hoistStack[-1].p.h.startswith(tag):
+        c.hoistStack = []
+        cc.selectChapterByName('main')
         return
     bunch = c.hoistStack.pop()
     p = bunch.p
