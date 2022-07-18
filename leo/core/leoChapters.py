@@ -83,10 +83,10 @@ class ChapterController:
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
-    #@+node:ekr.20070604165126: *3* cc.selectChapter
+    #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
     def selectChapter(self, event=None):
-        """Use the minibuffer to get a chapter name, then create the chapter."""
+        """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
         g.es('Chapters:\n' + '\n'.join(names))
@@ -99,12 +99,12 @@ class ChapterController:
         k.resetLabel()
         if k.arg:
             cc.selectChapterByName(k.arg)
-    #@+node:ekr.20170202061705.1: *3* cc.selectNext/Back
+    #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
     def backChapter(self, event=None):
         """Select the previous chapter"""
         cc = self
-        names = sorted(cc.setAllChapterNames())
+        names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
         i = names.index(sel_name)
         new_name = names[i - 1 if i > 0 else len(names) - 1]
@@ -114,7 +114,7 @@ class ChapterController:
     def nextChapter(self, event=None):
         """Select the next chapter"""
         cc = self
-        names = sorted(cc.setAllChapterNames())
+        names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
         i = names.index(sel_name)
         new_name = names[i + 1 if i + 1 < len(names) else 0]
@@ -160,10 +160,12 @@ class ChapterController:
             pass  # Do not use c.p.
         else:
             chapter.p = chapter.findRootNode()
+        # #2718: Leave the expansion state of all nodes strictly unchanged!
+        #        - c.contractAllHeadlines can change c.p!
+        #        - Expanding chapter.p would be confusing and annoying.
         chapter.select()
-        c.contractAllHeadlines()
-        chapter.p.v.expand()
         c.selectPosition(chapter.p)
+        c.redraw()  # #2718.
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):
@@ -261,7 +263,7 @@ class ChapterController:
         s = ''.join(result)
         s = s.replace('--', '-')
         return s[:128]
-    #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
+    #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition (calls c.redraw_later)
     def selectChapterForPosition(self, p, chapter=None):
         """
         Select a chapter containing position p.
@@ -368,7 +370,7 @@ class Chapter:
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
     def chapterSelectHelper(self, w=None):
 
-        c, cc = self.c, self.cc
+        c, cc, u = self.c, self.cc, self.c.undoer
         cc.selectedChapter = self
         if self.name == 'main':
             return  # 2016/04/20
@@ -395,9 +397,11 @@ class Chapter:
             if p.hasChildren():
                 self.p = p = p.firstChild()
             else:
-                # 2016/04/20: Create a dummy first child.
+                bunch = u.beforeInsertNode(p)
+                # Create a dummy first child.
                 self.p = p = p.insertAsLastChild()
                 p.h = 'New Headline'
+                u.afterInsertNode(self.p, 'Insert Node', bunch)
         c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         # Careful: c.selectPosition would pop the hoist stack.
         c.setCurrentPosition(p)
