@@ -730,7 +730,7 @@ class todoController:
         if k in d:
             del d[k]
     #@+node:tbrown.20090119215428.27: *3* drawing...
-    #@+node:tbrown.20090119215428.28: *4* redraw
+    #@+node:tbrown.20090119215428.28: *4* redraw (todo.py)
     def redraw(self):
 
         self.updateUI()
