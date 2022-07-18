@@ -598,19 +598,6 @@ class Undoer:
         bunch.newP = p.copy()
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
-    #@+node:ekr.20050411193627.6: *5* u.afterDehoist
-    def afterDehoist(self, p, command):
-        u = self
-        if u.redoing or u.undoing:
-            return
-        bunch = u.createCommonBunch(p)
-        # Set types & helpers
-        bunch.kind = 'dehoist'
-        bunch.undoType = command
-        # Set helpers
-        bunch.undoHelper = u.undoDehoistNode
-        bunch.redoHelper = u.redoDehoistNode
-        u.pushBead(bunch)
     #@+node:ekr.20050411193627.8: *5* u.afterDeleteNode
     def afterDeleteNode(self, p, command, bunch):
         u = self
@@ -657,19 +644,6 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-    #@+node:ekr.20050411193627.7: *5* u.afterHoist
-    def afterHoist(self, p, command):
-        u = self
-        if u.redoing or u.undoing:
-            return  # pragma: no cover
-        bunch = u.createCommonBunch(p)
-        # Set types & helpers
-        bunch.kind = 'hoist'
-        bunch.undoType = command
-        # Set helpers
-        bunch.undoHelper = u.undoHoistNode
-        bunch.redoHelper = u.redoHoistNode
-        u.pushBead(bunch)
     #@+node:ekr.20050411193627.9: *5* u.afterInsertNode
     def afterInsertNode(self, p, command, bunch):
         u = self

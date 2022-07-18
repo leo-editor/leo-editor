@@ -979,7 +979,6 @@ def dehoist(self, event=None):
     c.redraw()
     c.frame.clearStatusLine()
     c.frame.putStatusLine("De-Hoist: " + p.h)
-    c.undoer.afterDehoist(p, 'DeHoist')
     g.doHook('hoist-changed', c=c)
 #@+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
 @g.commander_command('clear-all-hoists')
@@ -993,8 +992,7 @@ def clearAllHoists(self, event=None):
 @g.commander_command('hoist')
 def hoist(self, event=None):
     """Make only the selected outline visible."""
-    c = self
-    p = c.p
+    c, p = self, self.p
     if not p:
         return
     # Don't hoist an @chapter node.
@@ -1009,7 +1007,6 @@ def hoist(self, event=None):
     c.redraw(p)
     c.frame.clearStatusLine()
     c.frame.putStatusLine("Hoist: " + p.h)
-    c.undoer.afterHoist(p, 'Hoist')
     g.doHook('hoist-changed', c=c)
 #@+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
 #@+node:ekr.20031218072017.1762: *3* c_oc.clone
