@@ -535,6 +535,7 @@
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use-chapter-tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
+<v t="ekr.20220718105957.1"><vh>@bool chapter-dropdown-left = False</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20210506073820.1"><vh>@bool allow-text-zoom = True</vh></v>
@@ -11658,6 +11659,7 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
        at that place.</t>
 <t tx="ekr.20220524035531.1">Column number for right margin guidelines.</t>
 <t tx="ekr.20220624062948.1"></t>
+<t tx="ekr.20220718105957.1">True: Position the Chapters drop-down at the left of the icon bar.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
