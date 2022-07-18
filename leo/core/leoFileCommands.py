@@ -572,6 +572,9 @@ class FastRead:
         #
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
+
+        # add all possible UAs for external files loading process to add UA's.
+        fc.descendentTnodeUaDictList.append(gnx2ua)
         return hidden_v
     #@-others
 #@+node:ekr.20160514120347.1: ** class FileCommands

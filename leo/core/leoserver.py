@@ -48,7 +48,7 @@ from leo.core.leoExternalFiles import ExternalFilesController
 version_tuple = (1, 0, 2)
 # Version History
 # 1.0.1 Initial commit
-# 1.0.2 Félix on June 2022: Adding ui-scroll, ua's & node_tags utilities
+# 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -1340,6 +1340,28 @@ class LeoServer:
                 )
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20220309010334.1: *4* server.nav commands
+    #@+node:felix.20220714000930.1: *5* server.chapter_main
+    def chapter_main(self, param):
+        tag = 'chapter_main'
+        c = self._check_c()
+        try:
+            cc = c.chapterController
+            cc.selectChapterByName('main')
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting main chapter: {e}")
+        return self._make_response()
+    #@+node:felix.20220714000942.1: *5* server.chapter_select
+    def chapter_select(self, param):
+        tag = 'chapter_select'
+        c = self._check_c()
+        try:
+            cc = c.chapterController
+            chapter = param.get('name', 'main')
+            cc.selectChapterByName(chapter)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception selecting a chapter: {chapter}, {e}")
+
+        return self._make_response()
     #@+node:felix.20220305211743.1: *5* server.nav_headline_search
     def nav_headline_search(self, param):
         """
@@ -2011,6 +2033,14 @@ class LeoServer:
                 }
             }
         return self._make_minimal_response(states)
+    #@+node:felix.20220714001051.1: *5* server.get_chapters
+    def get_chapters(self, param):
+        c = self._check_c()
+        cc = c.chapterController
+        chapters = []
+        if cc:
+            chapters = cc.setAllChapterNames()
+        return self._make_minimal_response({"chapters": chapters})
     #@+node:felix.20210621233316.42: *5* server.get_children
     def get_children(self, param):
         """
@@ -2028,8 +2058,12 @@ class LeoServer:
                 children = [self._get_position_d(child) for child in p.children()]
         else:
             if c.hoistStack:
-                # Always start hoisted tree with single hoisted root node
-                children = [self._get_position_d(c.hoistStack[-1].p)]
+                topHoistPos = c.hoistStack[-1].p
+                if g.match_word(topHoistPos.h, 0, '@chapter'):
+                    children = [self._get_position_d(child) for child in topHoistPos.children()]
+                else:
+                    # start hoisted tree with single hoisted root node
+                    children = [self._get_position_d(topHoistPos)]
             else:
                 # this outputs all Root Children
                 children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
@@ -2047,9 +2081,14 @@ class LeoServer:
         Return the node data for the parent of position p,
         where p is c.p if param["ap"] is missing.
         """
-        self._check_c()
+        c = self._check_c()
         p = self._get_p(param)
         parent = p.parent()
+        if c.hoistStack:
+                topHoistPos = c.hoistStack[-1].p
+                if parent == topHoistPos:
+                    parent = False
+
         data = self._get_position_d(parent) if parent else None
         return self._make_minimal_response({"node": data})
     #@+node:felix.20210621233316.45: *5* server.get_position_data
@@ -2099,6 +2138,16 @@ class LeoServer:
             if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
                 w_canHoist = False
 
+        inChapter = False
+        topHoistChapter = False
+        if c.config.getBool('use-chapters') and c.chapterController:
+            cc = c.chapterController
+            inChapter = cc.inChapter()
+            if c.hoistStack:
+                bunch = c.hoistStack[len(c.hoistStack) - 1]
+                if g.match_word(bunch.p.h, 0, '@chapter'):
+                    topHoistChapter = True
+
         try:
             states = {
                 "changed": c and c.changed,
@@ -2109,7 +2158,9 @@ class LeoServer:
                 "canDemote": c and c.canDemote(),
                 "canPromote": c and c.canPromote(),
                 "canDehoist": c and c.canDehoist(),
-                "canHoist": w_canHoist
+                "canHoist": w_canHoist,
+                "inChapter": inChapter,
+                "topHoistChapter": topHoistChapter
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
@@ -2236,40 +2287,70 @@ class LeoServer:
     #@+node:felix.20210621233316.55: *5* server.insert_node
     def insert_node(self, param):
         """
-        Insert a node at given node, then select it once created, and finally return it
+        Insert a node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline()  # Handles undo, sets c.p
+
+        if p == c.p:
+            c.insertHeadline()  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline()  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
     def insert_child_node(self, param):
         """
-        Insert a child node at given node, then select it once created, and finally return it
+        Insert a child node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
-        c.selectPosition(p)
-        c.insertHeadline(op_name='Insert Child', as_child=True)
+
+        if p == c.p:
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+        else:
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
     def insert_named_node(self, param):
         """
-        Insert a node at given node, set its headline, select it and finally return it
+        Insert a node at given node, set its headline. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c()
         p = self._get_p(param)
+
+        if p == c.p:
+            oldPosition = False
+        else:
+            oldPosition = c.p
+
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
         c.undoer.afterInsertNode(
             newNode, 'Insert Node', bunch)
+
         c.selectPosition(newNode)
+        if oldPosition:
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+
         c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
@@ -2285,7 +2366,7 @@ class LeoServer:
             newNode = p.insertAsLastChild()
         else:
             newNode = p.insertAsNthChild(0)
-        # set this node's new headline
+        # Set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
@@ -2361,7 +2442,7 @@ class LeoServer:
                     # additional try with higher childIndex
                     c.selectPosition(oldPosition)
         return self._make_response()
-    #@+node:felix.20220222173707.1: *5* paste_as_clone_node
+    #@+node:felix.20220222173707.1: *5* server.paste_as_clone_node
     def paste_as_clone_node(self, param):
         """
         Pastes a node as a clone,
@@ -2720,7 +2801,7 @@ class LeoServer:
             'delete-last-icon',
             'delete-node-icons',
             'insert-icon',
-            'set-ua',  # TODO : Should be easy to implement
+
             'export-headlines',  # export TODO
             'export-jupyter-notebook',  # export TODO
             'outline-to-cweb',  # export TODO
@@ -3557,14 +3638,14 @@ class LeoServer:
 
             #'insert-icon', # ? maybe move to bad commands?
 
-            #'set-ua',
+            'set-ua',
 
             'show-all-uas',
             'show-bindings',
             'show-clone-ancestors',
             'show-clone-parents',
 
-            # Export files...
+            # TODO Export files...
             #'export-headlines', # export
             #'export-jupyter-notebook', # export
             #'outline-to-cweb', # export
