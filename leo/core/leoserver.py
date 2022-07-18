@@ -48,7 +48,7 @@ from leo.core.leoExternalFiles import ExternalFilesController
 version_tuple = (1, 0, 2)
 # Version History
 # 1.0.1 Initial commit
-# 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, ua's & node_tags info
+# 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
