@@ -4396,10 +4396,23 @@ class LeoQtTreeTab:
 
         tt = self
         frame = QtWidgets.QLabel('Chapters: ')
-        tt.iconBar.addWidget(frame)
+        ibw = tt.iconBar.w  # "ibw": iconbar widget (a QToolbar)
         tt.w = w = LeoQComboBox(tt)
         tt.setNames()
-        tt.iconBar.addWidget(w)
+
+        # Should the "Chapters" group be installed at the left of the toolbar?
+        insert_left = self.c.config.getBool('chapter-dropdown-left', False)
+        left = None
+        if insert_left:
+            actions = ibw.actions()
+            if actions:
+                left = actions[0]
+        if left:
+            ibw.insertWidget(left, frame)
+            ibw.insertWidget(left, w)
+        else:
+            ibw.addWidget(frame)
+            ibw.addWidget(w)
 
         def onIndexChanged(s: Any, tt: Any=tt) -> None:
             if isinstance(s, int):
