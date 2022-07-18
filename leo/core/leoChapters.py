@@ -370,7 +370,7 @@ class Chapter:
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
     def chapterSelectHelper(self, w=None):
 
-        c, cc = self.c, self.cc
+        c, cc, u = self.c, self.cc, self.c.undoer
         cc.selectedChapter = self
         if self.name == 'main':
             return  # 2016/04/20
@@ -397,9 +397,11 @@ class Chapter:
             if p.hasChildren():
                 self.p = p = p.firstChild()
             else:
-                # 2016/04/20: Create a dummy first child.
+                bunch = u.beforeInsertNode(p)
+                # Create a dummy first child.
                 self.p = p = p.insertAsLastChild()
                 p.h = 'New Headline'
+                u.afterInsertNode(self.p, 'Insert Node', bunch)
         c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         # Careful: c.selectPosition would pop the hoist stack.
         c.setCurrentPosition(p)
