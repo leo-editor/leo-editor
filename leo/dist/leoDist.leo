@@ -1460,11 +1460,9 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create a release branch: 6.6.3
-
 *Never* merge devel into 6.6.3!
 
-It's OK to merge the 6.63 into devel after the release.
+It's OK to merge the 6.6.3 into devel after the release.
 
 @language rest
 </t>
