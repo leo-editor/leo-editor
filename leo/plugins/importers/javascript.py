@@ -27,7 +27,7 @@ class JS_Importer(Importer):
     #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
     def post_pass(self, parent):
         """
-        Optional Stage 2 of the javascript pipeline.
+        Post-pass for javascript importer.
 
         All substages **must** use the API for setting body text. Changing
         p.b directly will cause asserts to fail later in i.finish().
@@ -118,7 +118,7 @@ class JS_Importer(Importer):
                 head = lines
                 tail = []
         return head, tail
-    #@+node:ekr.20161105140842.5: *3* js_i.scan_line (rewritten)
+    #@+node:ekr.20161105140842.5: *3* js_i.scan_line
     def scan_line(self, s, prev_state):
         """
         Update the scan state at the *end* of the line.
@@ -369,7 +369,6 @@ def literals(choices, prefix="", suffix=""):
 
     """
     return "|".join(prefix + re.escape(c) + suffix for c in choices.split())
-
 #@+node:ekr.20200131110322.10: *3* class JsLexer(Lexer)
 class JsLexer(Lexer):
     """A Javascript lexer
@@ -379,12 +378,11 @@ class JsLexer(Lexer):
     [('id', 'a'), ('ws', ' '), ('punct', '='), ('ws', ' '), ('dnum', '1')]
 
     This doesn't properly handle non-Ascii characters in the Javascript source.
-
     """
+    # EKR: Happily, the JS importer doesn't need to handle id's carefully.
 
     #@+<< constants >>
     #@+node:ekr.20200131190707.1: *4* << constants >> (JsLexer)
-
     # Because these tokens are matched as alternatives in a regex, longer possibilities
     # must appear in the list before shorter ones, for example, '>>' before '>'.
     #
@@ -489,11 +487,8 @@ class JsLexer(Lexer):
         }
     #@-<< constants >>
 
-    #@+others
-    #@+node:ekr.20200131110322.11: *4* JsLexer.__init__
     def __init__(self):
         super().__init__(self.states, 'reg')
-    #@-others
 #@+node:ekr.20200131070055.1: ** class TestJSImporter (importers/javascript.py)
 class TestJSImporter(unittest.TestCase):
     #@+others
