@@ -43,7 +43,7 @@ class Cython_Importer(Importer):
             return 'class %s%s' % (m.group(1), m.group(2) or '')
         return s.strip()
 
-    #@+node:vitalije.20211207173723.1: *3* check
+    #@+node:vitalije.20211207173723.1: *3* cy_i.check
     def check(self, unused_s, parent):
         """
         Cython_Importer.check:  override Importer.check.
@@ -69,7 +69,7 @@ class Cython_Importer(Importer):
         if not ok:
             self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
         return ok
-    #@+node:vitalije.20211207173805.1: *3* strip_blank_and_comment_lines
+    #@+node:vitalije.20211207173805.1: *3* cy_i.strip_blank_and_comment_lines
     def strip_blank_and_comment_lines(self, lines):
         """Strip all blank lines and strip lws from comment lines."""
 
@@ -77,7 +77,7 @@ class Cython_Importer(Importer):
             return s.strip() if s.isspace() else s.lstrip() if s.strip().startswith('#') else s
 
         return [strip(z) for z in lines]
-    #@+node:vitalije.20211207173901.1: *3* get_decorator
+    #@+node:vitalije.20211207173901.1: *3* cy_i.get_decorator
     decorator_pat = re.compile(r'\s*@\s*([\w\.]+)')
 
     def get_decorator(self, p):
@@ -92,7 +92,7 @@ class Cython_Importer(Importer):
                         return s + ' '
                     return ''
         return ''
-    #@+node:vitalije.20211207173935.1: *3* find_class
+    #@+node:vitalije.20211207173935.1: *3* cy_i.find_class
     def find_class(self, parent):
         """
         Find the start and end of a class/def in a node.
@@ -114,7 +114,7 @@ class Cython_Importer(Importer):
                     return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
         return None, -1, -1
-    #@+node:vitalije.20211207174005.1: *3* skip_block
+    #@+node:vitalije.20211207174005.1: *3* cy_i.skip_block
     def skip_block(self, i, index, lines, prev_state, stack):
         """
         Find the end of a class/def starting at index
@@ -136,7 +136,7 @@ class Cython_Importer(Importer):
             prev_state = new_state
             i += 1
         return None, -1, -1
-    #@+node:vitalije.20211207174043.1: *3* gen_lines
+    #@+node:vitalije.20211207174043.1: *3* cy_i.gen_lines
     class_or_def_pattern = re.compile(r'\s*(class|cdef|cpdef|def)\s+')
 
     def gen_lines(self, lines, parent):
@@ -203,7 +203,7 @@ class Cython_Importer(Importer):
             p = parent
         self.add_line(p, line, tag='class')
         return p
-    #@+node:vitalije.20211207174137.1: *3* do_def
+    #@+node:vitalije.20211207174137.1: *3* cy_i.do_def
     def do_def(self, line, parent):
 
         new_indent = self.new_state.indent
@@ -228,7 +228,7 @@ class Cython_Importer(Importer):
         # The default: don't change parent.
         self.add_line(parent, line, tag='def')
         return parent
-    #@+node:vitalije.20211207174148.1: *3* do_normal_line
+    #@+node:vitalije.20211207174148.1: *3* cy_i.do_normal_line
     def do_normal_line(self, line, p):
 
         new_indent = self.new_state.indent
@@ -244,7 +244,7 @@ class Cython_Importer(Importer):
             p = self.start_python_block('org', line, p)
         self.add_line(p, line, tag='normal')
         return p
-    #@+node:vitalije.20211207174159.1: *3* end_previous_blocks
+    #@+node:vitalije.20211207174159.1: *3* cy_i.end_previous_blocks
     def end_previous_blocks(self, kind, line, p):
         """
         End blocks that are incompatible with the new line.
@@ -290,7 +290,7 @@ class Cython_Importer(Importer):
                 return p.parent()
             return p
         assert False, 'No parent'
-    #@+node:vitalije.20211207174206.1: *3* gen_python_ref
+    #@+node:vitalije.20211207174206.1: *3* cy_i.gen_python_ref
     def gen_python_ref(self, line, p):
         """Generate the at-others directive and set p's at-others flag"""
         d = self.vnode_info[p.v]
@@ -300,7 +300,7 @@ class Cython_Importer(Importer):
         indent_ws = self.get_str_lws(line)
         ref_line = f"{indent_ws}@others\n"
         self.add_line(p, ref_line, tag='@others')
-    #@+node:vitalije.20211207174213.1: *3* start_python_block
+    #@+node:vitalije.20211207174213.1: *3* cy_i.start_python_block
     def start_python_block(self, kind, line, parent):
         """
         Create, p as the last child of parent and initialize the p.v._import_* ivars.
@@ -331,7 +331,7 @@ class Cython_Importer(Importer):
             'lines': [],
         }
         return p
-    #@+node:vitalije.20211207174318.1: *3* adjust_all_decorator_lines
+    #@+node:vitalije.20211207174318.1: *3* cy_i.adjust_all_decorator_lines
     def adjust_all_decorator_lines(self, parent):
         """Move decorator lines (only) to the next sibling node."""
         g.trace(parent.h)
@@ -339,26 +339,26 @@ class Cython_Importer(Importer):
             for child in p.children():
                 if child.hasNext():
                     self.adjust_decorator_lines(child)
-    #@+node:vitalije.20211207174323.1: *4* adjust_decorator_lines
+    #@+node:vitalije.20211207174323.1: *4* cy_i.adjust_decorator_lines
     def adjust_decorator_lines(self, p):
         """Move decorator lines from the end of p.b to the start of p.next().b."""
         ### To do
-    #@+node:vitalije.20211207174343.1: *3* promote_first_child
+    #@+node:vitalije.20211207174343.1: *3* cy_i.promote_first_child
     def promote_first_child(self, parent):
         """Move a smallish first child to the start of parent."""
-    #@+node:vitalije.20211207174354.1: *3* create_child_node
+    #@+node:vitalije.20211207174354.1: *3* cy_i.create_child_node
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         assert False, g.callers()
-    #@+node:vitalije.20211207174358.1: *3* cut_stack
+    #@+node:vitalije.20211207174358.1: *3* cy_i.cut_stack
     def cut_stack(self, new_state, stack):
         """Cut back the stack until stack[-1] matches new_state."""
         assert False, g.callers()
-    #@+node:vitalije.20211207174403.1: *3* trace_status
+    #@+node:vitalije.20211207174403.1: *3* cy_i.trace_status
     def trace_status(self, line, new_state, prev_state, stack, top):
         """Do-nothing override of Import.trace_status."""
         assert False, g.callers()
-    #@+node:vitalije.20211207174409.1: *3* add_line
+    #@+node:vitalije.20211207174409.1: *3* cy_i.add_line
     heading_printed = False
 
     def add_line(self, p, s, tag=None):
@@ -378,7 +378,7 @@ class Cython_Importer(Importer):
                 tag = f"{kind:>5}:{tag:<10}"
             g.trace(f"{(tag or g.caller()):>20} {h[:30]!r:30} {s!r}")
         self.vnode_info[p.v]['lines'].append(s)
-    #@+node:vitalije.20211207174416.1: *3* common_lws
+    #@+node:vitalije.20211207174416.1: *3* cy_i.common_lws
     def common_lws(self, lines):
         """
         Override Importer.common_lws.
@@ -389,7 +389,7 @@ class Cython_Importer(Importer):
         It would be wrong to examine the indentation of other lines.
         """
         return self.get_str_lws(lines[0]) if lines else ''
-    #@+node:vitalije.20211207174422.1: *3* clean_all_headlines
+    #@+node:vitalije.20211207174422.1: *3* cy_i.clean_all_headlines
     def clean_all_headlines(self, parent):
         """
         Clean all headlines in parent's tree by calling the language-specific
@@ -401,7 +401,7 @@ class Cython_Importer(Importer):
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h
-    #@+node:vitalije.20211207174429.1: *3* find_tail
+    #@+node:vitalije.20211207174429.1: *3* cy_i.find_tail
     def find_tail(self, p):
         """
         Find the tail (trailing unindented) lines.
@@ -426,13 +426,13 @@ class Cython_Importer(Importer):
         if 0:
             g.printObj(lines, tag=f"lines: find_tail: {p.h}")
             g.printObj(tail, tag=f"tail: find_tail: {p.h}")
-    #@+node:vitalije.20211207174436.1: *3* promote_last_lines
+    #@+node:vitalije.20211207174436.1: *3* cy_i.promote_last_lines
     def promote_last_lines(self, parent):
         """A do-nothing override."""
-    #@+node:vitalije.20211207174441.1: *3* promote_trailing_underindented_lines
+    #@+node:vitalije.20211207174441.1: *3* cy_i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         """A do-nothing override."""
-    #@+node:vitalije.20211207174501.1: *3* get_new_dict
+    #@+node:vitalije.20211207174501.1: *3* cy_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
