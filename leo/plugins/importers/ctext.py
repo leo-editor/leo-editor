@@ -53,9 +53,8 @@ class CText_Importer(Importer):
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
-    def run(self, s, parent, parse_body=False):
-        """Override Importer.run()"""
-        # c = self.c
+    def run(self, s, parent):
+        """CText_Importer.run()"""
         root = parent.copy()
         cchar = '#'
         if self.fileType.lower() == '.tex':
@@ -91,11 +90,6 @@ class CText_Importer(Importer):
         # It's always useless for an an import to dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        # #1451: The caller should be responsible for this.
-            # if changed:
-                # c.setChanged()
-            # else:
-                # c.clearChanged()
         return True
     #@-others
 #@-others

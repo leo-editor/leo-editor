@@ -88,7 +88,7 @@ class Importer:
     """
     The new, unified, simplified, interface to Leo's importer code.
 
-    Eventually, all importers will create use this class.
+    Eventually, most importers will use this class.
     """
 
     #@+others
@@ -146,9 +146,7 @@ class Importer:
         self.errors = 0
         if ic:
             ic.errors = 0  # Required.
-        self.parse_body = False
-        # Keys are headlines. Values are disambiguating number.
-        self.refs_dict: Dict[str, int] = {}
+        self.refs_dict: Dict[str, int] = {}  # Keys: headlines. Values: disambiguating number.
         self.root = None
         self.skip = 0  # A skip count for x.gen_lines & its helpers.
         self.vnode_info: Dict[str, Any] = {}
@@ -160,12 +158,10 @@ class Importer:
             return
         getBool = c.config.getBool
         c.registerReloadSettings(self)
-        # self.at_auto_separate_non_def_nodes = False
         self.add_context = getBool("add-context-to-headlines")
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-
     #@+node:ekr.20161110042512.1: *3* i.Convenience methods for vnode_info dict
     def add_line(self, p, s, tag=None):
         """Append the line s to p.v._import_lines."""
@@ -397,7 +393,7 @@ class Importer:
                             line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
     #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
-    def run(self, s, parent, parse_body=False):
+    def run(self, s, parent):
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
@@ -405,9 +401,7 @@ class Importer:
             return None
         self.root = root = parent.copy()
         self.file_s = s
-        # Init the error/status info.
         self.errors = 0
-        self.parse_body = parse_body
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
         lines = g.splitLines(s)
@@ -420,10 +414,7 @@ class Importer:
         self.generate_nodes(lines, parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
-        if parse_body:
-            ok = self.errors == 0  # Work around problems with directives.
-        else:
-            ok = self.errors == 0 and self.check(s, parent)
+        ok = self.errors == 0 and self.check(s, parent)
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
             self.insert_ignore_directive(parent)
@@ -854,9 +845,7 @@ class Importer:
             '@language %s\n' % self.language,
             '@tabwidth %d\n' % self.tab_width,
         ]
-        if self.parse_body:
-            pass
-        elif self.has_lines(parent):
+        if self.has_lines(parent):
             # Make sure the last line ends with a newline.
             lines = self.get_lines(parent)
             if lines:
@@ -1212,6 +1201,7 @@ class Importer:
 
     @classmethod
     def do_import(cls):
+        """Instantiate cls, the (subclass of) the Importer class."""
         def f(c, s, parent):
             return cls(c.importCommands).run(s, parent)
         return f

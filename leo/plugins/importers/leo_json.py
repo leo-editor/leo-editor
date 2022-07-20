@@ -54,18 +54,13 @@ class JSON_Scanner:
         """Issue a message."""
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.run
-    def run(self, s, parent, parse_body=False):
-        """The common top-level code for all scanners."""
+    def run(self, s, parent):
+        """JSON_Scanner.run."""
         c = self.c
         ok = self.scan(s, parent)
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            # #1451: The caller should be responsible for this.
-                # if changed:
-                    # c.setChanged()
-                # else:
-                    # c.clearChanged()
         else:
             parent.setDirty()
             c.setChanged()

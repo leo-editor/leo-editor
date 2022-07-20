@@ -88,21 +88,16 @@ class TreePad_Scanner():
                 break
             article.append(line.strip())
         return self.add_node(article, level, title)
-    #@+node:ekr.20180201204000.1: *3* treepad.run (entry)
-    def run(self, s, parent, parse_body=False):
-        """The common top-level code for all scanners."""
+    #@+node:ekr.20180201204000.1: *3* treepad.run
+    def run(self, s, parent):
+        """TreePad_Scanner.run()."""
         c = self.c
-        changed = c.isChanged()
         ok = self.read_file(s, parent)
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            if changed:
-                c.setChanged()
-            else:
-                c.clearChanged()
         else:
-            parent.setDirty()  # setDescendentsDirty=False)
+            parent.setDirty()
             c.setChanged()
         return ok
     #@-others

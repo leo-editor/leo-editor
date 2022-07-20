@@ -50,7 +50,7 @@ class Import_IPYNB:
         c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.run
-    def run(self, s, parent, parse_body=False):
+    def run(self, s, parent):
         """
         @auto entry point. Called by code in leoImport.py.
         """
@@ -59,24 +59,20 @@ class Import_IPYNB:
             g.es_print('import-jupyter-notebook requires nbformat package')
             return
         c = self.c
+        if not c:
+            return
         fn = parent.atAutoNodeName()
-        if c and fn:
-            self.import_file(fn, parent)
-            # Similar to Importer.run.
-            parent.b = (
-                '@nocolor-node\n\n' +
-                'Note: This node\'s body text is ignored when writing this file.\n\n' +
-                'The @others directive is not required\n'
-            )
-            for p in parent.self_and_subtree():
-                p.clearDirty()
-            # #1451: The caller should be responsible for this.
-                # if changed:
-                    # c.setChanged()
-                # else:
-                    # c.clearChanged()
-        elif not c or not fn:
-            g.trace('can not happen', c, fn)
+        if not fn:
+            g.trace('Can not happen: no file name')
+            return
+        self.import_file(fn, parent)
+        parent.b = (
+            '@nocolor-node\n\n' +
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required\n'
+        )
+        for p in parent.self_and_subtree():
+            p.clearDirty()
     #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
     re_header1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
     re_header2 = re.compile(r'^\s*([#]+)')
