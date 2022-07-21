@@ -13,7 +13,7 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = True
+NEW_PYTHON_IMPORTER = False
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
@@ -34,74 +34,16 @@ class Python_Importer(Importer):
         self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
-    #@+node:ekr.20220720043557.3: *3* py_i.check & helper
-    def check(self, unused_s, parent):
-        """
-        Py_Importer.check:  override Importer.check.
+    #@+node:ekr.20220721144315.1: *3* pi_i: unused
+    # Disable most of the pipeline.
+    def check(self, unused_s, parent) -> bool:
+        return True
 
-        Return True if perfect import checks pass, making additional allowances
-        for underindented comment lines.
+    def finish(self, parent):
+        pass
 
-        Raise AssertionError if the checks fail while unit testing.
-        """
-        if g.app.suppressImportChecks:
-            g.app.suppressImportChecks = False
-            return True
-        s1 = g.toUnicode(self.file_s, self.encoding)
-        s2 = self.trial_write()
-        # Regularize the lines first.
-        lines1 = g.splitLines(s1.rstrip() + '\n')
-        lines2 = g.splitLines(s2.rstrip() + '\n')
-        # #2327: Ignore blank lines and lws in comment lines.
-        test_lines1 = self.strip_blank_and_comment_lines(lines1)
-        test_lines2 = self.strip_blank_and_comment_lines(lines2)
-        # #2327: Report all remaining mismatches.
-        ok = test_lines1 == test_lines2
-        if not ok:
-            self.show_failure(lines1, lines2, g.shortFileName(self.root.h))
-        return ok
-    #@+node:ekr.20220720043557.4: *4* pi_i.strip_blank_and_comment_lines
-    def strip_blank_and_comment_lines(self, lines):
-        """Strip all blank lines and strip lws from comment lines."""
-
-        def strip(s):
-            return s.strip() if s.isspace() else s.lstrip() if s.strip().startswith('#') else s
-
-        return [strip(z) for z in lines]
-    #@+node:ekr.20220720043557.5: *3* py_i.clean_headline
-    class_pat = re.compile(r'\s*class\s+(\w+)\s*(\([\w.]+\))?')
-    def_pat = re.compile(r'\s*def\s+(\w+)')
-
-    def clean_headline(self, s, p=None):
-        """Return a cleaned up headline s."""
-        if p:  # Called from clean_all_headlines:
-            return self.get_decorator(p) + p.h
-        # Handle defs.
-        m = self.def_pat.match(s)
-        if m:
-            return m.group(1)
-        # Handle classes.
-        #913: Show base classes in python importer.
-        #978: Better regex handles class C(bar.Bar)
-        m = self.class_pat.match(s)
-        if m:
-            return 'class %s%s' % (m.group(1), m.group(2) or '')
-        return s.strip()
-
-    decorator_pat = re.compile(r'\s*@\s*([\w\.]+)')
-
-    def get_decorator(self, p):
-        if g.unitTesting or self.put_decorators:
-            for s in self.get_lines(p):
-                if not s.isspace():
-                    m = self.decorator_pat.match(s)
-                    if m:
-                        s = s.strip()
-                        if s.endswith('('):
-                            s = s[:-1].strip()
-                        return s + ' '
-                    return ''
-        return ''
+    def post_pass(self, parent):
+        pass
     #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers
     def gen_lines(self, lines, parent):
         """
@@ -111,9 +53,10 @@ class Python_Importer(Importer):
 
         line_states: List[Python_ScanState] = []
         state = Python_ScanState()
-        self.vnode_info: Dict = {}
-        if g.unitTesting:
-            g.vnode_info = self.vnode_info  # A hack.
+        ###
+            # self.vnode_info: Dict = {}
+            # if g.unitTesting:
+                # g.vnode_info = self.vnode_info  # A hack.
 
         #@+others
         #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper
@@ -134,7 +77,7 @@ class Python_Importer(Importer):
             m = self.class_or_def_pat.match(line)
             if not m:
                 return None
-            g.trace(m, m.group(4))
+            ### g.trace(m, m.group(4))
             #
             kind = m.group(1)
             name = m.group(2)
@@ -260,18 +203,15 @@ class Python_Importer(Importer):
              inner_indent: The indentation of all of the inner definitions.
               definitions: The list of the definitions covering p.
             """
-            nonlocal self
-            vnode_info = self.vnode_info
+            ### nonlocal self
+            ### vnode_info = self.vnode_info
 
             # Find all defs with the given inner indentation.
             inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
             if not inner_defs or end - start < SPLIT_THRESHOLD:
                 # Don't split the body.
-                new_body = body_lines(start, end, others_indent)
-                ### p.b = new_body
-                assert not p.v in vnode_info, p.v
-                vnode_info [p.v] = {'lines': new_body}
+                p.b = body_string(start, end, others_indent)
                 return
 
             last = start  # The last used line.
@@ -284,10 +224,7 @@ class Python_Importer(Importer):
             # Calculate tail, the lines following the @others line.
             last_offset = inner_defs[-1].body_line1
             tail = body_string(last_offset, end, others_indent) if last_offset < end else ''
-            new_body = f'{head}{others_line}{tail}'
-            ###p.b = new_body
-            assert not p.v in vnode_info, p.v
-            vnode_info [p.v] = {'lines': g.splitLines(new_body)}
+            p.b = f'{head}{others_line}{tail}'
 
             # Add a child of p for each inner definition.
             last = decl_line1
@@ -300,8 +237,7 @@ class Python_Importer(Importer):
                     new_body = body_string(last, decl_line1, inner_indent)  # #2500.
                     child1 = p.insertAsLastChild()
                     child1.h = declaration_headline(new_body)  # #2500
-                    ### child1.b = new_body
-                    vnode_info [child1.v] = {'lines': g.splitLines(new_body)}
+                    child1.b = new_body
                     last = decl_line1
                 child = p.insertAsLastChild()
                 child.h = inner_def.name
@@ -321,9 +257,7 @@ class Python_Importer(Importer):
                     )
                 else:
                     # Just set the body.
-                    new_body = body_string(decl_line1, body_line1, inner_indent)
-                    ### child.b = new_body
-                    vnode_info [child.v] = {'lines': g.splitLines(new_body)}
+                    child.b = body_string(decl_line1, body_line1, inner_indent)
 
                 last = body_line1
         #@+node:ekr.20220720060831.2: *5* body_lines & body_string
@@ -371,61 +305,13 @@ class Python_Importer(Importer):
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        g.printObj([repr(z) for z in all_definitions], tag='all_definitions')
+        ### g.printObj([repr(z) for z in all_definitions], tag='all_definitions')
 
         # Start the recursion.
         parent.deleteAllChildren()
         make_node(
             p=parent, start=1, start_b=1, end=len(lines)+1,
             others_indent=0, inner_indent=0, definitions=all_definitions)
-
-        ### new_body = '@language python\n@tabwidth -4\n' + parent.b
-        ### self.vnode_info [parent.v] = { 'lines': g.splitLines(new_body)}
-
-        ### Begin old code ###
-
-        # # Init the state.
-        # self.new_state = Python_ScanState()
-        # assert self.new_state.indent == 0
-        # self.vnode_info = {
-            # # Keys are vnodes, values are inner dicts.
-            # parent.v: {
-                # '@others': True,
-                # 'indent': 0,  # None denotes a to-be-defined value.
-                # 'kind': 'outer',
-                # 'lines': ['@others\n'],  # The post pass adds @language and @tabwidth directives.
-            # }
-        # }
-        # if g.unitTesting:
-            # g.vnode_info = self.vnode_info  # A hack.
-        # # Create a Declarations node.
-        # p = self.start_python_block('org', 'Declarations', parent)
-        # #
-        # # The main importer loop. Don't worry about the speed of this loop.
-        # for line in lines:
-            # # Update the state, remembering the previous state.
-            # self.prev_state = self.new_state
-            # self.new_state = self.scan_line(line, self.prev_state)
-            # # Handle the line.
-            # if self.prev_state.context:
-                # # A line with a string or docstring.
-                # self.add_line(p, line, tag='string')
-            # elif self.ws_pattern.match(line):
-                # # A blank or comment line.
-                # self.add_line(p, line, tag='whitespace')
-            # else:
-                # # The leading whitespace of all other lines are significant.
-                # m = self.class_or_def_pattern.match(line)
-                # kind = m.group(1) if m else 'normal'
-                # p = self.end_previous_blocks(kind, line, p)
-                # if m:
-                    # assert kind in ('class', 'def'), repr(kind)
-                    # if kind == 'class':
-                        # p = self.do_class(line, p)
-                    # else:
-                        # p = self.do_def(line, p)
-                # else:
-                    # p = self.do_normal_line(line,p)
     #@+node:ekr.20220720043557.30: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -485,12 +371,6 @@ class Python_Importer(Importer):
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
         return d
-    #@+node:ekr.20220720191343.1: *3* py_i.finish  (do nothing)
-    # def finish(self, parent):
-        # pass
-    #@+node:ekr.20220720192339.1: *3* py_i.post_pass (do nothing)
-    # def post_pass(self, parent):
-        # pass
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:

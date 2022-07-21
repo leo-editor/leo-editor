@@ -870,7 +870,7 @@ class Importer:
                 lines[-1] += '\n'
             v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
-    def check(self, unused_s, parent):
+    def check(self, unused_s, parent) -> bool:
         """True if perfect import checks pass."""
         if g.app.suppressImportChecks:
             g.app.suppressImportChecks = False

@@ -103,13 +103,16 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
-        d = g.vnode_info  # Same as Importer.vnode_info!
         if tag:
             print(tag)
+        d = getattr(g, 'vnode_info', None)  # Same as Importer.vnode_info!
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
+            if d:
+                lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
+            else:
+                lines = g.splitLines(p.v.b)
             g.printObj(lines)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s):
@@ -1953,6 +1956,11 @@ class TestPython(BaseTestImporter):
     #@+others
     #@+node:vitalije.20211206180043.1: *3* TestPython.check_outline
     def check_outline(self, p, nodes):
+        """
+        TestPython.check_outline.
+        
+        This is *not* part of the Importer pipeline.
+        """
         it = iter(nodes)
         zlev = p.level()
         for p1 in p.self_and_subtree():
@@ -1960,7 +1968,6 @@ class TestPython(BaseTestImporter):
             assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
             if lev > 0:
                 assert p1.h == h, f'"{p1.h}" != "{h}"'
-            ### assert p1.b == b, f'\n{repr(p1.b)} !=\n{repr(b)}'
             self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
         try:
             next(it)
@@ -2244,8 +2251,8 @@ class TestPython(BaseTestImporter):
             'print(7)\n'
         )
         exp_nodes = [(0, 'ignored h',
-               # '@language python\n'
-               # '@tabwidth -4\n'
+               '@language python\n'
+               '@tabwidth -4\n'
                '"""A docstring"""\n'
                'switch = 1\n'
                'print(3)\n'
@@ -2253,8 +2260,6 @@ class TestPython(BaseTestImporter):
                'def a():\n'
                '    pass\n'
                'print(7)\n\n'
-               '@language python\n'  ###  
-               '@tabwidth -4\n'  ###
                )]
         p = self.run_test(input_s)
         ok, msg = self.check_outline(p, exp_nodes)
