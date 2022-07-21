@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Importer  ### , Target  ###
-from leo.core.leoNodes import Position  ###
+from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
@@ -108,6 +108,13 @@ class Python_Importer(Importer):
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
         assert self.root == parent, (self.root, parent)
+
+        line_states: List[Python_ScanState] = []
+        state = Python_ScanState()
+        
+        self.vnode_info: Dict = {}
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
 
         #@+others
         #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper
@@ -254,13 +261,18 @@ class Python_Importer(Importer):
              inner_indent: The indentation of all of the inner definitions.
               definitions: The list of the definitions covering p.
             """
+            nonlocal self
+            vnode_info = self.vnode_info
 
             # Find all defs with the given inner indentation.
             inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
             if not inner_defs or end - start < SPLIT_THRESHOLD:
                 # Don't split the body.
-                p.b = body(start, end, others_indent)
+                new_body = body(start, end, others_indent)
+                ### p.b = new_body
+                assert not p.v in vnode_info, p.v
+                vnode_info [p.v] = {'lines': g.splitLines(new_body)}
                 return
 
             last = start  # The last used line.
@@ -273,8 +285,10 @@ class Python_Importer(Importer):
             # Calculate tail, the lines following the @others line.
             last_offset = inner_defs[-1].body_line1
             tail = body(last_offset, end, others_indent) if last_offset < end else ''
-            p.b = f'{head}{others_line}{tail}'
-            ### p.v.vnode_info[p.v]['lines'] = g.splitLines(f'{head}{others_line}{tail}')
+            new_body = f'{head}{others_line}{tail}'
+            ###p.b = new_body
+            assert not p.v in vnode_info, p.v
+            vnode_info [p.v] = {'lines': g.splitLines(new_body)}
 
             # Add a child of p for each inner definition.
             last = decl_line1
@@ -287,7 +301,8 @@ class Python_Importer(Importer):
                     new_body = body(last, decl_line1, inner_indent)  # #2500.
                     child1 = p.insertAsLastChild()
                     child1.h = declaration_headline(new_body)  # #2500
-                    child1.b = new_body
+                    ### child1.b = new_body
+                    vnode_info [child1.v] = {'lines': g.splitLines(new_body)}
                     last = decl_line1
                 child = p.insertAsLastChild()
                 child.h = inner_def.name
@@ -307,7 +322,10 @@ class Python_Importer(Importer):
                     )
                 else:
                     # Just set the body.
-                    child.b = body(decl_line1, body_line1, inner_indent)
+                    new_body = body(decl_line1, body_line1, inner_indent)
+                    ### child.b = new_body
+                    vnode_info [child.v] = {'lines': g.splitLines(new_body)}
+
                 last = body_line1
         #@+node:ekr.20220720060831.2: *5* body & bodyLine
         def bodyLine(s: str, i: int) -> str:
@@ -340,7 +358,6 @@ class Python_Importer(Importer):
         #@-others
 
         # Prepass: calculate line states.
-        line_states, state = [],  Python_ScanState()
         for line in lines:
             state = self.scan_line(line, state)
             line_states.append(state)
@@ -358,8 +375,9 @@ class Python_Importer(Importer):
         make_node(
             p=parent, start=1, start_b=1, end=len(lines)+1,
             others_indent=0, inner_indent=0, definitions=all_definitions)
-            
-        parent.b = '@language python\n@tabwidth -4\n' + parent.b  ### temp hack.
+
+        new_body = '@language python\n@tabwidth -4\n' + parent.b
+        self.vnode_info [parent.v] = { 'lines': g.splitLines(new_body)}
 
         ### Begin old code ###
 
@@ -419,6 +437,8 @@ class Python_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
+            
+        d: Dict
 
         if context:
             d = {
@@ -464,12 +484,11 @@ class Python_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         return d
     #@+node:ekr.20220720191343.1: *3* py_i.finish  (do nothing)
-    def finish(self, parent):
-        ### g.trace('Python_Importer')
-        pass
+    # def finish(self, parent):
+        # pass
     #@+node:ekr.20220720192339.1: *3* py_i.post_pass (do nothing)
-    def post_pass(self, parent):
-        pass
+    # def post_pass(self, parent):
+        # pass
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
