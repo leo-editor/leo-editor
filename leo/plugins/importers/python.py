@@ -73,15 +73,42 @@ class Python_Importer(Importer):
             m = self.class_or_def_pat.match(line)
             if not m:
                 return None
-            ### g.trace(m, m.group(4))
+            g.trace(m, m.group(4))
             #
             kind = m.group(1)
             name = m.group(2)
             decl_line = i
             decl_indent = self.get_int_lws(line)
             if m.group(4):  # Multi-line class or def.
-                body_line1 = i + 1
-                body_indent = self.get_int_lws(lines[i + 1])
+                i += 1
+                # Find the first non-blank line of the body.
+                while i < len(lines):
+                    line = lines[i]
+                    i += 1
+                    if line.strip():
+                        body_indent = self.get_int_lws(line)
+                        break
+                else:
+                    g.trace("Can not happen: no body")
+                    body_indent = decl_indent
+                # The body ends at the next non-blank with less indentation than body_indent
+                i += 1
+                while i < len(lines):
+                    line = lines[i]
+                    i += 1
+                    g.trace(i, repr(line))
+                    if line.strip() and self.get_int_lws(line) < body_indent:
+                        body_line1 = i - 2
+                        break
+                else:
+                    body_line1 = len(lines)
+                    
+                # Increase body_line1 to include all following blank lines.
+                for j in range(body_line1, len(lines) + 1):
+                    if lines[j - 1].isspace():
+                        body_line1 = j + 1
+                    else:
+                        break
             else:  # One-line class or def.
                 body_line1 = i
                 body_indent = decl_indent
@@ -125,7 +152,6 @@ class Python_Importer(Importer):
                     # body_line1 = j + 1
                 # else:
                     # break
-
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
@@ -754,16 +780,19 @@ importer_dict = {
     'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
 }
 
+#@+<< define class_or_def_tuple >>
+#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >>
 # A named tuple containing all data relating to one declaration of a class or def.
 class_or_def_tuple = namedtuple('class_or_def_tuple', [
     'body_indent',  # Indentation of body.
-    'body_line1',  # Line number of the first line after the definition.
+    'body_line1',  # Line number of the *last* line of the definition.
     'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the first line of this node.
                    # This line may be a comment or decorator.
     'kind',  # 'def' or 'class'.
     'name',  # name of the function, class or method.
 ])
+#@-<< define class_or_def_tuple >>
 
 #@@language python
 #@@tabwidth -4
