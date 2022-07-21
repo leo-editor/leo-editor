@@ -1961,13 +1961,18 @@ class TestPython(BaseTestImporter):
         
         This is *not* part of the Importer pipeline.
         """
+        if 1:  # Dump the actual nodes.
+            for p1 in p.self_and_subtree():
+                g.printObj(g.splitLines(p1.b), tag=f"Got node: {p1.h}")
         it = iter(nodes)
         zlev = p.level()
         for p1 in p.self_and_subtree():
             lev, h, b = next(it)
             assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
             if lev > 0:
-                assert p1.h == h, f'"{p1.h}" != "{h}"'
+                self.assertEqual(p1.h,  h)
+            # if g.splitLines(p1.b) != g.splitLines(b):
+                # g.pdb()  ###
             self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
         try:
             next(it)
