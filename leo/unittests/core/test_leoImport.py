@@ -1961,19 +1961,20 @@ class TestPython(BaseTestImporter):
         
         This is *not* part of the Importer pipeline.
         """
-        if 1:  # Dump the actual nodes.
+        try:
+            it = iter(nodes)
+            top_level = p.level()
+            for p1 in p.self_and_subtree():
+                lev, h, b = next(it)
+                assert lev == p1.level() - top_level, f'lev:{p1.level()-top_level} != {lev}'
+                if lev > 0:
+                    self.assertEqual(p1.h,  h)
+                self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
+        except Exception:
+            # Show more clearly what the actual nodes are.
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"Got node: {p1.h}")
-        it = iter(nodes)
-        zlev = p.level()
-        for p1 in p.self_and_subtree():
-            lev, h, b = next(it)
-            assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
-            if lev > 0:
-                self.assertEqual(p1.h,  h)
-            # if g.splitLines(p1.b) != g.splitLines(b):
-                # g.pdb()  ###
-            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
+            raise
         try:
             next(it)
             return False, 'extra nodes'  # pragma: no cover
