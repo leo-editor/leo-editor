@@ -13,7 +13,7 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = False
+NEW_PYTHON_IMPORTER = True
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
@@ -53,10 +53,6 @@ class Python_Importer(Importer):
 
         line_states: List[Python_ScanState] = []
         state = Python_ScanState()
-        ###
-            # self.vnode_info: Dict = {}
-            # if g.unitTesting:
-                # g.vnode_info = self.vnode_info  # A hack.
 
         #@+others
         #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper
@@ -203,9 +199,6 @@ class Python_Importer(Importer):
              inner_indent: The indentation of all of the inner definitions.
               definitions: The list of the definitions covering p.
             """
-            ### nonlocal self
-            ### vnode_info = self.vnode_info
-
             # Find all defs with the given inner indentation.
             inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
@@ -243,7 +236,9 @@ class Python_Importer(Importer):
                 child.h = inner_def.name
 
                 # Compute inner definitions.
-                inner_definitions = [z for z in definitions if z.decl_line1 > decl_line1 and z.body_line1 <= body_line1]
+                inner_definitions = [
+                    z for z in definitions
+                        if z.decl_line1 > decl_line1 and z.body_line1 <= body_line1]
                 if inner_definitions:
                     # Recursively split this node.
                     make_node(
