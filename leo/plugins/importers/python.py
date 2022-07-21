@@ -436,13 +436,16 @@ class Python_ScanState:
 def do_import(c, s, parent):
 
     if NEW_PYTHON_IMPORTER:
-        return Python_Importer(c.importCommands).run(s, parent)
-
-    if sys.version_info < (3, 7, 0):  # pragma: no cover
-        g.es_print('The python importer requires python 3.7 or above')
-        return False
-    split_root(parent, s.splitlines(True))
+        # Use the scanner tables.
+        Python_Importer(c.importCommands).run(s, parent)
+    else:
+        if sys.version_info < (3, 7, 0):  # pragma: no cover
+            g.es_print('The python importer requires python 3.7 or above')
+            return False
+        split_root(parent, s.splitlines(True))
+    # Prepend @language and @tabwidth directives.
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
+    # Note: some unit tests change this setting.
     if c.config.getBool('put-class-in-imported-headlines'):
         for p in parent.subtree():  # Don't change parent.h.
             if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
