@@ -111,7 +111,6 @@ class Python_Importer(Importer):
 
         line_states: List[Python_ScanState] = []
         state = Python_ScanState()
-        
         self.vnode_info: Dict = {}
         if g.unitTesting:
             g.vnode_info = self.vnode_info  # A hack.
@@ -269,22 +268,22 @@ class Python_Importer(Importer):
 
             if not inner_defs or end - start < SPLIT_THRESHOLD:
                 # Don't split the body.
-                new_body = body(start, end, others_indent)
+                new_body = body_lines(start, end, others_indent)
                 ### p.b = new_body
                 assert not p.v in vnode_info, p.v
-                vnode_info [p.v] = {'lines': g.splitLines(new_body)}
+                vnode_info [p.v] = {'lines': new_body}
                 return
 
             last = start  # The last used line.
 
             # Calculate head, the lines preceding the @others.
             decl_line1 = inner_defs[0].decl_line1
-            head = body(start, decl_line1, others_indent) if decl_line1 > start else ''
+            head = body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
             others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
             # Calculate tail, the lines following the @others line.
             last_offset = inner_defs[-1].body_line1
-            tail = body(last_offset, end, others_indent) if last_offset < end else ''
+            tail = body_string(last_offset, end, others_indent) if last_offset < end else ''
             new_body = f'{head}{others_line}{tail}'
             ###p.b = new_body
             assert not p.v in vnode_info, p.v
@@ -298,7 +297,7 @@ class Python_Importer(Importer):
                 decl_line1 = inner_def.decl_line1
                 # Add a child for declaration lines between two inner definitions.
                 if decl_line1 > last:
-                    new_body = body(last, decl_line1, inner_indent)  # #2500.
+                    new_body = body_string(last, decl_line1, inner_indent)  # #2500.
                     child1 = p.insertAsLastChild()
                     child1.h = declaration_headline(new_body)  # #2500
                     ### child1.b = new_body
@@ -322,24 +321,28 @@ class Python_Importer(Importer):
                     )
                 else:
                     # Just set the body.
-                    new_body = body(decl_line1, body_line1, inner_indent)
+                    new_body = body_string(decl_line1, body_line1, inner_indent)
                     ### child.b = new_body
                     vnode_info [child.v] = {'lines': g.splitLines(new_body)}
 
                 last = body_line1
-        #@+node:ekr.20220720060831.2: *5* body & bodyLine
-        def bodyLine(s: str, i: int) -> str:
+        #@+node:ekr.20220720060831.2: *5* body_lines & body_string
+        def massaged_line(s: str, i: int) -> str:
             """Massage line s, adding the underindent string if necessary."""
             if i == 0 or s[:i].isspace():
                 return s[i:] or '\n'
             n = len(s) - len(s.lstrip())
             return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
 
-        def body(a: int, b: Optional[int], i: int) -> str:
+        def body_string(a: int, b: Optional[int], i: int) -> str:
             """Return the (massaged) concatentation of lines[a: b]"""
             nonlocal lines  # 'lines' is a kwarg to split_root.
-            xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
+            xlines = (massaged_line(s, i) for s in lines[a - 1 : b and (b - 1)])
             return ''.join(xlines)
+
+        def body_lines(a: int, b: Optional[int], i: int) -> List[str]:
+            nonlocal lines  # 'lines' is a kwarg to split_root.
+            return [massaged_line(s, i) for s in lines[a - 1 : b and (b - 1)]]
         #@+node:ekr.20220720060831.3: *5* declaration_headline
         def declaration_headline(body_string: str) -> str:  # #2500
             """
@@ -376,8 +379,8 @@ class Python_Importer(Importer):
             p=parent, start=1, start_b=1, end=len(lines)+1,
             others_indent=0, inner_indent=0, definitions=all_definitions)
 
-        new_body = '@language python\n@tabwidth -4\n' + parent.b
-        self.vnode_info [parent.v] = { 'lines': g.splitLines(new_body)}
+        ### new_body = '@language python\n@tabwidth -4\n' + parent.b
+        ### self.vnode_info [parent.v] = { 'lines': g.splitLines(new_body)}
 
         ### Begin old code ###
 
@@ -437,9 +440,8 @@ class Python_Importer(Importer):
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
-            
-        d: Dict
 
+        d: Dict
         if context:
             d = {
                 # key   kind    pattern ends?

@@ -2244,8 +2244,8 @@ class TestPython(BaseTestImporter):
             'print(7)\n'
         )
         exp_nodes = [(0, 'ignored h',
-               '@language python\n'
-               '@tabwidth -4\n'
+               # '@language python\n'
+               # '@tabwidth -4\n'
                '"""A docstring"""\n'
                'switch = 1\n'
                'print(3)\n'
@@ -2253,6 +2253,8 @@ class TestPython(BaseTestImporter):
                'def a():\n'
                '    pass\n'
                'print(7)\n\n'
+               '@language python\n'  ###  
+               '@tabwidth -4\n'  ###
                )]
         p = self.run_test(input_s)
         ok, msg = self.check_outline(p, exp_nodes)
