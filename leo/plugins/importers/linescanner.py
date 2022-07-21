@@ -410,7 +410,7 @@ class Importer:
         if not ws_ok:
             lines = self.regularize_whitespace(lines)
         # Generate the nodes, including directives and section references.
-        # Completely generate all nodes.
+        # Completely generate all nodes
         self.generate_nodes(lines, parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.

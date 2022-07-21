@@ -1951,109 +1951,22 @@ class TestPython(BaseTestImporter):
             self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
 
     #@+others
-    #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
-    def test_short_file(self):
-
-        input_s = (
-            '"""A docstring"""\n'
-            'switch = 1\n'
-            'print(3)\n'
-            'print(6)\n'
-            'def a():\n'
-            '    pass\n'
-            'print(7)\n'
-        )
-        exp_nodes = [(0, 'ignored h',
-               '@language python\n'
-               '@tabwidth -4\n'
-               '"""A docstring"""\n'
-               'switch = 1\n'
-               'print(3)\n'
-               'print(6)\n'
-               'def a():\n'
-               '    pass\n'
-               'print(7)\n\n'
-               )]
-        p = self.run_test(input_s)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-    #@+node:ekr.20210904065459.63: *3* TestPython.test_short_classes
-    def test_short_classes(self):
-        s = (
-            'import sys\n'
-            'def f1():\n'
-            '    pass\n'
-            '\n'
-            'class Class1:\n'
-            '    def method11():\n'
-            '        pass\n'
-            '    def method12():\n'
-            '        pass\n'
-            '        \n'
-            'a = 2\n'
-            '\n'
-            'def f2():\n'
-            '    pass\n'
-            '\n'
-            '# An outer comment\n'
-            '@myClassDecorator\n'
-            'class Class2:\n'
-            '    @myDecorator\n'
-            '    def method21():\n'
-            '        pass\n'
-            '    def method22():\n'
-            '        pass\n'
-            '        \n'
-            '# About main.\n'
-            'def main():\n'
-            '    pass\n'
-            '\n'
-            "if __name__ == '__main__':\n"
-            '    main()\n'
-            )
-        exp_nodes = [
-            (0, 'ignored h', '@language python\n'
-                             '@tabwidth -4\n'
-                             'import sys\n'
-                             '@others\n'
-                             "if __name__ == '__main__':\n"
-                             '    main()\n\n'
-            ),
-            (1, 'f1', 'def f1():\n'
-                      '    pass\n'
-                      '\n'
-            ),
-            (1, 'Class1', 'class Class1:\n'
-                          '    def method11():\n'
-                          '        pass\n'
-                          '    def method12():\n'
-                          '        pass\n'
-                          '\n'
-            ),
-            (1, 'a = 2', 'a = 2\n\n'),
-            (1, 'f2', 'def f2():\n'
-                      '    pass\n'
-                      '\n'
-            ),
-            (1, 'Class2', '# An outer comment\n'
-                          '@myClassDecorator\n'
-                          'class Class2:\n'
-                          '    @myDecorator\n'
-                          '    def method21():\n'
-                          '        pass\n'
-                          '    def method22():\n'
-                          '        pass\n'
-                          '\n'
-            ),
-            (1, 'main', '# About main.\n'
-                        'def main():\n'
-                        '    pass\n'
-                        '\n'
-            )
-        ]
-        p = self.run_test(s)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+    #@+node:vitalije.20211206180043.1: *3* TestPython.check_outline
+    def check_outline(self, p, nodes):
+        it = iter(nodes)
+        zlev = p.level()
+        for p1 in p.self_and_subtree():
+            lev, h, b = next(it)
+            assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
+            if lev > 0:
+                assert p1.h == h, f'"{p1.h}" != "{h}"'
+            ### assert p1.b == b, f'\n{repr(p1.b)} !=\n{repr(b)}'
+            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
+        try:
+            next(it)
+            return False, 'extra nodes'  # pragma: no cover
+        except StopIteration:
+            return True, 'ok'
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
         s = ('import sys\n'
@@ -2241,6 +2154,264 @@ class TestPython(BaseTestImporter):
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
 
+    #@+node:ekr.20210904065459.63: *3* TestPython.test_short_classes
+    def test_short_classes(self):
+        s = (
+            'import sys\n'
+            'def f1():\n'
+            '    pass\n'
+            '\n'
+            'class Class1:\n'
+            '    def method11():\n'
+            '        pass\n'
+            '    def method12():\n'
+            '        pass\n'
+            '        \n'
+            'a = 2\n'
+            '\n'
+            'def f2():\n'
+            '    pass\n'
+            '\n'
+            '# An outer comment\n'
+            '@myClassDecorator\n'
+            'class Class2:\n'
+            '    @myDecorator\n'
+            '    def method21():\n'
+            '        pass\n'
+            '    def method22():\n'
+            '        pass\n'
+            '        \n'
+            '# About main.\n'
+            'def main():\n'
+            '    pass\n'
+            '\n'
+            "if __name__ == '__main__':\n"
+            '    main()\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h', '@language python\n'
+                             '@tabwidth -4\n'
+                             'import sys\n'
+                             '@others\n'
+                             "if __name__ == '__main__':\n"
+                             '    main()\n\n'
+            ),
+            (1, 'f1', 'def f1():\n'
+                      '    pass\n'
+                      '\n'
+            ),
+            (1, 'Class1', 'class Class1:\n'
+                          '    def method11():\n'
+                          '        pass\n'
+                          '    def method12():\n'
+                          '        pass\n'
+                          '\n'
+            ),
+            (1, 'a = 2', 'a = 2\n\n'),
+            (1, 'f2', 'def f2():\n'
+                      '    pass\n'
+                      '\n'
+            ),
+            (1, 'Class2', '# An outer comment\n'
+                          '@myClassDecorator\n'
+                          'class Class2:\n'
+                          '    @myDecorator\n'
+                          '    def method21():\n'
+                          '        pass\n'
+                          '    def method22():\n'
+                          '        pass\n'
+                          '\n'
+            ),
+            (1, 'main', '# About main.\n'
+                        'def main():\n'
+                        '    pass\n'
+                        '\n'
+            )
+        ]
+        p = self.run_test(s)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
+    def test_short_file(self):
+
+        input_s = (
+            '"""A docstring"""\n'
+            'switch = 1\n'
+            'print(3)\n'
+            'print(6)\n'
+            'def a():\n'
+            '    pass\n'
+            'print(7)\n'
+        )
+        exp_nodes = [(0, 'ignored h',
+               '@language python\n'
+               '@tabwidth -4\n'
+               '"""A docstring"""\n'
+               'switch = 1\n'
+               'print(3)\n'
+               'print(6)\n'
+               'def a():\n'
+               '    pass\n'
+               'print(7)\n\n'
+               )]
+        p = self.run_test(input_s)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
+    def test_large_class_no_methods(self):
+
+        if sys.version_info < (3, 9, 0):
+            self.skipTest('Requires Python 3.9')  # pragma: no cover
+
+        txt = ('class A:\n'
+                '    a=1\n'
+                '    b=1\n'
+                '    c=1\n'
+                '    d=1\n'
+                '    e=1\n'
+                '    f=1\n'
+                '    g=1\n'
+                '    h=1\n'
+                '    i=1\n'
+                '    j=1\n'
+                '    k=1\n'
+                '    l=1\n'
+                '    m=1\n'
+                '    n=1\n'
+                '    o=1\n'
+                '    p=1\n'
+                '    q=1\n'
+                '    r=1\n'
+                '    s=1\n'
+                '    t=1\n'
+                '    u=1\n'
+                '    v=1\n'
+                '    w=1\n'
+                '    x=1\n'
+                '    y=1\n'
+                '    x=1\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    a=1\n'
+                       '    b=1\n'
+                       '    c=1\n'
+                       '    d=1\n'
+                       '    e=1\n'
+                       '    f=1\n'
+                       '    g=1\n'
+                       '    h=1\n'
+                       '    i=1\n'
+                       '    j=1\n'
+                       '    k=1\n'
+                       '    l=1\n'
+                       '    m=1\n'
+                       '    n=1\n'
+                       '    o=1\n'
+                       '    p=1\n'
+                       '    q=1\n'
+                       '    r=1\n'
+                       '    s=1\n'
+                       '    t=1\n'
+                       '    u=1\n'
+                       '    v=1\n'
+                       '    w=1\n'
+                       '    x=1\n'
+                       '    y=1\n'
+                       '    x=1\n'
+                       '\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_no_methods
+    def test_large_class_under_indented(self):
+        txt = ('class A:\n'
+                '    a=1\n'
+                '    b=1\n'
+                '    c=1\n'
+                '    d=1\n'
+                '    e=1\n'
+                '    def f(self):\n'
+                '        self._f = """dummy\n'
+                'dummy2\n'
+                'dummy3"""\n'
+                '    g=1\n'
+                '    h=1\n'
+                '    i=1\n'
+                '    j=1\n'
+                '    k=1\n'
+                '    l=1\n'
+                '    m=1\n'
+                '    n=1\n'
+                '    o=1\n'
+                '    p=1\n'
+                '    q=1\n'
+                '    r=1\n'
+                '    s=1\n'
+                '    t=1\n'
+                '    u=1\n'
+                '    v=1\n'
+                '    w=1\n'
+                '    x=1\n'
+                '    y=1\n'
+                '    x=1\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    a=1\n'
+                       '    b=1\n'
+                       '    c=1\n'
+                       '    d=1\n'
+                       '    e=1\n'
+                       '    @others\n'
+                       '    g=1\n'
+                       '    h=1\n'
+                       '    i=1\n'
+                       '    j=1\n'
+                       '    k=1\n'
+                       '    l=1\n'
+                       '    m=1\n'
+                       '    n=1\n'
+                       '    o=1\n'
+                       '    p=1\n'
+                       '    q=1\n'
+                       '    r=1\n'
+                       '    s=1\n'
+                       '    t=1\n'
+                       '    u=1\n'
+                       '    v=1\n'
+                       '    w=1\n'
+                       '    x=1\n'
+                       '    y=1\n'
+                       '    x=1\n'
+                       '\n'
+            ),
+            (2, 'f',
+                       'def f(self):\n'
+                       '    self._f = """dummy\n'
+                       '\\\\-4.dummy2\n'
+                       '\\\\-4.dummy3"""\n'
+            )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
         txt = ('class TestCopyFile(unittest.TestCase):\n'
@@ -2398,6 +2569,145 @@ class TestPython(BaseTestImporter):
             )
         ]
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
+    def test_no_defs(self):
+        txt = ('a = 1\n'
+                'if 1:\n'
+                " print('1')\n"
+                'if 2:\n'
+                "  print('2')\n"
+                'if 3:\n'
+                "   print('3')\n"
+                'if 4:\n'
+                "    print('4')\n"
+                'if 5:\n'
+                "    print('5')\n"
+                'if 6:\n'
+                "    print('6')\n"
+                'if 7:\n'
+                "    print('7')\n"
+                'if 8:\n'
+                "    print('8')\n"
+                'if 9:\n'
+                "    print('9')\n"
+                'if 10:\n'
+                "    print('10')\n"
+                'if 11:\n'
+                "    print('11')\n"
+                'if 12:\n'
+                "    print('12')\n"
+            )
+        exp_nodes = [
+            (0, 'ignored h', '@language python\n'
+                               '@tabwidth -4\n'
+                               'a = 1\n'
+                               'if 1:\n'
+                               " print('1')\n"
+                               'if 2:\n'
+                               "  print('2')\n"
+                               'if 3:\n'
+                               "   print('3')\n"
+                               'if 4:\n'
+                               "    print('4')\n"
+                               'if 5:\n'
+                               "    print('5')\n"
+                               'if 6:\n'
+                               "    print('6')\n"
+                               'if 7:\n'
+                               "    print('7')\n"
+                               'if 8:\n'
+                               "    print('8')\n"
+                               'if 9:\n'
+                               "    print('9')\n"
+                               'if 10:\n'
+                               "    print('10')\n"
+                               'if 11:\n'
+                               "    print('11')\n"
+                               'if 12:\n'
+                               "    print('12')\n\n"
+                    )
+        ]
+        p = self.run_test(txt)
+        ok, msg = self.check_outline(p, exp_nodes)
+        assert ok, msg
+    #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
+    def test_only_docs(self):
+        txt = ('class A:\n'
+                '    """\n'
+                '    dummy doc\n'
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                "    another line\n"
+                '    """\n'
+                '    def __init__(self):\n'
+                '        pass\n'
+                '\n'
+            )
+        exp_nodes = [
+            (0, 'ignored h',
+                       '@language python\n'
+                       '@tabwidth -4\n'
+                       '@others\n'
+            ),
+            (1, 'A',
+                       'class A:\n'
+                       '    """\n'
+                       '    dummy doc\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    another line\n'
+                       '    """\n'
+                       '    @others\n'
+            ),
+            (2, '__init__',
+                       'def __init__(self):\n'
+                       '    pass\n'
+                       '\n'
+            )
+        ]
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
@@ -2578,315 +2888,6 @@ class TestPython(BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
-    #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
-    def test_no_defs(self):
-        txt = ('a = 1\n'
-                'if 1:\n'
-                " print('1')\n"
-                'if 2:\n'
-                "  print('2')\n"
-                'if 3:\n'
-                "   print('3')\n"
-                'if 4:\n'
-                "    print('4')\n"
-                'if 5:\n'
-                "    print('5')\n"
-                'if 6:\n'
-                "    print('6')\n"
-                'if 7:\n'
-                "    print('7')\n"
-                'if 8:\n'
-                "    print('8')\n"
-                'if 9:\n'
-                "    print('9')\n"
-                'if 10:\n'
-                "    print('10')\n"
-                'if 11:\n'
-                "    print('11')\n"
-                'if 12:\n'
-                "    print('12')\n"
-            )
-        exp_nodes = [
-            (0, 'ignored h', '@language python\n'
-                               '@tabwidth -4\n'
-                               'a = 1\n'
-                               'if 1:\n'
-                               " print('1')\n"
-                               'if 2:\n'
-                               "  print('2')\n"
-                               'if 3:\n'
-                               "   print('3')\n"
-                               'if 4:\n'
-                               "    print('4')\n"
-                               'if 5:\n'
-                               "    print('5')\n"
-                               'if 6:\n'
-                               "    print('6')\n"
-                               'if 7:\n'
-                               "    print('7')\n"
-                               'if 8:\n'
-                               "    print('8')\n"
-                               'if 9:\n'
-                               "    print('9')\n"
-                               'if 10:\n'
-                               "    print('10')\n"
-                               'if 11:\n'
-                               "    print('11')\n"
-                               'if 12:\n'
-                               "    print('12')\n\n"
-                    )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-    #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
-    def test_only_docs(self):
-        txt = ('class A:\n'
-                '    """\n'
-                '    dummy doc\n'
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                "    another line\n"
-                '    """\n'
-                '    def __init__(self):\n'
-                '        pass\n'
-                '\n'
-            )
-        exp_nodes = [
-            (0, 'ignored h',
-                       '@language python\n'
-                       '@tabwidth -4\n'
-                       '@others\n'
-            ),
-            (1, 'A',
-                       'class A:\n'
-                       '    """\n'
-                       '    dummy doc\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    another line\n'
-                       '    """\n'
-                       '    @others\n'
-            ),
-            (2, '__init__',
-                       'def __init__(self):\n'
-                       '    pass\n'
-                       '\n'
-            )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-    #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
-    def test_large_class_no_methods(self):
-
-        if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')  # pragma: no cover
-
-        txt = ('class A:\n'
-                '    a=1\n'
-                '    b=1\n'
-                '    c=1\n'
-                '    d=1\n'
-                '    e=1\n'
-                '    f=1\n'
-                '    g=1\n'
-                '    h=1\n'
-                '    i=1\n'
-                '    j=1\n'
-                '    k=1\n'
-                '    l=1\n'
-                '    m=1\n'
-                '    n=1\n'
-                '    o=1\n'
-                '    p=1\n'
-                '    q=1\n'
-                '    r=1\n'
-                '    s=1\n'
-                '    t=1\n'
-                '    u=1\n'
-                '    v=1\n'
-                '    w=1\n'
-                '    x=1\n'
-                '    y=1\n'
-                '    x=1\n'
-                '\n'
-            )
-        exp_nodes = [
-            (0, 'ignored h',
-                       '@language python\n'
-                       '@tabwidth -4\n'
-                       '@others\n'
-            ),
-            (1, 'A',
-                       'class A:\n'
-                       '    a=1\n'
-                       '    b=1\n'
-                       '    c=1\n'
-                       '    d=1\n'
-                       '    e=1\n'
-                       '    f=1\n'
-                       '    g=1\n'
-                       '    h=1\n'
-                       '    i=1\n'
-                       '    j=1\n'
-                       '    k=1\n'
-                       '    l=1\n'
-                       '    m=1\n'
-                       '    n=1\n'
-                       '    o=1\n'
-                       '    p=1\n'
-                       '    q=1\n'
-                       '    r=1\n'
-                       '    s=1\n'
-                       '    t=1\n'
-                       '    u=1\n'
-                       '    v=1\n'
-                       '    w=1\n'
-                       '    x=1\n'
-                       '    y=1\n'
-                       '    x=1\n'
-                       '\n'
-            )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_no_methods
-    def test_large_class_under_indented(self):
-        txt = ('class A:\n'
-                '    a=1\n'
-                '    b=1\n'
-                '    c=1\n'
-                '    d=1\n'
-                '    e=1\n'
-                '    def f(self):\n'
-                '        self._f = """dummy\n'
-                'dummy2\n'
-                'dummy3"""\n'
-                '    g=1\n'
-                '    h=1\n'
-                '    i=1\n'
-                '    j=1\n'
-                '    k=1\n'
-                '    l=1\n'
-                '    m=1\n'
-                '    n=1\n'
-                '    o=1\n'
-                '    p=1\n'
-                '    q=1\n'
-                '    r=1\n'
-                '    s=1\n'
-                '    t=1\n'
-                '    u=1\n'
-                '    v=1\n'
-                '    w=1\n'
-                '    x=1\n'
-                '    y=1\n'
-                '    x=1\n'
-                '\n'
-            )
-        exp_nodes = [
-            (0, 'ignored h',
-                       '@language python\n'
-                       '@tabwidth -4\n'
-                       '@others\n'
-            ),
-            (1, 'A',
-                       'class A:\n'
-                       '    a=1\n'
-                       '    b=1\n'
-                       '    c=1\n'
-                       '    d=1\n'
-                       '    e=1\n'
-                       '    @others\n'
-                       '    g=1\n'
-                       '    h=1\n'
-                       '    i=1\n'
-                       '    j=1\n'
-                       '    k=1\n'
-                       '    l=1\n'
-                       '    m=1\n'
-                       '    n=1\n'
-                       '    o=1\n'
-                       '    p=1\n'
-                       '    q=1\n'
-                       '    r=1\n'
-                       '    s=1\n'
-                       '    t=1\n'
-                       '    u=1\n'
-                       '    v=1\n'
-                       '    w=1\n'
-                       '    x=1\n'
-                       '    y=1\n'
-                       '    x=1\n'
-                       '\n'
-            ),
-            (2, 'f',
-                       'def f(self):\n'
-                       '    self._f = """dummy\n'
-                       '\\\\-4.dummy2\n'
-                       '\\\\-4.dummy3"""\n'
-            )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-    #@+node:vitalije.20211206180043.1: *3* check_outline
-    def check_outline(self, p, nodes):
-        it = iter(nodes)
-        zlev = p.level()
-        for p1 in p.self_and_subtree():
-            lev, h, b = next(it)
-            assert p1.level() - zlev == lev, f'lev:{p1.level()-zlev} != {lev}'
-            if lev > 0:
-                assert p1.h == h, f'"{p1.h}" != "{h}"'
-            assert p1.b == b, f'\n{repr(p1.b)} !=\n{repr(b)}'
-        try:
-            next(it)
-            return False, 'extra nodes'  # pragma: no cover
-        except StopIteration:
-            return True, 'ok'
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):

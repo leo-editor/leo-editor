@@ -11,15 +11,17 @@ import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Importer  ### , Target  ###
 from leo.core.leoNodes import Position  ###
 
+#@+<< Define NEW_PYTHON_IMPORTER >>
+#@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
 NEW_PYTHON_IMPORTER = True
+#@-<< Define NEW_PYTHON_IMPORTER >>
+
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
     """A class to store and update scanning state."""
 
-    trace = False
-    
-    class_or_def_pat = re.compile(r'\s*(class|def)\s+\[\w_]+)\s*\(')
+    class_or_def_pat = re.compile(r'\s*(class|def)\s+([\w_]+)\s*(\(.*?\))?(:)?')
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -114,17 +116,32 @@ class Python_Importer(Importer):
             Look for a def or class at lines[i]
             Return None or a class_or_def_tuple describing the class or def.
             """
-            # Based on getdefn of previous python importer.
+            # Based on getdefn of Vitalije's python importer.
             nonlocal lines, line_states
-            line = line_states[i]
+            line = lines[i]
+            if not line.strip():
+                return None
+            state = line_states[i]
             assert state is not None
             if state.context or not line:
                 return None
             m = self.class_or_def_pat.match(line)
             if not m:
                 return None
+            g.trace(m, m.group(4))
+            #
+            kind = m.group(1)
+            name = m.group(2)
+            decl_line = i
+            decl_indent = self.get_int_lws(line)
+            if m.group(4):  # Multi-line class or def.
+                body_line1 = i + 1
+                body_indent = self.get_int_lws(lines[i + 1])
+            else:  # One-line class or def.
+                body_line1 = i
+                body_indent = decl_indent
+
             # Remember the start of the line.
-            body_line1 = i
             ###
                 # # Find the end of the definition line, ending in a NEWLINE token.
                 # # This one logical line may span several physical lines.
@@ -139,9 +156,9 @@ class Python_Importer(Importer):
                 # oneliner = i1 > i2 if t and t2 else False
 
             # Find the end of this definition.
-            
-            
-            
+
+
+
             # if oneliner:
                 # # The entire decl is on the same line.
                 # body_indent = decl_indent
@@ -163,14 +180,7 @@ class Python_Importer(Importer):
                     # body_line1 = j + 1
                 # else:
                     # break
-                    
-            body_indent = 0
-            body_line1 = 1
-            decl_line = 1
-            decl_indent = 0
-            name = 'xxx'
-            kind = 'def'
-            
+
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
@@ -264,6 +274,7 @@ class Python_Importer(Importer):
             last_offset = inner_defs[-1].body_line1
             tail = body(last_offset, end, others_indent) if last_offset < end else ''
             p.b = f'{head}{others_line}{tail}'
+            ### p.v.vnode_info[p.v]['lines'] = g.splitLines(f'{head}{others_line}{tail}')
 
             # Add a child of p for each inner definition.
             last = decl_line1
@@ -334,20 +345,21 @@ class Python_Importer(Importer):
             state = self.scan_line(line, state)
             line_states.append(state)
 
-        g.printObj(line_states, tag='line_states')
+        ### g.printObj(line_states, tag='line_states')
 
         # Make a list of *all* definitions.
-        ### aList = [getdefn(i) for i, z in enumerate(rawtokens)]
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        g.printObj(all_definitions, tag='all_definitions')
+        g.printObj([repr(z) for z in all_definitions], tag='all_definitions')
 
         # Start the recursion.
         parent.deleteAllChildren()
         make_node(
             p=parent, start=1, start_b=1, end=len(lines)+1,
             others_indent=0, inner_indent=0, definitions=all_definitions)
+            
+        parent.b = '@language python\n@tabwidth -4\n' + parent.b  ### temp hack.
 
         ### Begin old code ###
 
@@ -451,6 +463,13 @@ class Python_Importer(Importer):
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
         return d
+    #@+node:ekr.20220720191343.1: *3* py_i.finish  (do nothing)
+    def finish(self, parent):
+        ### g.trace('Python_Importer')
+        pass
+    #@+node:ekr.20220720192339.1: *3* py_i.post_pass (do nothing)
+    def post_pass(self, parent):
+        pass
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
