@@ -13,7 +13,7 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = False
+NEW_PYTHON_IMPORTER = True
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
@@ -64,6 +64,7 @@ class Python_Importer(Importer):
             """
             # Based on getdefn of Vitalije's python importer.
             nonlocal lines, line_states
+            trace = True
             line = lines[i]
             if not line.strip():
                 return None
@@ -74,8 +75,8 @@ class Python_Importer(Importer):
             m = self.class_or_def_pat.match(line)
             if not m:
                 return None
-            g.trace(m, m.group(4))
-            #
+            if trace:
+                g.trace(m, m.group(4))
             kind = m.group(1)
             name = m.group(2)
             decl_line = i
@@ -97,7 +98,7 @@ class Python_Importer(Importer):
                 while i < len(lines):
                     line = lines[i]
                     i += 1
-                    g.trace(i, repr(line))
+                    # g.trace(i, repr(line))
                     if line.strip() and self.get_int_lws(line) < body_indent:
                         body_line1 = i - 2
                         break
@@ -113,46 +114,6 @@ class Python_Importer(Importer):
             else:  # One-line class or def.
                 body_line1 = i
                 body_indent = decl_indent
-
-            # Remember the start of the line.
-            ###
-                # # Find the end of the definition line, ending in a NEWLINE token.
-                # # This one logical line may span several physical lines.
-                # i, t = find_token(start + 1, token.NEWLINE)
-                # body_line1 = t.start[0] + 1
-
-            ###
-                # Look ahead to see if we have a one-line definition
-                # (The next non-blank line is at the same or lesson indentation.).
-                # i1, t = find_token(i + 1, token.INDENT)  # t is used below.
-                # i2, t2 = find_token(i + 1, token.NEWLINE)
-                # oneliner = i1 > i2 if t and t2 else False
-
-            # Find the end of this definition.
-
-
-
-            # if oneliner:
-                # # The entire decl is on the same line.
-                # body_indent = decl_indent
-            # else:
-                # body_indent = len(t.string) + decl_indent
-                # # Skip the INDENT token.
-                # assert t.type == token.INDENT, t.type
-                # i += 1
-                # # The body ends at the next DEDENT or COMMENT token with less indentation.
-                # for i, t in itoks(i + 1):
-                    # col2 = t.start[1]
-                    # if col2 <= decl_indent and t.type in (token.DEDENT, token.COMMENT):
-                        # body_line1 = t.start[0]
-                        # break
-
-            # # Increase body_line1 to include all following blank lines.
-            # for j in range(body_line1, len(lines) + 1):
-                # if lines[j - 1].isspace():
-                    # body_line1 = j + 1
-                # else:
-                    # break
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
