@@ -1781,7 +1781,7 @@ class FileCommands:
 
         if self.usingClipboard:  # write the current tree.
             # Node to be root of tree to be put on clipboard
-            sp = p or c.p # Selected Position: sp
+            sp = p or c.p  # Selected Position: sp
             # build uas dict
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
@@ -1876,7 +1876,7 @@ class FileCommands:
         if p == c.p:
             status |= v.selectedBit
 
-        children = [] # Start empty
+        children = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.

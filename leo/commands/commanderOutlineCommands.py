@@ -362,7 +362,7 @@ def pasteAsTemplate(self, event=None):
         addBody(xvelements[0])
         uas = defaultdict(dict)
         uas.update(xroot.get('uas', {}))
-        root_gnx = xvelements[0].get('gnx') # the gnx of copied node
+        root_gnx = xvelements[0].get('gnx')  # the gnx of copied node
 
     # outside will contain gnxes of nodes that are outside the copied tree
     outside = {x.gnx for x in skip_root(c.hiddenRootNode)}
