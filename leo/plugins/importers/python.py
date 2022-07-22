@@ -13,7 +13,7 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = True
+NEW_PYTHON_IMPORTER = False
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
