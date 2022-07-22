@@ -13,7 +13,7 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = True
+NEW_PYTHON_IMPORTER = False
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
@@ -49,6 +49,7 @@ class Python_Importer(Importer):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
+        trace = True
         assert self.root == parent, (self.root, parent)
 
         line_states: List[Python_ScanState] = []
@@ -325,6 +326,11 @@ class Python_Importer(Importer):
         # Make a list of *all* definitions.
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
+        
+        if trace:
+            # trace results.
+            for z in all_definitions:
+                g.trace(repr(z))
 
         ### g.printObj([repr(z) for z in all_definitions], tag='all_definitions')
 
@@ -469,6 +475,7 @@ def do_import(c, s, parent):
             g.es_print('The python importer requires python 3.7 or above')
             return False
         split_root(parent, s.splitlines(True))
+            
     # Prepend @language and @tabwidth directives.
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
     # Note: some unit tests change this setting.
@@ -504,7 +511,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-
+    trace = True
     rawtokens: List
 
     #@+others
@@ -768,6 +775,11 @@ def split_root(root: Any, lines: List[str]) -> None:
     # Make a list of *all* definitions.
     aList = [getdefn(i) for i, z in enumerate(rawtokens)]
     all_definitions = [z for z in aList if z]
+    
+    if trace:
+        # trace results.
+        for z in all_definitions:
+            g.trace(repr(z))
 
     # Start the recursion.
     root.deleteAllChildren()
