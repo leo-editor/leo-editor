@@ -225,7 +225,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6.2
+Version: 6.6.3
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -244,30 +244,22 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.2 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.3 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.2**
+**The highlights of Leo 6.6.3**
 
-- Add "File Only" option in Leo's Find Pane.
-- Remove pylint-leo.py, pyflakes-leo.py and related code.
-- Add mypy annotations for Leo's most important files.
-- Fixed 9 minor bugs.
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.
 
-**6.6.2 Links**
+**Links**
 
-- [6.6.2 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2)
-- [6.6.2 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.2)
-- [6.6.2 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Abug+is%3Aclosed)
-- [6.6.2 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Aenhancement+)
-- [6.6.2 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.2+label%3Acode+)
-
-**General Links**
-
-- Leo's home page: http://leoeditor.com
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
@@ -280,8 +272,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [More links](http://leoeditor.com/leoLinks.html)
 
 @nowrap
-@language md
-</t>
+@language md</t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
 4.4.5       setup: 547   zip: 379  2007-12-11
@@ -1460,11 +1451,9 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create a release branch: 6.6.3
-
 *Never* merge devel into 6.6.3!
 
-It's OK to merge the 6.63 into devel after the release.
+It's OK to merge the 6.6.3 into devel after the release.
 
 @language rest
 </t>
