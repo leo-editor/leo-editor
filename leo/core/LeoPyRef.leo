@@ -232,7 +232,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d710668037d7107735806000000302e32302e3171087d710968037d710a735806000000302e32312e31710b7d710c68037d710d735806000000302e32322e31710e7d710f5808000000616e6e6f7461746571107d711173752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d710668037d7107735806000000302e32302e3171087d710968037d710a735806000000302e32312e31710b7d710c68037d710d735806000000302e32312e32710e7d710f5808000000616e6e6f7461746571107d7111735806000000302e32322e3171127d71135808000000616e6e6f7461746571147d7115735806000000302e32332e3071167d71175808000000616e6e6f7461746571187d711973752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -1013,7 +1013,8 @@ prolog = 'python3 -m unittest leo.unittests'
 # command = f"{prolog}.commands.test_editCommands.TestEditCommands.test_merge_node_with_next_node"
 # command = f"{prolog}.test_gui.TestQtGui.test_put_html_links"
 # command = f"{prolog}.core.test_leoConfig.TestConfig.test_local_settings_c_page_width"
-command = f"{prolog}.core.test_leoserver.TestLeoServer.test_find_commands"
+# command = f"{prolog}.core.test_leoserver.TestLeoServer.test_find_commands"
+command = f"{prolog}.core.test_leoNodes.TestNodes.test_p_moveToVisBack_in_a_chapter"
 g.execute_shell_commands(command)</t>
 <t tx="ekr.20201013034659.1"></t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""

@@ -1,27 +1,19 @@
-Leo http://leoeditor.com 6.6.2 is now available on
+Leo http://leoeditor.com 6.6.3 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.2**
+**The highlights of Leo 6.6.3**
 
-- Add "File Only" option in Leo's Find Pane.
-- Remove pylint-leo.py, pyflakes-leo.py and related code.
-- Add mypy annotations for Leo's most important files.
-- Fixed 9 minor bugs.
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.
 
-**6.6.2 Links**
+**Links**
 
-- [6.6.2 issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2)
-- [6.6.2 pull requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.6.2)
-- [6.6.2 bug fixes](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Abug+is%3Aclosed)
-- [6.6.2 enhancements](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.2+label%3Aenhancement+)
-- [6.6.2 code-level improvements](https://github.com/leo-editor/leo-editor/issues?q=milestone%3A6.6.2+label%3Acode+)
-
-**General Links**
-
-- Leo's home page: http://leoeditor.com
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)

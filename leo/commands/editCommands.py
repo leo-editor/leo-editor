@@ -3351,8 +3351,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('move-lines-down')
     def moveLinesDown(self, event):
         """
-        Move all lines containing any selected text down one line,
-        moving to the next node if the lines are the last lines of the body.
+        Move all lines containing any selected text down one line.
         """
         c = self.c
         w = self.editWidget(event)
@@ -3395,8 +3394,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('move-lines-up')
     def moveLinesUp(self, event):
         """
-        Move all lines containing any selected text up one line,
-        moving to the previous node as needed.
+        Move all lines containing any selected text up one line.
         """
         c = self.c
         w = self.editWidget(event)

@@ -4327,7 +4327,6 @@ class LeoServer:
         """
         d = self._p_to_ap(p)
         d['headline'] = p.h
-        d['level'] = p.level()
         if p.v.u:
             # tags quantity first if any ua's present
             tagsQty = len(p.v.u.get("__node_tags", []))

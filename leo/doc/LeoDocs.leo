@@ -1533,6 +1533,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
 <v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
 <v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
@@ -1699,6 +1700,8 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20220704113115.1"><vh>Leo 6.6.3 release nodes</vh></v>
+<v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
 <v t="ekr.20220401072939.1"><vh>Leo 6.6.1 release notes</vh></v>
 <v t="ekr.20211105051031.1"><vh>Leo 6.6 release notes</vh></v>
 <v t="ekr.20210921102613.1"><vh>Leo 6.5 release notes</vh>
@@ -2382,9 +2385,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20220523145755.1"></v>
-<v t="ekr.20220523084825.1"><vh>Leo 6.6.2 release nodes</vh></v>
-<v t="ekr.20220704113115.1"><vh>Leo 6.6.3 release nodes</vh></v>
+<v t="ekr.20220704113115.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31300,6 +31301,11 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 
 **The highlights of Leo 6.6.3**
 
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.
+
 **Links**
 
 - 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
@@ -31317,6 +31323,10 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 @nowrap
 @language md
 </t>
+<t tx="ekr.20220719064316.1">- Enhance leoserver.py to support leoInteg and leoJS.
+- Improve how Leo handles url's.
+- Simplify the GlobalConfigManager class.
+- The usual assortment of tweaks and bug fixes.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
