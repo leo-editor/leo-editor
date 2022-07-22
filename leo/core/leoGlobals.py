@@ -7429,7 +7429,9 @@ def handleUnl(unl: str, c: Cmdr) -> Any:
         return c
     else:
         path, unl = unl.split('#', 1)
-    if unl and not path:  # #2407
+    if not unl:
+        return None  # #2731.
+    if not path:  # #2407
         # Move to the unl in *this* commander.
         p = g.findUNL(unl.split("-->"), c)
         if p:
