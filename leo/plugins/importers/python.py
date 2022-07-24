@@ -65,32 +65,24 @@ class Python_Importer(Importer):
             Look for a def or class at lines[i]
             Return None or a class_or_def_tuple describing the class or def.
             """
-            # Based on getdefn of Vitalije's python importer.
+            # Based on Vitalije's importer.
             nonlocal class_pat, def_pat
             nonlocal lines, line_states
 
-            line = lines[i]
-            if not line.strip():
-                return None
-            state = line_states[i]
-            assert state is not None
-            if state.context or not line:
+            line, state = lines[i], line_states[i]
+            if state.context or not line.strip():
                 return None
             m = class_pat.match(line) or def_pat.match(line)
             if not m:
                 return
-                
-            ### g.trace('====', i, lines[i], m)  ###
-
-            kind = m.group(1)
-            name = m.group(2)
+            # Compute declaration data.
             decl_line = i
             decl_indent = self.get_int_lws(line)
 
             # Set body_indent to the indentation of the first non-blank line of the body.
             newlines = m.group(0).count('\n')
             i += (1 + newlines)  # The line after the last decl line.
-            
+
             # Test for a single-line class or def.
             while i < len(lines):
                 line = lines[i]
@@ -102,15 +94,11 @@ class Python_Importer(Importer):
                     break
             else:
                 single_line = True
-                body_indent = decl_indent  # Default for single-indent
-                
-            ### g.trace('body_indent', body_indent)
-                
-            ### g.trace('single_line', single_line)
+                body_indent = decl_indent
 
+            # Multi-line bodies end at the next non-blank with less indentation than body_indent.
+            # This is tricky because of underindented strings and docstrings.
             if not single_line:
-                # The body ends at the next non-blank with less indentation than body_indent.
-                # This is tricky because of underindented strings and docstrings.
                 last_state = None
                 while i < len(lines):
                     line = lines[i]
@@ -131,8 +119,6 @@ class Python_Importer(Importer):
             # Include all following blank lines.
             while i < len(lines) and lines[i].isspace():
                 i += 1
-                
-            ### g.trace('body_line1', i)
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
@@ -140,8 +126,8 @@ class Python_Importer(Importer):
                 body_line1 = i,
                 decl_indent = decl_indent,
                 decl_line1 = decl_line - get_intro(decl_line, decl_indent),
-                kind = kind,
-                name = name,
+                kind = m.group(1),
+                name = m.group(2),
             )
         #@+node:ekr.20220720064902.1: *5* get_intro & helper
         def get_intro(row: int, col: int) -> int:
@@ -149,7 +135,7 @@ class Python_Importer(Importer):
             Return the number of preceeding lines that should be added to this class or def.
             """
             nonlocal lines
-            
+
             # Scan backward for blank or intro lines.
             i = row - 1
             while i >= 0 and (lines[i].isspace() or is_intro_line(lines[i], col)):
