@@ -13,15 +13,13 @@ from leo.core.leoNodes import Position  ###, VNode  ###
 
 #@+<< Define NEW_PYTHON_IMPORTER >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
-NEW_PYTHON_IMPORTER = False
+NEW_PYTHON_IMPORTER = True
 #@-<< Define NEW_PYTHON_IMPORTER >>
 
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
     """A class to store and update scanning state."""
-
-    class_or_def_pat = re.compile(r'\s*(class|def)\s+([\w_]+)\s*(\(.*?\))?(:)?')
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -44,13 +42,19 @@ class Python_Importer(Importer):
 
     def post_pass(self, parent):
         pass
-    #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers
+    #@+node:ekr.20220720043557.8: *3* -*- py_i.gen_lines & helpers (New importer)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
         trace = True
         assert self.root == parent, (self.root, parent)
+
+        class_pat_s = r'\s*(class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
+        class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+        def_pat_s = r'\s*(def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
+        def_pat = re.compile(def_pat_s, re.MULTILINE)
 
         line_states: List[Python_ScanState] = []
         state = Python_ScanState()
@@ -63,8 +67,9 @@ class Python_Importer(Importer):
             Return None or a class_or_def_tuple describing the class or def.
             """
             # Based on getdefn of Vitalije's python importer.
+            nonlocal class_pat, def_pat
             nonlocal lines, line_states
-            trace = True
+
             line = lines[i]
             if not line.strip():
                 return None
@@ -72,48 +77,45 @@ class Python_Importer(Importer):
             assert state is not None
             if state.context or not line:
                 return None
-            m = self.class_or_def_pat.match(line)
+            m = class_pat.match(line) or def_pat.match(line)
             if not m:
-                return None
-            if trace:
-                g.trace(m, m.group(4))
+                return
             kind = m.group(1)
             name = m.group(2)
+            ### g.trace(kind, name)
             decl_line = i
             decl_indent = self.get_int_lws(line)
-            if m.group(4):  # Multi-line class or def.
+            # Find the first non-blank line of the body.
+            newlines = m.group(0).count('\n')
+            i += (1 + newlines)  # The line after the last decl lilne.
+            while i < len(lines):
+                line = lines[i]
                 i += 1
-                # Find the first non-blank line of the body.
-                while i < len(lines):
-                    line = lines[i]
-                    i += 1
-                    if line.strip():
-                        body_indent = self.get_int_lws(line)
-                        break
-                else:
-                    g.trace("Can not happen: no body")
-                    body_indent = decl_indent
-                # The body ends at the next non-blank with less indentation than body_indent
-                i += 1
-                while i < len(lines):
-                    line = lines[i]
-                    i += 1
-                    # g.trace(i, repr(line))
-                    if line.strip() and self.get_int_lws(line) < body_indent:
-                        body_line1 = i - 2
-                        break
-                else:
-                    body_line1 = len(lines)
-                    
-                # Increase body_line1 to include all following blank lines.
-                for j in range(body_line1, len(lines) + 1):
-                    if lines[j - 1].isspace():
-                        body_line1 = j + 1
-                    else:
-                        break
-            else:  # One-line class or def.
-                body_line1 = i
+                if line.strip():
+                    body_indent = self.get_int_lws(line)
+                    break
+            else:
+                g.trace("Can not happen: no body")
                 body_indent = decl_indent
+
+            # The body ends at the next non-blank with less indentation than body_indent
+            i += 1
+            while i < len(lines):
+                line = lines[i]
+                i += 1
+                # g.trace(i, repr(line))
+                if line.strip() and self.get_int_lws(line) < body_indent:
+                    body_line1 = i - 2
+                    break
+            else:
+                body_line1 = len(lines)
+
+            # Increase body_line1 to include all following blank lines.
+            for j in range(body_line1, len(lines) + 1):
+                if lines[j - 1].isspace():
+                    body_line1 = j + 1
+                else:
+                    break
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
@@ -167,7 +169,7 @@ class Python_Importer(Importer):
                     # # A comment at the same indentation as the definition.
                     # return True
                 # return False
-        #@+node:ekr.20220720060831.1: *4* make_node & helpers
+        #@+node:ekr.20220720060831.1: *4* function: make_node & helpers
         def make_node(p: Position,
             start: int,
             start_b: int,
@@ -180,8 +182,8 @@ class Python_Importer(Importer):
             Set p.b and add children recursively using the tokens described by the arguments.
 
                         p: The current node.
-                    start: The line number of the first line of this node
-                  start_b: The line number of first line of this node's function/class body
+                    start: The line number (zero based) of the first line of this node
+                  start_b: The line number (zero based) of first line of this node's function/class body
                       end: The line number of the first line after this node.
             others_indent: Accumulated @others indentation (to be stripped from left).
              inner_indent: The indentation of all of the inner definitions.
@@ -244,6 +246,8 @@ class Python_Importer(Importer):
 
                 last = body_line1
         #@+node:ekr.20220720060831.2: *5* body_lines & body_string
+        # 'lines' is a kwarg to split_root.
+
         def massaged_line(s: str, i: int) -> str:
             """Massage line s, adding the underindent string if necessary."""
             if i == 0 or s[:i].isspace():
@@ -251,28 +255,31 @@ class Python_Importer(Importer):
             n = len(s) - len(s.lstrip())
             return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
 
-        def body_string(a: int, b: Optional[int], i: int) -> str:
+        def body_string(a: int, b: int, i: int) -> str:
             """Return the (massaged) concatentation of lines[a: b]"""
-            nonlocal lines  # 'lines' is a kwarg to split_root.
-            xlines = (massaged_line(s, i) for s in lines[a - 1 : b and (b - 1)])
+            nonlocal lines 
+            xlines = (massaged_line(s, i) for s in lines[a : b])
             return ''.join(xlines)
 
-        def body_lines(a: int, b: Optional[int], i: int) -> List[str]:
-            nonlocal lines  # 'lines' is a kwarg to split_root.
-            return [massaged_line(s, i) for s in lines[a - 1 : b and (b - 1)]]
+        def body_lines(a: int, b: int, i: int) -> List[str]:
+            nonlocal lines
+            return [massaged_line(s, i) for s in lines[a : b]]
         #@+node:ekr.20220720060831.3: *5* declaration_headline
-        def declaration_headline(body_string: str) -> str:  # #2500
+        def declaration_headline(body: str) -> str:  # #2500
             """
             Return an informative headline for s, a group of declarations.
             """
-            for s1 in g.splitLines(body_string):
-                s = s1.strip()
-                if s.startswith('#') and len(s.replace('#', '').strip()) > 1:
-                    # A non-trivial comment: Return the comment w/o the leading '#'.
-                    return s[1:].strip()
-                if s and not s.startswith('#'):
-                    # A non-trivial non-comment.
-                    return s
+            for s in g.splitLines(body):
+                strip_s = s.strip()
+                if strip_s:
+                    if strip_s.startswith('#'):
+                        strip_comment = strip_s[1:].strip()
+                        if strip_comment:
+                            # A non-trivial comment: Return the comment w/o the leading '#'.
+                            return strip_comment
+                    else:
+                        # A non-trivial non-comment.
+                        return strip_s
             # Return legacy headline.
             return "...some declarations"  # pragma: no cover
         #@-others
@@ -287,7 +294,7 @@ class Python_Importer(Importer):
         # Make a list of *all* definitions.
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
-        
+
         if trace:
             # trace results.
             for z in all_definitions:
@@ -298,7 +305,7 @@ class Python_Importer(Importer):
         # Start the recursion.
         parent.deleteAllChildren()
         make_node(
-            p=parent, start=1, start_b=1, end=len(lines)+1,
+            p=parent, start=0, start_b=0, end=len(lines),
             others_indent=0, inner_indent=0, definitions=all_definitions)
     #@+node:ekr.20220720043557.30: *3* py_i.get_new_dict
     #@@nobeautify
@@ -308,7 +315,8 @@ class Python_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        ### This is an override. We know the delims!!
+        ### comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
             aList = d.get(key,[])
@@ -329,8 +337,8 @@ class Python_Importer(Importer):
                         ('len', "'",    context == "'"),
                     ],
             }
-            if block1 and block2:
-                add_key(d, block2[0], ('len', block1, True))
+            ### if block1 and block2:
+            ###    add_key(d, block2[0], ('len', block1, True))
         else:
             # Not in any context.
             d = {
@@ -354,10 +362,10 @@ class Python_Importer(Importer):
                 '[':    [('len', '[', context, (0,0,1)),],
                 ']':    [('len', ']', context, (0,0,-1)),],
             }
-            if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
+            ### if comment:
+            ###    add_key(d, comment[0], ('all', comment, '', None))
+            ### if block1 and block2:
+            ###    add_key(d, block1[0], ('len', block1, block1, None))
         return d
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
@@ -436,7 +444,7 @@ def do_import(c, s, parent):
             g.es_print('The python importer requires python 3.7 or above')
             return False
         split_root(parent, s.splitlines(True))
-            
+
     # Prepend @language and @tabwidth directives.
     parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
     # Note: some unit tests change this setting.
@@ -445,19 +453,8 @@ def do_import(c, s, parent):
             if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
                 p.h = f'class {p.h}'
     return True
-#@+node:vitalije.20211201230203.1: ** split_root & helpers (top-level python importer)
+#@+node:vitalije.20211201230203.1: ** -*- split_root & helpers (Vitalije's importer)
 SPLIT_THRESHOLD = 10
-
-# This named tuple contains all data relating to one declaration of a class or def.
-def_tuple = namedtuple('def_tuple', [
-    'body_indent',  # Indentation of body.
-    'body_line1',  # Line number of the first line after the definition.
-    'decl_indent',  # Indentation of the class or def line.
-    'decl_line1',  # Line number of the first line of this node.
-                   # This line may be a comment or decorator.
-    'kind',  # 'def' or 'class'.
-    'name',  # name of the function, class or method.
-])
 
 def split_root(root: Any, lines: List[str]) -> None:
     """
@@ -472,14 +469,14 @@ def split_root(root: Any, lines: List[str]) -> None:
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-    trace = True
+    trace = False
     rawtokens: List
 
     #@+others
     #@+node:vitalije.20211208092910.1: *3* getdefn & helper
     def getdefn(start: int) -> def_tuple:
         """
-        Look for a def or class found at rawtokens[start].
+        Look for an 'async', 'def' or `class` token at rawtokens[start].
         Return None or a def_tuple describing the def or class.
         """
         nonlocal lines  # 'lines' is a kwarg to split_root.
@@ -736,11 +733,11 @@ def split_root(root: Any, lines: List[str]) -> None:
     # Make a list of *all* definitions.
     aList = [getdefn(i) for i, z in enumerate(rawtokens)]
     all_definitions = [z for z in aList if z]
-    
+
     if trace:
         # trace results.
-        for z in all_definitions:
-            g.trace(repr(z))
+        for i, z in enumerate(all_definitions):
+            g.trace(i, repr(z))
 
     # Start the recursion.
     root.deleteAllChildren()
@@ -753,19 +750,35 @@ importer_dict = {
     'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
 }
 
+# For new importer.
 #@+<< define class_or_def_tuple >>
-#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >>
+#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (new importer)
 # A named tuple containing all data relating to one declaration of a class or def.
 class_or_def_tuple = namedtuple('class_or_def_tuple', [
     'body_indent',  # Indentation of body.
     'body_line1',  # Line number of the *last* line of the definition.
+    'decl_indent',  # Indentation of the class or def line.
+    'decl_line1',  # Line number of the *first* line of this node.
+                   # This line may be a comment or decorator.
+    'kind',  # 'def' or 'class'.
+    'name',  # name of the function, class or method.
+])
+#@-<< define class_or_def_tuple >>
+
+# For Vitalije's importer.
+#@+<< define def_tuple >>
+#@+node:ekr.20220724060054.1: ** << define def_tuple >> (Vitalije's importer)
+# This named tuple contains all data relating to one declaration of a class or def.
+def_tuple = namedtuple('def_tuple', [
+    'body_indent',  # Indentation of body.
+    'body_line1',  # Line number of the first line after the definition.
     'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the first line of this node.
                    # This line may be a comment or decorator.
     'kind',  # 'def' or 'class'.
     'name',  # name of the function, class or method.
 ])
-#@-<< define class_or_def_tuple >>
+#@-<< define def_tuple >>
 
 #@@language python
 #@@tabwidth -4
