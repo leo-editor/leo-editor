@@ -130,7 +130,7 @@ class Python_Importer(Importer):
             
             # Scan backward for blank or intro lines.
             i = row - 1
-            while i >= 0 and (lines[i].isspace() or is_intro_line(i, col)):
+            while i >= 0 and (lines[i].isspace() or is_intro_line(lines[i], col)):
                 i -= 1
 
             # Remove blank lines from the start of the intro.
@@ -143,19 +143,16 @@ class Python_Importer(Importer):
                     break
             return row - i
         #@+node:ekr.20220720064902.2: *6* is_intro_line
-        def is_intro_line(n: int, col: int) -> bool:
+        def is_intro_line(line: str, col: int) -> bool:
             """
             Return True if line n is either:
             - a comment line that starts at the same column as the def/class line,
             - a decorator line
             """
-            nonlocal lines
-            line = lines[n]
-            if col != g.computeLeadingWhitespaceWidth(line, self.tab_width):
-                return False
-            if line.strip()[0] in '@#':  # A comment or decorator.
-                return True  # Not accurate for multi-line decorators.
-            return False
+            return (
+                col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
+                and line.strip()[0] in '@#'
+            )
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers
         def make_node(p: Position,
             start: int,
