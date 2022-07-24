@@ -249,7 +249,7 @@ class Python_Importer(Importer):
 
         def body_string(a: int, b: int, i: int) -> str:
             """Return the (massaged) concatentation of lines[a: b]"""
-            nonlocal lines 
+            nonlocal lines
             xlines = (massaged_line(s, i) for s in lines[a : b])
             return ''.join(xlines)
 
@@ -281,17 +281,9 @@ class Python_Importer(Importer):
             state = self.scan_line(line, state)
             line_states.append(state)
 
-        ### g.printObj(line_states, tag='line_states')
-
         # Make a list of *all* definitions.
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
-
-        if 0: # trace results.
-            for z in all_definitions:
-                g.trace(repr(z))
-
-        ### g.printObj([repr(z) for z in all_definitions], tag='all_definitions')
 
         # Start the recursion.
         parent.deleteAllChildren()
