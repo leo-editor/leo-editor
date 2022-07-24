@@ -1961,7 +1961,7 @@ class TestPython(BaseTestImporter):
         
         This is *not* part of the Importer pipeline.
         """
-        trace = True
+        trace = False
         if trace:
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
@@ -2345,7 +2345,7 @@ class TestPython(BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
-    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_no_methods
+    #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_under_indented
     def test_large_class_under_indented(self):
         txt = ('class A:\n'
                 '    a=1\n'
@@ -2502,7 +2502,7 @@ class TestPython(BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
-    #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes
+    #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
     def test_nested_classes_with_async(self):
         txt = ('class TestCopyFile(unittest.TestCase):\n'
                 '\n'

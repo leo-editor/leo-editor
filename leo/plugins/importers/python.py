@@ -79,6 +79,9 @@ class Python_Importer(Importer):
             m = class_pat.match(line) or def_pat.match(line)
             if not m:
                 return
+                
+            ### g.trace('====', i, lines[i], m)  ###
+
             kind = m.group(1)
             name = m.group(2)
             decl_line = i
@@ -87,37 +90,56 @@ class Python_Importer(Importer):
             # Set body_indent to the indentation of the first non-blank line of the body.
             newlines = m.group(0).count('\n')
             i += (1 + newlines)  # The line after the last decl line.
+            
+            # Test for a single-line class or def.
             while i < len(lines):
                 line = lines[i]
-                if line.strip():
+                if line.isspace():  ### or line.strip().startswith('#'):
+                    i += 1
+                else:
                     body_indent = self.get_int_lws(line)
+                    single_line = body_indent == decl_indent
                     break
-                i += 1
             else:
-                g.trace("Can not happen: no body")
-                body_indent = decl_indent
+                single_line = True
+                body_indent = decl_indent  # Default for single-indent
+                
+            ### g.trace('body_indent', body_indent)
+                
+            ### g.trace('single_line', single_line)
 
-            # The body ends at the next non-blank with less indentation than body_indent.
-            while i < len(lines):
-                line = lines[i]
-                if line.strip() and self.get_int_lws(line) < body_indent:
-                    break
-                i += 1
+            if not single_line:
+                # The body ends at the next non-blank with less indentation than body_indent.
+                # This is tricky because of underindented strings and docstrings.
+                last_state = None
+                while i < len(lines):
+                    line = lines[i]
+                    this_state = line_states[i]
+                    last_context = last_state.context if last_state else ''
+                    this_context = this_state.context if this_state else ''
+                    ### g.trace(f"{i:3} {last_context:4} {this_context:4} {lines[i]!r}")
+                    if (
+                        not line.isspace()
+                        and this_context not in ("'''", '"""', "'", '"')
+                        and last_context not in ("'''", '"""', "'", '"')
+                        and self.get_int_lws(line) < body_indent
+                    ):
+                        break
+                    last_state = this_state
+                    i += 1
 
             # Include all following blank lines.
             while i < len(lines) and lines[i].isspace():
                 i += 1
                 
-            ### if name == 'Class2': g.pdb()
-
-            decl_line1 = decl_line - get_intro(decl_line, decl_indent)  ### To be moved.
+            ### g.trace('body_line1', i)
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
                 body_indent = body_indent,
                 body_line1 = i,
                 decl_indent = decl_indent,
-                decl_line1 = decl_line1,
+                decl_line1 = decl_line - get_intro(decl_line, decl_indent),
                 kind = kind,
                 name = name,
             )
