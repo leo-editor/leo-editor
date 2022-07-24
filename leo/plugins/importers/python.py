@@ -47,13 +47,12 @@ class Python_Importer(Importer):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
-        trace = True
         assert self.root == parent, (self.root, parent)
 
-        class_pat_s = r'\s*(class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
+        class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
         class_pat = re.compile(class_pat_s, re.MULTILINE)
 
-        def_pat_s = r'\s*(def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
+        def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
         def_pat = re.compile(def_pat_s, re.MULTILINE)
 
         line_states: List[Python_ScanState] = []
@@ -82,47 +81,43 @@ class Python_Importer(Importer):
                 return
             kind = m.group(1)
             name = m.group(2)
-            ### g.trace(kind, name)
             decl_line = i
             decl_indent = self.get_int_lws(line)
-            # Find the first non-blank line of the body.
+
+            # Set body_indent to the indentation of the first non-blank line of the body.
             newlines = m.group(0).count('\n')
-            i += (1 + newlines)  # The line after the last decl lilne.
+            i += (1 + newlines)  # The line after the last decl line.
             while i < len(lines):
                 line = lines[i]
-                i += 1
                 if line.strip():
                     body_indent = self.get_int_lws(line)
                     break
+                i += 1
             else:
                 g.trace("Can not happen: no body")
                 body_indent = decl_indent
 
-            # The body ends at the next non-blank with less indentation than body_indent
-            i += 1
+            # The body ends at the next non-blank with less indentation than body_indent.
             while i < len(lines):
                 line = lines[i]
-                i += 1
-                # g.trace(i, repr(line))
                 if line.strip() and self.get_int_lws(line) < body_indent:
-                    body_line1 = i - 2
                     break
-            else:
-                body_line1 = len(lines)
+                i += 1
 
-            # Increase body_line1 to include all following blank lines.
-            for j in range(body_line1, len(lines) + 1):
-                if lines[j - 1].isspace():
-                    body_line1 = j + 1
-                else:
-                    break
+            # Include all following blank lines.
+            while i < len(lines) and lines[i].isspace():
+                i += 1
+                
+            ### if name == 'Class2': g.pdb()
+
+            decl_line1 = decl_line - get_intro(decl_line, decl_indent)  ### To be moved.
 
             # This is the only instantiation of class_or_def_tuple.
             return class_or_def_tuple(
                 body_indent = body_indent,
-                body_line1 = body_line1,
+                body_line1 = i,
                 decl_indent = decl_indent,
-                decl_line1 = decl_line - get_intro(decl_line, decl_indent),
+                decl_line1 = decl_line1,
                 kind = kind,
                 name = name,
             )
@@ -131,20 +126,22 @@ class Python_Importer(Importer):
             """
             Return the number of preceeding lines that should be added to this class or def.
             """
-            return 0  ###
-            ###
-                # last = row
-                # for i in range(row - 1, 0, -1):
-                    # if is_intro_line(i, col):
-                        # last = i
-                    # else:
-                        # break
-                # # Remove blank lines from the start of the intro.
-                # # Leading blank lines should be added to the end of the preceeding node.
-                # for i in range(last, row):
-                    # if lines[i - 1].isspace():
-                        # last = i + 1
-                # return row - last
+            nonlocal lines
+            
+            # Scan backward for blank or intro lines.
+            i = row - 1
+            while i >= 0 and (lines[i].isspace() or is_intro_line(i, col)):
+                i -= 1
+
+            # Remove blank lines from the start of the intro.
+            # Leading blank lines should be added to the end of the preceeding node.
+            i += 1
+            while i < row:
+                if lines[i].isspace():
+                    i += 1
+                else:
+                    break
+            return row - i
         #@+node:ekr.20220720064902.2: *6* is_intro_line
         def is_intro_line(n: int, col: int) -> bool:
             """
@@ -152,23 +149,13 @@ class Python_Importer(Importer):
             - a comment line that starts at the same column as the def/class line,
             - a decorator line
             """
+            nonlocal lines
+            line = lines[n]
+            if col != g.computeLeadingWhitespaceWidth(line, self.tab_width):
+                return False
+            if line.strip()[0] in '@#':  # A comment or decorator.
+                return True  # Not accurate for multi-line decorators.
             return False
-            # Filter out all whitespace tokens.
-            ###
-                # xs = [z for z in lntokens[n] if z[0] not in (token.DEDENT, token.INDENT, token.NL)]
-                # if not xs:  # A blank line.
-                    # return True  # Allow blank lines in a block of comments.
-                # t = xs[0]  # The first non blank token in line n.
-                # if t.start[1] != col:
-                    # # Not the same indentation as the definition.
-                    # return False
-                # if t.type == token.OP and t.string == '@':
-                    # # A decorator.
-                    # return True
-                # if t.type == token.COMMENT:
-                    # # A comment at the same indentation as the definition.
-                    # return True
-                # return False
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers
         def make_node(p: Position,
             start: int,
@@ -295,8 +282,7 @@ class Python_Importer(Importer):
         aList = [get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if trace:
-            # trace results.
+        if 0: # trace results.
             for z in all_definitions:
                 g.trace(repr(z))
 

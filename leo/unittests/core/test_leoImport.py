@@ -1961,8 +1961,7 @@ class TestPython(BaseTestImporter):
         
         This is *not* part of the Importer pipeline.
         """
-        ### from leo.plugins.importers.python import NEW_PYTHON_IMPORTER
-        trace = False  ### NEW_PYTHON_IMPORTER
+        trace = True
         if trace:
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
@@ -2214,7 +2213,7 @@ class TestPython(BaseTestImporter):
                       '    pass\n'
                       '\n'
             ),
-            (1, 'Class1', 'class Class1:\n'
+            (1, 'Class1', 'class Class1:\n'  # Don't split very short classes.
                           '    def method11():\n'
                           '        pass\n'
                           '    def method12():\n'
