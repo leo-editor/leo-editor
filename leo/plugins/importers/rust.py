@@ -146,6 +146,7 @@ class Rust_Importer(Importer):
         Subclasses may override...
         """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == ('//', '/*', '*/'), f"rust: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, pattern, data):
             key = pattern[0]
@@ -161,18 +162,21 @@ class Rust_Importer(Importer):
 
         if context:
             d = {
-                # key    kind      pattern  ends?
-                '\\':   [('len+1', '\\',    None),],
-                '"':    [('len',   '"',     context == '"'),],
-                # "'":    [('len',   "'",     context == "'"),],
+                # key    kind  pattern  ends?
+                '\\':   [('len+1', '\\', None)],
+                '"':    [('len',   '"', context == '"')],
+                # "'":    [('len', "'", context == "'"),],
+                '*':    [('len', '*/', context == '/*')],
             }
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
         else:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None)],
+                '/':    [
+                    ('all', '//', context, None),
+                    ('len', '/*', '/*', None),
+                ],
+                '\\':   [('len+1', '\\', context, None)],
                 '"':    [('len', '"', '"',     None)],
                 # "'":    [('len', "'", "'",     None)],
                 '{':    [('len', '{', context, (1,0,0))],
@@ -182,10 +186,6 @@ class Rust_Importer(Importer):
                 '[':    [('len', '[', context, (0,0,1))],
                 ']':    [('len', ']', context, (0,0,-1))],
             }
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
         return d
     #@-others
 #@+node:ekr.20200316101240.7: ** class Rust_ScanState

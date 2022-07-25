@@ -1958,7 +1958,7 @@ class TestPython(BaseTestImporter):
     def check_outline(self, p, nodes):
         """
         TestPython.check_outline.
-        
+
         This is *not* part of the Importer pipeline.
         """
         trace = False

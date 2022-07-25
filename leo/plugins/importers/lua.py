@@ -119,7 +119,7 @@ class Lua_Importer(Importer):
     def get_new_dict(self, context):
         """The scan dict for the lua language."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert comment
+        assert (comment, block1, block2) == ('--', '', ''), f"lua: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, pattern, data):
             key = pattern[0]
@@ -144,30 +144,25 @@ class Lua_Importer(Importer):
                 add_key(d, pattern, ('len', pattern, context==open_pattern))
                 pattern = '--]%s]' % ('='*i)
                 add_key(d, pattern, ('len', pattern, context==open_pattern))
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
         else:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '--':   [('all', comment, context, None)],  # Regular comment.
+                '\\':   [('len+1', '\\', context, None)],
+                '"':    [('len', '"', '"',     None)],
+                "'":    [('len', "'", "'",     None)],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
             }
             # Start Lua long brackets.
             for i in range(10):
                 pattern = '--[%s[' % ('='*i)
                 add_key(d, pattern, ('len', pattern, pattern, None))
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
         return d
     #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):

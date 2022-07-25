@@ -28,6 +28,7 @@ class Elisp_Importer(Importer):
     def get_new_dict(self, context):
         """elisp state dictionary for the given context."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == (';', '', ''), f"elisp: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, pattern, data):
             key = pattern[0]
@@ -40,31 +41,25 @@ class Elisp_Importer(Importer):
         if context:
             d = {
                 # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [('len', '"',    context == '"'),],
+                '\\':   [('len+1', '\\', None)],
+                '"':    [('len', '"', context == '"')],
                 # "'":    [('len', "'",    context == "'"),],
             }
-            if block1 and block2:
-                # Bug fix: 2016/12/04: the tuple contained block1, not block2.
-                add_key(d, block2, ('len', block2, True))
         else:
             # Not in any context.
             d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
+                # key    kind   pattern   new-ctx  deltas
+                ';':    [('all', comment, context, None)],
+                '\\':   [('len+1', '\\', context, None)],
+                '"':    [('len', '"', '"', None)],
                 # "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
             }
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
         return d
     #@+node:ekr.20161127184128.4: *3* elisp_i.clean_headline
     elisp_clean_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')

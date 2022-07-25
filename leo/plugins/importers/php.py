@@ -35,8 +35,8 @@ class Php_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         """
-        trace = 'importers' in g.app.debug
         comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == ('//', '/*', '*/'), f"php: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, key, data):
             aList = d.get(key,[])
@@ -48,35 +48,30 @@ class Php_Importer(Importer):
         if context:
             d = {
                 # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [('len', '"',    context == '"'),],
-                "'":    [('len', "'",    context == "'"),],
-
+                '\\':   [('len+1', '\\', None)],
+                '"':    [('len', '"',    context == '"')],
+                "'":    [('len', "'",    context == "'")],
+                '*':    [('len', '*/', True)],  # #1717.
             }
-            if block1 and block2:
-                add_key(d, block2[0], ('len', block2, True))  # #1717.
         else:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '<':    [('<<<', '<<<', '<<<', None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '/':    [
+                    ('all', '//', context, None),
+                    ('len', '/*', '/*', None),
+                ],
+                '\\':   [('len+1', '\\', context, None)],
+                '<':    [('<<<', '<<<', '<<<', None)],
+                '"':    [('len', '"', '"',     None)],
+                "'":    [('len', "'", "'",     None)],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
             }
-            if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
-        if trace:
-            g.trace(f"{comment!r} {block1!r} {block2!r}")
-            g.printObj(d, tag=f"scan table for context {context!r}")
         return d
     #@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
     def scan_dict(self, context, i, s, d):

@@ -33,6 +33,7 @@ class CS_Importer(Importer):
         Subclasses may override...
         """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == ('#', '', ''), f"coffeescript: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, key, data):
             aList = d.get(key,[])
@@ -43,33 +44,30 @@ class CS_Importer(Importer):
 
         if context:
             d = {
-                # key    kind   pattern  ends?
+                # key   kind   pattern  ends?
                 '\\':   [('len+1', '\\', None),],
-                '#':    [('len', '###',  context == '###'),],
-                '"':    [('len', '"',    context == '"'),],
-                "'":    [('len', "'",    context == "'"),],
+                '#':    [('len', '###', context == '###')],
+                '"':    [('len', '"', context == '"')],
+                "'":    [('len', "'", context == "'")],
             }
-            if block1 and block2:
-                add_key(d, block2[0], ('len', block1, True))
         else:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '#':    [('len','###','###',   None),], # Docstring
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '\\':   [('len+1', '\\', context, None)],
+                '#':    [
+                            ('len','###','###', None), # Docstring
+                            ('all', '#', context, None),
+                        ],
+                '"':    [('len', '"', '"', None)],
+                "'":    [('len', "'", "'", None)],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
             }
-            if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
         return d
     #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.gen_lines
     #@+node:ekr.20161118134555.2: *4* coffee_i.end_block

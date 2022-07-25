@@ -29,6 +29,7 @@ class Python_Importer(Importer):
             state_class=Python_ScanState,
             strict=True,
         )
+        ### self.ws_pattern = re.compile(r'^\s*$|^\s*#')
         self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
@@ -47,6 +48,7 @@ class Python_Importer(Importer):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
+        # Based on Vitalije's importer.
         assert self.root == parent, (self.root, parent)
 
         class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
@@ -74,7 +76,7 @@ class Python_Importer(Importer):
                 return None
             m = class_pat.match(line) or def_pat.match(line)
             if not m:
-                return
+                return None
             # Compute declaration data.
             decl_line = i
             decl_indent = self.get_int_lws(line)
@@ -82,6 +84,8 @@ class Python_Importer(Importer):
             # Set body_indent to the indentation of the first non-blank line of the body.
             newlines = m.group(0).count('\n')
             i += (1 + newlines)  # The line after the last decl line.
+
+            ####### What about comments??????????
 
             # Test for a single-line class or def.
             while i < len(lines):
@@ -298,8 +302,8 @@ class Python_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         """
-        ### This is an override. We know the delims!!
-        ### comment, block1, block2 = self.single_comment, self.block1, self.block2
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == ('#', '', ''), f"python: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, key, data):
             aList = d.get(key,[])
@@ -320,8 +324,6 @@ class Python_Importer(Importer):
                         ('len', "'",    context == "'"),
                     ],
             }
-            ### if block1 and block2:
-            ###    add_key(d, block2[0], ('len', block1, True))
         else:
             # Not in any context.
             d = {
@@ -345,10 +347,6 @@ class Python_Importer(Importer):
                 '[':    [('len', '[', context, (0,0,1)),],
                 ']':    [('len', ']', context, (0,0,-1)),],
             }
-            ### if comment:
-            ###    add_key(d, comment[0], ('all', comment, '', None))
-            ### if block1 and block2:
-            ###    add_key(d, block1[0], ('len', block1, block1, None))
         return d
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState

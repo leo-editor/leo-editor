@@ -125,19 +125,16 @@ class Importer:
         self.tree_type = ic.treeType if c else None  # '@root', '@file', etc.
 
         # Constants...
-        if ic:
-            data = g.set_delims_from_language(self.name)
-            self.single_comment, self.block1, self.block2 = data
+        self.single_comment, self.block1, self.block2 = g.set_delims_from_language(self.name)
+        if self.single_comment:
+            self.ws_pattern = re.compile(fr"^\s*$|^\s*{self.single_comment}")
         else:
-            self.single_comment, self.block1, self.block2 = '//', '/*', '*/'  # Javascript.
-        if ic:
-            self.escape = c.atFileCommands.underindentEscapeString
-            self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
-            # m.group(1) is the unindent value.
-            self.escape_pattern = re.compile(self.escape_string)
+            self.ws_pattern = re.compile(r'^\s*$')
+        self.escape = c.atFileCommands.underindentEscapeString
+        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape) # m.group(1) is the unindent value.
+        self.escape_pattern = re.compile(self.escape_string)
         self.ScanState = ScanState  # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0  # Must be set in run, using self.root.
-        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
 
         # Settings...
         self.reloadSettings()

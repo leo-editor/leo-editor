@@ -441,6 +441,7 @@ class Cython_Importer(Importer):
         Subclasses may override...
         """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
+        assert (comment, block1, block2) == ('#', '', ''), f"cython: {comment!r} {block1!r} {block2!r}"
 
         def add_key(d, key, data):
             aList = d.get(key,[])
@@ -462,35 +463,29 @@ class Cython_Importer(Importer):
                         ('len', "'",    context == "'"),
                     ],
             }
-            if block1 and block2:
-                add_key(d, block2[0], ('len', block1, True))
         else:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\': [('len+1','\\', context, None),],
-                '#':  [('all', '#',   context, None),],
-                '"':[
-                        # order matters.
-                        ('len', '"""',  '"""', None),
-                        ('len', '"',    '"',   None),
-                    ],
-                "'":[
-                        # order matters.
-                        ('len', "'''",  "'''", None),
-                        ('len', "'",    "'",   None),
-                    ],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '\\':   [('len+1','\\', context, None)],
+                '#':    [('all', '#',   context, None)],
+                '"':    [
+                            # order matters.
+                            ('len', '"""',  '"""', None),
+                            ('len', '"',    '"',   None),
+                        ],
+                "'":    [
+                            # order matters.
+                            ('len', "'''",  "'''", None),
+                            ('len', "'",    "'",   None),
+                        ],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
             }
-            if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
         return d
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
