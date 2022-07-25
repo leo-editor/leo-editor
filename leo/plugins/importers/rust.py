@@ -148,12 +148,6 @@ class Rust_Importer(Importer):
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('//', '/*', '*/'), f"rust: {comment!r} {block1!r} {block2!r}"
 
-        def add_key(d, pattern, data):
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-        #
         # About context dependent lifetime tokens:
         # https://doc.rust-lang.org/stable/reference/tokens.html#lifetimes-and-loop-labels
         #

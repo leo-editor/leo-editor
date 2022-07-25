@@ -38,11 +38,6 @@ class Php_Importer(Importer):
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('//', '/*', '*/'), f"php: {comment!r} {block1!r} {block2!r}"
 
-        def add_key(d, key, data):
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
         d: Dict[str, List[Any]]
 
         if context:

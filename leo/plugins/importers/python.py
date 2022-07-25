@@ -11,10 +11,14 @@ import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Importer  ### , Target  ###
 from leo.core.leoNodes import Position  ###, VNode  ###
 
-#@+<< Define NEW_PYTHON_IMPORTER >>
-#@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER >> python.py
+#@+<< Define importer switches >>
+#@+node:ekr.20220720181543.1: ** << Define importer switches >> python.py
+# False: use Vitalije's importer.
 NEW_PYTHON_IMPORTER = True
-#@-<< Define NEW_PYTHON_IMPORTER >>
+
+# True: use token-based importer (only if NEW_PYTHON_IMPORTER is True)
+USE_TOKENS = False
+#@-<< Define importer switches >>
 
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -85,12 +89,10 @@ class Python_Importer(Importer):
             newlines = m.group(0).count('\n')
             i += (1 + newlines)  # The line after the last decl line.
 
-            ####### What about comments??????????
-
             # Test for a single-line class or def.
             while i < len(lines):
                 line = lines[i]
-                if line.isspace():  ### or line.strip().startswith('#'):
+                if line.isspace():
                     i += 1
                 else:
                     body_indent = self.get_int_lws(line)
@@ -109,7 +111,6 @@ class Python_Importer(Importer):
                     this_state = line_states[i]
                     last_context = last_state.context if last_state else ''
                     this_context = this_state.context if this_state else ''
-                    ### g.trace(f"{i:3} {last_context:4} {this_context:4} {lines[i]!r}")
                     if (
                         not line.isspace()
                         and this_context not in ("'''", '"""', "'", '"')
@@ -278,12 +279,21 @@ class Python_Importer(Importer):
                         return strip_s
             # Return legacy headline.
             return "...some declarations"  # pragma: no cover
+        #@+node:ekr.20220725092923.1: *4* function: tokenize
+        def tokenize(lines):
+            
+            pass
         #@-others
-
-        # Prepass: calculate line states.
-        for line in lines:
-            state = self.scan_line(line, state)
-            line_states.append(state)
+        
+        if USE_TOKENS:
+            tokens = tokenize(lines)
+            assert tokens  ###
+            
+        else:
+            # Prepass: calculate line states.
+            for line in lines:
+                state = self.scan_line(line, state)
+                line_states.append(state)
 
         # Make a list of *all* definitions.
         aList = [get_class_or_def(i) for i in range(len(lines))]
@@ -305,12 +315,8 @@ class Python_Importer(Importer):
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('#', '', ''), f"python: {comment!r} {block1!r} {block2!r}"
 
-        def add_key(d, key, data):
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
         d: Dict
+
         if context:
             d = {
                 # key   kind    pattern ends?
