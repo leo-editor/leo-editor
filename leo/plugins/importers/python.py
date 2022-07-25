@@ -281,14 +281,14 @@ class Python_Importer(Importer):
             return "...some declarations"  # pragma: no cover
         #@+node:ekr.20220725092923.1: *4* function: tokenize
         def tokenize(lines):
-            
+
             pass
         #@-others
-        
+
         if USE_TOKENS:
             tokens = tokenize(lines)
             assert tokens  ###
-            
+
         else:
             # Prepass: calculate line states.
             for line in lines:
