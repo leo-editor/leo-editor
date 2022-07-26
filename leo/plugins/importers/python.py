@@ -14,13 +14,17 @@ from leo.core.leoNodes import Position
 #@+<< Define importer switches >>
 #@+node:ekr.20220720181543.1: ** << Define importer switches >> python.py
 # False: use Vitalije's importer.
-NEW_PYTHON_IMPORTER = False
+NEW_PYTHON_IMPORTER = True
 #@-<< Define importer switches >>
 
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
-    """A class to store and update scanning state."""
+    """
+    A protype importer for eventual use by leoJS.
+    
+    Leo itself will never use this class.
+    """
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
