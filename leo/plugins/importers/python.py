@@ -34,7 +34,6 @@ class Python_Importer(Importer):
             state_class=Python_ScanState,
             strict=True,
         )
-        # self.put_decorators = self.c.config.getBool('put-python-decorators-in-imported-headlines')
 
     #@+others
     #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers (New importer)
@@ -337,12 +336,12 @@ class Python_Importer(Importer):
                         ('len', "'''",  "'''", None),
                         ('len', "'",    "'",   None),
                     ],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                # '{':    [('len', '{', context, (1,0,0)),],
+                # '}':    [('len', '}', context, (-1,0,0)),],
+                # '(':    [('len', '(', context, (0,1,0)),],
+                # ')':    [('len', ')', context, (0,-1,0)),],
+                # '[':    [('len', '[', context, (0,0,1)),],
+                # ']':    [('len', ']', context, (0,0,-1)),],
             }
         return d
     #@-others
@@ -353,18 +352,18 @@ class Python_ScanState:
     def __init__(self, d=None):
         """Python_ScanState ctor."""
         if d:
-            indent = d.get('indent')
+            # indent = d.get('indent')
             prev = d.get('prev')
-            self.indent = prev.indent if prev.bs_nl else indent
+            ### self.indent = prev.indent if prev.bs_nl else indent
             self.context = prev.context
-            self.curlies = prev.curlies
-            self.parens = prev.parens
-            self.squares = prev.squares
+            # self.curlies = prev.curlies
+            # self.parens = prev.parens
+            # self.squares = prev.squares
         else:
-            self.bs_nl = False
+            # self.bs_nl = False
             self.context = ''
-            self.curlies = self.parens = self.squares = 0
-            self.indent = 0
+            # self.curlies = self.parens = self.squares = 0
+            ### self.indent = 0
 
     #@+others
     #@+node:ekr.20220720044208.2: *3* py_state.__repr__ & short_description
@@ -375,27 +374,28 @@ class Python_ScanState:
     __str__ = __repr__
 
     def short_description(self):  # pylint: disable=no-else-return
-        bsnl = 'bs-nl' if self.bs_nl else ''
-        context = f"{self.context} " if self.context else ''
-        indent = self.indent
-        curlies = f"{{{self.curlies}}}" if self.curlies else ''
-        parens = f"({self.parens})" if self.parens else ''
-        squares = f"[{self.squares}]" if self.squares else ''
-        return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
-    #@+node:ekr.20220720044208.3: *3* py_state.level
-    def level(self):
-        """Python_ScanState.level."""
-        return self.indent
-    #@+node:ekr.20220720044208.4: *3* py_state.in_context
-    def in_context(self):
-        """True if in a special context."""
-        return (
-            self.context or
-            self.curlies > 0 or
-            self.parens > 0 or
-            self.squares > 0 or
-            self.bs_nl
-        )
+        # bsnl = 'bs-nl' if self.bs_nl else ''
+        return self.context
+        # context = f"{self.context} " if self.context else ''
+        # indent = self.indent
+        # curlies = f"{{{self.curlies}}}" if self.curlies else ''
+        # parens = f"({self.parens})" if self.parens else ''
+        # squares = f"[{self.squares}]" if self.squares else ''
+        # return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
+    #@+node:ekr.20220720044208.3: *3* py_state.level (not used)
+    # def level(self):
+        # """Python_ScanState.level."""
+        # return self.indent
+    #@+node:ekr.20220720044208.4: *3* py_state.in_context (not used)
+    # def in_context(self):
+        # """True if in a special context."""
+        # return (
+            # self.context or
+            # self.curlies > 0 or
+            # self.parens > 0 or
+            # self.squares > 0 or
+            # self.bs_nl
+        # )
     #@+node:ekr.20220720044208.5: *3* py_state.update
     def update(self, data):
         """
@@ -405,9 +405,9 @@ class Python_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c
-        self.parens += delta_p
-        self.squares += delta_s
+        # self.curlies += delta_c
+        # self.parens += delta_p
+        # self.squares += delta_s
         return i
 
     #@-others
