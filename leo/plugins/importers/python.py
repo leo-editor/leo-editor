@@ -356,7 +356,7 @@ class Python_ScanState:
             self.context = prev.context
         else:
             self.context = ''
-            
+
     def __repr__(self):
         """Py_State.__repr__"""
         return f"Python_ScanState: {self.context}"
