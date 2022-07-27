@@ -43,10 +43,10 @@ class Markdown_Importer(Importer):
                 skip -= 1
             elif not in_code and self.lookahead_underline(i, lines):
                 level = 1 if lines[i + 1].startswith('=') else 2
-                self.make_node(level, line)
+                self.make_markdown_node(level, line)
                 skip = 1
             elif not in_code and name:
-                self.make_node(level, name)
+                self.make_markdown_node(level, name)
             elif i == 0:
                 self.make_decls_node(line)
             elif in_code:
@@ -142,8 +142,8 @@ class Markdown_Importer(Importer):
             headline='!Declarations',
         )
         self.stack.append(child)
-    #@+node:ekr.20161125095217.1: *4* md_i.make_node
-    def make_node(self, level, name):  # pylint: disable=arguments-differ
+    #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
+    def make_markdown_node(self, level, name):
         """Create a new node."""
         self.find_parent(level=level, h=name)
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass

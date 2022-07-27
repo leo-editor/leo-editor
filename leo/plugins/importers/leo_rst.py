@@ -55,11 +55,11 @@ class Rst_Importer(Importer):
                 skip -= 1
             elif self.is_lookahead_overline(i, lines):
                 level = self.ch_level(line[0])
-                self.make_node(level, lines[i + 1])
+                self.make_rst_node(level, lines[i + 1])
                 skip = 2
             elif self.is_lookahead_underline(i, lines):
                 level = self.ch_level(lines[i + 1][0])
-                self.make_node(level, line)
+                self.make_rst_node(level, line)
                 skip = 1
             elif i == 0:
                 p = self.make_dummy_node('!Dummy chapter')
@@ -152,7 +152,7 @@ class Rst_Importer(Importer):
         self.stack.append(child)
         return child
     #@+node:ekr.20161129040921.7: *4* rst_i.make_node
-    def make_node(self, level, headline):  # pylint: disable=arguments-differ
+    def make_rst_node(self, level, headline):
         """Create a new node, with the given headline."""
         self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
