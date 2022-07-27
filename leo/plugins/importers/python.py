@@ -231,7 +231,7 @@ class Python_Importer(Importer):
                     child.b = body_string(decl_line1, body_line1, inner_indent)
 
                 last = body_line1
-        #@+node:ekr.20220720060831.2: *5* body_lines & body_string
+        #@+node:ekr.20220720060831.2: *5* function: body_lines & body_string
         # 'lines' is a kwarg to split_root.
 
         def massaged_line(s: str, i: int) -> str:
@@ -871,7 +871,7 @@ def gen_lines(self, lines, parent):
                 child.b = body_string(decl_line1, body_line1, inner_indent)
 
             last = body_line1
-    #@+node:ekr.20220720060831.2: *4* body_lines & body_string
+    #@+node:ekr.20220720060831.2: *4* function: body_lines & body_string
     # 'lines' is a kwarg to split_root.
 
     def massaged_line(s: str, i: int) -> str:
@@ -932,7 +932,7 @@ importer_dict = {
 
 # For new importer.
 #@+<< define class_or_def_tuple >>
-#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (new importer)
+#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (linescanner.py)
 # A named tuple containing all data relating to one declaration of a class or def.
 class_or_def_tuple = namedtuple('class_or_def_tuple', [
     'body_indent',  # Indentation of body.
