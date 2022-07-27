@@ -25,6 +25,13 @@ class Python_Importer(Importer):
 
     Leo itself will never use this class.
     """
+    # Optional base classes.
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    # Requred argument list.
+    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
 
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
@@ -238,8 +245,12 @@ class Python_Importer(Importer):
             """Massage line s, adding the underindent string if necessary."""
             if i == 0 or s[:i].isspace():
                 return s[i:] or '\n'
+            # An underindented string.
             n = len(s) - len(s.lstrip())
-            return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
+            if 1:  # Legacy
+                return f'\\\\-{i-n}.{s[n:]}'
+            else:
+                return s[n:]
 
         def body_string(a: int, b: int, i: int) -> str:
             """Return the (massaged) concatentation of lines[a: b]"""
@@ -878,8 +889,12 @@ def gen_lines(self, lines, parent):
         """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
+        # An underindented string.
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
+        if 1:  # Legacy
+            return f'\\\\-{i-n}.{s[n:]}'
+        else:
+            return s[n:]
 
     def body_string(a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""

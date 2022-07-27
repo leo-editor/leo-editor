@@ -562,8 +562,12 @@ class Importer:
         """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
+        # An underindented string.
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
+        if 1:  # Legacy
+            return f"\\\\-{i-n}.{s[n:]}"
+        else:
+            return s[n:]
 
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
