@@ -152,7 +152,7 @@ class Rst_Importer(Importer):
         self.stack.append(child)
         return child
     #@+node:ekr.20161129040921.7: *4* rst_i.make_node
-    def make_node(self, level, headline):
+    def make_node(self, level, headline):  # pylint: disable=arguments-differ
         """Create a new node, with the given headline."""
         self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level

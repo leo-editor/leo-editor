@@ -143,7 +143,7 @@ class Markdown_Importer(Importer):
         )
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_node
-    def make_node(self, level, name):
+    def make_node(self, level, name):  # pylint: disable=arguments-differ
         """Create a new node."""
         self.find_parent(level=level, h=name)
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass

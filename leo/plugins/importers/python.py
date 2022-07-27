@@ -247,6 +247,7 @@ class Python_Importer(Importer):
                 return s[i:] or '\n'
             # An underindented string.
             n = len(s) - len(s.lstrip())
+            # pylint: disable=no-else-return
             if 1:  # Legacy
                 return f'\\\\-{i-n}.{s[n:]}'
             else:
@@ -891,6 +892,7 @@ def gen_lines(self, lines, parent):
             return s[i:] or '\n'
         # An underindented string.
         n = len(s) - len(s.lstrip())
+        # pylint: disable=no-else-return
         if 1:  # Legacy
             return f'\\\\-{i-n}.{s[n:]}'
         else:

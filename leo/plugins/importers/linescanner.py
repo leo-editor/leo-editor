@@ -562,6 +562,7 @@ class Importer:
         """Massage line s, adding the underindent string if necessary."""
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
+        # pylint: disable=no-else-return
         # An underindented string.
         n = len(s) - len(s.lstrip())
         if 1:  # Legacy
@@ -1439,10 +1440,11 @@ class Importer:
         return ''.join(result)
     #@-others
 
-    # To be overridden in subclasses.
+    # If used at all, must be overridden in subclasses.
     class_pat: re.Pattern = None
     def_pat: re.Pattern = None
 
+    # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
 
     @classmethod
