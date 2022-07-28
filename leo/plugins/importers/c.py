@@ -159,9 +159,9 @@ class C_Importer(Importer):
         if m:
             if self.c_types_pattern.match(m.group(3)):
                 return True
-            prefix = m.group(1).strip() if m.group(1) else ''
-            self.headline = '%s %s' % (prefix, m.group(3))
-            self.headline = self.headline.strip()
+            name = m.group(3)
+            prefix = f"{m.group(1).strip()} " if m.group(1) else ''
+            self.headline = f"{prefix}{name}"
             return True
         m = self.c_typedef_pattern.match(line)
         if m:
@@ -185,6 +185,7 @@ class C_Importer(Importer):
         Look for a def or class at self.lines[i]
         Return None or a class_or_def_tuple describing the class or def.
         """
+        self.headline = None  # Set in helpers.
         lines = self.lines
 
         # Return if lines[i] does not start a block.
@@ -219,7 +220,7 @@ class C_Importer(Importer):
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            kind = self.headline,
+            kind = '',  # Not used.
             name = self.headline,
         )
     #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (***)

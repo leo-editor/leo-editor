@@ -525,7 +525,7 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     #@+others
-    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (***)
+    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (trace)
     def new_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -546,7 +546,7 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
         
-        if 1:  ###
+        if 0:  ###
             for z in all_definitions:
                 print(repr(z))
                 g.printObj(lines[z.decl_line1 : z.decl_line1 + 2])
@@ -593,7 +593,7 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def (TO DO later)
+    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def (TO DO later, based on c_i...)
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
         Importer.get_class_or_def
