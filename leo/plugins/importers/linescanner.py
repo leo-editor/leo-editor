@@ -525,24 +525,24 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     #@+others
-    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (*** test)
+    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (***)
     def new_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
-        """
-        # Based on Vitalije's python importer.
-        assert self.root == parent, (self.root, parent)
         
+        Based on Vitalije's python importer.
+        """
+        assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
         state = ScanState()
 
-        # Prepass: calculate line states.
+        # Prepass 1: calculate line states.
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
 
-        # Make a list of *all* definitions.
+        # Prepass 2: Find *all* definitions.
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
         
@@ -667,7 +667,7 @@ class Importer:
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20220727075027.1: *6* i.make_node (*** test)
+    #@+node:ekr.20220727075027.1: *6* i.make_node (***)
     def make_node(self,
         p: Position,
         start: int,

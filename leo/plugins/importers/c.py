@@ -177,18 +177,16 @@ class C_Importer(Importer):
             word = m.group(1)
             if not self.c_types_pattern.match(word):
                 self.headline = word
-    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def (*** Test)
+    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def (***)
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
-        C_Importer.get_class_or_def
+        C_Importer.get_class_or_def, based on Vitalije's python importer.
 
         Look for a def or class at self.lines[i]
         Return None or a class_or_def_tuple describing the class or def.
         """
-        # Based on Vitalije's importer.
         lines = self.lines
-        self.headline = None  ### Set by scanners.
-        
+
         # Return if lines[i] does not start a block.
         first_body_line = self.new_starts_block(i)
         if first_body_line is None:
@@ -200,7 +198,7 @@ class C_Importer(Importer):
 
         # Scan to the end of the block.
         i = self.new_skip_block(first_body_line)
-        
+
         # Calculate the indentation of the first non-blank body line.
         j = first_body_line
         while j <= i < len(lines):
@@ -215,7 +213,7 @@ class C_Importer(Importer):
         while i < len(lines) and lines[i].isspace():
             i += 1
 
-        # This is the only instantiation of class_or_def_tuple.
+        # Return the description of the unit.
         return class_or_def_tuple(
             body_indent = body_indent,
             body_line1 = i,
@@ -224,7 +222,7 @@ class C_Importer(Importer):
             kind = self.headline,
             name = self.headline,
         )
-    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (*** Test)
+    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (***)
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -249,7 +247,7 @@ class C_Importer(Importer):
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (*** Test)
+    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (***)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
