@@ -252,7 +252,7 @@ class C_Importer(Importer):
         while i < len(lines):
             i += 1
             if line_states[i].level() < state1.level():
-                i + 1
+                i += 1
                 if trace:
                     # g.trace('FOUND', i, repr(lines[i]))
                     g.printObj(lines[i1: i])
