@@ -187,35 +187,19 @@ class C_Importer(Importer):
         """
         # Based on Vitalije's importer.
         lines = self.lines
+        
+        # Return if lines[i] does not start a block.
         first_body_line = self.new_starts_block(i)
         if first_body_line is None:
             return None
+
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
         body_indent = self.get_int_lws(lines[first_body_line])
 
-        ### Scan to the end of the block.
+        # Scan to the end of the block.
         i = self.new_skip_block(first_body_line)
-
-        # Multi-line bodies end at the next non-blank with less indentation than body_indent.
-        # This is tricky because of underindented strings and docstrings.
-
-            # last_state = None
-            # while i < len(lines):
-                # line = lines[i]
-                # this_state = self.line_states[i]
-                # last_context = last_state.context if last_state else ''
-                # this_context = this_state.context if this_state else ''
-                # if (
-                    # not line.isspace()
-                    # and this_context not in ("'''", '"""', "'", '"')
-                    # and last_context not in ("'''", '"""', "'", '"')
-                    # and self.get_int_lws(line) < body_indent
-                # ):
-                    # break
-                # last_state = this_state
-                # i += 1
 
         # Include all following blank lines.
         while i < len(lines) and lines[i].isspace():
@@ -257,9 +241,24 @@ class C_Importer(Importer):
                 return i
             i += 1
         return None
-    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (*** To do)
+    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (*** Test)
     def new_skip_block(self, i: int) -> int:
-        return max(len(self.lines), i + 10)
+        """Return the index of line after the last line of the block."""
+        trace = True  ###
+        if trace:
+            i1 = i
+        lines, line_states = self.lines, self.line_states
+        state1 = line_states[i]  # The opening state
+        while i < len(lines):
+            i += 1
+            if line_states[i].level() < state1.level():
+                i + 1
+                if trace:
+                    # g.trace('FOUND', i, repr(lines[i]))
+                    g.printObj(lines[i1: i])
+                return i
+        return len(lines)
+
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
