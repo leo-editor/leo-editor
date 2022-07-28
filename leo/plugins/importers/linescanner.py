@@ -525,22 +525,16 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     #@+others
-    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (***)
+    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (*** test)
     def new_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
         # Based on Vitalije's python importer.
         assert self.root == parent, (self.root, parent)
-
-        # class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
-        # class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-        # def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
-        # def_pat = re.compile(def_pat_s, re.MULTILINE)
-
+        
         self.line_states: List[ScanState] = []
-        self.lines = lines  ###
+        self.lines = lines
         state = ScanState()
 
         # Prepass: calculate line states.
@@ -551,6 +545,11 @@ class Importer:
         # Make a list of *all* definitions.
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
+        
+        if 1:  ###
+            for z in all_definitions:
+                print(repr(z))
+                g.printObj(lines[z.decl_line1 : z.decl_line1 + 2])
 
         # Start the recursion.
         parent.deleteAllChildren()
@@ -668,7 +667,7 @@ class Importer:
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20220727075027.1: *6* i.make_node (new ***)
+    #@+node:ekr.20220727075027.1: *6* i.make_node (*** test)
     def make_node(self,
         p: Position,
         start: int,
@@ -691,6 +690,15 @@ class Importer:
         """
         # Find all defs with the given inner indentation.
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+        
+        if 0:
+            g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
+            g.printObj([repr(z) for z in inner_defs])
+            if 0:
+                for z in inner_defs:
+                    g.printObj(
+                        self.lines[z.decl_line1 : z.body_line1],
+                        tag=f"Lines[{z.decl_line1} : {z.body_line1}]")
 
         if not inner_defs or end - start < self.SPLIT_THRESHOLD:
             # Don't split the body.

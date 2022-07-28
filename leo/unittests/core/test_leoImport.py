@@ -51,7 +51,8 @@ class BaseTestImporter(LeoUnitTest):
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:  # pragma: no cover
-            g.trace(self.short_id)
+            print('')
+            g.trace('FAIL:', self.short_id)
             self.dump_tree(p1)
             raise
     #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
@@ -1961,7 +1962,7 @@ class TestPython(BaseTestImporter):
 
         This is *not* part of the Importer pipeline.
         """
-        trace = False
+        trace = False  # BaseTestImporter.check_headlines contains a better trace.
         if trace:
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
