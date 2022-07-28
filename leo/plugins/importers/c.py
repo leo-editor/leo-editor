@@ -177,7 +177,7 @@ class C_Importer(Importer):
             word = m.group(1)
             if not self.c_types_pattern.match(word):
                 self.headline = word
-    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def (***)
+    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
         C_Importer.get_class_or_def, based on Vitalije's python importer.
@@ -221,9 +221,9 @@ class C_Importer(Importer):
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             kind = '',  # Not used.
-            name = self.headline,
+            name = self.headline or '<no unit name>',
         )
-    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (***)
+    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -248,7 +248,7 @@ class C_Importer(Importer):
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (***)
+    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states

@@ -79,7 +79,7 @@ need to do so.
 import io
 import re
 from collections import namedtuple
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 StringIO = io.StringIO
@@ -525,11 +525,11 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     #@+others
-    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers (trace)
+    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers
     def new_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
-        
+
         Based on Vitalije's python importer.
         """
         assert self.root == parent, (self.root, parent)
@@ -545,7 +545,7 @@ class Importer:
         # Prepass 2: Find *all* definitions.
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
-        
+
         if 0:  ###
             for z in all_definitions:
                 print(repr(z))
@@ -593,73 +593,51 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def (TO DO later, based on c_i...)
+    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def (*** Test ***)
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
-        Importer.get_class_or_def
-        Look for a def or class at lines[i]
+        Importer.get_class_or_def, based on Vitalije's python importer.
+
+        Look for a def or class at self.lines[i]
         Return None or a class_or_def_tuple describing the class or def.
         """
-        # Based on Vitalije's importer.
-        lines, line_states = self.lines, self.line_states
-        line, state = lines[i], line_states[i]
-        if state.context or not line.strip():
+        ### self.headline = None  # Set in helpers.
+        lines = self.lines
+
+        # Return if lines[i] does not start a block.
+        first_body_line = self.new_starts_block(i)
+        if first_body_line is None:
             return None
-        m = self.class_pat.match(line) or self.def_pat.match(line)
-        if not m:
-            return None
+
         # Compute declaration data.
         decl_line = i
-        decl_indent = self.get_int_lws(line)
+        decl_indent = self.get_int_lws(self.lines[i])
 
-        # Set body_indent to the indentation of the first non-blank line of the body.
-        newlines = m.group(0).count('\n')
-        i += (1 + newlines)  # The line after the last decl line.
+        # Scan to the end of the block.
+        i = self.new_skip_block(first_body_line)
 
-        # Test for a single-line class or def.
-        while i < len(lines):
-            line = lines[i]
-            if line.isspace():
-                i += 1
-            else:
-                body_indent = self.get_int_lws(line)
-                single_line = body_indent == decl_indent
+        # Calculate the indentation of the first non-blank body line.
+        j = first_body_line
+        while j <= i < len(lines):
+            if not lines[j].isspace():
+                body_indent = self.get_int_lws(lines[j])
                 break
+            j += 1
         else:
-            single_line = True
-            body_indent = decl_indent
-
-        # Multi-line bodies end at the next non-blank with less indentation than body_indent.
-        # This is tricky because of underindented strings and docstrings.
-        if not single_line:
-            last_state = None
-            while i < len(lines):
-                line = lines[i]
-                this_state = self.line_states[i]
-                last_context = last_state.context if last_state else ''
-                this_context = this_state.context if this_state else ''
-                if (
-                    not line.isspace()
-                    and this_context not in ("'''", '"""', "'", '"')
-                    and last_context not in ("'''", '"""', "'", '"')
-                    and self.get_int_lws(line) < body_indent
-                ):
-                    break
-                last_state = this_state
-                i += 1
+            body_indent = 0
 
         # Include all following blank lines.
         while i < len(lines) and lines[i].isspace():
             i += 1
 
-        # This is the only instantiation of class_or_def_tuple.
+        # Return the description of the unit.
         return class_or_def_tuple(
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            kind = m.group(1),
-            name = m.group(2),
+            kind = '',  ### To do?
+            name = '',  ### To do?
         )
     #@+node:ekr.20220727074602.2: *6* i.get_intro (do-nothing default)
     def get_intro(self, row: int, col: int) -> int:
@@ -667,7 +645,7 @@ class Importer:
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20220727075027.1: *6* i.make_node (***)
+    #@+node:ekr.20220727075027.1: *6* i.make_node
     def make_node(self,
         p: Position,
         start: int,
@@ -690,7 +668,7 @@ class Importer:
         """
         # Find all defs with the given inner indentation.
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-        
+
         if 0:
             g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
             g.printObj([repr(z) for z in inner_defs])
@@ -753,6 +731,40 @@ class Importer:
                 child.b = self.body_string(decl_line1, body_line1, inner_indent)
 
             last = body_line1
+    #@+node:ekr.20220728130253.1: *6* i.new_starts_block (*** Test ***)
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        i0, lines, line_states = i, self.lines, self.line_states
+        line = lines[i]
+        if (
+            line.isspace()
+            or line_states[i].context
+        ):
+            return None
+        ### Correct???
+        # Scan ahead at most 10 lines until an open { is seen.
+        while i < len(lines) and i <= i0 + 10:
+            prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+            this_state = line_states[i]
+            if this_state.level() > prev_state.level():
+                return i + 1
+            i += 1
+        return None
+    #@+node:ekr.20220728130445.1: *6* i.new_skip_block (*** Test ***)
+    def new_skip_block(self, i: int) -> int:
+        """Return the index of line after the last line of the block."""
+        lines, line_states = self.lines, self.line_states
+        state1 = line_states[i]  # The opening state
+        while i < len(lines):
+            i += 1
+            if line_states[i].level() < state1.level():
+                return i + 1
+        return len(lines)
+
     #@+node:ekr.20220727073838.1: *5* old_gen_lines & helpers
     def old_gen_lines(self, lines, parent):
         """
