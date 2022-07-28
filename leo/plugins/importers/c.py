@@ -224,6 +224,8 @@ class C_Importer(Importer):
         assert i < len(self.lines), i
         i0, lines, line_states = i, self.lines, self.line_states
         line = lines[i]
+        if False and self.match_start_patterns(line):  ###
+            g.trace(i, line_states[i], repr(line))
         if (
             line.isspace()
             or line_states[i].context
@@ -233,7 +235,7 @@ class C_Importer(Importer):
         ):
             return None
         # Scan ahead at most 10 lines until an open { is seen.
-        while i < len(lines) and i <- i0 + 10:
+        while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.ScanState()
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
@@ -244,18 +246,13 @@ class C_Importer(Importer):
     #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (*** Test)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
-        trace = True  ###
-        if trace:
-            i1 = i
+        ### i1 = i  ### For tracing.
         lines, line_states = self.lines, self.line_states
         state1 = line_states[i]  # The opening state
         while i < len(lines):
             i += 1
             if line_states[i].level() < state1.level():
-                i += 1
-                if trace:
-                    # g.trace('FOUND', i, repr(lines[i]))
-                    g.printObj(lines[i1: i])
+                ### g.printObj(lines[i1: i])  ###
                 return i
         return len(lines)
 
