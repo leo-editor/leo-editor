@@ -2,14 +2,25 @@
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 """The @auto importer for the C language and other related languages."""
 import re
+from typing import Optional
 from leo.core import leoGlobals as g
 from leo.plugins.importers import linescanner
 assert g
 Importer = linescanner.Importer
 Target = linescanner.Target
+class_or_def_tuple = linescanner.class_or_def_tuple  ###
+NEW_GEN_LINES = linescanner.NEW_GEN_LINES  ###
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
+
+    # Patterns that can start a block
+    c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
+    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
+    c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
+
+    # For cleaning headlines.
+    c_name_pattern = re.compile(r'\s*([\w:]+)')
 
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
@@ -22,7 +33,8 @@ class C_Importer(Importer):
             state_class=C_ScanState,
         )
         self.headline = None
-        # Fix #545 by supporting @data c_import_typedefs.
+
+        # #545: Support @data c_import_typedefs.
         self.type_keywords = [
             'auto', 'bool', 'char', 'const', 'double',
             'extern', 'float', 'int', 'register',
@@ -49,6 +61,8 @@ class C_Importer(Importer):
         """
         if not p:
             return s.strip()
+        if NEW_GEN_LINES:
+            return s.strip()  ###
         lines = self.get_lines(p)
         if s.startswith('template') and len(lines) > 1:
             line = lines[1]
@@ -60,9 +74,8 @@ class C_Importer(Importer):
                 line = line.replace(ch, '')
             return line.strip()
         return s.strip()
-    #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
-    c_name_pattern = re.compile(r'\s*([\w:]+)')
-
+    #@+node:ekr.20220728055642.1: *3* legacy methods
+    #@+node:ekr.20161204173153.1: *4* c_i.match_name_patterns
     def match_name_patterns(self, line):
         """Set self.headline if the line defines a typedef name."""
         m = self.c_name_pattern.match(line)
@@ -70,12 +83,7 @@ class C_Importer(Importer):
             word = m.group(1)
             if not self.c_types_pattern.match(word):
                 self.headline = word
-    #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
-    # Define patterns that can start a block
-    c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
-    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
-    c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
-
+    #@+node:ekr.20161204165700.1: *4* c_i.match_start_patterns
     def match_start_patterns(self, line):
         """
         True if line matches any block-starting pattern.
@@ -110,7 +118,7 @@ class C_Importer(Importer):
             return True
         m = self.c_types_pattern.match(line)
         return bool(m)
-    #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
+    #@+node:ekr.20161204072326.1: *4* c_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         """Create a child node and update the stack."""
         line = lines[i]
@@ -141,9 +149,9 @@ class C_Importer(Importer):
                 if self.headline:
                     child.h = '%s %s' % (child.h.strip(), self.headline)
             self.add_line(child, lines[i])
-    #@+node:ekr.20161204155335.1: *3* c_i.starts_block
+    #@+node:ekr.20161204155335.1: *4* c_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
-        """True if the new state starts a block."""
+        """Return rue if the new state starts a block."""
         self.headline = None
         line = lines[i]
         if prev_state.context:
@@ -169,6 +177,89 @@ class C_Importer(Importer):
             else:
                 break
         return False
+    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def (*** Test)
+    def get_class_or_def(self, i: int) -> class_or_def_tuple:
+        """
+        C_Importer.get_class_or_def
+
+        Look for a def or class at self.lines[i]
+        Return None or a class_or_def_tuple describing the class or def.
+        """
+        # Based on Vitalije's importer.
+        lines = self.lines
+        first_body_line = self.new_starts_block(i)
+        if first_body_line is None:
+            return None
+        # Compute declaration data.
+        decl_line = i
+        decl_indent = self.get_int_lws(self.lines[i])
+        body_indent = self.get_int_lws(lines[first_body_line])
+
+        ### Scan to the end of the block.
+        i = self.new_skip_block(first_body_line)
+
+        # Multi-line bodies end at the next non-blank with less indentation than body_indent.
+        # This is tricky because of underindented strings and docstrings.
+
+            # last_state = None
+            # while i < len(lines):
+                # line = lines[i]
+                # this_state = self.line_states[i]
+                # last_context = last_state.context if last_state else ''
+                # this_context = this_state.context if this_state else ''
+                # if (
+                    # not line.isspace()
+                    # and this_context not in ("'''", '"""', "'", '"')
+                    # and last_context not in ("'''", '"""', "'", '"')
+                    # and self.get_int_lws(line) < body_indent
+                # ):
+                    # break
+                # last_state = this_state
+                # i += 1
+
+        # Include all following blank lines.
+        while i < len(lines) and lines[i].isspace():
+            i += 1
+
+        # This is the only instantiation of class_or_def_tuple.
+        return class_or_def_tuple(
+            body_indent = body_indent,
+            body_line1 = i,
+            decl_indent = decl_indent,
+            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+            kind = 'unknown kind',
+            name = 'unknown name',
+        )
+    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (*** Test)
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        assert i < len(self.lines), i
+        i0, lines, line_states = i, self.lines, self.line_states
+        line = lines[i]
+        if (
+            line.isspace()
+            or line_states[i].context
+            or line.find(';') > -1 # One-line declaration.
+            or self.c_keywords_pattern.match(line)  # A statement.
+            or not self.match_start_patterns(line)
+        ):
+            return None
+        # Scan ahead at most 10 lines until an open { is seen.
+        while i < len(lines) and i <- i0 + 10:
+            prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+            this_state = line_states[i]
+            if this_state.level() > prev_state.level():
+                g.trace('FOUND', i, repr(lines[i]))
+                return i
+            i += 1
+        return None
+    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (*** To do)
+    def new_skip_block(self, i: int) -> int:
+        return max(len(self.lines), i + 10)
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:

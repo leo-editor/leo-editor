@@ -43,7 +43,7 @@ class Python_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers (New importer)
+    #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers (New python importer)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -61,7 +61,7 @@ class Python_Importer(Importer):
         state = Python_ScanState()
 
         #@+others
-        #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper
+        #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper (new python importer)
         def get_class_or_def(i: int) -> class_or_def_tuple:
             """
             Look for a def or class at lines[i]
@@ -162,7 +162,7 @@ class Python_Importer(Importer):
                 col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
                 and line.strip()[0] in '@#'
             )
-        #@+node:ekr.20220720060831.1: *4* function: make_node & helpers
+        #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
         def make_node(p: Position,
             start: int,
             start_b: int,
@@ -238,7 +238,7 @@ class Python_Importer(Importer):
                     child.b = body_string(decl_line1, body_line1, inner_indent)
 
                 last = body_line1
-        #@+node:ekr.20220720060831.2: *5* function: body_lines & body_string
+        #@+node:ekr.20220720060831.2: *5* function: body_lines & body_string (new python importer)
         # 'lines' is a kwarg to split_root.
 
         def massaged_line(s: str, i: int) -> str:
@@ -262,7 +262,7 @@ class Python_Importer(Importer):
         def body_lines(a: int, b: int, i: int) -> List[str]:
             nonlocal lines
             return [massaged_line(s, i) for s in lines[a : b]]
-        #@+node:ekr.20220720060831.3: *5* declaration_headline
+        #@+node:ekr.20220720060831.3: *5* declaration_headline (new python importer)
         def declaration_headline(body: str) -> str:  # #2500
             """
             Return an informative headline for s, a group of declarations.
@@ -688,7 +688,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     mknode(
         p=root, start=1, start_b=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
-#@+node:ekr.20220720043557.8: ** py_i.gen_lines & helpers (New importer)
+#@+node:ekr.20220720043557.8: ** py_i.gen_lines & helpers (New python importer)
 def gen_lines(self, lines, parent):
     """
     Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -706,7 +706,7 @@ def gen_lines(self, lines, parent):
     state = Python_ScanState()
 
     #@+others
-    #@+node:ekr.20220720050740.1: *3* function: get_class_or_def & helper
+    #@+node:ekr.20220720050740.1: *3* function: get_class_or_def & helper (new python importer)
     def get_class_or_def(i: int) -> class_or_def_tuple:
         """
         Look for a def or class at lines[i]
@@ -807,7 +807,7 @@ def gen_lines(self, lines, parent):
             col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
             and line.strip()[0] in '@#'
         )
-    #@+node:ekr.20220720060831.1: *3* function: make_node & helpers
+    #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)
     def make_node(p: Position,
         start: int,
         start_b: int,
@@ -883,7 +883,7 @@ def gen_lines(self, lines, parent):
                 child.b = body_string(decl_line1, body_line1, inner_indent)
 
             last = body_line1
-    #@+node:ekr.20220720060831.2: *4* function: body_lines & body_string
+    #@+node:ekr.20220720060831.2: *4* function: body_lines & body_string (new python importer)
     # 'lines' is a kwarg to split_root.
 
     def massaged_line(s: str, i: int) -> str:
@@ -907,7 +907,7 @@ def gen_lines(self, lines, parent):
     def body_lines(a: int, b: int, i: int) -> List[str]:
         nonlocal lines
         return [massaged_line(s, i) for s in lines[a : b]]
-    #@+node:ekr.20220720060831.3: *4* declaration_headline
+    #@+node:ekr.20220720060831.3: *4* declaration_headline (new python importer)
     def declaration_headline(body: str) -> str:  # #2500
         """
         Return an informative headline for s, a group of declarations.

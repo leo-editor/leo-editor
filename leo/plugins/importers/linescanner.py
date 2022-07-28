@@ -86,7 +86,7 @@ StringIO = io.StringIO
 #@-<< linescanner imports >>
 #@+<< Define importer switches >>
 #@+node:ekr.20220727074910.1: ** << Define importer switches >> (linescanner.py)
-NEW_GEN_LINES = False
+NEW_GEN_LINES = True
 #@-<< Define importer switches >>
 #@+<< define class_or_def_tuple >>
 #@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (linescanner.py)
@@ -594,9 +594,10 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def
+    #@+node:ekr.20220727074602.1: *6* i.get_class_or_def (TO DO later)
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
+        Importer.get_class_or_def
         Look for a def or class at lines[i]
         Return None or a class_or_def_tuple describing the class or def.
         """
@@ -667,7 +668,7 @@ class Importer:
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20220727075027.1: *6* i.make_node (***)
+    #@+node:ekr.20220727075027.1: *6* i.make_node (new ***)
     def make_node(self,
         p: Position,
         start: int,
@@ -920,6 +921,8 @@ class Importer:
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().
         """
+        if NEW_GEN_LINES:
+            return  ###
         self.clean_all_headlines(parent)
         if self.add_context:
             self.add_class_names(parent)
@@ -1074,6 +1077,8 @@ class Importer:
 
         Subclasses should never need to override this method.
         """
+        if NEW_GEN_LINES:
+            return  ###
         # Put directives at the end, so as not to interfere with shebang lines, etc.
         self.add_root_directives(parent)
         #
@@ -1113,6 +1118,8 @@ class Importer:
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent) -> bool:
         """True if perfect import checks pass."""
+        if NEW_GEN_LINES:
+            return True  ###
         if g.app.suppressImportChecks:
             g.app.suppressImportChecks = False
             return True
@@ -1440,9 +1447,10 @@ class Importer:
         return ''.join(result)
     #@-others
 
-    # If used at all, must be overridden in subclasses.
-    class_pat: re.Pattern = None
-    def_pat: re.Pattern = None
+    ###
+        # # If used at all, must be overridden in subclasses.
+        # class_pat: re.Pattern = None
+        # def_pat: re.Pattern = None
 
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
