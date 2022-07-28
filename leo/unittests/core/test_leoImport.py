@@ -55,6 +55,32 @@ class BaseTestImporter(LeoUnitTest):
             g.trace('FAIL:', self.short_id)
             self.dump_tree(p1)
             raise
+    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline
+    def check_outline(self, p, nodes):
+        """
+        BaseTestImporter.check_outline.
+
+        This is *not* part of the Importer pipeline.
+        """
+        trace = False  # BaseTestImporter.check_headlines contains a better trace.
+        if trace:
+            for p1 in p.self_and_subtree():
+                g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
+        it = iter(nodes)
+        top_level = p.level()
+        for p1 in p.self_and_subtree():
+            lev, h, b = next(it)
+            assert lev == p1.level() - top_level, f'lev:{p1.level()-top_level} != {lev}'
+            if lev > 0:
+                self.assertEqual(p1.h,  h)
+            if trace and p1.b != b:  # Brief test.
+                self.fail(f"Body mismatch: {p1.h}")
+            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
+        try:
+            next(it)
+            return False, 'extra nodes'  # pragma: no cover
+        except StopIteration:
+            return True, 'ok'
     #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
     def compare_outlines(self, created_p, expected_p):  # pragma: no cover
         """
@@ -1955,10 +1981,10 @@ class TestPython(BaseTestImporter):
             self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
 
     #@+others
-    #@+node:vitalije.20211206180043.1: *3* TestPython.check_outline
+    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline
     def check_outline(self, p, nodes):
         """
-        TestPython.check_outline.
+        BaseTestImporter.check_outline.
 
         This is *not* part of the Importer pipeline.
         """
