@@ -299,23 +299,6 @@ class TestC(BaseTestImporter):
         self.check_headlines(p, (
             (1, 'extern "C"'),
         ))
-    #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
-    def test_intermixed_blanks_and_tabs(self):
-
-        s = """
-            void
-            aaa::bbb::doit
-                (
-                awk* b  // leading blank
-                )
-            {
-                assert(false); // leading tab
-            }
-        """
-        p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'void aaa::bbb::doit'),
-        ))
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
