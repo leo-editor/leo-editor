@@ -529,7 +529,7 @@ class Importer:
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     #@+others
-    #@+node:ekr.20220727073906.1: *5* new_gen_lines & helpers
+    #@+node:ekr.20220727073906.1: *5* i.new_gen_lines & helpers
     def new_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -797,7 +797,7 @@ class Importer:
                 return i + 1
         return len(lines)
 
-    #@+node:ekr.20220727073838.1: *5* old_gen_lines & helpers
+    #@+node:ekr.20220727073838.1: *5* i.old_gen_lines & helpers
     def old_gen_lines(self, lines, parent):
         """
         Non-recursively parse all lines of s into parent, creating descendant
