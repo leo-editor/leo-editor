@@ -10,13 +10,12 @@ from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Importer, class_or_def_tuple
 from leo.core.leoNodes import Position
-
-#@+<< Define importer switches >>
-#@+node:ekr.20220720181543.1: ** << Define importer switches >> python.py
-# False: use Vitalije's importer.
-NEW_PYTHON_IMPORTER = True
-#@-<< Define importer switches >>
-
+#@+<< Define NEW_PYTHON_IMPORTER switch >>
+#@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
+# The new importer is for leoJS, not Leo.
+# Except for testing, this switch should be *False* within Leo.
+NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
+#@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
@@ -896,7 +895,6 @@ importer_dict = {
     'func': do_import,
     'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
 }
-
 # For Vitalije's importer.
 #@+<< define def_tuple >>
 #@+node:ekr.20220724060054.1: ** << define def_tuple >> (Vitalije's importer)
