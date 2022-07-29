@@ -23,20 +23,18 @@ class C_Importer(Importer):
         """
         Adjust headline for templates.
         """
-        if NEW_GEN_LINES:
-            assert False, g.callers()
-        if not p:
-            return s.strip()
-        lines = self.get_lines(p)
-        if s.startswith('template') and len(lines) > 1:
-            line = lines[1]
-            # Filter out all keywords and cruft.
-            # This isn't perfect, but it's a good start.
-            for z in self.type_keywords:
-                line = re.sub(fr"\b{z}\b", '', line)
-            for ch in '()[]{}=':
-                line = line.replace(ch, '')
-            return line.strip()
+        i = s.find('(')
+        if i > -1:
+            s = s[:i]
+        # if s.startswith('template') and len(lines) > 1:
+            # line = lines[1]
+            # # Filter out all keywords and cruft.
+            # # This isn't perfect, but it's a good start.
+            # for z in self.type_keywords:
+                # line = re.sub(fr"\b{z}\b", '', line)
+            # for ch in '()[]{}=':
+                # line = line.replace(ch, '')
+            # return line.strip()
         return s.strip()
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):
@@ -69,7 +67,7 @@ class C_Importer(Importer):
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def (clears self.headline)
+    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
         C_Importer.get_class_or_def, based on Vitalije's python importer.
@@ -115,12 +113,6 @@ class C_Importer(Importer):
             kind = '',  # Not used.
             name = self.headline,
         )
-    #@+node:ekr.20220728132011.1: *3* c_i.get_intro (to do)
-    def get_intro(self, row: int, col: int) -> int:
-        """
-        Return the number of preceeding lines that should be added to this class or def.
-        """
-        return 0
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
     def match_name_patterns(self, line):
         """Set self.headline if the line defines a typedef name."""
@@ -140,7 +132,7 @@ class C_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         """
-        trace = True  ###
+        trace = False  ###
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
@@ -210,6 +202,9 @@ class C_Importer(Importer):
         # Try again to set self.headline.
         if not self.headline and i0 + 1 < len(lines):
             self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
+        # Now clean the headline.
+        if self.headline:
+            self.headline = self.clean_headline(self.headline)
         # Scan ahead at most 10 lines until an open { is seen.
         while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.ScanState()
@@ -218,66 +213,6 @@ class C_Importer(Importer):
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728055642.1: *3* legacy methods
-    #@+node:ekr.20161204072326.1: *4* c_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        line = lines[i]
-        target = stack[-1]
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        if self.headline:
-            h = self.headline
-        if new_state.level() > prev_state.level():
-            child = self.create_child_node(target.p, line, h)
-        else:
-            # We may not have seen the { yet, so adjust.
-            # Without this, the new block becomes a child of the preceding.
-            new_state = C_ScanState()
-            new_state.curlies = prev_state.curlies + 1
-            child = self.create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-        # Add all additional lines of the signature.
-        skip = self.skip  # Don't change the ivar!
-        while skip > 0:
-            skip -= 1
-            i += 1
-            assert i < len(lines), (i, len(lines))
-            line = lines[i]
-            if not self.headline:
-                self.match_name_patterns(line)
-                if self.headline:
-                    child.h = '%s %s' % (child.h.strip(), self.headline)
-            self.add_line(child, lines[i])
-    #@+node:ekr.20161204155335.1: *4* c_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
-        """Return rue if the new state starts a block."""
-        self.headline = None
-        line = lines[i]
-        if prev_state.context:
-            return False
-        if self.c_keywords_pattern.match(line):
-            return False
-        if not self.match_start_patterns(line):
-            return False
-        # Must not be a complete statement.
-        if line.find(';') > -1:
-            return False
-        # Scan ahead until an open { is seen. the skip count.
-        self.skip = 0
-        while self.skip < 10:
-            if new_state.level() > prev_state.level():
-                return True
-            self.skip += 1
-            i += 1
-            if i < len(lines):
-                line = lines[i]
-                prev_state = new_state
-                new_state = self.scan_line(line, prev_state)
-            else:
-                break
-        return False
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:

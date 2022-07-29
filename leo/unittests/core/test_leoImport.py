@@ -291,17 +291,13 @@ class TestC(BaseTestImporter):
         s = """
             extern "C"
             {
-            
             // comment 1
             // comment 2
-            
             #include "stuff.h"
             void    init(void);
             #include "that.h"
-            
             // comment 3
-            // comment 4
-
+            // comment 
             }
         """
         p = self.run_test(s)
@@ -311,6 +307,7 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.7: *3* TestC.test_intermixed_blanks_and_tabs
     def test_intermixed_blanks_and_tabs(self):
 
+        # New: add lines to exceed threshold.
         s = """
             void
             aaa::bbb::doit
@@ -318,7 +315,9 @@ class TestC(BaseTestImporter):
                 awk* b  // leading blank
                 )
             {
+                // comment line 1
                 assert(false); // leading tab
+                // comment line 2
             }
         """
         p = self.run_test(s)
@@ -328,11 +327,15 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
+        # New: add lines to exceed threshold.
         s = """
             static void
             ReleaseCharSet(cset)
                 CharSet *cset;
             {
+                // comment
+                // comment
+                // comment
                 ckfree((char *)cset->chars);
                 if (cset->ranges) {
                 ckfree((char *)cset->ranges);
@@ -346,12 +349,16 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
+        # New: add lines to exceed threshold.
         s = """
             Tcl_Obj *
             Tcl_NewLongObj(longValue)
                 register long longValue; /* Long integer used to initialize the
                      * new object. */
             {
+                // comment
+                // comment
+                // comment
                 return Tcl_DbNewLongObj(longValue, "unknown", 0);
             }
         """
