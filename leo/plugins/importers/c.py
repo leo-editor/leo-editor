@@ -119,17 +119,6 @@ class C_Importer(Importer):
         m = self.c_types_pattern.match(line)
         if trace and m: g.trace('type:', repr(line))  ###
         return bool(m)
-    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (check for in state!!)
-    def new_skip_block(self, i: int) -> int:
-        """Return the index of line after the last line of the block."""
-        lines, line_states = self.lines, self.line_states
-        state1 = line_states[i]  # The opening state
-        while i < len(lines):
-            i += 1
-            if line_states[i].level() < state1.level():
-                return i + 1
-        return len(lines)
-
     #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
@@ -183,6 +172,9 @@ class C_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220729124756.1: *3* c_state.in_context
+    def in_context(self) -> bool:
+        return self.context
     #@+node:ekr.20161119115315.1: *3* c_state.level
     def level(self):
         """C_ScanState.level."""

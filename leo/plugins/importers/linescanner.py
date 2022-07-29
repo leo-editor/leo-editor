@@ -736,7 +736,7 @@ class Importer:
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (check for in state!!)
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
@@ -745,9 +745,26 @@ class Importer:
         state1 = line_states[i]  # The opening state
         while i + 1 < len(lines):
             i += 1
-            if line_states[i].level() < state1.level():
+            line = lines[i]
+            state = line_states[i]
+            if (
+                not line.isspace()
+                and not state.in_context()
+                and state.level() < state1.level()
+            ):
                 return i + 1
         return len(lines)
+
+
+        # # # lines, line_states = self.lines, self.line_states
+        # # # if i >= len(lines):
+            # # # return len(lines)
+        # # # state1 = line_states[i]  # The opening state
+        # # # while i + 1 < len(lines):
+            # # # i += 1
+            # # # if line_states[i].level() < state1.level():
+                # # # return i + 1
+        # # # return len(lines)
 
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20211118082436.1: *4* i.dump_tree

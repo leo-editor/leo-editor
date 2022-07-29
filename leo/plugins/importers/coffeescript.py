@@ -99,25 +99,6 @@ class Coffeescript_Importer(Importer):
         Don't strip arguments.
         """
         return s.strip()
-    #@+node:ekr.20220729105516.1: *3* coffee_i.new_skip_block
-    def new_skip_block(self, i: int) -> int:
-        """Return the index of line after the last line of the block."""
-        lines, line_states = self.lines, self.line_states
-        if i >= len(lines):
-            return len(lines)
-        state1 = line_states[i]  # The opening state
-        while i + 1 < len(lines):
-            i += 1
-            line = lines[i]
-            state = line_states[i]
-            if (
-                not line.isspace()
-                and not state.in_context()
-                and state.indent < state1.indent
-            ):
-                return i + 1
-        return len(lines)
-
     #@-others
     @classmethod
     def do_import(cls):
