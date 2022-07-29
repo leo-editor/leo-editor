@@ -399,6 +399,7 @@ class TestCoffeescript(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_headlines(p, (
+          # (1, '@file TestCoffeescript.test_2'),
           (1, 'class Builder'),
           (2, 'constructor: ->'),
           (2, 'build: (args...) ->'),
@@ -414,7 +415,7 @@ class TestCoffeescript(BaseTestImporter):
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
         c = self.c
-        x = cs.CS_Importer(c.importCommands, atAuto=True)
+        x = cs.Coffeescript_Importer(c.importCommands, atAuto=True)
         self.assertEqual(x.single_comment, '#')
     #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)

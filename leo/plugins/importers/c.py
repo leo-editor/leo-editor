@@ -170,10 +170,8 @@ class C_Importer(Importer):
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
         state1 = line_states[i]  # The opening state
-        ### g.trace(i, state1, repr(lines[i]))
         while i < len(lines):
             i += 1
-            ### g.trace(i, line_states[i], repr(lines[i]))
             if line_states[i].level() < state1.level():
                 return i + 1
         return len(lines)

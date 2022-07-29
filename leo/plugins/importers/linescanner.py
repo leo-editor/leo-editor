@@ -505,8 +505,8 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 0:  ###
-            g.trace('All definitions...')
+        if 1:  ###
+            g.trace(self.__class__.__name__, 'All definitions...')
             for z in all_definitions:
                 print(repr(z))
                 g.printObj(lines[z.decl_line1 : z.body_line1])
@@ -561,7 +561,7 @@ class Importer:
         Look for a def or class at self.lines[i]
         Return None or a class_or_def_tuple describing the class or def.
         """
-        ### self.headline = None  # Set in helpers.
+        self.headline =  ''  # Set in helpers..
         lines = self.lines
 
         # Return if lines[i] does not start a block.
@@ -597,7 +597,7 @@ class Importer:
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             kind = '',  ### To do?
-            name = '',  ### To do?
+            name = self.headline,
         )
     #@+node:ekr.20220729070924.1: *5* i.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
@@ -727,17 +727,14 @@ class Importer:
         """
         i0, lines, line_states = i, self.lines, self.line_states
         line = lines[i]
-        if (
-            line.isspace()
-            or line_states[i].context
-        ):
+        if line.isspace() or line_states[i].context:
             return None
-        ### Correct???
         # Scan ahead at most 10 lines until an open { is seen.
         while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.ScanState()
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
+                self.headline = self.clean_headline(lines[i])
                 return i + 1
             i += 1
         return None
@@ -745,8 +742,10 @@ class Importer:
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
+        if i >= len(lines):
+            return len(lines)
         state1 = line_states[i]  # The opening state
-        while i < len(lines):
+        while i + 1 < len(lines):
             i += 1
             if line_states[i].level() < state1.level():
                 return i + 1
