@@ -546,7 +546,7 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 0:  ###
+        if 1:  ###
             for z in all_definitions:
                 print(repr(z))
                 g.printObj(lines[z.decl_line1 : z.decl_line1 + 2])
