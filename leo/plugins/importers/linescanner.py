@@ -211,9 +211,13 @@ class Importer:
     def clean_headline(self, s, p=None):
         """
         Return the cleaned version headline s.
-        Will typically be overridden in subclasses.
+        May be overridden in subclasses.
         """
+        i = s.find('(')
+        if i > -1:
+            s = s[:i]
         return s.strip()
+
     #@+node:ekr.20161110173058.1: *4* i.clean_nodes
     def clean_nodes(self, parent):
         """
@@ -640,12 +644,38 @@ class Importer:
             kind = '',  ### To do?
             name = '',  ### To do?
         )
-    #@+node:ekr.20220727074602.2: *6* i.get_intro (do-nothing default)
+    #@+node:ekr.20220729070924.1: *6* i.is_intro_line
+    def is_intro_line(self, n: int, col: int) -> bool:
+        """
+        Return True if line n is a comment line that starts at the give column.
+        """
+        line = self.lines[n]
+        return (
+            line.strip().startswith(self.single_comment)
+            and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
+        )
+    #@+node:ekr.20220727074602.2: *6* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
         Return the number of preceeding lines that should be added to this class or def.
         """
-        return 0
+        lines =self.lines
+
+        # Scan backward for blank or intro lines.
+        i = row - 1
+        while i >= 0 and (lines[i].isspace() or self.is_intro_line(i, col)):
+            i -= 1
+
+        # Remove blank lines from the start of the intro.
+        # Leading blank lines should be added to the end of the preceeding node.
+        i += 1
+        while i < row:
+            if lines[i].isspace():
+                i += 1
+            else:
+                break
+        return row - i
+
     #@+node:ekr.20220727075027.1: *6* i.make_node
     def make_node(self,
         p: Position,

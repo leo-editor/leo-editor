@@ -126,41 +126,9 @@ class Python_Importer(Importer):
                 body_indent = body_indent,
                 body_line1 = i,
                 decl_indent = decl_indent,
-                decl_line1 = decl_line - get_intro(decl_line, decl_indent),
+                decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
                 kind = m.group(1),
                 name = m.group(2),
-            )
-        #@+node:ekr.20220720064902.1: *5* get_intro & helper
-        def get_intro(row: int, col: int) -> int:
-            """
-            Return the number of preceeding lines that should be added to this class or def.
-            """
-            nonlocal lines
-
-            # Scan backward for blank or intro lines.
-            i = row - 1
-            while i >= 0 and (lines[i].isspace() or is_intro_line(lines[i], col)):
-                i -= 1
-
-            # Remove blank lines from the start of the intro.
-            # Leading blank lines should be added to the end of the preceeding node.
-            i += 1
-            while i < row:
-                if lines[i].isspace():
-                    i += 1
-                else:
-                    break
-            return row - i
-        #@+node:ekr.20220720064902.2: *6* is_intro_line
-        def is_intro_line(line: str, col: int) -> bool:
-            """
-            Return True if line n is either:
-            - a comment line that starts at the same column as the def/class line,
-            - a decorator line
-            """
-            return (
-                col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
-                and line.strip()[0] in '@#'
             )
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
         def make_node(p: Position,
@@ -417,7 +385,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     rawtokens: List
 
     #@+others
-    #@+node:vitalije.20211208092910.1: *3* getdefn & helper
+    #@+node:vitalije.20211208092910.1: *3* function: getdefn & helper 
     def getdefn(start: int) -> def_tuple:
         """
         Look for an 'async', 'def' or `class` token at rawtokens[start].
@@ -490,7 +458,7 @@ def split_root(root: Any, lines: List[str]) -> None:
             kind = kind,
             name = name,
         )
-    #@+node:vitalije.20211208084231.1: *4* get_intro & helper
+    #@+node:vitalije.20211208084231.1: *4* function: get_intro (Vitalije's importer)
     def get_intro(row: int, col: int) -> int:
         """
         Return the number of preceeding lines that should be added to this class or def.
@@ -507,7 +475,7 @@ def split_root(root: Any, lines: List[str]) -> None:
             if lines[i - 1].isspace():
                 last = i + 1
         return row - last
-    #@+node:vitalije.20211208183603.1: *5* is_intro_line
+    #@+node:vitalije.20211208183603.1: *4* function: is_intro_line (Vitalije's importer)
     def is_intro_line(n: int, col: int) -> bool:
         """
         Return True if line n is either:
@@ -771,41 +739,9 @@ def gen_lines(self, lines, parent):
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
-            decl_line1 = decl_line - get_intro(decl_line, decl_indent),
+            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             kind = m.group(1),
             name = m.group(2),
-        )
-    #@+node:ekr.20220720064902.1: *4* get_intro & helper
-    def get_intro(row: int, col: int) -> int:
-        """
-        Return the number of preceeding lines that should be added to this class or def.
-        """
-        nonlocal lines
-
-        # Scan backward for blank or intro lines.
-        i = row - 1
-        while i >= 0 and (lines[i].isspace() or is_intro_line(lines[i], col)):
-            i -= 1
-
-        # Remove blank lines from the start of the intro.
-        # Leading blank lines should be added to the end of the preceeding node.
-        i += 1
-        while i < row:
-            if lines[i].isspace():
-                i += 1
-            else:
-                break
-        return row - i
-    #@+node:ekr.20220720064902.2: *5* is_intro_line
-    def is_intro_line(line: str, col: int) -> bool:
-        """
-        Return True if line n is either:
-        - a comment line that starts at the same column as the def/class line,
-        - a decorator line
-        """
-        return (
-            col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
-            and line.strip()[0] in '@#'
         )
     #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)
     def make_node(p: Position,
