@@ -480,7 +480,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (traces defs)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -505,7 +505,8 @@ class Importer:
             g.trace(self.__class__.__name__, 'All definitions...')
             for z in all_definitions:
                 print(repr(z))
-                g.printObj(lines[z.decl_line1 : z.body_line1])
+                if 0:
+                    g.printObj(lines[z.decl_line1 : z.body_line1])
 
         # Start the recursion.
         parent.deleteAllChildren()
@@ -549,7 +550,7 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
+    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def (sets body_indent)
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
         Importer.get_class_or_def, based on Vitalije's python importer.
@@ -574,12 +575,14 @@ class Importer:
 
         # Calculate the indentation of the first non-blank body line.
         j = first_body_line
-        while j <= i < len(lines):
+        while j < i and j < len(lines):
+            ### g.trace('SCAN', self.headline, repr(lines[j]))
             if not lines[j].isspace():
                 body_indent = self.get_int_lws(lines[j])
                 break
             j += 1
         else:
+            ### g.trace('NO BODY FOUND', self.headline)
             body_indent = 0
 
         # Include all following blank lines.
@@ -740,28 +743,20 @@ class Importer:
         if i >= len(lines):
             return len(lines)
         state1 = line_states[i]  # The opening state
+        ### g.trace('----- state1', state1.indent, repr(lines[i]))
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
             state = line_states[i]
+            ### g.trace(state.indent, repr(line))
             if (
                 not line.isspace()
                 and not state.in_context()
                 and state.level() < state1.level()
             ):
+                ### g.trace('FOUND')
                 return i + 1
         return len(lines)
-
-
-        # # # lines, line_states = self.lines, self.line_states
-        # # # if i >= len(lines):
-            # # # return len(lines)
-        # # # state1 = line_states[i]  # The opening state
-        # # # while i + 1 < len(lines):
-            # # # i += 1
-            # # # if line_states[i].level() < state1.level():
-                # # # return i + 1
-        # # # return len(lines)
 
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20211118082436.1: *4* i.dump_tree
