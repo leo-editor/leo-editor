@@ -679,8 +679,8 @@ class Importer:
                         self.lines[z.decl_line1 : z.body_line1],
                         tag=f"Lines[{z.decl_line1} : {z.body_line1}]")
 
-        ### if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
-        if not inner_defs or end - start < self.SPLIT_THRESHOLD:
+        # Don't use the threshold for unit tests. It's too confusing.
+        if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
             p.b = self.body_string(start, end, others_indent)
             return
