@@ -22,9 +22,6 @@ class Coffeescript_Importer(Importer):
             state_class=Coffeescript_ScanState,
             strict=True
         )
-        ### self.errors = 0
-        self.root = None
-        ### self.tab_width = None  # NOT the same as self.c.tabwidth.  Set in run().
     #@+node:ekr.20220729104712.1: *3* coffee_i.clean_headline
     def clean_headline(self, s, p=None):
         """

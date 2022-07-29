@@ -391,9 +391,6 @@ class Importer:
             return None
         self.root = root = parent.copy()
 
-        ### self.file_s = s
-        ### self.errors = 0
-
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
         lines = g.splitLines(s)
@@ -403,7 +400,7 @@ class Importer:
         if not ws_ok:
             lines = self.regularize_whitespace(lines)
 
-        ### New: just call gen_lines.
+        # New: just call gen_lines.
         self.gen_lines(lines, parent)
         ###
             # # Generate the nodes, including directives and section references.
@@ -908,11 +905,6 @@ class Importer:
                 result.append(s)
         return ''.join(result)
     #@-others
-
-    ###
-        # # If used at all, must be overridden in subclasses.
-        # class_pat: re.Pattern = None
-        # def_pat: re.Pattern = None
 
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
