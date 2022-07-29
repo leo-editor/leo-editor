@@ -140,17 +140,17 @@ class C_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         """
-        trace = False  ###
+        trace = True  ###
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
-            if trace: g.trace('extern', line)  ###
+            if trace: g.trace('extern:', repr(line))  ###
             return True
         # #1626
         m = self.c_template_pattern.match(line)
         if m:
             self.headline = line.strip()
-            if trace: g.trace('template', line)  ###
+            if trace: g.trace('template:', repr(line))  ###
             return True
         m = self.c_class_pattern.match(line)
         if m:
@@ -162,28 +162,30 @@ class C_Importer(Importer):
         m = self.c_func_pattern.match(line)
         if m:
             if self.c_types_pattern.match(m.group(3)):
-                if trace: g.trace('func and types', line)  ###
+                if trace: g.trace('func and types:', repr(line))  ###
                 return True
             name = m.group(3)
             prefix = f"{m.group(1).strip()} " if m.group(1) else ''
             self.headline = f"{prefix}{name}"
-            if trace: g.trace('func', line)
+            if trace: g.trace('func', repr(line))
             return True
         m = self.c_typedef_pattern.match(line)
         if m:
             # Does not set self.headline.
-            if trace: g.trace('typedef', line)  ###
+            if trace: g.trace('typedef:', repr(line))  ###
             return True
         m = self.c_types_pattern.match(line)
-        if trace and m: g.trace('types', line)  ###
+        if trace and m: g.trace('type:', repr(line))  ###
         return bool(m)
     #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
         state1 = line_states[i]  # The opening state
+        ### g.trace(i, state1, repr(lines[i]))
         while i < len(lines):
             i += 1
+            ### g.trace(i, line_states[i], repr(lines[i]))
             if line_states[i].level() < state1.level():
                 return i + 1
         return len(lines)

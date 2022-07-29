@@ -546,11 +546,11 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 0:  ###
+        if 1:  ###
             g.trace('All definitions...')
             for z in all_definitions:
                 print(repr(z))
-                g.printObj(lines[z.decl_line1 : z.decl_line1 + 2])
+                g.printObj(lines[z.decl_line1 : z.body_line1])
 
         # Start the recursion.
         parent.deleteAllChildren()

@@ -287,12 +287,21 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
+        # New: add lines to exceed the threshold
         s = """
             extern "C"
             {
+            
+            // comment 1
+            // comment 2
+            
             #include "stuff.h"
             void    init(void);
             #include "that.h"
+            
+            // comment 3
+            // comment 4
+
             }
         """
         p = self.run_test(s)
