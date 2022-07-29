@@ -90,7 +90,6 @@ class_or_def_tuple = namedtuple('class_or_def_tuple', [
     'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the *first* line of this node.
                    # This line may be a comment or decorator.
-    'kind',  # 'def' or 'class'.
     'name',  # name of the function, class or method.
 ])
 #@-<< define class_or_def_tuple >>
@@ -505,7 +504,7 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 1:  ###
+        if 0:  ###
             g.trace(self.__class__.__name__, 'All definitions...')
             for z in all_definitions:
                 print(repr(z))
@@ -553,7 +552,7 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def (*** Test ***)
+    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
     def get_class_or_def(self, i: int) -> class_or_def_tuple:
         """
         Importer.get_class_or_def, based on Vitalije's python importer.
@@ -596,7 +595,6 @@ class Importer:
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            kind = '',  ### To do?
             name = self.headline,
         )
     #@+node:ekr.20220729070924.1: *5* i.is_intro_line
@@ -631,7 +629,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220727075027.1: *5* i.make_node
+    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs)
     def make_node(self,
         p: Position,
         start: int,
@@ -718,7 +716,7 @@ class Importer:
                 child.b = self.body_string(decl_line1, body_line1, inner_indent)
 
             last = body_line1
-    #@+node:ekr.20220728130253.1: *5* i.new_starts_block (*** Test ***)
+    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -738,7 +736,7 @@ class Importer:
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (*** Test ***)
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (check for in state!!)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states

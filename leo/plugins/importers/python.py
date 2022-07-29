@@ -128,7 +128,6 @@ class Python_Importer(Importer):
                 body_line1 = i,
                 decl_indent = decl_indent,
                 decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-                kind = m.group(1),
                 name = m.group(2),
             )
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
@@ -753,7 +752,6 @@ def gen_lines(self, lines, parent):
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            kind = m.group(1),
             name = m.group(2),
         )
     #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)

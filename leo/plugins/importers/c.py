@@ -4,7 +4,7 @@
 import re
 from typing import Optional
 from leo.core import leoGlobals as g
-from leo.plugins.importers.linescanner import Importer, class_or_def_tuple
+from leo.plugins.importers.linescanner import Importer
 assert g
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
@@ -63,52 +63,6 @@ class C_Importer(Importer):
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20220728060001.1: *3* c_i.get_class_or_def
-    def get_class_or_def(self, i: int) -> class_or_def_tuple:
-        """
-        C_Importer.get_class_or_def, based on Vitalije's python importer.
-
-        Look for a def or class at self.lines[i]
-        Return None or a class_or_def_tuple describing the class or def.
-        """
-        self.headline =  ''  # Set in helpers.
-        lines = self.lines
-
-        # Return if lines[i] does not start a block.
-        first_body_line = self.new_starts_block(i)
-        if first_body_line is None:
-            return None
-
-        # Compute declaration data.
-        decl_line = i
-        decl_indent = self.get_int_lws(self.lines[i])
-
-        # Scan to the end of the block.
-        i = self.new_skip_block(first_body_line)
-
-        # Calculate the indentation of the first non-blank body line.
-        j = first_body_line
-        while j <= i < len(lines):
-            if not lines[j].isspace():
-                body_indent = self.get_int_lws(lines[j])
-                break
-            j += 1
-        else:
-            body_indent = 0
-
-        # Include all following blank lines.
-        while i < len(lines) and lines[i].isspace():
-            i += 1
-
-        # Return the description of the unit.
-        return class_or_def_tuple(
-            body_indent = body_indent,
-            body_line1 = i,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            kind = '',  # Not used.
-            name = self.headline,
-        )
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
     def match_name_patterns(self, line):
         """Set self.headline if the line defines a typedef name."""
@@ -165,7 +119,7 @@ class C_Importer(Importer):
         m = self.c_types_pattern.match(line)
         if trace and m: g.trace('type:', repr(line))  ###
         return bool(m)
-    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block
+    #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block (check for in state!!)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         lines, line_states = self.lines, self.line_states
