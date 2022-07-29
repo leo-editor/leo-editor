@@ -140,34 +140,42 @@ class C_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         """
+        trace = False  ###
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
+            if trace: g.trace('extern', line)  ###
             return True
         # #1626
         m = self.c_template_pattern.match(line)
         if m:
             self.headline = line.strip()
+            if trace: g.trace('template', line)  ###
             return True
         m = self.c_class_pattern.match(line)
         if m:
-            prefix = m.group(1).strip() if m.group(1) else ''
-            self.headline = '%sclass %s' % (prefix, m.group(3))
-            self.headline = self.headline.strip()
+            prefix = f"{m.group(1).strip()} " if m.group(1) else ''
+            name = m.group(3)
+            self.headline = f"{prefix}class {name}"
+            if trace: g.trace('class', line)
             return True
         m = self.c_func_pattern.match(line)
         if m:
             if self.c_types_pattern.match(m.group(3)):
+                if trace: g.trace('func and types', line)  ###
                 return True
             name = m.group(3)
             prefix = f"{m.group(1).strip()} " if m.group(1) else ''
             self.headline = f"{prefix}{name}"
+            if trace: g.trace('func', line)
             return True
         m = self.c_typedef_pattern.match(line)
         if m:
             # Does not set self.headline.
+            if trace: g.trace('typedef', line)  ###
             return True
         m = self.c_types_pattern.match(line)
+        if trace and m: g.trace('types', line)  ###
         return bool(m)
     #@+node:ekr.20220728070521.1: *3* c_i.new_skip_block
     def new_skip_block(self, i: int) -> int:
@@ -180,7 +188,7 @@ class C_Importer(Importer):
                 return i + 1
         return len(lines)
 
-    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block (should set self.headline)
+    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -197,6 +205,9 @@ class C_Importer(Importer):
             or not self.match_start_patterns(line)
         ):
             return None
+        # Try again to set self.headline.
+        if not self.headline and i0 + 1 < len(lines):
+            self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
         # Scan ahead at most 10 lines until an open { is seen.
         while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.ScanState()
