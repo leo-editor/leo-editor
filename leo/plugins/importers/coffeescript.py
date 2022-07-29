@@ -25,6 +25,14 @@ class Coffeescript_Importer(Importer):
         ### self.errors = 0
         self.root = None
         ### self.tab_width = None  # NOT the same as self.c.tabwidth.  Set in run().
+    #@+node:ekr.20220729104712.1: *3* coffee_i.clean_headline
+    def clean_headline(self, s, p=None):
+        """
+        Coffeescript_Importer.clean_headline.
+
+        Don't strip arguments.
+        """
+        return s.strip()
     #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict
     #@@nobeautify
 
@@ -82,7 +90,7 @@ class Coffeescript_Importer(Importer):
         line = lines[i]
         if line.isspace() or line_states[i].in_context():
             return None
-        prev_state = line_states[i - 1] if i > 0 else Coffeescript_ScanState()
+        prev_state = line_states[i - 1] if i > 0 else self.state_class()
         if prev_state.in_context():
             return None
         line = lines[i]
@@ -91,14 +99,6 @@ class Coffeescript_Importer(Importer):
                 self.headline = self.clean_headline(line)
                 return i + 1
         return None
-    #@+node:ekr.20220729104712.1: *3* coffee_i.clean_headline
-    def clean_headline(self, s, p=None):
-        """
-        Coffeescript_Importer.clean_headline.
-        
-        Don't strip arguments.
-        """
-        return s.strip()
     #@-others
     @classmethod
     def do_import(cls):
@@ -132,10 +132,9 @@ class Coffeescript_ScanState:
 
     __str__ = __repr__
     #@+node:ekr.20161119115413.1: *3* cs_state.level
-    ###
-    # def level(self):
-        # """Coffeescript_ScanState.level."""
-        # return self.indent
+    def level(self):
+        """Coffeescript_ScanState.level."""
+        return self.indent
     #@+node:ekr.20161118140100.1: *3* cs_state.in_context
     def in_context(self):
         """True if in a special context."""

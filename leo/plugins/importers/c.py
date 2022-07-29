@@ -144,7 +144,7 @@ class C_Importer(Importer):
             self.headline = self.clean_headline(self.headline)
         # Scan ahead at most 10 lines until an open { is seen.
         while i < len(lines) and i <= i0 + 10:
-            prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+            prev_state = line_states[i - 1] if i > 0 else self.state_class() ### self.ScanState()
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
                 return i + 1
