@@ -8,12 +8,12 @@ from leo.plugins.importers import linescanner
 assert g
 Importer = linescanner.Importer
 Target = linescanner.Target
-class_or_def_tuple = linescanner.class_or_def_tuple  ###
+class_or_def_tuple = linescanner.class_or_def_tuple
 NEW_GEN_LINES = linescanner.NEW_GEN_LINES  ###
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-    
+
     # For cleaning headlines.
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 

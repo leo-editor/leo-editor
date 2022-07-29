@@ -8,7 +8,7 @@ import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Importer
+from leo.plugins.importers.linescanner import Importer, class_or_def_tuple
 from leo.core.leoNodes import Position
 
 #@+<< Define importer switches >>
@@ -50,6 +50,8 @@ class Python_Importer(Importer):
         """
         # Based on Vitalije's importer.
         assert self.root == parent, (self.root, parent)
+        
+        self.lines = lines
 
         class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
         class_pat = re.compile(class_pat_s, re.MULTILINE)
@@ -314,6 +316,16 @@ class Python_Importer(Importer):
                       ],
             }
         return d
+    #@+node:ekr.20220729081229.1: *3* py_i.is_intro_line
+    def is_intro_line(self, n: int, col: int) -> bool:
+        """
+        Return True if line n is a comment line or decorator that starts at the give column.
+        """
+        line = self.lines[n]
+        return (
+            line.strip().startswith(('#', '@'))
+            and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
+        )
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
@@ -385,7 +397,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     rawtokens: List
 
     #@+others
-    #@+node:vitalije.20211208092910.1: *3* function: getdefn & helper 
+    #@+node:vitalije.20211208092910.1: *3* function: getdefn & helper
     def getdefn(start: int) -> def_tuple:
         """
         Look for an 'async', 'def' or `class` token at rawtokens[start].
@@ -663,6 +675,8 @@ def gen_lines(self, lines, parent):
     """
     # Based on Vitalije's importer.
     assert self.root == parent, (self.root, parent)
+    
+    self.lines = lines
 
     class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
     class_pat = re.compile(class_pat_s, re.MULTILINE)
@@ -882,21 +896,6 @@ importer_dict = {
     'func': do_import,
     'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
 }
-
-# For new importer.
-#@+<< define class_or_def_tuple >>
-#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (linescanner.py)
-# A named tuple containing all data relating to one declaration of a class or def.
-class_or_def_tuple = namedtuple('class_or_def_tuple', [
-    'body_indent',  # Indentation of body.
-    'body_line1',  # Line number of the *last* line of the definition.
-    'decl_indent',  # Indentation of the class or def line.
-    'decl_line1',  # Line number of the *first* line of this node.
-                   # This line may be a comment or decorator.
-    'kind',  # 'def' or 'class'.
-    'name',  # name of the function, class or method.
-])
-#@-<< define class_or_def_tuple >>
 
 # For Vitalije's importer.
 #@+<< define def_tuple >>
