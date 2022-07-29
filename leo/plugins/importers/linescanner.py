@@ -74,8 +74,6 @@ need to do so.
 
 """
 #@-<< linescanner docstring >>
-#@+<< linescanner imports >>
-#@+node:ekr.20161108130715.1: ** << linescanner imports >>
 import io
 import re
 from collections import namedtuple
@@ -83,7 +81,6 @@ from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 StringIO = io.StringIO
-#@-<< linescanner imports >>
 #@+<< Define importer switches >>
 #@+node:ekr.20220727074910.1: ** << Define importer switches >> (linescanner.py)
 NEW_GEN_LINES = True

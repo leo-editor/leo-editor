@@ -4,12 +4,8 @@
 import re
 from typing import Optional
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
+from leo.plugins.importers.linescanner import Importer, class_or_def_tuple
 assert g
-Importer = linescanner.Importer
-Target = linescanner.Target
-class_or_def_tuple = linescanner.class_or_def_tuple
-NEW_GEN_LINES = linescanner.NEW_GEN_LINES  ###
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
