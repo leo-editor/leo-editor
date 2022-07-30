@@ -430,7 +430,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs) (to do: use level)
+    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs) (****** to do: use level)
     def make_node(self,
         p: Position,
         start: int,
@@ -451,15 +451,15 @@ class Importer:
          inner_indent: The indentation of all of the inner definitions.
           definitions: The list of the definitions covering p.
         """
-        trace = False
+        trace, trace_body = True, False
         # Find all defs with the given inner indentation.
-        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+        ### inner_defs = [z for z in definitions if z.decl_level == 1 + level]
 
         if trace:
             g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
             g.printObj([repr(z) for z in inner_defs])
-            if 0:
+            if trace_body:
                 for z in inner_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
