@@ -515,7 +515,7 @@ class Cython_ScanState:
         parens = f"({self.parens})" if self.parens else ''
         squares = f"[{self.squares}]" if self.squares else ''
         return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
-        
+
     #@+others
     #@+node:ekr.20220730072650.1: *3* cython_state.level
     def level(self):
@@ -543,7 +543,7 @@ class Cython_ScanState:
         self.squares += data.delta_s
         return data.i
     #@-others
-    
+
 #@+node:ekr.20211121065103.1: ** class CythonTarget
 class CythonTarget:
     """

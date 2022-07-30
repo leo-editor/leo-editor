@@ -57,15 +57,11 @@ class Csharp_ScanState:
     #@+node:ekr.20161121200106.9: *3* csharp_state.update
     def update(self, data: scan_tuple) -> int:
         """
-        Csharp_ScanState.update.
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Csharp_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.context = context
-        self.curlies += delta_c
-        return i
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 
 #@-others
