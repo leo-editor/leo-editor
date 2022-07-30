@@ -4,8 +4,9 @@
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+### from leo.plugins.importers import linescanner###, scan_tuple
+from leo.plugins.importers.linescanner import Importer, scan_tuple
+### Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer
 class Php_Importer(Importer):
@@ -128,11 +129,11 @@ class Php_Importer(Importer):
                 assert kind == 'len', (kind, self.name)
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
-            return new_context, i, delta_c, delta_p, delta_s, bs_nl
+            return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
         #
         # No match: stay in present state. All deltas are zero.
         new_context = context
-        return new_context, i + 1, 0, 0, 0, False
+        return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20161130044051.1: *3* php_i.skip_heredoc_string (not used)
     # EKR: This is Dave Hein's heredoc code from the old PHP scanner.
     # I have included it for reference in case heredoc problems arise.

@@ -94,6 +94,18 @@ block_tuple = namedtuple('block_tuple', [
     'name',  # name of the function, class or method.
 ])
 #@-<< define block_tuple >>
+#@+<< define scan_tuple >>
+#@+node:ekr.20220730064213.1: ** << define scan_tuple >> (linescanner.py)
+# This named tuple contains all data for updating the scan state.
+scan_tuple = namedtuple('scan_tuple', [
+    'new_context',
+    'i', # Line index.
+    'delta_c',  # Change in curly brackets count.
+    'delta_p',  # Change in parens count.
+    'delta_s',  # Change in square_brackets count.
+    'bs_nl',  # Backslash-newline flag.
+])
+#@-<< define scan_tuple >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
@@ -191,19 +203,11 @@ class Importer:
 
         # New: just call gen_lines.
         self.gen_lines(lines, parent)
-        ###
-            # # Generate the nodes, including directives and section references.
-            # # Completely generate all nodes
-            # self.generate_nodes(lines, parent)
-            # # Check the generated nodes.
-            # # Return True if the result is equivalent to the original file.
-            # ok = self.errors == 0 and self.check(s, parent)
-            # # Insert an @ignore directive if there were any serious problems.
-            # if not ok:
-                # self.insert_ignore_directive(parent)
+
         # Importers should never dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
+
         # #1451: Do not change the outline's change status.
         return True  # For unit tests.
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
@@ -360,7 +364,7 @@ class Importer:
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
-        decl_level = states[i].level()  ###
+        decl_level = states[i].level()
 
         # Scan to the end of the block.
         i = self.new_skip_block(first_body_line)
@@ -422,7 +426,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs)
+    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs) (to do: use level)
     def make_node(self,
         p: Position,
         start: int,
@@ -741,11 +745,12 @@ class Importer:
                 assert kind == 'len', (kind, self.name)
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
-            return new_context, i, delta_c, delta_p, delta_s, bs_nl
+            # return new_context, i, delta_c, delta_p, delta_s, bs_nl
+            return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
         #
         # No match: stay in present state. All deltas are zero.
         new_context = context
-        return new_context, i + 1, 0, 0, 0, False
+        return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s, prev_state):
         """
