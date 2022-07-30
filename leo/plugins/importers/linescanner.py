@@ -83,13 +83,14 @@ from leo.core.leoNodes import Position
 StringIO = io.StringIO
 #@+<< define block_tuple >>
 #@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
-# A named tuple containing all data relating to one declaration of a class or def.
+# This named tuple contains all data relating to one block (class, method or function).
 block_tuple = namedtuple('block_tuple', [
     'body_indent',  # Indentation of body.
     'body_line1',  # Line number of the *last* line of the definition.
     'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the *first* line of this node.
                    # This line may be a comment or decorator.
+    'decl_level',  # The nesting level of this block.
     'name',  # name of the function, class or method.
 ])
 #@-<< define block_tuple >>
@@ -275,6 +276,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
+        trace, verbose = False, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -289,11 +291,11 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 1:  ###
+        if trace:
             g.trace(self.__class__.__name__, 'All definitions...')
             for z in all_definitions:
                 print(repr(z))
-                if 1:
+                if verbose:
                     g.printObj(lines[z.decl_line1 : z.body_line1])
 
         # Start the recursion.
@@ -338,7 +340,7 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def (sets body_indent)
+    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
         Importer.get_class_or_def, based on Vitalije's python importer.
@@ -348,6 +350,7 @@ class Importer:
         """
         self.headline =  ''  # Set in helpers..
         lines = self.lines
+        states = self.line_states
 
         # Return if lines[i] does not start a block.
         first_body_line = self.new_starts_block(i)
@@ -357,6 +360,7 @@ class Importer:
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
+        decl_level = states[i].level()  ###
 
         # Scan to the end of the block.
         i = self.new_skip_block(first_body_line)
@@ -377,12 +381,13 @@ class Importer:
         while i < len(lines) and lines[i].isspace():
             i += 1
 
-        # Return the description of the unit.
+        # Return the description of the block.
         return block_tuple(
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level = decl_level,
             name = self.headline,
         )
     #@+node:ekr.20220729070924.1: *5* i.is_intro_line
@@ -528,22 +533,26 @@ class Importer:
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
+        trace = False  ###
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)
         state1 = line_states[i]  # The opening state
-        g.trace('----- state1:', state1.level(), repr(lines[i]))
+        if trace:
+            g.trace('----- state1:', state1.level(), repr(lines[i]))
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
             state = line_states[i]
-            g.trace(state.level(), repr(line))
+            if trace:
+                g.trace(state.level(), repr(line))
             if (
                 not line.isspace()
                 and not state.in_context()
                 and state.level() < state1.level()
             ):
-                g.trace('FOUND')
+                if trace:
+                    g.trace('FOUND')
                 return i + 1
         return len(lines)
 

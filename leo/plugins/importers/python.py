@@ -81,6 +81,7 @@ class Python_Importer(Importer):
             # Compute declaration data.
             decl_line = i
             decl_indent = self.get_int_lws(line)
+            decl_level = decl_indent
 
             # Set body_indent to the indentation of the first non-blank line of the body.
             newlines = m.group(0).count('\n')
@@ -122,12 +123,13 @@ class Python_Importer(Importer):
             while i < len(lines) and lines[i].isspace():
                 i += 1
 
-            # This is the only instantiation of block_tuple.
+            # Return the description of the block.
             return block_tuple(
                 body_indent = body_indent,
                 body_line1 = i,
                 decl_indent = decl_indent,
                 decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+                decl_level = decl_level,
                 name = m.group(2),
             )
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
@@ -705,6 +707,7 @@ def gen_lines(self, lines, parent):
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(line)
+        decl_level = decl_indent
 
         # Set body_indent to the indentation of the first non-blank line of the body.
         newlines = m.group(0).count('\n')
@@ -746,12 +749,13 @@ def gen_lines(self, lines, parent):
         while i < len(lines) and lines[i].isspace():
             i += 1
 
-        # This is the only instantiation of block_tuple.
+        # Return the description of the block.
         return block_tuple(
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level = decl_level,
             name = m.group(2),
         )
     #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)
