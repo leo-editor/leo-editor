@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 """The @auto importer for the java language."""
 import re
-from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
 class Java_Importer(Importer):
@@ -67,37 +67,6 @@ class Java_Importer(Importer):
             self.headline = line[:i] if i > -1 else line
             return True
         return False
-    #@+node:ekr.20161205042019.4: *3* java_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        line = lines[i]
-        target = stack[-1]
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        if self.headline:
-            h = self.headline
-        if new_state.level() > prev_state.level():
-            child = self.create_child_node(target.p, line, h)
-        else:
-            # We may not have seen the { yet, so adjust.
-            # Without this, the new block becomes a child of the preceding.
-            new_state = Java_ScanState()
-            new_state.curlies = prev_state.curlies + 1
-            child = self.create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-        # Add all additional lines of the signature.
-        skip = self.skip  # Don't change the ivar!
-        while skip > 0:
-            skip -= 1
-            i += 1
-            assert i < len(lines), (i, len(lines))
-            line = lines[i]
-            if not self.headline:
-                self.match_name_patterns(line)
-                if self.headline:
-                    child.h = '%s %s' % (child.h.strip(), self.headline)
-            self.add_line(child, lines[i])
     #@+node:ekr.20161205042019.5: *3* java_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         """True if the new state starts a block."""
