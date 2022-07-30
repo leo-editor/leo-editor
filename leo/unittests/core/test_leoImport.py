@@ -37,6 +37,9 @@ class BaseTestImporter(LeoUnitTest):
     def check_headlines(self, p, table):
         """Check that p and its subtree have the structure given in the table."""
         # Check structure
+        g.printObj(table)
+        for z in p.subtree():
+            print(z.level(), z.h)
         p1 = p.copy()
         try:
             self.assertEqual(p1.h, f"{self.treeType} {self.short_id}")
@@ -147,13 +150,16 @@ class BaseTestImporter(LeoUnitTest):
         """
         c, ext, p = self.c, self.ext, self.c.p
         self.assertTrue(ext)
+
         # Run the test.
         parent = p.insertAsLastChild()
         kind = self.compute_unit_test_kind(ext)
+        
         # TestCase.id() has the form leo.unittests.core.file.class.test_name
         id_parts = self.id().split('.')
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
+        
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
         ok = c.importCommands.createOutline(parent.copy(), ext, test_s)
@@ -422,8 +428,8 @@ class TestCSharp(BaseTestImporter):
     ext = '.c#'
 
     #@+others
-    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
-    def test_namespace_indent(self):
+    #@+node:ekr.20210904065459.12: *3* TestCSharp.xxx_test_namespace_indent
+    def xxx_test_namespace_indent(self):
 
         s = """
             namespace {

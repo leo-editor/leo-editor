@@ -271,14 +271,14 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (traces defs)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (traces lines, bodies, defs)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
 
         Based on Vitalije's python importer.
         """
-        trace, verbose = False, False
+        trace, trace_body, trace_states = True, False, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -288,16 +288,22 @@ class Importer:
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
+            
+        if trace and trace_states:
+            g.trace(f"{self.__class__.__name__} states & lines...")
+            for i, line in enumerate(self.lines):
+                state = self.line_states[i]
+                print(f"{i:3} {state!r} {line!r}")
 
         # Prepass 2: Find *all* definitions.
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
         if trace:
-            g.trace(self.__class__.__name__, 'All definitions...')
+            g.trace(self.__class__.__name__, 'all definitions...')
             for z in all_definitions:
                 print(repr(z))
-                if verbose:
+                if trace_body:
                     g.printObj(lines[z.decl_line1 : z.body_line1])
 
         # Start the recursion.
@@ -532,29 +538,31 @@ class Importer:
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace states)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         trace = False  ###
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)
-        state1 = line_states[i]  # The opening state
+        state0_level = -1 if i == 0 else  line_states[i-1].level()
+        # The opening state, *before* lines i
+        ### state1 = line_states[i-1] if i > 0 else self.scan_state()
         if trace:
-            g.trace('----- state1:', state1.level(), repr(lines[i]))
+            g.trace('----- ENTRY:', i, state0_level)
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
             state = line_states[i]
             if trace:
-                g.trace(state.level(), repr(line))
+                g.trace(i, state.level(), repr(line))
             if (
                 not line.isspace()
                 and not state.in_context()
-                and state.level() < state1.level()
+                and state.level() <= state0_level  ### Was <
             ):
                 if trace:
-                    g.trace('FOUND')
+                    g.trace('FOUND', i + 1)
                 return i + 1
         return len(lines)
 
