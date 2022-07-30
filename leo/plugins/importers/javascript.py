@@ -2,9 +2,6 @@
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
 """The @auto importer for JavaScript."""
 import re
-import textwrap
-import unittest
-from typing import List
 from leo.core import leoGlobals as g  # Required
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
@@ -22,100 +19,6 @@ class JS_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
-    def post_pass(self, parent):
-        """
-        Post-pass for javascript importer.
-
-        All substages **must** use the API for setting body text. Changing
-        p.b directly will cause asserts to fail later in i.finish().
-        """
-        self.clean_all_headlines(parent)
-        self.remove_singleton_at_others(parent)
-        self.clean_all_nodes(parent)
-        self.move_trailing_comments(parent)
-    #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
-    at_others = re.compile(r'^\s*@others\b')
-
-    def remove_singleton_at_others(self, parent):
-        """Replace @others by the body of a singleton child node."""
-        found = False
-        for p in parent.subtree():
-            if p.numberOfChildren() == 1:
-                child = p.firstChild()
-                lines = self.get_lines(p)
-                matches = [i for i, s in enumerate(lines) if self.at_others.match(s)]
-                if len(matches) == 1:
-                    found = True
-                    i = matches[0]
-                    child_lines = self.get_lines(child)
-                    lines = lines[:i] + child_lines + lines[i + 1 :]
-                    self.set_lines(p, lines)
-                    # Delete child later. Is this enough???
-                    self.set_lines(child, [])
-        return found
-    #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
-    def remove_organizer_nodes(self, parent):
-        """Removed all organizer nodes created by i.delete_all_empty_nodes."""
-        # Careful: Restart this loop whenever we find an organizer.
-        found = True
-        while found:
-            found = False
-            for p in parent.subtree():
-                lines = self.get_lines(p)
-                if p.h.lower() == 'organizer' and not lines:
-                    p.promote()
-                    p.doDelete()
-                    found = True  # Restart the loop.
-    #@+node:ekr.20200202071105.1: *4* js_i.clean_all_nodes
-    def clean_all_nodes(self, parent):
-        """Remove common leading whitespace from all nodes."""
-        for p in parent.subtree():
-            lines = self.get_lines(p)
-            s = textwrap.dedent(''.join(lines))
-            self.set_lines(p, g.splitLines(s))
-    #@+node:ekr.20200202091613.1: *4* js_i.move_trailing_comments & helper (new)
-    def move_trailing_comments(self, parent):
-        """Move all trailing comments to the start of the next node."""
-        for p in parent.subtree():
-            next = p.next()
-            if next:
-                lines = self.get_lines(p)
-                head_lines, tail_lines = self.get_trailing_comments(lines)
-                if tail_lines:
-                    self.set_lines(p, head_lines)
-                    next_lines = self.get_lines(next)
-                    self.set_lines(next, tail_lines + next_lines)
-    #@+node:ekr.20200202092332.1: *5* js_i.get_trailing_comments
-    def get_trailing_comments(self, lines):
-        """
-        Return the trailing comments of p.
-        Return (head_lines, tail_lines).
-        """
-        s = ''.join(lines)
-        head: List[str] = []
-        tail: List[str] = []
-        if not s.strip:
-            return head, tail
-        in_block_comment = False
-        head = lines
-        for i, line in enumerate(lines):
-            s = line.strip()
-            if in_block_comment:
-                tail.append(line)
-                if s.startswith('*/'):
-                    in_block_comment = False
-            elif s.startswith('/*'):
-                in_block_comment = True
-                head = lines[:i]
-                tail = [line]
-            elif s.startswith('//'):
-                head = lines[:i]
-                tail = [line]
-            elif s:  # Clear any previous comments.
-                head = lines
-                tail = []
-        return head, tail
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line
     def scan_line(self, s, prev_state):
         """
@@ -185,12 +88,6 @@ class JS_Importer(Importer):
             if pattern.match(line) is not None:
                 return True
         return False
-    #@+node:ekr.20200131193217.1: *3* js_i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        """True if line ends the block."""
-        # Comparing new_state against prev_state does not work for python.
-        top = stack[-1]
-        return new_state.level() < top.state.level()
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
         # (function name (
@@ -482,126 +379,11 @@ class JsLexer(Lexer):
 
     def __init__(self):
         super().__init__(self.states, 'reg')
-#@+node:ekr.20200131070055.1: ** class TestJSImporter (importers/javascript.py)
-class TestJSImporter(unittest.TestCase):
-    #@+others
-    #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments
-    def test_get_trailing_comments(self):
-
-        table = (
-            # Test 1
-            ("""\
-    head
-    // tail""", 1),
-
-            # Test 2
-            ("""\
-    head
-    /* comment 1
-     * comment 2
-     */""", 3),
-
-            # Test 3
-            ("""\
-    head
-    /* comment 1
-     * comment 2
-     */
-    tail""", 0),  # no tail
-
-            # Test 4
-            ("""\
-    head
-    // comment
-    tail""", 0),  # no tail
-
-    )  # End table.
-        for s, expected_length in table:
-            x = JS_Importer(None)
-            s = textwrap.dedent(s)
-            lines = g.splitLines(s)
-            head, tail = x.get_trailing_comments(lines)
-            expected_lines = lines[-expected_length :] if expected_length else []
-            assert tail == expected_lines, (repr(tail), repr(expected_lines))
-    #@+node:ekr.20200202104932.1: *3* test_JsLex
-    def test_JsLex(self):
-
-        table = (
-            ('id', ('f_', '$', 'A1', 'abc')),
-            ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
-            ('keyword', ('async', 'await', 'if')),
-            ('punct', ('(', ')', '{', '}', ',', ':', ';')),
-            # ('num', ('9', '2')),  # This test doesn't matter at present.
-        )
-        for kind, data in table:
-            for contents in data:
-                for name, tok in JsLexer().lex(contents):
-                    assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
-                    # print(f"{kind!s:10} {tok!r:10}")
-
-    #@+node:ekr.20200203051839.1: *3* test_starts_block
-    def test_starts_block(self):
-
-        table = (
-            (1, 'xx) => {}'),
-            (1, 'class c1'),
-            (1, 'function f1'),
-            (1, 'xx(function f2'),
-            (1, 'xx = function f3'),
-            (1, 'xx, function f4'),
-            (0, 'a = "function"'),
-            (0, 'a = /function/'),
-        )
-        for expected, line in table:
-            x = JS_Importer(None)
-            lines = [line]
-            new_state = JS_ScanState()
-            new_state.curlies += 1
-            prev_state = JS_ScanState()
-            results = x.starts_block(0, lines, new_state, prev_state)
-            # if expected != results: x.scan_line(line, prev_state
-            assert expected == results, f"expected: {expected} got: {int(results)} {line!r}\n"
-    #@+node:ekr.20200203060718.1: *3* test_scan_line
-    def test_scan_line(self):
-
-        table = (
-            # result        prev_context    s
-            ((0, 0, '"'), "", r'"string'),
-            ((0, 0, '/*'), "", r'/* line 1'),
-            ((0, 0, '/*'), "/*", r'line 2'),  # New.
-            ((0, 0, ''), "/*", r'line 3 */'),  # New.
-            ((0, 0, ''), "", r'a + b // /*'),
-            ((0, 1, ''), "", r'(function'),
-            ((1, 1, ''), "", r'(function(a) {'),
-            ((0, 0, ''), "", r'var x = /abc/'),
-            ((0, 0, ''), "", r'var x = /a"c/'),
-            ((0, 0, ''), "", r'var x = /a\//'),
-            ((0, 0, ''), "", r'var x = /a\//'),
-            ((0, 1, ''), "", r'var x = (0,'),
-        )
-        for result, prev_context, s in table:
-            importer = JS_Importer(None)
-            prev_state = JS_ScanState()
-            prev_state.context = prev_context
-            new_state = importer.scan_line(s, prev_state)
-            curlies, parens, context = result
-            ok = (
-                new_state.curlies == curlies and
-                new_state.parens == parens and
-                new_state.context == context)
-            assert ok, (
-                    f"\n"
-                    f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
-                    f"new_state: {new_state}\n"
-                    f"        s: {s!r}")
-    #@-others
 #@-others
 importer_dict = {
     'func': JS_Importer.do_import(),
     'extensions': ['.js',],
 }
-if __name__ == '__main__':
-    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@-leo
