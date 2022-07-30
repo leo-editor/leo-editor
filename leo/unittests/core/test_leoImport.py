@@ -1265,6 +1265,119 @@ class TestJavascript(BaseTestImporter):
             });
         """
         self.run_test(s)
+    #@+node:ekr.20200131070055.1: *3* --- These were in javascript.py
+    class TestJSImporter(BaseTestImporter):
+        #@+others
+        #@+node:ekr.20200202093420.1: *4* TestJavascript.test_get_trailing_comments
+        def test_get_trailing_comments(self):
+
+            table = (
+                # Test 1
+                ("""\
+        head
+        // tail""", 1),
+
+                # Test 2
+                ("""\
+        head
+        /* comment 1
+         * comment 2
+         */""", 3),
+
+                # Test 3
+                ("""\
+        head
+        /* comment 1
+         * comment 2
+         */
+        tail""", 0),  # no tail
+
+                # Test 4
+                ("""\
+        head
+        // comment
+        tail""", 0),  # no tail
+
+        )  # End table.
+            for s, expected_length in table:
+                x = JS_Importer(None)
+                s = textwrap.dedent(s)
+                lines = g.splitLines(s)
+                head, tail = x.get_trailing_comments(lines)
+                expected_lines = lines[-expected_length :] if expected_length else []
+                assert tail == expected_lines, (repr(tail), repr(expected_lines))
+        #@+node:ekr.20200202104932.1: *4* TestJavascript.test_JsLex
+        def test_JsLex(self):
+
+            table = (
+                ('id', ('f_', '$', 'A1', 'abc')),
+                ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
+                ('keyword', ('async', 'await', 'if')),
+                ('punct', ('(', ')', '{', '}', ',', ':', ';')),
+                # ('num', ('9', '2')),  # This test doesn't matter at present.
+            )
+            for kind, data in table:
+                for contents in data:
+                    for name, tok in JsLexer().lex(contents):
+                        assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
+                        # print(f"{kind!s:10} {tok!r:10}")
+
+        #@+node:ekr.20200203051839.1: *4* TestJavascript.test_starts_block
+        def test_starts_block(self):
+
+            table = (
+                (1, 'xx) => {}'),
+                (1, 'class c1'),
+                (1, 'function f1'),
+                (1, 'xx(function f2'),
+                (1, 'xx = function f3'),
+                (1, 'xx, function f4'),
+                (0, 'a = "function"'),
+                (0, 'a = /function/'),
+            )
+            for expected, line in table:
+                x = JS_Importer(None)
+                lines = [line]
+                new_state = JS_ScanState()
+                new_state.curlies += 1
+                prev_state = JS_ScanState()
+                results = x.starts_block(0, lines, new_state, prev_state)
+                # if expected != results: x.scan_line(line, prev_state
+                assert expected == results, f"expected: {expected} got: {int(results)} {line!r}\n"
+        #@+node:ekr.20200203060718.1: *4* test_scan_line
+        def test_scan_line(self):
+
+            table = (
+                # result        prev_context    s
+                ((0, 0, '"'), "", r'"string'),
+                ((0, 0, '/*'), "", r'/* line 1'),
+                ((0, 0, '/*'), "/*", r'line 2'),  # New.
+                ((0, 0, ''), "/*", r'line 3 */'),  # New.
+                ((0, 0, ''), "", r'a + b // /*'),
+                ((0, 1, ''), "", r'(function'),
+                ((1, 1, ''), "", r'(function(a) {'),
+                ((0, 0, ''), "", r'var x = /abc/'),
+                ((0, 0, ''), "", r'var x = /a"c/'),
+                ((0, 0, ''), "", r'var x = /a\//'),
+                ((0, 0, ''), "", r'var x = /a\//'),
+                ((0, 1, ''), "", r'var x = (0,'),
+            )
+            for result, prev_context, s in table:
+                importer = JS_Importer(None)
+                prev_state = JS_ScanState()
+                prev_state.context = prev_context
+                new_state = importer.scan_line(s, prev_state)
+                curlies, parens, context = result
+                ok = (
+                    new_state.curlies == curlies and
+                    new_state.parens == parens and
+                    new_state.context == context)
+                assert ok, (
+                        f"\n"
+                        f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
+                        f"new_state: {new_state}\n"
+                        f"        s: {s!r}")
+        #@-others
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
