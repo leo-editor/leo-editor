@@ -13,6 +13,7 @@ from leo.core.leoTest2 import LeoUnitTest
 # Import all tested scanners.
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
+from leo.plugins.importers.javascript import JS_Importer, JsLexer, JS_ScanState
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
@@ -88,7 +89,8 @@ class BaseTestImporter(LeoUnitTest):
 
         Also ensure that all created nodes have the expected node kind.
         """
-        d = g.vnode_info
+        assert False, 'BaseTestImporter.compare_outlines: not ready'
+        d = {} ### g.vnode_info
         p1, p2 = created_p.copy(), expected_p.copy()
         try:
             after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
