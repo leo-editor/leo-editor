@@ -3,8 +3,7 @@
 """The @auto importer for Perl."""
 import re
 from typing import Any, Dict, List
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer
 class Perl_Importer(Importer):
@@ -133,19 +132,14 @@ class Perl_ScanState:
         """Perl_ScanState.level."""
         return (self.curlies, self.parens)
     #@+node:ekr.20161119050522.1: *3* perl_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Perl_ScanState: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # self.bs_nl = bs_nl
-        self.context = context
-        self.curlies += delta_c
-        self.parens += delta_p
-        # self.squares += delta_s
-        return i
-
+        self.context = data.context
+        self.curlies += data.delta_c
+        self.parens += data.delta_p
+        return data.i
     #@-others
 
 #@-others

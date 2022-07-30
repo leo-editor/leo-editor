@@ -2,8 +2,7 @@
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 """The @auto importer for the dart language."""
 import re
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer
 class Dart_Importer(Importer):
@@ -54,18 +53,13 @@ class Dart_ScanState:
         """Dart_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161123120245.8: *3* dart_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Dart_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Dart_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        self.curlies += delta_c
-        return i
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 #@-others
 importer_dict = {

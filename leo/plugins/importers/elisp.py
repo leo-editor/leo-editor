@@ -4,8 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer
 class Elisp_Importer(Importer):
@@ -113,18 +112,13 @@ class Elisp_ScanState:
         return self.parens
 
     #@+node:ekr.20161127184128.8: *3* elisp_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Elisp_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Elisp_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        self.parens += delta_p
-        return i
+        self.context = data.context
+        self.parens += data.delta_p
+        return data.i
     #@-others
 #@-others
 importer_dict = {

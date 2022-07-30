@@ -3,10 +3,8 @@
 """The @auto importer for the php language."""
 import re
 from typing import Any, Dict, List
-from leo.core import leoGlobals as g
-### from leo.plugins.importers import linescanner###, scan_tuple
+from leo.core import leoGlobals as g  # required
 from leo.plugins.importers.linescanner import Importer, scan_tuple
-### Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer
 class Php_Importer(Importer):
@@ -205,25 +203,20 @@ class Php_ScanState:
         return self.curlies
 
     #@+node:ekr.20161129213243.8: *3* php_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Php_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Php_ScanState.update: Update the state using given scan_tuple.
         """
-        trace = 'importers' in g.app.debug
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        if trace:
+        if 'importers' in g.app.debug:
             g.trace(
-                f"context: {context!s} "
-                f"delta_c: {delta_c} "
-                f"delta_s: {delta_s} "
-                f"bs_nl: {bs_nl}")
+                f"context: {data.context!s} "
+                f"delta_c: {data.delta_c} "
+                f"delta_s: {data.delta_s} "
+                f"bs_nl: {data.bs_nl}")
         # All ScanState classes must have a context ivar.
-        self.context = context
-        self.curlies += delta_c
-        return i
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 #@-others
 importer_dict = {

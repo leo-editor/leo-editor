@@ -2,10 +2,8 @@
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
 """The @auto importer for the xml language."""
 import re
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.core import leoGlobals as g  # required.
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161121204146.3: ** class Xml_Importer
 class Xml_Importer(Importer):

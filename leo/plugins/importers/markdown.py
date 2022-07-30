@@ -3,8 +3,7 @@
 """The @auto importer for the markdown language."""
 import re
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer
 class Markdown_Importer(Importer):

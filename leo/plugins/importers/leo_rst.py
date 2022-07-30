@@ -6,9 +6,8 @@ The @auto importer for restructured text.
 This module must **not** be named rst, so as not to conflict with docutils.
 """
 from typing import Dict
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
+
 # Used by writers.leo_rst as well as in this file.
 # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
@@ -162,7 +161,7 @@ class Rst_Importer(Importer):
 
     def ch_level(self, ch):
         """Return the underlining level associated with ch."""
-        assert ch in underlines, (repr(ch), g.callers())
+        assert ch in underlines, repr(ch)
         d = self.rst_seen
         if ch in d:
             return d.get(ch)
@@ -198,17 +197,12 @@ class Rst_ScanState:
         return 0
 
     #@+node:ekr.20161127192007.8: *3* rst_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Rst_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Rst_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        return i
+        self.context = data.context
+        return data.i
     #@-others
 #@-others
 def do_import(c, s, parent):

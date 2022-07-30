@@ -4,9 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
 #@+others
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Importer)
 class Cython_Importer(Importer):
@@ -517,11 +515,15 @@ class Cython_ScanState:
         parens = f"({self.parens})" if self.parens else ''
         squares = f"[{self.squares}]" if self.squares else ''
         return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
+        
+    #@+others
+    #@+node:ekr.20220730072650.1: *3* cython_state.level
     def level(self):
-        """Python_ScanState.level."""
+        """Cython_ScanState.level."""
         return self.indent
+    #@+node:ekr.20220730072654.1: *3* cython_state.in_context
     def in_context(self):
-        """True if in a special context."""
+        """Cython_State.in_context"""
         return (
             self.context or
             self.curlies > 0 or
@@ -529,18 +531,19 @@ class Cython_ScanState:
             self.squares > 0 or
             self.bs_nl
         )
-    def update(self, data):
+    #@+node:ekr.20220730072654.2: *3* cython_state.update
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Cython_State: Update the state given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.bs_nl = bs_nl
-        self.context = context
-        self.curlies += delta_c
-        self.parens += delta_p
-        self.squares += delta_s
-        return i
+        self.bs_nl = data.bs_nl
+        self.context = data.context
+        self.curlies += data.delta_c
+        self.parens += data.delta_p
+        self.squares += data.delta_s
+        return data.i
+    #@-others
+    
 #@+node:ekr.20211121065103.1: ** class CythonTarget
 class CythonTarget:
     """

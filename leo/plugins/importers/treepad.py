@@ -2,7 +2,7 @@
 #@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
 """The @auto importer for the TreePad file format."""
 import re
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # required.
 #@+others
 #@+node:ekr.20180201203240.3: ** class TreePad_Scanner
 class TreePad_Scanner():

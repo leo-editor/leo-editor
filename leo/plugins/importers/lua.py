@@ -8,9 +8,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
 delete_blank_lines = True
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer
@@ -237,17 +235,13 @@ class Lua_ScanState:
         """Lua_ScanState.level."""
         return 0  # Never used.
     #@+node:ekr.20170530024520.9: *3* lua_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Lua_ScanState.update
-
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Lua_ScanState.update: Update the state using the given scan_tuple.
         Return i = data[1]
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        return i
+        self.context = data.context
+        return data.i
     #@-others
 
 #@-others

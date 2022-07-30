@@ -3,11 +3,7 @@
 """The @auto importer for coffeescript."""
 import re
 from typing import Any, Dict, List, Optional
-from leo.core import leoGlobals as g
-assert g  ###
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Importer)
 class Coffeescript_Importer(Importer):
@@ -122,34 +118,27 @@ class Coffeescript_ScanState:
             self.indent = 0
 
     #@+others
-    #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
+    #@+node:ekr.20161118064325.1: *3* coffeescript_state.__repr__
     def __repr__(self):
         """CS_State.__repr__"""
         return '<CSState %r indent: %s>' % (self.context, self.indent)
 
     __str__ = __repr__
-    #@+node:ekr.20161119115413.1: *3* cs_state.level
+    #@+node:ekr.20161119115413.1: *3* coffeescript_state.level
     def level(self):
         """Coffeescript_ScanState.level."""
         return self.indent
-    #@+node:ekr.20161118140100.1: *3* cs_state.in_context
+    #@+node:ekr.20161118140100.1: *3* coffeescript_state.in_context
     def in_context(self):
         """True if in a special context."""
         return self.context or self.bs_nl
-    #@+node:ekr.20161119052920.1: *3* cs_state.update
-    def update(self, data):
+    #@+node:ekr.20161119052920.1: *3* coffeescript_state.update
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Coffeescript_ScanState: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # self.bs_nl = bs_nl
-        self.context = context
-        # self.curlies += delta_c
-        # self.parens += delta_p
-        # self.squares += delta_s
-        return i
-
+        self.context = data.context
+        return data.i
     #@-others
 #@-others
 importer_dict = {

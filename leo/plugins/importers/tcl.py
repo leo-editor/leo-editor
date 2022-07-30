@@ -6,11 +6,7 @@ The @auto importer for the tcl language.
 Created 2017/06/15 by the `importer;;` abbreviation.
 """
 import re
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-assert g
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20170615153639.3: ** class Tcl_Importer
 class Tcl_Importer(Importer):
@@ -76,18 +72,13 @@ class Tcl_ScanState:
         """Tcl_ScanState.level."""
         return self.curlies
     #@+node:ekr.20170615153639.9: *3* tcl_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Tcl_ScanState.update
-
-        Update the state using the 6-tuple returned by v2_scan_line.
-        Return i = data[1]
+        Tcl_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        self.curlies += delta_c
-        return i
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 #@-others
 importer_dict = {

@@ -4,8 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
 class Pascal_Importer(Importer):
@@ -123,17 +122,12 @@ class Pascal_ScanState:
         return 0  # Not used
 
     #@+node:ekr.20161126171035.8: *3* pascal_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Pascal_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Pascal_ScanState.update: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        return i
+        self.context = data.context
+        return data.i
     #@-others
 #@-others
 importer_dict = {

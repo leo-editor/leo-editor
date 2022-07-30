@@ -2,8 +2,7 @@
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 """The @auto importer for .ini files."""
 import re
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
 class Ini_Importer(Importer):

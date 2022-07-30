@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18140: * @file ../plugins/importers/csharp.py
 """The @auto importer for the csharp language."""
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer
 class Csharp_Importer(Importer):
@@ -56,7 +55,7 @@ class Csharp_ScanState:
         """Csharp_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161121200106.9: *3* csharp_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
         Csharp_ScanState.update.
 

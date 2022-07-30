@@ -5,10 +5,8 @@ import re
 import textwrap
 import unittest
 from typing import List
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.core import leoGlobals as g  # Required
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
@@ -283,19 +281,14 @@ class JS_ScanState:
         """JS_ScanState.level."""
         return (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Javascript_ScanState: Update the state using the given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # self.bs_nl = bs_nl
-        self.context = context
-        self.curlies += delta_c
-        self.parens += delta_p
-        # self.squares += delta_s
-        return i
-
+        self.context = data.context
+        self.curlies += data.delta_c
+        self.parens += data.delta_p
+        return data.i
     #@-others
 
 #@+node:ekr.20200131110322.2: ** JsLexer...

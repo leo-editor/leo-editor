@@ -2,11 +2,7 @@
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 """The @auto importer for the java language."""
 import re
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-assert g
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
 class Java_Importer(Importer):
@@ -159,18 +155,13 @@ class Java_ScanState:
         return self.curlies
 
     #@+node:ekr.20161126161824.8: *3* java_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Java_ScanState.update
-
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Java_ScanState.update: Update the state using the given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        self.curlies += delta_c
-        return i
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 #@-others
 importer_dict = {

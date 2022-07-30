@@ -934,19 +934,16 @@ class ScanState:
         """ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Importer.ScanState: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.bs_nl = bs_nl
-        self.context = context
-        self.curlies += delta_c
-        self.parens += delta_p
-        self.squares += delta_s
-        return i
-
+        self.bs_nl = data.bs_nl
+        self.context = data.context
+        self.curlies += data.delta_c
+        self.parens += data.delta_p
+        self.squares += data.delta_s
+        return data.i
     #@-others
 #@+node:ekr.20161108155158.1: ** class Target
 class Target:

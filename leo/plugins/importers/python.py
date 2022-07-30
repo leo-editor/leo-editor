@@ -8,7 +8,7 @@ import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Importer, block_tuple
+from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 from leo.core.leoNodes import Position
 #@+<< Define NEW_PYTHON_IMPORTER switch >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
@@ -49,7 +49,7 @@ class Python_Importer(Importer):
         """
         # Based on Vitalije's importer.
         assert self.root == parent, (self.root, parent)
-        
+
         self.lines = lines
 
         class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
@@ -347,15 +347,12 @@ class Python_ScanState:
 
     #@+others
     #@+node:ekr.20220720044208.5: *3* py_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Python_ScanState: Update the state using given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.context = context
-        return i
-
+        self.context = data.context
+        return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
 def do_import(c, s, parent):
@@ -675,7 +672,7 @@ def gen_lines(self, lines, parent):
     """
     # Based on Vitalije's importer.
     assert self.root == parent, (self.root, parent)
-    
+
     self.lines = lines
 
     class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.

@@ -2,10 +2,8 @@
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 """The @auto importer for TypeScript."""
 import re
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-assert g
-Importer = linescanner.Importer
+from leo.core import leoGlobals as g  # Required.
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
@@ -53,7 +51,7 @@ class TS_Importer(Importer):
         super().__init__(
             importCommands,
             language='typescript',  # Case is important.
-            state_class=TS_ScanState,
+            state_class=Typescript_ScanState,
         )
 
     #@+others
@@ -162,12 +160,12 @@ class TS_Importer(Importer):
                 return True
         return False
     #@-others
-#@+node:ekr.20161118071747.14: ** class TS_ScanState
-class TS_ScanState:
+#@+node:ekr.20161118071747.14: ** class Typescript_ScanState
+class Typescript_ScanState:
     """A class representing the state of the typescript line-oriented scan."""
 
     def __init__(self, d=None):
-        """TS_ScanState ctor."""
+        """Typescript_ScanState ctor."""
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -177,33 +175,30 @@ class TS_ScanState:
             self.curlies = 0
 
     #@+others
-    #@+node:ekr.20161118071747.15: *3* ts_state.__repr__
+    #@+node:ekr.20161118071747.15: *3* typescript_state.__repr__
     def __repr__(self):
         """ts_state.__repr__"""
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 
     __str__ = __repr__
-    #@+node:ekr.20161119115736.1: *3* ts_state.level
+    #@+node:ekr.20161119115736.1: *3* typescript_state.level
     def level(self):
-        """TS_ScanState.level."""
+        """Typescript_ScanState.level."""
         return self.curlies
-    #@+node:ekr.20161118082821.1: *3* ts_state.is_ws_line
+    #@+node:ekr.20161118082821.1: *3* typescript_state.is_ws_line
     ws_pattern = re.compile(r'^\s*$|^\s*#')
 
     def is_ws_line(self, s):
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
-    #@+node:ekr.20161118072957.1: *3* ts_state.update
-    def update(self, data):
+    #@+node:ekr.20161118072957.1: *3* typescript_state.update
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        Typescript_ScanState: Update the state using the given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.context = context
-        self.curlies += delta_c
-        return i
-
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 #@-others
 importer_dict = {

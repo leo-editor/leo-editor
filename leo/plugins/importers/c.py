@@ -3,9 +3,7 @@
 """The @auto importer for the C language and other related languages."""
 import re
 from typing import Optional
-from leo.core import leoGlobals as g
-from leo.plugins.importers.linescanner import Importer
-assert g
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -82,42 +80,34 @@ class C_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         """
-        trace = False  ###
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
-            if trace: g.trace('extern:', repr(line))  ###
             return True
         # #1626
         m = self.c_template_pattern.match(line)
         if m:
             self.headline = line.strip()
-            if trace: g.trace('template:', repr(line))  ###
             return True
         m = self.c_class_pattern.match(line)
         if m:
             prefix = f"{m.group(1).strip()} " if m.group(1) else ''
             name = m.group(3)
             self.headline = f"{prefix}class {name}"
-            if trace: g.trace('class', line)
             return True
         m = self.c_func_pattern.match(line)
         if m:
             if self.c_types_pattern.match(m.group(3)):
-                if trace: g.trace('func and types:', repr(line))  ###
                 return True
             name = m.group(3)
             prefix = f"{m.group(1).strip()} " if m.group(1) else ''
             self.headline = f"{prefix}{name}"
-            if trace: g.trace('func', repr(line))
             return True
         m = self.c_typedef_pattern.match(line)
         if m:
             # Does not set self.headline.
-            if trace: g.trace('typedef:', repr(line))  ###
             return True
         m = self.c_types_pattern.match(line)
-        if trace and m: g.trace('type:', repr(line))  ###
         return bool(m)
     #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
@@ -180,17 +170,13 @@ class C_ScanState:
         """C_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118051111.1: *3* c_state.update
-    def update(self, data):
+    def update(self, data: scan_tuple) -> int:
         """
-        Update the state using the 6-tuple returned by i.scan_line.
-        Return i = data[1]
+        C_ScanState: Update the state using the given scan_tuple.
         """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # self.bs_nl = bs_nl
-        self.context = context
-        self.curlies += delta_c
-        return i
-
+        self.context = data.context
+        self.curlies += data.delta_c
+        return data.i
     #@-others
 
 #@-others

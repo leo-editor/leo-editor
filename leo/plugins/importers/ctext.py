@@ -3,8 +3,7 @@
 #@@language python
 #@@tabwidth -4
 from typing import List
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:tbrown.20140801105909.47551: ** class CText_Importer
 class CText_Importer(Importer):

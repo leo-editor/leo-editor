@@ -3,7 +3,7 @@
 """The @auto importer for Jupyter (.ipynb) files."""
 import re
 from typing import List
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # Required.
 from leo.core.leoNodes import Position as Pos
 try:
     import nbformat
