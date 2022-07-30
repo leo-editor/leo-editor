@@ -8,7 +8,7 @@ import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
-from leo.plugins.importers.linescanner import Importer, class_or_def_tuple
+from leo.plugins.importers.linescanner import Importer, block_tuple
 from leo.core.leoNodes import Position
 #@+<< Define NEW_PYTHON_IMPORTER switch >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
@@ -63,10 +63,10 @@ class Python_Importer(Importer):
 
         #@+others
         #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper (new python importer)
-        def get_class_or_def(i: int) -> class_or_def_tuple:
+        def get_class_or_def(i: int) -> block_tuple:
             """
             Look for a def or class at lines[i]
-            Return None or a class_or_def_tuple describing the class or def.
+            Return None or a block_tuple describing the class or def.
             """
             # Based on Vitalije's importer.
             nonlocal class_pat, def_pat
@@ -122,8 +122,8 @@ class Python_Importer(Importer):
             while i < len(lines) and lines[i].isspace():
                 i += 1
 
-            # This is the only instantiation of class_or_def_tuple.
-            return class_or_def_tuple(
+            # This is the only instantiation of block_tuple.
+            return block_tuple(
                 body_indent = body_indent,
                 body_line1 = i,
                 decl_indent = decl_indent,
@@ -137,7 +137,7 @@ class Python_Importer(Importer):
             end: int,
             others_indent: int,
             inner_indent: int,
-            definitions: List[class_or_def_tuple],
+            definitions: List[block_tuple],
         ) -> None:
             """
             Set p.b and add children recursively using the tokens described by the arguments.
@@ -687,10 +687,10 @@ def gen_lines(self, lines, parent):
 
     #@+others
     #@+node:ekr.20220720050740.1: *3* function: get_class_or_def & helper (new python importer)
-    def get_class_or_def(i: int) -> class_or_def_tuple:
+    def get_class_or_def(i: int) -> block_tuple:
         """
         Look for a def or class at lines[i]
-        Return None or a class_or_def_tuple describing the class or def.
+        Return None or a block_tuple describing the class or def.
         """
         # Based on Vitalije's importer.
         nonlocal class_pat, def_pat
@@ -746,8 +746,8 @@ def gen_lines(self, lines, parent):
         while i < len(lines) and lines[i].isspace():
             i += 1
 
-        # This is the only instantiation of class_or_def_tuple.
-        return class_or_def_tuple(
+        # This is the only instantiation of block_tuple.
+        return block_tuple(
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
@@ -761,7 +761,7 @@ def gen_lines(self, lines, parent):
         end: int,
         others_indent: int,
         inner_indent: int,
-        definitions: List[class_or_def_tuple],
+        definitions: List[block_tuple],
     ) -> None:
         """
         Set p.b and add children recursively using the tokens described by the arguments.

@@ -81,10 +81,10 @@ from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 StringIO = io.StringIO
-#@+<< define class_or_def_tuple >>
-#@+node:ekr.20220721155212.1: ** << define class_or_def_tuple >> (linescanner.py)
+#@+<< define block_tuple >>
+#@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
 # A named tuple containing all data relating to one declaration of a class or def.
-class_or_def_tuple = namedtuple('class_or_def_tuple', [
+block_tuple = namedtuple('block_tuple', [
     'body_indent',  # Indentation of body.
     'body_line1',  # Line number of the *last* line of the definition.
     'decl_indent',  # Indentation of the class or def line.
@@ -92,7 +92,7 @@ class_or_def_tuple = namedtuple('class_or_def_tuple', [
                    # This line may be a comment or decorator.
     'name',  # name of the function, class or method.
 ])
-#@-<< define class_or_def_tuple >>
+#@-<< define block_tuple >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
@@ -339,12 +339,12 @@ class Importer:
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
     #@+node:ekr.20220727074602.1: *5* i.get_class_or_def (sets body_indent)
-    def get_class_or_def(self, i: int) -> class_or_def_tuple:
+    def get_class_or_def(self, i: int) -> block_tuple:
         """
         Importer.get_class_or_def, based on Vitalije's python importer.
 
         Look for a def or class at self.lines[i]
-        Return None or a class_or_def_tuple describing the class or def.
+        Return None or a block_tuple describing the class or def.
         """
         self.headline =  ''  # Set in helpers..
         lines = self.lines
@@ -378,7 +378,7 @@ class Importer:
             i += 1
 
         # Return the description of the unit.
-        return class_or_def_tuple(
+        return block_tuple(
             body_indent = body_indent,
             body_line1 = i,
             decl_indent = decl_indent,
@@ -425,7 +425,7 @@ class Importer:
         end: int,
         others_indent: int,
         inner_indent: int,
-        definitions: List[class_or_def_tuple],
+        definitions: List[block_tuple],
     ) -> None:
         """
         Set p.b and add children recursively using the tokens described by the arguments.
