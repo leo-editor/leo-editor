@@ -170,219 +170,7 @@ class Importer:
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-    #@+node:ekr.20161108131153.7: *3* i.Overrides
-    # These can be overridden in subclasses.
-    #@+node:ekr.20161108131153.8: *4* i.adjust_parent
-    def adjust_parent(self, parent, headline):
-        """Return the effective parent.
-
-        This is overridden by the RstScanner class."""
-        return parent
-    #@+node:ekr.20161108131153.9: *4* i.clean_headline
-    def clean_headline(self, s, p=None):
-        """
-        Return the cleaned version headline s.
-        May be overridden in subclasses.
-        """
-        i = s.find('(')
-        if i > -1:
-            s = s[:i]
-        return s.strip()
-
-    #@+node:ekr.20161110173058.1: *4* i.clean_nodes
-    def clean_nodes(self, parent):
-        """
-        Clean all nodes in parent's tree.
-        Subclasses override this as desired.
-        See perl_i.clean_nodes for an examplle.
-        """
-        pass
-    #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
-    #@+node:ekr.20161128025508.1: *4* i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context):
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-
-        def add_key(d, pattern, data):
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind      pattern  ends?
-                '\\':   [('len+1', '\\',    None),],
-                '"':    [('len',   '"',     context == '"'),],
-                "'":    [('len',   "'",     context == "'"),],
-            }
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
-            }
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
-        return d
-    #@+node:ekr.20161113135037.1: *4* i.get_table
-    #@@nobeautify
-    cached_scan_tables: Dict[str, Any] = {}
-
-    def get_table(self, context):
-        """
-        Return the state table for the given context.
-
-        This method handles caching.  x.get_new_table returns the actual table.
-        """
-        # Bug fix: must keep tables separate.
-        key = '%s.%s' % (self.name, context)
-        table = self.cached_scan_tables.get(key)
-        if table:
-            return table
-        table = self.get_new_dict(context)
-        self.cached_scan_tables[key] = table
-        return table
-    #@+node:ekr.20161128025444.1: *4* i.scan_dict
-    def scan_dict(self, context, i, s, d):
-        """
-        i.scan_dict: Scan at position i of s with the give context and dict.
-        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        """
-        found = False
-        delta_c = delta_p = delta_s = 0
-        ch = s[i]
-        aList = d.get(ch)
-        if aList and context:
-            # In context.
-            for data in aList:
-                kind, pattern, ends = data
-                if self.match(s, i, pattern):
-                    if ends is None:
-                        found = True
-                        new_context = context
-                        break
-                    elif ends:
-                        found = True
-                        new_context = ''
-                        break
-                    else:
-                        pass  # Ignore this match.
-        elif aList:
-            # Not in context.
-            for data in aList:
-                kind, pattern, new_context, deltas = data
-                if self.match(s, i, pattern):
-                    found = True
-                    if deltas:
-                        delta_c, delta_p, delta_s = deltas
-                    break
-        if found:
-            if kind == 'all':
-                i = len(s)
-            elif kind == 'len+1':
-                i += (len(pattern) + 1)
-            else:
-                assert kind == 'len', (kind, self.name)
-                i += len(pattern)
-            bs_nl = pattern == '\\\n'
-            return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        #
-        # No match: stay in present state. All deltas are zero.
-        new_context = context
-        return new_context, i + 1, 0, 0, 0, False
-    #@+node:ekr.20161108170435.1: *4* i.scan_line
-    def scan_line(self, s, prev_state):
-        """
-        A generalized scan-line method.
-
-        SCAN STATE PROTOCOL:
-
-        The Importer class should have a state_class ivar that references a
-        **state class**. This class probably should *not* be subclass of the
-        ScanState class, but it should observe the following protocol:
-
-        1. The state class's ctor must have the following signature:
-
-            def __init__(self, d)
-
-        2. The state class must have an update method.
-        """
-        # This dict allows new data to be added without changing ScanState signatures.
-        d = {
-            'indent': self.get_int_lws(s),
-            'is_ws_line': self.is_ws_line(s),
-            'prev': prev_state,
-            's': s,
-        }
-        new_state = self.state_class(d)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_dict(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        return new_state
-    #@+node:ekr.20161114024119.1: *4* i.test_scan_state
-    def test_scan_state(self, tests, State):
-        """
-        Test x.scan_line or i.scan_line.
-
-        `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
-
-        A typical @command test:
-
-            if c.isChanged(): c.save()
-            < < imp.reload importers.linescanner and importers.python > >
-            importer = py.Py_Importer(c.importCommands)
-            importer.test_scan_state(tests, Python_ScanState)
-        """
-        assert self.single_comment == '#', self.single_comment
-        table = self.get_table(context='')
-        contexts = self.all_contexts(table)
-        for bunch in tests:
-            assert bunch.line is not None
-            line = bunch.line
-            ctx = getattr(bunch, 'ctx', None)
-            if ctx:  # Test one transition.
-                ctx_in, ctx_out = ctx
-                prev_state = State()
-                prev_state.context = ctx_in
-                new_state = self.scan_line(line, prev_state)
-                new_context = new_state.context
-                assert new_context == ctx_out, (
-                    'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
-                        line, ctx_in, new_context, ctx_out, prev_state, new_state))
-            else:  # Test all transitions.
-                for context in contexts:
-                    prev_state = State()
-                    prev_state.context = context
-                    new_state = self.scan_line(line, prev_state)
-                    assert new_state.context == context, (
-                        'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
-                            line, context, new_state.context, prev_state, new_state))
-    #@+node:ekr.20161108131153.10: *3* i.run (driver) & helers
+    #@+node:ekr.20161108131153.10: *3* i.run (driver) & helpers
     def run(self, s, parent):
         """The common top-level code for all scanners."""
         c = self.c
@@ -501,11 +289,11 @@ class Importer:
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if 0:  ###
+        if 1:  ###
             g.trace(self.__class__.__name__, 'All definitions...')
             for z in all_definitions:
                 print(repr(z))
-                if 0:
+                if 1:
                     g.printObj(lines[z.decl_line1 : z.body_line1])
 
         # Start the recursion.
@@ -651,6 +439,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         # Find all defs with the given inner indentation.
+        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
         if 0:
@@ -743,22 +532,22 @@ class Importer:
         if i >= len(lines):
             return len(lines)
         state1 = line_states[i]  # The opening state
-        ### g.trace('----- state1', state1.indent, repr(lines[i]))
+        g.trace('----- state1:', state1.level(), repr(lines[i]))
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
             state = line_states[i]
-            ### g.trace(state.indent, repr(line))
+            g.trace(state.level(), repr(line))
             if (
                 not line.isspace()
                 and not state.in_context()
                 and state.level() < state1.level()
             ):
-                ### g.trace('FOUND')
+                g.trace('FOUND')
                 return i + 1
         return len(lines)
 
-    #@+node:ekr.20161108131153.15: *3* i.Utils
+    #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
     #@+node:ekr.20211118082436.1: *4* i.dump_tree
     def dump_tree(self, root, tag=None):
         """
@@ -772,6 +561,49 @@ class Importer:
             print('level:', p.level(), p.h)
             lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
             g.printObj(lines)
+    #@+node:ekr.20161108131153.18: *4* i.Messages
+    def error(self, s):
+        """Issue an error and cause a unit test to fail."""
+        self.errors += 1
+        self.importCommands.errors += 1
+
+    def report(self, message):
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
+
+    def warning(self, s):
+        if not g.unitTesting:
+            g.warning('Warning:', s)
+    #@+node:ekr.20161108131153.7: *3* i: Overrides
+    # These can be overridden in subclasses.
+    #@+node:ekr.20161108131153.8: *4* i.adjust_parent
+    def adjust_parent(self, parent, headline):
+        """Return the effective parent.
+
+        This is overridden by the RstScanner class."""
+        return parent
+    #@+node:ekr.20161108131153.9: *4* i.clean_headline
+    def clean_headline(self, s, p=None):
+        """
+        Return the cleaned version headline s.
+        May be overridden in subclasses.
+        """
+        i = s.find('(')
+        if i > -1:
+            s = s[:i]
+        return s.strip()
+
+    #@+node:ekr.20161110173058.1: *4* i.clean_nodes
+    def clean_nodes(self, parent):
+        """
+        Clean all nodes in parent's tree.
+        Subclasses override this as desired.
+        See perl_i.clean_nodes for an examplle.
+        """
+        pass
+    #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
         """
@@ -789,51 +621,195 @@ class Importer:
                     contexts.add(data[2])
         # Order must not matter, so sorting is ok.
         return sorted(contexts)
+    #@+node:ekr.20161128025508.1: *4* i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        """
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        """
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+
+        def add_key(d, pattern, data):
+            key = pattern[0]
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        d: Dict[str, List[Any]]
+
+        if context:
+            d = {
+                # key    kind      pattern  ends?
+                '\\':   [('len+1', '\\',    None),],
+                '"':    [('len',   '"',     context == '"'),],
+                "'":    [('len',   "'",     context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2, ('len', block2, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment, ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1, ('len', block1, block1, None))
+        return d
+    #@+node:ekr.20161113135037.1: *4* i.get_table
+    #@@nobeautify
+    cached_scan_tables: Dict[str, Any] = {}
+
+    def get_table(self, context):
+        """
+        Return the state table for the given context.
+
+        This method handles caching.  x.get_new_table returns the actual table.
+        """
+        # Bug fix: must keep tables separate.
+        key = '%s.%s' % (self.name, context)
+        table = self.cached_scan_tables.get(key)
+        if table:
+            return table
+        table = self.get_new_dict(context)
+        self.cached_scan_tables[key] = table
+        return table
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
         """Return True if the pattern matches at s[i:]"""
         return s[i : i + len(pattern)] == pattern
-    #@+node:ekr.20161108131153.18: *4* i.Messages
-    def error(self, s):
-        """Issue an error and cause a unit test to fail."""
-        self.errors += 1
-        self.importCommands.errors += 1
+    #@+node:ekr.20161128025444.1: *4* i.scan_dict
+    def scan_dict(self, context, i, s, d):
+        """
+        i.scan_dict: Scan at position i of s with the give context and dict.
+        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
+        """
+        found = False
+        delta_c = delta_p = delta_s = 0
+        ch = s[i]
+        aList = d.get(ch)
+        if aList and context:
+            # In context.
+            for data in aList:
+                kind, pattern, ends = data
+                if self.match(s, i, pattern):
+                    if ends is None:
+                        found = True
+                        new_context = context
+                        break
+                    elif ends:
+                        found = True
+                        new_context = ''
+                        break
+                    else:
+                        pass  # Ignore this match.
+        elif aList:
+            # Not in context.
+            for data in aList:
+                kind, pattern, new_context, deltas = data
+                if self.match(s, i, pattern):
+                    found = True
+                    if deltas:
+                        delta_c, delta_p, delta_s = deltas
+                    break
+        if found:
+            if kind == 'all':
+                i = len(s)
+            elif kind == 'len+1':
+                i += (len(pattern) + 1)
+            else:
+                assert kind == 'len', (kind, self.name)
+                i += len(pattern)
+            bs_nl = pattern == '\\\n'
+            return new_context, i, delta_c, delta_p, delta_s, bs_nl
+        #
+        # No match: stay in present state. All deltas are zero.
+        new_context = context
+        return new_context, i + 1, 0, 0, 0, False
+    #@+node:ekr.20161108170435.1: *4* i.scan_line
+    def scan_line(self, s, prev_state):
+        """
+        A generalized scan-line method.
 
-    def report(self, message):
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
+        SCAN STATE PROTOCOL:
 
-    def warning(self, s):
-        if not g.unitTesting:
-            g.warning('Warning:', s)
-    #@+node:ekr.20161109045619.1: *4* i.print_lines
-    def print_lines(self, lines):
-        """Print lines for debugging."""
-        print('[')
-        for line in lines:
-            print(repr(line))
-        print(']')
+        The Importer class should have a state_class ivar that references a
+        **state class**. This class probably should *not* be subclass of the
+        ScanState class, but it should observe the following protocol:
 
-    print_list = print_lines
-    #@+node:ekr.20161125174423.1: *4* i.print_stack
-    def print_stack(self, stack):
-        """Print a stack of positions."""
-        g.printList([p.h for p in stack])
-    #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
-    def underindented_comment(self, line):
-        if self.at_auto_warns_about_leading_whitespace:
-            self.warning(
-                'underindented python comments.\n' +
-                'Extra leading whitespace will be added\n' + line)
+        1. The state class's ctor must have the following signature:
 
-    def underindented_line(self, line):
-        if self.warn_about_underindented_lines:
-            self.error(
-                'underindented line.\n'
-                'Extra leading whitespace will be added\n' + line)
-    #@+node:ekr.20161109045312.1: *3* i.Whitespace
+            def __init__(self, d)
+
+        2. The state class must have an update method.
+        """
+        # This dict allows new data to be added without changing ScanState signatures.
+        d = {
+            'indent': self.get_int_lws(s),
+            'is_ws_line': self.is_ws_line(s),
+            'prev': prev_state,
+            's': s,
+        }
+        new_state = self.state_class(d)
+        i = 0
+        while i < len(s):
+            progress = i
+            context = new_state.context
+            table = self.get_table(context)
+            data = self.scan_dict(context, i, s, table)
+            i = new_state.update(data)
+            assert progress < i
+        return new_state
+    #@+node:ekr.20161114024119.1: *4* i.test_scan_state
+    def test_scan_state(self, tests, State):
+        """
+        Test x.scan_line or i.scan_line.
+
+        `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
+
+        A typical @command test:
+
+            if c.isChanged(): c.save()
+            < < imp.reload importers.linescanner and importers.python > >
+            importer = py.Py_Importer(c.importCommands)
+            importer.test_scan_state(tests, Python_ScanState)
+        """
+        assert self.single_comment == '#', self.single_comment
+        table = self.get_table(context='')
+        contexts = self.all_contexts(table)
+        for bunch in tests:
+            assert bunch.line is not None
+            line = bunch.line
+            ctx = getattr(bunch, 'ctx', None)
+            if ctx:  # Test one transition.
+                ctx_in, ctx_out = ctx
+                prev_state = State()
+                prev_state.context = ctx_in
+                new_state = self.scan_line(line, prev_state)
+                new_context = new_state.context
+                assert new_context == ctx_out, (
+                    'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
+                        line, ctx_in, new_context, ctx_out, prev_state, new_state))
+            else:  # Test all transitions.
+                for context in contexts:
+                    prev_state = State()
+                    prev_state.context = context
+                    new_state = self.scan_line(line, prev_state)
+                    assert new_state.context == context, (
+                        'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
+                            line, context, new_state.context, prev_state, new_state))
+    #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s):
         """Return the the lws (a number) of line s."""
