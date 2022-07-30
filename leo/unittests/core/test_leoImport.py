@@ -437,7 +437,7 @@ class TestCSharp(BaseTestImporter):
             (1, 'namespace'),
             (2, 'class cTestClass1'),
         ))
-    #@+node:ekr.20210904065459.13: *3* TestImport.test_namespace_no_indent
+    #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
         s = """
