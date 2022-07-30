@@ -36,10 +36,12 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20211128045212.1: *3* BaseTestImporter.check_headlines
     def check_headlines(self, p, table):
         """Check that p and its subtree have the structure given in the table."""
+        verbose = False
         # Check structure
-        g.printObj(table)
-        for z in p.subtree():
-            print(z.level(), z.h)
+        if verbose:
+            g.printObj(table)
+            for z in p.subtree():
+                print(z.level(), z.h)
         p1 = p.copy()
         try:
             self.assertEqual(p1.h, f"{self.treeType} {self.short_id}")
@@ -55,9 +57,10 @@ class BaseTestImporter(LeoUnitTest):
             # Make sure there are no extra nodes in p's tree.
             self.assertEqual(i, len(table), msg=f"i: {i}, len(table): {len(table)}")
         except AssertionError:  # pragma: no cover
-            print('')
-            g.trace('FAIL:', self.short_id)
-            self.dump_tree(p1)
+            if verbose:
+                print('')
+                g.trace('FAIL:', self.short_id)
+                self.dump_tree(p1)
             raise
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline
     def check_outline(self, p, nodes):

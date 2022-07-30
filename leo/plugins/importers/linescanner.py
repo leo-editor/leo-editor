@@ -86,7 +86,7 @@ StringIO = io.StringIO
 # This named tuple contains all data relating to one block (class, method or function).
 block_tuple = namedtuple('block_tuple', [
     'body_indent',  # Indentation of body.
-    'body_line1',  # Line number of the *last* line of the definition.
+    'body_line9',  # Line number of the *last* line of the definition.
     'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the *first* line of this node.
                    # This line may be a comment or decorator.
@@ -278,7 +278,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
-        trace, trace_body, trace_states = True, False, False
+        trace, trace_body, trace_states = False, False, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -304,7 +304,7 @@ class Importer:
             for z in all_definitions:
                 print(repr(z))
                 if trace_body:
-                    g.printObj(lines[z.decl_line1 : z.body_line1])
+                    g.printObj(lines[z.decl_line1 : z.body_line9])
 
         # Start the recursion.
         parent.deleteAllChildren()
@@ -392,7 +392,7 @@ class Importer:
         # Return the description of the block.
         return block_tuple(
             body_indent = body_indent,
-            body_line1 = i,
+            body_line9 = i,
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             decl_level = decl_level,
@@ -451,18 +451,19 @@ class Importer:
          inner_indent: The indentation of all of the inner definitions.
           definitions: The list of the definitions covering p.
         """
+        trace = False
         # Find all defs with the given inner indentation.
         ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
-        if 0:
+        if trace:
             g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
             g.printObj([repr(z) for z in inner_defs])
             if 0:
                 for z in inner_defs:
                     g.printObj(
-                        self.lines[z.decl_line1 : z.body_line1],
-                        tag=f"Lines[{z.decl_line1} : {z.body_line1}]")
+                        self.lines[z.decl_line1 : z.body_line9],
+                        tag=f"Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
         if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
@@ -478,7 +479,7 @@ class Importer:
         others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].body_line1
+        last_offset = inner_defs[-1].body_line9
         tail = self.body_string(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
 
@@ -486,7 +487,7 @@ class Importer:
         last = decl_line1
         for inner_def in inner_defs:
             body_indent = inner_def.body_indent
-            body_line1 = inner_def.body_line1
+            body_line9 = inner_def.body_line9
             decl_line1 = inner_def.decl_line1
             # Add a child for declaration lines between two inner definitions.
             if decl_line1 > last:
@@ -501,23 +502,23 @@ class Importer:
             # Compute inner definitions.
             inner_definitions = [
                 z for z in definitions
-                    if z.decl_line1 > decl_line1 and z.body_line1 <= body_line1]
+                    if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
             if inner_definitions:
                 # Recursively split this node.
                 self.make_node(
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    end=body_line1,
+                    end=body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=body_indent,
                     definitions=inner_definitions,
                 )
             else:
                 # Just set the body.
-                child.b = self.body_string(decl_line1, body_line1, inner_indent)
+                child.b = self.body_string(decl_line1, body_line9, inner_indent)
 
-            last = body_line1
+            last = body_line9
     #@+node:ekr.20220728130253.1: *5* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
@@ -541,7 +542,7 @@ class Importer:
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace states)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
-        trace = False  ###
+        trace = False
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)
