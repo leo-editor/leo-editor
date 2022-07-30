@@ -82,7 +82,7 @@ class BaseTestImporter(LeoUnitTest):
             return False, 'extra nodes'  # pragma: no cover
         except StopIteration:
             return True, 'ok'
-    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines
+    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines (*** to do)
     def compare_outlines(self, created_p, expected_p):  # pragma: no cover
         """
         Ensure that the created and expected trees have equal shape and contents.
@@ -90,6 +90,7 @@ class BaseTestImporter(LeoUnitTest):
         Also ensure that all created nodes have the expected node kind.
         """
         assert False, 'BaseTestImporter.compare_outlines: not ready'
+        ### Use p.b rather than g.vnode_info.
         d = {} ### g.vnode_info
         p1, p2 = created_p.copy(), expected_p.copy()
         try:
@@ -134,15 +135,10 @@ class BaseTestImporter(LeoUnitTest):
         """Dump root's tree just as as Importer.dump_tree."""
         if tag:
             print(tag)
-        d = getattr(g, 'vnode_info', None)  # Same as Importer.vnode_info!
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            if d:
-                lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
-            else:
-                lines = g.splitLines(p.v.b)
-            g.printObj(lines)
+            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s):
         """

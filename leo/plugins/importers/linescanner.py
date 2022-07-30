@@ -169,8 +169,6 @@ class Importer:
             ic.errors = 0  # Required.
         self.refs_dict: Dict[str, int] = {}  # Keys: headlines. Values: disambiguating number.
         self.root = None
-        self.skip = 0  # A skip count for x.gen_lines & its helpers.
-        self.vnode_info: Dict[str, Any] = {}
         self.ws_error = False
 
     def reloadSettings(self):
@@ -566,14 +564,12 @@ class Importer:
         """
         Like LeoUnitTest.dump_tree.
         """
-        d = self.vnode_info if hasattr(self, 'vnode_info') else {}
         if tag:
             print(tag)
         for p in root.self_and_subtree():
             print('')
             print('level:', p.level(), p.h)
-            lines = d[p.v]['lines'] if p.v in d else g.splitLines(p.v.b)
-            g.printObj(lines)
+            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
         """Issue an error and cause a unit test to fail."""

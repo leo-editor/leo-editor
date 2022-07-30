@@ -23,22 +23,6 @@ class Perl_Importer(Importer):
         """Return a cleaned up headline s."""
         m = re.match(r'sub\s+(\w+)', s)
         return 'sub ' + m.group(1) if m else s
-    #@+node:ekr.20161027194956.1: *3* perl_i.clean_nodes
-    def clean_nodes(self, parent):
-        """Clean nodes as part of the perl post pass."""
-        # Move trailing comments into following def nodes.
-        for p in parent.subtree():
-            next = p.threadNext()  # This can be a node *outside* parent's tree!
-            if next and self.has_lines(next):
-                lines = self.get_lines(p)
-                if lines:
-                    tail = []
-                    while lines and lines[-1].strip().startswith('#'):
-                        tail.append(lines.pop())
-                    if tail:
-                        self.set_lines(p, lines)
-                        self.prepend_lines(next, reversed(tail))
-
     #@+node:ekr.20161129024520.1: *3* perl_i.get_new_dict
     #@@nobeautify
 

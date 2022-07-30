@@ -191,25 +191,6 @@ class Xml_Importer(Importer):
     def is_ws_line(self, s):
         """True if s is nothing but whitespace or single-line comments."""
         return bool(self.xml_ws_pattern.match(s))
-    #@+node:ekr.20161123005742.1: *3* xml_i.undent
-    def undent(self, p):
-        """
-        Regularize lws before @others, but preserve lws for all other lines.
-        This is needed to handle embedded brython code properly.
-        """
-        result, w = [], self.tab_width
-        indent = ' ' * abs(w) if w < 0 else '\t'
-        for s in self.get_lines(p):
-            ls = '\n' if s.isspace() else s.lstrip()
-            if ls.startswith('@others'):
-                if p == self.root:
-                    result.append(ls)
-                else:
-                    result.append(indent + ls)
-            else:
-                # Fix #479: Preserve brython indentation when importing .html files.
-                result.append('\n' if s.isspace() else s)
-        return result
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:

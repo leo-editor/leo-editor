@@ -3,7 +3,7 @@
 """The @auto importer for rust."""
 import re
 from typing import Any, Dict, List
-from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
 class Rust_Importer(Importer):
@@ -65,61 +65,6 @@ class Rust_Importer(Importer):
         if m:
             self.headline = line.strip()
         return bool(m)
-    #@+node:ekr.20200623083608.1: *3* rust_i.promote_last_lines
-    def promote_last_lines(self, parent):
-        """
-        Move trailing comment and macro lines to the start of the next node.
-
-        For now, @others anywhere in a node prevents all moves.
-        """
-        for p in parent.subtree():
-            next = p.threadNext()
-            if not next:
-                continue
-            lines = self.get_lines(p)
-            if '@others' in ''.join(lines):
-                # Don't move anything.
-                continue
-            comment_lines: List[str] = []
-            for line in reversed(lines):
-                if line.strip().startswith(('//', '#[', '#!')):
-                    comment_lines.insert(0, line)
-                    lines.pop()
-                elif line.strip():
-                    break
-                else:
-                    lines.pop()
-            if ''.join(comment_lines).strip():
-                next_lines = self.get_lines(next)
-                self.set_lines(next, comment_lines + next_lines)
-                self.set_lines(p, lines)
-    #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        line = lines[i]
-        target = stack[-1]
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        if self.headline:
-            h = self.headline
-        if new_state.level() > prev_state.level():
-            child = self.create_child_node(target.p, line, h)
-        else:
-            # We may not have seen the { yet, so adjust.
-            # Without this, the new block becomes a child of the preceding.
-            new_state = Rust_ScanState()
-            new_state.curlies = prev_state.curlies + 1
-            child = self.create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-        # Add all additional lines of the signature.
-        skip = self.skip  # Don't change the ivar!
-        while skip > 0:
-            skip -= 1
-            i += 1
-            assert i < len(lines), (i, len(lines))
-            line = lines[i]
-            self.add_line(child, lines[i])
     #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         """True if the new state starts a block."""

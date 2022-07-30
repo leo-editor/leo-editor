@@ -79,47 +79,6 @@ class TS_Importer(Importer):
         s = s.replace('  ', ' ')
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
-    #@+node:ekr.20200816192919.1: *3* ts_i.promote_last_lines
-    comment_pat = re.compile(r'(/\*.*?\*/)', re.DOTALL | re.MULTILINE)
-
-    def promote_last_lines(self, parent):
-        """
-        This method is slightly misnamed. It moves trailing comments to the
-        next node.
-        """
-        # Move trailing comments into following nodes.
-        for p in parent.self_and_subtree():
-            next = p.threadNext()
-            #
-            # Ensure next is in the proper tree.
-            ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
-            if not ok:
-                continue
-            lines = self.get_lines(p)
-            if not lines:
-                continue
-            all_s = ''.join(lines)
-            #
-            # An ugly special case to avoid improperly-created children.
-            if p.hasChildren() and next != p.next():
-                next = p.next()
-                ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
-                if not ok:
-                    continue
-            all_matches = list(self.comment_pat.finditer(all_s))
-            m = all_matches and all_matches[-1]
-            if not m:
-                continue
-            comment_s = m.group(0)
-            i = m.start()
-            head_s = all_s[:i]
-            tail_s = all_s[i + len(comment_s) :]
-            if tail_s.strip():
-                continue  # Not a trailing comment.
-            head_lines = g.splitLines(head_s)
-            comment_lines = g.splitLines(comment_s + tail_s)
-            self.set_lines(p, head_lines)
-            self.prepend_lines(next, comment_lines)
     #@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
     def skip_possible_regex(self, s, i):
         """look ahead for a regex /"""

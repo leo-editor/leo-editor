@@ -34,66 +34,41 @@ class Rst_Importer(Importer):
         reason to prevent the writer from inserting conditional newlines.
         """
         return True
-    #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
+    #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers (*** to do)
     def gen_lines(self, lines, parent):
         """Node generator for reStructuredText importer."""
         if all(s.isspace() for s in lines):
             return
-        self.vnode_info = {
-            # Keys are vnodes, values are inner dicts.
-            parent.v: {
-                'lines': [],
-            }
-        }
-        # We may as well do this first.  See note below.
-        self.stack = [parent]
-        skip = 0
+        ###
+            # self.vnode_info = {
+                # # Keys are vnodes, values are inner dicts.
+                # parent.v: {
+                    # 'lines': [],
+                # }
+            # }
+            # # We may as well do this first.  See note below.
+            # self.stack = [parent]
+            # skip = 0
 
         for i, line in enumerate(lines):
-            if skip > 0:
-                skip -= 1
-            elif self.is_lookahead_overline(i, lines):
-                level = self.ch_level(line[0])
-                self.make_rst_node(level, lines[i + 1])
-                skip = 2
-            elif self.is_lookahead_underline(i, lines):
-                level = self.ch_level(lines[i + 1][0])
-                self.make_rst_node(level, line)
-                skip = 1
-            elif i == 0:
-                p = self.make_dummy_node('!Dummy chapter')
-                self.add_line(p, line)
-            else:
-                p = self.stack[-1]
-                self.add_line(p, line)
-    #@+node:ekr.20161129040921.5: *4* rst_i.find_parent
-    def find_parent(self, level, h):
-        """
-        Return the parent at the indicated level, allocating
-        place-holder nodes as necessary.
-        """
-        assert level > 0
-        while level < len(self.stack):
-            self.stack.pop()
-        # Insert placeholders as necessary.
-        # This could happen in imported files not created by us.
-        while level > len(self.stack):
-            top = self.stack[-1]
-            child = self.create_child_node(
-                parent=top,
-                line=None,
-                headline='placeholder',
-            )
-            self.stack.append(child)
-        # Create the desired node.
-        top = self.stack[-1]
-        child = self.create_child_node(
-            parent=top,
-            line=None,
-            headline=h,  # Leave the headline alone
-        )
-        self.stack.append(child)
-        return self.stack[level]
+            pass
+            ###
+                # if skip > 0:
+                    # skip -= 1
+                # elif self.is_lookahead_overline(i, lines):
+                    # level = self.ch_level(line[0])
+                    # self.make_rst_node(level, lines[i + 1])
+                    # skip = 2
+                # elif self.is_lookahead_underline(i, lines):
+                    # level = self.ch_level(lines[i + 1][0])
+                    # self.make_rst_node(level, line)
+                    # skip = 1
+                # elif i == 0:
+                    # p = self.make_dummy_node('!Dummy chapter')
+                    # self.add_line(p, line)
+                # else:
+                    # p = self.stack[-1]
+                    # self.add_line(p, line)
     #@+node:ekr.20161129111503.1: *4* rst_i.is_lookahead_overline
     def is_lookahead_overline(self, i, lines):
         """True if lines[i:i+2] form an overlined/underlined line."""
@@ -138,22 +113,6 @@ class Rst_Importer(Importer):
                 return None
         return ch1
 
-    #@+node:ekr.20161129040921.6: *4* rst_i.make_dummy_node
-    def make_dummy_node(self, headline):
-        """Make a decls node."""
-        parent = self.stack[-1]
-        assert parent == self.root, repr(parent)
-        child = self.create_child_node(
-            parent=self.stack[-1],
-            line=None,
-            headline=headline,
-        )
-        self.stack.append(child)
-        return child
-    #@+node:ekr.20161129040921.7: *4* rst_i.make_node
-    def make_rst_node(self, level, headline):
-        """Create a new node, with the given headline."""
-        self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
     # # 430, per RagBlufThim. Was {'#': 1,}
     rst_seen: Dict[str, int] = {}

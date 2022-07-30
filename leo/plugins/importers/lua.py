@@ -8,7 +8,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.plugins.importers.linescanner import Importer, scan_tuple, Target
+from leo.plugins.importers.linescanner import Importer, scan_tuple
 delete_blank_lines = True
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer
@@ -39,78 +39,6 @@ class Lua_Importer(Importer):
         if i > -1:
             s = s[:i]
         return s.strip()
-    #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
-    def cut_stack(self, new_state, stack):
-        """Cut back the stack until stack[-1] matches new_state."""
-        # function/end's are strictly nested, so this suffices.
-        assert len(stack) > 1  # Fail on entry.
-        stack.pop()
-        # Restore the guard entry if necessary.
-        if len(stack) == 1:
-            stack.append(stack[-1])
-        assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
-    def ends_block(self, i, lines, new_state, prev_state, stack):
-        """True if line ends the block."""
-        # pylint: disable=arguments-differ
-        if prev_state.context:
-            return False
-        line = lines[i]
-        # if line.strip().startswith('end'):
-        if g.match_word(line.strip(), 0, 'end'):
-            if self.start_stack:
-                top = self.start_stack.pop()
-                return top == 'function'
-            g.trace('unmatched "end" statement at line', i)
-        return False
-    #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
-    def gen_lines(self, lines, parent):
-        """
-        Non-recursively parse all lines of s into parent, creating descendant
-        nodes as needed.
-        """
-        tail_p = None
-        self.tail_lines = []
-        prev_state = self.state_class()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        self.vnode_info = {
-            # Keys are vnodes, values are inner dicts.
-            parent.v: {
-                'lines': [],
-            }
-        }
-
-        self.skip = 0
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
-            if self.skip > 0:
-                self.skip -= 1
-            elif line.isspace() and delete_blank_lines and not prev_state.context:
-                # Delete blank lines, but not inside strings and --[[ comments.
-                pass
-            elif self.is_ws_line(line):
-                if tail_p:
-                    self.tail_lines.append(line)
-                else:
-                    self.add_line(top.p, line)
-            elif self.starts_block(i, lines, new_state, prev_state):
-                tail_p = None
-                self.start_new_block(i, lines, new_state, prev_state, stack)
-            elif self.ends_block(i, lines, new_state, prev_state, stack):
-                tail_p = self.end_block(line, new_state, stack)
-            else:
-                if tail_p:
-                    self.tail_lines.append(line)
-                else:
-                    self.add_line(top.p, line)
-            prev_state = new_state
-        if self.tail_lines:
-            target = stack[-1]
-            self.extend_lines(target.p, self.tail_lines)
-            self.tail_lines = []
-
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
     #@@nobeautify
 
@@ -162,21 +90,6 @@ class Lua_Importer(Importer):
                 pattern = '--[%s[' % ('='*i)
                 add_key(d, pattern, ('len', pattern, pattern, None))
         return d
-    #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        if hasattr(new_state, 'in_context'):
-            assert not new_state.in_context(), ('start_new_block', new_state)
-        line = lines[i]
-        target = stack[-1]
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        child = self.create_child_node(target.p, line, h)
-        if self.tail_lines:
-            self.prepend_lines(child, self.tail_lines)
-            self.tail_lines = []
-        stack.append(Target(child, new_state))
     #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
     # Buggy: this could appear in a string or comment.
     # The function must be an "outer" function, without indentation.
