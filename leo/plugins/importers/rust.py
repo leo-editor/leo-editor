@@ -151,10 +151,9 @@ class Rust_ScanState:
 
     #@+others
     #@+node:ekr.20200316101240.8: *3* rust_state.level
-    def level(self):
+    def level(self) -> int:
         """Rust_ScanState.level."""
-        # return self.curlies
-        return (self.curlies, self.parens)
+        return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20200316101240.9: *3* rust_state.update
     def update(self, data: scan_tuple) -> int:
         """

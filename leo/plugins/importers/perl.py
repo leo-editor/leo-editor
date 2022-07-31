@@ -112,9 +112,9 @@ class Perl_ScanState:
 
     #@+others
     #@+node:ekr.20161119115617.1: *3* perl_state.level
-    def level(self):
+    def level(self) -> int:
         """Perl_ScanState.level."""
-        return (self.curlies, self.parens)
+        return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20161119050522.1: *3* perl_state.update
     def update(self, data: scan_tuple) -> int:
         """

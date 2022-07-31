@@ -151,7 +151,7 @@ class Rst_ScanState:
 
     #@+others
     #@+node:ekr.20161127192007.7: *3* rst_state.level
-    def level(self):
+    def level(self) -> int:
         """Rst_ScanState.level."""
         return 0
 

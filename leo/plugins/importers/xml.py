@@ -214,7 +214,7 @@ class Xml_ScanState:
 
     #@+others
     #@+node:ekr.20161121204146.8: *3* xml_state.level
-    def level(self):
+    def level(self) -> int:
         """Xml_ScanState.level."""
         return self.tag_level
     #@-others

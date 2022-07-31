@@ -125,7 +125,7 @@ class Coffeescript_ScanState:
 
     __str__ = __repr__
     #@+node:ekr.20161119115413.1: *3* coffeescript_state.level
-    def level(self):
+    def level(self) -> int:
         """Coffeescript_ScanState.level."""
         return self.indent
     #@+node:ekr.20161118140100.1: *3* coffeescript_state.in_context

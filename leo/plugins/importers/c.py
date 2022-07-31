@@ -166,7 +166,7 @@ class C_ScanState:
     def in_context(self) -> bool:
         return bool(self.context)
     #@+node:ekr.20161119115315.1: *3* c_state.level
-    def level(self):
+    def level(self) -> int:
         """C_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118051111.1: *3* c_state.update

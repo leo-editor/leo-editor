@@ -51,7 +51,7 @@ class Csharp_ScanState:
     def in_context(self) -> bool:
         return bool(self.context)
     #@+node:ekr.20161121200106.8: *3* csharp_state.level
-    def level(self):
+    def level(self) -> int:
         """Csharp_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161121200106.9: *3* csharp_state.update

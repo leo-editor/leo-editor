@@ -177,7 +177,7 @@ class JS_ScanState:
     def in_context(self) -> bool:
         return bool(self.context or self.parens)
     #@+node:ekr.20161119115505.1: *3* js_state.level
-    def level(self):
+    def level(self) -> int:
         """JS_ScanState.level."""
         return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update

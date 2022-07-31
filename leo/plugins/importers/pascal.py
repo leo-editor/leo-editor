@@ -117,7 +117,7 @@ class Pascal_ScanState:
 
     #@+others
     #@+node:ekr.20161126171035.7: *3* pascal_state.level
-    def level(self):
+    def level(self) -> int:
         """Pascal_ScanState.level."""
         return 0  # Not used
 

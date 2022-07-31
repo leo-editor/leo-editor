@@ -144,7 +144,7 @@ class Lua_ScanState:
 
     #@+others
     #@+node:ekr.20170530024520.8: *3* lua_state.level
-    def level(self):
+    def level(self) -> int:
         """Lua_ScanState.level."""
         return 0  # Never used.
     #@+node:ekr.20170530024520.9: *3* lua_state.update

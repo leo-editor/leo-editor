@@ -119,7 +119,7 @@ class Java_ScanState:
 
     #@+others
     #@+node:ekr.20161126161824.7: *3* java_state.level
-    def level(self):
+    def level(self) -> int:
         """Java_ScanState.level."""
         return self.curlies
 

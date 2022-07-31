@@ -141,7 +141,7 @@ class Typescript_ScanState:
 
     __str__ = __repr__
     #@+node:ekr.20161119115736.1: *3* typescript_state.level
-    def level(self):
+    def level(self) -> int:
         """Typescript_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118082821.1: *3* typescript_state.is_ws_line

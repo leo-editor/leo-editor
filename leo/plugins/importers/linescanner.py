@@ -946,7 +946,7 @@ class ScanState:
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)
     #@+node:ekr.20161119115215.1: *3* ScanState.level
-    def level(self):
+    def level(self) -> int:
         """ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update

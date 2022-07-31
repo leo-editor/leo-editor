@@ -198,7 +198,7 @@ class Php_ScanState:
 
     #@+others
     #@+node:ekr.20161129213243.7: *3* php_state.level
-    def level(self):
+    def level(self) -> int:
         """Php_ScanState.level."""
         return self.curlies
 

@@ -49,7 +49,7 @@ class Dart_ScanState:
 
     #@+others
     #@+node:ekr.20161123120245.7: *3* dart_state.level
-    def level(self):
+    def level(self) -> int:
         """Dart_ScanState.level."""
         return self.curlies
     #@+node:ekr.20161123120245.8: *3* dart_state.update

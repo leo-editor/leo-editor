@@ -68,7 +68,7 @@ class Tcl_ScanState:
         return bool(self.context)  # or self.curlies > 0
 
     #@+node:ekr.20170615153639.8: *3* tcl_state.level
-    def level(self):
+    def level(self) -> int:
         """Tcl_ScanState.level."""
         return self.curlies
     #@+node:ekr.20170615153639.9: *3* tcl_state.update
