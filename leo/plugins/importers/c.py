@@ -137,8 +137,6 @@ class C_Importer(Importer):
             prev_state = line_states[i - 1] if i > 0 else self.state_class()
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
-                ### from leo.core import leoGlobals as g  ###
-                ### g.trace('FOUND', i + 1, self.headline)  ###
                 return i + 1
             i += 1
         return None

@@ -288,7 +288,7 @@ class Importer:
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
-            
+
         if trace and trace_states:
             g.trace(f"{self.__class__.__name__} states & lines...")
             for i, line in enumerate(self.lines):
@@ -379,13 +379,11 @@ class Importer:
         # Calculate the indentation of the first non-blank body line.
         j = first_body_line
         while j < i and j < len(lines):
-            ### g.trace('SCAN', self.headline, repr(lines[j]))
             if not lines[j].isspace():
                 body_indent = self.get_int_lws(lines[j])
                 break
             j += 1
         else:
-            ### g.trace('NO BODY FOUND', self.headline)
             body_indent = 0
 
         # Include all following blank lines.
@@ -461,9 +459,6 @@ class Importer:
             print('')
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
-        ### Find all defs with the given inner indentation.
-        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-        
         # Find all outer defs, all of whose levels are the smallest level > outer_level.
         potential_outer_defs = [z for z in definitions if z.decl_level > outer_level]
         if potential_outer_defs:
@@ -474,7 +469,7 @@ class Importer:
             assert new_outer_defs, (new_outer_level, potential_outer_defs)
         else:
             new_outer_defs = []
-       
+
         if trace and new_outer_defs:
             g.printObj([repr(z) for z in new_outer_defs], tag=f"new_outer_defs new_outer_level: {new_outer_level}")
             if trace_body:
@@ -506,7 +501,6 @@ class Importer:
         for inner_def in new_outer_defs:
             # Add a child for declaration lines between two inner definitions.
             if inner_def.decl_line1 > last:
-                ### new_body = self.body_string(last, decl_line1, inner_indent)  # #2500.
                 new_body = self.body_string(last, inner_def.decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = self.declaration_headline(new_body)  # #2500
@@ -522,31 +516,22 @@ class Importer:
                 and z.body_line9 <= inner_def.body_line9
             )]
 
-            ### No need for this trace. These defs will be traced in the recursive call.
-                # if trace and inner_defs:
-                    # g.printObj([repr(z) for z in inner_defs], tag=f"inner_defs {p.h}")
-
             if inner_defs:
                 # Recursively split this node.
                 self.make_node(
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    ### end=body_line9,
                     end=inner_def.body_line9,
-                    ### others_indent=others_indent + inner_indent,
                     others_indent=others_indent + inner_def.body_indent,
-                    # inner_indent=body_indent,
                     inner_indent=inner_def.body_indent,
                     outer_level=new_outer_level,
                     definitions=inner_defs,
                 )
             else:
                 # Just set the body.
-                ### child.b = self.body_string(decl_line1, body_line9, inner_indent)
                 child.b = self.body_string(decl_line1, inner_def.body_line9, inner_indent)
 
-            ### last = body_line9
             last = inner_def.body_line9
     #@+node:ekr.20220728130253.1: *5* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
@@ -565,7 +550,6 @@ class Importer:
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
                 self.headline = self.clean_headline(lines[i])
-                ### g.trace('FOUND', i + 1, self.headline)
                 return i + 1
             i += 1
         return None
