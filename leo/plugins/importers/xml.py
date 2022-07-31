@@ -213,6 +213,9 @@ class Xml_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731124729.1: *3* xml_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161121204146.8: *3* xml_state.level
     def level(self) -> int:
         """Xml_ScanState.level."""
