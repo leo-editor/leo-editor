@@ -106,6 +106,9 @@ class Elisp_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731123531.1: *3* elisp_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context or self.parens)
     #@+node:ekr.20161127184128.7: *3* elisp_state.level
     def level(self) -> int:
         """Elisp_ScanState.level."""

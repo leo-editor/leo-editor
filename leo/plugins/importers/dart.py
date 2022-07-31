@@ -48,6 +48,9 @@ class Dart_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731123118.1: *3* dart_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161123120245.7: *3* dart_state.level
     def level(self) -> int:
         """Dart_ScanState.level."""
