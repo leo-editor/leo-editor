@@ -81,9 +81,9 @@ class Php_Importer(Importer):
             if self.here_doc_target.lower() == s[:n].lower():
                 self.here_doc_target = None
                 i = n
-                return '', i, 0, 0, 0, False
+                return scan_tuple('', i, 0, 0, 0, False)
             # Skip the rest of the line
-            return '', len(s), 0, 0, 0, False
+            return scan_tuple('', len(s), 0, 0, 0, False)
         ch = s[i]  # For traces.
         aList = d.get(ch)
         if aList and context:
