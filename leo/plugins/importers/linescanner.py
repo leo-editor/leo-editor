@@ -783,10 +783,7 @@ class Importer:
 
         2. The state class must have an update method.
         """
-        trace = False
         # This dict allows new data to be added without changing ScanState signatures.
-        if trace:
-            g.trace('===== prev_state', repr(prev_state), g.callers())
         d = {
             'indent': self.get_int_lws(s),
             'is_ws_line': self.is_ws_line(s),
@@ -800,12 +797,6 @@ class Importer:
             context = new_state.context
             table = self.get_table(context)
             data = self.scan_dict(context, i, s, table)
-            ### g.trace(f"{i:3}", repr(data), repr(context), repr(s))
-            # context.__class__.__name__, 
-            if trace:
-                g.trace(f"{i:3}", data.__class__.__name__, 'context', repr(context),
-                    'prev', prev_state.__class__.__name__,
-                    repr(s))
             i = new_state.update(data)
             assert progress < i
         return new_state
