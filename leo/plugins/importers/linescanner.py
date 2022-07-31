@@ -271,7 +271,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (traces lines, bodies, defs)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -431,7 +431,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs)
+    #@+node:ekr.20220727075027.1: *5* i.make_node (trace)
     def make_node(self,
         p: Position,
         start: int,
@@ -553,7 +553,7 @@ class Importer:
                 return i + 1
             i += 1
         return None
-    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace states)
+    #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line after the last line of the block."""
         trace = False
@@ -563,14 +563,11 @@ class Importer:
         # The opening state, *before* lines[i].
         state0_level = -1 if i == 0 else  line_states[i-1].level()
         if trace:
-            line0 = lines[max(0, i-1)]
-            g.trace(f"----- Entry i: {i} state0level: {state0_level} {line0!r}")
+            g.trace(f"----- Entry i: {i} state0level: {state0_level} {lines[max(0, i-1)]!r}")
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
             state = line_states[i]
-            if trace:
-                g.trace(i, state.level(), repr(line))
             if (
                 not line.isspace()
                 and not state.in_context()
