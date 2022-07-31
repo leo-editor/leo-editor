@@ -433,7 +433,7 @@ class Importer:
                 break
         return row - i
 
-    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs) (****** to do: use level)
+    #@+node:ekr.20220727075027.1: *5* i.make_node (traces inner defs)
     def make_node(self,
         p: Position,
         start: int,
@@ -456,37 +456,35 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = True, True
-        
+        trace, trace_body = True, False
         if trace:
-            g.printObj([repr(z) for z in definitions], tag=f"definitions {p.h}")
+            print('')
+            g.printObj([repr(z) for z in definitions], tag=f"----- Entry. definitions {p.h}")
 
-        # Find all defs with the given inner indentation.
+        ### Find all defs with the given inner indentation.
         ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-        g.trace('outer_level', outer_level, p.h)
-        potential_inner_defs = [
-            z for z in definitions
-                if z.decl_level > outer_level
-                    ### and z.decl_line1 > decl_line1 and z.body_line9 <= body_line9
-        ]
-        if potential_inner_defs:
-            inner_level = min(z.decl_level for z in potential_inner_defs)
-            g.trace('inner_level', inner_level, p.h)
-            inner_defs = [z for z in potential_inner_defs if z.decl_level == inner_level]
+        
+        # Find all outer defs, all of whose levels are the smallest level > outer_level.
+        potential_outer_defs = [z for z in definitions if z.decl_level > outer_level]
+        if potential_outer_defs:
+            new_outer_level = min(z.decl_level for z in potential_outer_defs)
+            # g.trace('outer_level', outer_level, 'new_outer_level', new_outer_level, p.h)
+            new_outer_defs = [z for z in potential_outer_defs if z.decl_level == new_outer_level]
+            # At least one potential inner def has the minimum level.
+            assert new_outer_defs, (new_outer_level, potential_outer_defs)
         else:
-            inner_defs = []
+            new_outer_defs = []
        
-        if trace and inner_defs:
-            ### g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
-            g.printObj([repr(z) for z in inner_defs], tag=f"inner_defs {p.h}")
+        if trace and new_outer_defs:
+            g.printObj([repr(z) for z in new_outer_defs], tag=f"new_outer_defs new_outer_level: {new_outer_level}")
             if trace_body:
-                for z in inner_defs:
+                for z in new_outer_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
                         tag=f"Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
-        if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
+        if not new_outer_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
             p.b = self.body_string(start, end, others_indent)
             return
@@ -494,24 +492,22 @@ class Importer:
         last = start  # The last used line.
 
         # Calculate head, the lines preceding the @others.
-        decl_line1 = inner_defs[0].decl_line1
+        decl_line1 = new_outer_defs[0].decl_line1
         head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
         others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].body_line9
+        last_offset = new_outer_defs[-1].body_line9
         tail = self.body_string(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
 
         # Add a child of p for each inner definition.
         last = decl_line1
-        for inner_def in inner_defs:
-            body_indent = inner_def.body_indent
-            body_line9 = inner_def.body_line9
-            decl_line1 = inner_def.decl_line1
+        for inner_def in new_outer_defs:
             # Add a child for declaration lines between two inner definitions.
-            if decl_line1 > last:
-                new_body = self.body_string(last, decl_line1, inner_indent)  # #2500.
+            if inner_def.decl_line1 > last:
+                ### new_body = self.body_string(last, decl_line1, inner_indent)  # #2500.
+                new_body = self.body_string(last, inner_def.decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = self.declaration_headline(new_body)  # #2500
                 child1.b = new_body
@@ -519,28 +515,39 @@ class Importer:
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
-            ### Don't do this twice!!!
-                # Compute inner definitions.
-                # inner_definitions = [
-                    # z for z in definitions
-                        # if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
+            # Compute the inner defs.
+            inner_defs = [z for z in definitions if (
+                z.decl_level > new_outer_level
+                and z.decl_line1 > inner_def.decl_line1
+                and z.body_line9 <= inner_def.body_line9
+            )]
+
+            ### No need for this trace. These defs will be traced in the recursive call.
+                # if trace and inner_defs:
+                    # g.printObj([repr(z) for z in inner_defs], tag=f"inner_defs {p.h}")
+
             if inner_defs:
                 # Recursively split this node.
                 self.make_node(
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    end=body_line9,
-                    others_indent=others_indent + inner_indent,
-                    inner_indent=body_indent,
-                    outer_level=inner_level,
-                    definitions=inner_defs,  ### inner_definitions,
+                    ### end=body_line9,
+                    end=inner_def.body_line9,
+                    ### others_indent=others_indent + inner_indent,
+                    others_indent=others_indent + inner_def.body_indent,
+                    # inner_indent=body_indent,
+                    inner_indent=inner_def.body_indent,
+                    outer_level=new_outer_level,
+                    definitions=inner_defs,
                 )
             else:
                 # Just set the body.
-                child.b = self.body_string(decl_line1, body_line9, inner_indent)
+                ### child.b = self.body_string(decl_line1, body_line9, inner_indent)
+                child.b = self.body_string(decl_line1, inner_def.body_line9, inner_indent)
 
-            last = body_line9
+            ### last = body_line9
+            last = inner_def.body_line9
     #@+node:ekr.20220728130253.1: *5* i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
@@ -558,6 +565,7 @@ class Importer:
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
                 self.headline = self.clean_headline(lines[i])
+                ### g.trace('FOUND', i + 1, self.headline)
                 return i + 1
             i += 1
         return None
@@ -568,11 +576,11 @@ class Importer:
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)
+        # The opening state, *before* lines[i].
         state0_level = -1 if i == 0 else  line_states[i-1].level()
-        # The opening state, *before* lines i
-        ### state1 = line_states[i-1] if i > 0 else self.scan_state()
         if trace:
-            g.trace('----- ENTRY:', i, state0_level)
+            line0 = lines[max(0, i-1)]
+            g.trace(f"----- Entry i: {i} state0level: {state0_level} {line0!r}")
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
@@ -582,7 +590,7 @@ class Importer:
             if (
                 not line.isspace()
                 and not state.in_context()
-                and state.level() <= state0_level  ### Was <
+                and state.level() < state0_level
             ):
                 if trace:
                     g.trace('FOUND', i + 1)
