@@ -118,6 +118,9 @@ class Java_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731102742.1: *3* java_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161126161824.7: *3* java_state.level
     def level(self) -> int:
         """Java_ScanState.level."""

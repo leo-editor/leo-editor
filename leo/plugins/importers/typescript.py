@@ -140,16 +140,19 @@ class Typescript_ScanState:
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 
     __str__ = __repr__
-    #@+node:ekr.20161119115736.1: *3* typescript_state.level
-    def level(self) -> int:
-        """Typescript_ScanState.level."""
-        return self.curlies
+    #@+node:ekr.20220731103111.1: *3* typescript_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161118082821.1: *3* typescript_state.is_ws_line
     ws_pattern = re.compile(r'^\s*$|^\s*#')
 
     def is_ws_line(self, s):
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
+    #@+node:ekr.20161119115736.1: *3* typescript_state.level
+    def level(self) -> int:
+        """Typescript_ScanState.level."""
+        return self.curlies
     #@+node:ekr.20161118072957.1: *3* typescript_state.update
     def update(self, data: scan_tuple) -> int:
         """

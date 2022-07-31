@@ -282,7 +282,7 @@ class Importer:
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
-        state = ScanState()
+        state = self.state_class()
 
         # Prepass 1: calculate line states.
         for line in lines:
@@ -698,7 +698,7 @@ class Importer:
         return d
     #@+node:ekr.20161113135037.1: *4* i.get_table
     #@@nobeautify
-    cached_scan_tables: Dict[str, Any] = {}
+    cached_scan_tables: Dict[str, Dict] = {}
 
     def get_table(self, context):
         """
@@ -706,13 +706,12 @@ class Importer:
 
         This method handles caching.  x.get_new_table returns the actual table.
         """
-        # Bug fix: must keep tables separate.
-        key = '%s.%s' % (self.name, context)
+        key = f"{self.name}.{context!r}"  # Keep tables separate!
         table = self.cached_scan_tables.get(key)
-        if table:
-            return table
-        table = self.get_new_dict(context)
-        self.cached_scan_tables[key] = table
+        if not table:
+            table = self.get_new_dict(context)
+            ### g.trace('NEW TABLE', key)
+            self.cached_scan_tables[key] = table
         return table
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
@@ -784,7 +783,10 @@ class Importer:
 
         2. The state class must have an update method.
         """
+        trace = False
         # This dict allows new data to be added without changing ScanState signatures.
+        if trace:
+            g.trace('===== prev_state', repr(prev_state), g.callers())
         d = {
             'indent': self.get_int_lws(s),
             'is_ws_line': self.is_ws_line(s),
@@ -798,6 +800,12 @@ class Importer:
             context = new_state.context
             table = self.get_table(context)
             data = self.scan_dict(context, i, s, table)
+            ### g.trace(f"{i:3}", repr(data), repr(context), repr(s))
+            # context.__class__.__name__, 
+            if trace:
+                g.trace(f"{i:3}", data.__class__.__name__, 'context', repr(context),
+                    'prev', prev_state.__class__.__name__,
+                    repr(s))
             i = new_state.update(data)
             assert progress < i
         return new_state

@@ -197,6 +197,9 @@ class Php_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731103148.1: *3* php_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161129213243.7: *3* php_state.level
     def level(self) -> int:
         """Php_ScanState.level."""
@@ -207,6 +210,7 @@ class Php_ScanState:
         """
         Php_ScanState.update: Update the state using given scan_tuple.
         """
+        ### assert data.__class__.__name__ == 'scan_tuple', (repr(data), g.callers())  ###
         if 'importers' in g.app.debug:
             g.trace(
                 f"context: {data.context!s} "
