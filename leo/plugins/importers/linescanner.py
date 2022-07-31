@@ -456,10 +456,10 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = True, False
+        trace, trace_body = False, False
         if trace:
             print('')
-            g.printObj([repr(z) for z in definitions], tag=f"----- Entry. definitions {p.h}")
+            g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
         ### Find all defs with the given inner indentation.
         ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
