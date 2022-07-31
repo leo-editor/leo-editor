@@ -48,8 +48,8 @@ class Csharp_ScanState:
 
     #@+others
     #@+node:ekr.20220729152938.1: *3* csharp_state.in_context
-    def in_context(self):
-        return self.context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161121200106.8: *3* csharp_state.level
     def level(self):
         """Csharp_ScanState.level."""

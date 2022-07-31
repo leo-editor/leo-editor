@@ -173,10 +173,13 @@ class JS_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731093145.1: *3* js_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context or self.parens)
     #@+node:ekr.20161119115505.1: *3* js_state.level
     def level(self):
         """JS_ScanState.level."""
-        return (self.curlies, self.parens)
+        return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
     def update(self, data: scan_tuple) -> int:
         """

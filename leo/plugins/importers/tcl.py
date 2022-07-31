@@ -63,9 +63,9 @@ class Tcl_ScanState:
 
     #@+others
     #@+node:ekr.20170615160228.1: *3* tcl_state.in_context
-    def in_context(self):
+    def in_context(self) -> bool:
         """True if in a special context."""
-        return self.context  # or self.curlies > 0
+        return bool(self.context)  # or self.curlies > 0
 
     #@+node:ekr.20170615153639.8: *3* tcl_state.level
     def level(self):

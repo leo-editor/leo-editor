@@ -129,9 +129,9 @@ class Coffeescript_ScanState:
         """Coffeescript_ScanState.level."""
         return self.indent
     #@+node:ekr.20161118140100.1: *3* coffeescript_state.in_context
-    def in_context(self):
+    def in_context(self) -> bool:
         """True if in a special context."""
-        return self.context or self.bs_nl
+        return bool(self.context or self.bs_nl)
     #@+node:ekr.20161119052920.1: *3* coffeescript_state.update
     def update(self, data: scan_tuple) -> int:
         """

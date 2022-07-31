@@ -164,7 +164,7 @@ class C_ScanState:
     #@+others
     #@+node:ekr.20220729124756.1: *3* c_state.in_context
     def in_context(self) -> bool:
-        return self.context
+        return bool(self.context)
     #@+node:ekr.20161119115315.1: *3* c_state.level
     def level(self):
         """C_ScanState.level."""

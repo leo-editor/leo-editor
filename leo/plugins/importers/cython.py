@@ -148,7 +148,7 @@ class Cython_ScanState:
         """Cython_ScanState.level."""
         return self.indent
     #@+node:ekr.20220730072654.1: *3* cython_state.in_context
-    def in_context(self):
+    def in_context(self) -> bool:
         """Cython_State.in_context"""
         return (
             self.context or
