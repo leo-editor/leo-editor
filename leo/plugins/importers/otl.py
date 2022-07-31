@@ -37,7 +37,8 @@ class Otl_Importer(Importer):
 
         for line in lines:
             m = self.otl_body_pattern.match(line)
-            g.trace(m)
+            if 0:
+                g.trace(m)  ###
             ###
                 # if m:
                     # p = self.parents[-1]

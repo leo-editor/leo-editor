@@ -36,7 +36,7 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20211128045212.1: *3* BaseTestImporter.check_headlines
     def check_headlines(self, p, table):
         """Check that p and its subtree have the structure given in the table."""
-        dump_tree, trace_subtree = False, True
+        dump_tree, trace_subtree = False, False
         p1 = p.copy()
         try:
             self.assertEqual(p1.h, f"{self.treeType} {self.short_id}")

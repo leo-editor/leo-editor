@@ -111,6 +111,9 @@ class Perl_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220731125725.1: *3* perl_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context or self.parens)
     #@+node:ekr.20161119115617.1: *3* perl_state.level
     def level(self) -> int:
         """Perl_ScanState.level."""

@@ -58,7 +58,7 @@ class Org_Importer(Importer):
             # self.parents = [parent]
         for line in lines:
             m = self.org_pattern.match(line)
-            g.trace(m)
+            ### g.trace(m)
             ###
                 # if m:
                     # # Cut back the stack, then allocate a new node.
