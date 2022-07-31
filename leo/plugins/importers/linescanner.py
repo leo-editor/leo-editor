@@ -310,7 +310,10 @@ class Importer:
         parent.deleteAllChildren()
         self.make_node(
             p=parent, start=0, start_b=0, end=len(lines),
-            others_indent=0, inner_indent=0, definitions=all_definitions)
+            others_indent=0, inner_indent=0,
+            outer_level = -1,
+            definitions=all_definitions,
+        )
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
@@ -437,6 +440,7 @@ class Importer:
         start_b: int,
         end: int,
         others_indent: int,
+        outer_level: int,
         inner_indent: int,
         definitions: List[block_tuple],
     ) -> None:
@@ -449,16 +453,32 @@ class Importer:
                   end: The line number of the first line after this node.
         others_indent: Accumulated @others indentation (to be stripped from left).
          inner_indent: The indentation of all of the inner definitions.
+          outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = True, False
-        # Find all defs with the given inner indentation.
-        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-        ### inner_defs = [z for z in definitions if z.decl_level == 1 + level]
-
+        trace, trace_body = True, True
+        
         if trace:
-            g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
-            g.printObj([repr(z) for z in inner_defs])
+            g.printObj([repr(z) for z in definitions], tag=f"definitions {p.h}")
+
+        # Find all defs with the given inner indentation.
+        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+        g.trace('outer_level', outer_level, p.h)
+        potential_inner_defs = [
+            z for z in definitions
+                if z.decl_level > outer_level
+                    ### and z.decl_line1 > decl_line1 and z.body_line9 <= body_line9
+        ]
+        if potential_inner_defs:
+            inner_level = min(z.decl_level for z in potential_inner_defs)
+            g.trace('inner_level', inner_level, p.h)
+            inner_defs = [z for z in potential_inner_defs if z.decl_level == inner_level]
+        else:
+            inner_defs = []
+       
+        if trace and inner_defs:
+            ### g.trace('inner_indent', inner_indent, 'others_indent', others_indent, p.h)
+            g.printObj([repr(z) for z in inner_defs], tag=f"inner_defs {p.h}")
             if trace_body:
                 for z in inner_defs:
                     g.printObj(
@@ -499,11 +519,12 @@ class Importer:
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
-            # Compute inner definitions.
-            inner_definitions = [
-                z for z in definitions
-                    if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
-            if inner_definitions:
+            ### Don't do this twice!!!
+                # Compute inner definitions.
+                # inner_definitions = [
+                    # z for z in definitions
+                        # if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
+            if inner_defs:
                 # Recursively split this node.
                 self.make_node(
                     p=child,
@@ -512,7 +533,8 @@ class Importer:
                     end=body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=body_indent,
-                    definitions=inner_definitions,
+                    outer_level=inner_level,
+                    definitions=inner_defs,  ### inner_definitions,
                 )
             else:
                 # Just set the body.
@@ -950,28 +972,6 @@ class ScanState:
         self.squares += data.delta_s
         return data.i
     #@-others
-#@+node:ekr.20161108155158.1: ** class Target
-class Target:
-    """
-    A class describing a target node p.
-    state is used to cut back the stack.
-    """
-
-    def __init__(self, p, state):
-        """Target ctor."""
-        self.at_others_flag = False  # True: @others has been generated for this target.
-        self.p = p
-        self.gen_refs = False  # Can be forced True.
-        self.ref_flag = False  # True: @others or section reference should be generated.
-        self.state = state
-
-    def __repr__(self):
-        return 'Target: %s @others: %s refs: %s p: %s' % (
-            self.state,
-            int(self.at_others_flag),
-            int(self.gen_refs),
-            g.shortFileName(self.p.h),
-        )
 #@-others
 #@@language python
 #@@tabwidth -4
