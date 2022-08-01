@@ -186,6 +186,151 @@ class Xml_Importer(Importer):
     def is_ws_line(self, s):
         """True if s is nothing but whitespace or single-line comments."""
         return bool(self.xml_ws_pattern.match(s))
+    #@+node:ekr.20220801064718.1: *3* xml_i.gen_lines & helpers (***From devel)
+    def gen_lines(self, lines, parent):
+        """
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        """
+        trace = 'importers' in g.app.debug
+        tail_p = None
+        prev_state = self.state_class()
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        self.vnode_info = {
+            # Keys are vnodes, values are inner dicts.
+            parent.v: {
+                'lines': [],
+            }
+        }
+        if g.unitTesting:
+            g.vnode_info = self.vnode_info  # A hack.
+
+        self.skip = 0
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            top = stack[-1]
+            # g.trace(new_state.level(), f"{new_state.level() < top.state.level():1}", repr(line))
+            if trace:
+                g.trace('%d %d %s' % (
+                    self.starts_block(i, lines, new_state, prev_state),
+                    self.ends_block(line, new_state, prev_state, stack),
+                    line.rstrip()))
+            if self.skip > 0:
+                self.skip -= 1
+            elif self.is_ws_line(line):
+                p = tail_p or top.p
+                self.add_line(p, line)
+            elif self.starts_block(i, lines, new_state, prev_state):
+                tail_p = None
+                self.start_new_block(i, lines, new_state, prev_state, stack)
+            elif self.ends_block(line, new_state, prev_state, stack):
+                tail_p = self.end_block(line, new_state, stack)
+            else:
+                p = tail_p or top.p
+                self.add_line(p, line)
+            prev_state = new_state
+    #@+node:ekr.20220801064718.2: *4* i.create_child_node
+    def create_child_node(self, parent, line, headline):
+        """Create a child node of parent."""
+        child = parent.insertAsLastChild()
+        self.vnode_info[child.v] = {
+            'lines': [],
+        }
+        if line:
+            self.add_line(child, line)
+        assert isinstance(headline, str), repr(headline)
+        child.h = headline.strip()
+        return child
+    #@+node:ekr.20220801064718.3: *4* i.cut_stack
+    def cut_stack(self, new_state, stack):
+        """Cut back the stack until stack[-1] matches new_state."""
+
+        def underflow(n):
+            g.trace(n)
+            g.trace(new_state)
+            g.printList(stack)
+
+        # assert len(stack) > 1 # Fail on entry.
+        if len(stack) <= 1:
+            return underflow(0)
+        while stack:
+            top_state = stack[-1].state
+            if new_state.level() < top_state.level():
+                if len(stack) > 1:
+                    stack.pop()
+                else:
+                    return underflow(1)
+            elif top_state.level() == new_state.level():
+                # assert len(stack) > 1, stack # ==
+                # This is the only difference between i.cut_stack and python/cs.cut_stack
+                if len(stack) <= 1:
+                    return underflow(2)
+                break
+            else:
+                # This happens often in valid Python programs.
+                break
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            stack.append(stack[-1])
+        elif len(stack) <= 1:
+            return underflow(3)
+        return None
+    #@+node:ekr.20220801064718.4: *4* i.end_block
+    def end_block(self, line, new_state, stack):
+        # The block is ending. Add tail lines until the start of the next block.
+        p = stack[-1].p
+        self.add_line(p, line)
+        self.cut_stack(new_state, stack)
+        tail_p = None if self.gen_refs else p
+        return tail_p
+    #@+node:ekr.20220801064718.5: *4* i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        """True if line ends the block."""
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
+    #@+node:ekr.20220801064718.6: *4* i.gen_ref
+    def gen_ref(self, line, parent, target):
+        """
+        Generate the ref line. Return the headline.
+        """
+        indent_ws = self.get_str_lws(line)
+        h = self.clean_headline(line, p=None)
+        if self.gen_refs:
+            # Fix #441: Make sure all section refs are unique.
+            d = self.refs_dict
+            n = d.get(h, 0)
+            d[h] = n + 1
+            if n > 0:
+                h = '%s: %s' % (n, h)
+            headline = g.angleBrackets(' %s ' % h)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % h))
+        else:
+            if target.ref_flag:
+                ref = None
+            else:
+                ref = '%s@others\n' % indent_ws
+                target.at_others_flag = True
+            target.ref_flag = True  # Don't generate another @others in this target.
+            headline = h
+        if ref:
+            self.add_line(parent, ref)
+        return headline
+    #@+node:ekr.20220801064718.7: *4* i.start_new_block
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
+        """Create a child node and update the stack."""
+        if hasattr(new_state, 'in_context'):
+            assert not new_state.in_context(), ('start_new_block', new_state)
+        line = lines[i]
+        target = stack[-1]
+        # Insert the reference in *this* node.
+        h = self.gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:
