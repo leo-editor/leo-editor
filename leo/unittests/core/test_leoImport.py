@@ -62,29 +62,36 @@ class BaseTestImporter(LeoUnitTest):
                 self.dump_tree(p1)
             raise
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best check)
-    def check_outline(self, p, nodes):
+    def check_outline(self, p, expected):
         """
         BaseTestImporter.check_outline.
         """
-        trace = False
-        if trace:
-            for p1 in p.self_and_subtree():
-                g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
-        it = iter(nodes)
-        top_level = p.level()
-        for p1 in p.self_and_subtree():
-            level, h, b = next(it)
-            assert level == p1.level() - top_level, f'level:{p1.level()-top_level} != {level}'
-            if level > 0:
-                self.assertEqual(p1.h,  h)
-            # if trace and p1.b != b:  # Brief test.
-                # self.fail(f"Body mismatch: {p1.h}")
-            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
-        try:
-            next(it)
-            return False, 'extra nodes'  # pragma: no cover
-        except StopIteration:
+        if 0: # Dump expected results.
+            print('')
+            g.trace('Expected results...')
+            for (level, h, s) in expected:
+                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
+
+        if 0: # Dump actual results.
+            print('')
+            g.trace('Actual results...')
+            for p2 in p.self_and_subtree():
+                g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
+                
+        # Do the actual tests.
+        p0_level = p.level()
+        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        self.assertEqual(len(expected), len(actual))
+        for i, actual in enumerate(actual):
+            a_level, a_h, a_str = actual
+            e_level, e_h, e_str = expected[i]
+            msg = f"FAIL in node {i} {e_h}"
+            self.assertEqual(a_level - p0_level, e_level, msg=msg)
+            if i > 0:  # Don't test top-level headline.
+                self.assertEqual(e_h, a_h, msg=msg)
+            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
             return True, 'ok'
+
     #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines (*** to do)
     def compare_outlines(self, created_p, expected_p):  # pragma: no cover
         """
@@ -2083,29 +2090,36 @@ class TestPython(BaseTestImporter):
 
     #@+others
     #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best check)
-    def check_outline(self, p, nodes):
+    def check_outline(self, p, expected):
         """
         BaseTestImporter.check_outline.
         """
-        trace = False
-        if trace:
-            for p1 in p.self_and_subtree():
-                g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
-        it = iter(nodes)
-        top_level = p.level()
-        for p1 in p.self_and_subtree():
-            level, h, b = next(it)
-            assert level == p1.level() - top_level, f'level:{p1.level()-top_level} != {level}'
-            if level > 0:
-                self.assertEqual(p1.h,  h)
-            # if trace and p1.b != b:  # Brief test.
-                # self.fail(f"Body mismatch: {p1.h}")
-            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
-        try:
-            next(it)
-            return False, 'extra nodes'  # pragma: no cover
-        except StopIteration:
+        if 0: # Dump expected results.
+            print('')
+            g.trace('Expected results...')
+            for (level, h, s) in expected:
+                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
+
+        if 0: # Dump actual results.
+            print('')
+            g.trace('Actual results...')
+            for p2 in p.self_and_subtree():
+                g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
+                
+        # Do the actual tests.
+        p0_level = p.level()
+        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        self.assertEqual(len(expected), len(actual))
+        for i, actual in enumerate(actual):
+            a_level, a_h, a_str = actual
+            e_level, e_h, e_str = expected[i]
+            msg = f"FAIL in node {i} {e_h}"
+            self.assertEqual(a_level - p0_level, e_level, msg=msg)
+            if i > 0:  # Don't test top-level headline.
+                self.assertEqual(e_h, a_h, msg=msg)
+            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
             return True, 'ok'
+
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
         s = ('import sys\n'
@@ -3405,69 +3419,33 @@ class TestXML(BaseTestImporter):
             </body>
             </html>
         """
-        p = self.run_test(s)
-        p0_level = p.level()  ###
-
         # (level, headline, body_lines).
         expected = (
             (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
-                [
-                    '@others\n',
-                    '@language xml\n',
+                    '@others\n'
+                    '@language xml\n'
                     '@tabwidth -4\n'
-                ]
             ),
             (1, '<html>',
-                [
-                    '<html>\n',
-                    '@others\n', 
-                    '</html>\n',
+                    '<html>\n'
+                    '@others\n'
+                    '</html>\n'
                     '\n'
-                ]
             ),
             (2, '<head>',
-                [
-                    '<head>\n',
-                    '    <title>Bodystring</title>\n',
+                    '<head>\n'
+                    '    <title>Bodystring</title>\n'
                     '</head>\n'
-                ]
             ),
             (2, "<body class='bodystring'>",
-                [
-                    "<body class='bodystring'>\n",
-                    "<div id='bodydisplay'></div>\n",
+                    "<body class='bodystring'>\n"
+                    "<div id='bodydisplay'></div>\n"
                     '</body>\n'
-                ]
             ),
         )
        
-        if 0: # Dump expected results.
-            print('')
-            g.trace('Expected results...')
-            for (level, h, lines) in expected:
-                 g.printObj(lines, tag=f"level: {level} {h}")
-                 
-        if 0: # Dump actual results.
-            print('')
-            g.trace('Actual results...')
-            for p2 in p.self_and_subtree():
-                g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
-                
-        if 1:
-            # Compare by hand.
-            # Create a results tuple, corresponding to expected_nodes tuple
-            actual = [(z.level(), z.h, g.splitLines(z.b)) for z in p.self_and_subtree()]
-            self.assertEqual(len(expected), len(actual))
-            for i, actual in enumerate(actual):
-                a_level, a_h, a_lines = actual
-                e_level, e_h, e_lines = expected[i]
-                msg = f"FAIL in node {i} {e_h}"
-                self.assertEqual(a_level - p0_level, e_level, msg=msg)
-                if i > 0:  # Don't test top-level headline.
-                    self.assertEqual(a_h, e_h, msg=msg)
-                self.assertEqual(a_lines, e_lines, msg=msg)
-        if 0:
-            self.check_outline(p , expected)
+        p = self.run_test(s)
+        self.check_outline(p , expected)
             
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
