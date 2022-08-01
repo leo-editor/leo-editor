@@ -6,7 +6,7 @@ from typing import Optional
 from leo.core import leoGlobals as g  # required.
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161121204146.3: ** class Xml_Importer (*** to do)
+#@+node:ekr.20161121204146.3: ** class Xml_Importer
 class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 

@@ -2,7 +2,7 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
@@ -16,7 +16,7 @@ class Cython_Importer(Importer):
     def_pat = re.compile(r'\s*(cdef|cpdef|def)\s+(\w+)')
     trace = False
     #@+others
-    #@+node:ekr.20200619144343.1: *3* cy_i.ctor
+    #@+node:ekr.20200619144343.1: *3* cython_i.ctor
     def __init__(self, importCommands, **kwargs):
         """Cython_Importer.ctor."""
         super().__init__(
@@ -26,7 +26,7 @@ class Cython_Importer(Importer):
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
-    #@+node:ekr.20200619141201.3: *3* cy_i.clean_headline & helper
+    #@+node:ekr.20200619141201.3: *3* cython_i.clean_headline & helper
     def clean_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         if p:  # Called from clean_all_headlines:
@@ -56,7 +56,7 @@ class Cython_Importer(Importer):
                         return s + ' '
                     return ''
         return ''
-    #@+node:vitalije.20211207174501.1: *3* cy_i.get_new_dict
+    #@+node:vitalije.20211207174501.1: *3* cython_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
@@ -106,6 +106,54 @@ class Cython_Importer(Importer):
                 ']':    [('len', ']', context, (0,0,-1))],
             }
         return d
+    #@+node:ekr.20220801113535.1: *3* cython_i.get_intro
+    def get_intro(self, row: int, col: int) -> int:
+        """
+        Return the number of preceeding lines that should be added to this class or def.
+        """
+        return 0
+        ###
+            # lines =self.lines
+
+            # # Scan backward for blank or intro lines.
+            # i = row - 1
+            # while i >= 0 and (lines[i].isspace() or self.is_intro_line(i, col)):
+                # i -= 1
+
+            # # Remove blank lines from the start of the intro.
+            # # Leading blank lines should be added to the end of the preceeding node.
+            # i += 1
+            # while i < row:
+                # if lines[i].isspace():
+                    # i += 1
+                # else:
+                    # break
+            # return row - i
+
+    #@+node:ekr.20220801114302.1: *3* cython_i.new_starts_block
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        lines, line_states = self.lines, self.line_states
+        line = lines[i]
+        prev_state = line_states[i - 1] if i > 0 else self.state_class()
+        this_state = line_states[i]
+        if 0:
+            g.trace(
+                f"{this_state.tag_level > prev_state.tag_level:1} "
+                f"i: {i} "
+                f"old level: {prev_state.tag_level} "
+                f"new level: {this_state.tag_level} "
+                f"{line!r}"
+            )
+        if this_state.level() > prev_state.level():
+            prev_line = lines[max(0, i-1)]
+            self.headline = self.clean_headline(prev_line)
+            return i + 1
+        return None
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:
