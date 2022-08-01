@@ -35,19 +35,13 @@ class Xml_Importer(Importer):
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
+        g.trace(aList)
         return aList
     #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
     def clean_headline(self, s, p=None):
         """xml and html: Return a cleaned up headline s."""
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()
-    #@+node:ekr.20161123003732.1: *3* xml_i.error
-    def error(self, s):
-        """Issue an error, but do *not* cause a unit test to fail."""
-        g.es_print('\nin %s' % self.root.h)
-        g.es_print(s)
-        # Tell i.check to strip lws.
-        self.ws_error = True
     #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
     def scan_line(self, s, prev_state):
         """Update the xml scan state by scanning line s."""
@@ -61,6 +55,7 @@ class Xml_Importer(Importer):
                 context, i, tag_level = self.scan_out_context(i, s, tag_level)
             assert progress < i, (repr(s[i]), '***', repr(s))
         d = {'context': context, 'tag_level': tag_level}
+        ### g.trace(tag_level, repr(context), repr(s))
         return Xml_ScanState(d)
     #@+node:ekr.20161122073937.1: *4* xml_i.scan_in_context
     def scan_in_context(self, context, i, s):
