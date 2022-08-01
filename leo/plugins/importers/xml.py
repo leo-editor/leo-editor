@@ -188,24 +188,6 @@ class Xml_Importer(Importer):
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-        ###
-            # lines =self.lines
-
-            # # Scan backward for blank or intro lines.
-            # i = row - 1
-            # while i >= 0 and (lines[i].isspace() or self.is_intro_line(i, col)):
-                # i -= 1
-
-            # # Remove blank lines from the start of the intro.
-            # # Leading blank lines should be added to the end of the preceeding node.
-            # i += 1
-            # while i < row:
-                # if lines[i].isspace():
-                    # i += 1
-                # else:
-                    # break
-            # return row - i
-
     #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         """True if the line startswith an xml block"""
