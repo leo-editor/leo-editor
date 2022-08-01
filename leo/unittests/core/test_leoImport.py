@@ -3417,6 +3417,33 @@ class TestXML(BaseTestImporter):
                 g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
         # if 0:
             # self.check_outline(p , expected_nodes)
+            
+        ### Expected, from devel
+    # @file TestXML.test_xml_1:
+    # [
+        # '@others\n',
+        # '@language xml\n',
+        # '@tabwidth -4\n'
+    # ]
+    # <html>:
+    # [
+        # '<html>\n',
+        # '    @others\n',
+        # '</html>\n',
+        # '\n'
+    # ]
+    # <head>:
+    # [
+        # '<head>\n',
+        # '    <title>Bodystring</title>\n',
+        # '</head>\n'
+    # ]
+    # <body class='bodystring'>:
+    # [
+        # "<body class='bodystring'>\n",
+        # "<div id='bodydisplay'></div>\n",
+        # '</body>\n'
+    # ]
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
