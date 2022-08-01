@@ -66,23 +66,20 @@ class BaseTestImporter(LeoUnitTest):
         """
         BaseTestImporter.check_outline.
         """
-        trace = False  # BaseTestImporter.check_headlines contains a better trace.
+        trace = False
         if trace:
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
         it = iter(nodes)
         top_level = p.level()
         for p1 in p.self_and_subtree():
-            ### lev, h, b = next(it)
-            level, h, lines = next(it)
+            level, h, b = next(it)
             assert level == p1.level() - top_level, f'level:{p1.level()-top_level} != {level}'
             if level > 0:
                 self.assertEqual(p1.h,  h)
-            ###
-                # if trace and p1.b != b:  # Brief test.
-                    # self.fail(f"Body mismatch: {p1.h}")
-            ### self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
-            self.assertEqual(g.splitLines(p1.b), lines, msg=p1.h)
+            # if trace and p1.b != b:  # Brief test.
+                # self.fail(f"Body mismatch: {p1.h}")
+            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
         try:
             next(it)
             return False, 'extra nodes'  # pragma: no cover
@@ -2090,23 +2087,20 @@ class TestPython(BaseTestImporter):
         """
         BaseTestImporter.check_outline.
         """
-        trace = False  # BaseTestImporter.check_headlines contains a better trace.
+        trace = False
         if trace:
             for p1 in p.self_and_subtree():
                 g.printObj(g.splitLines(p1.b), tag=f"check_outline: {p1.h}")
         it = iter(nodes)
         top_level = p.level()
         for p1 in p.self_and_subtree():
-            ### lev, h, b = next(it)
-            level, h, lines = next(it)
+            level, h, b = next(it)
             assert level == p1.level() - top_level, f'level:{p1.level()-top_level} != {level}'
             if level > 0:
                 self.assertEqual(p1.h,  h)
-            ###
-                # if trace and p1.b != b:  # Brief test.
-                    # self.fail(f"Body mismatch: {p1.h}")
-            ### self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
-            self.assertEqual(g.splitLines(p1.b), lines, msg=p1.h)
+            # if trace and p1.b != b:  # Brief test.
+                # self.fail(f"Body mismatch: {p1.h}")
+            self.assertEqual(g.splitLines(p1.b), g.splitLines(b), msg=p1.h)
         try:
             next(it)
             return False, 'extra nodes'  # pragma: no cover

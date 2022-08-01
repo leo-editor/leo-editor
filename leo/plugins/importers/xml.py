@@ -36,7 +36,6 @@ class Xml_Importer(Importer):
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
-        g.trace(aList)
         return aList
     #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
     def clean_headline(self, s, p=None):
