@@ -55,7 +55,7 @@ class Xml_Importer(Importer):
                 context, i, tag_level = self.scan_out_context(i, s, tag_level)
             assert progress < i, (repr(s[i]), '***', repr(s))
         d = {'context': context, 'tag_level': tag_level}
-        g.trace(d, repr(s))  ###
+        ### g.trace(d, repr(s))  ###
         return Xml_ScanState(d)
     #@+node:ekr.20161122073937.1: *4* xml_i.scan_in_context
     def scan_in_context(self, context, i, s):
@@ -197,16 +197,17 @@ class Xml_Importer(Importer):
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
-        self.vnode_info = {
-            # Keys are vnodes, values are inner dicts.
-            parent.v: {
-                'lines': [],
-            }
-        }
-        if g.unitTesting:
-            g.vnode_info = self.vnode_info  # A hack.
+        ###
+            # self.vnode_info = {
+                # # Keys are vnodes, values are inner dicts.
+                # parent.v: {
+                    # 'lines': [],
+                # }
+            # }
+            # if g.unitTesting:
+                # g.vnode_info = self.vnode_info  # A hack.
 
-        self.skip = 0
+        ### self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
@@ -216,11 +217,14 @@ class Xml_Importer(Importer):
                     self.starts_block(i, lines, new_state, prev_state),
                     self.ends_block(line, new_state, prev_state, stack),
                     line.rstrip()))
-            if self.skip > 0:
-                self.skip -= 1
-            elif self.is_ws_line(line):
+            ###
+                # if self.skip > 0:
+                    # self.skip -= 1
+                # el
+            if self.is_ws_line(line):
                 p = tail_p or top.p
-                self.add_line(p, line)
+                ### self.add_line(p, line)
+                p.b += line
             elif self.starts_block(i, lines, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(i, lines, new_state, prev_state, stack)
@@ -228,17 +232,22 @@ class Xml_Importer(Importer):
                 tail_p = self.end_block(line, new_state, stack)
             else:
                 p = tail_p or top.p
-                self.add_line(p, line)
+                ### self.add_line(p, line)
+                p.b += line
             prev_state = new_state
+        ### Add trailing lines.
+        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220801064718.2: *4* i.create_child_node
     def create_child_node(self, parent, line, headline):
         """Create a child node of parent."""
         child = parent.insertAsLastChild()
-        self.vnode_info[child.v] = {
-            'lines': [],
-        }
+        ###
+        # self.vnode_info[child.v] = {
+            # 'lines': [],
+        # }
         if line:
-            self.add_line(child, line)
+            ### self.add_line(child, line)
+            child.b += line
         assert isinstance(headline, str), repr(headline)
         child.h = headline.strip()
         return child
@@ -280,7 +289,8 @@ class Xml_Importer(Importer):
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
         p = stack[-1].p
-        self.add_line(p, line)
+        ### self.add_line(p, line)
+        p.b += line
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
@@ -317,7 +327,8 @@ class Xml_Importer(Importer):
             target.ref_flag = True  # Don't generate another @others in this target.
             headline = h
         if ref:
-            self.add_line(parent, ref)
+            ### self.add_line(parent, ref)
+            parent.b += ref
         return headline
     #@+node:ekr.20220801064718.7: *4* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
