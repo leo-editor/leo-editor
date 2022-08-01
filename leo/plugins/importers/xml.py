@@ -361,6 +361,28 @@ class Xml_ScanState:
         """Xml_ScanState.level."""
         return self.tag_level
     #@-others
+#@+node:ekr.20220801065307.1: ** class Target (temp, from devel)
+class Target:
+    """
+    A class describing a target node p.
+    state is used to cut back the stack.
+    """
+
+    def __init__(self, p, state):
+        """Target ctor."""
+        self.at_others_flag = False  # True: @others has been generated for this target.
+        self.p = p
+        self.gen_refs = False  # Can be forced True.
+        self.ref_flag = False  # True: @others or section reference should be generated.
+        self.state = state
+
+    def __repr__(self):
+        return 'Target: %s @others: %s refs: %s p: %s' % (
+            self.state,
+            int(self.at_others_flag),
+            int(self.gen_refs),
+            g.shortFileName(self.p.h),
+        )
 #@-others
 importer_dict = {
     'func': Xml_Importer.do_import(),
