@@ -456,7 +456,7 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = True, True
+        trace, trace_body = False, True
         if trace:
             print('')
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
@@ -473,7 +473,8 @@ class Importer:
             new_outer_defs = []
 
         if trace and new_outer_defs:
-            g.printObj([repr(z) for z in new_outer_defs], tag=f"new_outer_defs new_outer_level: {new_outer_level}")
+            g.printObj([repr(z) for z in new_outer_defs],
+                tag=f"make_node: new_outer_level: {new_outer_level}")
             if trace_body:
                 for z in new_outer_defs:
                     g.printObj(

@@ -3453,7 +3453,7 @@ class TestXML(BaseTestImporter):
             for (level, h, lines) in expected:
                  g.printObj(lines, tag=f"level: {level} {h}")
                  
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
