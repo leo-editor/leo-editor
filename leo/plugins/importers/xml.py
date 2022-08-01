@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
 """The @auto importer for the xml language."""
 import re
+from typing import Optional
 from leo.core import leoGlobals as g  # required.
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -175,10 +176,6 @@ class Xml_Importer(Importer):
                 # if trace: g.trace('POP: ', top)
                 if top == tag:
                     return
-    #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
-        """True if the line startswith an xml block"""
-        return new_state.tag_level > prev_state.tag_level
     #@+node:ekr.20161121212858.1: *3* xml_i.is_ws_line
     # Warning: base Importer class defines ws_pattern.
     xml_ws_pattern = re.compile(r'\s*(<!--([^-]|-[^-])*-->\s*)*$')
@@ -186,140 +183,57 @@ class Xml_Importer(Importer):
     def is_ws_line(self, s):
         """True if s is nothing but whitespace or single-line comments."""
         return bool(self.xml_ws_pattern.match(s))
-    #@+node:ekr.20220801064718.1: *3* xml_i.gen_lines & helpers (from devel)
-    def gen_lines(self, lines, parent):
+    #@+node:ekr.20220801080949.1: *3* xml_i.get_intro
+    def get_intro(self, row: int, col: int) -> int:
         """
-        Non-recursively parse all lines of s into parent, creating descendant
-        nodes as needed.
+        Return the number of preceeding lines that should be added to this class or def.
         """
-        trace = 'importers' in g.app.debug
-        tail_p = None
-        prev_state = self.state_class()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
-            # g.trace(new_state.level(), f"{new_state.level() < top.state.level():1}", repr(line))
-            if trace:
-                g.trace('%d %d %s' % (
-                    self.starts_block(i, lines, new_state, prev_state),
-                    self.ends_block(line, new_state, prev_state, stack),
-                    line.rstrip()))
-            if self.is_ws_line(line):
-                p = tail_p or top.p
-                p.b += line
-            elif self.starts_block(i, lines, new_state, prev_state):
-                tail_p = None
-                self.start_new_block(i, lines, new_state, prev_state, stack)
-            elif self.ends_block(line, new_state, prev_state, stack):
-                tail_p = self.end_block(line, new_state, stack)
-            else:
-                p = tail_p or top.p
-                p.b += line
-            prev_state = new_state
-        # Add trailing lines.
-        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
-    #@+node:ekr.20220801064718.2: *4* i.create_child_node
-    def create_child_node(self, parent, line, headline):
-        """Create a child node of parent."""
-        child = parent.insertAsLastChild()
-        if line:
-            child.b += line
-        assert isinstance(headline, str), repr(headline)
-        child.h = headline.strip()
-        return child
-    #@+node:ekr.20220801064718.3: *4* i.cut_stack
-    def cut_stack(self, new_state, stack):
-        """Cut back the stack until stack[-1] matches new_state."""
+        return 0
+        ###
+            # lines =self.lines
 
-        def underflow(n):
-            g.trace(n)
-            g.trace(new_state)
-            g.printList(stack)
+            # # Scan backward for blank or intro lines.
+            # i = row - 1
+            # while i >= 0 and (lines[i].isspace() or self.is_intro_line(i, col)):
+                # i -= 1
 
-        # assert len(stack) > 1 # Fail on entry.
-        if len(stack) <= 1:
-            return underflow(0)
-        while stack:
-            top_state = stack[-1].state
-            if new_state.level() < top_state.level():
-                if len(stack) > 1:
-                    stack.pop()
-                else:
-                    return underflow(1)
-            elif top_state.level() == new_state.level():
-                # This is the only difference between i.cut_stack and python/cs.cut_stack
-                # assert len(stack) > 1, stack
-                if len(stack) <= 1:
-                    return underflow(2)
-                break
-            else:
-                # This happens often in valid Python programs.
-                break
-        # Restore the guard entry if necessary.
-        if len(stack) == 1:
-            stack.append(stack[-1])
-        elif len(stack) <= 1:
-            return underflow(3)
-        return None
-    #@+node:ekr.20220801064718.4: *4* i.end_block
-    def end_block(self, line, new_state, stack):
-        # The block is ending. Add tail lines until the start of the next block.
-        p = stack[-1].p
-        p.b += line
-        self.cut_stack(new_state, stack)
-        tail_p = None if self.gen_refs else p
-        return tail_p
-    #@+node:ekr.20220801064718.5: *4* i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        """True if line ends the block."""
-        # Comparing new_state against prev_state does not work for python.
-        top = stack[-1]
-        return new_state.level() < top.state.level()
-    #@+node:ekr.20220801064718.6: *4* i.gen_ref
-    def gen_ref(self, line, parent, target):
+            # # Remove blank lines from the start of the intro.
+            # # Leading blank lines should be added to the end of the preceeding node.
+            # i += 1
+            # while i < row:
+                # if lines[i].isspace():
+                    # i += 1
+                # else:
+                    # break
+            # return row - i
+
+    #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        """True if the line startswith an xml block"""
+        return new_state.tag_level > prev_state.tag_level
+    #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
+    def new_starts_block(self, i: int) -> Optional[int]:
         """
-        Generate the ref line. Return the headline.
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
         """
-        indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line, p=None)
-        if self.gen_refs:
-            # Fix #441: Make sure all section refs are unique.
-            d = self.refs_dict
-            n = d.get(h, 0)
-            d[h] = n + 1
-            if n > 0:
-                h = '%s: %s' % (n, h)
-            headline = g.angleBrackets(' %s ' % h)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % h))
-        else:
-            if target.ref_flag:
-                ref = None
-            else:
-                ref = '%s@others\n' % indent_ws
-                target.at_others_flag = True
-            target.ref_flag = True  # Don't generate another @others in this target.
-            headline = h
-        if ref:
-            parent.b += ref
-        return headline
-    #@+node:ekr.20220801064718.7: *4* i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        if hasattr(new_state, 'in_context'):
-            assert not new_state.in_context(), ('start_new_block', new_state)
+        lines, line_states = self.lines, self.line_states
         line = lines[i]
-        target = stack[-1]
-
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-
-        # Create a new child and associated target.
-        child = self.create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
+        prev_state = line_states[i - 1] if i > 0 else self.state_class()
+        this_state = line_states[i]
+        if 0:
+            g.trace(
+                f"{this_state.tag_level > prev_state.tag_level:1} "
+                f"i: {i} "
+                f"old level: {prev_state.tag_level} "
+                f"new level: {this_state.tag_level} "
+                f"{line!r}"
+            )
+        if this_state.tag_level > prev_state.tag_level:
+            self.headline = self.clean_headline(line)
+            return i + 1
+        return None
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:

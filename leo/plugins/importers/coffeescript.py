@@ -77,7 +77,7 @@ class Coffeescript_Importer(Importer):
         """
         Return None if lines[i] does not start a class, function or method.
 
-        Otherwise, return the index of the first line of the body.
+        Otherwise, return the index of the first line of the body and set self.headline.
         """
         lines, line_states = self.lines, self.line_states
         line = lines[i]

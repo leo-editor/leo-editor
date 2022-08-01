@@ -3426,7 +3426,6 @@ class TestXML(BaseTestImporter):
             (1, '<html>',
                 [
                     '<html>\n',
-                    # '    @others\n',  ### Original ???
                     '@others\n', 
                     '</html>\n',
                     '\n'
@@ -3466,9 +3465,9 @@ class TestXML(BaseTestImporter):
             actual = [(z.level(), z.h, g.splitLines(z.b)) for z in p.self_and_subtree()]
             self.assertEqual(len(expected), len(actual))
             for i, actual in enumerate(actual):
-                msg = f"FAIL in node {i}"
                 a_level, a_h, a_lines = actual
                 e_level, e_h, e_lines = expected[i]
+                msg = f"FAIL in node {i} {e_h}"
                 self.assertEqual(a_level - p0_level, e_level, msg=msg)
                 if i > 0:  # Don't test top-level headline.
                     self.assertEqual(a_h, e_h, msg=msg)

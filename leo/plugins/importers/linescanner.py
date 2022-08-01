@@ -278,7 +278,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
-        trace, trace_body, trace_states = False, False, False
+        trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -314,6 +314,8 @@ class Importer:
             outer_level = -1,
             definitions=all_definitions,
         )
+        ### Add trailing lines.
+        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
@@ -454,7 +456,7 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = False, False
+        trace, trace_body = True, True
         if trace:
             print('')
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
@@ -476,11 +478,12 @@ class Importer:
                 for z in new_outer_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
-                        tag=f"Lines[{z.decl_line1} : {z.body_line9}]")
+                        tag=f"make_node: Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
         if not new_outer_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
+            g.trace('===== RETURN ====')
             p.b = self.body_string(start, end, others_indent)
             return
 
@@ -498,10 +501,12 @@ class Importer:
 
         # Add a child of p for each inner definition.
         last = decl_line1
+        
         for inner_def in new_outer_defs:
             # Add a child for declaration lines between two inner definitions.
             if inner_def.decl_line1 > last:
-                new_body = self.body_string(last, inner_def.decl_line1, inner_indent)  # #2500.
+                new_body = self.body_string(last, inner_def.decl_line1, inner_indent)
+                g.trace('===== BETWEEN', last, inner_def.decl_line1)
                 child1 = p.insertAsLastChild()
                 child1.h = self.declaration_headline(new_body)  # #2500
                 child1.b = new_body
@@ -530,7 +535,8 @@ class Importer:
                 )
             else:
                 # Just set the body.
-                child.b = self.body_string(decl_line1, inner_def.body_line9, inner_indent)
+                child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
+                ### g.trace('child.b') ; g.printObj(g.splitLines(child.b))
 
             last = inner_def.body_line9
     #@+node:ekr.20220728130253.1: *5* i.new_starts_block
@@ -538,7 +544,7 @@ class Importer:
         """
         Return None if lines[i] does not start a class, function or method.
 
-        Otherwise, return the index of the first line of the body.
+        Otherwise, return the index of the first line of the body and set self.headline.
         """
         i0, lines, line_states = i, self.lines, self.line_states
         line = lines[i]
