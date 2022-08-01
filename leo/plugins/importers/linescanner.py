@@ -484,7 +484,6 @@ class Importer:
         # Don't use the threshold for unit tests. It's too confusing.
         if not new_outer_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
-            g.trace('===== RETURN ====')
             p.b = self.body_string(start, end, others_indent)
             return
 
@@ -507,7 +506,6 @@ class Importer:
             # Add a child for declaration lines between two inner definitions.
             if inner_def.decl_line1 > last:
                 new_body = self.body_string(last, inner_def.decl_line1, inner_indent)
-                g.trace('===== BETWEEN', last, inner_def.decl_line1)
                 child1 = p.insertAsLastChild()
                 child1.h = self.declaration_headline(new_body)  # #2500
                 child1.b = new_body
@@ -537,7 +535,6 @@ class Importer:
             else:
                 # Just set the body.
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
-                ### g.trace('child.b') ; g.printObj(g.splitLines(child.b))
 
             last = inner_def.body_line9
     #@+node:ekr.20220728130253.1: *5* i.new_starts_block
