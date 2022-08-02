@@ -48,7 +48,7 @@ class Python_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20220720043557.8: *3* py_i.gen_lines & helpers (New python importer)
+    #@+node:ekr.20220720043557.8: *3* python_i.gen_lines
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -61,127 +61,6 @@ class Python_Importer(Importer):
         self.line_states: List[Python_ScanState] = []
         state = Python_ScanState()
 
-        #@+others
-        #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
-        def make_node(p: Position,
-            start: int,
-            start_b: int,
-            end: int,
-            others_indent: int,
-            inner_indent: int,
-            definitions: List[block_tuple],
-        ) -> None:
-            """
-            Set p.b and add children recursively using the tokens described by the arguments.
-
-                        p: The current node.
-                    start: The line number (zero based) of the first line of this node
-                  start_b: The line number (zero based) of first line of this node's function/class body
-                      end: The line number of the first line after this node.
-            others_indent: Accumulated @others indentation (to be stripped from left).
-             inner_indent: The indentation of all of the inner definitions.
-              definitions: The list of the definitions covering p.
-            """
-            # Find all defs with the given inner indentation.
-            inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-
-            if not inner_defs or end - start < SPLIT_THRESHOLD:
-                # Don't split the body.
-                p.b = body_string(start, end, others_indent)
-                return
-
-            last = start  # The last used line.
-
-            # Calculate head, the lines preceding the @others.
-            decl_line1 = inner_defs[0].decl_line1
-            head = body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
-            others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
-
-            # Calculate tail, the lines following the @others line.
-            last_offset = inner_defs[-1].body_line9
-            tail = body_string(last_offset, end, others_indent) if last_offset < end else ''
-            p.b = f'{head}{others_line}{tail}'
-
-            # Add a child of p for each inner definition.
-            last = decl_line1
-            for inner_def in inner_defs:
-                body_indent = inner_def.body_indent
-                body_line9 = inner_def.body_line9
-                decl_line1 = inner_def.decl_line1
-                # Add a child for declaration lines between two inner definitions.
-                if decl_line1 > last:
-                    new_body = body_string(last, decl_line1, inner_indent)  # #2500.
-                    child1 = p.insertAsLastChild()
-                    child1.h = declaration_headline(new_body)  # #2500
-                    child1.b = new_body
-                    last = decl_line1
-                child = p.insertAsLastChild()
-                child.h = inner_def.name
-
-                # Compute inner definitions.
-                inner_definitions = [
-                    z for z in definitions
-                        if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
-                if inner_definitions:
-                    # Recursively split this node.
-                    make_node(
-                        p=child,
-                        start=decl_line1,
-                        start_b=start_b,
-                        end=body_line9,
-                        others_indent=others_indent + inner_indent,
-                        inner_indent=body_indent,
-                        definitions=inner_definitions,
-                    )
-                else:
-                    # Just set the body.
-                    child.b = body_string(decl_line1, body_line9, inner_indent)
-
-                last = body_line9
-        #@+node:ekr.20220720060831.2: *5* function: body_lines & body_string (new python importer)
-        # 'lines' is a kwarg to split_root.
-
-        def massaged_line(s: str, i: int) -> str:
-            """Massage line s, adding the underindent string if necessary."""
-            if i == 0 or s[:i].isspace():
-                return s[i:] or '\n'
-            # An underindented string.
-            n = len(s) - len(s.lstrip())
-            # pylint: disable=no-else-return
-            if 1:  # Legacy
-                return f'\\\\-{i-n}.{s[n:]}'
-            else:
-                return s[n:]
-
-        def body_string(a: int, b: int, i: int) -> str:
-            """Return the (massaged) concatentation of lines[a: b]"""
-            nonlocal lines
-            xlines = (massaged_line(s, i) for s in lines[a : b])
-            return ''.join(xlines)
-
-        def body_lines(a: int, b: int, i: int) -> List[str]:
-            nonlocal lines
-            return [massaged_line(s, i) for s in lines[a : b]]
-        #@+node:ekr.20220720060831.3: *5* declaration_headline (new python importer)
-        def declaration_headline(body: str) -> str:  # #2500
-            """
-            Return an informative headline for s, a group of declarations.
-            """
-            for s in g.splitLines(body):
-                strip_s = s.strip()
-                if strip_s:
-                    if strip_s.startswith('#'):
-                        strip_comment = strip_s[1:].strip()
-                        if strip_comment:
-                            # A non-trivial comment: Return the comment w/o the leading '#'.
-                            return strip_comment
-                    else:
-                        # A non-trivial non-comment.
-                        return strip_s
-            # Return legacy headline.
-            return "...some declarations"  # pragma: no cover
-        #@-others
-
         # Prepass: calculate line states.
         for line in lines:
             state = self.scan_line(line, state)
@@ -193,18 +72,17 @@ class Python_Importer(Importer):
 
         # Start the recursion.
         parent.deleteAllChildren()
-        make_node(
+        self.make_node(
             p=parent, start=0, start_b=0, end=len(lines),
             others_indent=0, inner_indent=0, definitions=all_definitions)
-    #@+node:ekr.20220720050740.1: *3* py_i.get_class_or_def (new python importer)
+    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
         Look for a def or class at lines[i]
         Return None or a block_tuple describing the class or def.
+        
+        Based on Vitalije's importer.
         """
-        # Based on Vitalije's importer.
-        ### nonlocal class_pat, def_pat
-        ### nonlocal lines, line_states
 
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
@@ -266,7 +144,7 @@ class Python_Importer(Importer):
             decl_level = decl_level,
             name = m.group(2),
         )
-    #@+node:ekr.20220720043557.30: *3* py_i.get_new_dict
+    #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
@@ -306,7 +184,7 @@ class Python_Importer(Importer):
                       ],
             }
         return d
-    #@+node:ekr.20220729081229.1: *3* py_i.is_intro_line
+    #@+node:ekr.20220729081229.1: *3* python_i.get_new_dict.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
         """
         Return True if line n is a comment line or decorator that starts at the give column.
@@ -316,6 +194,123 @@ class Python_Importer(Importer):
             line.strip().startswith(('#', '@'))
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
+    #@+node:ekr.20220720060831.1: *3* python_i.make_node
+    def make_node(self,
+        p: Position,
+        start: int,
+        start_b: int,
+        end: int,
+        others_indent: int,
+        inner_indent: int,
+        definitions: List[block_tuple],
+    ) -> None:
+        """
+        Set p.b and add children recursively using the tokens described by the arguments.
+
+                    p: The current node.
+                start: The line number (zero based) of the first line of this node
+              start_b: The line number (zero based) of first line of this node's function/class body
+                  end: The line number of the first line after this node.
+        others_indent: Accumulated @others indentation (to be stripped from left).
+         inner_indent: The indentation of all of the inner definitions.
+          definitions: The list of the definitions covering p.
+        """
+        # Find all defs with the given inner indentation.
+        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+
+        if not inner_defs or end - start < SPLIT_THRESHOLD:
+            # Don't split the body.
+            p.b = self.body_string(start, end, others_indent)
+            return
+
+        last = start  # The last used line.
+
+        # Calculate head, the lines preceding the @others.
+        decl_line1 = inner_defs[0].decl_line1
+        head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
+        others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
+
+        # Calculate tail, the lines following the @others line.
+        last_offset = inner_defs[-1].body_line9
+        tail = self.body_string(last_offset, end, others_indent) if last_offset < end else ''
+        p.b = f'{head}{others_line}{tail}'
+
+        # Add a child of p for each inner definition.
+        last = decl_line1
+        for inner_def in inner_defs:
+            body_indent = inner_def.body_indent
+            body_line9 = inner_def.body_line9
+            decl_line1 = inner_def.decl_line1
+            # Add a child for declaration lines between two inner definitions.
+            if decl_line1 > last:
+                new_body = self.body_string(last, decl_line1, inner_indent)  # #2500.
+                child1 = p.insertAsLastChild()
+                child1.h = self.declaration_headline(new_body)  # #2500
+                child1.b = new_body
+                last = decl_line1
+            child = p.insertAsLastChild()
+            child.h = inner_def.name
+
+            # Compute inner definitions.
+            inner_definitions = [
+                z for z in definitions
+                    if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
+            if inner_definitions:
+                # Recursively split this node.
+                self.make_node(
+                    p=child,
+                    start=decl_line1,
+                    start_b=start_b,
+                    end=body_line9,
+                    others_indent=others_indent + inner_indent,
+                    inner_indent=body_indent,
+                    definitions=inner_definitions,
+                )
+            else:
+                # Just set the body.
+                child.b = self.body_string(decl_line1, body_line9, inner_indent)
+
+            last = body_line9
+    #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
+    def declaration_headline(self, body: str) -> str:  # #2500
+        """
+        Return an informative headline for s, a group of declarations.
+        """
+        for s in g.splitLines(body):
+            strip_s = s.strip()
+            if strip_s:
+                if strip_s.startswith('#'):
+                    strip_comment = strip_s[1:].strip()
+                    if strip_comment:
+                        # A non-trivial comment: Return the comment w/o the leading '#'.
+                        return strip_comment
+                else:
+                    # A non-trivial non-comment.
+                    return strip_s
+        # Return legacy headline.
+        return "...some declarations"  # pragma: no cover
+    #@+node:ekr.20220720060831.2: *3* python_i.body_lines & body_string
+    # 'lines' is a kwarg to split_root.
+
+    def massaged_line(self, s: str, i: int) -> str:
+        """Massage line s, adding the underindent string if necessary."""
+        if i == 0 or s[:i].isspace():
+            return s[i:] or '\n'
+        # An underindented string.
+        n = len(s) - len(s.lstrip())
+        # pylint: disable=no-else-return
+        if 1:  # Legacy
+            return f'\\\\-{i-n}.{s[n:]}'
+        else:
+            return s[n:]
+
+    def body_string(self, a: int, b: int, i: int) -> str:
+        """Return the (massaged) concatentation of lines[a: b]"""
+        xlines = (self.massaged_line(s, i) for s in self.lines[a : b])
+        return ''.join(xlines)
+
+    def body_lines(self, a: int, b: int, i: int) -> List[str]:
+        return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
@@ -658,7 +653,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     mknode(
         p=root, start=1, start_b=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
-#@+node:ekr.20220720043557.8: ** py_i.gen_lines & helpers (New python importer)
+#@+node:ekr.20220720043557.8: ** python_i.gen_lines
 def gen_lines(self, lines, parent):
     """
     Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -671,127 +666,6 @@ def gen_lines(self, lines, parent):
     self.line_states: List[Python_ScanState] = []
     state = Python_ScanState()
 
-    #@+others
-    #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)
-    def make_node(p: Position,
-        start: int,
-        start_b: int,
-        end: int,
-        others_indent: int,
-        inner_indent: int,
-        definitions: List[block_tuple],
-    ) -> None:
-        """
-        Set p.b and add children recursively using the tokens described by the arguments.
-
-                    p: The current node.
-                start: The line number (zero based) of the first line of this node
-              start_b: The line number (zero based) of first line of this node's function/class body
-                  end: The line number of the first line after this node.
-        others_indent: Accumulated @others indentation (to be stripped from left).
-         inner_indent: The indentation of all of the inner definitions.
-          definitions: The list of the definitions covering p.
-        """
-        # Find all defs with the given inner indentation.
-        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-
-        if not inner_defs or end - start < SPLIT_THRESHOLD:
-            # Don't split the body.
-            p.b = body_string(start, end, others_indent)
-            return
-
-        last = start  # The last used line.
-
-        # Calculate head, the lines preceding the @others.
-        decl_line1 = inner_defs[0].decl_line1
-        head = body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
-        others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
-
-        # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].body_line9
-        tail = body_string(last_offset, end, others_indent) if last_offset < end else ''
-        p.b = f'{head}{others_line}{tail}'
-
-        # Add a child of p for each inner definition.
-        last = decl_line1
-        for inner_def in inner_defs:
-            body_indent = inner_def.body_indent
-            body_line9 = inner_def.body_line9
-            decl_line1 = inner_def.decl_line1
-            # Add a child for declaration lines between two inner definitions.
-            if decl_line1 > last:
-                new_body = body_string(last, decl_line1, inner_indent)  # #2500.
-                child1 = p.insertAsLastChild()
-                child1.h = declaration_headline(new_body)  # #2500
-                child1.b = new_body
-                last = decl_line1
-            child = p.insertAsLastChild()
-            child.h = inner_def.name
-
-            # Compute inner definitions.
-            inner_definitions = [
-                z for z in definitions
-                    if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
-            if inner_definitions:
-                # Recursively split this node.
-                make_node(
-                    p=child,
-                    start=decl_line1,
-                    start_b=start_b,
-                    end=body_line9,
-                    others_indent=others_indent + inner_indent,
-                    inner_indent=body_indent,
-                    definitions=inner_definitions,
-                )
-            else:
-                # Just set the body.
-                child.b = body_string(decl_line1, body_line9, inner_indent)
-
-            last = body_line9
-    #@+node:ekr.20220720060831.2: *4* function: body_lines & body_string (new python importer)
-    # 'lines' is a kwarg to split_root.
-
-    def massaged_line(s: str, i: int) -> str:
-        """Massage line s, adding the underindent string if necessary."""
-        if i == 0 or s[:i].isspace():
-            return s[i:] or '\n'
-        # An underindented string.
-        n = len(s) - len(s.lstrip())
-        # pylint: disable=no-else-return
-        if 1:  # Legacy
-            return f'\\\\-{i-n}.{s[n:]}'
-        else:
-            return s[n:]
-
-    def body_string(a: int, b: int, i: int) -> str:
-        """Return the (massaged) concatentation of lines[a: b]"""
-        nonlocal lines
-        xlines = (massaged_line(s, i) for s in lines[a : b])
-        return ''.join(xlines)
-
-    def body_lines(a: int, b: int, i: int) -> List[str]:
-        nonlocal lines
-        return [massaged_line(s, i) for s in lines[a : b]]
-    #@+node:ekr.20220720060831.3: *4* declaration_headline (new python importer)
-    def declaration_headline(body: str) -> str:  # #2500
-        """
-        Return an informative headline for s, a group of declarations.
-        """
-        for s in g.splitLines(body):
-            strip_s = s.strip()
-            if strip_s:
-                if strip_s.startswith('#'):
-                    strip_comment = strip_s[1:].strip()
-                    if strip_comment:
-                        # A non-trivial comment: Return the comment w/o the leading '#'.
-                        return strip_comment
-                else:
-                    # A non-trivial non-comment.
-                    return strip_s
-        # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
-    #@-others
-
     # Prepass: calculate line states.
     for line in lines:
         state = self.scan_line(line, state)
@@ -803,7 +677,7 @@ def gen_lines(self, lines, parent):
 
     # Start the recursion.
     parent.deleteAllChildren()
-    make_node(
+    self.make_node(
         p=parent, start=0, start_b=0, end=len(lines),
         others_indent=0, inner_indent=0, definitions=all_definitions)
 #@-others
