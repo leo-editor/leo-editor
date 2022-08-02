@@ -547,57 +547,6 @@ def split_root(root: Any, lines: List[str]) -> None:
     mknode(
         p=root, start=1, start_b=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
-#@+node:ekr.20220720043557.8: ** python_i.xxx_gen_lines
-def xxx_gen_lines(self, lines, parent):
-    """
-    Recursively parse all lines of s into parent, creating descendant nodes as needed.
-    """
-    # Based on Vitalije's importer.
-    trace, trace_body, trace_states = True, False, False
-    assert self.root == parent, (self.root, parent)
-
-    c = self.c
-    self.lines = lines
-    self.line_states: List[Python_ScanState] = []
-    state = Python_ScanState()
-
-    # Prepass: calculate line states.
-    for line in lines:
-        state = self.scan_line(line, state)
-        self.line_states.append(state)
-        
-    if trace and trace_states:
-        g.trace(f"{self.__class__.__name__} states & lines...")
-        for i, line in enumerate(self.lines):
-            state = self.line_states[i]
-            print(f"{i:3} {state!r} {line!r}")
-
-    # Make a list of *all* definitions.
-    aList = [self.get_class_or_def(i) for i in range(len(lines))]
-    all_definitions = [z for z in aList if z]
-    
-    if trace:
-        g.trace(self.__class__.__name__, 'all definitions...')
-        for z in all_definitions:
-            print(repr(z))
-            if trace_body:
-                g.printObj(lines[z.decl_line1 : z.body_line9])
-
-    # Start the recursion.
-    parent.deleteAllChildren()
-    self.make_node(
-        p=parent, start=0, start_b=0, end=len(lines),
-        outer_level = -1,  ### Experimental (used by Importer.make_node)
-        others_indent=0, inner_indent=0, definitions=all_definitions)
-
-    # Add trailing lines, just like the Importer class.
-    parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
-
-    # Note: some unit tests change this setting.
-    if c.config.getBool('put-class-in-imported-headlines'):
-        for p in parent.subtree():  # Don't change parent.h.
-            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                p.h = f'class {p.h}'
 #@-others
 importer_dict = {
     'func': do_import,
