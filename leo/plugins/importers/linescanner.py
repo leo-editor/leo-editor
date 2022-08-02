@@ -502,7 +502,7 @@ class Importer:
 
         # Add a child of p for each inner definition.
         last = decl_line1
-        
+
         for inner_def in new_outer_defs:
             # Add a child for declaration lines between two inner definitions.
             if inner_def.decl_line1 > last:

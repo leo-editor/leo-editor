@@ -70,14 +70,14 @@ class BaseTestImporter(LeoUnitTest):
             print('')
             g.trace('Expected results...')
             for (level, h, s) in expected:
-                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
+                g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
         if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
                 g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
-                
+
         # Do the actual tests.
         p0_level = p.level()
         actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
@@ -495,7 +495,7 @@ class TestCython(BaseTestImporter):
 
         '''
         p = self.run_test(s)
-        
+
         expected = (
             (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
                     '@others\n'
@@ -2125,14 +2125,14 @@ class TestPython(BaseTestImporter):
             print('')
             g.trace('Expected results...')
             for (level, h, s) in expected:
-                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
+                g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
         if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
                 g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
-                
+
         # Do the actual tests.
         p0_level = p.level()
         actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
@@ -2149,25 +2149,25 @@ class TestPython(BaseTestImporter):
 
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
-        
+
         s = self.dedent("""\
               import sys
               def f1():
                   pass
-              
+
               class Class1:
                   def method11():
                       pass
                   def method12():
                       pass
-                      
+
               #
               # Define a = 2
               a = 2
-              
+
               def f2():
                   pass
-              
+
               # An outer comment
               ATmyClassDecorator
               class Class2:
@@ -2192,15 +2192,15 @@ class TestPython(BaseTestImporter):
                       pass
                   def method22():
                       pass
-                      
+
               # About main.
               def main():
                   pass
-              
+
               if __name__ == '__main__':
                   main()
         """).replace('AT', '@')
-            
+
         # Level, headline, lines (as a string).
         exp_nodes = (
             (0, 'check_outline ignores the first headline', self.dedent("""\
@@ -2211,13 +2211,12 @@ class TestPython(BaseTestImporter):
                     if __name__ == '__main__':
                         main()
 
-                """.replace('AT', '@')
-            )),
-            (1, 'f1',
-                       'def f1():\n'
-                       '    pass\n'
-                       '\n'
-            ),
+                """.replace('AT', '@'))),
+            (1, 'f1', self.dedent(
+                """\
+                    def f1():
+                        pass
+                """)),
             (1, 'Class1',
                        'class Class1:\n'
                        '    def method11():\n'
@@ -3476,10 +3475,10 @@ class TestXML(BaseTestImporter):
                     '</body>\n'
             ),
         )
-       
+
         p = self.run_test(s)
         self.check_outline(p , expected)
-            
+
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
