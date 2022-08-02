@@ -84,12 +84,13 @@ StringIO = io.StringIO
 #@+<< define block_tuple >>
 #@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
 # This named tuple contains all data relating to one block (class, method or function).
+# Order matters for dumps.
 block_tuple = namedtuple('block_tuple', [
-    'body_indent',  # Indentation of body.
-    'body_line9',  # Line number of the *last* line of the definition.
-    'decl_indent',  # Indentation of the class or def line.
     'decl_line1',  # Line number of the *first* line of this node.
                    # This line may be a comment or decorator.
+    'body_line9',  # Line number of the *last* line of the definition.
+    'body_indent',  # Indentation of body.
+    'decl_indent',  # Indentation of the class or def line.
     'decl_level',  # The nesting level of this block.
     'name',  # name of the function, class or method.
 ])
@@ -456,7 +457,7 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = False, True
+        trace, trace_body = True, True
         if trace:
             print('')
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")

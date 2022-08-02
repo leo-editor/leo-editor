@@ -140,6 +140,10 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
+    #@+node:ekr.20220802054221.1: *3* BaseTestImporter.dedent
+    def dedent(self, s):
+        """Remove common leading whitespace from all lines of s."""
+        return textwrap.dedent(s)
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
@@ -491,11 +495,34 @@ class TestCython(BaseTestImporter):
 
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Organizer: Declarations'),
-            (1, 'double'),
-            (1, 'print_result'),
-        ))
+        
+        expected = (
+            (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
+                    '@others\n'
+                    '@language xml\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'cdef double square_and_add',  ### To do: clean_headline.
+                    '"""Compute x^2 + x as double.\n'
+                    '\n'
+                    'This is a cdef function that can be called from within\n'
+                    'a Cython program, but not from Python.\n'
+                    '"""\n'
+                    'return pow(x, 2.0) + x\n'
+                    '\n'
+            ),
+            (1, 'cpdef print_result',  ### To do: clean_headline.
+                    '"""This is a cpdef function that can be called from Python."""\n'
+                    'print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
+            ),
+        )
+
+        # self.check_headlines(p, (
+            # (1, 'Organizer: Declarations'),
+            # (1, 'double'),
+            # (1, 'print_result'),
+        # ))
+        self.check_outline(p, expected)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
@@ -2171,80 +2198,84 @@ class TestPython(BaseTestImporter):
               "if __name__ == '__main__':\n"
               '    main()\n'
             )
-        exp_nodes = [
-                        (0, 'ignored h',
-                                   '@language python\n'
-                                   '@tabwidth -4\n'
-                                   'import sys\n'
-                                   '@others\n'
-                                   "if __name__ == '__main__':\n"
-                                   '    main()\n\n'
-                        ),
-                        (1, 'f1',
-                                   'def f1():\n'
-                                   '    pass\n'
-                                   '\n'
-                        ),
-                        (1, 'Class1',
-                                   'class Class1:\n'
-                                   '    def method11():\n'
-                                   '        pass\n'
-                                   '    def method12():\n'
-                                   '        pass\n'
-                                   '\n'
-                        ),
-                        (1, 'Define a = 2',  # #2500
-                                   '#\n'
-                                   '# Define a = 2\n'
-                                   'a = 2\n'
-                                   '\n'
-                        ),
-                        (1, 'f2',
-                                   'def f2():\n'
-                                   '    pass\n'
-                                   '\n'
-                        ),
-                        (1, 'Class2',
-                                   '# An outer comment\n'
-                                   '@myClassDecorator\n'
-                                   'class Class2:\n'
-                                   '    @others\n'
-                        ),
-                        (2, 'meth00',
-                                   'def meth00():\n'
-                                   '    print(1)\n'
-                                   '    print(2)\n'
-                                   '    print(3)\n'
-                                   '    print(4)\n'
-                                   '    print(5)\n'
-                                   '    print(6)\n'
-                                   '    print(7)\n'
-                                   '    print(8)\n'
-                                   '    print(9)\n'
-                                   '    print(10)\n'
-                                   '    print(11)\n'
-                                   '    print(12)\n'
-                                   '    print(13)\n'
-                                   '    print(14)\n'
-                                   '    print(15)\n'
-                        ),
-                        (2, 'method21',
-                                   '@myDecorator\n'
-                                   'def method21():\n'
-                                   '    pass\n'
-                        ),
-                        (2, 'method22',
-                                   'def method22():\n'
-                                   '    pass\n'
-                                   '\n'
-                        ),
-                        (1, 'main',
-                                   '# About main.\n'
-                                   'def main():\n'
-                                   '    pass\n'
-                                   '\n'
-                        )
-        ]
+            
+        # Level, headline, lines (as a string).
+        exp_nodes = (
+            (0, 'ignored h', self.dedent("""\
+                    ATlanguage python
+                    ATtabwidth -4
+                    import sys
+                    ATothers
+                    if __name__ == '__main__':
+                        main()
+
+                """.replace('AT', '@')
+            )),
+            (1, 'f1',
+                       'def f1():\n'
+                       '    pass\n'
+                       '\n'
+            ),
+            (1, 'Class1',
+                       'class Class1:\n'
+                       '    def method11():\n'
+                       '        pass\n'
+                       '    def method12():\n'
+                       '        pass\n'
+                       '\n'
+            ),
+            (1, 'Define a = 2',  # #2500
+                       '#\n'
+                       '# Define a = 2\n'
+                       'a = 2\n'
+                       '\n'
+            ),
+            (1, 'f2',
+                       'def f2():\n'
+                       '    pass\n'
+                       '\n'
+            ),
+            (1, 'Class2',
+                       '# An outer comment\n'
+                       '@myClassDecorator\n'
+                       'class Class2:\n'
+                       '    @others\n'
+            ),
+            (2, 'meth00',
+                       'def meth00():\n'
+                       '    print(1)\n'
+                       '    print(2)\n'
+                       '    print(3)\n'
+                       '    print(4)\n'
+                       '    print(5)\n'
+                       '    print(6)\n'
+                       '    print(7)\n'
+                       '    print(8)\n'
+                       '    print(9)\n'
+                       '    print(10)\n'
+                       '    print(11)\n'
+                       '    print(12)\n'
+                       '    print(13)\n'
+                       '    print(14)\n'
+                       '    print(15)\n'
+            ),
+            (2, 'method21',
+                       '@myDecorator\n'
+                       'def method21():\n'
+                       '    pass\n'
+            ),
+            (2, 'method22',
+                       'def method22():\n'
+                       '    pass\n'
+                       '\n'
+            ),
+            (1, 'main',
+                       '# About main.\n'
+                       'def main():\n'
+                       '    pass\n'
+                       '\n'
+            )
+        )
         p = self.run_test(s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
