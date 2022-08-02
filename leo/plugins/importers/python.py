@@ -9,7 +9,6 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
-from leo.core.leoNodes import Position
 #@+<< Define NEW_PYTHON_IMPORTER switch >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
@@ -80,57 +79,6 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720043557.8: *3* python_i.xxx_gen_lines
-    def xxx_gen_lines(self, lines, parent):
-        """
-        Recursively parse all lines of s into parent, creating descendant nodes as needed.
-        """
-        # Based on Vitalije's importer.
-        trace, trace_body, trace_states = True, False, False
-        assert self.root == parent, (self.root, parent)
-
-        c = self.c
-        self.lines = lines
-        self.line_states: List[Python_ScanState] = []
-        state = Python_ScanState()
-
-        # Prepass: calculate line states.
-        for line in lines:
-            state = self.scan_line(line, state)
-            self.line_states.append(state)
-            
-        if trace and trace_states:
-            g.trace(f"{self.__class__.__name__} states & lines...")
-            for i, line in enumerate(self.lines):
-                state = self.line_states[i]
-                print(f"{i:3} {state!r} {line!r}")
-
-        # Make a list of *all* definitions.
-        aList = [self.get_class_or_def(i) for i in range(len(lines))]
-        all_definitions = [z for z in aList if z]
-        
-        if trace:
-            g.trace(self.__class__.__name__, 'all definitions...')
-            for z in all_definitions:
-                print(repr(z))
-                if trace_body:
-                    g.printObj(lines[z.decl_line1 : z.body_line9])
-
-        # Start the recursion.
-        parent.deleteAllChildren()
-        self.make_node(
-            p=parent, start=0, start_b=0, end=len(lines),
-            outer_level = -1,  ### Experimental (used by Importer.make_node)
-            others_indent=0, inner_indent=0, definitions=all_definitions)
-
-        # Add trailing lines, just like the Importer class.
-        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
-
-        # Note: some unit tests change this setting.
-        if c.config.getBool('put-class-in-imported-headlines'):
-            for p in parent.subtree():  # Don't change parent.h.
-                if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                    p.h = f'class {p.h}'
     #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
@@ -251,109 +199,6 @@ class Python_Importer(Importer):
             line.strip().startswith(('#', '@'))
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@+node:ekr.20220720060831.1: *3* python_i.xxx_make_node (trace)
-    def xxx_make_node(self,
-        p: Position,
-        start: int,
-        start_b: int,
-        end: int,
-        others_indent: int,
-        inner_indent: int,
-        definitions: List[block_tuple],
-    ) -> None:
-        #@+<< Python_Importer.make_node docstring >>
-        #@+node:ekr.20220802095141.1: *4* << Python_Importer.make_node docstring >>
-        """
-        Set p.b and add children recursively using the tokens described by the arguments.
-
-                    p: The current node.
-                start: The line number (zero based) of the first line of this node
-              start_b: The line number (zero based) of first line of this node's function/class body
-                  end: The line number of the first line after this node.
-        others_indent: Accumulated @others indentation (to be stripped from left).
-         inner_indent: The indentation of all of the inner definitions.
-          definitions: The list of the definitions covering p.
-        """
-        #@-<< Python_Importer.make_node docstring >>
-        trace, trace_body = False, True
-        trace = True
-        if trace:
-            print('')
-            g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
-
-        # Find all defs with the given inner indentation.
-        inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
-        new_outer_level = inner_indent + 1  ### Experimental
-
-        if trace and inner_defs:
-            g.printObj([repr(z) for z in inner_defs],
-                tag=f"python_i.make_node: new_outer_level: {new_outer_level}")
-            if trace_body:
-                for z in inner_defs:
-                    g.printObj(
-                        self.lines[z.decl_line1 : z.body_line9],
-                        tag=f"python_i.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
-
-        # Don't use the threshold for unit tests. It's too confusing.
-        if not inner_defs or end - start < SPLIT_THRESHOLD:
-            # Don't split the body.
-            p.b = self.body_string(start, end, others_indent)
-            return
-        
-        last = start  # The last used line.
-
-        # Calculate head, the lines preceding the @others.
-        decl_line1 = inner_defs[0].decl_line1
-        head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
-        others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
-
-        # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].body_line9
-        tail = self.body_string(last_offset, end, others_indent) if last_offset < end else ''
-        p.b = f'{head}{others_line}{tail}'
-
-        # Add a child of p for each inner definition.
-        last = decl_line1
-        for inner_def in inner_defs:
-            ### body_indent = inner_def.body_indent
-            ### body_line9 = inner_def.body_line9
-            ### decl_line1 = inner_def.decl_line1
-            # Add a child for declaration lines between two inner definitions.
-            if inner_def.decl_line1 > last:
-                new_body = self.body_string(last, inner_def.decl_line1, inner_indent)  # #2500.
-                child1 = p.insertAsLastChild()
-                child1.h = self.declaration_headline(new_body)  # #2500
-                child1.b = new_body
-                last = decl_line1
-
-            child = p.insertAsLastChild()
-            child.h = inner_def.name
-
-            # Compute inner definitions.
-            inner_definitions = [
-                z for z in definitions if (
-                    ### z.decl_level > new_outer_level  ### Add this ???
-                    z.decl_line1 > decl_line1   #### in base class: new_outer_level
-                    and z.body_line9 <= inner_def.body_line9
-            )]
-
-            if inner_definitions:
-                # Recursively split this node.
-                self.make_node(
-                    p=child,
-                    start=decl_line1,
-                    start_b=start_b,
-                    end=inner_def.body_line9,
-                    others_indent=others_indent + inner_indent,
-                    ### outer_level = new_outer_level  ### Add this ???
-                    inner_indent=inner_def.body_indent,
-                    definitions=inner_definitions,
-                )
-            else:
-                # Just set the body.
-                child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
-
-            last = inner_def.body_line9
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
