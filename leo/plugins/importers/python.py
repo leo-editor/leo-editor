@@ -266,16 +266,6 @@ class Python_Importer(Importer):
         make_node(
             p=parent, start=0, start_b=0, end=len(lines),
             others_indent=0, inner_indent=0, definitions=all_definitions)
-    #@+node:ekr.20220721144315.1: *3* pi_i: unused
-    # Disable most of the pipeline.
-    def check(self, unused_s, parent) -> bool:
-        return True
-
-    def finish(self, parent):
-        pass
-
-    def post_pass(self, parent):
-        pass
     #@+node:ekr.20220720043557.30: *3* py_i.get_new_dict
     #@@nobeautify
 
