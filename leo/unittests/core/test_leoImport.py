@@ -2186,10 +2186,24 @@ class TestPython(BaseTestImporter):
                     def f1():
                         pass
                 """)),
+            # Use this if unit tests *do* honor threshold.
+            # (1, 'Class1',
+                       # 'class Class1:\n'
+                       # '    def method11():\n'
+                       # '        pass\n'
+                       # '    def method12():\n'
+                       # '        pass\n'
+                       # '\n'
+            # ),
             (1, 'Class1',
                        'class Class1:\n'
+                       '@others\n'
+            ),
+            (2, 'method11',
                        '    def method11():\n'
                        '        pass\n'
+            ),
+            (2, 'method12',
                        '    def method12():\n'
                        '        pass\n'
                        '\n'
