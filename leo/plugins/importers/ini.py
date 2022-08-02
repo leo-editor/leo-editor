@@ -17,10 +17,24 @@ class Ini_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
+    #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
+    def gen_lines(self, lines, parent):
+        """
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        """
+        self.at_others_flag = False
+        p = self.root
+        for line in lines:
+            if self.new_starts_block(line):
+                pass  ### p = self.new_starts_block(line)
+            else:
+                ### self.add_line(p, line)
+                p.b += line
+    #@+node:ekr.20161123103554.1: *3* ini_i.new_starts_block
     ini_pattern = re.compile(r'^\s*\[(.*)\]')
 
-    def starts_block(self, line):
+    def new_starts_block(self, line):
         """name if the line is [ a name ]."""
         # pylint: disable=arguments-differ
         m = self.ini_pattern.match(line)
