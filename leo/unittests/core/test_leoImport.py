@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -1638,7 +1638,6 @@ class TestOrg(BaseTestImporter):
                 '@language ini\n'
                 '@tabwidth -4\n'
             ),
-            # (1, 'placeholder', ''),
             (1, 'Section 1',
                 '* Section 1\n'
                 'Sec 1.\n'
@@ -1761,33 +1760,63 @@ class TestOrg(BaseTestImporter):
         # Suppress perfect import checks.
         g.app.suppressImportChecks = True
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Section 1'),
-            (1, 'Section 2'),
-            (2, 'Section 2-1'),
-            (3, 'Section 2-1-1'),
-            (1, 'Section 3'),
-            (2, 'placeholder'),
-            (3, 'placeholder'),
-            (4, 'placeholder'),
-            (5, 'placeholder'),
-            (6, 'Section 3-1-1-1-1-1'),
-            (2, 'Section 3.1'),
-        ))
+        expected = (
+            (0, 'check_outline ignores the first headline',
+                '@language ini\n'
+                '@tabwidth -4\n'
+            ),
+            # (1, 'placeholder', ''),
+            (1, 'Section 1',
+                '* Section 1\n'
+                'Sec 1.\n'
+            ),
+            (1, 'Section 2',
+                '* Section 2\n'
+                'Sec 2.\n'
+                '\n'
+            ),
+            (2, 'Section 2-1',
+                '** Section 2-1\n'
+                'Sec 2.1\n'
+            ),
+            (3, 'Section 2-1-1'
+                '*** Section 2-1-1\n'
+                'Sec 2.1.1\n'
+            ),
+            (1, 'Section 3',
+                '* Section 3\n'
+            ),
+            (4, 'placeholder', ''),
+            (5, 'placeholder', ''),
+            (6, 'Section 3-1-1-1-1-1',
+                '****** Section 3-1-1-1-1-1\n',
+                ': Sec 3-1-1-1-1-1\n'
+            ),
+            (2, 'Section 3.1',
+                '** Section 3.1\n'
+                'Sec 3.1\n'
+            ),
+        )
+        self.check_outline(p, expected)
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
 
-        s = """
+        s = self.dedent("""\
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
-        """
+        """)
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Section 1 :tag1:'),
-            (1, 'Section 2 :tag2:'),
-            (1, 'Section 3 :tag3:tag4:'),
-        ))
+        expected = (
+            (0, 'check_outline ignores the first headline',
+                '@language ini\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'Section 1 :tag1:', ''),
+            (1, 'Section 2 :tag2:', ''),
+            (1, 'Section 3 :tag3:tag4:', ''),
+        )
+        self.check_outline(p, expected)
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl(BaseTestImporter):
