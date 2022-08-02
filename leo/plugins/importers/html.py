@@ -4,7 +4,7 @@
 from leo.plugins.importers import xml
 Xml_Importer = xml.Xml_Importer
 #@+others
-#@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)  (*** to do)
+#@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)
 class Html_Importer(Xml_Importer):
 
     def __init__(self, importCommands, **kwargs):
