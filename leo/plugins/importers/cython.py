@@ -2,7 +2,7 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g  # Required.
 ### from leo.plugins.importers.linescanner import Importer, scan_tuple
 from leo.plugins.importers.linescanner import scan_tuple
@@ -132,30 +132,6 @@ class Cython_Importer(Python_Importer):
                     # break
             # return row - i
 
-    #@+node:ekr.20220801114302.1: *3* cython_i.new_starts_block
-    def new_starts_block(self, i: int) -> Optional[int]:
-        """
-        Return None if lines[i] does not start a class, function or method.
-
-        Otherwise, return the index of the first line of the body and set self.headline.
-        """
-        lines, line_states = self.lines, self.line_states
-        line = lines[i]
-        prev_state = line_states[i - 1] if i > 0 else self.state_class()
-        this_state = line_states[i]
-        if 0:
-            g.trace(
-                f"{this_state.tag_level > prev_state.tag_level:1} "
-                f"i: {i} "
-                f"old level: {prev_state.tag_level} "
-                f"new level: {this_state.tag_level} "
-                f"{line!r}"
-            )
-        if this_state.level() > prev_state.level():
-            prev_line = lines[max(0, i-1)]
-            self.headline = self.clean_headline(prev_line)
-            return i + 1
-        return None
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:

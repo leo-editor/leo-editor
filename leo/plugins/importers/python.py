@@ -20,19 +20,13 @@ NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
     """
-    A protype importer for eventual use by leoJS.
-
-    Leo itself will never use this class.
+    An importer for eventual use by leoJS.
+    
+    Leo uses this class *only* as the base class for the cython importer.
     """
     # Optional base classes.
-    # class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
-    # class_pat = re.compile(class_pat_s, re.MULTILINE)
-    
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
     class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
-    def_pat = re.compile(def_pat_s, re.MULTILINE)
 
     # Requred argument list.
     def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
@@ -48,12 +42,51 @@ class Python_Importer(Importer):
         )
 
     #@+others
+    #@+node:ekr.20220720060831.2: *3* python_i.body_lines & body_string
+    def massaged_line(self, s: str, i: int) -> str:
+        """Massage line s, adding the underindent string if necessary."""
+        if i == 0 or s[:i].isspace():
+            return s[i:] or '\n'
+        # An underindented string.
+        n = len(s) - len(s.lstrip())
+        # pylint: disable=no-else-return
+        if 1:  # Legacy
+            return f'\\\\-{i-n}.{s[n:]}'
+        else:
+            return s[n:]
+
+    def body_string(self, a: int, b: int, i: int) -> str:
+        """Return the (massaged) concatentation of lines[a: b]"""
+        xlines = (self.massaged_line(s, i) for s in self.lines[a : b])
+        return ''.join(xlines)
+
+    def body_lines(self, a: int, b: int, i: int) -> List[str]:
+        return [self.massaged_line(s, i) for s in self.lines[a : b]]
+    #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
+    def declaration_headline(self, body: str) -> str:  # #2500
+        """
+        Return an informative headline for s, a group of declarations.
+        """
+        for s in g.splitLines(body):
+            strip_s = s.strip()
+            if strip_s:
+                if strip_s.startswith('#'):
+                    strip_comment = strip_s[1:].strip()
+                    if strip_comment:
+                        # A non-trivial comment: Return the comment w/o the leading '#'.
+                        return strip_comment
+                else:
+                    # A non-trivial non-comment.
+                    return strip_s
+        # Return legacy headline.
+        return "...some declarations"  # pragma: no cover
     #@+node:ekr.20220720043557.8: *3* python_i.gen_lines
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
         # Based on Vitalije's importer.
+        trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
 
         self.lines = lines
@@ -65,16 +98,39 @@ class Python_Importer(Importer):
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
+            
+        if trace and trace_states:
+            g.trace(f"{self.__class__.__name__} states & lines...")
+            for i, line in enumerate(self.lines):
+                state = self.line_states[i]
+                print(f"{i:3} {state!r} {line!r}")
 
         # Make a list of *all* definitions.
         aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
+        
+        if trace:
+            g.trace(self.__class__.__name__, 'all definitions...')
+            for z in all_definitions:
+                print(repr(z))
+                if trace_body:
+                    g.printObj(lines[z.decl_line1 : z.body_line9])
 
         # Start the recursion.
         parent.deleteAllChildren()
         self.make_node(
             p=parent, start=0, start_b=0, end=len(lines),
             others_indent=0, inner_indent=0, definitions=all_definitions)
+
+        # Add trailing lines, just like the Importer class.
+        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+
+        # Note: some unit tests change this setting.
+        c = self.c
+        if c.config.getBool('put-class-in-imported-headlines'):
+            for p in parent.subtree():  # Don't change parent.h.
+                if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                    p.h = f'class {p.h}'
     #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
@@ -83,6 +139,7 @@ class Python_Importer(Importer):
         
         Based on Vitalije's importer.
         """
+        # Note: this method does not call x.new_starts_block.
 
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
@@ -271,46 +328,6 @@ class Python_Importer(Importer):
                 child.b = self.body_string(decl_line1, body_line9, inner_indent)
 
             last = body_line9
-    #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
-    def declaration_headline(self, body: str) -> str:  # #2500
-        """
-        Return an informative headline for s, a group of declarations.
-        """
-        for s in g.splitLines(body):
-            strip_s = s.strip()
-            if strip_s:
-                if strip_s.startswith('#'):
-                    strip_comment = strip_s[1:].strip()
-                    if strip_comment:
-                        # A non-trivial comment: Return the comment w/o the leading '#'.
-                        return strip_comment
-                else:
-                    # A non-trivial non-comment.
-                    return strip_s
-        # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720060831.2: *3* python_i.body_lines & body_string
-    # 'lines' is a kwarg to split_root.
-
-    def massaged_line(self, s: str, i: int) -> str:
-        """Massage line s, adding the underindent string if necessary."""
-        if i == 0 or s[:i].isspace():
-            return s[i:] or '\n'
-        # An underindented string.
-        n = len(s) - len(s.lstrip())
-        # pylint: disable=no-else-return
-        if 1:  # Legacy
-            return f'\\\\-{i-n}.{s[n:]}'
-        else:
-            return s[n:]
-
-    def body_string(self, a: int, b: int, i: int) -> str:
-        """Return the (massaged) concatentation of lines[a: b]"""
-        xlines = (self.massaged_line(s, i) for s in self.lines[a : b])
-        return ''.join(xlines)
-
-    def body_lines(self, a: int, b: int, i: int) -> List[str]:
-        return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
@@ -331,9 +348,6 @@ class Python_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20220802065137.1: *3* py_state.level
-    def level(self) -> int:
-        return 
     #@+node:ekr.20220720044208.5: *3* py_state.update
     def update(self, data: scan_tuple) -> int:
         """
@@ -354,13 +368,13 @@ def do_import(c, s, parent):
             return False
         split_root(parent, s.splitlines(True))
 
-    # Prepend @language and @tabwidth directives.
-    parent.b = f'@language python\n@tabwidth -4\n{parent.b}'
-    # Note: some unit tests change this setting.
-    if c.config.getBool('put-class-in-imported-headlines'):
-        for p in parent.subtree():  # Don't change parent.h.
-            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                p.h = f'class {p.h}'
+        # Add *trailing* lines, just line the Importer class.
+        parent.b += '@language python\n@tabwidth -4\n'
+        # Note: some unit tests change this setting.
+        if c.config.getBool('put-class-in-imported-headlines'):
+            for p in parent.subtree():  # Don't change parent.h.
+                if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                    p.h = f'class {p.h}'
     return True
 #@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
 SPLIT_THRESHOLD = 10
@@ -659,6 +673,7 @@ def gen_lines(self, lines, parent):
     Recursively parse all lines of s into parent, creating descendant nodes as needed.
     """
     # Based on Vitalije's importer.
+    trace, trace_body, trace_states = False, True, False
     assert self.root == parent, (self.root, parent)
 
     self.lines = lines
@@ -670,16 +685,39 @@ def gen_lines(self, lines, parent):
     for line in lines:
         state = self.scan_line(line, state)
         self.line_states.append(state)
+        
+    if trace and trace_states:
+        g.trace(f"{self.__class__.__name__} states & lines...")
+        for i, line in enumerate(self.lines):
+            state = self.line_states[i]
+            print(f"{i:3} {state!r} {line!r}")
 
     # Make a list of *all* definitions.
     aList = [self.get_class_or_def(i) for i in range(len(lines))]
     all_definitions = [z for z in aList if z]
+    
+    if trace:
+        g.trace(self.__class__.__name__, 'all definitions...')
+        for z in all_definitions:
+            print(repr(z))
+            if trace_body:
+                g.printObj(lines[z.decl_line1 : z.body_line9])
 
     # Start the recursion.
     parent.deleteAllChildren()
     self.make_node(
         p=parent, start=0, start_b=0, end=len(lines),
         others_indent=0, inner_indent=0, definitions=all_definitions)
+
+    # Add trailing lines, just like the Importer class.
+    parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+
+    # Note: some unit tests change this setting.
+    c = self.c
+    if c.config.getBool('put-class-in-imported-headlines'):
+        for p in parent.subtree():  # Don't change parent.h.
+            if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                p.h = f'class {p.h}'
 #@-others
 importer_dict = {
     'func': do_import,

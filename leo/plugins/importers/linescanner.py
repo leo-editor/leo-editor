@@ -272,7 +272,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace, adds @language...)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -457,7 +457,7 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = True, True
+        trace, trace_body = False, True
         if trace:
             print('')
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")

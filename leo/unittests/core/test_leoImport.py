@@ -2116,37 +2116,6 @@ class TestPython(BaseTestImporter):
             self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
 
     #@+others
-    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best check)
-    def check_outline(self, p, expected):
-        """
-        BaseTestImporter.check_outline.
-        """
-        if 0: # Dump expected results.
-            print('')
-            g.trace('Expected results...')
-            for (level, h, s) in expected:
-                g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
-
-        if 0: # Dump actual results.
-            print('')
-            g.trace('Actual results...')
-            for p2 in p.self_and_subtree():
-                g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
-
-        # Do the actual tests.
-        p0_level = p.level()
-        actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-        self.assertEqual(len(expected), len(actual))
-        for i, actual in enumerate(actual):
-            a_level, a_h, a_str = actual
-            e_level, e_h, e_str = expected[i]
-            msg = f"FAIL in node {i} {e_h}"
-            self.assertEqual(a_level - p0_level, e_level, msg=msg)
-            if i > 0:  # Don't test top-level headline.
-                self.assertEqual(e_h, a_h, msg=msg)
-            self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-            return True, 'ok'
-
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
 
@@ -2204,13 +2173,13 @@ class TestPython(BaseTestImporter):
         # Level, headline, lines (as a string).
         exp_nodes = (
             (0, 'check_outline ignores the first headline', self.dedent("""\
-                    ATlanguage python
-                    ATtabwidth -4
                     import sys
                     ATothers
                     if __name__ == '__main__':
                         main()
 
+                    ATlanguage python
+                    ATtabwidth -4
                 """.replace('AT', '@'))),
             (1, 'f1', self.dedent(
                 """\
@@ -2301,12 +2270,12 @@ class TestPython(BaseTestImporter):
               '    main()\n'
             )
         exp_nodes = [(0, 'ignored h',
-                               '@language python\n'
-                               '@tabwidth -4\n'
                                'import sys\n'
                                '@others\n'
                                "if __name__ == '__main__':\n"
                                '    main()\n\n'
+                               '@language python\n'
+                               '@tabwidth -4\n'
                     ),
                     (1, 'f1',
                                'def f1():\n'
@@ -2374,12 +2343,13 @@ class TestPython(BaseTestImporter):
             '    main()\n'
             )
         exp_nodes = [
-            (0, 'ignored h', '@language python\n'
-                             '@tabwidth -4\n'
+            (0, 'ignored h', 
                              'import sys\n'
                              '@others\n'
                              "if __name__ == '__main__':\n"
                              '    main()\n\n'
+                             '@language python\n'
+                             '@tabwidth -4\n'
             ),
             (1, 'f1', 'def f1():\n'
                       '    pass\n'
@@ -2429,8 +2399,6 @@ class TestPython(BaseTestImporter):
             'print(7)\n'
         )
         exp_nodes = [(0, 'ignored h',
-               '@language python\n'
-               '@tabwidth -4\n'
                '"""A docstring"""\n'
                'switch = 1\n'
                'print(3)\n'
@@ -2438,6 +2406,8 @@ class TestPython(BaseTestImporter):
                'def a():\n'
                '    pass\n'
                'print(7)\n\n'
+               '@language python\n'
+               '@tabwidth -4\n'
                )]
         p = self.run_test(input_s)
         ok, msg = self.check_outline(p, exp_nodes)
@@ -2479,9 +2449,9 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
+                       '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
-                       '@others\n'
             ),
             (1, 'A',
                        'class A:\n'
@@ -2553,9 +2523,9 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
+                       '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
-                       '@others\n'
             ),
             (1, 'A',
                        'class A:\n'
@@ -2631,9 +2601,9 @@ class TestPython(BaseTestImporter):
               )
         exp_nodes = [
             (0, 'ignored h',
+                       '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
-                       '@others\n'
             ),
             (1, 'TestCopyFile',
                        'class TestCopyFile(unittest.TestCase):\n'
@@ -2710,9 +2680,9 @@ class TestPython(BaseTestImporter):
               )
         exp_nodes = [
             (0, 'ignored h',
+                       '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
-                       '@others\n'
             ),
             (1, 'TestCopyFile',
                        'class TestCopyFile(unittest.TestCase):\n'
@@ -2786,34 +2756,35 @@ class TestPython(BaseTestImporter):
                 "    print('12')\n"
             )
         exp_nodes = [
-            (0, 'ignored h', '@language python\n'
-                               '@tabwidth -4\n'
-                               'a = 1\n'
-                               'if 1:\n'
-                               " print('1')\n"
-                               'if 2:\n'
-                               "  print('2')\n"
-                               'if 3:\n'
-                               "   print('3')\n"
-                               'if 4:\n'
-                               "    print('4')\n"
-                               'if 5:\n'
-                               "    print('5')\n"
-                               'if 6:\n'
-                               "    print('6')\n"
-                               'if 7:\n'
-                               "    print('7')\n"
-                               'if 8:\n'
-                               "    print('8')\n"
-                               'if 9:\n'
-                               "    print('9')\n"
-                               'if 10:\n'
-                               "    print('10')\n"
-                               'if 11:\n'
-                               "    print('11')\n"
-                               'if 12:\n'
-                               "    print('12')\n\n"
-                    )
+            (0, 'ignored h',
+               'a = 1\n'
+               'if 1:\n'
+               " print('1')\n"
+               'if 2:\n'
+               "  print('2')\n"
+               'if 3:\n'
+               "   print('3')\n"
+               'if 4:\n'
+               "    print('4')\n"
+               'if 5:\n'
+               "    print('5')\n"
+               'if 6:\n'
+               "    print('6')\n"
+               'if 7:\n'
+               "    print('7')\n"
+               'if 8:\n'
+               "    print('8')\n"
+               'if 9:\n'
+               "    print('9')\n"
+               'if 10:\n'
+               "    print('10')\n"
+               'if 11:\n'
+               "    print('11')\n"
+               'if 12:\n'
+               "    print('12')\n\n"
+               '@language python\n'
+               '@tabwidth -4\n'
+            )
         ]
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
@@ -2853,9 +2824,9 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
+                       '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
-                       '@others\n'
             ),
             (1, 'A',
                        'class A:\n'
@@ -2936,8 +2907,6 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
-                       '@language python\n'
-                       '@tabwidth -4\n'
                        'if 1:\n'
                        " print('1')\n"
                        'if 2:\n'
@@ -2946,6 +2915,8 @@ class TestPython(BaseTestImporter):
                        "   print('3')\n"
                        '\n'
                        '@others\n'
+                       '@language python\n'
+                       '@tabwidth -4\n'
             ),
             (1, 'StrangeClass',
                        'class StrangeClass:\n'
@@ -3025,8 +2996,6 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
-                       '@language python\n'
-                       '@tabwidth -4\n'
                        'if 1:\n'
                        " print('1')\n"
                        'if 2:\n'
@@ -3035,6 +3004,8 @@ class TestPython(BaseTestImporter):
                        "   print('3')\n"
                        '\n'
                        '@others\n'
+                       '@language python\n'
+                       '@tabwidth -4\n'
             ),
             (1, 'class StrangeClass',
                        'class StrangeClass:\n'
