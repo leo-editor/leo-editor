@@ -14,7 +14,7 @@ from leo.core.leoNodes import Position
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -564,7 +564,8 @@ def split_root(root: Any, lines: List[str]) -> None:
         # Find all defs with the given inner indentation.
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
 
-        if not inner_defs or end - start < SPLIT_THRESHOLD:
+        # Don't use the threshold for unit tests. It's too confusing.
+        if not inner_defs or (not g.unitTesting and end - start < SPLIT_THRESHOLD):
             # Don't split the body.
             p.b = body(start, end, others_indent)
             return
