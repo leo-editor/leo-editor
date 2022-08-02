@@ -92,37 +92,6 @@ class BaseTestImporter(LeoUnitTest):
             self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
             return True, 'ok'
 
-    #@+node:ekr.20211126052156.1: *3* BaseTestImporter.compare_outlines (*** to do)
-    def compare_outlines(self, created_p, expected_p):  # pragma: no cover
-        """
-        Ensure that the created and expected trees have equal shape and contents.
-
-        Also ensure that all created nodes have the expected node kind.
-        """
-        assert False, 'BaseTestImporter.compare_outlines: not ready'
-        ### Use p.b rather than g.vnode_info.
-        d = {} ### g.vnode_info
-        p1, p2 = created_p.copy(), expected_p.copy()
-        try:
-            after1, after2 = p1.nodeAfterTree(), p2.nodeAfterTree()
-            while p1 and p2 and p1 != after1 and p2 != after2:
-                aList1 = d.get(p1.v)['kind'].split(':')
-                aList2 = d.get(p2.v)['kind'].split(':')
-                kind1, kind2 = aList1[0], aList2[0]
-                self.assertEqual(p1.h, p2.h)
-                self.assertEqual(p1.numberOfChildren(), p2.numberOfChildren(), msg=p1.h)
-                self.assertEqual(p1.b.strip(), p2.b.strip(), msg=p1.h)
-                self.assertEqual(kind1, kind2, msg=p1.h)
-                p1.moveToThreadNext()
-                p2.moveToThreadNext()
-            # Make sure both trees end at the same time.
-            self.assertTrue(not p1 or p1 == after1)
-            self.assertTrue(not p2 or p2 == after2)
-        except AssertionError:
-            g.es_exception()
-            self.dump_tree(created_p, tag='===== Created')
-            self.dump_tree(expected_p, tag='===== Expected')
-            raise
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
