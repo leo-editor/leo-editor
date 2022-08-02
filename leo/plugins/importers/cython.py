@@ -2,9 +2,6 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Any, Dict, List
-### from leo.core import leoGlobals as g
-### from leo.plugins.importers.linescanner import Importer, scan_tuple
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
@@ -31,56 +28,6 @@ class Cython_Importer(Python_Importer):
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
-    #@+node:vitalije.20211207174501.1: *3* cython_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context):
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('#', '', ''), f"cython: {comment!r} {block1!r} {block2!r}"
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key   kind    pattern ends?
-                '\\':   [('len+1', '\\',None),],
-                '"':[
-                        ('len', '"""',  context == '"""'),
-                        ('len', '"',    context == '"'),
-                    ],
-                "'":[
-                        ('len', "'''",  context == "'''"),
-                        ('len', "'",    context == "'"),
-                    ],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':   [('len+1','\\', context, None)],
-                '#':    [('all', '#',   context, None)],
-                '"':    [
-                            # order matters.
-                            ('len', '"""',  '"""', None),
-                            ('len', '"',    '"',   None),
-                        ],
-                "'":    [
-                            # order matters.
-                            ('len', "'''",  "'''", None),
-                            ('len', "'",    "'",   None),
-                        ],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-        return d
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:
