@@ -460,7 +460,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace = True and self.language == 'python'
+        trace = False and self.language == 'python'
         trace_body = False
         if trace:
             print('')

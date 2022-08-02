@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -2389,17 +2389,18 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
     def test_short_file(self):
 
-        input_s = (
-            '"""A docstring"""\n'
-            'switch = 1\n'
-            'print(3)\n'
-            'print(6)\n'
-            'def a():\n'
-            '    pass\n'
-            'print(7)\n'
-        )
-        exp_nodes = (
-            (0, 'check_outline ignores the first headline', self.dedent('''\
+        input_s = self.dedent('''\
+            """A docstring"""
+            switch = 1
+            print(3)
+            print(6)
+            def a():
+                pass
+            print(7)
+        ''')
+        expected = (
+            (0, 'check_outline ignores the first headline', 
+                self.dedent('''\
                     """A docstring"""
                     switch = 1
                     print(3)
@@ -2417,7 +2418,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         p = self.run_test(input_s)
-        ok, msg = self.check_outline(p, exp_nodes)
+        ok, msg = self.check_outline(p, expected)
         assert ok, msg
     #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
     def test_large_class_no_methods(self):
