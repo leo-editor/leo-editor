@@ -25,7 +25,7 @@ class Ini_Importer(Importer):
         for line in lines:
             headline = self.starts_block(line)
             if headline:
-                p = p.insertAsLastChild()
+                p = self.root.insertAsLastChild()
                 p.h = headline
             p.b += line
         self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
