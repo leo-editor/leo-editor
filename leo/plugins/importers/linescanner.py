@@ -315,7 +315,7 @@ class Importer:
             outer_level = -1,
             definitions=all_definitions,
         )
-        ### Add trailing lines.
+        # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
     def massaged_line(self, s: str, i: int) -> str:

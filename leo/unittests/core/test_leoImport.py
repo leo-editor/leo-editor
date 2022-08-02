@@ -33,7 +33,7 @@ class BaseTestImporter(LeoUnitTest):
         g.app.loadManager.createAllImporterData()
 
     #@+others
-    #@+node:ekr.20211128045212.1: *3* BaseTestImporter.check_headlines
+    #@+node:ekr.20211128045212.1: *3* BaseTestImporter.check_headlines (to be removed)
     def check_headlines(self, p, table):
         """Check that p and its subtree have the structure given in the table."""
         dump_tree, trace_subtree = True, True
