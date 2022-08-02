@@ -89,8 +89,8 @@ class Python_Importer(Importer):
         trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
 
+        c = self.c
         self.lines = lines
-
         self.line_states: List[Python_ScanState] = []
         state = Python_ScanState()
 
@@ -126,7 +126,6 @@ class Python_Importer(Importer):
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
 
         # Note: some unit tests change this setting.
-        c = self.c
         if c.config.getBool('put-class-in-imported-headlines'):
             for p in parent.subtree():  # Don't change parent.h.
                 if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
@@ -676,8 +675,8 @@ def gen_lines(self, lines, parent):
     trace, trace_body, trace_states = False, True, False
     assert self.root == parent, (self.root, parent)
 
+    c = self.c
     self.lines = lines
-
     self.line_states: List[Python_ScanState] = []
     state = Python_ScanState()
 
@@ -713,7 +712,6 @@ def gen_lines(self, lines, parent):
     parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
 
     # Note: some unit tests change this setting.
-    c = self.c
     if c.config.getBool('put-class-in-imported-headlines'):
         for p in parent.subtree():  # Don't change parent.h.
             if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
