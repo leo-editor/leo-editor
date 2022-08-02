@@ -14,7 +14,7 @@ from leo.core.leoNodes import Position
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -599,7 +599,9 @@ def split_root(root: Any, lines: List[str]) -> None:
             child.h = inner_def.name
 
             # Compute inner definitions.
-            inner_definitions = [z for z in definitions if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
+            inner_definitions = [z for z in definitions if
+                z.decl_line1 > decl_line1 and z.body_line9 <= body_line9
+            ]
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
