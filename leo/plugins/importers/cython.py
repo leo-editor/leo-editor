@@ -4,10 +4,12 @@
 import re
 from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g  # Required.
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+### from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import scan_tuple
+from leo.plugins.importers.python import Python_Importer
 #@+others
-#@+node:ekr.20200619141201.2: ** class Cython_Importer(Importer)
-class Cython_Importer(Importer):
+#@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
+class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
 
     starts_pattern = re.compile(r'\s*(class|def|cdef|cpdef)\s+')
