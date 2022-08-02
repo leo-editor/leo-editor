@@ -80,13 +80,13 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720043557.8: *3* python_i.gen_lines
-    def gen_lines(self, lines, parent):
+    #@+node:ekr.20220720043557.8: *3* python_i.xxx_gen_lines
+    def xxx_gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
         """
         # Based on Vitalije's importer.
-        trace, trace_body, trace_states = False, True, False
+        trace, trace_body, trace_states = True, False, False
         assert self.root == parent, (self.root, parent)
 
         c = self.c
@@ -120,6 +120,7 @@ class Python_Importer(Importer):
         parent.deleteAllChildren()
         self.make_node(
             p=parent, start=0, start_b=0, end=len(lines),
+            outer_level = -1,  ### Experimental (used by Importer.make_node)
             others_indent=0, inner_indent=0, definitions=all_definitions)
 
         # Add trailing lines, just like the Importer class.
@@ -250,8 +251,8 @@ class Python_Importer(Importer):
             line.strip().startswith(('#', '@'))
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@+node:ekr.20220720060831.1: *3* python_i.make_node
-    def make_node(self,
+    #@+node:ekr.20220720060831.1: *3* python_i.xxx_make_node (trace)
+    def xxx_make_node(self,
         p: Position,
         start: int,
         start_b: int,
@@ -260,6 +261,8 @@ class Python_Importer(Importer):
         inner_indent: int,
         definitions: List[block_tuple],
     ) -> None:
+        #@+<< Python_Importer.make_node docstring >>
+        #@+node:ekr.20220802095141.1: *4* << Python_Importer.make_node docstring >>
         """
         Set p.b and add children recursively using the tokens described by the arguments.
 
@@ -271,14 +274,32 @@ class Python_Importer(Importer):
          inner_indent: The indentation of all of the inner definitions.
           definitions: The list of the definitions covering p.
         """
+        #@-<< Python_Importer.make_node docstring >>
+        trace, trace_body = False, True
+        trace = True
+        if trace:
+            print('')
+            g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
+
         # Find all defs with the given inner indentation.
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+        new_outer_level = inner_indent + 1  ### Experimental
 
+        if trace and inner_defs:
+            g.printObj([repr(z) for z in inner_defs],
+                tag=f"python_i.make_node: new_outer_level: {new_outer_level}")
+            if trace_body:
+                for z in inner_defs:
+                    g.printObj(
+                        self.lines[z.decl_line1 : z.body_line9],
+                        tag=f"python_i.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
+
+        # Don't use the threshold for unit tests. It's too confusing.
         if not inner_defs or end - start < SPLIT_THRESHOLD:
             # Don't split the body.
             p.b = self.body_string(start, end, others_indent)
             return
-
+        
         last = start  # The last used line.
 
         # Calculate head, the lines preceding the @others.
@@ -294,39 +315,45 @@ class Python_Importer(Importer):
         # Add a child of p for each inner definition.
         last = decl_line1
         for inner_def in inner_defs:
-            body_indent = inner_def.body_indent
-            body_line9 = inner_def.body_line9
-            decl_line1 = inner_def.decl_line1
+            ### body_indent = inner_def.body_indent
+            ### body_line9 = inner_def.body_line9
+            ### decl_line1 = inner_def.decl_line1
             # Add a child for declaration lines between two inner definitions.
-            if decl_line1 > last:
-                new_body = self.body_string(last, decl_line1, inner_indent)  # #2500.
+            if inner_def.decl_line1 > last:
+                new_body = self.body_string(last, inner_def.decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = self.declaration_headline(new_body)  # #2500
                 child1.b = new_body
                 last = decl_line1
+
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
             # Compute inner definitions.
             inner_definitions = [
-                z for z in definitions
-                    if z.decl_line1 > decl_line1 and z.body_line9 <= body_line9]
+                z for z in definitions if (
+                    ### z.decl_level > new_outer_level  ### Add this ???
+                    z.decl_line1 > decl_line1   #### in base class: new_outer_level
+                    and z.body_line9 <= inner_def.body_line9
+            )]
+
             if inner_definitions:
                 # Recursively split this node.
                 self.make_node(
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    end=body_line9,
+                    end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
-                    inner_indent=body_indent,
+                    ### outer_level = new_outer_level  ### Add this ???
+                    inner_indent=inner_def.body_indent,
                     definitions=inner_definitions,
                 )
             else:
                 # Just set the body.
-                child.b = self.body_string(decl_line1, body_line9, inner_indent)
+                child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
-            last = body_line9
+            last = inner_def.body_line9
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
@@ -337,8 +364,10 @@ class Python_ScanState:
         if d:
             prev = d.get('prev')
             self.context = prev.context
+            ### self.indent = prev.indent
         else:
             self.context = ''
+            ### self.indent = 0
 
     def __repr__(self):
         """Py_State.__repr__"""
@@ -347,12 +376,16 @@ class Python_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220802100612.1: *3* py_state.level  (*** not used)
+    # def level(self) -> int:
+        # return self.indent
     #@+node:ekr.20220720044208.5: *3* py_state.update
     def update(self, data: scan_tuple) -> int:
         """
         Python_ScanState: Update the state using given scan_tuple.
         """
         self.context = data.context
+        ### self.indent = data.indent
         return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
@@ -666,13 +699,13 @@ def split_root(root: Any, lines: List[str]) -> None:
     mknode(
         p=root, start=1, start_b=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
-#@+node:ekr.20220720043557.8: ** python_i.gen_lines
-def gen_lines(self, lines, parent):
+#@+node:ekr.20220720043557.8: ** python_i.xxx_gen_lines
+def xxx_gen_lines(self, lines, parent):
     """
     Recursively parse all lines of s into parent, creating descendant nodes as needed.
     """
     # Based on Vitalije's importer.
-    trace, trace_body, trace_states = False, True, False
+    trace, trace_body, trace_states = True, False, False
     assert self.root == parent, (self.root, parent)
 
     c = self.c
@@ -706,6 +739,7 @@ def gen_lines(self, lines, parent):
     parent.deleteAllChildren()
     self.make_node(
         p=parent, start=0, start_b=0, end=len(lines),
+        outer_level = -1,  ### Experimental (used by Importer.make_node)
         others_indent=0, inner_indent=0, definitions=all_definitions)
 
     # Add trailing lines, just like the Importer class.

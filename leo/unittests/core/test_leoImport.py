@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -2398,17 +2398,24 @@ class TestPython(BaseTestImporter):
             '    pass\n'
             'print(7)\n'
         )
-        exp_nodes = [(0, 'ignored h',
-               '"""A docstring"""\n'
-               'switch = 1\n'
-               'print(3)\n'
-               'print(6)\n'
+        exp_nodes = (
+            (0, 'check_outline ignores the first headline', self.dedent('''\
+                    """A docstring"""
+                    switch = 1
+                    print(3)
+                    print(6)
+                    ATothers
+                    print(7)
+
+                    ATlanguage python
+                    ATtabwidth -4
+                ''').replace('AT', '@')
+            ),
+            (1, 'a',  # Unit tests ignore size threshold.
                'def a():\n'
                '    pass\n'
-               'print(7)\n\n'
-               '@language python\n'
-               '@tabwidth -4\n'
-               )]
+            ),
+        )
         p = self.run_test(input_s)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg

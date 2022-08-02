@@ -279,7 +279,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
-        trace, trace_body, trace_states = False, True, False
+        trace, trace_body, trace_states = False, False, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -445,6 +445,8 @@ class Importer:
         inner_indent: int,
         definitions: List[block_tuple],
     ) -> None:
+        #@+<< Importer.make_node docstring >>
+        #@+node:ekr.20220802095116.1: *6* << Importer.make_node docstring >>
         """
         Set p.b and add children recursively using the tokens described by the arguments.
 
@@ -457,9 +459,12 @@ class Importer:
           outer_level: The level of the containing def.
           definitions: The list of the definitions covering p.
         """
-        trace, trace_body = False, True
+        #@-<< Importer.make_node docstring >>
+        trace = True and self.language == 'python'
+        trace_body = False
         if trace:
             print('')
+            g.trace('outer_level', outer_level)
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
         # Find all outer defs, all of whose levels are the smallest level > outer_level.
@@ -475,12 +480,12 @@ class Importer:
 
         if trace and new_outer_defs:
             g.printObj([repr(z) for z in new_outer_defs],
-                tag=f"make_node: new_outer_level: {new_outer_level}")
+                tag=f"Importer.make_node: new_outer_level: {new_outer_level}")
             if trace_body:
                 for z in new_outer_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
-                        tag=f"make_node: Lines[{z.decl_line1} : {z.body_line9}]")
+                        tag=f"Importer.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
         if not new_outer_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
@@ -489,7 +494,7 @@ class Importer:
             return
 
         last = start  # The last used line.
-
+        
         # Calculate head, the lines preceding the @others.
         decl_line1 = new_outer_defs[0].decl_line1
         head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
@@ -502,7 +507,6 @@ class Importer:
 
         # Add a child of p for each inner definition.
         last = decl_line1
-
         for inner_def in new_outer_defs:
             # Add a child for declaration lines between two inner definitions.
             if inner_def.decl_line1 > last:
@@ -511,6 +515,7 @@ class Importer:
                 child1.h = self.declaration_headline(new_body)  # #2500
                 child1.b = new_body
                 last = decl_line1
+
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
@@ -535,6 +540,7 @@ class Importer:
                 )
             else:
                 # Just set the body.
+                if trace: g.trace('NO INNER DEFS')
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
