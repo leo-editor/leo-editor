@@ -494,7 +494,7 @@ class Importer:
             return
 
         last = start  # The last used line.
-        
+
         # Calculate head, the lines preceding the @others.
         decl_line1 = new_outer_defs[0].decl_line1
         head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''

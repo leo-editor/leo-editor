@@ -20,7 +20,7 @@ NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 class Python_Importer(Importer):
     """
     An importer for eventual use by leoJS.
-    
+
     Leo uses this class *only* as the base class for the cython importer.
     """
     # Optional base classes.
@@ -84,7 +84,7 @@ class Python_Importer(Importer):
         """
         Look for a def or class at lines[i]
         Return None or a block_tuple describing the class or def.
-        
+
         Based on Vitalije's importer.
         """
         # Note: this method does not call x.new_starts_block.

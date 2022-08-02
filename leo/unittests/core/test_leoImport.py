@@ -2357,7 +2357,7 @@ class TestPython(BaseTestImporter):
             '    main()\n'
             )
         exp_nodes = [
-            (0, 'ignored h', 
+            (0, 'ignored h',
                              'import sys\n'
                              '@others\n'
                              "if __name__ == '__main__':\n"
@@ -2443,7 +2443,7 @@ class TestPython(BaseTestImporter):
             print(7)
         ''')
         expected = (
-            (0, 'check_outline ignores the first headline', 
+            (0, 'check_outline ignores the first headline',
                 self.dedent('''\
                     """A docstring"""
                     switch = 1

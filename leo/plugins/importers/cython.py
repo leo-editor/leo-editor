@@ -11,7 +11,7 @@ from leo.plugins.importers.python import Python_Importer
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
-    
+
     # class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
     # class_pat = re.compile(class_pat_s, re.MULTILINE)
     # # Requred argument list.
