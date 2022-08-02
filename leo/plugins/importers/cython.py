@@ -3,7 +3,7 @@
 """@auto importer for cython."""
 import re
 from typing import Any, Dict, List
-from leo.core import leoGlobals as g  # Required.
+### from leo.core import leoGlobals as g
 ### from leo.plugins.importers.linescanner import Importer, scan_tuple
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
@@ -12,19 +12,12 @@ from leo.plugins.importers.python import Python_Importer
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
 
-    # class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
-    # class_pat = re.compile(class_pat_s, re.MULTILINE)
-    # # Requred argument list.
-
-    ### starts_pattern = re.compile(r'\s*(class|def|cdef|cpdef)\s+')
-
-    # Matches lines that apparently start a class or def.
-    ### class_pat = re.compile(r'\s*class\s+(\w+)\s*(\([\w.]+\))?')
     class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
     class_pat = re.compile(class_pat_s, re.MULTILINE)
 
-    ### def_pat = re.compile(r'\s*(cdef|cpdef|def)\s+(\w+)')
-    def_pat_s = r'\s*(cdef|cpdef|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
+    # m.group(2) might not be the def name!
+    # clean_headline must handle the complications.
+    def_pat_s = r'\s*\b(cdef|cpdef|def)\s+([\w_]+)'
     def_pat = re.compile(def_pat_s, re.MULTILINE)
 
     #@+others
@@ -38,36 +31,6 @@ class Cython_Importer(Python_Importer):
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
-    #@+node:ekr.20200619141201.3: *3* cython_i.clean_headline & helper
-    def clean_headline(self, s, p=None):
-        """Return a cleaned up headline s."""
-        if p:  # Called from clean_all_headlines:
-            return self.get_decorator(p) + p.h
-        # Handle def, cdef, cpdef.
-        m = re.match(r'\s*(cpdef|cdef|def)\s+(\w+)', s)
-        if m:
-            return m.group(2)
-        # Handle classes.
-        m = re.match(r'\s*class\s+(\w+)\s*(\([\w.]+\))?', s)
-        if m:
-            return 'class %s%s' % (m.group(1), m.group(2) or '')
-        return s.strip()
-
-    #@+node:vitalije.20211207173901.1: *4* cy_i.get_decorator
-    decorator_pat = re.compile(r'\s*@\s*([\w\.]+)')
-
-    def get_decorator(self, p):
-        if g.unitTesting or self.put_decorators:
-            for s in p.b:
-                if not s.isspace():
-                    m = self.decorator_pat.match(s)
-                    if m:
-                        s = s.strip()
-                        if s.endswith('('):
-                            s = s[:-1].strip()
-                        return s + ' '
-                    return ''
-        return ''
     #@+node:vitalije.20211207174501.1: *3* cython_i.get_new_dict
     #@@nobeautify
 
@@ -118,30 +81,6 @@ class Cython_Importer(Python_Importer):
                 ']':    [('len', ']', context, (0,0,-1))],
             }
         return d
-    #@+node:ekr.20220801113535.1: *3* cython_i.get_intro
-    def get_intro(self, row: int, col: int) -> int:
-        """
-        Return the number of preceeding lines that should be added to this class or def.
-        """
-        return 0
-        ###
-            # lines =self.lines
-
-            # # Scan backward for blank or intro lines.
-            # i = row - 1
-            # while i >= 0 and (lines[i].isspace() or self.is_intro_line(i, col)):
-                # i -= 1
-
-            # # Remove blank lines from the start of the intro.
-            # # Leading blank lines should be added to the end of the preceeding node.
-            # i += 1
-            # while i < row:
-                # if lines[i].isspace():
-                    # i += 1
-                # else:
-                    # break
-            # return row - i
-
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:

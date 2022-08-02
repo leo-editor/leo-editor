@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -497,12 +497,14 @@ class TestCython(BaseTestImporter):
         p = self.run_test(s)
 
         expected = (
-            (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
+            (0, 'check_outlines ignores the first headline',
+                    'from libc.math cimport pow\n'
+                    '\n'
                     '@others\n'
-                    '@language xml\n'
+                    '@language cython\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'cdef double square_and_add',  ### To do: clean_headline.
+            (1, 'cdef double square_and_add',
                     '"""Compute x^2 + x as double.\n'
                     '\n'
                     'This is a cdef function that can be called from within\n'
@@ -511,17 +513,11 @@ class TestCython(BaseTestImporter):
                     'return pow(x, 2.0) + x\n'
                     '\n'
             ),
-            (1, 'cpdef print_result',  ### To do: clean_headline.
+            (1, 'cpdef print_result',
                     '"""This is a cpdef function that can be called from Python."""\n'
                     'print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
             ),
         )
-
-        # self.check_headlines(p, (
-            # (1, 'Organizer: Declarations'),
-            # (1, 'double'),
-            # (1, 'print_result'),
-        # ))
         self.check_outline(p, expected)
     #@-others
 #@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
