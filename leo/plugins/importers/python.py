@@ -221,9 +221,6 @@ class Python_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20220802100612.1: *3* py_state.level  (*** not used)
-    # def level(self) -> int:
-        # return self.indent
     #@+node:ekr.20220720044208.5: *3* py_state.update
     def update(self, data: scan_tuple) -> int:
         """
