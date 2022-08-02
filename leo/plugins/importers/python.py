@@ -25,8 +25,14 @@ class Python_Importer(Importer):
     Leo itself will never use this class.
     """
     # Optional base classes.
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    # class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    # class_pat = re.compile(class_pat_s, re.MULTILINE)
+    
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
     class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
 
     # Requred argument list.
     def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
@@ -52,86 +58,10 @@ class Python_Importer(Importer):
 
         self.lines = lines
 
-        class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
-        class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-        def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
-        def_pat = re.compile(def_pat_s, re.MULTILINE)
-
-        line_states: List[Python_ScanState] = []
+        self.line_states: List[Python_ScanState] = []
         state = Python_ScanState()
 
         #@+others
-        #@+node:ekr.20220720050740.1: *4* function: get_class_or_def & helper (new python importer)
-        def get_class_or_def(i: int) -> block_tuple:
-            """
-            Look for a def or class at lines[i]
-            Return None or a block_tuple describing the class or def.
-            """
-            # Based on Vitalije's importer.
-            nonlocal class_pat, def_pat
-            nonlocal lines, line_states
-
-            line, state = lines[i], line_states[i]
-            if state.context or not line.strip():
-                return None
-            m = class_pat.match(line) or def_pat.match(line)
-            if not m:
-                return None
-            # Compute declaration data.
-            decl_line = i
-            decl_indent = self.get_int_lws(line)
-            decl_level = decl_indent
-
-            # Set body_indent to the indentation of the first non-blank line of the body.
-            newlines = m.group(0).count('\n')
-            i += (1 + newlines)  # The line after the last decl line.
-
-            # Test for a single-line class or def.
-            while i < len(lines):
-                line = lines[i]
-                if line.isspace():
-                    i += 1
-                else:
-                    body_indent = self.get_int_lws(line)
-                    single_line = body_indent == decl_indent
-                    break
-            else:
-                single_line = True
-                body_indent = decl_indent
-
-            # Multi-line bodies end at the next non-blank with less indentation than body_indent.
-            # This is tricky because of underindented strings and docstrings.
-            if not single_line:
-                last_state = None
-                while i < len(lines):
-                    line = lines[i]
-                    this_state = line_states[i]
-                    last_context = last_state.context if last_state else ''
-                    this_context = this_state.context if this_state else ''
-                    if (
-                        not line.isspace()
-                        and this_context not in ("'''", '"""', "'", '"')
-                        and last_context not in ("'''", '"""', "'", '"')
-                        and self.get_int_lws(line) < body_indent
-                    ):
-                        break
-                    last_state = this_state
-                    i += 1
-
-            # Include all following blank lines.
-            while i < len(lines) and lines[i].isspace():
-                i += 1
-
-            # Return the description of the block.
-            return block_tuple(
-                body_indent = body_indent,
-                body_line9 = i,
-                decl_indent = decl_indent,
-                decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-                decl_level = decl_level,
-                name = m.group(2),
-            )
         #@+node:ekr.20220720060831.1: *4* function: make_node & helpers (new python importer)
         def make_node(p: Position,
             start: int,
@@ -255,10 +185,10 @@ class Python_Importer(Importer):
         # Prepass: calculate line states.
         for line in lines:
             state = self.scan_line(line, state)
-            line_states.append(state)
+            self.line_states.append(state)
 
         # Make a list of *all* definitions.
-        aList = [get_class_or_def(i) for i in range(len(lines))]
+        aList = [self.get_class_or_def(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
         # Start the recursion.
@@ -266,6 +196,76 @@ class Python_Importer(Importer):
         make_node(
             p=parent, start=0, start_b=0, end=len(lines),
             others_indent=0, inner_indent=0, definitions=all_definitions)
+    #@+node:ekr.20220720050740.1: *3* py_i.get_class_or_def (new python importer)
+    def get_class_or_def(self, i: int) -> block_tuple:
+        """
+        Look for a def or class at lines[i]
+        Return None or a block_tuple describing the class or def.
+        """
+        # Based on Vitalije's importer.
+        ### nonlocal class_pat, def_pat
+        ### nonlocal lines, line_states
+
+        line, state = self.lines[i], self.line_states[i]
+        if state.context or not line.strip():
+            return None
+        m = self.class_pat.match(line) or self.def_pat.match(line)
+        if not m:
+            return None
+        # Compute declaration data.
+        decl_line = i
+        decl_indent = self.get_int_lws(line)
+        decl_level = decl_indent
+
+        # Set body_indent to the indentation of the first non-blank line of the body.
+        newlines = m.group(0).count('\n')
+        i += (1 + newlines)  # The line after the last decl line.
+
+        # Test for a single-line class or def.
+        while i < len(self.lines):
+            line = self.lines[i]
+            if line.isspace():
+                i += 1
+            else:
+                body_indent = self.get_int_lws(line)
+                single_line = body_indent == decl_indent
+                break
+        else:
+            single_line = True
+            body_indent = decl_indent
+
+        # Multi-line bodies end at the next non-blank with less indentation than body_indent.
+        # This is tricky because of underindented strings and docstrings.
+        if not single_line:
+            last_state = None
+            while i < len(self.lines):
+                line = self.lines[i]
+                this_state = self.line_states[i]
+                last_context = last_state.context if last_state else ''
+                this_context = this_state.context if this_state else ''
+                if (
+                    not line.isspace()
+                    and this_context not in ("'''", '"""', "'", '"')
+                    and last_context not in ("'''", '"""', "'", '"')
+                    and self.get_int_lws(line) < body_indent
+                ):
+                    break
+                last_state = this_state
+                i += 1
+
+        # Include all following blank lines.
+        while i < len(self.lines) and self.lines[i].isspace():
+            i += 1
+
+        # Return the description of the block.
+        return block_tuple(
+            body_indent = body_indent,
+            body_line9 = i,
+            decl_indent = decl_indent,
+            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level = decl_level,
+            name = m.group(2),
+        )
     #@+node:ekr.20220720043557.30: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -336,6 +336,9 @@ class Python_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220802065137.1: *3* py_state.level
+    def level(self) -> int:
+        return 
     #@+node:ekr.20220720044208.5: *3* py_state.update
     def update(self, data: scan_tuple) -> int:
         """
@@ -665,86 +668,10 @@ def gen_lines(self, lines, parent):
 
     self.lines = lines
 
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'  # Optional base classes.
-    class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'  # Requred argument list.
-    def_pat = re.compile(def_pat_s, re.MULTILINE)
-
-    line_states: List[Python_ScanState] = []
+    self.line_states: List[Python_ScanState] = []
     state = Python_ScanState()
 
     #@+others
-    #@+node:ekr.20220720050740.1: *3* function: get_class_or_def & helper (new python importer)
-    def get_class_or_def(i: int) -> block_tuple:
-        """
-        Look for a def or class at lines[i]
-        Return None or a block_tuple describing the class or def.
-        """
-        # Based on Vitalije's importer.
-        nonlocal class_pat, def_pat
-        nonlocal lines, line_states
-
-        line, state = lines[i], line_states[i]
-        if state.context or not line.strip():
-            return None
-        m = class_pat.match(line) or def_pat.match(line)
-        if not m:
-            return None
-        # Compute declaration data.
-        decl_line = i
-        decl_indent = self.get_int_lws(line)
-        decl_level = decl_indent
-
-        # Set body_indent to the indentation of the first non-blank line of the body.
-        newlines = m.group(0).count('\n')
-        i += (1 + newlines)  # The line after the last decl line.
-
-        # Test for a single-line class or def.
-        while i < len(lines):
-            line = lines[i]
-            if line.isspace():
-                i += 1
-            else:
-                body_indent = self.get_int_lws(line)
-                single_line = body_indent == decl_indent
-                break
-        else:
-            single_line = True
-            body_indent = decl_indent
-
-        # Multi-line bodies end at the next non-blank with less indentation than body_indent.
-        # This is tricky because of underindented strings and docstrings.
-        if not single_line:
-            last_state = None
-            while i < len(lines):
-                line = lines[i]
-                this_state = line_states[i]
-                last_context = last_state.context if last_state else ''
-                this_context = this_state.context if this_state else ''
-                if (
-                    not line.isspace()
-                    and this_context not in ("'''", '"""', "'", '"')
-                    and last_context not in ("'''", '"""', "'", '"')
-                    and self.get_int_lws(line) < body_indent
-                ):
-                    break
-                last_state = this_state
-                i += 1
-
-        # Include all following blank lines.
-        while i < len(lines) and lines[i].isspace():
-            i += 1
-
-        # Return the description of the block.
-        return block_tuple(
-            body_indent = body_indent,
-            body_line9 = i,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            decl_level = decl_level,
-            name = m.group(2),
-        )
     #@+node:ekr.20220720060831.1: *3* function: make_node & helpers (new python importer)
     def make_node(p: Position,
         start: int,
@@ -868,10 +795,10 @@ def gen_lines(self, lines, parent):
     # Prepass: calculate line states.
     for line in lines:
         state = self.scan_line(line, state)
-        line_states.append(state)
+        self.line_states.append(state)
 
     # Make a list of *all* definitions.
-    aList = [get_class_or_def(i) for i in range(len(lines))]
+    aList = [self.get_class_or_def(i) for i in range(len(lines))]
     all_definitions = [z for z in aList if z]
 
     # Start the recursion.
