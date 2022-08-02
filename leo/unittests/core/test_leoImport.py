@@ -959,7 +959,7 @@ class TestIni(BaseTestImporter):
     ext = '.ini'
 
     #@+others
-    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
+    #@+node:ekr.20210904065459.29: *3* TestIni.test_1 *** Convert to strict test
     def test_1(self):
 
         s = '''
@@ -977,6 +977,7 @@ class TestIni(BaseTestImporter):
             file = "payroll.dat"
         '''
         p = self.run_test(s)
+        ########
         self.check_headlines(p, (
             (1, '; last modified 1 April 2001 by John Doe'),
             (2, '[owner]'),
