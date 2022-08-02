@@ -42,34 +42,41 @@ class Org_Importer(Importer):
                     self.tc.add_tag(p, tag)
         return s
 
-    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines (*** to do)
+    #@+node:ekr.20220802153637.1: *3* org_i.create_placeholders
+    def create_placeholders(self, level, parents):
+        """Create placeholders as necessary."""
+        assert level >= 0
+        while level -1 > len(parents):
+            level -= 1
+            parent = parents[-1] if parents else self.root
+            child = parent.insertAsLastChild()
+            child.h = 'placeholder'
+            parents.append(child)
+    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
     def gen_lines(self, lines, parent):
-        """Node generator for org mode."""
-        ###
-            # self.vnode_info = {
-                # # Keys are vnodes, values are inner dicts.
-                # parent.v: {
-                    # 'lines': [],
-                # }
-            # }
-            # self.parents = [parent]
+        """Org_Importer.gen_lines. Allocate nodes to lines."""
+        p, parents = self.root, []
         for line in lines:
             m = self.org_pattern.match(line)
-            ### g.trace(m)
-            ###
-                # if m:
-                    # # Cut back the stack, then allocate a new node.
-                    # level = len(m.group(1))
-                    # self.parents = self.parents[:level]
-                    # self.find_parent(
-                        # level=level,
-                        # h=m.group(2))
-                # else:
-                    # p = self.parents[-1]
-                    # self.add_line(p, line)
+            if m:
+                level, headline = len(m.group(1)), m.group(2)
+                # Cut back the stack.
+                parents = parents[:level]
+                # Create any needed placeholders.
+                self.create_placeholders(level, parents)
+                # Create the child.
+                parent =  parents[-1] if parents else self.root
+                child = parent.insertAsLastChild()
+                parents.append(child)
+                child.h = headline  # #1087: Don't strip!
+            # Append the line.
+            p = parents[-1] if parents else self.root
+            p.b += line
+        # Add the directives.
+        self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
         """
