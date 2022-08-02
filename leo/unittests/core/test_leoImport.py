@@ -2355,9 +2355,23 @@ class TestPython(BaseTestImporter):
                       '    pass\n'
                       '\n'
             ),
-            (1, 'Class1', 'class Class1:\n'  # Don't split very short classes.
+            # Use this if unit tests *do* honor threshold.
+            # (1, 'Class1', 'class Class1:\n'  # Don't split very short classes.
+                          # '    def method11():\n'
+                          # '        pass\n'
+                          # '    def method12():\n'
+                          # '        pass\n'
+                          # '\n'
+            # ),
+            (1, 'Class1',
+                        'class Class1:\n'  # Don't split very short classes.
+                        '@others\n'
+            ),
+            (2, 'method11',
                           '    def method11():\n'
                           '        pass\n'
+            ),
+            (2, 'method12',
                           '    def method12():\n'
                           '        pass\n'
                           '\n'
@@ -2367,12 +2381,28 @@ class TestPython(BaseTestImporter):
                       '    pass\n'
                       '\n'
             ),
+            # Use this if unit tests *do* honor threshold.
+            # (1, 'Class2', '# An outer comment\n'
+                          # '@myClassDecorator\n'
+                          # 'class Class2:\n'
+                          # '    @myDecorator\n'
+                          # '    def method21():\n'
+                          # '        pass\n'
+                          # '    def method22():\n'
+                          # '        pass\n'
+                          # '\n'
+            # ),
             (1, 'Class2', '# An outer comment\n'
                           '@myClassDecorator\n'
                           'class Class2:\n'
+                          '@others\n'
+            ),
+            (2, 'method21',
                           '    @myDecorator\n'
                           '    def method21():\n'
                           '        pass\n'
+            ),
+            (2, 'method22',
                           '    def method22():\n'
                           '        pass\n'
                           '\n'

@@ -460,8 +460,8 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace = False and self.language == 'python'
-        trace_body = False
+        trace = True and self.language == 'python'
+        trace_body = True
         if trace:
             print('')
             g.trace('outer_level', outer_level)
@@ -540,7 +540,7 @@ class Importer:
                 )
             else:
                 # Just set the body.
-                if trace: g.trace('NO INNER DEFS')
+                ### if trace: g.trace('NO INNER DEFS')
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
