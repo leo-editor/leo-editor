@@ -2149,59 +2149,61 @@ class TestPython(BaseTestImporter):
 
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_longer_classes
     def test_longer_classes(self):
-        s = ('import sys\n'
-              'def f1():\n'
-              '    pass\n'
-              '\n'
-              'class Class1:\n'
-              '    def method11():\n'
-              '        pass\n'
-              '    def method12():\n'
-              '        pass\n'
-              '        \n'
-              '#\n'
-              '# Define a = 2\n'
-              'a = 2\n'
-              '\n'
-              'def f2():\n'
-              '    pass\n'
-              '\n'
-              '# An outer comment\n'
-              '@myClassDecorator\n'
-              'class Class2:\n'
-              '    def meth00():\n'
-              '        print(1)\n'
-              '        print(2)\n'
-              '        print(3)\n'
-              '        print(4)\n'
-              '        print(5)\n'
-              '        print(6)\n'
-              '        print(7)\n'
-              '        print(8)\n'
-              '        print(9)\n'
-              '        print(10)\n'
-              '        print(11)\n'
-              '        print(12)\n'
-              '        print(13)\n'
-              '        print(14)\n'
-              '        print(15)\n'
-              '    @myDecorator\n'
-              '    def method21():\n'
-              '        pass\n'
-              '    def method22():\n'
-              '        pass\n'
-              '        \n'
-              '# About main.\n'
-              'def main():\n'
-              '    pass\n'
-              '\n'
-              "if __name__ == '__main__':\n"
-              '    main()\n'
-            )
+        
+        s = self.dedent("""\
+              import sys
+              def f1():
+                  pass
+              
+              class Class1:
+                  def method11():
+                      pass
+                  def method12():
+                      pass
+                      
+              #
+              # Define a = 2
+              a = 2
+              
+              def f2():
+                  pass
+              
+              # An outer comment
+              ATmyClassDecorator
+              class Class2:
+                  def meth00():
+                      print(1)
+                      print(2)
+                      print(3)
+                      print(4)
+                      print(5)
+                      print(6)
+                      print(7)
+                      print(8)
+                      print(9)
+                      print(10)
+                      print(11)
+                      print(12)
+                      print(13)
+                      print(14)
+                      print(15)
+                  ATmyDecorator
+                  def method21():
+                      pass
+                  def method22():
+                      pass
+                      
+              # About main.
+              def main():
+                  pass
+              
+              if __name__ == '__main__':
+                  main()
+        """).replace('AT', '@')
             
         # Level, headline, lines (as a string).
         exp_nodes = (
-            (0, 'ignored h', self.dedent("""\
+            (0, 'check_outline ignores the first headline', self.dedent("""\
                     ATlanguage python
                     ATtabwidth -4
                     import sys
