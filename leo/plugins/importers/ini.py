@@ -34,9 +34,7 @@ class Ini_Importer(Importer):
 
     def starts_block(self, line) -> Optional[str]:
         """Return the name of the section or None"""
-        if line.strip().startswith(';'):
-            return None
-        m = self.ini_pattern.match(line)
+        m = self.ini_pattern.match(line)  # Won't match a comment.
         if m:
             return m.group(1).strip()
         return None

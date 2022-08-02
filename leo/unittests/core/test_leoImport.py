@@ -959,7 +959,7 @@ class TestIni(BaseTestImporter):
     ext = '.ini'
 
     #@+others
-    #@+node:ekr.20210904065459.29: *3* TestIni.test_1 *** Convert to strict test
+    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
     def test_1(self):
 
         s = '''
@@ -977,12 +977,36 @@ class TestIni(BaseTestImporter):
             file = "payroll.dat"
         '''
         p = self.run_test(s)
-        ########
-        self.check_headlines(p, (
-            (1, '; last modified 1 April 2001 by John Doe'),
-            (2, '[owner]'),
-            (2, '[database]'),
-        ))
+        expected = (
+            (0, 'check_outline ignores the first headline',
+                self.dedent("""\
+                    ; last modified 1 April 2001 by John Doe
+                    ATlanguage ini
+                    ATtabwidth -4
+                """).replace('AT', '@')
+            ),
+            (1, '[owner]',
+                self.dedent("""\
+
+                    [owner]
+                    name=John Doe
+                    organization=Acme Widgets Inc.
+
+                    ; [ not a section ]
+
+                """)
+            ),
+            (1, '[database]',
+                self.dedent("""\
+                    [database]
+                    server=192.0.2.62
+                        ; use IP address
+                    port=143
+                    file = "payroll.dat"
+                """)
+            ),
+        )
+        self.check_outline(p, expected)
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
