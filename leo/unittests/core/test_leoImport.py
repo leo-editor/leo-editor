@@ -978,8 +978,9 @@ class TestIni(BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_headlines(p, (
-            (1, '[owner]'),
-            (1, '[database]'),
+            (1, '; last modified 1 April 2001 by John Doe'),
+            (2, '[owner]'),
+            (2, '[database]'),
         ))
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
