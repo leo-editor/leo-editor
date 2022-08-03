@@ -79,6 +79,8 @@ class Org_Importer(Importer):
             p = parents[-1] if parents else self.root
             p.b += line
         # Add the directives.
+        if self.root.b and not self.root.b.endswith('\n'):
+            self.root.b += '\n'
         self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
