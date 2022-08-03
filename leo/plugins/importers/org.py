@@ -47,12 +47,17 @@ class Org_Importer(Importer):
     #@+node:ekr.20220802153637.1: *3* org_i.create_placeholders
     def create_placeholders(self, level, lines_dict, parents):
         """Create placeholders as necessary."""
+        if level <= len(parents):
+            return
+        n = level - len(parents)
+        assert n > 0
         assert level >= 0
-        while level -1 > len(parents):
-            level -= 1
-            parent = parents[-1] if parents else self.root
+        while n > 0:
+            n -= 1
+            parent = parents[-1]
             child = parent.insertAsLastChild()
-            child.h = 'placeholder'
+            child.h = f"placeholder level {len(parents)}"
+            # g.trace('CREATE', parent.h, child.h)
             parents.append(child)
             lines_dict[child.v] = []
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
@@ -63,7 +68,7 @@ class Org_Importer(Importer):
         """Org_Importer.gen_lines. Allocate nodes to lines."""
         assert parent == self.root
         p = self.root
-        parents: List[Position] = []
+        parents: List[Position] = [self.root]
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
@@ -71,12 +76,13 @@ class Org_Importer(Importer):
             if m:
                 level, headline = len(m.group(1)), m.group(2)
                 # Cut back the stack.
-                parents = parents[:level-1]
+                parents = parents[:level]
                 # Create any needed placeholders.
+                # g.trace(f"level: {level} len(parents): {len(parents)}")
                 self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
-                parent =  parents[-1] if parents else self.root
-                # g.trace(f"level: {level} parent: {parent.h:>25} line: {line!r}")
+                parent = parents[-1]
+                # g.trace(f"parent: {parent.h:>25} line: {line!r}")
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!

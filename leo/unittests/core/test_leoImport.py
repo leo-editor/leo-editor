@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -1797,28 +1797,30 @@ class TestOrg(BaseTestImporter):
             (1, 'Section 2',
                 '* Section 2\n'
                 'Sec 2.\n'
-                '\n'
             ),
             (2, 'Section 2-1',
                 '** Section 2-1\n'
                 'Sec 2.1\n'
             ),
-            (3, 'Section 2-1-1'
+            (3, 'Section 2-1-1',
                 '*** Section 2-1-1\n'
                 'Sec 2.1.1\n'
             ),
             (1, 'Section 3',
                 '* Section 3\n'
             ),
-            (4, 'placeholder', ''),
-            (5, 'placeholder', ''),
+            (2, 'placeholder level 2', ''),
+            (3, 'placeholder level 3', ''),
+            (4, 'placeholder level 4', ''),
+            (5, 'placeholder level 5', ''),
             (6, 'Section 3-1-1-1-1-1',
-                '****** Section 3-1-1-1-1-1\n',
+                '****** Section 3-1-1-1-1-1\n'
                 ': Sec 3-1-1-1-1-1\n'
             ),
             (2, 'Section 3.1',
                 '** Section 3.1\n'
                 'Sec 3.1\n'
+                '\n'
             ),
         )
         self.check_outline(p, expected)
