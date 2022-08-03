@@ -64,6 +64,7 @@ class Org_Importer(Importer):
         assert parent == self.root
         p = self.root
         parents: List[Position] = []
+        # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
             m = self.org_pattern.match(line)
@@ -87,15 +88,13 @@ class Org_Importer(Importer):
         if root_lines and not root_lines[-1].endswith('\n'):
             root_lines.append('\n')
         root_lines.extend([
-            '@language ini\n',
+            '@language org\n',
             f"@tabwidth {self.tab_width}\n",
         ])
+        # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
             assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
-        # if self.root.b and not self.root.b.endswith('\n'):
-            # self.root.b += '\n'
-        # self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
         """
