@@ -27,17 +27,16 @@ class Otl_Importer(Importer):
 
     def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
-        from leo.core import leoGlobals as g  ###
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
-        parents: List[Position] = []
+        parents: List[Position] = [self.root]
         for line in lines:
             m = self.otl_body_pattern.match(line)
-            g.trace(repr(m), repr(line))
             if m:
-                parent =  parents[-1] if parents else self.root
-                lines_dict [parent.v].append(line)
+                parent =  parents[-1]
+                # g.trace('body', parent.h, repr(line))
+                lines_dict [parent.v].append(m.group(1) + '\n')
                 continue
             m = self.otl_pattern.match(line)
             if m:
@@ -46,8 +45,10 @@ class Otl_Importer(Importer):
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
                 parent =  parents[-1] if parents else self.root
+                # g.trace('node', level, parent.h, repr(line))
                 child = parent.insertAsLastChild()
                 child.h = m.group(2)
+                parents.append(child)
                 lines_dict [child.v] = []
             else:  # pragma: no cover
                 self.error(f"Bad otl line: {line!r}")
@@ -56,7 +57,7 @@ class Otl_Importer(Importer):
         if root_lines and not root_lines[-1].endswith('\n'):
             root_lines.append('\n')
         root_lines.extend([
-            '@language org\n',
+            '@language otl\n',
             f"@tabwidth {self.tab_width}\n",
         ])
         # Set p.b from the lines_dict.
