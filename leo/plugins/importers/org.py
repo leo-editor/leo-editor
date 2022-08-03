@@ -2,9 +2,9 @@
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
 import re
-from typing import List
+from typing import Dict, List
 from leo.core import leoGlobals as g
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer
@@ -45,7 +45,7 @@ class Org_Importer(Importer):
         return s
 
     #@+node:ekr.20220802153637.1: *3* org_i.create_placeholders
-    def create_placeholders(self, level, parents):
+    def create_placeholders(self, level, lines_dict, parents):
         """Create placeholders as necessary."""
         assert level >= 0
         while level -1 > len(parents):
@@ -54,14 +54,17 @@ class Org_Importer(Importer):
             child = parent.insertAsLastChild()
             child.h = 'placeholder'
             parents.append(child)
+            lines_dict[child.v] = []
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
     def gen_lines(self, lines, parent):
         """Org_Importer.gen_lines. Allocate nodes to lines."""
+        assert parent == self.root
         p = self.root
         parents: List[Position] = []
+        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
             m = self.org_pattern.match(line)
             if m:
@@ -69,19 +72,30 @@ class Org_Importer(Importer):
                 # Cut back the stack.
                 parents = parents[:level]
                 # Create any needed placeholders.
-                self.create_placeholders(level, parents)
+                self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
                 parent =  parents[-1] if parents else self.root
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!
+                lines_dict [child.v] = []
             # Append the line.
             p = parents[-1] if parents else self.root
-            p.b += line
+            lines_dict [p.v].append(line)
         # Add the directives.
-        if self.root.b and not self.root.b.endswith('\n'):
-            self.root.b += '\n'
-        self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
+        root_lines = lines_dict[self.root.v]
+        if root_lines and not root_lines[-1].endswith('\n'):
+            root_lines.append('\n')
+        root_lines.extend([
+            '@language ini\n',
+            f"@tabwidth {self.tab_width}\n",
+        ])
+        for p in self.root.self_and_subtree():
+            assert not p.b, repr(p.b)
+            p.b = ''.join(lines_dict[p.v])
+        # if self.root.b and not self.root.b.endswith('\n'):
+            # self.root.b += '\n'
+        # self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
         """
