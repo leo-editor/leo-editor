@@ -1635,7 +1635,7 @@ class TestOrg(BaseTestImporter):
         p = self.run_test(s)
         expected = (
             (0, 'check_outline ignores the first headline',
-                '@language ini\n'
+                '@language org\n'
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1',
@@ -1707,7 +1707,7 @@ class TestOrg(BaseTestImporter):
             (0, 'check_outline ignores the first headline',
                 self.dedent("""\
                     Intro line.
-                    ATlanguage ini
+                    ATlanguage org
                     ATtabwidth -4
                 """).replace('AT', '@')
             ),
@@ -1759,7 +1759,7 @@ class TestOrg(BaseTestImporter):
         p = self.run_test(s)
         expected = (
             (0, 'check_outline ignores the first headline',
-                '@language ini\n'
+                '@language org\n'
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1',
@@ -1805,7 +1805,7 @@ class TestOrg(BaseTestImporter):
         p = self.run_test(s)
         expected = (
             (0, 'check_outline ignores the first headline',
-                '@language ini\n'
+                '@language org\n'
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1 :tag1:', ''),
