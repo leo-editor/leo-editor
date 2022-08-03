@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -1449,15 +1449,30 @@ class TestMarkdown(BaseTestImporter):
             ),
             (1, 'Top', 'The top section\n\n'),
             (2, 'Section 1',
-                    'section 1, line 1\n',
-                    'section 1, line 2\n',
+                    'section 1, line 1\n'
+                    'section 1, line 2\n'
                     '\n'
             ),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
+            (2, 'Section 2',
+                    'section 2, line 1\n'
+                    '\n'
+            ),
+            (3, 'Section 2.1',
+                    'section 2.1, line 1\n'
+                    '\n'
+            ),
+            (4, 'Section 2.1.1',
+                    'section 2.2.1 line 1\n'
+                    'The next section is empty. It must not be deleted.\n'
+                    '\n'
+            ),
+            (3, 'Section 2.2',
+                    '\n'
+            ),
+            (2, 'Section 3',
+                    'Section 3, line 1\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
