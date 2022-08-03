@@ -1711,7 +1711,6 @@ class TestOrg(BaseTestImporter):
                     ATtabwidth -4
                 """).replace('AT', '@')
             ),
-            # (1, 'placeholder', ''),
             (1, 'Section 1',
                 '* Section 1\n'
                 'Sec 1.\n'
@@ -1722,7 +1721,7 @@ class TestOrg(BaseTestImporter):
                 '\n'
             ),
         )
-        self.check_outline(p, expected) 
+        self.check_outline(p, expected)
     #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
     def test_pattern(self):
 
@@ -1730,13 +1729,11 @@ class TestOrg(BaseTestImporter):
         x = org.Org_Importer(c.importCommands, atAuto=False)
         pattern = x.org_pattern
         table = (
-            # 'body * line',
             '* line 1',
             '** level 2',
         )
         for line in table:
             m = pattern.match(line)
-            # print('%20s ==> (%r)(%r)' % (line, m and m.group(1), m and m.group(2)))
             assert m, repr(line)
     #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
@@ -1765,7 +1762,6 @@ class TestOrg(BaseTestImporter):
                 '@language ini\n'
                 '@tabwidth -4\n'
             ),
-            # (1, 'placeholder', ''),
             (1, 'Section 1',
                 '* Section 1\n'
                 'Sec 1.\n'
