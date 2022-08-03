@@ -32,6 +32,8 @@ class Otl_Importer(Importer):
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         parents: List[Position] = [self.root]
         for line in lines:
+            if not line.strip():
+                continue  # New.
             m = self.otl_body_pattern.match(line)
             if m:
                 parent =  parents[-1]

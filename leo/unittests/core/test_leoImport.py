@@ -1852,7 +1852,6 @@ class TestOtl(BaseTestImporter):
             (3, 'Section 2-1-1', '\t\tSection 2-1-1\n'),
             (1, 'Section 3', ': Sec 3\n'),
             (2, 'Section 3.1', ': Sec 3.1'),
-            (1, ''),  # Due to the added blank line?
         ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
