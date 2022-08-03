@@ -57,7 +57,6 @@ class Org_Importer(Importer):
             parent = parents[-1]
             child = parent.insertAsLastChild()
             child.h = f"placeholder level {len(parents)}"
-            # g.trace('CREATE', parent.h, child.h)
             parents.append(child)
             lines_dict[child.v] = []
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
@@ -78,11 +77,9 @@ class Org_Importer(Importer):
                 # Cut back the stack.
                 parents = parents[:level]
                 # Create any needed placeholders.
-                # g.trace(f"level: {level} len(parents): {len(parents)}")
                 self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
                 parent = parents[-1]
-                # g.trace(f"parent: {parent.h:>25} line: {line!r}")
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!

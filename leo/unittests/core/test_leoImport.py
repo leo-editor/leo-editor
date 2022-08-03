@@ -1835,12 +1835,19 @@ class TestOrg(BaseTestImporter):
         p = self.run_test(s)
         expected = (
             (0, 'check_outline ignores the first headline',
-                '@language org\n'
-                '@tabwidth -4\n'
+                    '@language org\n'
+                    '@tabwidth -4\n'
             ),
-            (1, 'Section 1 :tag1:', ''),
-            (1, 'Section 2 :tag2:', ''),
-            (1, 'Section 3 :tag3:tag4:', ''),
+            (1, 'Section 1 :tag1:',
+                    '* Section 1 :tag1:\n'
+            ),
+            (1, 'Section 2 :tag2:',
+                    '* Section 2 :tag2:\n'
+            ),
+            (1, 'Section 3 :tag3:tag4:',
+                    '* Section 3 :tag3:tag4:\n'
+                    '\n'
+            ),
         )
         self.check_outline(p, expected)
     #@-others
