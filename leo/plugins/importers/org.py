@@ -2,7 +2,9 @@
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
 import re
+from typing import List
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer
@@ -58,7 +60,8 @@ class Org_Importer(Importer):
 
     def gen_lines(self, lines, parent):
         """Org_Importer.gen_lines. Allocate nodes to lines."""
-        p, parents = self.root, []
+        p = self.root
+        parents: List[Position] = []
         for line in lines:
             m = self.org_pattern.match(line)
             if m:
