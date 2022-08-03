@@ -2,7 +2,8 @@
 #@+node:ekr.20140723122936.18150: * @file ../plugins/importers/otl.py
 """The @auto importer for vim-outline files."""
 import re
-from leo.core import leoGlobals as g  ### temp.
+from typing import Dict, List
+from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161124034614.2: ** class Otl_Importer
@@ -19,55 +20,57 @@ class Otl_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines (*** to do)
+    #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines
     # Must match body pattern first.
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
     def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
-        ###
-            # self.vnode_info = {
-                # # Keys are vnodes, values are inner dicts.
-                # parent.v: {
-                    # 'lines': [],
-                # }
-            # }
-            # self.parents = [parent]
-
+        assert parent == self.root
+        # Use a dict instead of creating a new VNode slot.
+        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        parents: List[Position] = []
         for line in lines:
             m = self.otl_body_pattern.match(line)
-            if 0:
-                g.trace(m)  ###
-            ###
-                # if m:
-                    # p = self.parents[-1]
-                    # self.add_line(p, m.group(1))
-                # else:
-                    # m = self.otl_pattern.match(line)
-                    # if m:
-                        # # Cut back the stack, then allocate a new node.
-                        # level = 1 + len(m.group(1))
-                        # self.parents = self.parents[:level]
-                        # self.find_parent(
-                            # level=level,
-                            # h=m.group(2).strip())
-                    # else:  # pragma: no cover
-                        # self.error('Bad otl line: %r' % line)
-    #@+node:ekr.20161125221742.1: *3* otl_i.delete_all_empty_nodes
-    def delete_all_empty_nodes(self, parent):
-        """Override the base class so we *dont* delete empty nodes!"""
-    #@+node:ekr.20161126074028.1: *3* otl_i.post_pass
-    def post_pass(self, parent):
-        """
-        Optional Stage 2 of the importer pipeline, consisting of zero or more
-        substages. Each substage alters nodes in various ways.
-
-        Subclasses may freely override this method, **provided** that all
-        substages use the API for setting body text. Changing p.b directly will
-        cause asserts to fail later in i.finish().
-        """
-        # Do nothing!
+            if m:
+                parent =  parents[-1] if parents else self.root
+                lines_dict [parent.v].append(line)
+                continue
+            m = self.otl_pattern.match(line)
+            if m:
+                # Cut back the stack, then allocate a new node.
+                level = 1 + len(m.group(1))
+                parents = parents[:level]
+                self.create_placeholders(level, lines_dict, parents)
+                child = self.root.insertAsLastChild()
+                child.h = m.group(2)
+                lines_dict [child.v] = []
+            else:  # pragma: no cover
+                self.error(f"Bad otl line: {line!r}")
+        # Add the directives.
+        root_lines = lines_dict[self.root.v]
+        if root_lines and not root_lines[-1].endswith('\n'):
+            root_lines.append('\n')
+        root_lines.extend([
+            '@language org\n',
+            f"@tabwidth {self.tab_width}\n",
+        ])
+        # Set p.b from the lines_dict.
+        for p in self.root.self_and_subtree():
+            assert not p.b, repr(p.b)
+            p.b = ''.join(lines_dict[p.v])
+    #@+node:ekr.20220802164834.1: *3* otl_i.create_placeholders (new)
+    def create_placeholders(self, level, lines_dict, parents):
+        """Create placeholders as necessary."""
+        assert level >= 0
+        while level -1 > len(parents):
+            level -= 1
+            parent = parents[-1] if parents else self.root
+            child = parent.insertAsLastChild()
+            child.h = 'placeholder'
+            parents.append(child)
+            lines_dict[child.v] = []
     #@-others
 #@-others
 importer_dict = {
