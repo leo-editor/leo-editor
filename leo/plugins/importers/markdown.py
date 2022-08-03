@@ -21,7 +21,7 @@ class Markdown_Importer(Importer):
         self.underline_dict = {}
 
     #@+others
-    #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers (*** to do)
+    #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, lines, parent):
         """Node generator for markdown importer."""
         if all(s.isspace() for s in lines):  # pragma: no cover
