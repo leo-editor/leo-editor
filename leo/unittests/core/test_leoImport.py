@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -90,7 +90,7 @@ class BaseTestImporter(LeoUnitTest):
             if i > 0:  # Don't test top-level headline.
                 self.assertEqual(e_h, a_h, msg=msg)
             self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
-            return True, 'ok'
+        return True, 'ok'
 
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
@@ -1418,7 +1418,7 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
 
-        s = """\
+        s = self.dedent("""\
             #Top
             The top section
 
@@ -1440,11 +1440,19 @@ class TestMarkdown(BaseTestImporter):
 
             ##Section 3
             Section 3, line 1
-        """
+        """)
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Top'),
-            (2, 'Section 1'),
+        self.check_outline(p, (
+            (0, 'check_outlines ignores the first headline',
+                    '@language md\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'Top', 'The top section\n\n'),
+            (2, 'Section 1',
+                    'section 1, line 1\n',
+                    'section 1, line 2\n',
+                    '\n'
+            ),
             (2, 'Section 2'),
             (3, 'Section 2.1'),
             (4, 'Section 2.1.1'),
