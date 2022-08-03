@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -1418,7 +1418,7 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
 
-        s = self.dedent("""\
+        s = """\
             #Top
             The top section
 
@@ -1440,7 +1440,7 @@ class TestMarkdown(BaseTestImporter):
 
             ##Section 3
             Section 3, line 1
-        """)
+        """
         p = self.run_test(s)
         self.check_outline(p, (
             (0, 'check_outlines ignores the first headline',
@@ -1820,11 +1820,11 @@ class TestOrg(BaseTestImporter):
     #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
 
-        s = self.dedent("""\
+        s = """\
             * Section 1 :tag1:
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
-        """)
+        """
         p = self.run_test(s)
         expected = (
             (0, 'check_outline ignores the first headline',
@@ -1847,7 +1847,7 @@ class TestOtl(BaseTestImporter):
     #@+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
     def test_otl_1(self):
 
-        s = self.dedent("""\
+        s = """\
             preamble.
             Section 1
             : Sec 1.
@@ -1856,32 +1856,32 @@ class TestOtl(BaseTestImporter):
             \tSection 2-1
             : Sec 2-1
             \t\tSection 2-1-1
-            : Sect 2-1-1
+            : Sec 2-1-1
             Section 3
             : Sec 3
             \tSection 3.1
             : Sec 3.1
-        """)
-        p = self.run_test(s)
+        """
+        p = self.run_test(s) 
         self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'preamble.', 'preamble.\n'),
-            (1, 'Section 1', ': Sec 1.\n'),
-            (1, 'Section 2', ' : Sec 2.\n'),
-            (2, 'Section 2-1', ': Sec 2-1\n'),
-            (3, 'Section 2-1-1', '\t\tSection 2-1-1\n'),
-            (1, 'Section 3', ': Sec 3\n'),
-            (2, 'Section 3.1', ': Sec 3.1'),
+            (1, 'preamble.', ''),
+            (1, 'Section 1', 'Sec 1.\n'),
+            (1, 'Section 2', 'Sec 2.\n'),
+            (2, 'Section 2-1', 'Sec 2-1\n'),
+            (3, 'Section 2-1-1', 'Sec 2-1-1\n'),
+            (1, 'Section 3', 'Sec 3\n'),
+            (2, 'Section 3.1', 'Sec 3.1\n'),
         ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 
         c = self.c
         x = otl.Otl_Importer(c.importCommands, atAuto=False)
-        pattern = x.otl_pattern
+        pattern = x.otl_node_pattern
         table = (
             'body line',
             '\tline 1',

@@ -31,7 +31,6 @@ class Otl_Importer(Importer):
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         parents: List[Position] = [self.root]
-        from leo.core import leoGlobals as g  ###
         for line in lines:
             if not line.strip():
                 continue  # New.
@@ -42,9 +41,9 @@ class Otl_Importer(Importer):
                 continue
             m = self.otl_node_pattern.match(line)
             if m:
-                g.trace('node', repr(line))
                 # Cut back the stack, then allocate a new node.
                 level = 1 + len(m.group(1))
+                ### g.trace('node', 'level', level, repr(line))
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
                 parent =  parents[-1] if parents else self.root
@@ -77,6 +76,15 @@ class Otl_Importer(Importer):
             child.h = 'placeholder'
             parents.append(child)
             lines_dict[child.v] = []
+    #@+node:ekr.20220803162645.1: *3* otl.regularize_whitespace
+    def regularize_whitespace(self, lines):
+        """
+        Otl_Importer.regularize_whitespace.
+        
+        Tabs are part of the otl format. Leave them alone.
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        """
+        return lines  
     #@-others
 #@-others
 importer_dict = {
