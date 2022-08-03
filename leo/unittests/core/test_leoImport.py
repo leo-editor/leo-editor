@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -1840,16 +1840,26 @@ class TestOtl(BaseTestImporter):
             : Sec 3.1
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'preamble.'),
-            (1, 'Section 1'),
-            (1, 'Section 2'),
-            (1, 'Section 2-1'),
-            (1, 'Section 2-1-1'),
-            (1, 'Section 3'),
-            (1, 'Section 3.1'),
+        self.check_outline(p, (
+            (1, 'preamble.', 'preamble.\n'),
+            (1, 'Section 1', ': Sec 1.\n'),
+            (1, 'Section 2', ' : Sec 2.\n'),
+            (1, 'Section 2-1', ': Sec 2-1n'),
+            (1, 'Section 2-1-1', '\t\tSection 2-1-1\n'),
+            (1, 'Section 3', ': Sec 3\n'),
+            (1, 'Section 3.1', ': Sec 3.1'),
             (1, ''),  # Due to the added blank line?
         ))
+        # self.check_headlines(p, (
+            # (1, 'preamble.'),
+            # (1, 'Section 1'),
+            # (1, 'Section 2'),
+            # (1, 'Section 2-1'),
+            # (1, 'Section 2-1-1'),
+            # (1, 'Section 3'),
+            # (1, 'Section 3.1'),
+            # (1, ''),  # Due to the added blank line?
+        # ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 

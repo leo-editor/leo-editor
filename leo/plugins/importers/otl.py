@@ -27,12 +27,14 @@ class Otl_Importer(Importer):
 
     def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
+        from leo.core import leoGlobals as g  ###
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         parents: List[Position] = []
         for line in lines:
             m = self.otl_body_pattern.match(line)
+            g.trace(repr(m), repr(line))
             if m:
                 parent =  parents[-1] if parents else self.root
                 lines_dict [parent.v].append(line)
@@ -43,7 +45,8 @@ class Otl_Importer(Importer):
                 level = 1 + len(m.group(1))
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
-                child = self.root.insertAsLastChild()
+                parent =  parents[-1] if parents else self.root
+                child = parent.insertAsLastChild()
                 child.h = m.group(2)
                 lines_dict [child.v] = []
             else:  # pragma: no cover
