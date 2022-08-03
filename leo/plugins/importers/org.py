@@ -71,11 +71,12 @@ class Org_Importer(Importer):
             if m:
                 level, headline = len(m.group(1)), m.group(2)
                 # Cut back the stack.
-                parents = parents[:level]
+                parents = parents[:level-1]
                 # Create any needed placeholders.
                 self.create_placeholders(level, lines_dict, parents)
                 # Create the child.
                 parent =  parents[-1] if parents else self.root
+                # g.trace(f"level: {level} parent: {parent.h:>25} line: {line!r}")
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!

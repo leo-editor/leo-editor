@@ -72,7 +72,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -83,8 +83,13 @@ class BaseTestImporter(LeoUnitTest):
         actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
         self.assertEqual(len(expected), len(actual))
         for i, actual in enumerate(actual):
-            a_level, a_h, a_str = actual
-            e_level, e_h, e_str = expected[i]
+            try:
+                a_level, a_h, a_str = actual
+                e_level, e_h, e_str = expected[i]
+            except ValueError:
+                g.printObj(actual, tag=f"actual[{i}]")
+                g.printObj(expected[i], tag=f"expected[{i}]")
+                self.fail(f"Error unpacking tuple {i}")
             msg = f"FAIL in node {i} {e_h}"
             self.assertEqual(a_level - p0_level, e_level, msg=msg)
             if i > 0:  # Don't test top-level headline.
@@ -1662,28 +1667,28 @@ class TestOrg(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1',
-                '* Section 1\n'
-                'Sec 1.\n'
+                    '* Section 1\n'
+                    'Sec 1.\n'
             ),
             (1, 'Section 2',
-                '* Section 2\n'
-                'Sec 2.\n'
-                '\n'
+                    '* Section 2\n'
+                    'Sec 2.\n'
             ),
             (2, 'Section 2-1',
-                '** Section 2-1\n'
-                'Sec 2.1\n'
+                    '** Section 2-1\n'
+                    'Sec 2.1\n'
             ),
-            (3, 'Section 2-1-1'
-                '*** Section 2-1-1\n'
-                'Sec 2.1.1\n'
+            (3, 'Section 2-1-1',
+                    '*** Section 2-1-1\n'
+                    'Sec 2.1.1\n'
             ),
             (1, 'Section 3',
-                '* Section 3\n'
+                    '* Section 3\n'
             ),
             (2, 'Section 3.1',
-                '** Section 3.1\n'
-                'Sec 3.1\n'
+                    '** Section 3.1\n'
+                    'Sec 3.1\n'
+                    '\n'
             ),
         )
         self.check_outline(p, expected)
