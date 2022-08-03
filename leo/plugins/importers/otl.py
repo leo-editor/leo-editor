@@ -35,7 +35,6 @@ class Otl_Importer(Importer):
             m = self.otl_body_pattern.match(line)
             if m:
                 parent =  parents[-1]
-                # g.trace('body', parent.h, repr(line))
                 lines_dict [parent.v].append(m.group(1) + '\n')
                 continue
             m = self.otl_pattern.match(line)
@@ -45,7 +44,6 @@ class Otl_Importer(Importer):
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
                 parent =  parents[-1] if parents else self.root
-                # g.trace('node', level, parent.h, repr(line))
                 child = parent.insertAsLastChild()
                 child.h = m.group(2)
                 parents.append(child)
