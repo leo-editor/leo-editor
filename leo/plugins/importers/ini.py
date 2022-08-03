@@ -2,7 +2,8 @@
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 """The @auto importer for .ini files."""
 import re
-from typing import Optional
+from typing import Dict, List, Optional
+from leo.core.leoNodes import VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
@@ -21,14 +22,29 @@ class Ini_Importer(Importer):
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
     def gen_lines(self, lines, parent):
         """Ini_Importer.gen_lines. Allocate nodes to lines."""
+        assert parent == self.root
         p = self.root
+        # Use a dict instead of creating a new VNode slot.
+        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
             headline = self.starts_block(line)
             if headline:
                 p = self.root.insertAsLastChild()
                 p.h = headline
-            p.b += line
-        self.root.b += f"@language ini\n@tabwidth {self.tab_width}\n"
+                lines_dict [p.v] = []
+            lines_dict[p.v].append(line)
+        # Add the directives.
+        root_lines = lines_dict[self.root.v]
+        if root_lines and not root_lines[-1].endswith('\n'):
+            root_lines.append('\n')
+        root_lines.extend([
+            '@language ini\n',
+            f"@tabwidth {self.tab_width}\n",
+        ])
+        # Set p.b from the lines_dict.
+        for p in self.root.self_and_subtree():
+            assert not p.b, repr(p.b)
+            p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
     ini_pattern = re.compile(r'^\s*(\[.*\])')
 
