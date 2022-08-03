@@ -23,7 +23,7 @@ class Otl_Importer(Importer):
     #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines
     # Must match body pattern first.
     otl_body_pattern = re.compile(r'^: (.*)$')
-    otl_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
+    otl_node_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
     def gen_lines(self, lines, parent):
         """Node generator for otl (vim-outline) mode."""
@@ -31,6 +31,7 @@ class Otl_Importer(Importer):
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         parents: List[Position] = [self.root]
+        from leo.core import leoGlobals as g  ###
         for line in lines:
             if not line.strip():
                 continue  # New.
@@ -39,8 +40,9 @@ class Otl_Importer(Importer):
                 parent =  parents[-1]
                 lines_dict [parent.v].append(m.group(1) + '\n')
                 continue
-            m = self.otl_pattern.match(line)
+            m = self.otl_node_pattern.match(line)
             if m:
+                g.trace('node', repr(line))
                 # Cut back the stack, then allocate a new node.
                 level = 1 + len(m.group(1))
                 parents = parents[:level]
