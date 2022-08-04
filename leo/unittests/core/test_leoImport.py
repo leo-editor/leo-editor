@@ -1861,7 +1861,7 @@ class TestOtl(BaseTestImporter):
     #@+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
     def test_otl_1(self):
 
-        s = """\
+        s = """
             preamble.
             Section 1
             : Sec 1.
@@ -1889,6 +1889,28 @@ class TestOtl(BaseTestImporter):
             (3, 'Section 2-1-1', 'Sec 2-1-1\n'),
             (1, 'Section 3', 'Sec 3\n'),
             (2, 'Section 3.1', 'Sec 3.1\n'),
+        ))
+    #@+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
+    def test_otl_placeholder(self):
+
+        s = """
+            Section 1
+            : Sec 1.
+            Section 2
+            : Sec 2.
+            \t\tSection 3
+            : Sec 3.
+        """
+        p = self.run_test(s) 
+        self.check_outline(p, (
+            (0, 'check_outline ignores the first headline',
+                '@language otl\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'Section 1', 'Sec 1.\n'),
+            (1, 'Section 2', 'Sec 2.\n'),
+            (2, 'placeholder level 2', ''),
+            (3, 'Section 3', 'Sec 3.\n'),
         ))
     #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
@@ -2716,81 +2738,84 @@ class TestPython(BaseTestImporter):
         assert ok, msg
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        txt = ('class TestCopyFile(unittest.TestCase):\n'
-                '\n'
-                '    _delete = False\n'
-                '    a00 = 1\n'
-                '    a01 = 1\n'
-                '    a02 = 1\n'
-                '    a03 = 1\n'
-                '    a04 = 1\n'
-                '    a05 = 1\n'
-                '    a06 = 1\n'
-                '    a07 = 1\n'
-                '    a08 = 1\n'
-                '    a09 = 1\n'
-                '    a10 = 1\n'
-                '    a11 = 1\n'
-                '    a12 = 1\n'
-                '    a13 = 1\n'
-                '    a14 = 1\n'
-                '    a15 = 1\n'
-                '    a16 = 1\n'
-                '    a17 = 1\n'
-                '    a18 = 1\n'
-                '    a19 = 1\n'
-                '    a20 = 1\n'
-                '    a21 = 1\n'
-                '    class Faux(object):\n'
-                '        _entered = False\n'
-                '        _exited_with = None # type: tuple\n'
-                '        _raised = False\n'
-              )
-        exp_nodes = [
+        txt = """\
+            class TestCopyFile(unittest.TestCase):
+
+                _delete = False
+                a00 = 1
+                a01 = 1
+                a02 = 1
+                a03 = 1
+                a04 = 1
+                a05 = 1
+                a06 = 1
+                a07 = 1
+                a08 = 1
+                a09 = 1
+                a10 = 1
+                a11 = 1
+                a12 = 1
+                a13 = 1
+                a14 = 1
+                a15 = 1
+                a16 = 1
+                a17 = 1
+                a18 = 1
+                a19 = 1
+                a20 = 1
+                a21 = 1
+                class Faux(object):
+                    _entered = False
+                    _exited_with = None # type: tuple
+                    _raised = False
+            """
+        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
+        p = self.run_test(txt)
+        self.check_outline(p, (
             (0, 'ignored h',
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'TestCopyFile',
-                       'class TestCopyFile(unittest.TestCase):\n'
-                       '\n'
-                       '    _delete = False\n'
-                       '    a00 = 1\n'
-                       '    a01 = 1\n'
-                       '    a02 = 1\n'
-                       '    a03 = 1\n'
-                       '    a04 = 1\n'
-                       '    a05 = 1\n'
-                       '    a06 = 1\n'
-                       '    a07 = 1\n'
-                       '    a08 = 1\n'
-                       '    a09 = 1\n'
-                       '    a10 = 1\n'
-                       '    a11 = 1\n'
-                       '    a12 = 1\n'
-                       '    a13 = 1\n'
-                       '    a14 = 1\n'
-                       '    a15 = 1\n'
-                       '    a16 = 1\n'
-                       '    a17 = 1\n'
-                       '    a18 = 1\n'
-                       '    a19 = 1\n'
-                       '    a20 = 1\n'
-                       '    a21 = 1\n'
-                       '    @others\n'
+            (1, 'TestCopyFile', self.dedent("""\
+                        class TestCopyFile(unittest.TestCase):
+
+                            _delete = False
+                            a00 = 1
+                            a01 = 1
+                            a02 = 1
+                            a03 = 1
+                            a04 = 1
+                            a05 = 1
+                            a06 = 1
+                            a07 = 1
+                            a08 = 1
+                            a09 = 1
+                            a10 = 1
+                            a11 = 1
+                            a12 = 1
+                            a13 = 1
+                            a14 = 1
+                            a15 = 1
+                            a16 = 1
+                            a17 = 1
+                            a18 = 1
+                            a19 = 1
+                            a20 = 1
+                            a21 = 1
+                            ATothers
+                """).replace('AT', '@')
             ),
-            (2, 'Faux',
-                       'class Faux(object):\n'
-                       '    _entered = False\n'
-                       '    _exited_with = None # type: tuple\n'
-                       '    _raised = False\n\n'
-            )
-        ]
-        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+            (2, 'Faux', self.dedent("""\
+                        class Faux(object):
+                            _entered = False
+                            _exited_with = None # type: tuple
+                            _raised = False
+
+                """)
+            ),
+        ))
+       
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
     def test_nested_classes_with_async(self):
         txt = ('class TestCopyFile(unittest.TestCase):\n'

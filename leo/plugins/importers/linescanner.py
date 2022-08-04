@@ -460,7 +460,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace, trace_body = False, True
+        trace, trace_body = True, True
         if trace:
             print('')
             g.trace('outer_level', outer_level)

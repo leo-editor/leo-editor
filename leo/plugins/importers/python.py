@@ -49,7 +49,7 @@ class Python_Importer(Importer):
         # An underindented string.
         n = len(s) - len(s.lstrip())
         # pylint: disable=no-else-return
-        if 1:  # Legacy
+        if 0:  # Legacy
             return f'\\\\-{i-n}.{s[n:]}'
         else:
             return s[n:]
@@ -92,6 +92,7 @@ class Python_Importer(Importer):
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
             return None
+        ### if line.strip().startswith('class'): g.pdb()  ###
         m = self.class_pat.match(line) or self.def_pat.match(line)
         if not m:
             return None
