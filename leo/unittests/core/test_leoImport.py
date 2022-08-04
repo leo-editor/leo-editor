@@ -1913,7 +1913,7 @@ class TestOtl(BaseTestImporter):
             \tSection 3.1
             : Sec 3.1
         """
-        p = self.run_test(s) 
+        p = self.run_test(s)
         self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
                 '@language otl\n'
@@ -1938,7 +1938,7 @@ class TestOtl(BaseTestImporter):
             \t\tSection 3
             : Sec 3.
         """
-        p = self.run_test(s) 
+        p = self.run_test(s)
         self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
                 '@language otl\n'
@@ -2040,7 +2040,7 @@ class TestPascal(BaseTestImporter):
                     '{ Public declarations }\n'
                     'end;\n'
                     '\n'
-                    'var\n'  
+                    'var\n'
             ),
             (2, 'Form1: TForm1;',
                     'Form1: TForm1;\n'
@@ -2886,7 +2886,7 @@ class TestPython(BaseTestImporter):
                 """)
             ),
         ))
-       
+
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
     def test_nested_classes_with_async(self):
         txt = ('class TestCopyFile(unittest.TestCase):\n'

@@ -84,11 +84,11 @@ class Otl_Importer(Importer):
     def regularize_whitespace(self, lines):
         """
         Otl_Importer.regularize_whitespace.
-        
+
         Tabs are part of the otl format. Leave them alone.
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         """
-        return lines  
+        return lines
     #@-others
 #@-others
 importer_dict = {

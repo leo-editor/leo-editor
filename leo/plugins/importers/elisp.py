@@ -8,7 +8,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
 class Elisp_Importer(Importer):
     """The importer for the elisp lanuage."""
-    
+
     elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
     def __init__(self, importCommands, **kwargs):

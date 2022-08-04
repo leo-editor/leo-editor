@@ -289,7 +289,7 @@ class Importer:
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
-            
+
         # Additional prepass, for pascal.
         self.gen_lines_prepass()
 
@@ -413,7 +413,7 @@ class Importer:
     def get_intro(self, row: int, col: int) -> int:
         """
         Return the number of preceeding "intro lines" that should be added to this class or def.
-        
+
         i.is_intro_line defines what an intro line is. By default it is a
         single-line comment at the same indentation as col.
         """
@@ -628,7 +628,7 @@ class Importer:
         """Return the effective parent.
 
         This is overridden by the RstScanner class."""
-        
+
         ### To be removed. ###
 
         return parent

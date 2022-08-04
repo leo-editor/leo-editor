@@ -9,7 +9,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
 class Pascal_Importer(Importer):
     """The importer for the pascal lanuage."""
-    
+
     pascal_start_pat1 = re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n')
     pascal_start_pat2 = re.compile(r'^interface\b')
 
