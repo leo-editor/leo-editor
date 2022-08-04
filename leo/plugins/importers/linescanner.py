@@ -289,6 +289,9 @@ class Importer:
         for line in lines:
             state = self.scan_line(line, state)
             self.line_states.append(state)
+            
+        # Additional prepass, for pascal.
+        self.gen_lines_prepass()
 
         if trace and trace_states:
             g.trace(f"{self.__class__.__name__} states & lines...")
@@ -354,6 +357,10 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
+    #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
+    def gen_lines_prepass(self):
+        """A hook for pascal. Called by i.gen_lines()."""
+        pass
     #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
@@ -402,16 +409,6 @@ class Importer:
             decl_level = decl_level,
             name = self.headline,
         )
-    #@+node:ekr.20220729070924.1: *5* i.is_intro_line
-    def is_intro_line(self, n: int, col: int) -> bool:
-        """
-        Return True if line n is a comment line that starts at the give column.
-        """
-        line = self.lines[n]
-        return (
-            line.strip().startswith(self.single_comment)
-            and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
-        )
     #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
@@ -437,6 +434,16 @@ class Importer:
                 break
         return row - i
 
+    #@+node:ekr.20220729070924.1: *5* i.is_intro_line
+    def is_intro_line(self, n: int, col: int) -> bool:
+        """
+        Return True if line n is a comment line that starts at the give column.
+        """
+        line = self.lines[n]
+        return (
+            line.strip().startswith(self.single_comment)
+            and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
+        )
     #@+node:ekr.20220727075027.1: *5* i.make_node (trace)
     def make_node(self,
         p: Position,
@@ -463,7 +470,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace, trace_body = False, True
+        trace, trace_body = False, False
         if trace:
             print('')
             g.trace('outer_level', outer_level)
@@ -545,23 +552,6 @@ class Importer:
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
-    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
-    def new_starts_block(self, i: int) -> Optional[int]:
-        """
-        Return None if lines[i] does not start a class, function or method.
-
-        Otherwise, return the index of the first line of the body and set self.headline.
-        """
-        lines, line_states = self.lines, self.line_states
-        line = lines[i]
-        if line.isspace() or line_states[i].context:
-            return None
-        prev_state = line_states[i - 1] if i > 0 else self.ScanState()
-        this_state = line_states[i]
-        if this_state.level() > prev_state.level():
-            self.headline = self.clean_headline(lines[i])
-            return i + 1
-        return None
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
@@ -587,6 +577,23 @@ class Importer:
                 return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
 
+    #@+node:ekr.20220728130253.1: *5* i.new_starts_block
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        lines, line_states = self.lines, self.line_states
+        line = lines[i]
+        if line.isspace() or line_states[i].context:
+            return None
+        prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+        this_state = line_states[i]
+        if this_state.level() > prev_state.level():
+            self.headline = self.clean_headline(lines[i])
+            return i + 1
+        return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
     #@+node:ekr.20211118082436.1: *4* i.dump_tree
     def dump_tree(self, root, tag=None):
@@ -621,6 +628,9 @@ class Importer:
         """Return the effective parent.
 
         This is overridden by the RstScanner class."""
+        
+        ### To be removed. ###
+
         return parent
     #@+node:ekr.20161108131153.9: *4* i.clean_headline
     def clean_headline(self, s, p=None):

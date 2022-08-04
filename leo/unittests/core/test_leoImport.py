@@ -2014,7 +2014,14 @@ class TestPascal(BaseTestImporter):
             (0, 'check_outline ignores the first headline',
                     'unit Unit1;\n'
                     '\n'
-                    'interface\n'
+                    '@others\n'
+                    'end. // interface\n'
+                    '\n'
+                    '@language pascal\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'interface',
+                'interface\n'
                     '\n'
                     'uses\n'
                     'Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,\n'
@@ -2024,12 +2031,8 @@ class TestPascal(BaseTestImporter):
                     'type\n'
                     'TForm1 = class(TForm)\n'
                     '@others\n'
-                    'end. // interface\n'
-                    '\n'
-                    '@language pascal\n'
-                    '@tabwidth -4\n'
             ),
-            (1, 'procedure FormCreate',
+            (2, 'procedure FormCreate',
                     'procedure FormCreate(Sender: TObject);\n'
                     'private\n'
                     '{ Private declarations }\n'
@@ -2037,9 +2040,9 @@ class TestPascal(BaseTestImporter):
                     '{ Public declarations }\n'
                     'end;\n'
                     '\n'
+                    'var\n'  
             ),
-            (1, 'var',
-                    'var\n'
+            (2, 'Form1: TForm1;',
                     'Form1: TForm1;\n'
                     '\n'
                     'implementation\n'
@@ -2047,7 +2050,7 @@ class TestPascal(BaseTestImporter):
                     '{$R *.dfm}\n'
                     '\n'
             ),
-            (1, 'procedure TForm1.FormCreate',
+            (2, 'procedure TForm1.FormCreate',
                     'procedure TForm1.FormCreate(Sender: TObject);\n'
                     'var\n'
                     'x,y: double;\n'
@@ -2845,7 +2848,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'TestCopyFile', self.dedent("""\
+            (1, 'class TestCopyFile', self.dedent("""\
                         class TestCopyFile(unittest.TestCase):
 
                             _delete = False
