@@ -10,7 +10,6 @@ import sys
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
-# Import all tested scanners.
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
 from leo.plugins.importers.javascript import JS_Importer, JsLexer, JS_ScanState
@@ -18,7 +17,6 @@ import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
-import leo.plugins.importers.pascal as pascal
 import leo.plugins.importers.xml as xml
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
@@ -584,14 +582,32 @@ class TestElisp(BaseTestImporter):
             (defun abc (a b)
                (+ 1 2 3))
 
-            ; comm
+            ; comment re cde
             (defun cde (a b)
                (+ 1 2 3))
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'defun abc'),
-            (1, 'defun cde'),
+        self.check_outline(p, (
+            (0, 'check_outline ignores the first headline',
+                    '@others\n'
+                    '@language lisp\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'defun abc',
+                    ';;; comment\n'
+                    ';;; continue\n'
+                    ';;;\n'
+                    '\n'
+                    '(defun abc (a b)\n'
+                    '   (+ 1 2 3))\n'
+                    '\n'
+            ),
+            (1, 'defun cde',
+                    '; comment re cde\n'
+                    '(defun cde (a b)\n'
+                    '   (+ 1 2 3))\n'
+                    '\n'
+            ),
         ))
 
     #@-others
@@ -1994,23 +2010,54 @@ class TestPascal(BaseTestImporter):
             end. // interface
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'interface'),
-            (2, 'procedure FormCreate'),
-            (2, 'procedure TForm1.FormCreate'),
-        ))
-    #@+node:ekr.20210904065459.130: *3* TestPascal.test_methods
-    def test_methods(self):
-
-        c = self.c
-        x = pascal.Pascal_Importer(c.importCommands, atAuto=False)
-        table = (
-            ('procedure TForm1.FormCreate(Sender: TObject);\n', 'procedure TForm1.FormCreate'),
-        )
-        state = g.Bunch(context='')
-        for line, cleaned in table:
-            assert x.starts_block(0, [line], state, state)
-            self.assertEqual(x.clean_headline(line), cleaned)
+        self.check_outline(p, (
+            (0, 'check_outline ignores the first headline',
+                    'unit Unit1;\n'
+                    '\n'
+                    'interface\n'
+                    '\n'
+                    'uses\n'
+                    'Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,\n'
+                    'Forms,\n'
+                    'Dialogs;\n'
+                    '\n'
+                    'type\n'
+                    'TForm1 = class(TForm)\n'
+                    '@others\n'
+                    'end. // interface\n'
+                    '\n'
+                    '@language pascal\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'procedure FormCreate',
+                    'procedure FormCreate(Sender: TObject);\n'
+                    'private\n'
+                    '{ Private declarations }\n'
+                    'public\n'
+                    '{ Public declarations }\n'
+                    'end;\n'
+                    '\n'
+            ),
+            (1, 'var',
+                    'var\n'
+                    'Form1: TForm1;\n'
+                    '\n'
+                    'implementation\n'
+                    '\n'
+                    '{$R *.dfm}\n'
+                    '\n'
+            ),
+            (1, 'procedure TForm1.FormCreate',
+                    'procedure TForm1.FormCreate(Sender: TObject);\n'
+                    'var\n'
+                    'x,y: double;\n'
+                    'begin\n'
+                    'x:= 4;\n'
+                    'Y := x/2;\n'
+                    'end;\n'
+                    '\n'
+            ),
+         ))
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):

@@ -272,7 +272,7 @@ class Importer:
             else:
                 g.es(message)
         return ok
-    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace, adds @language...)
+    #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
     def gen_lines(self, lines, parent):
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
@@ -415,7 +415,10 @@ class Importer:
     #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
-        Return the number of preceeding lines that should be added to this class or def.
+        Return the number of preceeding "intro lines" that should be added to this class or def.
+        
+        i.is_intro_line defines what an intro line is. By default it is a
+        single-line comment at the same indentation as col.
         """
         lines =self.lines
 
@@ -460,7 +463,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace, trace_body = False, False
+        trace, trace_body = False, True
         if trace:
             print('')
             g.trace('outer_level', outer_level)
@@ -539,7 +542,6 @@ class Importer:
                 )
             else:
                 # Just set the body.
-                ### if trace: g.trace('NO INNER DEFS')
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
@@ -562,7 +564,7 @@ class Importer:
         return None
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
-        """Return the index of line after the last line of the block."""
+        """Return the index of line *after* the last line of the block."""
         trace = False
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
@@ -570,7 +572,7 @@ class Importer:
         # The opening state, *before* lines[i].
         state0_level = -1 if i == 0 else  line_states[i-1].level()
         if trace:
-            g.trace(f"----- Entry i: {i} state0level: {state0_level} {lines[max(0, i-1)]!r}")
+            g.trace(f"----- Entry i: {i} state0 level: {state0_level} {lines[max(0, i-1)]!r}")
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
@@ -580,9 +582,9 @@ class Importer:
                 and not state.in_context()
                 and state.level() < state0_level
             ):
-                if trace:
-                    g.trace('FOUND', i + 1)
-                return i + 1
+                # Remove lines that would be added later by get_intro!
+                lws = self.get_int_lws(lines[i + 1])
+                return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
 
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages

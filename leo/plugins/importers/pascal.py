@@ -2,8 +2,8 @@
 #@+node:ekr.20140723122936.18147: * @file ../plugins/importers/pascal.py
 """The @auto importer for the pascal language."""
 import re
-from typing import Any, Dict, List
-from leo.core import leoGlobals as g
+from typing import Any, Dict, List, Optional
+from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
@@ -28,21 +28,6 @@ class Pascal_Importer(Importer):
         m = self.pascal_clean_pattern.match(s)
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
 
-    #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
-    def cut_stack(self, new_state, stack):
-        """Cut back the stack until stack[-1] matches new_state."""
-        # This underflow could happen as the result of extra 'end' statement in user code.
-        if len(stack) > 1:
-            stack.pop()
-
-    #@+node:ekr.20161127104208.1: *3* pascal_i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        """True if line ends a function or procedure."""
-        if prev_state.context:
-            return False
-        ls = line.lstrip()
-        val = g.match_word(ls, 0, 'end')
-        return val
     #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict
     #@@nobeautify
 
@@ -80,22 +65,49 @@ class Pascal_Importer(Importer):
                 ']':    [('len', ']', context, (0,0,-1))],
             }
         return d
-    #@+node:ekr.20161126182009.1: *3* pascal_i.starts_block
-    pascal_pattern_table = (
-        re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n'),
-        re.compile(r'^(interface)\s*\n')
-    )
+    #@+node:ekr.20220804080141.1: *3* pascal_i.new_starts_block
+    pascal_start_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n')
 
-    def starts_block(self, i, lines, new_state, prev_state):
-        """True if the line starts a block."""
-        if prev_state.context:
-            return False
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        lines, line_states = self.lines, self.line_states
         line = lines[i]
-        for pattern in self.pascal_pattern_table:
-            m = pattern.match(line)
-            if m:
-                return True
-        return False
+        if line.isspace() or line_states[i].context:
+            return None
+        m = self.pascal_start_pattern.match(line)
+        if m:
+            self.headline = self.clean_headline(line)
+            return i + 1
+        return None
+    #@+node:ekr.20220804082819.1: *3* pascal_i.new_skip_block (override)
+    def new_skip_block(self, i: int) -> int:
+        """Return the index of line *after* the last line of the block."""
+        trace = False
+        lines, line_states = self.lines, self.line_states
+        if i >= len(lines):
+            return len(lines)
+        # The opening state, *before* lines[i].
+        state0_level = -1 if i == 0 else  line_states[i-1].level()
+        if trace:
+            g.trace(f"----- Entry i: {i} state0 level: {state0_level} {lines[max(0, i-1)]!r}")
+        while i + 1 < len(lines):
+            i += 1
+            line = lines[i]
+            state = line_states[i]
+            if (
+                not line.isspace()
+                and not state.in_context()
+                and g.match_word(line.lstrip(), 0, 'end')
+            ):
+                # Remove lines that would be added later by get_intro!
+                lws = self.get_int_lws(lines[i + 1])
+                return i + 1 - self.get_intro(i + 1, lws)
+        return len(lines)
+
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:
@@ -116,6 +128,9 @@ class Pascal_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220804080833.1: *3* pascal_state.in_context
+    def in_context(self) -> bool:
+        return bool(self.context)
     #@+node:ekr.20161126171035.7: *3* pascal_state.level
     def level(self) -> int:
         """Pascal_ScanState.level."""
