@@ -92,7 +92,6 @@ class Python_Importer(Importer):
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
             return None
-        ### if line.strip().startswith('class'): g.pdb()  ###
         m = self.class_pat.match(line) or self.def_pat.match(line)
         if not m:
             return None
@@ -148,7 +147,7 @@ class Python_Importer(Importer):
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             decl_level = decl_level,
-            name = m.group(2),
+            name = self.clean_headline(self.lines[decl_line])  ###
         )
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify

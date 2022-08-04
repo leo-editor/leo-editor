@@ -479,17 +479,20 @@ class TestCython(BaseTestImporter):
                     '@tabwidth -4\n'
             ),
             (1, 'cdef double square_and_add',
-                    '"""Compute x^2 + x as double.\n'
+                    'cdef double square_and_add (double x):\n'
+                    '    """Compute x^2 + x as double.\n'
                     '\n'
-                    'This is a cdef function that can be called from within\n'
-                    'a Cython program, but not from Python.\n'
-                    '"""\n'
-                    'return pow(x, 2.0) + x\n'
+                    '    This is a cdef function that can be called from within\n'
+                    '    a Cython program, but not from Python.\n'
+                    '    """\n'
+                    '    return pow(x, 2.0) + x\n'
                     '\n'
             ),
             (1, 'cpdef print_result',
-                    '"""This is a cpdef function that can be called from Python."""\n'
-                    'print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
+                    'cpdef print_result (double x):\n'
+                    '    """This is a cpdef function that can be called from Python."""\n'
+                    '    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))\n'
+                    '\n'
             ),
         )
         self.check_outline(p, expected)
