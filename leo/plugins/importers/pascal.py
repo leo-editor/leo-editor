@@ -83,17 +83,13 @@ class Pascal_Importer(Importer):
             self.headline = self.clean_headline(line)
             return i + 1
         return None
-    #@+node:ekr.20220804082819.1: *3* pascal_i.new_skip_block (override)
+    #@+node:ekr.20220804082819.1: *3* pascal_i.new_skip_block
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
-        trace = False
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)
         # The opening state, *before* lines[i].
-        state0_level = -1 if i == 0 else  line_states[i-1].level()
-        if trace:
-            g.trace(f"----- Entry i: {i} state0 level: {state0_level} {lines[max(0, i-1)]!r}")
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
@@ -107,7 +103,6 @@ class Pascal_Importer(Importer):
                 lws = self.get_int_lws(lines[i + 1])
                 return i + 1 - self.get_intro(i + 1, lws)
         return len(lines)
-
     #@-others
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:
