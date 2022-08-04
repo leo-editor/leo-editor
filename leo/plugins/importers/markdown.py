@@ -3,7 +3,6 @@
 """The @auto importer for the markdown language."""
 import re
 from typing import Dict, List
-from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -66,36 +65,6 @@ class Markdown_Importer(Importer):
         for p in self.root.self_and_subtree():
             assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
-    #@+node:ekr.20161124193148.2: *4* md_i.find_parent
-    def find_parent(self, level, lines_dict, h):
-        """
-        Return the parent at the indicated level, allocating
-        place-holder nodes as necessary.
-        """
-        assert level >= 0
-        while level < len(self.stack):
-            self.stack.pop()
-        top = self.stack[-1]
-        if 1:  # Experimental fix for #877.
-            if level > len(self.stack):  # pragma: no cover
-                print('')
-                g.trace('Unexpected markdown level for: %s' % h)
-                print('')
-            while level > len(self.stack):
-                child = self.create_child_node(
-                    parent=top,
-                    line=None,
-                    headline='INSERTED NODE'
-                )
-                self.stack.append(child)
-        assert level == len(self.stack), (level, len(self.stack))
-        child = top.insertAsLastChild()
-        child.h = h
-        lines_dict [child.v] = []
-        self.stack.append(child)
-        assert self.stack
-        assert 0 <= level < len(self.stack), (level, len(self.stack))
-        return self.stack[level]
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
     # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
@@ -148,7 +117,24 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
     def make_markdown_node(self, level, lines_dict, name):
         """Create a new node."""
-        self.find_parent(level, lines_dict, name)
+        self.stack = self.stack[:level]
+        # #877: Insert placeholder nodes.
+        while level > len(self.stack):
+            parent = self.stack[-1]
+            child = parent.insertAsLastChild()
+            child.h = f"Inserted node at level {level}"
+            lines_dict [child.v] = []
+            self.stack.append(child)
+        assert level == len(self.stack), (level, len(self.stack))
+        parent = self.stack[-1]
+        child = parent.insertAsLastChild()
+        child.h = name
+        lines_dict [child.v] = []
+        self.stack.append(child)
+        assert self.stack
+        assert 0 <= level < len(self.stack), (level, len(self.stack))
+        return self.stack[level]
+
     #@-others
 #@-others
 importer_dict = {
