@@ -1007,36 +1007,29 @@ class TestIni(BaseTestImporter):
             file = "payroll.dat"
         '''
         p = self.run_test(s)
-        expected = (
+        self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
-                self.dedent("""\
-                    ; last modified 1 April 2001 by John Doe
-                    ATlanguage ini
-                    ATtabwidth -4
-                """).replace('AT', '@')
+                    '; last modified 1 April 2001 by John Doe\n'
+                    '@language ini\n'
+                    '@tabwidth -4\n'
             ),
             (1, '[owner]',
-                self.dedent("""\
-
-                    [owner]
-                    name=John Doe
-                    organization=Acme Widgets Inc.
-
-                    ; [ not a section ]
-
-                """)
+                    '[owner]\n'
+                    'name=John Doe\n'
+                    'organization=Acme Widgets Inc.\n'
+                    '\n'
+                    '; [ not a section ]\n'
+                    '\n'
             ),
             (1, '[database]',
-                self.dedent("""\
-                    [database]
-                    server=192.0.2.62
-                        ; use IP address
-                    port=143
-                    file = "payroll.dat"
-                """)
+                    '[database]\n'
+                    'server=192.0.2.62\n'
+                    '    ; use IP address\n'
+                    'port=143\n'
+                    'file = "payroll.dat"\n'
+                    '\n'
             ),
-        )
-        self.check_outline(p, expected)
+        ))
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
