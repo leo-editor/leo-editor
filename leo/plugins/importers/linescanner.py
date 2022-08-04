@@ -460,7 +460,7 @@ class Importer:
           definitions: The list of the definitions covering p.
         """
         #@-<< Importer.make_node docstring >>
-        trace, trace_body = True, True
+        trace, trace_body = False, False
         if trace:
             print('')
             g.trace('outer_level', outer_level)
@@ -550,18 +550,15 @@ class Importer:
 
         Otherwise, return the index of the first line of the body and set self.headline.
         """
-        i0, lines, line_states = i, self.lines, self.line_states
+        lines, line_states = self.lines, self.line_states
         line = lines[i]
         if line.isspace() or line_states[i].context:
             return None
-        # Scan ahead at most 10 lines until an open { is seen.
-        while i < len(lines) and i <= i0 + 10:
-            prev_state = line_states[i - 1] if i > 0 else self.ScanState()
-            this_state = line_states[i]
-            if this_state.level() > prev_state.level():
-                self.headline = self.clean_headline(lines[i])
-                return i + 1
-            i += 1
+        prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+        this_state = line_states[i]
+        if this_state.level() > prev_state.level():
+            self.headline = self.clean_headline(lines[i])
+            return i + 1
         return None
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:

@@ -522,10 +522,35 @@ class TestDart(BaseTestImporter):
         }
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'hello'),
-            (1, 'printNumber'),
-            (1, 'void main'),
+        self.check_outline(p, (
+            (0, 'check_outline ignores the first headline',
+                    "var name = 'Bob';\n"
+                    '\n'
+                    '@others\n'
+                    '@language dart\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'hello',
+                    'hello() {\n'
+                    "  print('Hello, World!');\n"
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'printNumber',
+                    '// Define a function.\n'
+                    'printNumber(num aNumber) {\n'
+                    "  print('The number is $aNumber.'); // Print to console.\n"
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'void main',
+                    '// This is where the app starts executing.\n'
+                    'void main() {\n'
+                    '  var number = 42; // Declare and initialize a variable.\n'
+                    '  printNumber(number); // Call a function.\n'
+                    '}\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.127: *3* TestDart.test_clean_headline
     def test_clean_headline(self):
