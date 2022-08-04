@@ -147,7 +147,7 @@ class Python_Importer(Importer):
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             decl_level = decl_level,
-            name = self.clean_headline(self.lines[decl_line])  ###
+            name = self.clean_headline(self.lines[decl_line])
         )
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
