@@ -71,11 +71,9 @@ class BaseTestImporter(LeoUnitTest):
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
         if 0: # Dump headlines of actual results.
-            print('')
             self.dump_headlines(p, tag='Actual headlines...')
 
         if 1: # Dump actual results, including bodies.
-            print('')
             self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.
@@ -121,6 +119,7 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20220805071838.1: *3* BaseTestImporter.dump_headlines
     def dump_headlines(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
+        print('')
         if tag:
             print(tag)
         for p in root.self_and_subtree():
@@ -128,6 +127,7 @@ class BaseTestImporter(LeoUnitTest):
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
+        print('')
         if tag:
             print(tag)
         for p in root.self_and_subtree():
