@@ -504,7 +504,7 @@ class Importer:
 
         last = start  # The last used line.
         
-        ### g.trace('others_indent', others_indent, 'inner_indent', inner_indent)
+        g.trace('others_indent', others_indent, 'inner_indent', inner_indent)  ###
 
         # Calculate head, the lines preceding the @others.
         decl_line1 = new_outer_defs[0].decl_line1
@@ -544,7 +544,7 @@ class Importer:
                     start=decl_line1,
                     start_b=start_b,
                     end=inner_def.body_line9,
-                    others_indent=others_indent + inner_def.body_indent,
+                    others_indent=others_indent + inner_indent,
                     inner_indent=inner_def.body_indent,
                     outer_level=new_outer_level,
                     definitions=inner_defs,

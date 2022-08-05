@@ -259,24 +259,21 @@ class Python_ScanState:
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
 def do_import(c, s, parent):
 
+    ### g.trace('*** NEW_PYTHON_IMPORTER ***', NEW_PYTHON_IMPORTER)  ###
+
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
         Python_Importer(c.importCommands).run(s, parent)
     else:
-        g.trace('Calling split_root')
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')
             return False
+
         add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
         split_root(add_class_to_headlines, parent, s.splitlines(True))
+        
         # Add *trailing* lines, just line the Importer class.
         parent.b += '@language python\n@tabwidth -4\n'
-        ### Wrong place for this!
-            # # Note: some unit tests change this setting.
-            # if c.config.getBool('put-class-in-imported-headlines'):
-                # for p in parent.subtree():  # Don't change parent.h.
-                    # if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                        # p.h = f'class {p.h}'
     return True
 #@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
 SPLIT_THRESHOLD = 10
@@ -294,7 +291,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-    trace = True
+    trace = False
     rawtokens: List
 
     #@+others
@@ -466,12 +463,10 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                 new_body = body(last, decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = declaration_headline(new_body)  # #2500
-                ### g.trace('child1.h', child1.h)  ###
                 child1.b = new_body
                 last = decl_line1
             child = p.insertAsLastChild()
             child.h = inner_def.name
-            ### g.trace('child.h', inner_def)  ###
 
             # Compute inner definitions.
             inner_definitions = [z for z in definitions if
