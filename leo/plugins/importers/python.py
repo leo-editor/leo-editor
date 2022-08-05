@@ -458,7 +458,6 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         # *including* lines *between* inner defitions.
         last = decl_line1  # The last @other line that has been allocated.
         for inner_def in inner_defs:
-            body_line9 = inner_def.body_line9
             decl_line1 = inner_def.decl_line1
             # Add a child for declaration lines between two inner definitions.
             if decl_line1 > last:
@@ -472,7 +471,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
 
             # Compute inner definitions.
             inner_definitions = [z for z in definitions if
-                z.decl_line1 > decl_line1 and z.body_line9 <= body_line9
+                z.decl_line1 > decl_line1 and z.body_line9 <= inner_def.body_line9
             ]
             if inner_definitions:
                 # Recursively split this node.
@@ -480,15 +479,15 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                     p=child,
                     start=decl_line1,
                     start_b=start_b,
-                    end=body_line9,
+                    end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=inner_def.body_indent,
                     definitions=inner_definitions,
                 )
             else:
                 # Just set the body.
-                child.b = body(decl_line1, body_line9, inner_indent)
-            last = body_line9
+                child.b = body(decl_line1, inner_def.body_line9, inner_indent)
+            last = inner_def.body_line9
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
