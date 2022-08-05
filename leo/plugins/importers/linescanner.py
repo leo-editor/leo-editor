@@ -315,7 +315,7 @@ class Importer:
         self.make_node(
             p=parent, start=0, end=len(lines),
             others_indent=0, inner_indent=0,
-            outer_level = -1,
+            ### outer_level = -1,
             definitions=all_definitions,
         )
         # Add trailing lines.
@@ -374,7 +374,7 @@ class Importer:
         first_body_line = self.new_starts_block(i)
         if first_body_line is None:
             return None
-            
+
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
@@ -447,63 +447,65 @@ class Importer:
         start: int,  # The first line to allocate.
         end: int,  # The last line to allocate.
         others_indent: int,  # @others indentation (to be stripped from left).
-        outer_level: int,  # The logical nesting level of inner defs.
         inner_indent: int,  # The indentation of all of the inner definitions.
         definitions: List[block_tuple],  # The definitions occuring within lines[start : end].
     ) -> None:
         """
         Allocate lines[start : end] to p.b or descendants of p.
         """
-        trace, trace_body = False, False
+        trace, trace_body = True, False
         if trace:
             print('')
-            g.trace('outer_level', outer_level)
+            ### g.trace('outer_level', outer_level)
+            g.trace('ENTRY! start:',
+                start, 'end:', end,
+                '@others indent:', others_indent, 'inner_indent', inner_indent)
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
-        # Find all outer defs, all of whose levels are the smallest level > outer_level.
-        potential_outer_defs = [z for z in definitions if z.decl_level > outer_level]
-        if potential_outer_defs:
-            new_outer_level = min(z.decl_level for z in potential_outer_defs)
-            # g.trace('outer_level', outer_level, 'new_outer_level', new_outer_level, p.h)
-            new_outer_defs = [z for z in potential_outer_defs if z.decl_level == new_outer_level]
-            # At least one potential inner def has the minimum level.
-            assert new_outer_defs, (new_outer_level, potential_outer_defs)
-        else:
-            new_outer_defs = []
+        # Aha 1: We must handle *all* inner defs between start and end regardless of indentation.
+        # Aha 2: We use ScanState.level() only when *discovering* defs.
+        # Aha 3: The @others logic drives this algorithm.
+        #        The @others indentation if the minimum indentation of all inner defs.
+        #
+        # In other words, this is *almost exactly* the same algorithm as in the python importer.
 
-        if trace and new_outer_defs:
-            g.printObj([repr(z) for z in new_outer_defs],
-                tag=f"Importer.make_node: new_outer_level: {new_outer_level}")
+        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+
+        # The inner defs are *all* defs between lines[start:end] whose indentation is new_indent.
+        inner_defs = [z for z in definitions if z.decl_line1 >= start and z.body_line9 <= end]
+        new_indent = min(z.decl_indent for z in inner_defs)
+      
+        if trace and inner_defs:
+            g.printObj([repr(z) for z in inner_defs],
+                tag=f"Importer.make_node inner_defs: new_indent: {new_indent}")
             if trace_body:
-                for z in new_outer_defs:
+                for z in inner_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
                         tag=f"Importer.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
-        if not new_outer_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
+        if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
+            ### g.trace('No inner defs')
             p.b = self.body_string(start, end, others_indent)
             return
 
-        last = start  # The last used line.
-        
-        ### g.trace('others_indent', others_indent, 'inner_indent', inner_indent)  ###
-
         # Calculate head, the lines preceding the @others.
-        decl_line1 = new_outer_defs[0].decl_line1
+        decl_line1 = inner_defs[0].decl_line1
         head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
         others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
-        last_offset = new_outer_defs[-1].body_line9
-        tail = self.body_string(last_offset, end, others_indent) if last_offset < end else ''
+        last_tail_line = inner_defs[-1].body_line9
+        tail = self.body_string(last_tail_line, end, others_indent) if last_tail_line < end else ''
         p.b = f'{head}{others_line}{tail}'
 
         # Add a child of p for each inner definition.
         last = decl_line1
-        for inner_def in new_outer_defs:
-            # Add a child for declaration lines between two inner definitions.
+        for inner_def in inner_defs:
+
+            # Add a child for in-between (declaration) lines.
             if inner_def.decl_line1 > last:
                 new_body = self.body_string(last, inner_def.decl_line1, inner_indent)
                 child1 = p.insertAsLastChild()
@@ -511,29 +513,30 @@ class Importer:
                 child1.b = new_body
                 last = decl_line1
 
+            # Add a child holding the inner definition.
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
-            # Compute the inner defs.
-            inner_defs = [z for z in definitions if (
-                z.decl_level > new_outer_level
-                and z.decl_line1 > inner_def.decl_line1
-                and z.body_line9 <= inner_def.body_line9
-            )]
-
-            if inner_defs:
-                # Recursively split this node.
+            # Compute the inner definitions of *this* inner definition.
+            # Important: The calculation uses only the the position of each definition.
+            #            The calculation *ignores* indentation and logical level!
+            inner_inner_defs = [z for z in definitions if
+                z.decl_line1 > inner_def.decl_line1 and z.body_line9 <= inner_def.body_line9
+            ]
+            if inner_inner_defs:
+                # Recursively allocate all lines of all inner inner defs.
+                # This will set child.b to include the head lines, @others lines, and tail lines.
                 self.make_node(
                     p=child,
-                    start=decl_line1,
+                    start=inner_def.decl_line1,
                     end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=inner_def.body_indent,
-                    outer_level=new_outer_level,
-                    definitions=inner_defs,
+                    definitions=inner_inner_defs,
                 )
             else:
-                # Just set the body.
+                # There are no inner defs, so this node will contain no @others directive.
+                ### g.trace('No inner inner defs for inner_def', inner_def.name)
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9

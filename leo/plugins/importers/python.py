@@ -434,7 +434,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             p.b = body(start, end, others_indent)
             return
 
-        last = start  # The last used line.
+        ### last = start  # The last used line.
 
         # Calculate head, the lines preceding the @others.
         decl_line1 = inner_defs[0].decl_line1
@@ -442,8 +442,8 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
-        last_offset = inner_defs[-1].body_line9
-        tail = body(last_offset, end, others_indent) if last_offset < end else ''
+        last_tail_line = inner_defs[-1].body_line9
+        tail = body(last_tail_line, end, others_indent) if last_tail_line < end else ''
         p.b = f'{head}{others_line}{tail}'
 
         # Generate (allocate to body text) all @others lines, that is, all lines from:
@@ -468,6 +468,8 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             child.h = inner_def.name
 
             # Compute the inner definitions of *this* inner definition.
+            # Note: The calculation uses only the the position of each definition.
+            #       The calculation *ignores* indentation!
             inner_inner_defs = [z for z in definitions if
                 z.decl_line1 > inner_def.decl_line1 and z.body_line9 <= inner_def.body_line9
             ]
