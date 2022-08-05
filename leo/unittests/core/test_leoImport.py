@@ -70,7 +70,7 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 0: # Dump actual results.
+        if 1: # Dump actual results.
             print('')
             g.trace('Actual results...')
             for p2 in p.self_and_subtree():
@@ -116,6 +116,13 @@ class BaseTestImporter(LeoUnitTest):
     def dedent(self, s):
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
+    #@+node:ekr.20220805071838.1: *3* BaseTestImporter.dump_headlines
+    def dump_headlines(self, root, tag=None):  # pragma: no cover
+        """Dump root's tree just as as Importer.dump_tree."""
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('level:', p.level(), p.h)
     #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
     def dump_tree(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
@@ -2360,20 +2367,20 @@ class TestPython(BaseTestImporter):
 
         # Level, headline, lines (as a string).
         exp_nodes = (
-            (0, 'check_outline ignores the first headline', self.dedent("""\
-                    import sys
-                    ATothers
-                    if __name__ == '__main__':
-                        main()
-
-                    ATlanguage python
-                    ATtabwidth -4
-                """.replace('AT', '@'))),
-            (1, 'f1', self.dedent(
-                """\
-                    def f1():
-                        pass
-                """)),
+            (0, 'check_outline ignores the first headline',
+                    'import sys\n'
+                    '@others\n'
+                    "if __name__ == '__main__':\n"
+                    '    main()\n'
+                    '\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'f1', 
+                    'def f1():\n'
+                    '    pass\n'
+                    '\n'
+            ),
             # Use this if unit tests *do* honor threshold.
             # (1, 'Class1',
                        # 'class Class1:\n'
@@ -2383,17 +2390,17 @@ class TestPython(BaseTestImporter):
                        # '        pass\n'
                        # '\n'
             # ),
-            (1, 'Class1',
+            (1, 'class Class1',
                        'class Class1:\n'
-                       '@others\n'
+                       '    @others\n'
             ),
             (2, 'method11',
-                       '    def method11():\n'
-                       '        pass\n'
+                       'def method11():\n'
+                       '    pass\n'
             ),
             (2, 'method12',
-                       '    def method12():\n'
-                       '        pass\n'
+                       'def method12():\n'
+                       '    pass\n'
                        '\n'
             ),
             (1, 'Define a = 2',  # #2500
@@ -2407,7 +2414,7 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
                        '\n'
             ),
-            (1, 'Class2',
+            (1, 'class Class2',
                        '# An outer comment\n'
                        '@myClassDecorator\n'
                        'class Class2:\n'
@@ -2484,7 +2491,7 @@ class TestPython(BaseTestImporter):
                                '    pass\n'
                                '\n'
                     ),
-                    (1, 'Class1',
+                    (1, 'class Class1',
                                'class Class1:pass\n'
                     ),
                     (1, 'a = 2',
@@ -2496,7 +2503,7 @@ class TestPython(BaseTestImporter):
                                '\n'
                                '\n'
                     ),
-                    (1, 'A',
+                    (1, 'class A',
                                'class A: pass\n'
                     ),
                     (1, 'main',
@@ -2546,16 +2553,18 @@ class TestPython(BaseTestImporter):
             )
         exp_nodes = [
             (0, 'ignored h',
-                             'import sys\n'
-                             '@others\n'
-                             "if __name__ == '__main__':\n"
-                             '    main()\n\n'
-                             '@language python\n'
-                             '@tabwidth -4\n'
+                    'import sys\n'
+                    '@others\n'
+                    "if __name__ == '__main__':\n"
+                    '    main()\n'
+                    '\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
             ),
-            (1, 'f1', 'def f1():\n'
-                      '    pass\n'
-                      '\n'
+            (1, 'f1',
+                    'def f1():\n'
+                    '    pass\n'
+                    '\n'
             ),
             # Use this if unit tests *do* honor threshold.
             # (1, 'Class1', 'class Class1:\n'  # Don't split very short classes.
@@ -2565,23 +2574,27 @@ class TestPython(BaseTestImporter):
                           # '        pass\n'
                           # '\n'
             # ),
-            (1, 'Class1',
+            (1, 'class Class1',
                         'class Class1:\n'  # Don't split very short classes.
-                        '@others\n'
+                        '    @others\n'
             ),
             (2, 'method11',
-                          '    def method11():\n'
-                          '        pass\n'
+                        'def method11():\n'
+                        '    pass\n'
             ),
             (2, 'method12',
-                          '    def method12():\n'
-                          '        pass\n'
-                          '\n'
+                        'def method12():\n'
+                        '    pass\n'
+                        '\n'
             ),
-            (1, 'a = 2', 'a = 2\n\n'),
-            (1, 'f2', 'def f2():\n'
-                      '    pass\n'
-                      '\n'
+            (1, 'a = 2',
+                        'a = 2\n'
+                        '\n'
+            ),
+            (1, 'f2',
+                        'def f2():\n'
+                        '    pass\n'
+                        '\n'
             ),
             # Use this if unit tests *do* honor threshold.
             # (1, 'Class2', '# An outer comment\n'
@@ -2594,19 +2607,20 @@ class TestPython(BaseTestImporter):
                           # '        pass\n'
                           # '\n'
             # ),
-            (1, 'Class2', '# An outer comment\n'
-                          '@myClassDecorator\n'
-                          'class Class2:\n'
-                          '@others\n'
+            (1, 'class Class2',
+                        '# An outer comment\n'
+                        '@myClassDecorator\n'
+                        'class Class2:\n'
+                        '    @others\n'
             ),
             (2, 'method21',
-                          '    @myDecorator\n'
-                          '    def method21():\n'
-                          '        pass\n'
+                        '@myDecorator\n'
+                        'def method21():\n'
+                        '    pass\n'
             ),
             (2, 'method22',
-                          '    def method22():\n'
-                          '        pass\n'
+                          'def method22():\n'
+                          '    pass\n'
                           '\n'
             ),
             (1, 'main', '# About main.\n'
@@ -2693,7 +2707,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'A',
+            (1, 'class A',
                        'class A:\n'
                        '    a=1\n'
                        '    b=1\n'
@@ -2767,7 +2781,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'A',
+            (1, 'class A',
                        'class A:\n'
                        '    a=1\n'
                        '    b=1\n'
@@ -2877,7 +2891,7 @@ class TestPython(BaseTestImporter):
                             ATothers
                 """).replace('AT', '@')
             ),
-            (2, 'Faux', self.dedent("""\
+            (2, 'class Faux', self.dedent("""\
                         class Faux(object):
                             _entered = False
                             _exited_with = None # type: tuple
@@ -2886,7 +2900,6 @@ class TestPython(BaseTestImporter):
                 """)
             ),
         ))
-
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
     def test_nested_classes_with_async(self):
         txt = ('class TestCopyFile(unittest.TestCase):\n'
@@ -2927,7 +2940,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'TestCopyFile',
+            (1, 'class TestCopyFile',
                        'class TestCopyFile(unittest.TestCase):\n'
                        '\n'
                        '    _delete = False\n'
@@ -2959,7 +2972,7 @@ class TestPython(BaseTestImporter):
                        'async def a(self):\n'
                        '    return await f(self)\n'
             ),
-            (2, 'Faux',
+            (2, 'class Faux',
                        'class Faux(object):\n'
                        '    _entered = False\n'
                        '    _exited_with = None # type: tuple\n'
@@ -3071,7 +3084,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'A',
+            (1, 'class A',
                        'class A:\n'
                        '    """\n'
                        '    dummy doc\n'
@@ -3161,7 +3174,7 @@ class TestPython(BaseTestImporter):
                        '@language python\n'
                        '@tabwidth -4\n'
             ),
-            (1, 'StrangeClass',
+            (1, 'class StrangeClass',
                        'class StrangeClass:\n'
                        ' a = 1\n'
                        ' if 1:\n'
@@ -3198,7 +3211,7 @@ class TestPython(BaseTestImporter):
         p = self.run_test(txt)
         ok, msg = self.check_outline(p, exp_nodes)
         assert ok, msg
-    #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation
+    #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation_with...
     def test_strange_indentation_with_added_class_in_the_headline(self):
         self.c.config.set(None, 'bool', 'put-class-in-imported-headlines', True)
         txt = ('if 1:\n'

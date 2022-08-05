@@ -61,6 +61,19 @@ class Python_Importer(Importer):
 
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
+    #@+node:ekr.20220805071145.1: *3* python_i.clean_headline
+    def clean_headline(self, s, p=None):
+        """
+        Return the cleaned version headline s.
+        May be overridden in subclasses.
+        """
+        s = s.strip()
+        i = s.find('(')
+        if i > -1:
+            s = s[:i]
+        if s.endswith(':'):
+            s = s[:-1]
+        return s.strip()
     #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
         """
@@ -266,7 +279,7 @@ def split_root(root: Any, lines: List[str]) -> None:
     t.string: the token string;
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
-    trace = False
+    trace = True
     rawtokens: List
 
     #@+others
@@ -333,6 +346,12 @@ def split_root(root: Any, lines: List[str]) -> None:
                 body_line9 = j + 1
             else:
                 break
+        
+        ### and not name.startswith('class')
+        g.trace(kind, name)
+        name = f"class {name}" if kind == 'class' else name
+        g.trace('after', name)
+        ### g.trace('get_intro', get_intro(decl_line, decl_indent))
 
         # This is the only instantiation of def_tuple.
         return def_tuple(
@@ -435,10 +454,12 @@ def split_root(root: Any, lines: List[str]) -> None:
                 new_body = body(last, decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = declaration_headline(new_body)  # #2500
+                g.trace('child1.h', child1.h)
                 child1.b = new_body
                 last = decl_line1
             child = p.insertAsLastChild()
             child.h = inner_def.name
+            g.trace('child.h', inner_def)
 
             # Compute inner definitions.
             inner_definitions = [z for z in definitions if
@@ -477,6 +498,7 @@ def split_root(root: Any, lines: List[str]) -> None:
         """
         Return an informative headline for s, a group of declarations.
         """
+        ###g.printObj(g.splitLines(body_string), tag='declaration_headline')
         for s1 in g.splitLines(body_string):
             s = s1.strip()
             if s.startswith('#') and len(s.replace('#', '').strip()) > 1:

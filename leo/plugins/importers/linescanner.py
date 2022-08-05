@@ -377,7 +377,7 @@ class Importer:
         first_body_line = self.new_starts_block(i)
         if first_body_line is None:
             return None
-
+            
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
@@ -638,11 +638,11 @@ class Importer:
         Return the cleaned version headline s.
         May be overridden in subclasses.
         """
+        g.trace(repr(s))
         i = s.find('(')
         if i > -1:
             s = s[:i]
         return s.strip()
-
     #@+node:ekr.20161110173058.1: *4* i.clean_nodes
     def clean_nodes(self, parent):
         """
