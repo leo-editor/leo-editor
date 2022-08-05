@@ -2482,7 +2482,7 @@ class TestPython(BaseTestImporter):
             )
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'ignored h',
+            (0, 'check_outline ignores the first headline',
                        'import sys\n'
                        '@others\n'
                        "if __name__ == '__main__':\n"
