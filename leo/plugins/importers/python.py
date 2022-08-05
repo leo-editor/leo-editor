@@ -13,7 +13,7 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -250,23 +250,25 @@ def do_import(c, s, parent):
         # Use the scanner tables.
         Python_Importer(c.importCommands).run(s, parent)
     else:
+        g.trace('Calling split_root')
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')
             return False
-        split_root(parent, s.splitlines(True))
-
+        add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
+        split_root(add_class_to_headlines, parent, s.splitlines(True))
         # Add *trailing* lines, just line the Importer class.
         parent.b += '@language python\n@tabwidth -4\n'
-        # Note: some unit tests change this setting.
-        if c.config.getBool('put-class-in-imported-headlines'):
-            for p in parent.subtree():  # Don't change parent.h.
-                if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
-                    p.h = f'class {p.h}'
+        ### Wrong place for this!
+            # # Note: some unit tests change this setting.
+            # if c.config.getBool('put-class-in-imported-headlines'):
+                # for p in parent.subtree():  # Don't change parent.h.
+                    # if p.b.startswith('class ') or p.b.partition('\nclass ')[1]:
+                        # p.h = f'class {p.h}'
     return True
 #@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
 SPLIT_THRESHOLD = 10
 
-def split_root(root: Any, lines: List[str]) -> None:
+def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> None:
     """
     Create direct children of root for all top level function definitions and class definitions.
 
@@ -346,12 +348,9 @@ def split_root(root: Any, lines: List[str]) -> None:
                 body_line9 = j + 1
             else:
                 break
-        
-        ### and not name.startswith('class')
-        g.trace(kind, name)
-        name = f"class {name}" if kind == 'class' else name
-        g.trace('after', name)
-        ### g.trace('get_intro', get_intro(decl_line, decl_indent))
+
+        if add_class_to_headlines:
+            name = f"class {name}" if kind == 'class' else name
 
         # This is the only instantiation of def_tuple.
         return def_tuple(
@@ -454,12 +453,12 @@ def split_root(root: Any, lines: List[str]) -> None:
                 new_body = body(last, decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = declaration_headline(new_body)  # #2500
-                g.trace('child1.h', child1.h)
+                ### g.trace('child1.h', child1.h)  ###
                 child1.b = new_body
                 last = decl_line1
             child = p.insertAsLastChild()
             child.h = inner_def.name
-            g.trace('child.h', inner_def)
+            ### g.trace('child.h', inner_def)  ###
 
             # Compute inner definitions.
             inner_definitions = [z for z in definitions if

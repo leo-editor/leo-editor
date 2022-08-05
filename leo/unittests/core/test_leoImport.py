@@ -70,11 +70,13 @@ class BaseTestImporter(LeoUnitTest):
             for (level, h, s) in expected:
                 g.printObj(g.splitLines(s), tag=f"level: {level} {h}")
 
-        if 1: # Dump actual results.
+        if 0: # Dump headlines of actual results.
             print('')
-            g.trace('Actual results...')
-            for p2 in p.self_and_subtree():
-                g.printObj(g.splitLines(p2.b), tag=f"level: {p2.level()} {p2.h}")
+            self.dump_headlines(p, tag='Actual headlines...')
+
+        if 1: # Dump actual results, including bodies.
+            print('')
+            self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.
         p0_level = p.level()
