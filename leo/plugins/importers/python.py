@@ -458,7 +458,6 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         # *including* lines *between* inner defitions.
         last = decl_line1  # The last @other line that has been allocated.
         for inner_def in inner_defs:
-            body_indent = inner_def.body_indent
             body_line9 = inner_def.body_line9
             decl_line1 = inner_def.decl_line1
             # Add a child for declaration lines between two inner definitions.
@@ -483,7 +482,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                     start_b=start_b,
                     end=body_line9,
                     others_indent=others_indent + inner_indent,
-                    inner_indent=body_indent,
+                    inner_indent=inner_def.body_indent,
                     definitions=inner_definitions,
                 )
             else:
