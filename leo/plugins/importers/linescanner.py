@@ -279,7 +279,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
-        trace, trace_body, trace_states = True, False, False
+        trace, trace_body, trace_states = False, False, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines

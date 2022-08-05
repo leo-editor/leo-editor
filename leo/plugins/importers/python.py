@@ -13,7 +13,7 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -39,6 +39,8 @@ class Python_Importer(Importer):
             state_class=Python_ScanState,
             strict=True,
         )
+        c = importCommands.c
+        self.add_class_to_headlines = c.config.getBool('put-class-in-imported-headlines')
 
     #@+others
     #@+node:ekr.20220720060831.2: *3* python_i.body_lines & body_string
@@ -64,15 +66,26 @@ class Python_Importer(Importer):
     #@+node:ekr.20220805071145.1: *3* python_i.clean_headline
     def clean_headline(self, s, p=None):
         """
+        Python_Importer.clean_headline.
+        
         Return the cleaned version headline s.
-        May be overridden in subclasses.
         """
         s = s.strip()
-        i = s.find('(')
-        if i > -1:
-            s = s[:i]
-        if s.endswith(':'):
-            s = s[:-1]
+        # Remove '(' and ':' and everything after.
+        for ch in '(:':
+            i = s.find(ch)
+            if i > -1:
+                s = s[:i]
+        # Remove leading 'def'
+        if s.startswith('def '):
+            s = s[3:]
+        # Remove leading 'class'.
+        elif (
+            s.startswith('class ')
+            and not g.unitTesting
+            and not self.add_class_to_headlines
+        ):
+            s = s[5:]
         return s.strip()
     #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
