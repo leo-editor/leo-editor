@@ -74,7 +74,7 @@ class BaseTestImporter(LeoUnitTest):
             print('')
             self.dump_headlines(p, tag='Actual headlines...')
 
-        if 0: # Dump actual results, including bodies.
+        if 1: # Dump actual results, including bodies.
             print('')
             self.dump_tree(p, tag='Actual results...')
 
@@ -2550,8 +2550,9 @@ class TestPython(BaseTestImporter):
             '\n'
             "if __name__ == '__main__':\n"
             '    main()\n'
-            )
-        exp_nodes = [
+        )
+        p = self.run_test(s)
+        self.check_outline(p, (
             (0, 'ignored h',
                     'import sys\n'
                     '@others\n'
@@ -2628,10 +2629,8 @@ class TestPython(BaseTestImporter):
                         '    pass\n'
                         '\n'
             )
-        ]
-        p = self.run_test(s)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
+        
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
     def test_short_file(self):
 
