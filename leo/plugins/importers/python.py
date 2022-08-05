@@ -451,9 +451,12 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         last_offset = inner_defs[-1].body_line9
         tail = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
-
-        # Add a child of p for each inner definition.
-        last = decl_line1
+        
+        # Generate (allocate to body text) all @others lines, that is, all lines from:
+        # - the first line of the first inner definition to
+        # - the last line of the last inner definition.
+        # *including* lines *between* inner defitions.
+        last = decl_line1  # The last @other line that has been allocated.
         for inner_def in inner_defs:
             body_indent = inner_def.body_indent
             body_line9 = inner_def.body_line9

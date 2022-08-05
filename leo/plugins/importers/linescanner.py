@@ -323,15 +323,12 @@ class Importer:
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
+        legacy = False  # Generating escape strings seems unlikely to be useful.
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
-        # pylint: disable=no-else-return
         # An underindented string.
         n = len(s) - len(s.lstrip())
-        if 1:  # Legacy
-            return f"\\\\-{i-n}.{s[n:]}"
-        else:
-            return s[n:]
+        return f"\\\\-{i-n}.{s[n:]}" if legacy else s[n:]
 
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
