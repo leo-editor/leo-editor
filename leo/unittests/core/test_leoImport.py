@@ -2813,8 +2813,10 @@ class TestPython(BaseTestImporter):
             (2, 'f',
                        'def f(self):\n'
                        '    self._f = """dummy\n'
-                       '\\\\-4.dummy2\n'
-                       '\\\\-4.dummy3"""\n'
+                       # '\\\\-4.dummy2\n'
+                       # '\\\\-4.dummy3"""\n'
+                       'dummy2\n'
+                       'dummy3"""\n'
             )
         ]
         p = self.run_test(txt)

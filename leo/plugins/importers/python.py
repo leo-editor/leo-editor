@@ -13,7 +13,7 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -490,10 +490,14 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
+        # Vitalije's legacy importer generated underindented escape strings.
+        # However, this seems unlikely to be useful.
+        legacy = False
         if i == 0 or s[:i].isspace():
             return s[i:] or '\n'
+        # An underindented string.
         n = len(s) - len(s.lstrip())
-        return f'\\\\-{i-n}.{s[n:]}'  # An underindented string.
+        return f"\\\\-{i-n}.{s[n:]}" if legacy else s[n:]
 
     def body(a: int, b: Optional[int], i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
