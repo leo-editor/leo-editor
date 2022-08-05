@@ -458,26 +458,25 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         # *including* lines *between* inner defitions.
         last = decl_line1  # The last @other line that has been allocated.
         for inner_def in inner_defs:
-            decl_line1 = inner_def.decl_line1
             # Add a child for declaration lines between two inner definitions.
-            if decl_line1 > last:
-                new_body = body(last, decl_line1, inner_indent)  # #2500.
+            if inner_def.decl_line1 > last:
+                new_body = body(last, inner_def.decl_line1, inner_indent)  # #2500.
                 child1 = p.insertAsLastChild()
                 child1.h = declaration_headline(new_body)  # #2500
                 child1.b = new_body
-                last = decl_line1
+                last = inner_def.decl_line1
             child = p.insertAsLastChild()
             child.h = inner_def.name
 
             # Compute inner definitions.
             inner_definitions = [z for z in definitions if
-                z.decl_line1 > decl_line1 and z.body_line9 <= inner_def.body_line9
+                z.decl_line1 > inner_def.decl_line1 and z.body_line9 <= inner_def.body_line9
             ]
             if inner_definitions:
                 # Recursively split this node.
                 mknode(
                     p=child,
-                    start=decl_line1,
+                    start=inner_def.decl_line1,
                     start_b=start_b,
                     end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
@@ -486,7 +485,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                 )
             else:
                 # Just set the body.
-                child.b = body(decl_line1, inner_def.body_line9, inner_indent)
+                child.b = body(inner_def.decl_line1, inner_def.body_line9, inner_indent)
             last = inner_def.body_line9
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
     def bodyLine(s: str, i: int) -> str:
