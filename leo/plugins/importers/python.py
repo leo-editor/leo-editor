@@ -451,12 +451,14 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         last_offset = inner_defs[-1].body_line9
         tail = body(last_offset, end, others_indent) if last_offset < end else ''
         p.b = f'{head}{others_line}{tail}'
-        
+
         # Generate (allocate to body text) all @others lines, that is, all lines from:
         # - the first line of the first inner definition to
         # - the last line of the last inner definition.
         # *including* lines *between* inner defitions.
+
         last = decl_line1  # The last @other line that has been allocated.
+
         for inner_def in inner_defs:
 
             # Add a child for in-between (declaration) lines.
@@ -466,7 +468,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                 child1.h = declaration_headline(new_body)  # #2500
                 child1.b = new_body
                 last = inner_def.decl_line1
-            
+
             # Add a child holding the inner definition.
             child = p.insertAsLastChild()
             child.h = inner_def.name
@@ -477,6 +479,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             ]
             if inner_inner_defs:
                 # Recursively allocate all lines of all inner inner defs.
+                # This will set child.b to include the head lines, @others lines, and tail lines.
                 mknode(
                     p=child,
                     start=inner_def.decl_line1,
@@ -489,7 +492,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             else:
                 # There are no inner defs, so this node will contain no @others directive.
                 child.b = body(inner_def.decl_line1, inner_def.body_line9, inner_indent)
-                
+
             # Remember the last allocated line.
             last = inner_def.body_line9
     #@+node:vitalije.20211208101750.1: *4* body & bodyLine
