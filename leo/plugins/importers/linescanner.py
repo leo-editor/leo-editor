@@ -313,7 +313,7 @@ class Importer:
         # Start the recursion.
         parent.deleteAllChildren()
         self.make_node(
-            p=parent, start=0, start_b=0, end=len(lines),
+            p=parent, start=0, end=len(lines),
             others_indent=0, inner_indent=0,
             outer_level = -1,
             definitions=all_definitions,
@@ -445,7 +445,6 @@ class Importer:
     def make_node(self,
         p: Position,
         start: int,
-        start_b: int,
         end: int,
         others_indent: int,
         outer_level: int,
@@ -459,7 +458,6 @@ class Importer:
 
                     p: The current node.
                 start: The line number (zero based) of the first line of this node
-              start_b: The line number (zero based) of first line of this node's function/class body
                   end: The line number of the first line after this node.
         others_indent: Accumulated @others indentation (to be stripped from left).
          inner_indent: The indentation of all of the inner definitions.
@@ -539,7 +537,6 @@ class Importer:
                 self.make_node(
                     p=child,
                     start=decl_line1,
-                    start_b=start_b,
                     end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=inner_def.body_indent,

@@ -412,24 +412,16 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         return False
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
     def mknode(p: Any,
-        start: int,
-        start_b: int,
-        end: int,
-        others_indent: int,
-        inner_indent: int,
-        definitions: List[def_tuple],
+        start: int,  # The first line to allocate.
+        end: int,  # The last line to allocate.
+        others_indent: int,  # @others indentation (to be stripped from left).
+        inner_indent: int,  # The indentation of all of the inner definitions.
+        definitions: List[def_tuple],  # The definitions to be allocated.
     ) -> None:
         """
-        Set p.b and add children recursively using the tokens described by the arguments.
-
-                    p: The current node.
-                start: The line number of the first line of this node
-              start_b: The line number of first line of this node's function/class body
-                  end: The line number of the first line after this node.
-        others_indent: Accumulated @others indentation (to be stripped from left).
-         inner_indent: The indentation of all of the inner definitions.
-          definitions: The list of the definitions covering p.
+        Allocate lines[start : end] to p.b or descendants of p.
         """
+        nonlocal lines
 
         # Find all defs with the given inner indentation.
         inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
@@ -483,7 +475,6 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
                 mknode(
                     p=child,
                     start=inner_def.decl_line1,
-                    start_b=start_b,
                     end=inner_def.body_line9,
                     others_indent=others_indent + inner_indent,
                     inner_indent=inner_def.body_indent,
@@ -583,7 +574,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     # Start the recursion.
     root.deleteAllChildren()
     mknode(
-        p=root, start=1, start_b=1, end=len(lines)+1,
+        p=root, start=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
 #@-others
 importer_dict = {
