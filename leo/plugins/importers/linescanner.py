@@ -443,28 +443,17 @@ class Importer:
         )
     #@+node:ekr.20220727075027.1: *5* i.make_node (trace)
     def make_node(self,
-        p: Position,
-        start: int,
-        end: int,
-        others_indent: int,
-        outer_level: int,
-        inner_indent: int,
-        definitions: List[block_tuple],
+        p: Position,  # The starting (local root) position.
+        start: int,  # The first line to allocate.
+        end: int,  # The last line to allocate.
+        others_indent: int,  # @others indentation (to be stripped from left).
+        outer_level: int,  # The logical nesting level of inner defs.
+        inner_indent: int,  # The indentation of all of the inner definitions.
+        definitions: List[block_tuple],  # The definitions occuring within lines[start : end].
     ) -> None:
-        #@+<< Importer.make_node docstring >>
-        #@+node:ekr.20220802095116.1: *6* << Importer.make_node docstring >>
         """
-        Set p.b and add children recursively using the tokens described by the arguments.
-
-                    p: The current node.
-                start: The line number (zero based) of the first line of this node
-                  end: The line number of the first line after this node.
-        others_indent: Accumulated @others indentation (to be stripped from left).
-         inner_indent: The indentation of all of the inner definitions.
-          outer_level: The level of the containing def.
-          definitions: The list of the definitions covering p.
+        Allocate lines[start : end] to p.b or descendants of p.
         """
-        #@-<< Importer.make_node docstring >>
         trace, trace_body = False, False
         if trace:
             print('')

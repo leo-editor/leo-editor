@@ -8,6 +8,7 @@ import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+<< Define NEW_PYTHON_IMPORTER switch >>
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
@@ -411,12 +412,13 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             return True
         return False
     #@+node:vitalije.20211208104408.1: *3* mknode & helpers
-    def mknode(p: Any,
+    def mknode(
+        p: Position,  # The starting (local root) position.
         start: int,  # The first line to allocate.
         end: int,  # The last line to allocate.
         others_indent: int,  # @others indentation (to be stripped from left).
         inner_indent: int,  # The indentation of all of the inner definitions.
-        definitions: List[def_tuple],  # The definitions to be allocated.
+        definitions: List[def_tuple],  # The definitions occuring within lines[start : end].
     ) -> None:
         """
         Allocate lines[start : end] to p.b or descendants of p.
