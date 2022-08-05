@@ -2480,45 +2480,43 @@ class TestPython(BaseTestImporter):
               "if __name__ == '__main__':\n"
               '    main()\n'
             )
-        exp_nodes = [(0, 'ignored h',
-                               'import sys\n'
-                               '@others\n'
-                               "if __name__ == '__main__':\n"
-                               '    main()\n\n'
-                               '@language python\n'
-                               '@tabwidth -4\n'
-                    ),
-                    (1, 'f1',
-                               'def f1():\n'
-                               '    pass\n'
-                               '\n'
-                    ),
-                    (1, 'class Class1',
-                               'class Class1:pass\n'
-                    ),
-                    (1, 'a = 2',
-                               'a = 2\n'
-                    ),
-                    (1, 'f2',
-                               '@dec_for_f2\n'
-                               'def f2(): pass\n'
-                               '\n'
-                               '\n'
-                    ),
-                    (1, 'class A',
-                               'class A: pass\n'
-                    ),
-                    (1, 'main',
-                               '# About main.\n'
-                               'def main():\n'
-                               '    pass\n'
-                               '\n'
-                    )
-        ]
         p = self.run_test(s)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
-
+        self.check_outline(p, (
+            (0, 'ignored h',
+                       'import sys\n'
+                       '@others\n'
+                       "if __name__ == '__main__':\n"
+                       '    main()\n\n'
+                       '@language python\n'
+                       '@tabwidth -4\n'
+            ),
+            (1, 'f1',
+                       'def f1():\n'
+                       '    pass\n'
+                       '\n'
+            ),
+            (1, 'class Class1',
+                       'class Class1:pass\n'
+            ),
+            (1, 'a = 2',
+                       'a = 2\n'
+            ),
+            (1, 'f2',
+                       '@dec_for_f2\n'
+                       'def f2(): pass\n'
+                       '\n'
+                       '\n'
+            ),
+            (1, 'class A',
+                       'class A: pass\n'
+            ),
+            (1, 'main',
+                       '# About main.\n'
+                       'def main():\n'
+                       '    pass\n'
+                       '\n'
+            ),
+        ))
     #@+node:ekr.20210904065459.63: *3* TestPython.test_short_classes
     def test_short_classes(self):
         s = (
