@@ -59,7 +59,7 @@ class BaseTestImporter(LeoUnitTest):
                 print(self.short_id)
                 self.dump_tree(p1)
             raise
-    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best check)
+    #@+node:vitalije.20211206180043.1: *3* BaseTestImporter.check_outline (best trace)
     def check_outline(self, p, expected):
         """
         BaseTestImporter.check_outline.

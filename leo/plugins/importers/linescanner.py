@@ -453,17 +453,15 @@ class Importer:
         """
         Allocate lines[start : end] to p.b or descendants of p.
         """
+        # This algorithm is a generalization of Vitalije's original python importer.
+        # It calculates top-level methods using neither def.body_indent nor def.decl_level!
         trace, trace_body = False, False
         if trace:
             print('')
-            ### g.trace('outer_level', outer_level)
             g.trace('ENTRY! start:',
                 start, 'end:', end,
                 '@others indent:', others_indent, 'inner_indent', inner_indent)
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
-
-        # This is *almost exactly* the same algorithm as in the python importer:
-        # It does not use ScanState.level() at all!
 
         # Find all the defs between lines[start:end].
         all_inner_defs = [z for z in definitions if z.decl_line1 >= start and z.body_line9 <= end]
@@ -551,7 +549,7 @@ class Importer:
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
-        trace = False
+        trace = True
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)

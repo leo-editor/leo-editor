@@ -3,10 +3,12 @@
 """The @auto importer for coffeescript."""
 import re
 from typing import Any, Dict, List, Optional
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+### from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import scan_tuple
+from leo.plugins.importers.python import Python_Importer
 #@+others
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Importer)
-class Coffeescript_Importer(Importer):
+class Coffeescript_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
@@ -93,6 +95,7 @@ class Coffeescript_Importer(Importer):
                 return i + 1
         return None
     #@-others
+    
     @classmethod
     def do_import(cls):
         def f(c, s, parent):

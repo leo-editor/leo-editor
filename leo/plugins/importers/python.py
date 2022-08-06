@@ -24,14 +24,7 @@ class Python_Importer(Importer):
 
     Leo uses this class *only* as the base class for the cython importer.
     """
-    # Optional base classes.
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
-    class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-    # Requred argument list.
-    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
-    def_pat = re.compile(def_pat_s, re.MULTILINE)
-
+   
     def __init__(self, importCommands, language='python', **kwargs):
         """Py_Importer.ctor."""
         super().__init__(
@@ -116,13 +109,11 @@ class Python_Importer(Importer):
 
         Based on Vitalije's importer.
         """
-        # Note: this method does not call x.new_starts_block.
-
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
             return None
-        m = self.class_pat.match(line) or self.def_pat.match(line)
-        if not m:
+        i2 = self.new_starts_block(i)
+        if i2 is None:
             return None
         # Compute declaration data.
         decl_line = i
@@ -130,10 +121,8 @@ class Python_Importer(Importer):
         decl_level = decl_indent
 
         # Set body_indent to the indentation of the first non-blank line of the body.
-        newlines = m.group(0).count('\n')
-        i += (1 + newlines)  # The line after the last decl line.
-
         # Test for a single-line class or def.
+        i += i2
         while i < len(self.lines):
             line = self.lines[i]
             if line.isspace():
@@ -178,6 +167,27 @@ class Python_Importer(Importer):
             decl_level = decl_level,
             name = self.clean_headline(self.lines[decl_line])
         )
+    #@+node:ekr.20220806085448.1: *3* python_i.new_starts_block
+    # Optional base classes.
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    # Requred argument list.
+    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
+
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        line = self.lines[i]
+        m = self.class_pat.match(line) or self.def_pat.match(line)
+        if not m:
+            return None
+        newlines = m.group(0).count('\n')
+        return newlines + 1
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
 
@@ -231,17 +241,18 @@ class Python_Importer(Importer):
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:
-    """A class representing the state of the python line-oriented scan."""
+    """
+    A class representing the state of the python line-oriented scan."""
+    
+    # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
 
     def __init__(self, d=None):
         """Python_ScanState ctor."""
         if d:
             prev = d.get('prev')
             self.context = prev.context
-            ### self.indent = prev.indent
         else:
             self.context = ''
-            ### self.indent = 0
 
     def __repr__(self):
         """Py_State.__repr__"""
@@ -256,7 +267,6 @@ class Python_ScanState:
         Python_ScanState: Update the state using given scan_tuple.
         """
         self.context = data.context
-        ### self.indent = data.indent
         return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
