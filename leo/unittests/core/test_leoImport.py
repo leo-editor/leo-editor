@@ -73,7 +73,7 @@ class BaseTestImporter(LeoUnitTest):
         if 0: # Dump headlines of actual results.
             self.dump_headlines(p, tag='Actual headlines...')
 
-        if 0: # Dump actual results, including bodies.
+        if 1: # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.

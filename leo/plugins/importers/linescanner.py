@@ -462,17 +462,22 @@ class Importer:
                 '@others indent:', others_indent, 'inner_indent', inner_indent)
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
-        # Aha 1: We must handle *all* inner defs between start and end regardless of indentation.
-        # Aha 2: We use ScanState.level() only when *discovering* defs.
-        # Aha 3: The @others logic drives this algorithm.
-        #        The @others indentation if the minimum indentation of all inner defs.
-        #
-        # In other words, this is *almost exactly* the same algorithm as in the python importer.
+        # This is *almost exactly* the same algorithm as in the python importer:
+        # It does not use ScanState.level() at all!
 
-        ### inner_defs = [z for z in definitions if z.decl_indent == inner_indent]
+        # Find all the defs between lines[start:end].
+        all_inner_defs = [z for z in definitions if z.decl_line1 >= start and z.body_line9 <= end]
+        
+        # The *top-level* inner defs are those contained within no other inner indent.
+        # The following works because the definitions list is ordered by decl_line1.
+        inner_defs = [all_inner_defs[0]]
+        for z in all_inner_defs[1:]:
+            if not any(z.decl_line1 >= z2.decl_line1 and z.body_line9 <= z2.body_line9
+                for z2 in inner_defs
+            ):
+                inner_defs.append(z)
 
-        # The inner defs are *all* defs between lines[start:end] whose indentation is new_indent.
-        inner_defs = [z for z in definitions if z.decl_line1 >= start and z.body_line9 <= end]
+        # The new (@others) indentation is the minimum indent for all inner defs.
         new_indent = min(z.decl_indent for z in inner_defs)
       
         if trace and inner_defs:
@@ -521,6 +526,8 @@ class Importer:
             # Important: The calculation uses only the the position of each definition.
             #            The calculation *ignores* indentation and logical level!
             inner_inner_defs = [z for z in definitions if
+                ### z not in inner_defs
+                ### and
                 z.decl_line1 > inner_def.decl_line1 and z.body_line9 <= inner_def.body_line9
             ]
             if inner_inner_defs:
