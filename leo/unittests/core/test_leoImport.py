@@ -394,13 +394,55 @@ class TestCoffeescript(BaseTestImporter):
               if str.length > 0 then str else ""
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-          # (1, '@file TestCoffeescript.test_2'),
-          (1, 'class Builder'),
-          (2, 'constructor: ->'),
-          (2, 'build: (args...) ->'),
-          (2, 'transform: (args...) ->'),
-          (2, 'body: (node, opts={}) ->'),
+        self.check_outline(p, (
+          (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language coffeescript\n'
+                '@tabwidth -4\n'
+          ),
+          (1, 'class Builder',
+                'class Builder\n'
+                '  @others\n'
+          ),
+          (2, 'constructor: ->',
+              'constructor: ->\n'
+              '  @transformer = new Transformer\n'
+              '  @others\n'
+          ),
+          (3, 'build: (args...) ->',
+              '# `build()`\n'
+              '\n'
+              'build: (args...) ->\n'
+              'node = args[0]\n'
+              '@transform node\n'
+              '\n'
+              "name = 'other'\n"
+              'name = node.typeName()  if node != undefined and node.typeName\n'
+              '\n'
+              'fn  = (@[name] or @other)\n'
+              'out = fn.apply(this, args)\n'
+              '\n'
+              'if node.parenthesized then paren(out) else out\n'
+              '@others\n'
+          ),
+          (4, 'transform: (args...) ->',
+              '# `transform()`\n'
+              '\n'
+              'transform: (args...) ->\n'
+              '@transformer.transform.apply(@transformer, args)\n'
+              '\n'
+              '@others\n'
+          ),
+          (5, 'body: (node, opts={}) ->',
+              '# `body()`\n'
+              '\n'
+              'body: (node, opts={}) ->\n'
+              'str = @build(node, opts)\n'
+              'str = blockTrim(str)\n'
+              'str = unshift(str)\n'
+              'if str.length > 0 then str else ""\n'
+              '\n'
+          ),
         ))
 
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
