@@ -2,20 +2,13 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
+from typing import Optional
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
-
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
-    class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-    # m.group(2) might not be the def name!
-    # clean_headline must handle the complications.
-    def_pat_s = r'\s*\b(cdef|cpdef|def)\s+([\w_]+)'
-    def_pat = re.compile(def_pat_s, re.MULTILINE)
 
     #@+others
     #@+node:ekr.20200619144343.1: *3* cython_i.ctor
@@ -28,6 +21,27 @@ class Cython_Importer(Python_Importer):
             strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
+    #@+node:ekr.20220806173547.1: *3* cython_i.new_starts_block
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    # m.group(2) might not be the def name!
+    # clean_headline must handle the complications.
+    def_pat_s = r'\s*\b(cdef|cpdef|def)\s+([\w_]+)'
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
+
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        line = self.lines[i]
+        m = self.class_pat.match(line) or self.def_pat.match(line)
+        if not m:
+            return None
+        newlines = m.group(0).count('\n')
+        return newlines + 1
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:

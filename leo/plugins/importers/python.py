@@ -145,6 +145,7 @@ class Python_Importer(Importer):
         i2 = self.new_starts_block(i)
         if i2 is None:
             return None
+
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(line)
@@ -152,7 +153,7 @@ class Python_Importer(Importer):
 
         # Set body_indent to the indentation of the first non-blank line of the body.
         # Test for a single-line class or def.
-        i += i2
+        i = i2
         while i < len(self.lines):
             line = self.lines[i]
             if line.isspace():
@@ -258,7 +259,7 @@ class Python_Importer(Importer):
                       ],
             }
         return d
-    #@+node:ekr.20220729081229.1: *3* python_i.get_new_dict.is_intro_line
+    #@+node:ekr.20220729081229.1: *3* python_i.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
         """
         Return True if line n is a comment line or decorator that starts at the give column.

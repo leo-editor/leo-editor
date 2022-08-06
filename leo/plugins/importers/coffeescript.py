@@ -94,6 +94,18 @@ class Coffeescript_Importer(Python_Importer):
                 self.headline = self.clean_headline(line)
                 return i + 1
         return None
+    #@+node:ekr.20220806164640.1: *3* coffee_i.is_intro_line
+    def is_intro_line(self, n: int, col: int) -> bool:
+        """
+        Return True if line n is a comment line or decorator that starts at the give column.
+        """
+        from leo.core import leoGlobals as g  ##
+        line = self.lines[n]
+        return (
+            ### line.strip().startswith(('#', '@'));
+            line.strip().startswith('#')
+            and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
+        )
     #@-others
     
     @classmethod

@@ -493,7 +493,6 @@ class Importer:
         # Don't use the threshold for unit tests. It's too confusing.
         if not top_level_inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
-            ### g.trace('No inner defs')
             p.b = self.body_string(start, end, others_indent)
             return
 
@@ -549,7 +548,7 @@ class Importer:
     #@+node:ekr.20220728130445.1: *5* i.new_skip_block (trace)
     def new_skip_block(self, i: int) -> int:
         """Return the index of line *after* the last line of the block."""
-        trace = True
+        trace = False
         lines, line_states = self.lines, self.line_states
         if i >= len(lines):
             return len(lines)

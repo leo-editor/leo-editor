@@ -73,7 +73,7 @@ class BaseTestImporter(LeoUnitTest):
         if 0: # Dump headlines of actual results.
             self.dump_headlines(p, tag='Actual headlines...')
 
-        if 0: # Dump actual results, including bodies.
+        if 1: # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
 
         # Do the actual tests.
@@ -116,6 +116,11 @@ class BaseTestImporter(LeoUnitTest):
     def dedent(self, s):
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
+    #@+node:ekr.20220806170537.1: *3* BaseTestImporter.dump_string
+    def dump_string(self, s, tag=None):
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
     #@+node:ekr.20220805071838.1: *3* BaseTestImporter.dump_headlines
     def dump_headlines(self, root, tag=None):  # pragma: no cover
         """Dump root's tree just as as Importer.dump_tree."""
@@ -407,44 +412,40 @@ class TestCoffeescript(BaseTestImporter):
           (2, 'constructor: ->',
               'constructor: ->\n'
               '  @transformer = new Transformer\n'
-              '  @others\n'
           ),
           (2, 'build: (args...) ->',
-              '# `build()`\n'
-              '\n'
-              'build: (args...) ->\n'
-              'node = args[0]\n'
-              '@transform node\n'
-              '\n'
-              "name = 'other'\n"
-              'name = node.typeName()  if node != undefined and node.typeName\n'
-              '\n'
-              'fn  = (@[name] or @other)\n'
-              'out = fn.apply(this, args)\n'
-              '\n'
-              'if node.parenthesized then paren(out) else out\n'
-              '@others\n'
+                '# `build()`\n'
+                '\n'
+                'build: (args...) ->\n'
+                '  node = args[0]\n'
+                '  @transform node\n'
+                '\n'
+                "  name = 'other'\n"
+                '  name = node.typeName()  if node != undefined and node.typeName\n'
+                '\n'
+                '  fn  = (@[name] or @other)\n'
+                '  out = fn.apply(this, args)\n'
+                '\n'
+                '  if node.parenthesized then paren(out) else out\n'
           ),
           (2, 'transform: (args...) ->',
               '# `transform()`\n'
               '\n'
               'transform: (args...) ->\n'
-              '@transformer.transform.apply(@transformer, args)\n'
+              '  @transformer.transform.apply(@transformer, args)\n'
               '\n'
-              '@others\n'
           ),
           (2, 'body: (node, opts={}) ->',
               '# `body()`\n'
               '\n'
               'body: (node, opts={}) ->\n'
-              'str = @build(node, opts)\n'
-              'str = blockTrim(str)\n'
-              'str = unshift(str)\n'
-              'if str.length > 0 then str else ""\n'
+              '  str = @build(node, opts)\n'
+              '  str = blockTrim(str)\n'
+              '  str = unshift(str)\n'
+              '  if str.length > 0 then str else ""\n'
               '\n'
           ),
         ))
-
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
