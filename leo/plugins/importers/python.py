@@ -79,7 +79,9 @@ class Python_Importer(Importer):
                 s = s[:i]
         # Remove leading 'def'
         if s.startswith('def '):
-            s = s[3:]
+            s = s[len('def'):]
+        elif s.startswith('async def '):
+            s = s[len('async def'):]
         # Remove leading 'class'.
         elif (
             s.startswith('class ')

@@ -453,7 +453,7 @@ class Importer:
         """
         Allocate lines[start : end] to p.b or descendants of p.
         """
-        trace, trace_body = True, False
+        trace, trace_body = False, False
         if trace:
             print('')
             ### g.trace('outer_level', outer_level)
@@ -470,45 +470,48 @@ class Importer:
         
         # The *top-level* inner defs are those contained within no other inner indent.
         # The following works because the definitions list is ordered by decl_line1.
-        inner_defs = [all_inner_defs[0]]
-        for z in all_inner_defs[1:]:
-            if not any(z.decl_line1 >= z2.decl_line1 and z.body_line9 <= z2.body_line9
-                for z2 in inner_defs
-            ):
-                inner_defs.append(z)
-
-        # The new (@others) indentation is the minimum indent for all inner defs.
-        new_indent = min(z.decl_indent for z in inner_defs)
+        if all_inner_defs:
+            top_level_inner_defs = [all_inner_defs[0]]
+            for z in all_inner_defs[1:]:
+                if not any(z.decl_line1 >= z2.decl_line1 and z.body_line9 <= z2.body_line9
+                    for z2 in top_level_inner_defs
+                ):
+                    top_level_inner_defs.append(z)
+            # The new (@others) indentation is the minimum indent for all inner defs.
+            new_indent = min(z.decl_indent for z in top_level_inner_defs)
+        else:
+            top_level_inner_defs = []
+            new_indent = 0  # Not used.
       
-        if trace and inner_defs:
-            g.printObj([repr(z) for z in inner_defs],
-                tag=f"Importer.make_node inner_defs: new_indent: {new_indent}")
+        if trace and top_level_inner_defs:
+            g.printObj([repr(z) for z in top_level_inner_defs],
+                tag=f"Importer.make_node top_level_inner_defs: new_indent: {new_indent}")
             if trace_body:
-                for z in inner_defs:
+                for z in top_level_inner_defs:
                     g.printObj(
                         self.lines[z.decl_line1 : z.body_line9],
                         tag=f"Importer.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
-        if not inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
+        if not top_level_inner_defs or (not g.unitTesting and end - start < self.SPLIT_THRESHOLD):
             # Don't split the body.
             ### g.trace('No inner defs')
             p.b = self.body_string(start, end, others_indent)
             return
 
         # Calculate head, the lines preceding the @others.
-        decl_line1 = inner_defs[0].decl_line1
+        decl_line1 = top_level_inner_defs[0].decl_line1
         head = self.body_string(start, decl_line1, others_indent) if decl_line1 > start else ''
         others_line = ' ' * max(0, inner_indent - others_indent) + '@others\n'
 
         # Calculate tail, the lines following the @others line.
-        last_tail_line = inner_defs[-1].body_line9
+        last_tail_line = top_level_inner_defs[-1].body_line9
         tail = self.body_string(last_tail_line, end, others_indent) if last_tail_line < end else ''
         p.b = f'{head}{others_line}{tail}'
 
         # Add a child of p for each inner definition.
         last = decl_line1
-        for inner_def in inner_defs:
+        for inner_def in top_level_inner_defs:
 
             # Add a child for in-between (declaration) lines.
             if inner_def.decl_line1 > last:
@@ -526,8 +529,6 @@ class Importer:
             # Important: The calculation uses only the the position of each definition.
             #            The calculation *ignores* indentation and logical level!
             inner_inner_defs = [z for z in definitions if
-                ### z not in inner_defs
-                ### and
                 z.decl_line1 > inner_def.decl_line1 and z.body_line9 <= inner_def.body_line9
             ]
             if inner_inner_defs:
