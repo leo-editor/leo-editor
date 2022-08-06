@@ -17,6 +17,36 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
+#@+node:ekr.20220720044208.1: ** class Python_ScanState
+class Python_ScanState:
+    """
+    A class representing the state of the python line-oriented scan."""
+    
+    # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
+
+    def __init__(self, d=None):
+        """Python_ScanState ctor."""
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+        else:
+            self.context = ''
+
+    def __repr__(self):
+        """Py_State.__repr__"""
+        return f"Python_ScanState: {self.context}"
+
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20220720044208.5: *3* py_state.update
+    def update(self, data: scan_tuple) -> int:
+        """
+        Python_ScanState: Update the state using given scan_tuple.
+        """
+        self.context = data.context
+        return data.i
+    #@-others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
     """
@@ -25,12 +55,12 @@ class Python_Importer(Importer):
     Leo uses this class *only* as the base class for the cython importer.
     """
    
-    def __init__(self, importCommands, language='python', **kwargs):
+    def __init__(self, importCommands, language='python', state_class=Python_ScanState, **kwargs):
         """Py_Importer.ctor."""
         super().__init__(
             importCommands,
             language=language,
-            state_class=Python_ScanState,
+            state_class=state_class,
             strict=True,
         )
         c = importCommands.c
@@ -101,7 +131,7 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
+    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def (generalized)
     def get_class_or_def(self, i: int) -> block_tuple:
         """
         Look for a def or class at lines[i]
@@ -238,36 +268,6 @@ class Python_Importer(Importer):
             line.strip().startswith(('#', '@'))
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@-others
-#@+node:ekr.20220720044208.1: ** class Python_ScanState
-class Python_ScanState:
-    """
-    A class representing the state of the python line-oriented scan."""
-    
-    # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
-
-    def __init__(self, d=None):
-        """Python_ScanState ctor."""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self):
-        """Py_State.__repr__"""
-        return f"Python_ScanState: {self.context}"
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220720044208.5: *3* py_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Python_ScanState: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
 def do_import(c, s, parent):
