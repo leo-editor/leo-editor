@@ -409,7 +409,7 @@ class TestCoffeescript(BaseTestImporter):
               '  @transformer = new Transformer\n'
               '  @others\n'
           ),
-          (3, 'build: (args...) ->',
+          (2, 'build: (args...) ->',
               '# `build()`\n'
               '\n'
               'build: (args...) ->\n'
@@ -425,7 +425,7 @@ class TestCoffeescript(BaseTestImporter):
               'if node.parenthesized then paren(out) else out\n'
               '@others\n'
           ),
-          (4, 'transform: (args...) ->',
+          (2, 'transform: (args...) ->',
               '# `transform()`\n'
               '\n'
               'transform: (args...) ->\n'
@@ -433,7 +433,7 @@ class TestCoffeescript(BaseTestImporter):
               '\n'
               '@others\n'
           ),
-          (5, 'body: (node, opts={}) ->',
+          (2, 'body: (node, opts={}) ->',
               '# `body()`\n'
               '\n'
               'body: (node, opts={}) ->\n'
