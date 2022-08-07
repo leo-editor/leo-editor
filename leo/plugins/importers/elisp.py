@@ -74,7 +74,6 @@ class Elisp_Importer(Importer):
         if line.isspace() or line_states[i].context:
             return None
         if self.elisp_defun_pattern.match(line):
-            self.headline = self.compute_headline(line)
             return i + 1
         return None
     #@-others
