@@ -2244,7 +2244,49 @@ class TestPerl(BaseTestImporter):
             # Function call
             Hello();
         """
-        self.run_test(s)
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '#!/usr/bin/perl\n'
+                    '\n'
+                    '@others\n'
+                    '            # Function call\n'
+                    '            Hello();\n'
+                    '\n'
+                    '@language perl\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'sub Hello',
+                    '            # Function definition\n'
+                    '            sub Hello{\n'
+                    '               print "Hello, World!\n'
+                    '";\n'
+                    '            }\n'
+                    '\n'
+            ),
+            (1, 'sub Test',
+                    '            sub Test{\n'
+                    '               print "Test!\n'
+                    '";\n'
+                    '            }\n'
+            ),
+            (1,  '"ﬁ" =~ /fi/i',
+                '            "ﬁ" =~ /fi/i;\n'
+                '\n'
+                '            $bar = "foo";\n'
+            
+            ),
+            (1, 'if ($bar =~ /foo/)',
+                '            if ($bar =~ /foo/){\n'
+                '               print "Second time is matching\n'
+                '";\n'
+                '            }else{\n'
+                '               print "Second time is not matching\n'
+                '";\n'
+                '            }\n'
+                '\n'
+            ),
+        ))
     #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
 
@@ -2260,7 +2302,25 @@ class TestPerl(BaseTestImporter):
 
             world\n";
         """
-        self.run_test(s)
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '#!/usr/bin/perl\n'
+                    '\n'
+                    '            # This would print with a line break in the middle\n'
+                    '            print "Hello\n'
+                    '\n'
+                    '            sub World {\n'
+                    '                print "This is not a funtion!"\n'
+                    '            }\n'
+                    '\n'
+                    '            world\n'
+                    '";\n'
+                    '\n'
+                    '@language perl\n'
+                    '@tabwidth -4\n'
+            ),
+        ))
     #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
 

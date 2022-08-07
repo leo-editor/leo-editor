@@ -356,7 +356,7 @@ class Importer:
         Return the cleaned version headline s.
         May be overridden in subclasses.
         """
-        for ch in '{(=':
+        for ch in '{(=;':
             i = s.find(ch)
             if i > -1:
                 s = s[:i]
@@ -394,8 +394,8 @@ class Importer:
                         # A non-trivial comment: Return the comment w/o the leading '#'.
                         return strip_comment
                 else:
-                    # A non-trivial non-comment.
-                    return strip_s
+                    # A non-trivial non-comment: perform the standard cleanings.
+                    return self.compute_headline(strip_s)
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
