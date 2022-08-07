@@ -105,7 +105,7 @@ class Coffeescript_Importer(Python_Importer):
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
     #@-others
-    
+
     @classmethod
     def do_import(cls):
         def f(c, s, parent):

@@ -2419,7 +2419,7 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'f1', 
+            (1, 'f1',
                     'def f1():\n'
                     '    pass\n'
                     '\n'
@@ -2671,7 +2671,7 @@ class TestPython(BaseTestImporter):
                         '\n'
             )
         ))
-        
+
     #@+node:ekr.20211126055349.1: *3* TestPython.test_short_file
     def test_short_file(self):
 

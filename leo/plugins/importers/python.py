@@ -21,7 +21,7 @@ NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 class Python_ScanState:
     """
     A class representing the state of the python line-oriented scan."""
-    
+
     # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
 
     def __init__(self, d=None):
@@ -54,7 +54,7 @@ class Python_Importer(Importer):
 
     Leo uses this class *only* as the base class for the cython importer.
     """
-   
+
     def __init__(self, importCommands, language='python', state_class=Python_ScanState, **kwargs):
         """Py_Importer.ctor."""
         super().__init__(
@@ -91,7 +91,7 @@ class Python_Importer(Importer):
     def clean_headline(self, s, p=None):
         """
         Python_Importer.clean_headline.
-        
+
         Return the cleaned version headline s.
         """
         s = s.strip()
@@ -283,7 +283,7 @@ def do_import(c, s, parent):
 
         add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
         split_root(add_class_to_headlines, parent, s.splitlines(True))
-        
+
         # Add *trailing* lines, just line the Importer class.
         parent.b += '@language python\n@tabwidth -4\n'
     return True

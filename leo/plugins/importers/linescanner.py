@@ -463,7 +463,7 @@ class Importer:
 
         # Find all the defs between lines[start:end].
         all_inner_defs = [z for z in definitions if z.decl_line1 >= start and z.body_line9 <= end]
-        
+
         # The *top-level* inner defs are those contained within no other inner indent.
         # The following works because the definitions list is ordered by decl_line1.
         if all_inner_defs:
@@ -478,7 +478,7 @@ class Importer:
         else:
             top_level_inner_defs = []
             new_indent = 0  # Not used.
-      
+
         if trace and top_level_inner_defs:
             g.printObj([repr(z) for z in top_level_inner_defs],
                 tag=f"Importer.make_node top_level_inner_defs: new_indent: {new_indent}")
