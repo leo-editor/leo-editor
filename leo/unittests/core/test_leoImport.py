@@ -1139,7 +1139,7 @@ class TestJava(BaseTestImporter):
             (1, 'public final class AdminPermission extends BasicPermission',
                     'public final class AdminPermission extends BasicPermission\n'
                     '{\n'
-                    '    /**\n',
+                    '    /**\n'
                     '     * Creates a new <tt>AdminPermission</tt> object.\n'
                     '     */\n'
                     '    @others\n'
@@ -1148,8 +1148,8 @@ class TestJava(BaseTestImporter):
             ),
             (2, 'public AdminPermission',
                     'public AdminPermission()\n'
-                    '{\n',
-                    '    super("AdminPermission");\n',
+                    '{\n'
+                    '    super("AdminPermission");\n'
                     '}\n'
             ),
         ))

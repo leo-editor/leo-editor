@@ -647,11 +647,11 @@ class Importer:
         Return the cleaned version headline s.
         May be overridden in subclasses.
         """
-        s = s.strip()
         for ch in '{(=':
-            if s.endswith(ch):
-                s = s[:-1].strip()
-        return s
+            i = s.find(ch)
+            if i > -1:
+                s = s[:i]
+        return s.strip()
     #@+node:ekr.20161110173058.1: *4* i.clean_nodes
     def clean_nodes(self, parent):
         """

@@ -117,7 +117,7 @@ class C_Importer(Importer):
             or not self.match_start_patterns(line)
         ):
             return None
-        # Try again to set self.headline.
+        # Try to set self.headline.
         if not self.headline and i0 + 1 < len(lines):
             self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
         # Now clean the headline.

@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 """The @auto importer for the java language."""
 import re
+from typing import Optional
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
@@ -63,34 +64,33 @@ class Java_Importer(Importer):
             self.headline = line[:i] if i > -1 else line
             return True
         return False
-    #@+node:ekr.20161205042019.5: *3* java_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
-        """True if the new state starts a block."""
-        self.headline = None
+    #@+node:ekr.20161205042019.5: *3* java_i.new_starts_block
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body and set self.headline.
+        """
+        i0, lines, line_states = i, self.lines, self.line_states
         line = lines[i]
-        if prev_state.context:
-            return False
-        if self.java_keywords_pattern.match(line):
-            return False
-        if not self.match_start_patterns(line):
-            return False
-        # Must not be a complete statement.
-        if line.find(';') > -1:
-            return False
-        # Scan ahead until an open { is seen. the skip count.
-        self.skip = 0
-        while self.skip < 10:
-            if new_state.level() > prev_state.level():
-                return True
-            self.skip += 1
+        if (
+            line.isspace()
+            or ';' in line  # Must not be a complete statement.
+            or line_states[i].context
+            or self.java_keywords_pattern.match(line)
+            or not self.match_start_patterns(line)
+        ):
+            return None
+        # Set self.headline.
+        # Scan ahead at most 10 lines until an open { is seen.
+        while i < len(lines) and i <= i0 + 10:
+            prev_state = line_states[i - 1] if i > 0 else self.state_class()
+            this_state = line_states[i]
+            if this_state.level() > prev_state.level():
+                self.headline = self.clean_headline(lines[i0])
+                return i + 1
             i += 1
-            if i < len(lines):
-                line = lines[i]
-                prev_state = new_state
-                new_state = self.scan_line(line, prev_state)
-            else:
-                break
-        return False
+        return None
     #@-others
 #@+node:ekr.20161126161824.6: ** class class Java_ScanState
 class Java_ScanState:
