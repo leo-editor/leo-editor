@@ -473,7 +473,7 @@ class Importer:
         """
         # This algorithm is a generalization of Vitalije's original python importer.
         # It calculates top-level methods using neither def.body_indent nor def.decl_level!
-        trace, trace_body = False, True
+        trace, trace_body = False, False
         if trace:
             print('')
             g.trace('ENTRY! start:', start, 'end:', end,
@@ -603,18 +603,18 @@ class Importer:
             self.headline = self.clean_headline(lines[i])
             return i + 1
         return None
+    #@+node:ekr.20161108131153.9: *5* i.clean_headline
+    def clean_headline(self, s, p=None):
+        """
+        Return the cleaned version headline s.
+        May be overridden in subclasses.
+        """
+        for ch in '{(=':
+            i = s.find(ch)
+            if i > -1:
+                s = s[:i]
+        return s.strip()
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
-    #@+node:ekr.20211118082436.1: *4* i.dump_tree
-    def dump_tree(self, root, tag=None):
-        """
-        Like LeoUnitTest.dump_tree.
-        """
-        if tag:
-            print(tag)
-        for p in root.self_and_subtree():
-            print('')
-            print('level:', p.level(), p.h)
-            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
         """Issue an error and cause a unit test to fail."""
@@ -630,36 +630,6 @@ class Importer:
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161108131153.7: *3* i: Overrides
-    # These can be overridden in subclasses.
-    #@+node:ekr.20161108131153.8: *4* i.adjust_parent
-    def adjust_parent(self, parent, headline):
-        """Return the effective parent.
-
-        This is overridden by the RstScanner class."""
-
-        ### To be removed. ###
-
-        return parent
-    #@+node:ekr.20161108131153.9: *4* i.clean_headline
-    def clean_headline(self, s, p=None):
-        """
-        Return the cleaned version headline s.
-        May be overridden in subclasses.
-        """
-        for ch in '{(=':
-            i = s.find(ch)
-            if i > -1:
-                s = s[:i]
-        return s.strip()
-    #@+node:ekr.20161110173058.1: *4* i.clean_nodes
-    def clean_nodes(self, parent):
-        """
-        Clean all nodes in parent's tree.
-        Subclasses override this as desired.
-        See perl_i.clean_nodes for an examplle.
-        """
-        pass
     #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):

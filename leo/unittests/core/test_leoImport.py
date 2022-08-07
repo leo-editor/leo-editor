@@ -3509,7 +3509,7 @@ class TestRst(BaseTestImporter):
             (2, 'section 2.1'),
             (3, 'section 2.1.1'),
             (1, 'section 3'),
-            (2, 'placeholder'),
+            (2, 'placeholder level 2'),
             (3, 'section 3.1.1'),
         ))
     #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
@@ -3595,7 +3595,7 @@ class TestRst(BaseTestImporter):
             (2, 'section 2.1'),
             (3, 'section 2.1.1'),
             (1, 'section 3'),
-            (2, 'placeholder'),
+            (2, 'placeholder level 2'),
             (3, 'section 3.1.1'),
         ))
     #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines

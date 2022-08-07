@@ -35,7 +35,7 @@ class Rst_Importer(Importer):
         reason to prevent the writer from inserting conditional newlines.
         """
         return True
-    #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers (*** to do)
+    #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, lines, parent):
         """Node generator for reStructuredText importer."""
         if all(s.isspace() for s in lines):
@@ -143,12 +143,6 @@ class Rst_Importer(Importer):
         """Make a decls node."""
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
-        ###
-            # child = self.create_child_node(
-                # parent=self.stack[-1],
-                # line=None,
-                # headline=headline,
-            # )
         child = parent.insertAsLastChild()
         child.h = headline
         lines_dict[child.v] = []
