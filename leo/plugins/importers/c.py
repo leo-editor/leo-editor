@@ -12,15 +12,6 @@ class C_Importer(Importer):
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 
     #@+others
-    #@+node:ekr.20200819073508.1: *3* c_i.compute_headline
-    def compute_headline(self, s, p=None):
-        """
-        Adjust headline for templates.
-        """
-        i = s.find('(')
-        if i > -1:
-            s = s[:i]
-        return s.strip()
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):
         """C_Importer.__init__"""

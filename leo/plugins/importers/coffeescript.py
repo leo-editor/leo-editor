@@ -91,7 +91,6 @@ class Coffeescript_Importer(Python_Importer):
         line = lines[i]
         for pattern in self.pattern_table:
             if pattern.match(line):
-                self.headline = self.compute_headline(line)
                 return i + 1
         return None
     #@+node:ekr.20220806164640.1: *3* coffee_i.is_intro_line

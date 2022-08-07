@@ -410,7 +410,7 @@ class Importer:
         Look for a def or class at self.lines[i]
         Return None or a block_tuple describing the class or def.
         """
-        self.headline =  ''  # Set in helpers..
+        self.headline =  ''  # May be set in new_starts_block.
         lines = self.lines
         states = self.line_states
 
@@ -448,7 +448,7 @@ class Importer:
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             decl_level = decl_level,
-            name = self.headline,
+            name = self.compute_headline(self.headline or lines[decl_line])
         )
     #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
@@ -626,7 +626,6 @@ class Importer:
         prev_state = line_states[i - 1] if i > 0 else self.ScanState()
         this_state = line_states[i]
         if this_state.level() > prev_state.level():
-            self.headline = self.compute_headline(lines[i])
             return i + 1
         return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages

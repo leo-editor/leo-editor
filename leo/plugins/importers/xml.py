@@ -211,7 +211,6 @@ class Xml_Importer(Importer):
                 f"{line!r}"
             )
         if this_state.tag_level > prev_state.tag_level:
-            self.headline = self.compute_headline(line)
             return i + 1
         return None
     #@-others
