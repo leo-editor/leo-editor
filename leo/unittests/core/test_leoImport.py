@@ -2599,7 +2599,7 @@ class TestPython(BaseTestImporter):
                        '\n'
             ),
         ))
-       
+
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
         s = ('import sys\n'
