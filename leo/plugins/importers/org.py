@@ -44,21 +44,6 @@ class Org_Importer(Importer):
                     self.tc.add_tag(p, tag)
         return s
 
-    #@+node:ekr.20220802153637.1: *3* org_i.create_placeholders
-    def create_placeholders(self, level, lines_dict, parents):
-        """Create placeholders as necessary."""
-        if level <= len(parents):
-            return
-        n = level - len(parents)
-        assert n > 0
-        assert level >= 0
-        while n > 0:
-            n -= 1
-            parent = parents[-1]
-            child = parent.insertAsLastChild()
-            child.h = f"placeholder level {len(parents)}"
-            parents.append(child)
-            lines_dict[child.v] = []
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')

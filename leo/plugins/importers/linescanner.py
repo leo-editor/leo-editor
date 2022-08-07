@@ -353,6 +353,25 @@ class Importer:
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
+    #@+node:ekr.20220807043759.1: *5* i.create_placeholders
+    def create_placeholders(self, level, lines_dict, parents):
+        """
+        Create placeholder nodes so between the current level (len(parents)) and the desired level.
+
+        Used by the org and otl importers.
+        """
+        if level <= len(parents):
+            return
+        n = level - len(parents)
+        assert n > 0
+        assert level >= 0
+        while n > 0:
+            n -= 1
+            parent = parents[-1]
+            child = parent.insertAsLastChild()
+            child.h = f"placeholder level {len(parents)}"
+            parents.append(child)
+            lines_dict[child.v] = []
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
     def gen_lines_prepass(self):
         """A hook for pascal. Called by i.gen_lines()."""

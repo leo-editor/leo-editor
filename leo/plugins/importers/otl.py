@@ -64,21 +64,6 @@ class Otl_Importer(Importer):
         for p in self.root.self_and_subtree():
             assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
-    #@+node:ekr.20220804040158.1: *3* otl_i.create_placeholders
-    def create_placeholders(self, level, lines_dict, parents):
-        """Create placeholders as necessary."""
-        if level <= len(parents):
-            return
-        n = level - len(parents)
-        assert n > 0
-        assert level >= 0
-        while n > 0:
-            n -= 1
-            parent = parents[-1]
-            child = parent.insertAsLastChild()
-            child.h = f"placeholder level {len(parents)}"
-            parents.append(child)
-            lines_dict[child.v] = []
     #@+node:ekr.20220803162645.1: *3* otl.regularize_whitespace
     def regularize_whitespace(self, lines):
         """
