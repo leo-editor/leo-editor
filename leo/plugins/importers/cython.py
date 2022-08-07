@@ -41,7 +41,7 @@ class Cython_Importer(Python_Importer):
         if not m:
             return None
         newlines = m.group(0).count('\n')
-        return newlines + 1
+        return i + newlines + 1
     #@-others
 #@+node:vitalije.20211207174609.1: ** class Cython_State
 class Cython_ScanState:

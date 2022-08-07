@@ -458,8 +458,7 @@ class Importer:
         trace, trace_body = False, False
         if trace:
             print('')
-            g.trace('ENTRY! start:',
-                start, 'end:', end,
+            g.trace('ENTRY! start:', start, 'end:', end,
                 '@others indent:', others_indent, 'inner_indent', inner_indent)
             g.printObj([repr(z) for z in definitions], tag=f"----- make_node. definitions {p.h}")
 
