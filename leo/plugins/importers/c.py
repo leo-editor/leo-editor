@@ -20,15 +20,6 @@ class C_Importer(Importer):
         i = s.find('(')
         if i > -1:
             s = s[:i]
-        # if s.startswith('template') and len(lines) > 1:
-            # line = lines[1]
-            # # Filter out all keywords and cruft.
-            # # This isn't perfect, but it's a good start.
-            # for z in self.type_keywords:
-                # line = re.sub(fr"\b{z}\b", '', line)
-            # for ch in '()[]{}=':
-                # line = line.replace(ch, '')
-            # return line.strip()
         return s.strip()
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):

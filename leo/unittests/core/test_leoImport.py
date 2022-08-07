@@ -1197,8 +1197,20 @@ class TestJava(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'interface Bicycle'),
+        self.dump_tree(p, tag='Actual results...')
+        self.check_outline(p, (
+            (0, '',  # check_outline does not check the first outline.
+                '@others\n'
+                '@language java\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
+                'interface Bicycle {\n'
+                '    void changeCadence(int newValue);\n'
+                '    void changeGear(int newValue);\n'
+                '}\n'
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
