@@ -2283,36 +2283,8 @@ class TestPerl(BaseTestImporter):
             }
         """
         self.run_test(s)
-    #@+node:ekr.20210904065459.54: *3* TestPerl.test_regex_1
-    def test_regex_1(self):
-
-        # ('len',   'tr///', '/',       context,  0,       0,       0),
-        # ('len',   's///',  '/',       context,  0,       0,       0),
-        # ('len',   'm//',   '/',       context,  0,       0,       0),
-        # ('len',   '/',     '/',       '',       0,       0,       0),
-        s = """
-            #!/usr/bin/perl
-
-            sub test1 {
-                s = /{/g;
-            }
-
-            sub test2 {
-                s = m//{/;
-            }
-
-            sub test3 {
-                s = s///{/;
-            }
-
-            sub test4 {
-                s = tr///{/;
-            }
-        """
-        self.run_test(s)
-
-    #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex_2
-    def test_regex_2(self):
+    #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex
+    def test_regex(self):
 
         s = """
             #!/usr/bin/perl
