@@ -2334,12 +2334,38 @@ class TestPerl(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        ### self.dump_tree(p, tag='Actual results...')
-        self.check_headlines(p, (
-            (1, 'sub test1'),
-            (1, 'sub test2'),
-            (1, 'sub test3'),
-            (1, 'sub test4'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language perl\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'sub test1',
+                    '#!/usr/bin/perl\n'
+                    '\n'
+                    'sub test1 {\n'
+                    '    s = /}/g;\n'
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'sub test2',
+                    'sub test2 {\n'
+                    '    s = m//}/;\n'
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'sub test3',
+                    'sub test3 {\n'
+                    '    s = s///}/;\n'
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'sub test4',
+                    'sub test4 {\n'
+                    '    s = tr///}/;\n'
+                    '}\n'
+                    '\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
