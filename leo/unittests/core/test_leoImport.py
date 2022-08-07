@@ -360,8 +360,27 @@ class TestCoffeescript(BaseTestImporter):
           scriptNode = parser.parse str
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'buildCoffee = (str) ->'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    "# Js2coffee relies on Narcissus's parser.\n"
+                    '\n'
+                    "{parser} = @Narcissus or require('./narcissus_packed')\n"
+                    '\n'
+                    '@others\n'
+                    '@language coffeescript\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'buildCoffee = (str) ->',
+                    '# Main entry point\n'
+                    '\n'
+                    'buildCoffee = (str) ->\n'
+                    "  str  = str.replace /\\r/g, ''\n"
+                    '  str += "\\n"\n'
+                    '\n'
+                    '  builder    = new Builder\n'
+                    '  scriptNode = parser.parse str\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
     #@@tabwidth -2 # Required
