@@ -40,7 +40,7 @@ class Rst_Importer(Importer):
         """Node generator for reStructuredText importer."""
         if all(s.isspace() for s in lines):
             return
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        self.lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         self.lines: List[str] = lines
         self.stack: List[Position] = [parent]
         skip = 0
@@ -49,21 +49,20 @@ class Rst_Importer(Importer):
                 skip -= 1
             elif self.is_lookahead_overline(i):
                 level = self.ch_level(line[0])
-                self.make_rst_node(level, lines[i + 1], lines_dict)
+                self.make_rst_node(level, lines[i + 1])
                 skip = 2
             elif self.is_lookahead_underline(i):
                 level = self.ch_level(lines[i + 1][0])
-                self.make_rst_node(level, line, lines_dict)
+                self.make_rst_node(level, line)
                 skip = 1
             elif i == 0:
-                p = self.make_dummy_node('!Dummy chapter', lines_dict)
-                # self.add_line(p, line)
-                lines_dict[p.v].append(line)
+                p = self.make_dummy_node('!Dummy chapter')
+                self.lines_dict[p.v].append(line)
             else:
                 p = self.stack[-1]
-                lines_dict[p.v].append(line)
+                self.lines_dict[p.v].append(line)
         # Add the directives.
-        root_lines = lines_dict[self.root.v]
+        root_lines = self.lines_dict[self.root.v]
         if root_lines and not root_lines[-1].endswith('\n'):
             root_lines.append('\n')
         root_lines.extend([
@@ -73,7 +72,7 @@ class Rst_Importer(Importer):
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
             assert not p.b, repr(p.b)
-            p.b = ''.join(lines_dict[p.v])
+            p.b = ''.join(self.lines_dict[p.v])
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
     # # 430, per RagBlufThim. Was {'#': 1,}
     rst_seen: Dict[str, int] = {}
@@ -114,14 +113,9 @@ class Rst_Importer(Importer):
             return False
         line0 = lines[i]
         line1 = lines[i + 1]
-        ### ch0 = self.is_underline(line0)
-        ### ch1 = self.is_underline(line1)
         return (
-            not line0.isspace()
-            and len(line1) >= 4
-            ### and not ch0 and ch1
-            and self.is_underline(line1)
-            and not self.is_underline(line0)
+            not line0.isspace() and len(line1) >= 4
+            and self.is_underline(line1) and not self.is_underline(line0)
         )
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
     def is_underline(self, line, extra=None):
@@ -139,42 +133,28 @@ class Rst_Importer(Importer):
                 return None
         return ch1
     #@+node:ekr.20220807060022.1: *4* rst_i.make_dummy_node
-    def make_dummy_node(self, headline, lines_dict):
+    def make_dummy_node(self, headline):
         """Make a decls node."""
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
         child = parent.insertAsLastChild()
         child.h = headline
-        lines_dict[child.v] = []
+        self.lines_dict[child.v] = []
         self.stack.append(child)
         return child
     #@+node:ekr.20220807060050.1: *4* rst_i.make_rst_node
-    def make_rst_node(self, level, headline, lines_dict):
+    def make_rst_node(self, level, headline):
         """Create a new node, with the given headline."""
-        ### self.find_parent(level, headline, lines_dict)
         assert level > 0
-        ###
-            # while level < len(self.stack):
-                # self.stack.pop()
         self.stack = self.stack[:level]
         # Insert placeholders as necessary.
         # This could happen in imported files not created by us.
-        self.create_placeholders(level, lines_dict, parents=self.stack)
-            ###
-            # while level > len(self.stack):
-                # top = self.stack[-1]
-                # ###
-                    # # child = self.create_child_node(
-                        # # parent=top, line=None, headline='placeholder',
-                    # # )
-                # child = top.insertAsLastChild()
-                # child.h = 'placeholder'
-                # self.stack.append(child)
+        self.create_placeholders(level, lines_dict=self.lines_dict, parents=self.stack)
         # Create the node.
         top = self.stack[-1]
         child = top.insertAsLastChild()
         child.h = headline
-        lines_dict[child.v] = []
+        self.lines_dict[child.v] = []
         self.stack.append(child)
         return self.stack[level]
     #@+node:ekr.20161129040921.11: *3* rst_i.post_pass
