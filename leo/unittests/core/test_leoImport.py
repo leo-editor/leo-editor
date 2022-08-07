@@ -1126,9 +1126,32 @@ class TestJava(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'public final class AdminPermission extends BasicPermission'),
-            (2, 'public AdminPermission'),
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline does not check the first outline.
+                    '/**\n'
+                    " * Indicates the caller's authority to perform lifecycle operations on\n"
+                    ' */\n'
+                    '\n'
+                    'public final class AdminPermission extends BasicPermission\n'
+                    '@others\n'
+                    '@language java\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'public final class AdminPermission extends BasicPermission',
+                    '{\n'
+                    '    /**\n',
+                    '     * Creates a new <tt>AdminPermission</tt> object.\n'
+                    '     */\n'
+                    '    public AdminPermission()\n'
+                    '    @others\n'
+                    '}\n'
+                    '\n'
+            ),
+            (2, 'public AdminPermission',
+                    '{\n',
+                    '    super("AdminPermission");\n',
+                    '}\n'
+            ),
         ))
     #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
@@ -1197,7 +1220,6 @@ class TestJava(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.dump_tree(p, tag='Actual results...')
         self.check_outline(p, (
             (0, '',  # check_outline does not check the first outline.
                 '@others\n'
