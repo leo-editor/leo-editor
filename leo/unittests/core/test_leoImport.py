@@ -1751,14 +1751,47 @@ class TestMarkdown(BaseTestImporter):
             section 3, line 1
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Top'),
-            (2, 'Section 1'),
-            (2, 'Section 2'),
-            (3, 'Section 2.1'),
-            (4, 'Section 2.1.1'),
-            (3, 'Section 2.2'),
-            (2, 'Section 3'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@language md\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'Top',
+                '\n'
+                'The top section\n'
+                '\n'    
+            ),
+            (2, 'Section 1',
+                '\n'
+                'section 1, line 1\n'
+                '-- Not an underline\n'
+                'secttion 1, line 2\n'
+                '\n'
+            ),
+            (2, 'Section 2',
+                '\n'
+                'section 2, line 1\n'
+                '\n'
+            ),
+            (3, 'Section 2.1',
+                '\n'
+                'section 2.1, line 1\n'
+                '\n'  
+            ),
+            (4, 'Section 2.1.1',
+                '\n'
+                'section 2.2.1 line 1\n'
+                '\n'
+            ),
+            (3, 'Section 2.2',
+                'section 2.2, line 1.\n'
+                '\n'
+            ),
+            (2, 'Section 3',
+                '\n'
+                'section 3, line 1\n'
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
@@ -1781,11 +1814,31 @@ class TestMarkdown(BaseTestImporter):
             #Last header: no text
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, '!Declarations'),
-            (1, 'Header'),
-            (2, 'Subheader'),
-            (1, 'Last header: no text'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@language md\n'
+                '@tabwidth -4\n'
+            ),
+            (1, '!Declarations',
+                'Decl line.\n'  
+            ),
+            (1, 'Header',
+                '\n'
+                'After header text\n'
+                '\n'
+            ),
+            (2, 'Subheader',
+                '\n'
+                'Not an underline\n'
+                '\n'
+                '----------------\n'
+                '\n'
+                'After subheader text\n'
+                '\n'
+            ),
+            (1, 'Last header: no text',
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
@@ -1809,15 +1862,35 @@ class TestMarkdown(BaseTestImporter):
 
             #Last header: no text
         """
-        # Implicit underlining *must* cause the perfect-import test to fail!
-        g.app.suppressImportChecks = True
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, '!Declarations'),
-            (1, 'Header'),
-            (2, 'Subheader'),
-            (1, 'This *should* be a section'),
-            (1, 'Last header: no text'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@language md\n'
+                '@tabwidth -4\n'
+            ),
+            (1, '!Declarations',
+                'Decl line.\n'
+            ),
+            (1, 'Header',
+                '\n'
+                'After header text\n'
+                '\n'
+            ),
+            (2, 'Subheader',
+                '\n'
+                'Not an underline\n'
+                '\n'
+                '----------------\n'
+                '\n'
+            ),
+            (1, 'This *should* be a section',
+                '\n'
+                'After subheader text\n'
+                '\n'       
+            ),
+            (1, 'Last header: no text',
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
@@ -1835,10 +1908,26 @@ class TestMarkdown(BaseTestImporter):
             #Last header
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, '!Declarations'),
-            (1, 'Header'),
-            (1, 'Last header'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@language md\n'
+                '@tabwidth -4\n'
+            ),
+            (1, '!Declarations',
+                'Decl line.\n'        
+            ),
+            (1, 'Header',
+                '\n'
+                '```python\n'
+                'loads.init = {\n'
+                '    Chloride: 11.5,\n'
+                '    TotalP: 0.002,\n'
+                '}\n'
+                '```\n'
+            ),
+            (1, 'Last header',
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
@@ -3734,7 +3823,6 @@ class TestRst(BaseTestImporter):
             The top chapter.
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
