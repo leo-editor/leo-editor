@@ -482,8 +482,8 @@ class TestCSharp(BaseTestImporter):
     ext = '.c#'
 
     #@+others
-    #@+node:ekr.20210904065459.12: *3* TestCSharp.xxx_test_namespace_indent
-    def xxx_test_namespace_indent(self):
+    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
+    def test_namespace_indent(self):
 
         s = """
             namespace {
@@ -493,9 +493,23 @@ class TestCSharp(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'namespace'),
-            (2, 'class cTestClass1'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language csharp\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'namespace',
+                    'namespace {\n'
+                    '    @others\n'
+                    '}\n'
+                    '\n'
+            ),
+            (2, 'class cTestClass1',
+                    'class cTestClass1 {\n'
+                    '    ;\n'
+                    '}\n'
+            ),
         ))
     #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
@@ -508,9 +522,23 @@ class TestCSharp(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'namespace'),
-            (2, 'class cTestClass1')
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language csharp\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'namespace',
+                    'namespace {\n'
+                    '@others\n'
+                    '}\n'
+                    '\n'
+            ),
+            (2, 'class cTestClass1',
+                    'class cTestClass1 {\n'
+                    '    ;\n'
+                    '}\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
