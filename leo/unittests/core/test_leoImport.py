@@ -1906,8 +1906,16 @@ class TestOrg(BaseTestImporter):
             First line.
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, ' Test'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@language org\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, ' Test',
+                    '*  Test\n'
+                    'First line.\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
@@ -1921,10 +1929,24 @@ class TestOrg(BaseTestImporter):
             *** 每周惯例
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Events'),
-            (2, '整理个人生活'),
-            (3, '每周惯例'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@language org\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'Events',
+                    '* Events\n'
+                    '  :PROPERTIES:\n'
+                    '  :CATEGORY: events\n'
+                    '  :END:\n'
+            ),
+            (2, '整理个人生活',
+                    '** 整理个人生活\n'
+            ),
+            (3, '每周惯例',
+                    '*** 每周惯例\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
@@ -2293,7 +2315,7 @@ class TestPerl(BaseTestImporter):
                 '            "ﬁ" =~ /fi/i;\n'
                 '\n'
                 '            $bar = "foo";\n'
-            
+
             ),
             (1, 'if ($bar =~ /foo/)',
                 '            if ($bar =~ /foo/){\n'
