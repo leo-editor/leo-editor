@@ -101,7 +101,7 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def (generalized)
+    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
     def get_class_or_def(self, i: int) -> block_tuple:
         """
         Look for a def or class at lines[i]
@@ -168,27 +168,6 @@ class Python_Importer(Importer):
             decl_level = decl_level,
             name = self.compute_headline(self.lines[decl_line])
         )
-    #@+node:ekr.20220806085448.1: *3* python_i.new_starts_block
-    # Optional base classes.
-    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
-    class_pat = re.compile(class_pat_s, re.MULTILINE)
-
-    # Requred argument list.
-    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
-    def_pat = re.compile(def_pat_s, re.MULTILINE)
-
-    def new_starts_block(self, i: int) -> Optional[int]:
-        """
-        Return None if lines[i] does not start a class, function or method.
-
-        Otherwise, return the index of the first line of the body.
-        """
-        line = self.lines[i]
-        m = self.class_pat.match(line) or self.def_pat.match(line)
-        if not m:
-            return None
-        newlines = m.group(0).count('\n')
-        return i + newlines + 1
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
 
@@ -239,6 +218,27 @@ class Python_Importer(Importer):
             line.strip().startswith(('#', '@'))
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
+    #@+node:ekr.20220806085448.1: *3* python_i.new_starts_block
+    # Optional base classes.
+    class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
+    class_pat = re.compile(class_pat_s, re.MULTILINE)
+
+    # Requred argument list.
+    def_pat_s = r'\s*(async def|def)\s+([\w_]+)\s*(\(.*?\))(.*?):'
+    def_pat = re.compile(def_pat_s, re.MULTILINE)
+
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        line = self.lines[i]
+        m = self.class_pat.match(line) or self.def_pat.match(line)
+        if not m:
+            return None
+        newlines = m.group(0).count('\n')
+        return i + newlines + 1
     #@-others
 #@+node:ekr.20220720044208.1: ** class Python_ScanState
 class Python_ScanState:

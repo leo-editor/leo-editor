@@ -2334,6 +2334,7 @@ class TestPerl(BaseTestImporter):
             }
         """
         p = self.run_test(s)
+        ### self.dump_tree(p, tag='Actual results...')
         self.check_headlines(p, (
             (1, 'sub test1'),
             (1, 'sub test2'),
@@ -2508,9 +2509,9 @@ class TestPython(BaseTestImporter):
                   main()
         """).replace('AT', '@')
 
-        # Level, headline, lines (as a string).
-        exp_nodes = (
-            (0, 'check_outline ignores the first headline',
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '', # check_outline ignores the first headline'
                     'import sys\n'
                     '@others\n'
                     "if __name__ == '__main__':\n"
@@ -2596,11 +2597,9 @@ class TestPython(BaseTestImporter):
                        'def main():\n'
                        '    pass\n'
                        '\n'
-            )
-        )
-        p = self.run_test(s)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+            ),
+        ))
+       
     #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
         s = ('import sys\n'
