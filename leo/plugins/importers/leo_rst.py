@@ -5,7 +5,8 @@ The @auto importer for restructured text.
 
 This module must **not** be named rst, so as not to conflict with docutils.
 """
-from typing import Dict
+from typing import Dict, List
+from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 
 # Used by writers.leo_rst as well as in this file.
@@ -39,64 +40,89 @@ class Rst_Importer(Importer):
         """Node generator for reStructuredText importer."""
         if all(s.isspace() for s in lines):
             return
-        ###
-            # self.vnode_info = {
-                # # Keys are vnodes, values are inner dicts.
-                # parent.v: {
-                    # 'lines': [],
-                # }
-            # }
-            # # We may as well do this first.  See note below.
-            # self.stack = [parent]
-            # skip = 0
-
+        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        self.lines: List[str] = lines
+        self.stack: List[Position] = [parent]
+        skip = 0
         for i, line in enumerate(lines):
-            pass
-            ###
-                # if skip > 0:
-                    # skip -= 1
-                # elif self.is_lookahead_overline(i, lines):
-                    # level = self.ch_level(line[0])
-                    # self.make_rst_node(level, lines[i + 1])
-                    # skip = 2
-                # elif self.is_lookahead_underline(i, lines):
-                    # level = self.ch_level(lines[i + 1][0])
-                    # self.make_rst_node(level, line)
-                    # skip = 1
-                # elif i == 0:
-                    # p = self.make_dummy_node('!Dummy chapter')
-                    # self.add_line(p, line)
-                # else:
-                    # p = self.stack[-1]
-                    # self.add_line(p, line)
+            if skip > 0:
+                skip -= 1
+            elif self.is_lookahead_overline(i):
+                level = self.ch_level(line[0])
+                self.make_rst_node(level, lines[i + 1], lines_dict)
+                skip = 2
+            elif self.is_lookahead_underline(i):
+                level = self.ch_level(lines[i + 1][0])
+                self.make_rst_node(level, line, lines_dict)
+                skip = 1
+            elif i == 0:
+                p = self.make_dummy_node('!Dummy chapter', lines_dict)
+                # self.add_line(p, line)
+                lines_dict[p.v].append(line)
+            else:
+                p = self.stack[-1]
+                lines_dict[p.v].append(line)
+        # Add the directives.
+        root_lines = lines_dict[self.root.v]
+        if root_lines and not root_lines[-1].endswith('\n'):
+            root_lines.append('\n')
+        root_lines.extend([
+            '@language rst\n',
+            f"@tabwidth {self.tab_width}\n",
+        ])
+        # Set p.b from the lines_dict.
+        for p in self.root.self_and_subtree():
+            assert not p.b, repr(p.b)
+            p.b = ''.join(lines_dict[p.v])
+    #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
+    # # 430, per RagBlufThim. Was {'#': 1,}
+    rst_seen: Dict[str, int] = {}
+    rst_level = 0  # A trick.
+
+    def ch_level(self, ch):
+        """Return the underlining level associated with ch."""
+        assert ch in underlines, repr(ch)
+        d = self.rst_seen
+        if ch in d:
+            return d.get(ch)
+        self.rst_level += 1
+        d[ch] = self.rst_level
+        return self.rst_level
     #@+node:ekr.20161129111503.1: *4* rst_i.is_lookahead_overline
-    def is_lookahead_overline(self, i, lines):
+    def is_lookahead_overline(self, i):
         """True if lines[i:i+2] form an overlined/underlined line."""
-        if i + 2 < len(lines):
-            line0 = lines[i]
-            line1 = lines[i + 1]
-            line2 = lines[i + 2]
-            ch0 = self.is_underline(line0, extra='#')
-            ch1 = self.is_underline(line1)
-            ch2 = self.is_underline(line2, extra='#')
-            return (
-                ch0 and ch2 and ch0 == ch2 and
-                not ch1 and
-                len(line1) >= 4 and
-                len(line0) >= len(line1) and
-                len(line2) >= len(line1)
-            )
-        return False
+        lines = self.lines
+        if i + 2 >= len(lines):
+            return False
+        line0 = lines[i]
+        line1 = lines[i + 1]
+        line2 = lines[i + 2]
+        ch0 = self.is_underline(line0, extra='#')
+        ch1 = self.is_underline(line1)
+        ch2 = self.is_underline(line2, extra='#')
+        return (
+            ch0 and ch2 and ch0 == ch2 and not ch1
+            and len(line1) >= 4
+            and len(line0) >= len(line1)
+            and len(line2) >= len(line1)
+        )
     #@+node:ekr.20161129112703.1: *4* rst_i.is_lookahead_underline
-    def is_lookahead_underline(self, i, lines):
+    def is_lookahead_underline(self, i):
         """True if lines[i:i+1] form an underlined line."""
-        if i + 1 < len(lines):
-            line0 = lines[i]
-            line1 = lines[i + 1]
-            ch0 = self.is_underline(line0)
-            ch1 = self.is_underline(line1)
-            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1)
-        return False
+        lines = self.lines
+        if i + 1 >= len(lines):
+            return False
+        line0 = lines[i]
+        line1 = lines[i + 1]
+        ### ch0 = self.is_underline(line0)
+        ### ch1 = self.is_underline(line1)
+        return (
+            not line0.isspace()
+            and len(line1) >= 4
+            ### and not ch0 and ch1
+            and self.is_underline(line1)
+            and not self.is_underline(line0)
+        )
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
     def is_underline(self, line, extra=None):
         """True if the line consists of nothing but the same underlining characters."""
@@ -112,21 +138,51 @@ class Rst_Importer(Importer):
             if ch != ch1:
                 return None
         return ch1
-
-    #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
-    # # 430, per RagBlufThim. Was {'#': 1,}
-    rst_seen: Dict[str, int] = {}
-    rst_level = 0  # A trick.
-
-    def ch_level(self, ch):
-        """Return the underlining level associated with ch."""
-        assert ch in underlines, repr(ch)
-        d = self.rst_seen
-        if ch in d:
-            return d.get(ch)
-        self.rst_level += 1
-        d[ch] = self.rst_level
-        return self.rst_level
+    #@+node:ekr.20220807060022.1: *4* rst_i.make_dummy_node
+    def make_dummy_node(self, headline, lines_dict):
+        """Make a decls node."""
+        parent = self.stack[-1]
+        assert parent == self.root, repr(parent)
+        ###
+            # child = self.create_child_node(
+                # parent=self.stack[-1],
+                # line=None,
+                # headline=headline,
+            # )
+        child = parent.insertAsLastChild()
+        child.h = headline
+        lines_dict[child.v] = []
+        self.stack.append(child)
+        return child
+    #@+node:ekr.20220807060050.1: *4* rst_i.make_rst_node
+    def make_rst_node(self, level, headline, lines_dict):
+        """Create a new node, with the given headline."""
+        ### self.find_parent(level, headline, lines_dict)
+        assert level > 0
+        ###
+            # while level < len(self.stack):
+                # self.stack.pop()
+        self.stack = self.stack[:level]
+        # Insert placeholders as necessary.
+        # This could happen in imported files not created by us.
+        self.create_placeholders(level, lines_dict, parents=self.stack)
+            ###
+            # while level > len(self.stack):
+                # top = self.stack[-1]
+                # ###
+                    # # child = self.create_child_node(
+                        # # parent=top, line=None, headline='placeholder',
+                    # # )
+                # child = top.insertAsLastChild()
+                # child.h = 'placeholder'
+                # self.stack.append(child)
+        # Create the node.
+        top = self.stack[-1]
+        child = top.insertAsLastChild()
+        child.h = headline
+        lines_dict[child.v] = []
+        self.stack.append(child)
+        return self.stack[level]
     #@+node:ekr.20161129040921.11: *3* rst_i.post_pass
     def post_pass(self, parent):
         """A do-nothing post-pass for markdown."""
