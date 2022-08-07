@@ -43,7 +43,6 @@ class Otl_Importer(Importer):
             if m:
                 # Cut back the stack, then allocate a new node.
                 level = 1 + len(m.group(1))
-                ### g.trace('node', 'level', level, repr(line))
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
                 parent =  parents[-1] if parents else self.root

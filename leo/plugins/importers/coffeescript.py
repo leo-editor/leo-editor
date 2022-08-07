@@ -3,7 +3,7 @@
 """The @auto importer for coffeescript."""
 import re
 from typing import Any, Dict, List, Optional
-### from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
@@ -99,10 +99,8 @@ class Coffeescript_Importer(Python_Importer):
         """
         Return True if line n is a comment line or decorator that starts at the give column.
         """
-        from leo.core import leoGlobals as g  ##
         line = self.lines[n]
         return (
-            ### line.strip().startswith(('#', '@'));
             line.strip().startswith('#')
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )

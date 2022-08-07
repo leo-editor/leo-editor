@@ -210,7 +210,6 @@ class Php_ScanState:
         """
         Php_ScanState.update: Update the state using given scan_tuple.
         """
-        ### assert data.__class__.__name__ == 'scan_tuple', (repr(data), g.callers())  ###
         if 'importers' in g.app.debug:
             g.trace(
                 f"context: {data.context!s} "

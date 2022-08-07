@@ -55,7 +55,6 @@ class Xml_Importer(Importer):
                 context, i, tag_level = self.scan_out_context(i, s, tag_level)
             assert progress < i, (repr(s[i]), '***', repr(s))
         d = {'context': context, 'tag_level': tag_level}
-        ### g.trace(d, repr(s))  ###
         return Xml_ScanState(d)
     #@+node:ekr.20161122073937.1: *4* xml_i.scan_in_context
     def scan_in_context(self, context, i, s):

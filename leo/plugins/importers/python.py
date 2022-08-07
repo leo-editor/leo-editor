@@ -273,8 +273,6 @@ class Python_Importer(Importer):
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
 def do_import(c, s, parent):
 
-    ### g.trace('*** NEW_PYTHON_IMPORTER ***', NEW_PYTHON_IMPORTER)  ###
-
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
         Python_Importer(c.importCommands).run(s, parent)
@@ -447,8 +445,6 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
             p.b = body(start, end, others_indent)
             return
 
-        ### last = start  # The last used line.
-
         # Calculate head, the lines preceding the @others.
         decl_line1 = inner_defs[0].decl_line1
         head = body(start, decl_line1, others_indent) if decl_line1 > start else ''
@@ -525,7 +521,6 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         """
         Return an informative headline for s, a group of declarations.
         """
-        ###g.printObj(g.splitLines(body_string), tag='declaration_headline')
         for s1 in g.splitLines(body_string):
             s = s1.strip()
             if s.startswith('#') and len(s.replace('#', '').strip()) > 1:

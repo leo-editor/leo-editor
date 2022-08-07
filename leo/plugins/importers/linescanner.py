@@ -315,7 +315,6 @@ class Importer:
         self.make_node(
             p=parent, start=0, end=len(lines),
             others_indent=0, inner_indent=0,
-            ### outer_level = -1,
             definitions=all_definitions,
         )
         # Add trailing lines.
@@ -540,7 +539,6 @@ class Importer:
                 )
             else:
                 # There are no inner defs, so this node will contain no @others directive.
-                ### g.trace('No inner inner defs for inner_def', inner_def.name)
                 child.b = self.body_string(inner_def.decl_line1, inner_def.body_line9, inner_indent)
 
             last = inner_def.body_line9
@@ -721,7 +719,6 @@ class Importer:
         table = self.cached_scan_tables.get(key)
         if not table:
             table = self.get_new_dict(context)
-            ### g.trace('NEW TABLE', key)
             self.cached_scan_tables[key] = table
         return table
     #@+node:ekr.20161108155143.4: *4* i.match
