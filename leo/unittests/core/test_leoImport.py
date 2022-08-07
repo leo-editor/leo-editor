@@ -2282,7 +2282,43 @@ class TestPerl(BaseTestImporter):
                print "Hello, World!\n";
             }
         """
-        self.run_test(s)
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '#!/usr/bin/perl\n'
+                    '\n'
+                    '@others\n'
+                    '@language perl\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'sub Test',
+                    '            sub Test{\n'
+                    '               print "Test!\n'
+                    '";\n'
+                    '            }\n'
+                    '\n'
+            ),
+            (1, '=begin comment',
+                    '            =begin comment\n'
+            ),
+            (1, 'sub World',
+                    '            sub World {\n'
+                    '                print "This is not a funtion!"\n'
+                    '            }\n'
+            ),
+            (1, '=cut',
+                    '            =cut\n'
+                    '\n'
+            ),
+            (1, 'sub Hello',
+                    '            # Function definition\n'
+                    '            sub Hello{\n'
+                    '               print "Hello, World!\n'
+                    '";\n'
+                    '            }\n'
+                    '\n'
+            ),
+        ))
     #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex
     def test_regex(self):
 

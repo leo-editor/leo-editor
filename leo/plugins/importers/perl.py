@@ -22,7 +22,7 @@ class Perl_Importer(Importer):
     def compute_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         m = re.match(r'sub\s+(\w+)', s)
-        return 'sub ' + m.group(1) if m else s
+        return super().compute_headline('sub ' + m.group(1) if m else s)
     #@+node:ekr.20161129024520.1: *3* perl_i.get_new_dict
     #@@nobeautify
 
