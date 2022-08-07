@@ -69,7 +69,7 @@ class Java_Importer(Importer):
         """
         Return None if lines[i] does not start a class, function or method.
 
-        Otherwise, return the index of the first line of the body and set self.headline.
+        Otherwise, return the index of the first line of the body.
         """
         i0, lines, line_states = i, self.lines, self.line_states
         line = lines[i]

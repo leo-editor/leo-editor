@@ -34,7 +34,7 @@ class Cython_Importer(Python_Importer):
         """
         Return None if lines[i] does not start a class, function or method.
 
-        Otherwise, return the index of the first line of the body and set self.headline.
+        Otherwise, return the index of the first line of the body.
         """
         line = self.lines[i]
         m = self.class_pat.match(line) or self.def_pat.match(line)
