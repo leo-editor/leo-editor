@@ -1244,8 +1244,19 @@ class TestJava(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'interface Bicycle'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@others\n'
+                    '@language java\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
+                    'interface Bicycle {\n'
+                    'void changeCadence(int newValue);\n'
+                    'void changeGear(int newValue);\n'
+                    '}\n'
+                    '\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
