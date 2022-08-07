@@ -57,10 +57,10 @@ class Python_Importer(Importer):
 
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
-    #@+node:ekr.20220805071145.1: *3* python_i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20220805071145.1: *3* python_i.compute_headline
+    def compute_headline(self, s, p=None):
         """
-        Python_Importer.clean_headline.
+        Python_Importer.compute_headline.
 
         Return the cleaned version headline s.
         """
@@ -166,7 +166,7 @@ class Python_Importer(Importer):
             decl_indent = decl_indent,
             decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
             decl_level = decl_level,
-            name = self.clean_headline(self.lines[decl_line])
+            name = self.compute_headline(self.lines[decl_line])
         )
     #@+node:ekr.20220806085448.1: *3* python_i.new_starts_block
     # Optional base classes.

@@ -19,13 +19,13 @@ class Rust_Importer(Importer):
         self.headline = None
 
     #@+others
-    #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
+    #@+node:ekr.20200317114526.1: *3* rust_i.compute_headline
     arg_pat = re.compile(r'(\(.*?\))')
     type_pat = re.compile(r'(\s*->.*)')
     life_pat = re.compile(r'(\<.*\>)')
     body_pat = re.compile(r'(\{.*\})')
 
-    def clean_headline(self, s, p=None):
+    def compute_headline(self, s, p=None):
         """
         Remove argument list and return value.
         """
@@ -53,7 +53,7 @@ class Rust_Importer(Importer):
             tail = tail[:-1].rstrip()
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
-    # clean_headline also uses this pattern.
+    # compute_headline also uses this pattern.
     func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
 
     def match_start_patterns(self, line):

@@ -603,8 +603,8 @@ class TestDart(BaseTestImporter):
                     '\n'
             ),
         ))
-    #@+node:ekr.20210904065459.127: *3* TestDart.test_clean_headline
-    def test_clean_headline(self):
+    #@+node:ekr.20210904065459.127: *3* TestDart.test_compute_headline
+    def test_compute_headline(self):
         c = self.c
         x = dart.Dart_Importer(c.importCommands, atAuto=False)
         table = (
@@ -612,7 +612,7 @@ class TestDart(BaseTestImporter):
             ('void foo() {', 'void foo'),
         )
         for s, expected in table:
-            got = x.clean_headline(s)
+            got = x.compute_headline(s)
             self.assertEqual(got, expected)
     #@-others
 #@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)

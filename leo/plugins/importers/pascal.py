@@ -23,10 +23,10 @@ class Pascal_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
+    #@+node:ekr.20161126171035.4: *3* pascal_i.compute_headline
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
 
-    def clean_headline(self, s, p=None):
+    def compute_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         m = self.pascal_clean_pattern.match(s)
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()

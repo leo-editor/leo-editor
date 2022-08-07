@@ -37,8 +37,8 @@ class Xml_Importer(Importer):
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
         return aList
-    #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20170416082422.1: *3* xml_i.compute_headline
+    def compute_headline(self, s, p=None):
         """xml and html: Return a cleaned up headline s."""
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()
@@ -211,7 +211,7 @@ class Xml_Importer(Importer):
                 f"{line!r}"
             )
         if this_state.tag_level > prev_state.tag_level:
-            self.headline = self.clean_headline(line)
+            self.headline = self.compute_headline(line)
             return i + 1
         return None
     #@-others

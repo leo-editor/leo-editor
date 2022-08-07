@@ -87,7 +87,7 @@ class Java_Importer(Importer):
             prev_state = line_states[i - 1] if i > 0 else self.state_class()
             this_state = line_states[i]
             if this_state.level() > prev_state.level():
-                self.headline = self.clean_headline(lines[i0])
+                self.headline = self.compute_headline(lines[i0])
                 return i + 1
             i += 1
         return None

@@ -22,12 +22,12 @@ class Org_Importer(Importer):
         self.tc = self.load_nodetags()
 
     #@+others
-    #@+node:ekr.20171120084611.2: *3* org_i.clean_headline
+    #@+node:ekr.20171120084611.2: *3* org_i.compute_headline
     # Recognize :tag: syntax only at the end of headlines.
     # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
     tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
 
-    def clean_headline(self, s, p=None):
+    def compute_headline(self, s, p=None):
         """
         Return a cleaned up headline for p.
         Also parses org-mode tags.

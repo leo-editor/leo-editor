@@ -88,7 +88,7 @@ class JS_Importer(Importer):
             if pattern.match(line) is not None:
                 return True
         return False
-    #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
+    #@+node:ekr.20161101183354.1: *3* js_i.compute_headline
     clean_regex_list1 = [
         # (function name (
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
@@ -111,7 +111,7 @@ class JS_Importer(Importer):
         re.compile(r'(.*)\(\s*(=>)'),  # .* ( =>
     ]
 
-    def clean_headline(self, s, p=None, trace=False):
+    def compute_headline(self, s, p=None, trace=False):
         """Return a cleaned up headline s."""
         # pylint: disable=arguments-differ
         s = s.strip()

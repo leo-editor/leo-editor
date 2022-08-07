@@ -18,10 +18,10 @@ class Dart_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161123121021.1: *3* dart_i.clean_headline
+    #@+node:ekr.20161123121021.1: *3* dart_i.compute_headline
     dart_pattern = re.compile(r'^\s*([\w_][\w_\s]*)\(')
 
-    def clean_headline(self, s, p=None):
+    def compute_headline(self, s, p=None):
 
         m = self.dart_pattern.match(s)
         return m.group(0).strip('(').strip() if m else s.strip()

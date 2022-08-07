@@ -12,8 +12,8 @@ class C_Importer(Importer):
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 
     #@+others
-    #@+node:ekr.20200819073508.1: *3* c_i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20200819073508.1: *3* c_i.compute_headline
+    def compute_headline(self, s, p=None):
         """
         Adjust headline for templates.
         """
@@ -122,7 +122,7 @@ class C_Importer(Importer):
             self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
         # Now clean the headline.
         if self.headline:
-            self.headline = self.clean_headline(self.headline)
+            self.headline = self.compute_headline(self.headline)
         # Scan ahead at most 10 lines until an open { is seen.
         while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.state_class()

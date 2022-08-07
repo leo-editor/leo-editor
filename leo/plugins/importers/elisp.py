@@ -55,10 +55,8 @@ class Elisp_Importer(Importer):
                 ']':    [('len', ']', context, (0,0,-1))],
             }
         return d
-    #@+node:ekr.20161127184128.4: *3* elisp_i.clean_headline
-
-
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline
+    def compute_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         m = self.elisp_defun_pattern.match(s)
         if m and m.group(1):
@@ -76,7 +74,7 @@ class Elisp_Importer(Importer):
         if line.isspace() or line_states[i].context:
             return None
         if self.elisp_defun_pattern.match(line):
-            self.headline = self.clean_headline(line)
+            self.headline = self.compute_headline(line)
             return i + 1
         return None
     #@-others

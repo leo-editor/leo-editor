@@ -26,7 +26,7 @@ class Cython_Importer(Python_Importer):
     class_pat = re.compile(class_pat_s, re.MULTILINE)
 
     # m.group(2) might not be the def name!
-    # clean_headline must handle the complications.
+    # compute_headline must handle the complications.
     def_pat_s = r'\s*\b(cdef|cpdef|def)\s+([\w_]+)'
     def_pat = re.compile(def_pat_s, re.MULTILINE)
 

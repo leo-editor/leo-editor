@@ -350,8 +350,8 @@ class Importer:
 
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
-    #@+node:ekr.20161108131153.9: *5* i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20161108131153.9: *5* i.compute_headline
+    def compute_headline(self, s, p=None):
         """
         Return the cleaned version headline s.
         May be overridden in subclasses.
@@ -626,7 +626,7 @@ class Importer:
         prev_state = line_states[i - 1] if i > 0 else self.ScanState()
         this_state = line_states[i]
         if this_state.level() > prev_state.level():
-            self.headline = self.clean_headline(lines[i])
+            self.headline = self.compute_headline(lines[i])
             return i + 1
         return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages

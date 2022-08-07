@@ -22,8 +22,8 @@ class Php_Importer(Importer):
         self.here_doc_target = None
 
     #@+others
-    #@+node:ekr.20161129213243.4: *3* php_i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20161129213243.4: *3* php_i.compute_headline
+    def compute_headline(self, s, p=None):
         """Return a cleaned up headline s."""
         return s.rstrip('{').strip()
     #@+node:ekr.20161129213808.1: *3* php_i.get_new_dict
