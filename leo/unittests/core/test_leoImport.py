@@ -1206,9 +1206,64 @@ class TestJava(BaseTestImporter):
 
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'public class BundleException extends Exception'),
-            (2, 'public BundleException'),
+        self.check_outline(p, (
+            (0, '',  # check_outline does not check the first outline.
+                    '/*\n'
+                    ' * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $\n'
+                    ' *\n'
+                    ' * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.\n'
+                    ' *\n'
+                    ' * This program and the accompanying materials are made available under the\n'
+                    ' * terms of the Eclipse Public License v1.0 which accompanies this\n'
+                    ' * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.\n'
+                    ' */\n'
+                    '\n'
+                    'package org.osgi.framework;\n'
+                    '\n'
+                    '/**\n'
+                    ' * A Framework exception used to indicate that a bundle lifecycle problem\n'
+                    ' * occurred.\n'
+                    ' *\n'
+                    ' * <p>\n'
+                    ' * <code>BundleException</code> object is created by the Framework to denote\n'
+                    ' * an exception condition in the lifecycle of a bundle.\n'
+                    ' * <code>BundleException</code>s should not be created by bundle developers.\n'
+                    ' *\n'
+                    ' * <p>\n'
+                    ' * This exception is updated to conform to the general purpose exception\n'
+                    ' * chaining mechanism.\n'
+                    ' *\n'
+                    ' * @version $Revision: 1.247 $\n'
+                    ' */\n'
+                    '\n'
+                    '@others\n'
+                    '@language java\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'public class BundleException extends Exception',
+                    'public class BundleException extends Exception {\n'
+                    '    static final long serialVersionUID = 3571095144220455665L;\n'
+                    '    /**\n'
+                    '     * Nested exception.\n'
+                    '     */\n'
+                    '    private Throwable cause;\n'
+                    '\n'
+                    '    /**\n'
+                    '     * Creates a <code>BundleException</code> that wraps another exception.\n'
+                    '     *\n'
+                    '     * @param msg The associated message.\n'
+                    '     * @param cause The cause of this exception.\n'
+                    '     */\n'
+                    '    @others\n'
+                    '}\n'
+                    '\n'
+            ),
+            (2, 'public BundleException',
+                    'public BundleException(String msg, Throwable cause) {\n'
+                    '    super(msg);\n'
+                    '    this.cause = cause;\n'
+                    '}\n'
+            ),
         ))
     #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
