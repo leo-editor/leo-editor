@@ -33,17 +33,10 @@ class Ini_Importer(Importer):
                 p.h = headline
                 lines_dict [p.v] = []
             lines_dict[p.v].append(line)
-        # Add the directives.
-        root_lines = lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):
-            root_lines.append('\n')
-        root_lines.extend([
-            '@language ini\n',
-            f"@tabwidth {self.tab_width}\n",
-        ])
+        # Add the top-level directives.
+        self.append_directives(lines_dict)
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
-            assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
     ini_pattern = re.compile(r'^\s*(\[.*\])')

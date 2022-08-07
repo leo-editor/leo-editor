@@ -61,17 +61,10 @@ class Rst_Importer(Importer):
             else:
                 p = self.stack[-1]
                 self.lines_dict[p.v].append(line)
-        # Add the directives.
-        root_lines = self.lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):
-            root_lines.append('\n')
-        root_lines.extend([
-            '@language rst\n',
-            f"@tabwidth {self.tab_width}\n",
-        ])
+        # Add the top-level directives.
+        self.append_directives(self.lines_dict)
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
-            assert not p.b, repr(p.b)
             p.b = ''.join(self.lines_dict[p.v])
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
     # # 430, per RagBlufThim. Was {'#': 1,}

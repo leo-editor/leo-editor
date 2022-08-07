@@ -52,17 +52,10 @@ class Otl_Importer(Importer):
                 lines_dict [child.v] = []
             else:  # pragma: no cover
                 self.error(f"Bad otl line: {line!r}")
-        # Add the directives.
-        root_lines = lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):
-            root_lines.append('\n')
-        root_lines.extend([
-            '@language otl\n',
-            f"@tabwidth {self.tab_width}\n",
-        ])
+        # Add the top-level directives.
+        self.append_directives(lines_dict, language='otl')
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
-            assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20220803162645.1: *3* otl.regularize_whitespace
     def regularize_whitespace(self, lines):

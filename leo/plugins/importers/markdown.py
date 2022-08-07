@@ -54,16 +54,10 @@ class Markdown_Importer(Importer):
                 lines_dict [top.v].append(line)
             else:
                 lines_dict [top.v].append(line)
-        root_lines = lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):
-            root_lines.append('\n')
-        root_lines.extend([
-            '@language md\n',
-            f"@tabwidth {self.tab_width}\n",
-        ])
+        # Add the top-level directives.
+        self.append_directives(lines_dict)
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
-            assert not p.b, repr(p.b)
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
     # Allow any non-blank after the hashes.

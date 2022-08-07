@@ -319,6 +319,21 @@ class Importer:
         )
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20220807083207.1: *5* i.append_directives
+    def append_directives(self, lines_dict, language=None):
+        """
+        Append directive lines to lines_dict.
+        """
+        # Ensure a newline before the directives.
+        root_lines = lines_dict[self.root.v]
+        if root_lines and not root_lines[-1].endswith('\n'):
+            root_lines.append('\n')
+
+        # Insert the directive lines.
+        root_lines.extend([
+            f"@language {language or self.language}\n",
+            f"@tabwidth {self.tab_width}\n",
+        ])
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
@@ -335,24 +350,17 @@ class Importer:
 
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
-    #@+node:ekr.20220727085911.1: *5* i.declaration_headline
-    def declaration_headline(self, body: str) -> str:  # #2500
+    #@+node:ekr.20161108131153.9: *5* i.clean_headline
+    def clean_headline(self, s, p=None):
         """
-        Return an informative headline for s, a group of declarations.
+        Return the cleaned version headline s.
+        May be overridden in subclasses.
         """
-        for s in g.splitLines(body):
-            strip_s = s.strip()
-            if strip_s:
-                if strip_s.startswith('#'):
-                    strip_comment = strip_s[1:].strip()
-                    if strip_comment:
-                        # A non-trivial comment: Return the comment w/o the leading '#'.
-                        return strip_comment
-                else:
-                    # A non-trivial non-comment.
-                    return strip_s
-        # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
+        for ch in '{(=':
+            i = s.find(ch)
+            if i > -1:
+                s = s[:i]
+        return s.strip()
     #@+node:ekr.20220807043759.1: *5* i.create_placeholders
     def create_placeholders(self, level, lines_dict, parents):
         """
@@ -372,6 +380,24 @@ class Importer:
             child.h = f"placeholder level {len(parents)}"
             parents.append(child)
             lines_dict[child.v] = []
+    #@+node:ekr.20220727085911.1: *5* i.declaration_headline
+    def declaration_headline(self, body: str) -> str:  # #2500
+        """
+        Return an informative headline for s, a group of declarations.
+        """
+        for s in g.splitLines(body):
+            strip_s = s.strip()
+            if strip_s:
+                if strip_s.startswith('#'):
+                    strip_comment = strip_s[1:].strip()
+                    if strip_comment:
+                        # A non-trivial comment: Return the comment w/o the leading '#'.
+                        return strip_comment
+                else:
+                    # A non-trivial non-comment.
+                    return strip_s
+        # Return legacy headline.
+        return "...some declarations"  # pragma: no cover
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
     def gen_lines_prepass(self):
         """A hook for pascal. Called by i.gen_lines()."""
@@ -603,17 +629,6 @@ class Importer:
             self.headline = self.clean_headline(lines[i])
             return i + 1
         return None
-    #@+node:ekr.20161108131153.9: *5* i.clean_headline
-    def clean_headline(self, s, p=None):
-        """
-        Return the cleaned version headline s.
-        May be overridden in subclasses.
-        """
-        for ch in '{(=':
-            i = s.find(ch)
-            if i > -1:
-                s = s[:i]
-        return s.strip()
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
