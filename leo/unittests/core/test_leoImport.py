@@ -3663,7 +3663,10 @@ class TestRst(BaseTestImporter):
             section 3.1.1, line 1
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+            ),
             (1, '!Dummy chapter'),
             (1, 'top'),
             (1, 'section 1'),
@@ -3695,7 +3698,10 @@ class TestRst(BaseTestImporter):
             The top chapter.
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0:  self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+            ),
             (1, "!Dummy chapter"),
             (1, "Chapter"),
         ))
@@ -3749,17 +3755,55 @@ class TestRst(BaseTestImporter):
             section 3.1.1, line 1
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        self.check_headlines(p, (
-            (1, '!Dummy chapter'),
-            (1, 'top'),
-            (1, 'section 1'),
-            (1, 'section 2'),
-            (2, 'section 2.1'),
-            (3, 'section 2.1.1'),
-            (1, 'section 3'),
-            (2, 'placeholder level 2'),
-            (3, 'section 3.1.1'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@language rest\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '!Dummy chapter',
+                    '.. toc\n'
+                    '\n'
+            ),
+            (1, 'top',
+                    '\n'
+                    'The top section\n'
+                    '\n'
+            ),
+            (1, 'section 1',
+                    '\n'
+                    'section 1, line 1\n'
+                    '--\n'
+                    'section 1, line 2\n'
+                    '\n'
+            ),
+            (1, 'section 2',
+                    '\n'
+                    'section 2, line 1\n'
+                    '\n'
+            ),
+            (2, 'section 2.1',
+                    '\n'
+                    'section 2.1, line 1\n'
+                    '\n'
+            ),
+            (3, 'section 2.1.1',
+                    '\n'
+                    'section 2.2.1 line 1\n'
+                    '\n'
+            ),
+            (1, 'section 3',
+                    '\n'
+                    'section 3, line 1\n'
+                    '\n'
+            ),
+            (2, 'placeholder level 2',
+                    ''
+            ),
+            (3, 'section 3.1.1',
+                    '\n'
+                    'section 3.1.1, line 1\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
     def test_long_underlines(self):
@@ -3779,9 +3823,20 @@ class TestRst(BaseTestImporter):
             The top section
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, '!Dummy chapter'),
-            (1, 'top'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@language rest\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '!Dummy chapter',
+                    '.. toc\n'
+                    '\n'
+            ),
+            (1, 'top',
+                    '\n'
+                    'The top section\n'
+                    '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
     def test_test_long_overlines(self):
@@ -3802,7 +3857,10 @@ class TestRst(BaseTestImporter):
             The top section
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0:  self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+            ),
             (1, "!Dummy chapter"),
             (1, "top"),
         ))
@@ -3827,7 +3885,10 @@ class TestRst(BaseTestImporter):
             The top section.
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0:  self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+            ),
             (1, "!Dummy chapter"),
             (1, "top"),
         ))
@@ -3859,10 +3920,26 @@ class TestRst(BaseTestImporter):
             Sec 2.
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, 'Chapter 1'),
-            (2, 'section 1'),
-            (2, 'section 2'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '@language rest\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'Chapter 1',
+                    '\n'
+                    'It was a dark and stormy night.\n'
+                    '\n'
+            ),
+            (2, 'section 1',
+                    '\n'
+                    'Sec 1.\n'
+                    '\n'
+            ),
+            (2, 'section 2',
+                    '\n'
+                    'Sec 2.\n'
+                    '\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
