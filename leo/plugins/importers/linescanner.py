@@ -455,7 +455,7 @@ class Importer:
         """
         # This algorithm is a generalization of Vitalije's original python importer.
         # It calculates top-level methods using neither def.body_indent nor def.decl_level!
-        trace, trace_body = False, False
+        trace, trace_body = False, True
         if trace:
             print('')
             g.trace('ENTRY! start:', start, 'end:', end,

@@ -218,7 +218,7 @@ class Python_Importer(Importer):
         if not m:
             return None
         newlines = m.group(0).count('\n')
-        return newlines + 1
+        return i + newlines + 1
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
 
