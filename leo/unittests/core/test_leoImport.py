@@ -1126,28 +1126,28 @@ class TestJava(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        if 0: self.check_outline(p, (
+        self.check_outline(p, (
             (0, '',  # check_outline does not check the first outline.
                     '/**\n'
                     " * Indicates the caller's authority to perform lifecycle operations on\n"
                     ' */\n'
                     '\n'
-                    'public final class AdminPermission extends BasicPermission\n'
                     '@others\n'
                     '@language java\n'
                     '@tabwidth -4\n'
             ),
             (1, 'public final class AdminPermission extends BasicPermission',
+                    'public final class AdminPermission extends BasicPermission\n'
                     '{\n'
                     '    /**\n',
                     '     * Creates a new <tt>AdminPermission</tt> object.\n'
                     '     */\n'
-                    '    public AdminPermission()\n'
                     '    @others\n'
                     '}\n'
                     '\n'
             ),
             (2, 'public AdminPermission',
+                    'public AdminPermission()\n'
                     '{\n',
                     '    super("AdminPermission");\n',
                     '}\n'
