@@ -243,10 +243,6 @@ class LeoApp:
         self.scriptResult = None  # For use by leoPymacs.
         self.permanentScriptDict = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
-        #@+<< LeoApp: unit testing ivars >>
-        #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>
-        self.suppressImportChecks = False  # True: suppress importCommands.check
-        #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
         self.init_at_file_names()
