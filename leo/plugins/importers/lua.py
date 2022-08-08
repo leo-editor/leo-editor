@@ -15,7 +15,7 @@ delete_blank_lines = True
 class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Lua_Importer.__init__"""
         super().__init__(
             c,
