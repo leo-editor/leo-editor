@@ -12,7 +12,7 @@ class C_Importer(Importer):
     # For cleaning headlines.
     c_name_pattern = re.compile(r'\s*([\w:]+)')
     headline = None
-    
+
     # #545: Support @data c_import_typedefs.
     type_keywords = [
         'auto', 'bool', 'char', 'const', 'double',
