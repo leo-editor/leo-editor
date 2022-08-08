@@ -45,10 +45,11 @@ from leo.core.leoNodes import Position, PosList
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-version_tuple = (1, 0, 2)
+version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
 # 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
+# 1.0.3 Félix on July 2022: Fixed original node selection upon opening a file.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -1194,7 +1195,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        c.selectPosition(c.rootPosition())  # Required.
+        # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
         # Check the outline!
         c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
