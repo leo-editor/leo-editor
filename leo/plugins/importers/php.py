@@ -188,7 +188,7 @@ class Php_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Php_ScanState.__repr__"""
         return "Php_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

@@ -110,7 +110,7 @@ class Perl_ScanState:
             self.context = ''
             self.curlies = self.parens = 0
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Perl_ScanState.__repr__"""
         return 'Perl_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)

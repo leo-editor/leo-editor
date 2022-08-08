@@ -104,7 +104,7 @@ class Java_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Java_ScanState.__repr__"""
         return "Java_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

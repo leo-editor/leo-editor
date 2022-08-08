@@ -105,7 +105,7 @@ class Pascal_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Pascal_ScanState.__repr__"""
         return "Pascal_ScanState context: %r" % (self.context)
 

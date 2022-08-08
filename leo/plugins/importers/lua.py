@@ -137,7 +137,7 @@ class Lua_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         return "Lua_ScanState context: %r " % (self.context)
     __str__ = __repr__
 

@@ -6,6 +6,7 @@ The @auto importer for restructured text.
 This module must **not** be named rst, so as not to conflict with docutils.
 """
 from typing import Dict, List
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 
@@ -13,11 +14,11 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 #@+others
-#@+node:ekr.20161127192007.2: ** class Rst_Importer
+#@+node:ekr.20161127192007.2: ** class Rst_Importer(Importer)
 class Rst_Importer(Importer):
     """The importer for the rst lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Rst_Importer.__init__"""
         super().__init__(
             c,
@@ -26,15 +27,6 @@ class Rst_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161204032455.1: *3* rst_i.check
-    def check(self, unused_s, parent):
-        """
-        Suppress perfect-import checks for rST.
-
-        There is no reason to retain specic underlinings, nor is there any
-        reason to prevent the writer from inserting conditional newlines.
-        """
-        return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for reStructuredText importer."""
@@ -72,7 +64,7 @@ class Rst_Importer(Importer):
     rst_seen: Dict[str, int] = {}
     rst_level = 0  # A trick.
 
-    def ch_level(self, ch):
+    def ch_level(self, ch: str) -> int:
         """Return the underlining level associated with ch."""
         assert ch in underlines, repr(ch)
         d = self.rst_seen
@@ -82,7 +74,7 @@ class Rst_Importer(Importer):
         d[ch] = self.rst_level
         return self.rst_level
     #@+node:ekr.20161129111503.1: *4* rst_i.is_lookahead_overline
-    def is_lookahead_overline(self, i):
+    def is_lookahead_overline(self, i: int) -> bool:
         """True if lines[i:i+2] form an overlined/underlined line."""
         lines = self.lines
         if i + 2 >= len(lines):
@@ -94,13 +86,13 @@ class Rst_Importer(Importer):
         ch1 = self.is_underline(line1)
         ch2 = self.is_underline(line2, extra='#')
         return (
-            ch0 and ch2 and ch0 == ch2 and not ch1
+            bool(ch0 and ch2 and ch0 == ch2 and not ch1)
             and len(line1) >= 4
             and len(line0) >= len(line1)
             and len(line2) >= len(line1)
         )
     #@+node:ekr.20161129112703.1: *4* rst_i.is_lookahead_underline
-    def is_lookahead_underline(self, i):
+    def is_lookahead_underline(self, i: int) -> bool:
         """True if lines[i:i+1] form an underlined line."""
         lines = self.lines
         if i + 1 >= len(lines):
@@ -112,22 +104,22 @@ class Rst_Importer(Importer):
             and self.is_underline(line1) and not self.is_underline(line0)
         )
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
-    def is_underline(self, line, extra=None):
+    def is_underline(self, line: str, extra: str=None) -> bool:
         """True if the line consists of nothing but the same underlining characters."""
         if line.isspace():
-            return None
+            return False
         chars = underlines
         if extra:
             chars = chars + extra
         ch1 = line[0]
         if ch1 not in chars:
-            return None
+            return False
         for ch in line.rstrip():
             if ch != ch1:
-                return None
-        return ch1
+                return False
+        return bool(ch1)
     #@+node:ekr.20220807060022.1: *4* rst_i.make_dummy_node
-    def make_dummy_node(self, headline):
+    def make_dummy_node(self, headline: str) -> Position:
         """Make a decls node."""
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
@@ -137,7 +129,7 @@ class Rst_Importer(Importer):
         self.stack.append(child)
         return child
     #@+node:ekr.20220807060050.1: *4* rst_i.make_rst_node
-    def make_rst_node(self, level, headline):
+    def make_rst_node(self, level: int, headline: str) -> Position:
         """Create a new node, with the given headline."""
         assert level > 0
         self.stack = self.stack[:level]
@@ -151,9 +143,6 @@ class Rst_Importer(Importer):
         self.lines_dict[child.v] = []
         self.stack.append(child)
         return self.stack[level]
-    #@+node:ekr.20161129040921.11: *3* rst_i.post_pass
-    def post_pass(self, parent):
-        """A do-nothing post-pass for markdown."""
     #@-others
 #@+node:ekr.20161127192007.6: ** class Rst_ScanState
 class Rst_ScanState:
@@ -167,7 +156,7 @@ class Rst_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Rst_ScanState.__repr__"""
         return "Rst_ScanState context: %r " % (self.context)
 
@@ -188,7 +177,7 @@ class Rst_ScanState:
         return data.i
     #@-others
 #@-others
-def do_import(c, s, parent):
+def do_import(c: Cmdr, s: str, parent: Position) -> bool:
     return Rst_Importer(c).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read

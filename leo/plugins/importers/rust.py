@@ -139,7 +139,7 @@ class Rust_ScanState:
             self.curlies = 0
             self.parens = 0
 
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """Rust_ScanState.__repr__"""
         return (
             f"<Rust_ScanState "
