@@ -25,7 +25,7 @@ class Otl_Importer(Importer):
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_node_pattern = re.compile(r'^[ ]*(\t*)(.*)$')
 
-    def gen_lines(self, lines, parent):
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for otl (vim-outline) mode."""
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.

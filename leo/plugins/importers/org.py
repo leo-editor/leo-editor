@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
 import re
-from typing import Dict, List
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
@@ -48,7 +48,7 @@ class Org_Importer(Importer):
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
-    def gen_lines(self, lines, parent):
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Org_Importer.gen_lines. Allocate nodes to lines."""
         assert parent == self.root
         p = self.root
@@ -78,7 +78,7 @@ class Org_Importer(Importer):
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
-    def load_nodetags(self):
+    def load_nodetags(self) -> Any:
         """
         Load the nodetags.py plugin if necessary.
         Return c.theTagController.
