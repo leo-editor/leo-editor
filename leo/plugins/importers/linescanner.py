@@ -77,8 +77,9 @@ need to do so.
 import io
 import re
 from collections import namedtuple
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 from leo.core import leoGlobals as g
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 StringIO = io.StringIO
 #@+<< define block_tuple >>
@@ -874,53 +875,15 @@ class Importer:
     def is_ws_line(self, s):
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
-    #@+node:ekr.20161109072221.1: *4* i.undent_body_lines & helper
-    def undent_body_lines(self, lines, ignoreComments=True):
-        """
-        Remove the first line's leading indentation from all lines.
-        Return the resulting string.
-        """
-        s = ''.join(lines)
-        if self.is_rst:
-            return s  # Never unindent rst code.
-        # Calculate the amount to be removed from each line.
-        undent_val = self.get_leading_indent(lines, 0, ignoreComments=ignoreComments)
-        if undent_val == 0:
-            return s
-        result = self.undent_by(s, undent_val)
-        return result
-    #@+node:ekr.20161108180655.2: *5* i.undent_by
-    def undent_by(self, s, undent_val):
-        """
-        Remove leading whitespace equivalent to undent_val from each line.
-
-        Strict languages: prepend the underindent escape for underindented lines.
-        """
-        if self.is_rst:
-            return s  # Never unindent rst code.
-        result = []
-        for line in g.splitlines(s):
-            lws_s = self.get_str_lws(line)
-            lws = g.computeWidth(lws_s, self.tab_width)
-            # Add underindentEscapeString only for strict languages.
-            if self.strict and not line.isspace() and lws < undent_val:
-                # End the underindent count with a period to
-                # protect against lines that start with a digit!
-                result.append("%s%s.%s" % (
-                    self.escape, undent_val - lws, line.lstrip()))
-            else:
-                s = g.removeLeadingWhitespace(line, undent_val, self.tab_width)
-                result.append(s)
-        return ''.join(result)
     #@-others
 
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
 
     @classmethod
-    def do_import(cls):
+    def do_import(cls: Any) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c, s, parent):
+        def f(c: Cmdr, s: str, parent: Position) -> Callable:
             return cls(c).run(s, parent)
         return f
 #@+node:ekr.20161108171914.1: ** class ScanState
@@ -930,7 +893,7 @@ class ScanState:
     scan.
     """
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict[str, Any]=None):
         """ScanState ctor."""
         if d:
             indent = d.get('indent')
@@ -948,7 +911,7 @@ class ScanState:
 
     #@+others
     #@+node:ekr.20161118043146.1: *3* ScanState.__repr__
-    def __repr__(self):
+    def __repr__(self) -> str:
         """ScanState.__repr__"""
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)
