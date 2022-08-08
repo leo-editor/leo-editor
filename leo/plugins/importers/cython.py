@@ -18,7 +18,6 @@ class Cython_Importer(Python_Importer):
             c,
             language='cython',
             state_class=Cython_ScanState,
-            strict=True,
         )
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
     #@+node:ekr.20220806173547.1: *3* cython_i.new_starts_block

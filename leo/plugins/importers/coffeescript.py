@@ -18,7 +18,6 @@ class Coffeescript_Importer(Python_Importer):
             c,
             language='coffeescript',
             state_class=Coffeescript_ScanState,
-            strict=True
         )
     #@+node:ekr.20220729104712.1: *3* coffee_i.compute_headline
     def compute_headline(self, s):

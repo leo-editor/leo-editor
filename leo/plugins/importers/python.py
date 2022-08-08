@@ -8,6 +8,7 @@ import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+<< Define NEW_PYTHON_IMPORTER switch >>
@@ -25,7 +26,7 @@ class Python_Importer(Importer):
     Leo uses this class *only* as the base class for the cython importer.
     """
 
-    def __init__(self, c, language='python', state_class=None, **kwargs):
+    def __init__(self, c: Cmdr, language: str='python', state_class: Any=None) -> None:
         """Py_Importer.ctor."""
         super().__init__(
             c,
@@ -57,7 +58,7 @@ class Python_Importer(Importer):
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20220805071145.1: *3* python_i.compute_headline
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """
         Python_Importer.compute_headline.
 
@@ -170,7 +171,7 @@ class Python_Importer(Importer):
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """Return the state dictionary for python."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('#', '', ''), f"python: {comment!r} {block1!r} {block2!r}"
@@ -246,7 +247,7 @@ class Python_ScanState:
 
     # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Python_ScanState ctor."""
         if d:
             prev = d.get('prev')
@@ -254,7 +255,7 @@ class Python_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Py_State.__repr__"""
         return f"Python_ScanState: {self.context}"
 
@@ -270,7 +271,7 @@ class Python_ScanState:
         return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
-def do_import(c, s, parent):
+def do_import(c: Cmdr, s: str, parent: Position) -> bool:
 
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
@@ -555,7 +556,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         """Return an readline-like interface for tokenize."""
         itlines = iter(lines)
 
-        def nextline():
+        def nextline() -> str:
             try:
                 return next(itlines)
             except StopIteration:
