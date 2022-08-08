@@ -57,7 +57,7 @@ class Rust_Importer(Importer):
     # compute_headline also uses this pattern.
     func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
 
-    def match_start_patterns(self, line):
+    def match_start_patterns(self, line: str) -> bool:
         """
         True if line matches any block-starting pattern.
         If true, set self.headline.
