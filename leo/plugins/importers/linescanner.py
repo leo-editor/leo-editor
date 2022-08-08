@@ -316,7 +316,7 @@ class Importer:
             definitions=all_definitions,
         )
         # Add trailing lines.
-        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+        parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220807083207.1: *5* i.append_directives
     def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str=None) -> None:
         """
@@ -329,7 +329,7 @@ class Importer:
 
         # Insert the directive lines.
         root_lines.extend([
-            f"@language {language or self.language}\n",
+            f"@language {language or self.name}\n",
             f"@tabwidth {self.tab_width}\n",
         ])
     #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string

@@ -849,7 +849,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
@@ -924,7 +924,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
@@ -1007,7 +1007,7 @@ class TestHtml(BaseTestImporter):
                     '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '<html><head>headline</head><body>body</body></html>\n'
                     '\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
         ))
@@ -1024,7 +1024,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
@@ -1066,7 +1066,7 @@ class TestHtml(BaseTestImporter):
                     '<p>Paragraph</p>\n'
                     '</td>\n'
                     '\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
@@ -1107,7 +1107,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
-                '@language xml\n'
+                '@language html\n'
                 '@tabwidth -4\n'
             ),
             (1, '<HTML>',
@@ -1150,7 +1150,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<body>',
@@ -1196,7 +1196,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
@@ -1240,7 +1240,7 @@ class TestHtml(BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
-                '@language xml\n'
+                '@language html\n'
                 '@tabwidth -4\n'
             ),
             (1, '<html>',
@@ -1409,7 +1409,7 @@ class TestHtml(BaseTestImporter):
             (0, '',  # check_outline ignores the first headline.
                     '<!DOCTYPE html>\n'
                     '@others\n'
-                    '@language xml\n'
+                    '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
