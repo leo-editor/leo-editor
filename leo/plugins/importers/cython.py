@@ -2,7 +2,8 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Optional
+from typing import Any, Dict, Optional
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
@@ -12,7 +13,7 @@ class Cython_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20200619144343.1: *3* cython_i.ctor
-    def __init__(self, c, **kwargs):
+    def __init__(self, c: Cmdr, **kwargs: Any) -> None:
         """Cython_Importer.ctor."""
         super().__init__(
             c,
@@ -46,7 +47,7 @@ class Cython_Importer(Python_Importer):
 class Cython_ScanState:
     """A class representing the state of the python line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Cython_ScanState ctor."""
         if d:
             indent = d.get('indent')
@@ -62,13 +63,13 @@ class Cython_ScanState:
             self.curlies = self.parens = self.squares = 0
             self.indent = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Py_State.__repr__"""
         return self.short_description()
 
     __str__ = __repr__
 
-    def short_description(self):  # pylint: disable=no-else-return
+    def short_description(self) -> str:  # pylint: disable=no-else-return
         bsnl = 'bs-nl' if self.bs_nl else ''
         context = f"{self.context} " if self.context else ''
         indent = self.indent
