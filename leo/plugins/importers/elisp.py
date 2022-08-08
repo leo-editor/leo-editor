@@ -80,7 +80,7 @@ class Elisp_Importer(Importer):
 class Elisp_ScanState:
     """A class representing the state of the elisp line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Elisp_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -90,7 +90,7 @@ class Elisp_ScanState:
             self.context = ''
             self.parens = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Elisp_ScanState.__repr__"""
         return "Elisp_ScanState context: %r parens: %s" % (
             self.context, self.parens)

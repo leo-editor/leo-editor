@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 """The @auto importer for TypeScript."""
 import re
+from typing import Dict
 from leo.core import leoGlobals as g  # Required.
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
@@ -123,7 +124,7 @@ class TS_Importer(Importer):
 class Typescript_ScanState:
     """A class representing the state of the typescript line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Typescript_ScanState ctor."""
         if d:
             prev = d.get('prev')
@@ -135,7 +136,7 @@ class Typescript_ScanState:
 
     #@+others
     #@+node:ekr.20161118071747.15: *3* typescript_state.__repr__
-    def __repr__(self):
+    def __repr__(self) -> None:
         """ts_state.__repr__"""
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 

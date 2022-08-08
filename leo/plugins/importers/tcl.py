@@ -6,6 +6,7 @@ The @auto importer for the tcl language.
 Created 2017/06/15 by the `importer;;` abbreviation.
 """
 import re
+from typing import Dict
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20170615153639.3: ** class Tcl_Importer
@@ -43,7 +44,7 @@ class Tcl_Importer(Importer):
 class Tcl_ScanState:
     """A class representing the state of the tcl line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Tcl_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -53,7 +54,7 @@ class Tcl_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Tcl_ScanState.__repr__"""
         return "Tcl_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

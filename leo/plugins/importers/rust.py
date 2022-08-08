@@ -127,7 +127,7 @@ class Rust_Importer(Importer):
 class Rust_ScanState:
     """A class representing the state of the line-oriented scan for rust."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Rust_ScanSate ctor"""
         if d:
             prev = d.get('prev')
@@ -139,7 +139,7 @@ class Rust_ScanState:
             self.curlies = 0
             self.parens = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Rust_ScanState.__repr__"""
         return (
             f"<Rust_ScanState "

@@ -130,14 +130,14 @@ class Lua_Importer(Importer):
 class Lua_ScanState:
     """A class representing the state of the lua line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         if d:
             prev = d.get('prev')
             self.context = prev.context
         else:
             self.context = ''
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         return "Lua_ScanState context: %r " % (self.context)
     __str__ = __repr__
 

@@ -159,7 +159,7 @@ class Rst_Importer(Importer):
 class Rst_ScanState:
     """A class representing the state of the rst line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Rst_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -167,7 +167,7 @@ class Rst_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Rst_ScanState.__repr__"""
         return "Rst_ScanState context: %r " % (self.context)
 

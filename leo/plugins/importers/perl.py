@@ -99,7 +99,7 @@ class Perl_Importer(Importer):
 class Perl_ScanState:
     """A class representing the state of the perl line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Perl_ScanState ctor."""
         if d:
             prev = d.get('prev')
@@ -110,7 +110,7 @@ class Perl_ScanState:
             self.context = ''
             self.curlies = self.parens = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Perl_ScanState.__repr__"""
         return 'Perl_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)

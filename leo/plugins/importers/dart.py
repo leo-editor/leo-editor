@@ -2,6 +2,7 @@
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 """The @auto importer for the dart language."""
 import re
+from typing import Dict
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer
@@ -29,7 +30,7 @@ class Dart_Importer(Importer):
 class Dart_ScanState:
     """A class representing the state of the dart line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Dart_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -39,7 +40,7 @@ class Dart_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):  # pragma: no cover
+    def __repr__(self) -> None:  # pragma: no cover
         """Dart_ScanState.__repr__"""
         return "Dart_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

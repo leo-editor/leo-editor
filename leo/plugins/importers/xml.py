@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
 """The @auto importer for the xml language."""
 import re
-from typing import Optional
+from typing import Dict, Optional
 from leo.core import leoGlobals as g  # required.
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -217,7 +217,7 @@ class Xml_Importer(Importer):
 class Xml_ScanState:
     """A class representing the state of the xml line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Xml_ScanState.__init__"""
         if d:
             self.context = d.get('context')
@@ -226,7 +226,7 @@ class Xml_ScanState:
             self.context = ''
             self.tag_level = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Xml_ScanState.__repr__"""
         return "Xml_ScanState context: %r tag_level: %s" % (
             self.context, self.tag_level)

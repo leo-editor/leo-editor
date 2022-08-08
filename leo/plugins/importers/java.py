@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 """The @auto importer for the java language."""
 import re
-from typing import Optional
+from typing import Dict, Optional
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
@@ -94,7 +94,7 @@ class Java_Importer(Importer):
 class Java_ScanState:
     """A class representing the state of the java line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Java_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -104,7 +104,7 @@ class Java_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Java_ScanState.__repr__"""
         return "Java_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

@@ -178,7 +178,7 @@ class Php_Importer(Importer):
 class Php_ScanState:
     """A class representing the state of the php line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Php_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -188,7 +188,7 @@ class Php_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Php_ScanState.__repr__"""
         return "Php_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

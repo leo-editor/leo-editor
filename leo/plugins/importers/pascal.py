@@ -96,7 +96,7 @@ class Pascal_Importer(Importer):
 class Pascal_ScanState:
     """A class representing the state of the pascal line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Pascal_ScanState.__init__"""
         self.decl_level = 0  # A hack, for self.level()
         if d:
@@ -105,7 +105,7 @@ class Pascal_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self):
+    def __repr__(self) -> None:
         """Pascal_ScanState.__repr__"""
         return "Pascal_ScanState context: %r" % (self.context)
 
