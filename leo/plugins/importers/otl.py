@@ -58,7 +58,7 @@ class Otl_Importer(Importer):
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
     #@+node:ekr.20220803162645.1: *3* otl.regularize_whitespace
-    def regularize_whitespace(self, lines):
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:
         """
         Otl_Importer.regularize_whitespace.
 
