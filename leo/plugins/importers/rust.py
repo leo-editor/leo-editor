@@ -25,7 +25,7 @@ class Rust_Importer(Importer):
     life_pat = re.compile(r'(\<.*\>)')
     body_pat = re.compile(r'(\{.*\})')
 
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """
         Remove argument list and return value.
         """

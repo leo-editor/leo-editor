@@ -19,7 +19,7 @@ class Perl_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.compute_headline
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         m = re.match(r'sub\s+(\w+)', s)
         s = 'sub ' + m.group(1) if m else s
