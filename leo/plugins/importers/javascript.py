@@ -2,13 +2,15 @@
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
 """The @auto importer for JavaScript."""
 import re
+from typing import Any, Dict, Generator, List
 from leo.core import leoGlobals as g  # Required
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
 
-    def __init__(self, c, force_at_others=False, **kwargs):
+    def __init__(self, c: Cmdr, force_at_others: bool=False, **kwargs: Any):
         """The ctor for the JS_ImportController class."""
         # Init the base class.
         super().__init__(
@@ -19,7 +21,7 @@ class JS_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line
-    def scan_line(self, s, prev_state):
+    def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
         """
         Update the scan state at the *end* of the line.
         Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
@@ -72,7 +74,7 @@ class JS_Importer(Importer):
         re.compile(r'.*?[(=,]\s*function\b'),
     ]
 
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: "JS_ScanState", prev_state: "JS_ScanState") -> bool:
         """True if the new state starts a block."""
         if new_state.level() <= prev_state.level():
             return False
@@ -110,7 +112,7 @@ class JS_Importer(Importer):
         re.compile(r'(.*)\(\s*(=>)'),  # .* ( =>
     ]
 
-    def compute_headline(self, s, p=None, trace=False):
+    def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         # pylint: disable=arguments-differ
         s = s.strip()
@@ -153,7 +155,7 @@ class JS_Importer(Importer):
 class JS_ScanState:
     """A class representing the state of the javascript line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """JS_ScanState ctor"""
         if d:
             # d is *different* from the dict created by i.scan_line.
@@ -164,7 +166,7 @@ class JS_ScanState:
             self.context = ''
             self.curlies = self.parens = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """JS_ScanState.__repr__"""
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
@@ -202,7 +204,7 @@ class Tok:
 
     num = 0
 
-    def __init__(self, name, regex, next=None):
+    def __init__(self, name: str, regex: str, next: Any=None):
         self.id = Tok.num
         Tok.num += 1
         self.name = name
@@ -214,7 +216,7 @@ class Lexer:
 
     #@+others
     #@+node:ekr.20200131110322.8: *4* Lexer.__init__
-    def __init__(self, states, first):
+    def __init__(self, states: Dict, first: Any) -> None:
         self.regexes = {}
         self.toks = {}
         for state, rules in states.items():
@@ -225,9 +227,8 @@ class Lexer:
                 parts.append("(?P<%s>%s)" % (groupid, tok.regex))
             self.regexes[state] = re.compile("|".join(parts), re.MULTILINE | re.VERBOSE)  # |re.UNICODE)
         self.state = first
-
     #@+node:ekr.20200131110322.9: *4* Lexer.lex
-    def lex(self, text):
+    def lex(self, text: str) -> Generator:
         """Lexically analyze `text`.
 
         Yields pairs (`name`, `tokentext`).
@@ -252,7 +253,7 @@ class Lexer:
         self.state = state
     #@-others
 #@+node:ekr.20200131110322.6: *3* function: literals
-def literals(choices, prefix="", suffix=""):
+def literals(choices: str, prefix: str="", suffix: str="") -> str:
     """
     Create a regex from a space-separated list of literal `choices`.
 
@@ -379,7 +380,7 @@ class JsLexer(Lexer):
         }
     #@-<< constants >>
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(self.states, 'reg')
 #@-others
 importer_dict = {

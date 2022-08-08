@@ -776,7 +776,7 @@ class Importer:
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20161108170435.1: *4* i.scan_line
-    def scan_line(self, s: str, prev_state: "ScanState") -> "ScanState":
+    def scan_line(self, s: str, prev_state: Any) -> Any:
         """
         A generalized scan-line method.
 
