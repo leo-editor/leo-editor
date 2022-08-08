@@ -26,7 +26,7 @@ class Org_Importer(Importer):
     # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
     tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
 
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """
         Return a cleaned up headline for p.
         Also parses org-mode tags.

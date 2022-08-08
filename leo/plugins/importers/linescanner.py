@@ -80,7 +80,7 @@ from collections import namedtuple
 from typing import Any, Callable, Dict, List, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, VNode
 StringIO = io.StringIO
 #@+<< define block_tuple >>
 #@+node:ekr.20220721155212.1: ** << define block_tuple >> (linescanner.py)
@@ -120,11 +120,11 @@ class Importer:
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
-        c,
-        language=None,  # For @language directive.
-        name=None,  # The kind of importer, usually the same as language
-        state_class=None,  # For i.scan_line
-        strict=False,
+        c: Cmdr,
+        language: str=None,  # For @language directive.
+        name: str=None,  # The kind of importer, usually the same as language
+        state_class: Any=None,  # For i.scan_line
+        strict: bool=False,
     ):
         """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
@@ -167,10 +167,10 @@ class Importer:
         if ic:
             ic.errors = 0  # Required.
         self.refs_dict: Dict[str, int] = {}  # Keys: headlines. Values: disambiguating number.
-        self.root = None
+        self.root: Position = None
         self.ws_error = False
 
-    def reloadSettings(self):
+    def reloadSettings(self) -> None:
         c = self.c
         if not c:
             return
@@ -181,7 +181,7 @@ class Importer:
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
     #@+node:ekr.20161108131153.10: *3* i.run (driver) & helpers
-    def run(self, s, parent):
+    def run(self, s: str, parent: Position) -> bool:
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
@@ -208,7 +208,7 @@ class Importer:
         # #1451: Do not change the outline's change status.
         return True  # For unit tests.
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
-    def regularize_whitespace(self, lines):
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:
         """
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -244,7 +244,7 @@ class Importer:
                 self.report('changed %s lines' % count)
         return result
     #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines):
+    def check_blanks_and_tabs(self, lines: List[str]) -> bool:
         """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         fn = g.shortFileName(self.root.h)
@@ -271,7 +271,7 @@ class Importer:
                 g.es(message)
         return ok
     #@+node:ekr.20220727073906.1: *4* i.gen_lines & helpers (trace)
-    def gen_lines(self, lines, parent):
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """
         Recursively parse all lines of s into parent, creating descendant nodes as needed.
 
@@ -318,7 +318,7 @@ class Importer:
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20220807083207.1: *5* i.append_directives
-    def append_directives(self, lines_dict, language=None):
+    def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str=None) -> None:
         """
         Append directive lines to lines_dict.
         """
@@ -349,7 +349,7 @@ class Importer:
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20161108131153.9: *5* i.compute_headline
-    def compute_headline(self, s: str, p=None):
+    def compute_headline(self, s: str) -> str:
         """
         Return the cleaned version headline s.
         May be overridden in subclasses.
