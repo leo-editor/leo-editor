@@ -874,7 +874,13 @@ class TestHtml(BaseTestImporter):
             </html>
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<html>'),
             (2, '<head>'),
             (2, '<body class="bodystring">'),
@@ -931,7 +937,13 @@ class TestHtml(BaseTestImporter):
             </html>
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<html>'),
             (2, '<body>'),
             (3, '<table id="0">'),
@@ -950,7 +962,13 @@ class TestHtml(BaseTestImporter):
             <html><head>headline</head><body>body</body></html>
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             # The new xml scanner doesn't generate any new nodes,
             # because the scan state hasn't changed at the end of the line!
         ))
@@ -964,7 +982,13 @@ class TestHtml(BaseTestImporter):
             </html>
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<html>'),
             # (2, '<head>'),
             # (2, '<body>'),
@@ -993,7 +1017,13 @@ class TestHtml(BaseTestImporter):
             </td>
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">'),
             (2, '<table>'),
         ))
@@ -1011,7 +1041,13 @@ class TestHtml(BaseTestImporter):
             </HTML>
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<HTML>'),
             (2, '<HEAD>'),
             (2, "<BODY class='bodystring'>"),
@@ -1037,7 +1073,13 @@ class TestHtml(BaseTestImporter):
             </body>
         """
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<body>'),
             (2, '<div id="D666">'),
         ))
@@ -1060,7 +1102,13 @@ class TestHtml(BaseTestImporter):
             <!-- oops: missing tags. -->
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<html>'),
             (2, '<head>'),
         ))
@@ -1083,7 +1131,13 @@ class TestHtml(BaseTestImporter):
             </html>
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
+        # self.dump_tree(p, tag='Actual results...')
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language xml\n'
+                '@tabwidth -4\n'
+            ),
             (1, '<html>'),
             (2, '<head>'),
         ))
@@ -1230,10 +1284,155 @@ class TestHtml(BaseTestImporter):
             </body></html>
         '''
         p = self.run_test(s)
-        self.check_headlines(p, (
-            (1, '<html>'),
-            (2, '<head>'),
-            (2, '<body onload="brython({debug:1, cache:\'none\'})">'),
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                    '<!DOCTYPE html>\n'
+                    '@others\n'
+                    '@language xml\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<html>',
+                    '<html>\n'
+                    '@others\n'
+            ),
+            (2, '<head>',
+                    '<head>\n'
+                    '<script type="text/python3">\n'
+                    '"""Code for the header menu"""\n'
+                    'from browser import document as doc\n'
+                    'from browser import html\n'
+                    'import header\n'
+                    '\n'
+                    'qs_lang,language = header.show()\n'
+                    '\n'
+                    'doc["content"].html = doc["content_%s" %language].html\n'
+                    '\n'
+                    'if qs_lang:\n'
+                    '    doc["c_%s" %qs_lang].href += "?lang=%s" %qs_lang\n'
+                    '\n'
+                    'def ch_lang(ev):\n'
+                    '    sel = ev.target\n'
+                    '    new_lang = sel.options[sel.selectedIndex].value\n'
+                    "    doc.location.href = 'index.html?lang=%s' %new_lang\n"
+                    '\n'
+                    'for elt in doc[html.SELECT]:\n'
+                    "    if elt.id.startswith('change_lang_'):\n"
+                    "        doc[elt.id].bind('change',ch_lang)\n"
+                    '</script>\n'
+                    '\n'
+                    '<script type="text/python3">\n'
+                    '"""Code for the clock"""\n'
+                    '\n'
+                    'import time\n'
+                    'import math\n'
+                    'import datetime\n'
+                    '\n'
+                    'from browser import document as doc\n'
+                    'import browser.timer\n'
+                    '\n'
+                    'sin,cos = math.sin,math.cos\n'
+                    'width,height = 250,250 # canvas dimensions\n'
+                    'ray = 100 # clock ray\n'
+                    '\n'
+                    'def needle(angle,r1,r2,color="#000000"):\n'
+                    '    # draw a needle at specified angle in specified color\n'
+                    '    # r1 and r2 are percentages of clock ray\n'
+                    '    x1 = width/2-ray*cos(angle)*r1\n'
+                    '    y1 = height/2-ray*sin(angle)*r1\n'
+                    '    x2 = width/2+ray*cos(angle)*r2\n'
+                    '    y2 = height/2+ray*sin(angle)*r2\n'
+                    '    ctx.beginPath()\n'
+                    '    ctx.strokeStyle = color\n'
+                    '    ctx.moveTo(x1,y1)\n'
+                    '    ctx.lineTo(x2,y2)\n'
+                    '    ctx.stroke()\n'
+                    '\n'
+                    'def set_clock():\n'
+                    '    # erase clock\n'
+                    '    ctx.beginPath()\n'
+                    '    ctx.fillStyle = "#FFF"\n'
+                    '    ctx.arc(width/2,height/2,ray*0.89,0,2*math.pi)\n'
+                    '    ctx.fill()\n'
+                    '\n'
+                    '    # redraw hours\n'
+                    '    show_hours()\n'
+                    '\n'
+                    '    # print day\n'
+                    '    now = datetime.datetime.now()\n'
+                    '    day = now.day\n'
+                    '    ctx.font = "bold 14px Arial"\n'
+                    '    ctx.textAlign = "center"\n'
+                    '    ctx.textBaseline = "middle"\n'
+                    '    ctx.fillStyle="#FFF"\n'
+                    '    ctx.fillText(day,width*0.7,height*0.5)\n'
+                    '\n'
+                    '    # draw needles for hour, minute, seconds\n'
+                    '    ctx.lineWidth = 3\n'
+                    '    hour = now.hour%12 + now.minute/60\n'
+                    '    angle = hour*2*math.pi/12 - math.pi/2\n'
+                    '    needle(angle,0.05,0.5)\n'
+                    '    minute = now.minute\n'
+                    '    angle = minute*2*math.pi/60 - math.pi/2\n'
+                    '    needle(angle,0.05,0.85)\n'
+                    '    ctx.lineWidth = 1\n'
+                    '    second = now.second+now.microsecond/1000000\n'
+                    '    angle = second*2*math.pi/60 - math.pi/2\n'
+                    '    needle(angle,0.05,0.85,"#FF0000") # in red\n'
+                    '\n'
+                    'def show_hours():\n'
+                    '    ctx.beginPath()\n'
+                    '    ctx.arc(width/2,height/2,ray*0.05,0,2*math.pi)\n'
+                    '    ctx.fillStyle = "#000"\n'
+                    '    ctx.fill()\n'
+                    '    for i in range(1,13):\n'
+                    '        angle = i*math.pi/6-math.pi/2\n'
+                    '        x3 = width/2+ray*cos(angle)*0.75\n'
+                    '        y3 = height/2+ray*sin(angle)*0.75\n'
+                    '        ctx.font = "20px Arial"\n'
+                    '        ctx.textAlign = "center"\n'
+                    '        ctx.textBaseline = "middle"\n'
+                    '        ctx.fillText(i,x3,y3)\n'
+                    '    # cell for day\n'
+                    '    ctx.fillStyle = "#000"\n'
+                    '    ctx.fillRect(width*0.65,height*0.47,width*0.1,height*0.06)\n'
+                    '\n'
+                    'canvas = doc["clock"]\n'
+                    '# draw clock border\n'
+                    "if hasattr(canvas,'getContext'):\n"
+                    '    ctx = canvas.getContext("2d")\n'
+                    '    ctx.beginPath()\n'
+                    '    ctx.lineWidth = 10\n'
+                    '    ctx.arc(width/2,height/2,ray,0,2*math.pi)\n'
+                    '    ctx.stroke()\n'
+                    '\n'
+                    '    for i in range(60):\n'
+                    '        ctx.lineWidth = 1\n'
+                    '        if i%5 == 0:\n'
+                    '            ctx.lineWidth = 3\n'
+                    '        angle = i*2*math.pi/60 - math.pi/3\n'
+                    '        x1 = width/2+ray*cos(angle)\n'
+                    '        y1 = height/2+ray*sin(angle)\n'
+                    '        x2 = width/2+ray*cos(angle)*0.9\n'
+                    '        y2 = height/2+ray*sin(angle)*0.9\n'
+                    '        ctx.beginPath()\n'
+                    '        ctx.moveTo(x1,y1)\n'
+                    '        ctx.lineTo(x2,y2)\n'
+                    '        ctx.stroke()\n'
+                    '    browser.timer.set_interval(set_clock,100)\n'
+                    '    show_hours()\n'
+                    'else:\n'
+                    '    doc[\'navig_zone\'].html = "On Internet Explorer 9 or more, use a Standard rendering engine"\n'
+                    '</script>\n'
+                    '\n'
+                    '<title>Brython</title>\n'
+                    '<link rel="stylesheet" href="Brython_files/doc_brython.css">\n'
+                    '</head>\n'
+            ),
+            (2, '<body onload="brython({debug:1, cache:\'none\'})">',
+                    '<body onload="brython({debug:1, cache:\'none\'})">\n'
+                    '</body></html>\n'
+                    '\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
