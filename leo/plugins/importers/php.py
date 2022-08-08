@@ -19,7 +19,7 @@ class Php_Importer(Importer):
             state_class=Php_ScanState,
         )
         self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
-        self.here_doc_target = None
+        self.here_doc_target: str = None
 
     #@+others
     #@+node:ekr.20161129213243.4: *3* php_i.compute_headline
@@ -68,7 +68,7 @@ class Php_Importer(Importer):
             }
         return d
     #@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
-    def scan_dict(self, context, i, s, d):
+    def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
         """
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
@@ -139,7 +139,7 @@ class Php_Importer(Importer):
     # php_i.scan dict uses r'<<<\s*([\w_]+)' instead of the more complex pattern below.
     # This is likely good enough. Importers can assume that code is well formed.
 
-    def skip_heredoc_string(self, s, i):
+    def skip_heredoc_string(self, s: str, i: int) -> int:
         #@+<< skip_heredoc docstrig >>
         #@+node:ekr.20161130044051.2: *4* << skip_heredoc docstrig >>
         #@@nocolor-node
