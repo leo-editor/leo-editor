@@ -2,8 +2,10 @@
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 """The @auto importer for coffeescript."""
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 from leo.core import leoGlobals as g  # Required.
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
@@ -12,7 +14,7 @@ class Coffeescript_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
-    def __init__(self, c, **kwargs):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(
             c,
@@ -20,7 +22,7 @@ class Coffeescript_Importer(Python_Importer):
             state_class=Coffeescript_ScanState,
         )
     #@+node:ekr.20220729104712.1: *3* coffee_i.compute_headline
-    def compute_headline(self, s):
+    def compute_headline(self, s: str) -> str:
         """
         Coffeescript_Importer.compute_headline.
 
@@ -30,7 +32,7 @@ class Coffeescript_Importer(Python_Importer):
     #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
@@ -105,16 +107,16 @@ class Coffeescript_Importer(Python_Importer):
     #@-others
 
     @classmethod
-    def do_import(cls):
+    def do_import(cls) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c, s, parent):
+        def f(c: Cmdr, s: str, parent: Position) -> bool:
             return cls(c).run(s, parent)
         return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:
     """A class representing the state of the coffeescript line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Coffeescript_ScanState ctor."""
         if d:
             indent = d.get('indent')
@@ -131,7 +133,7 @@ class Coffeescript_ScanState:
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* coffeescript_state.__repr__
-    def __repr__(self):
+    def __repr__(self) -> str:
         """CS_State.__repr__"""
         return '<CSState %r indent: %s>' % (self.context, self.indent)
 
