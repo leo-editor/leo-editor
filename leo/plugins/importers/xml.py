@@ -2,8 +2,9 @@
 #@+node:ekr.20140723122936.18137: * @file ../plugins/importers/xml.py
 """The @auto importer for the xml language."""
 import re
-from typing import Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g  # required.
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161121204146.3: ** class Xml_Importer
@@ -12,7 +13,7 @@ class Xml_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161122124109.1: *3* xml_i.__init__
-    def __init__(self, c, tags_setting='import_xml_tags'):
+    def __init__(self, c: Cmdr, tags_setting: str='import_xml_tags') -> None:
         """Xml_Importer.__init__"""
         # Init the base class.
         super().__init__(
@@ -23,26 +24,26 @@ class Xml_Importer(Importer):
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()
         # A closing tag decrements state.tag_level only if the top is an opening tag.
-        self.stack = []  # Stack of tags.
+        self.stack: List[str] = []  # Stack of tags.
         self.void_tags = [
             '<?xml',
             '!doctype',
         ]
         self.tag_warning_given = False  # True: a structure error has been detected.
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
-    def add_tags(self):
+    def add_tags(self) -> List[str]:
         """Add items to self.class/functionTags and from settings."""
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
         return aList
     #@+node:ekr.20170416082422.1: *3* xml_i.compute_headline
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """xml and html: Return a cleaned up headline s."""
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()
     #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
-    def scan_line(self, s, prev_state):
+    def scan_line(self, s: str, prev_state: Any) -> Any:
         """Update the xml scan state by scanning line s."""
         context, tag_level = prev_state.context, prev_state.tag_level
         i = 0
@@ -56,7 +57,7 @@ class Xml_Importer(Importer):
         d = {'context': context, 'tag_level': tag_level}
         return Xml_ScanState(d)
     #@+node:ekr.20161122073937.1: *4* xml_i.scan_in_context
-    def scan_in_context(self, context, i, s):
+    def scan_in_context(self, context: str, i: int, s: str) -> Tuple[str, int]:
         """
         Scan s from i, within the given context.
         Return (context, i)
@@ -73,7 +74,7 @@ class Xml_Importer(Importer):
             i += 1
         return context, i
     #@+node:ekr.20161122073938.1: *4* xml_i.scan_out_context & helpers
-    def scan_out_context(self, i, s, tag_level):
+    def scan_out_context(self, i: int, s: str, tag_level: int) -> Tuple[str, int, int]:
         """
         Scan s from i, outside any context.
         Return (context, i, tag_level)
@@ -98,7 +99,7 @@ class Xml_Importer(Importer):
             i += 1
         return context, i, tag_level
     #@+node:ekr.20161122084808.1: *5* xml_i.end_tag
-    def end_tag(self, s, tag, tag_level):
+    def end_tag(self, s: str, tag: str, tag_level: int) -> int:
         """
         Handle the ">" or "/>" that ends an element.
 
@@ -120,7 +121,7 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper
     ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
-    def scan_tag(self, s, i, tag_level):
+    def scan_tag(self, s: str, i: int, tag_level: int) -> Tuple[int, int]:
         """
         Scan an xml tag starting with "<" or "</".
 
@@ -151,7 +152,7 @@ class Xml_Importer(Importer):
                 tag_level += 1
         return i, tag_level
     #@+node:ekr.20170416043508.1: *6* xml_i.pop_to_tag
-    def pop_to_tag(self, tag, s):
+    def pop_to_tag(self, tag: str, s: str) -> None:
         """
         Attempt to pop tag from the top of the stack.
 
@@ -177,7 +178,7 @@ class Xml_Importer(Importer):
     # Warning: base Importer class defines ws_pattern.
     xml_ws_pattern = re.compile(r'\s*(<!--([^-]|-[^-])*-->\s*)*$')
 
-    def is_ws_line(self, s):
+    def is_ws_line(self, s: str) -> bool:
         """True if s is nothing but whitespace or single-line comments."""
         return bool(self.xml_ws_pattern.match(s))
     #@+node:ekr.20220801080949.1: *3* xml_i.get_intro
@@ -187,7 +188,7 @@ class Xml_Importer(Importer):
         """
         return 0
     #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the line startswith an xml block"""
         return new_state.tag_level > prev_state.tag_level
     #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
