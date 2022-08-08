@@ -11,26 +11,26 @@ class C_Importer(Importer):
 
     # For cleaning headlines.
     c_name_pattern = re.compile(r'\s*([\w:]+)')
+    headline = None
+    
+    # #545: Support @data c_import_typedefs.
+    type_keywords = [
+        'auto', 'bool', 'char', 'const', 'double',
+        'extern', 'float', 'int', 'register',
+        'signed', 'short', 'static', 'typedef',
+        'union', 'unsigned', 'void', 'volatile',
+    ]
 
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, c: Cmdr) -> None:
         """C_Importer.__init__"""
+
         # Init the base class.
         super().__init__(c, language='c', state_class=C_ScanState)
-        self.headline = None
 
-        # #545: Support @data c_import_typedefs.
-        self.type_keywords = [
-            'auto', 'bool', 'char', 'const', 'double',
-            'extern', 'float', 'int', 'register',
-            'signed', 'short', 'static', 'typedef',
-            'union', 'unsigned', 'void', 'volatile',
-        ]
-        aSet = set(
-            self.type_keywords +
-            (self.c.config.getData('c_import_typedefs') or [])
-        )
+        # These must be defined here because they use configuration data..
+        aSet = set(self.type_keywords + (c.config.getData('c_import_typedefs') or []))
         self.c_type_names = f"({'|'.join(list(aSet))})"
         self.c_types_pattern = re.compile(self.c_type_names)
         self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
