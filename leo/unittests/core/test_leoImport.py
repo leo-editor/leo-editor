@@ -190,7 +190,7 @@ class TestC(BaseTestImporter):
                 'int foo (int a) {\n'
                 '    a = 2 ;\n'
                 '}\n'
-                '\n'  
+                '\n'
             ),
             (2, 'char bar',
                 'char bar (float c) {\n'
@@ -242,7 +242,7 @@ class TestC(BaseTestImporter):
                 '\n'
                 'char bar (float c) {\n'
                 '    ;\n'
-                '}\n'  
+                '}\n'
             ),
         ))
 
@@ -337,7 +337,7 @@ class TestC(BaseTestImporter):
                 '    assert(false);\n'
                 '}\n'
                 '\n'
-            
+
             ),
             (1, 'bool aaa::bbb::dothat',
                 'bool\n'
@@ -2067,7 +2067,7 @@ class TestMarkdown(BaseTestImporter):
             (1, 'Top',
                 '\n'
                 'The top section\n'
-                '\n'    
+                '\n'
             ),
             (2, 'Section 1',
                 '\n'
@@ -2084,7 +2084,7 @@ class TestMarkdown(BaseTestImporter):
             (3, 'Section 2.1',
                 '\n'
                 'section 2.1, line 1\n'
-                '\n'  
+                '\n'
             ),
             (4, 'Section 2.1.1',
                 '\n'
@@ -2128,7 +2128,7 @@ class TestMarkdown(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, '!Declarations',
-                'Decl line.\n'  
+                'Decl line.\n'
             ),
             (1, 'Header',
                 '\n'
@@ -2194,7 +2194,7 @@ class TestMarkdown(BaseTestImporter):
             (1, 'This *should* be a section',
                 '\n'
                 'After subheader text\n'
-                '\n'       
+                '\n'
             ),
             (1, 'Last header: no text',
                 '\n'
@@ -2222,7 +2222,7 @@ class TestMarkdown(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, '!Declarations',
-                'Decl line.\n'        
+                'Decl line.\n'
             ),
             (1, 'Header',
                 '\n'
@@ -4305,7 +4305,7 @@ class TestRst(BaseTestImporter):
             ),
             (1, "!Dummy chapter",
                 '.. toc\n'
-                '\n' 
+                '\n'
             ),
             (1, "top",
                 '\n'
@@ -4348,7 +4348,7 @@ class TestRst(BaseTestImporter):
             (1, "top",
                 '\n'
                 'The top section.\n'
-                '\n'     
+                '\n'
             ),
         ))
     #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
