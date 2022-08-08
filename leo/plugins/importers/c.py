@@ -2,7 +2,8 @@
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 """The @auto importer for the C language and other related languages."""
 import re
-from typing import Optional
+from typing import Dict, Optional
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
@@ -13,7 +14,7 @@ class C_Importer(Importer):
 
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
-    def __init__(self, c, **kwargs):
+    def __init__(self, c: Cmdr) -> None:
         """C_Importer.__init__"""
         # Init the base class.
         super().__init__(c, language='c', state_class=C_ScanState)
@@ -40,7 +41,7 @@ class C_Importer(Importer):
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
-    def match_name_patterns(self, line):
+    def match_name_patterns(self, line: str) -> None:
         """Set self.headline if the line defines a typedef name."""
         m = self.c_name_pattern.match(line)
         if m:
@@ -53,7 +54,7 @@ class C_Importer(Importer):
     c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
 
-    def match_start_patterns(self, line):
+    def match_start_patterns(self, line: str) -> bool:
         """
         True if line matches any block-starting pattern.
         If true, set self.headline.
@@ -123,7 +124,7 @@ class C_Importer(Importer):
 class C_ScanState:
     """A class representing the state of the C line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """C_ScanSate ctor"""
         if d:
             prev = d.get('prev')
@@ -133,7 +134,7 @@ class C_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """C_ScanState.__repr__"""
         return 'C_ScanState context: %r curlies: %s' % (self.context, self.curlies)
 
