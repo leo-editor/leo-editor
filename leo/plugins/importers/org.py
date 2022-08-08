@@ -26,12 +26,12 @@ class Org_Importer(Importer):
     # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
     tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
 
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str):
         """
         Return a cleaned up headline for p.
         Also parses org-mode tags.
         """
-        if p and self.tc:
+        if self.tc:
             # Support for #578: org-mode tags.
             m = self.tag_pattern.search(s)
             if m:
@@ -40,8 +40,8 @@ class Org_Importer(Importer):
                 tail = s[i + 1 : -1].strip()
                 tags = tail.split(':')
                 for tag in tags:
-                    self.tc.add_tag(p, tag)
-        return s
+                    self.tc.add_tag(self.root, tag)
+        return super().compute_headline(s)
 
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.

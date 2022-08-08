@@ -349,7 +349,7 @@ class Importer:
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20161108131153.9: *5* i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str, p=None):
         """
         Return the cleaned version headline s.
         May be overridden in subclasses.
@@ -360,7 +360,7 @@ class Importer:
                 s = s[:i]
         return s.strip()
     #@+node:ekr.20220807043759.1: *5* i.create_placeholders
-    def create_placeholders(self, level, lines_dict, parents):
+    def create_placeholders(self, level: int, lines_dict: Dict, parents: List[Position]) -> None:
         """
         Create placeholder nodes so between the current level (len(parents)) and the desired level.
 
@@ -397,7 +397,7 @@ class Importer:
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
-    def gen_lines_prepass(self):
+    def gen_lines_prepass(self) -> None:
         """A hook for pascal. Called by i.gen_lines()."""
         pass
     #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
@@ -628,23 +628,23 @@ class Importer:
         return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
     #@+node:ekr.20161108131153.18: *4* i.Messages
-    def error(self, s):
+    def error(self, s: str) -> None:
         """Issue an error and cause a unit test to fail."""
         self.errors += 1
         self.importCommands.errors += 1
 
-    def report(self, message):
+    def report(self, message: str) -> None:
         if self.strict:
             self.error(message)
         else:
             self.warning(message)
 
-    def warning(self, s):
+    def warning(self, s: str) -> None:
         if not g.unitTesting:
             g.warning('Warning:', s)
     #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
-    def all_contexts(self, table):
+    def all_contexts(self, table: Dict) -> List:
         """
         Return a list of all contexts contained in the third column of the given table.
 
@@ -663,14 +663,14 @@ class Importer:
     #@+node:ekr.20161128025508.1: *4* i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         """
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
-        def add_key(d, pattern, data):
+        def add_key(d: Dict, pattern: str, data: Any) -> None:
             key = pattern[0]
             aList = d.get(key,[])
             aList.append(data)
@@ -710,7 +710,7 @@ class Importer:
     #@@nobeautify
     cached_scan_tables: Dict[str, Dict] = {}
 
-    def get_table(self, context):
+    def get_table(self, context: str) -> Dict:
         """
         Return the state table for the given context.
 
@@ -723,11 +723,11 @@ class Importer:
             self.cached_scan_tables[key] = table
         return table
     #@+node:ekr.20161108155143.4: *4* i.match
-    def match(self, s, i, pattern):
+    def match(self, s: str, i: int, pattern: str) -> bool:
         """Return True if the pattern matches at s[i:]"""
         return s[i : i + len(pattern)] == pattern
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
-    def scan_dict(self, context, i, s, d):
+    def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
         """
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
@@ -776,7 +776,7 @@ class Importer:
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20161108170435.1: *4* i.scan_line
-    def scan_line(self, s, prev_state):
+    def scan_line(self, s: str, prev_state: "ScanState") -> "ScanState":
         """
         A generalized scan-line method.
 

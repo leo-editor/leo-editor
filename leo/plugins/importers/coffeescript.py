@@ -21,7 +21,7 @@ class Coffeescript_Importer(Python_Importer):
             strict=True
         )
     #@+node:ekr.20220729104712.1: *3* coffee_i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s):
         """
         Coffeescript_Importer.compute_headline.
 

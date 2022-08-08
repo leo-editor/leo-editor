@@ -55,7 +55,7 @@ class Elisp_Importer(Importer):
             }
         return d
     #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str):
         """Return a cleaned up headline s."""
         m = self.elisp_defun_pattern.match(s)
         if m and m.group(1):

@@ -22,7 +22,7 @@ class Php_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161129213243.4: *3* php_i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str):
         """Return a cleaned up headline s."""
         return s.rstrip('{').strip()
     #@+node:ekr.20161129213808.1: *3* php_i.get_new_dict

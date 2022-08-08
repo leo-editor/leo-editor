@@ -57,7 +57,7 @@ class Python_Importer(Importer):
     def body_lines(self, a: int, b: int, i: int) -> List[str]:
         return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20220805071145.1: *3* python_i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str):
         """
         Python_Importer.compute_headline.
 

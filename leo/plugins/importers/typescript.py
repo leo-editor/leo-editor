@@ -60,7 +60,7 @@ class TS_Importer(Importer):
         """Add class names to headlines for all descendant nodes."""
         return
     #@+node:ekr.20161118093751.5: *3* ts_i.compute_headline
-    def compute_headline(self, s, p=None):
+    def compute_headline(self, s: str):
         """Return a cleaned up headline s."""
         s = s.strip()
         # Don't clean a headline twice.
