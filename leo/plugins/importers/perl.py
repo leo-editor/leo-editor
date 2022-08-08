@@ -75,7 +75,7 @@ class Perl_Importer(Importer):
             }
         return d
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
-    def skip_regex(self, s, i, pattern):
+    def skip_regex(self, s: str, i: int, pattern: str) -> int:
         """look ahead for a regex /"""
         assert self.match(s, i, pattern)
         i += len(pattern)
