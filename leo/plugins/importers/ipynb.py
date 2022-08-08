@@ -10,9 +10,6 @@ try:
 except ImportError:
     nbformat = None
 #@+others
-#@+node:ekr.20211209081012.1: ** function: do_import
-def do_import(c, s, parent):
-    return Import_IPYNB(c.importCommands).run(s, parent)
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB:
     """A class to import .ipynb files."""
@@ -265,6 +262,8 @@ class Import_IPYNB:
         p.v.u = d
     #@-others
 #@-others
+def do_import(c, s, parent):
+    return Import_IPYNB(c.importCommands).run(s, parent)
 importer_dict = {
     '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
     'class': Import_IPYNB,
