@@ -19,7 +19,6 @@ class Pascal_Importer(Importer):
             c,
             language='pascal',
             state_class=Pascal_ScanState,
-            strict=False,
         )
 
     #@+others

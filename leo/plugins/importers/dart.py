@@ -14,7 +14,6 @@ class Dart_Importer(Importer):
             c,
             language='dart',
             state_class=Dart_ScanState,
-            strict=False,
         )
 
     #@+others

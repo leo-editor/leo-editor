@@ -42,8 +42,6 @@ class CText_Importer(Importer):
         super().__init__(
             c,
             language='ctext',
-            state_class=None,
-            strict=False
         )
         importCommands = c.importCommands  ###
         self.fileType = importCommands.fileType

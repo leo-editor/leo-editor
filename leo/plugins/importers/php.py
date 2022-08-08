@@ -16,7 +16,6 @@ class Php_Importer(Importer):
             c,
             language='php',
             state_class=Php_ScanState,
-            strict=False,
         )
         self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
         self.here_doc_target = None

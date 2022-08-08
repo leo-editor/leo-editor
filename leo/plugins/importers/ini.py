@@ -15,7 +15,6 @@ class Ini_Importer(Importer):
             c,
             language='ini',
             state_class=None,
-            strict=False,
         )
 
     #@+others

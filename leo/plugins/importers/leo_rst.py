@@ -23,7 +23,6 @@ class Rst_Importer(Importer):
             c,
             language='rest',
             state_class=Rst_ScanState,
-            strict=False,
         )
 
     #@+others

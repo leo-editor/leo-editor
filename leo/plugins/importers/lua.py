@@ -21,7 +21,6 @@ class Lua_Importer(Importer):
             c,
             language='lua',
             state_class=Lua_ScanState,
-            strict=False,
         )
         # Contains entries for all constructs that end with 'end'.
         self.start_stack = []

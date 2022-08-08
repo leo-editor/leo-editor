@@ -13,7 +13,6 @@ class Csharp_Importer(Importer):
             c,
             language='csharp',
             state_class=Csharp_ScanState,
-            strict=False,
         )
 
     #@+others

@@ -18,7 +18,6 @@ class Elisp_Importer(Importer):
             c,
             language='lisp',
             state_class=Elisp_ScanState,
-            strict=False,
         )
 
     #@+others

@@ -18,7 +18,6 @@ class Tcl_Importer(Importer):
             c,
             language='tcl',
             state_class=Tcl_ScanState,
-            strict=False,
         )
 
     #@+others

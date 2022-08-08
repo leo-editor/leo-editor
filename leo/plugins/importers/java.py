@@ -15,7 +15,6 @@ class Java_Importer(Importer):
             c,
             language='java',
             state_class=Java_ScanState,
-            strict=False,
         )
 
     # Used in multiple methods.

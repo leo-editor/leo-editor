@@ -16,7 +16,6 @@ class Otl_Importer(Importer):
             c,
             language='plain',
             state_class=None,
-            strict=False,
         )
 
     #@+others

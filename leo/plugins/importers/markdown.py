@@ -16,7 +16,6 @@ class Markdown_Importer(Importer):
             c,
             language='md',
             state_class=None,
-            strict=False,
         )
         self.underline_dict = {}
 

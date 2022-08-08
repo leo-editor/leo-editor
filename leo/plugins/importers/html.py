@@ -9,7 +9,10 @@ class Html_Importer(Xml_Importer):
 
     def __init__(self, c, **kwargs):
         """Html_Importer.__init__"""
-        super().__init__(c, tags_setting='import_html_tags')
+        super().__init__(
+            c,
+            tags_setting='import_html_tags',
+        )
         self.name = 'html'
         self.void_tags = [
             # A small kludge: add !DOCTYPE.
