@@ -8,7 +8,7 @@ from leo.core import leoGlobals as g  # required.
 class TreePad_Scanner():
     """The importer for the TreePad file format."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         self.c = c
 
     #@+others

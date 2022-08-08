@@ -13,7 +13,7 @@ class Pascal_Importer(Importer):
     pascal_start_pat1 = re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n')
     pascal_start_pat2 = re.compile(r'^interface\b')
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Pascal_Importer.__init__"""
         super().__init__(
             c,

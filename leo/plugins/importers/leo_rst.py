@@ -17,7 +17,7 @@ underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 class Rst_Importer(Importer):
     """The importer for the rst lanuage."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Rst_Importer.__init__"""
         super().__init__(
             c,

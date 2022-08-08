@@ -2,7 +2,7 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
@@ -13,7 +13,7 @@ class Cython_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20200619144343.1: *3* cython_i.ctor
-    def __init__(self, c: Cmdr, **kwargs: Any) -> None:
+    def __init__(self, c: Cmdr) -> None:
         """Cython_Importer.ctor."""
         super().__init__(
             c,

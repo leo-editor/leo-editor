@@ -12,7 +12,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Tcl_Importer(Importer):
     """The importer for the tcl lanuage."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Tcl_Importer.__init__"""
         super().__init__(
             c,

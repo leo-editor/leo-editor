@@ -11,7 +11,7 @@ class Elisp_Importer(Importer):
 
     elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Elisp_Importer.__init__"""
         # Init the base class.
         super().__init__(

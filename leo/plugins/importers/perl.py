@@ -9,7 +9,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Perl_Importer(Importer):
     """A scanner for the perl language."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """The ctor for the Perl_ImportController class."""
         super().__init__(
             c,

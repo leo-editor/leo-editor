@@ -9,7 +9,7 @@ from leo.plugins.importers.linescanner import Importer
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
 class Ini_Importer(Importer):
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Ini_Importer.__init__"""
         super().__init__(
             c,

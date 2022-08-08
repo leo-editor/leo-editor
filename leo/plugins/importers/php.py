@@ -10,7 +10,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Php_Importer(Importer):
     """The importer for the php lanuage."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Php_Importer.__init__"""
         super().__init__(
             c,

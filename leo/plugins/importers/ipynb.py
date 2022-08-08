@@ -15,7 +15,7 @@ except ImportError:
 class Import_IPYNB:
     """A class to import .ipynb files."""
 
-    def __init__(self, c: Cmdr, **kwargs: Any) -> None:
+    def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.cell_n = 0  # The number of untitled cells.
         self.parent: Position = None  # The parent for the next created node.

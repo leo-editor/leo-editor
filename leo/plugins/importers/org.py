@@ -11,7 +11,7 @@ from leo.plugins.importers.linescanner import Importer
 class Org_Importer(Importer):
     """The importer for the org lanuage."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """Org_Importer.__init__"""
         super().__init__(
             c,

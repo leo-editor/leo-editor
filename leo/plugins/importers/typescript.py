@@ -45,7 +45,7 @@ class TS_Importer(Importer):
     )
     #@-<< define function patterns >>
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c):
         """The ctor for the TS_ImportController class."""
         # Init the base class.
         super().__init__(
