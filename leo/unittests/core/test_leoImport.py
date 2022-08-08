@@ -349,12 +349,35 @@ class TestC(BaseTestImporter):
             } //  <--------------------- problem
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        if 0: self.check_outline(p, (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language c\n'
+                '@tabwidth -4\n'
             ),
-            (1, 'void aaa::bbb::doit'),
-            (1, 'bool aaa::bbb::dothat'),
+            (1, 'void aaa::bbb::doit',
+                'void\n'
+                'aaa::bbb::doit\n'
+                '    (\n'
+                '    awk* b\n'
+                '    )\n'
+                '{\n'
+                '    assert(false);\n'
+                '}\n'
+                '\n'
+            
+            ),
+            (1, 'bool aaa::bbb::dothat',
+                'bool\n'
+                'aaa::bbb::dothat\n'
+                '    (\n'
+                '    xyz *b\n'
+                '    )\n'
+                '{\n'
+                '    return true;\n'
+                '} //  <--------------------- problem\n'
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
@@ -368,14 +391,21 @@ class TestC(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        if 0: self.check_outline(p, (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'extern "C"'),
+            (1, 'extern "C"',
+                'extern "C"\n'
+                '{\n'
+                '#include "stuff.h"\n'
+                'void    init(void);\n'
+                '#include "that.h"\n'
+                '}\n'
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
@@ -392,14 +422,24 @@ class TestC(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        if 0: self.check_outline(p, (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'static void ReleaseCharSet'),
+            (1, 'static void ReleaseCharSet',
+                'static void\n'
+                'ReleaseCharSet(cset)\n'
+                '    CharSet *cset;\n'
+                '{\n'
+                '    ckfree((char *)cset->chars);\n'
+                '    if (cset->ranges) {\n'
+                '    ckfree((char *)cset->ranges);\n'
+                '    }\n'
+                '}\n'
+                '\n'
+            ),
         ))
     #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
@@ -414,14 +454,22 @@ class TestC(BaseTestImporter):
             }
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
-        if 0: self.check_outline(p, (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@others\n'
                 '@language c\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'Tcl_Obj * Tcl_NewLongObj'),
+            (1, 'Tcl_Obj * Tcl_NewLongObj',
+                'Tcl_Obj *\n'
+                'Tcl_NewLongObj(longValue)\n'
+                '    register long longValue; /* Long integer used to initialize the\n'
+                '         * new object. */\n'
+                '{\n'
+                '    return Tcl_DbNewLongObj(longValue, "unknown", 0);\n'
+                '}\n'
+                '\n'
+            ),
         ))
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
