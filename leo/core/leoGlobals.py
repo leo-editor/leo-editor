@@ -7624,7 +7624,7 @@ def openUrlHelper(event: Any, url: str=None) -> Optional[str]:
         #@+node:tom.20220328141455.1: *5* << look for section ref >>
         # Navigate to section reference if one was clicked.
         l_ = line.strip()
-        if l_.startswith('<<') and l_.endswith('>>'):
+        if l_.endswith('>>') and l_.startswith('<<'):
             p = c.p
             px = None
             for p1 in p.subtree():
