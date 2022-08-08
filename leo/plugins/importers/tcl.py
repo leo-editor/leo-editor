@@ -6,7 +6,7 @@ The @auto importer for the tcl language.
 Created 2017/06/15 by the `importer;;` abbreviation.
 """
 import re
-from typing import Dict
+from typing import Any, Dict, List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
@@ -26,7 +26,7 @@ class Tcl_Importer(Importer):
     #@+node:ekr.20170615155627.1: *3* tcl.starts_block
     starts_pattern = re.compile(r'\s*(proc)\s+')
 
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the line startswith proc outside any context."""
         if prev_state.in_context():
             return False

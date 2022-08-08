@@ -67,7 +67,7 @@ class Rust_Importer(Importer):
             self.headline = line.strip()
         return bool(m)
     #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the new state starts a block."""
         self.headline = None
         line = lines[i]

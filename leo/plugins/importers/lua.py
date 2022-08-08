@@ -96,7 +96,7 @@ class Lua_Importer(Importer):
     function_pattern = re.compile(r'^(local\s+)?function')
     function_pattern2 = re.compile(r'(local\s+)?function')
 
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the new state starts a block."""
 
         def end(line):

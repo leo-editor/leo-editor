@@ -74,7 +74,7 @@ class JS_Importer(Importer):
         re.compile(r'.*?[(=,]\s*function\b'),
     ]
 
-    def starts_block(self, i: int, lines: List[str], new_state: "JS_ScanState", prev_state: "JS_ScanState") -> bool:
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the new state starts a block."""
         if new_state.level() <= prev_state.level():
             return False

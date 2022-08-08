@@ -4,7 +4,7 @@
 import re
 from typing import Dict, List, Optional
 from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import VNode
+from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
@@ -20,7 +20,7 @@ class Ini_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
-    def gen_lines(self, lines, parent):
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Ini_Importer.gen_lines. Allocate nodes to lines."""
         assert parent == self.root
         p = self.root
@@ -41,7 +41,7 @@ class Ini_Importer(Importer):
     #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
     ini_pattern = re.compile(r'^\s*(\[.*\])')
 
-    def starts_block(self, line) -> Optional[str]:
+    def starts_block(self, line: str) -> Optional[str]:
         """Return the name of the section or None"""
         m = self.ini_pattern.match(line)  # Won't match a comment.
         if m:
