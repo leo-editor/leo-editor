@@ -25,7 +25,7 @@ class Elisp_Importer(Importer):
     #@+node:ekr.20170205195239.1: *3* elisp_i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """elisp state dictionary for the given context."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == (';', '', ''), f"elisp: {comment!r} {block1!r} {block2!r}"

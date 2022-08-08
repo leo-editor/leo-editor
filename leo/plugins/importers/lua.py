@@ -42,7 +42,7 @@ class Lua_Importer(Importer):
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """The scan dict for the lua language."""
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('--', '', ''), f"lua: {comment!r} {block1!r} {block2!r}"

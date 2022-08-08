@@ -33,7 +33,7 @@ class Pascal_Importer(Importer):
     #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict
     #@@nobeautify
 
-    def get_new_dict(self, context):
+    def get_new_dict(self, context: str) -> Dict:
         """
         Return a *general* state dictionary for the given context.
         Subclasses may override...
