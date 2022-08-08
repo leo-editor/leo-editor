@@ -3,6 +3,7 @@
 """The @auto importer for the elisp language."""
 import re
 from typing import Any, Dict, List, Optional
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
@@ -11,7 +12,7 @@ class Elisp_Importer(Importer):
 
     elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Elisp_Importer.__init__"""
         # Init the base class.
         super().__init__(

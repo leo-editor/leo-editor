@@ -3,13 +3,14 @@
 """The @auto importer for .ini files."""
 import re
 from typing import Dict, List, Optional
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
 class Ini_Importer(Importer):
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ini_Importer.__init__"""
         super().__init__(
             c,

@@ -7,13 +7,14 @@ Created 2017/06/15 by the `importer;;` abbreviation.
 """
 import re
 from typing import Dict
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20170615153639.3: ** class Tcl_Importer
 class Tcl_Importer(Importer):
     """The importer for the tcl lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Tcl_Importer.__init__"""
         super().__init__(
             c,

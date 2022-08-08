@@ -3,13 +3,14 @@
 """The @auto importer for Perl."""
 import re
 from typing import Any, Dict, List
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer
 class Perl_Importer(Importer):
     """A scanner for the perl language."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """The ctor for the Perl_ImportController class."""
         super().__init__(
             c,

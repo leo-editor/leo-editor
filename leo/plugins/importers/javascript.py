@@ -10,7 +10,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
 
-    def __init__(self, c: Cmdr):
+    def __init__(self, c: Cmdr) -> None:
         """The ctor for the JS_ImportController class."""
         # Init the base class.
         super().__init__(
@@ -204,7 +204,7 @@ class Tok:
 
     num = 0
 
-    def __init__(self, name: str, regex: str, next: Any=None):
+    def __init__(self, name: str, regex: str, next: Any=None) -> None:
         self.id = Tok.num
         Tok.num += 1
         self.name = name

@@ -4,6 +4,7 @@
 import re
 from typing import Dict, List
 from leo.core import leoGlobals as g
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -11,7 +12,7 @@ from leo.plugins.importers.linescanner import Importer
 class Org_Importer(Importer):
     """The importer for the org lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Org_Importer.__init__"""
         super().__init__(
             c,

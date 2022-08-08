@@ -3,6 +3,7 @@
 """The @auto importer for vim-outline files."""
 import re
 from typing import Dict, List
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -10,7 +11,7 @@ from leo.plugins.importers.linescanner import Importer
 class Otl_Importer(Importer):
     """The importer for the otl lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Otl_Importer.__init__"""
         super().__init__(
             c,

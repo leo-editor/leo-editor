@@ -3,13 +3,14 @@
 """The @auto importer for the java language."""
 import re
 from typing import Dict, Optional
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
 class Java_Importer(Importer):
     """The importer for the java lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Java_Importer.__init__"""
         super().__init__(
             c,

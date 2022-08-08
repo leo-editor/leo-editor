@@ -8,6 +8,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 delete_blank_lines = True
 #@+others
@@ -15,7 +16,7 @@ delete_blank_lines = True
 class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Lua_Importer.__init__"""
         super().__init__(
             c,

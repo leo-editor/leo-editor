@@ -125,7 +125,7 @@ class Importer:
         name: str=None,  # The kind of importer, usually the same as language
         state_class: Any=None,  # For i.scan_line
         strict: bool=False,
-    ):
+    ) -> None:
         """
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
         """
@@ -855,7 +855,7 @@ class ScanState:
     scan.
     """
 
-    def __init__(self, d: Dict[str, Any]=None):
+    def __init__(self, d: Dict[str, Any]=None) -> None:
         """ScanState ctor."""
         if d:
             indent = d.get('indent')

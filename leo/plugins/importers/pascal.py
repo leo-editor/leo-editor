@@ -4,6 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g  # Required.
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
@@ -13,7 +14,7 @@ class Pascal_Importer(Importer):
     pascal_start_pat1 = re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n')
     pascal_start_pat2 = re.compile(r'^interface\b')
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Pascal_Importer.__init__"""
         super().__init__(
             c,

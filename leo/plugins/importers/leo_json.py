@@ -17,7 +17,7 @@ class JSON_Scanner:
     # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
-    def __init__(self, c: Cmdr):
+    def __init__(self, c: Cmdr) -> None:
         """The ctor for the JSON_Scanner class."""
         self.c = c
         # Keys are gnx's. Values are vnode_dicts.

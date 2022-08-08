@@ -3,13 +3,14 @@
 """The @auto importer for the dart language."""
 import re
 from typing import Dict
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer
 class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Dart_Importer.__init__"""
         super().__init__(
             c,
