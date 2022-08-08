@@ -2,8 +2,10 @@
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 """The @auto importer for TypeScript."""
 import re
-from typing import Dict
+from typing import Any, Dict, List
 from leo.core import leoGlobals as g  # Required.
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
@@ -46,7 +48,7 @@ class TS_Importer(Importer):
     )
     #@-<< define function patterns >>
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """The ctor for the TS_ImportController class."""
         # Init the base class.
         super().__init__(
@@ -57,11 +59,11 @@ class TS_Importer(Importer):
 
     #@+others
     #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
-    def add_class_names(self, p):
+    def add_class_names(self, p: Position) -> None:
         """Add class names to headlines for all descendant nodes."""
-        return
+        ###
     #@+node:ekr.20161118093751.5: *3* ts_i.compute_headline
-    def compute_headline(self, s: str):
+    def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         s = s.strip()
         # Don't clean a headline twice.
@@ -81,7 +83,7 @@ class TS_Importer(Importer):
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
     #@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
-    def skip_possible_regex(self, s, i):
+    def skip_possible_regex(self, s: str, i: int) -> int:
         """look ahead for a regex /"""
         assert s[i] in '=(', repr(s[i])
         i += 1
@@ -103,7 +105,7 @@ class TS_Importer(Importer):
 
         return i - 1
     #@+node:ekr.20180523170649.1: *3* ts_i.starts_block
-    def starts_block(self, i, lines, new_state, prev_state):
+    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the new state starts a block."""
         if new_state.level() <= prev_state.level():
             return False
@@ -136,7 +138,7 @@ class Typescript_ScanState:
 
     #@+others
     #@+node:ekr.20161118071747.15: *3* typescript_state.__repr__
-    def __repr__(self) -> None:
+    def __repr__(self) -> str:
         """ts_state.__repr__"""
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 
@@ -147,7 +149,7 @@ class Typescript_ScanState:
     #@+node:ekr.20161118082821.1: *3* typescript_state.is_ws_line
     ws_pattern = re.compile(r'^\s*$|^\s*#')
 
-    def is_ws_line(self, s):
+    def is_ws_line(self, s: str) -> bool:
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161119115736.1: *3* typescript_state.level
