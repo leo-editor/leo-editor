@@ -2,7 +2,8 @@
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
 """The @auto importer for the markdown language."""
 import re
-from typing import Dict, List
+from typing import Dict, List, Tuple
+from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
@@ -10,18 +11,18 @@ from leo.plugins.importers.linescanner import Importer
 class Markdown_Importer(Importer):
     """The importer for the markdown lanuage."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Markdown_Importer.__init__"""
         super().__init__(
             c,
             language='md',
             state_class=None,
         )
-        self.underline_dict = {}
+        ### self.underline_dict: Dict = {}
 
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
-    def gen_lines(self, lines, parent):
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for markdown importer."""
         if all(s.isspace() for s in lines):  # pragma: no cover
             return
@@ -63,7 +64,7 @@ class Markdown_Importer(Importer):
     # Allow any non-blank after the hashes.
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
 
-    def is_hash(self, line):
+    def is_hash(self, line: str) -> Tuple[int, str]:
         """
         Return level, name if line is a hash section line.
         else return None, None.
@@ -81,7 +82,7 @@ class Markdown_Importer(Importer):
         re.compile(r'^(-+)\n'),
     )
 
-    def is_underline(self, line):
+    def is_underline(self, line: str) -> bool:
         """True if line is all '-' or '=' characters."""
 
         for pattern in self.md_pattern_table:
@@ -90,7 +91,7 @@ class Markdown_Importer(Importer):
                 return True
         return False
     #@+node:ekr.20161202085032.1: *4* md_i.lookahead_underline
-    def lookahead_underline(self, i, lines):
+    def lookahead_underline(self, i: int, lines: List[str]) -> bool:
         """True if lines[i:i+1] form an underlined line."""
         if i + 1 < len(lines):
             line0 = lines[i]
@@ -100,7 +101,7 @@ class Markdown_Importer(Importer):
             return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
         return False
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
-    def make_decls_node(self, line, lines_dict):
+    def make_decls_node(self, line: str, lines_dict: Dict[VNode, List[str]]) -> None:
         """Make a decls node."""
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
@@ -109,7 +110,7 @@ class Markdown_Importer(Importer):
         lines_dict [child.v] = [line]
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
-    def make_markdown_node(self, level, lines_dict, name):
+    def make_markdown_node(self, level: int, lines_dict: Dict[VNode, List[str]], name: str) -> Position:
         """Create a new node."""
         self.stack = self.stack[:level]
         # #877: Insert placeholder nodes.
