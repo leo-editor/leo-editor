@@ -1002,7 +1002,6 @@ class TestHtml(BaseTestImporter):
             <html><head>headline</head><body>body</body></html>
         """
         p = self.run_test(s)
-        # self.dump_tree(p, tag='Actual results...')
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
@@ -1011,8 +1010,6 @@ class TestHtml(BaseTestImporter):
                     '@language xml\n'
                     '@tabwidth -4\n'
             ),
-            # The new xml scanner doesn't generate any new nodes,
-            # because the scan state hasn't changed at the end of the line!
         ))
     #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
@@ -1167,7 +1164,7 @@ class TestHtml(BaseTestImporter):
                     '</p> <!-- orphan -->\n'
                     '\n'
                     '</body>\n'
-                    '\n' 
+                    '\n'
             ),
             (2, '<div id="D666">',
                     '<div id="D666">Paragraph</p> <!-- P1 -->\n'
