@@ -4,8 +4,12 @@
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.
 import json
+from typing import  Dict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
+
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
@@ -13,16 +17,17 @@ class JSON_Scanner:
     # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
-    def __init__(self, c, language='json'):
+    def __init__(self, c: Cmdr):
         """The ctor for the JSON_Scanner class."""
-        self.c = c ### = importCommands.c
+        self.c = c
         # Keys are gnx's. Values are vnode_dicts.
-        self.gnx_dict = {}
+        self.gnx_dict: Dict[str, Dict] = {}
+        self.language = 'json'
         self.tab_width = c.tab_width
         # Keys are gnx's. Values are already-created vnodes.
-        self.vnodes_dict = {}
+        self.vnodes_dict: Dict[str, VNode] = {}
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
-    def create_nodes(self, parent, parent_d):
+    def create_nodes(self, parent: Position, parent_d: Dict) -> None:
         """Create the tree of nodes rooted in parent."""
         d = self.gnx_dict
         for child_gnx in parent_d.get('children'):
@@ -45,11 +50,11 @@ class JSON_Scanner:
                     child.u = d2.get('ua')
                 self.create_nodes(child, d2)
     #@+node:ekr.20161015213011.1: *3* json.report
-    def report(self, s):
+    def report(self, s: str) -> None:
         """Issue a message."""
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.run
-    def run(self, s, parent):
+    def run(self, s: str, parent: Position) -> bool:
         """JSON_Scanner.run."""
         c = self.c
         ok = self.scan(s, parent)
@@ -60,26 +65,8 @@ class JSON_Scanner:
             parent.setDirty()
             c.setChanged()
         return ok
-    #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
-    def escapeFalseSectionReferences(self, s):
-        """
-        Probably a bad idea.  Keep the apparent section references.
-        The perfect-import write code no longer attempts to expand references
-        when the perfectImportFlag is set.
-        """
-        return s
-        # result = []
-        # for line in g.splitLines(s):
-            # r1 = line.find('<<')
-            # r2 = line.find('>>')
-            # if r1>=0 and r2>=0 and r1<r2:
-                # result.append("@verbatim\n")
-                # result.append(line)
-            # else:
-                # result.append(line)
-        # return ''.join(result)
     #@+node:ekr.20160504092347.3: *4* json.checkBlanksAndTabs
-    def checkBlanksAndTabs(self, s):
+    def checkBlanksAndTabs(self, s: str) -> bool:
         """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         blanks = tabs = 0
@@ -92,7 +79,7 @@ class JSON_Scanner:
             self.report('intermixed blanks and tabs')
         return ok
     #@+node:ekr.20160504092347.4: *4* json.regularizeWhitespace
-    def regularizeWhitespace(self, s):
+    def regularizeWhitespace(self, s: str) -> str:
         """Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         This is only called for strict languages."""
@@ -119,7 +106,7 @@ class JSON_Scanner:
             self.report(message)
         return ''.join(result)
     #@+node:ekr.20160504082809.1: *3* json.scan
-    def scan(self, s, parent):
+    def scan(self, s: str, parent: Position) -> bool:
         """Create an outline from a MindMap (.csv) file."""
         # pylint: disable=no-member
         # pylint confuses this module with the stdlib json module
@@ -150,7 +137,7 @@ class JSON_Scanner:
             return True
     #@-others
 #@-others
-def do_import(c, s, parent):
+def do_import(c: Cmdr, s: str, parent: Position) -> bool:
     return JSON_Scanner(c).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-json',],
