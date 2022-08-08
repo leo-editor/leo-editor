@@ -809,52 +809,14 @@ class Importer:
             i = new_state.update(data)
             assert progress < i
         return new_state
-    #@+node:ekr.20161114024119.1: *4* i.test_scan_state
-    def test_scan_state(self, tests, State):
-        """
-        Test x.scan_line or i.scan_line.
-
-        `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
-
-        A typical @command test:
-
-            if c.isChanged(): c.save()
-            < < imp.reload importers.linescanner and importers.python > >
-            importer = py.Py_Importer(c.importCommands)
-            importer.test_scan_state(tests, Python_ScanState)
-        """
-        assert self.single_comment == '#', self.single_comment
-        table = self.get_table(context='')
-        contexts = self.all_contexts(table)
-        for bunch in tests:
-            assert bunch.line is not None
-            line = bunch.line
-            ctx = getattr(bunch, 'ctx', None)
-            if ctx:  # Test one transition.
-                ctx_in, ctx_out = ctx
-                prev_state = State()
-                prev_state.context = ctx_in
-                new_state = self.scan_line(line, prev_state)
-                new_context = new_state.context
-                assert new_context == ctx_out, (
-                    'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
-                        line, ctx_in, new_context, ctx_out, prev_state, new_state))
-            else:  # Test all transitions.
-                for context in contexts:
-                    prev_state = State()
-                    prev_state.context = context
-                    new_state = self.scan_line(line, prev_state)
-                    assert new_state.context == context, (
-                        'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
-                            line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
-    def get_int_lws(self, s):
+    def get_int_lws(self, s: str) -> int:
         """Return the the lws (a number) of line s."""
         # Important: use self.tab_width, *not* c.tab_width.
         return g.computeLeadingWhitespaceWidth(s, self.tab_width)
     #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
-    def get_leading_indent(self, lines, i, ignoreComments=True):
+    def get_leading_indent(self, lines: List[str], i: int, ignoreComments: bool=True) -> int:
         """
         Return the leading whitespace (an int) of the first significant line.
         Ignore blank and comment lines if ignoreComments is True
@@ -867,12 +829,12 @@ class Importer:
                     break
         return self.get_int_lws(lines[i]) if i < len(lines) else 0
     #@+node:ekr.20161108131153.17: *4* i.get_str_lws
-    def get_str_lws(self, s):
+    def get_str_lws(self, s: str) -> str:
         """Return the characters of the lws of s."""
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line
-    def is_ws_line(self, s):
+    def is_ws_line(self, s: str) -> bool:
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
     #@-others
