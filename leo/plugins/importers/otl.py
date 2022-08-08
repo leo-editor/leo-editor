@@ -10,10 +10,10 @@ from leo.plugins.importers.linescanner import Importer
 class Otl_Importer(Importer):
     """The importer for the otl lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Otl_Importer.__init__"""
         super().__init__(
-            importCommands,
+            c,
             language='plain',
             state_class=None,
             strict=False,

@@ -13,14 +13,11 @@ class JSON_Scanner:
     # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
-    def __init__(self,
-        importCommands,
-        language='json',
-        alternate_language=None,
-        **kwargs
-    ):
+    def __init__(self, c, language='json'):
+        ###alternate_language=None,
+        ###**kwargs
         """The ctor for the JSON_Scanner class."""
-        self.c = c = importCommands.c
+        self.c = c ### = importCommands.c
         # Keys are gnx's. Values are vnode_dicts.
         self.gnx_dict = {}
         self.tab_width = c.tab_width
@@ -156,7 +153,7 @@ class JSON_Scanner:
     #@-others
 #@-others
 def do_import(c, s, parent):
-    return JSON_Scanner(c.importCommands).run(s, parent)
+    return JSON_Scanner(c).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-json',],
     'func': do_import,

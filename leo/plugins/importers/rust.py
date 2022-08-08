@@ -8,11 +8,11 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
 class Rust_Importer(Importer):
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """rust_Importer.__init__"""
         # Init the base class.
         super().__init__(
-            importCommands,
+            c,
             language='rust',
             state_class=Rust_ScanState,
         )

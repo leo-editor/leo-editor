@@ -8,10 +8,10 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Dart_Importer(Importer):
     """The importer for the dart lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Dart_Importer.__init__"""
         super().__init__(
-            importCommands,
+            c,
             language='dart',
             state_class=Dart_ScanState,
             strict=False,

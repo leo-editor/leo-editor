@@ -14,8 +14,8 @@ except ImportError:
 class Import_IPYNB:
     """A class to import .ipynb files."""
 
-    def __init__(self, c=None, importCommands=None, **kwargs):
-        self.c = importCommands.c if importCommands else c
+    def __init__(self, c, **kwargs):
+        self.c = c
         self.cell_n = 0  # The number of untitled cells.
         self.parent = None  # The parent for the next created node.
         self.root = None  # The root of the to-be-created outline.
@@ -263,7 +263,7 @@ class Import_IPYNB:
     #@-others
 #@-others
 def do_import(c, s, parent):
-    return Import_IPYNB(c.importCommands).run(s, parent)
+    return Import_IPYNB(c).run(s, parent)
 importer_dict = {
     '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
     'class': Import_IPYNB,

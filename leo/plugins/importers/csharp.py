@@ -7,10 +7,10 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Csharp_Importer(Importer):
     """The importer for the csharp lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Csharp_Importer.__init__"""
         super().__init__(
-            importCommands,
+            c,
             language='csharp',
             state_class=Csharp_ScanState,
             strict=False,

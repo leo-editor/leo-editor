@@ -12,11 +12,11 @@ class Xml_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161122124109.1: *3* xml_i.__init__
-    def __init__(self, importCommands, tags_setting='import_xml_tags', **kwargs):
+    def __init__(self, c, tags_setting='import_xml_tags', **kwargs):
         """Xml_Importer.__init__"""
         # Init the base class.
         super().__init__(
-            importCommands,
+            c,
             language='xml',
             state_class=Xml_ScanState,
             strict=False,

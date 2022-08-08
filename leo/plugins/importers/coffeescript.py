@@ -12,10 +12,10 @@ class Coffeescript_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(
-            importCommands,
+            c,
             language='coffeescript',
             state_class=Coffeescript_ScanState,
             strict=True
@@ -107,8 +107,9 @@ class Coffeescript_Importer(Python_Importer):
 
     @classmethod
     def do_import(cls):
+        """Instantiate cls, the (subclass of) the Importer class."""
         def f(c, s, parent):
-            return cls(c.importCommands).run(s, parent)
+            return cls(c).run(s, parent)
         return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:

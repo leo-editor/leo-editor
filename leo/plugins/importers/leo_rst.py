@@ -17,9 +17,10 @@ underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 class Rst_Importer(Importer):
     """The importer for the rst lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Rst_Importer.__init__"""
-        super().__init__(importCommands,
+        super().__init__(
+            c,
             language='rest',
             state_class=Rst_ScanState,
             strict=False,
@@ -189,7 +190,7 @@ class Rst_ScanState:
     #@-others
 #@-others
 def do_import(c, s, parent):
-    return Rst_Importer(c.importCommands).run(s, parent)
+    return Rst_Importer(c).run(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
     'func': Rst_Importer.do_import(),

@@ -11,10 +11,10 @@ from leo.plugins.importers.linescanner import Importer
 class Org_Importer(Importer):
     """The importer for the org lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Org_Importer.__init__"""
         super().__init__(
-            importCommands,
+            c,
             language='plain',  # A reasonable @language
             state_class=None,
             strict=False,

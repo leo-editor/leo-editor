@@ -25,15 +25,14 @@ class Python_Importer(Importer):
     Leo uses this class *only* as the base class for the cython importer.
     """
 
-    def __init__(self, importCommands, language='python', state_class=None, **kwargs):
+    def __init__(self, c, language='python', state_class=None, **kwargs):
         """Py_Importer.ctor."""
         super().__init__(
-            importCommands,
+            c,
             language=language,
             state_class=state_class or Python_ScanState,
             strict=True,
         )
-        c = importCommands.c
         self.add_class_to_headlines = c.config.getBool('put-class-in-imported-headlines')
 
     #@+others
@@ -275,7 +274,7 @@ def do_import(c, s, parent):
 
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
-        Python_Importer(c.importCommands).run(s, parent)
+        Python_Importer(c).run(s, parent)
     else:
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')

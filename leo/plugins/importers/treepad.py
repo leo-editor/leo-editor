@@ -8,8 +8,8 @@ from leo.core import leoGlobals as g  # required.
 class TreePad_Scanner():
     """The importer for the TreePad file format."""
 
-    def __init__(self, importCommands, **kwargs):
-        self.c = importCommands.c
+    def __init__(self, c, **kwargs):
+        self.c = c
 
     #@+others
     #@+node:ekr.20180201204402.2: *3* treepad.add_node
@@ -103,7 +103,7 @@ class TreePad_Scanner():
     #@-others
 #@-others
 def do_import(c, s, parent):
-    return TreePad_Scanner(c.importCommands).run(s, parent)
+    return TreePad_Scanner(c).run(s, parent)
 importer_dict = {
     'func': do_import,
     'extensions': ['.hjt',],

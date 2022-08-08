@@ -37,14 +37,15 @@ class CText_Importer(Importer):
     #@-<< ctext docstring >>
     #@+others
     #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(
-            importCommands,
+            c,
             language='ctext',
             state_class=None,
             strict=False
         )
+        importCommands = c.importCommands  ###
         self.fileType = importCommands.fileType
     #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines
     def write_lines(self, node, lines):

@@ -45,11 +45,11 @@ class TS_Importer(Importer):
     )
     #@-<< define function patterns >>
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """The ctor for the TS_ImportController class."""
         # Init the base class.
         super().__init__(
-            importCommands,
+            c,
             language='typescript',  # Case is important.
             state_class=Typescript_ScanState,
         )

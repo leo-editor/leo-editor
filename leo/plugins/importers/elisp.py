@@ -11,11 +11,11 @@ class Elisp_Importer(Importer):
 
     elisp_defun_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Elisp_Importer.__init__"""
         # Init the base class.
         super().__init__(
-            importCommands,
+            c,
             language='lisp',
             state_class=Elisp_ScanState,
             strict=False,

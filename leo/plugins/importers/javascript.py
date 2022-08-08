@@ -8,12 +8,12 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
 
-    def __init__(self, importCommands, force_at_others=False, **kwargs):
+    def __init__(self, c, force_at_others=False, **kwargs):
         """The ctor for the JS_ImportController class."""
         # Init the base class.
         super().__init__(
-            importCommands,
-            gen_refs=False,  # Fix #639.
+            c,
+            gen_refs=False,  # Fix #639.  ###
             language='javascript',
             state_class=JS_ScanState,
         )

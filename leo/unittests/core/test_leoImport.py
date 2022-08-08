@@ -577,12 +577,12 @@ class TestCoffeescript(BaseTestImporter):
     #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
-        importer = linescanner.Importer(c.importCommands, language='coffeescript')
+        importer = linescanner.Importer(c, language='coffeescript')
         self.assertEqual(importer.single_comment, '#')
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
         c = self.c
-        x = cs.Coffeescript_Importer(c.importCommands, atAuto=True)
+        x = cs.Coffeescript_Importer(c, atAuto=True)
         self.assertEqual(x.single_comment, '#')
     #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
@@ -762,7 +762,7 @@ class TestDart(BaseTestImporter):
     #@+node:ekr.20210904065459.127: *3* TestDart.test_compute_headline
     def test_compute_headline(self):
         c = self.c
-        x = dart.Dart_Importer(c.importCommands, atAuto=False)
+        x = dart.Dart_Importer(c, atAuto=False)
         table = (
             ('func(abc) {', 'func'),
             ('void foo() {', 'void foo'),
@@ -2389,8 +2389,8 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
         c = self.c
-        ic = c.importCommands
-        x = markdown.Markdown_Importer(ic, atAuto=False)
+        ### ic = c.importCommands
+        x = markdown.Markdown_Importer(c, atAuto=False)
         assert x.md_pattern_table
         table = (
             (1, 'name', '# name\n'),
@@ -2408,8 +2408,8 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
     def test_is_underline(self):
         c = self.c
-        ic = c.importCommands
-        x = markdown.Markdown_Importer(ic, atAuto=False)
+        ### ic = c.importCommands
+        x = markdown.Markdown_Importer(c, atAuto=False)
         for line in ('----\n', '-----\n', '====\n', '====\n'):
             got = x.is_underline(line)
             assert got, repr(line)
@@ -2556,7 +2556,7 @@ class TestOrg(BaseTestImporter):
     def test_pattern(self):
 
         c = self.c
-        x = org.Org_Importer(c.importCommands, atAuto=False)
+        x = org.Org_Importer(c, atAuto=False)
         pattern = x.org_pattern
         table = (
             '* line 1',
@@ -2716,7 +2716,7 @@ class TestOtl(BaseTestImporter):
     def test_vim_outline_mode(self):
 
         c = self.c
-        x = otl.Otl_Importer(c.importCommands, atAuto=False)
+        x = otl.Otl_Importer(c, atAuto=False)
         pattern = x.otl_node_pattern
         table = (
             'body line',
@@ -4707,7 +4707,7 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.132: *3* TestXml.test_is_ws_line
     def test_is_ws_line(self):
         c = self.c
-        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
+        x = xml.Xml_Importer(c, atAuto=False)
         table = (
            (1, ' \n'),
            (1, '\n'),
@@ -4723,7 +4723,7 @@ class TestXML(BaseTestImporter):
     #@+node:ekr.20210904065459.133: *3* TestXml.test_scan_line
     def test_scan_line(self):
         c = self.c
-        x = xml.Xml_Importer(importCommands=c.importCommands, atAuto=False)
+        x = xml.Xml_Importer(c, atAuto=False)
         x.start_tags.append('html')  # Don't rely on settings.
         table = (
             (0, '<tag>'),

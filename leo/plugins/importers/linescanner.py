@@ -119,7 +119,7 @@ class Importer:
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
-        importCommands,
+        c,
         gen_refs=False,  # True: generate section references,
         language=None,  # For @language directive.
         name=None,  # The kind of importer, usually the same as language
@@ -131,8 +131,8 @@ class Importer:
         Importer.__init__: New in Leo 6.1.1: ic and c may be None for unit tests.
         """
         # Copies of args...
-        self.importCommands = ic = importCommands
-        self.c = c = ic and ic.c
+        self.c = c
+        self.importCommands = ic = c.importCommands
         self.encoding = ic and ic.encoding or 'utf-8'
         self.gen_refs = gen_refs
         self.language = language or name  # For the @language directive.
@@ -924,7 +924,7 @@ class Importer:
     def do_import(cls):
         """Instantiate cls, the (subclass of) the Importer class."""
         def f(c, s, parent):
-            return cls(c.importCommands).run(s, parent)
+            return cls(c).run(s, parent)
         return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:

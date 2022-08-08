@@ -13,14 +13,10 @@ class C_Importer(Importer):
 
     #@+others
     #@+node:ekr.20200819144754.1: *3* c_i.ctor
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """C_Importer.__init__"""
         # Init the base class.
-        super().__init__(
-            importCommands,
-            language='c',
-            state_class=C_ScanState,
-        )
+        super().__init__(c, language='c', state_class=C_ScanState)
         self.headline = None
 
         # #545: Support @data c_import_typedefs.

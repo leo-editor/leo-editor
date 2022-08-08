@@ -12,10 +12,10 @@ class Cython_Importer(Python_Importer):
 
     #@+others
     #@+node:ekr.20200619144343.1: *3* cython_i.ctor
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Cython_Importer.ctor."""
         super().__init__(
-            importCommands,
+            c,
             language='cython',
             state_class=Cython_ScanState,
             strict=True,

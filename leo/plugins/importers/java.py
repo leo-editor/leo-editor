@@ -9,10 +9,10 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 class Java_Importer(Importer):
     """The importer for the java lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Java_Importer.__init__"""
         super().__init__(
-            importCommands,
+            c,
             language='java',
             state_class=Java_ScanState,
             strict=False,

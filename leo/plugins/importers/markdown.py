@@ -10,9 +10,10 @@ from leo.plugins.importers.linescanner import Importer
 class Markdown_Importer(Importer):
     """The importer for the markdown lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c, **kwargs):
         """Markdown_Importer.__init__"""
-        super().__init__(importCommands,
+        super().__init__(
+            c,
             language='md',
             state_class=None,
             strict=False,
