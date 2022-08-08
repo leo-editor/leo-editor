@@ -120,7 +120,6 @@ class Importer:
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
         c,
-        gen_refs=False,  # True: generate section references,
         language=None,  # For @language directive.
         name=None,  # The kind of importer, usually the same as language
         state_class=None,  # For i.scan_line
@@ -133,7 +132,6 @@ class Importer:
         self.c = c
         self.importCommands = ic = c.importCommands
         self.encoding = ic and ic.encoding or 'utf-8'
-        self.gen_refs = gen_refs
         self.language = language or name  # For the @language directive.
         self.name = name or language
         language = self.language

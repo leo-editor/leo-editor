@@ -13,7 +13,6 @@ class JS_Importer(Importer):
         # Init the base class.
         super().__init__(
             c,
-            gen_refs=False,  # Fix #639.  ###
             language='javascript',
             state_class=JS_ScanState,
         )
