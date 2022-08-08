@@ -1,13 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18140: * @file ../plugins/importers/csharp.py
 """The @auto importer for the csharp language."""
+from typing import Dict
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer
 class Csharp_Importer(Importer):
     """The importer for the csharp lanuage."""
 
-    def __init__(self, c, **kwargs):
+    def __init__(self, c: Cmdr) -> None:
         """Csharp_Importer.__init__"""
         super().__init__(
             c,
@@ -17,7 +19,7 @@ class Csharp_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161121200106.5: *3* csharp.compute_headline
-    def compute_headline(self, s):
+    def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         s = s.strip()
         if s.endswith('{'):
@@ -28,7 +30,7 @@ class Csharp_Importer(Importer):
 class Csharp_ScanState:
     """A class representing the state of the csharp line-oriented scan."""
 
-    def __init__(self, d=None):
+    def __init__(self, d: Dict=None) -> None:
         """Csharp_ScanState.__init__"""
         if d:
             prev = d.get('prev')
@@ -38,7 +40,7 @@ class Csharp_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self):  # pragma: no cover
+    def __repr__(self) -> str:  # pragma: no cover
         """Csharp_ScanState.__repr__"""
         return "Csharp_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
