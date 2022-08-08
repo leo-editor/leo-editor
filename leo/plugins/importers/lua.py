@@ -24,7 +24,7 @@ class Lua_Importer(Importer):
             state_class=Lua_ScanState,
         )
         # Contains entries for all constructs that end with 'end'.
-        self.start_stack = []
+        self.start_stack: List[str] = []
 
     # Define necessary overrides.
     #@+others
@@ -47,7 +47,7 @@ class Lua_Importer(Importer):
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert (comment, block1, block2) == ('--', '', ''), f"lua: {comment!r} {block1!r} {block2!r}"
 
-        def add_key(d, pattern, data):
+        def add_key(d: Dict, pattern: str, data: Any) -> None:
             key = pattern[0]
             aList = d.get(key,[])
             aList.append(data)
@@ -99,7 +99,7 @@ class Lua_Importer(Importer):
     def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
         """True if the new state starts a block."""
 
-        def end(line):
+        def end(line: str) -> int:
             # Buggy: 'end' could appear in a string or comment.
             # However, this code is much better than before.
             i = line.find('end')
