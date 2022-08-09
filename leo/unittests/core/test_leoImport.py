@@ -2500,7 +2500,6 @@ class TestOrg(BaseTestImporter):
                     '@tabwidth -4\n'
             ),
             (1, ' Test',
-                    '*  Test\n'
                     'First line.\n'
                     '\n'
             ),
@@ -2523,16 +2522,14 @@ class TestOrg(BaseTestImporter):
                     '@tabwidth -4\n'
             ),
             (1, 'Events',
-                    '* Events\n'
                     '  :PROPERTIES:\n'
                     '  :CATEGORY: events\n'
                     '  :END:\n'
             ),
             (2, '整理个人生活',
-                    '** 整理个人生活\n'
+                    ''
             ),
             (3, '每周惯例',
-                    '*** 每周惯例\n'
                     '\n'
             ),
         ))
@@ -2547,25 +2544,20 @@ class TestOrg(BaseTestImporter):
             Sec 2.
         """
         p = self.run_test(s)
-        expected = (
+        self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
-                self.dedent("""\
-                    Intro line.
-                    ATlanguage org
-                    ATtabwidth -4
-                """).replace('AT', '@')
+                'Intro line.\n'
+                '@language org\n'
+                '@tabwidth -4\n'
             ),
             (1, 'Section 1',
-                '* Section 1\n'
                 'Sec 1.\n'
             ),
             (1, 'Section 2',
-                '* Section 2\n'
                 'Sec 2.\n'
                 '\n'
             ),
-        )
-        self.check_outline(p, expected)
+        ))
     #@+node:ekr.20210904065459.41: *3* TestOrg.test_pattern
     def test_pattern(self):
 
@@ -2598,41 +2590,33 @@ class TestOrg(BaseTestImporter):
             ** Section 3.1
             Sec 3.1
         """
-        p = self.run_test(s)
+        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
         expected = (
             (0, 'check_outline ignores the first headline',
                 '@language org\n'
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1',
-                '* Section 1\n'
                 'Sec 1.\n'
             ),
             (1, 'Section 2',
-                '* Section 2\n'
                 'Sec 2.\n'
             ),
             (2, 'Section 2-1',
-                '** Section 2-1\n'
                 'Sec 2.1\n'
             ),
             (3, 'Section 2-1-1',
-                '*** Section 2-1-1\n'
                 'Sec 2.1.1\n'
             ),
-            (1, 'Section 3',
-                '* Section 3\n'
-            ),
+            (1, 'Section 3', ''),
             (2, 'placeholder level 2', ''),
             (3, 'placeholder level 3', ''),
             (4, 'placeholder level 4', ''),
             (5, 'placeholder level 5', ''),
             (6, 'Section 3-1-1-1-1-1',
-                '****** Section 3-1-1-1-1-1\n'
                 ': Sec 3-1-1-1-1-1\n'
             ),
             (2, 'Section 3.1',
-                '** Section 3.1\n'
                 'Sec 3.1\n'
                 '\n'
             ),
@@ -2652,14 +2636,9 @@ class TestOrg(BaseTestImporter):
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'Section 1 :tag1:',
-                    '* Section 1 :tag1:\n'
-            ),
-            (1, 'Section 2 :tag2:',
-                    '* Section 2 :tag2:\n'
-            ),
+            (1, 'Section 1 :tag1:', ''),
+            (1, 'Section 2 :tag2:', ''),
             (1, 'Section 3 :tag3:tag4:',
-                    '* Section 3 :tag3:tag4:\n'
                     '\n'
             ),
         )

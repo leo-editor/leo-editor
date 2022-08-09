@@ -44,7 +44,7 @@ class Org_Importer(Importer):
                     self.tc.add_tag(self.root, tag)
         return super().compute_headline(s)
 
-    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines (changed)
+    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
