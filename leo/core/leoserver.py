@@ -45,10 +45,11 @@ from leo.core.leoNodes import Position, PosList
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-version_tuple = (1, 0, 2)
+version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
 # 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
+# 1.0.3 Félix on July 2022: Fixed original node selection upon opening a file.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 g = None  # The bridge's leoGlobals module.
@@ -908,7 +909,7 @@ class LeoServer:
         t2 = time.process_time()
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
-    #@+node:felix.20210622235127.1: *3* server:leo overridden methods
+    #@+node:felix.20210622235127.1: *3* server.leo overridden methods
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
     def _runAskOkDialog(self, c, title, message=None, text="Ok"):
         """Create and run an askOK dialog ."""
@@ -1017,8 +1018,8 @@ class LeoServer:
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
         # no return
-    #@+node:felix.20210621233316.6: *3* server:public commands
-    #@+node:felix.20210621233316.7: *4* server:button commands
+    #@+node:felix.20210621233316.6: *3* server.public commands
+    #@+node:felix.20210621233316.7: *4* server.button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:felix.20210621233316.8: *5* _check_button_command
     def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
@@ -1169,7 +1170,7 @@ class LeoServer:
             raise ServerError(f"{tag}: button {index!r} does not exist")
 
         return self._make_response()
-    #@+node:felix.20210621233316.12: *4* server:file commands
+    #@+node:felix.20210621233316.12: *4* server.file commands
     #@+node:felix.20210621233316.13: *5* server.open_file
     def open_file(self, param):
         """
@@ -1194,7 +1195,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        c.selectPosition(c.rootPosition())  # Required.
+        # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
         # Check the outline!
         c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
         self._check_outline(c)
@@ -1339,6 +1340,64 @@ class LeoServer:
                     # Experimental: attempt to use permissive section ref logic.
                 )
         return self._make_response()  # Just send empty as 'ok'
+    #@+node:felix.20220808210033.1: *4* server.export commands
+    #@+node:felix.20220808211111.2: *5* server.export-headlines
+    def export_headlines(self, param):
+        """
+        Export Outline (export headlines)
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.3: *5* server.export-jupyter-notebook
+    def export_jupyter_notebook(self, param):
+        """
+        Export Jupyter Notebook
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.4: *5* server.flatten-outline
+    def flatten_outline(self, param):
+        """
+        Flatten Selected Outline
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.5: *5* server.outline-to-cweb
+    def outline_to_cweb(self, param):
+        """
+        Outline To CWEB
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.6: *5* server.outline-to-noweb
+
+    def outline_to_noweb(self, param):
+        """
+        Outline To Noweb
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.7: *5* server.remove-sentinels
+    def remove_sentinels(self, param):
+        """
+        Remove Sentinels
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808211111.8: *5* server.weave
+    def weave(self, param):
+        """
+        Weave
+        """
+
+        return self._make_response()
+    #@+node:felix.20220808221351.1: *5* server.write-file-from-node
+    def write_file_from_node(self, param):
+        """
+        Write file from node
+        """
+
+        return self._make_response()
     #@+node:felix.20220309010334.1: *4* server.nav commands
     #@+node:felix.20220714000930.1: *5* server.chapter_main
     def chapter_main(self, param):
@@ -1885,7 +1944,7 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
-    #@+node:felix.20210621233316.35: *4* server:getter commands
+    #@+node:felix.20210621233316.35: *4* server.getter commands
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param):
         """Return array describing each commander in g.app.commanders()."""
@@ -2179,7 +2238,7 @@ class LeoServer:
             response = {"bead": 0, "undos": []}
         # _make_response adds all the cheap redraw data.
         return self._make_minimal_response(response)
-    #@+node:felix.20210621233316.49: *4* server:node commands
+    #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param):
         """
@@ -2683,7 +2742,7 @@ class LeoServer:
                 u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
-    #@+node:felix.20210621233316.68: *4* server:server commands
+    #@+node:felix.20210621233316.68: *4* server.server commands
     #@+node:felix.20210914230846.1: *5* server.get_version
     def get_version(self, param):
         """
@@ -2804,13 +2863,15 @@ class LeoServer:
 
             'export-headlines',  # export TODO
             'export-jupyter-notebook',  # export TODO
+            'flatten-outline',  # export TODO
             'outline-to-cweb',  # export TODO
-            'outline-to-noweb',  # export TODO
-            'remove-sentinels',  # import TODO
+            'outline-to-noweb', # export TODO
+            'remove-sentinels',  # open, reads and then replaces without sentinels TODO
+            'weave',  # export TODO
+            'write-file-from-node', # export TODO
 
             'save-all',
             'save-file-as-zipped',
-            'write-file-from-node',
             'edit-setting',
             'edit-shortcut',
             'goto-line',
@@ -3786,7 +3847,7 @@ class LeoServer:
             'find-long-lines',
             'find-missing-docstrings',
             'flake8-files',
-            'flatten-outline',
+            #'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
 
@@ -3883,8 +3944,6 @@ class LeoServer:
 
             #'view-lossage',  # ?
 
-            'weave',
-
             # Dubious commands (to do)...
             'act-on-node',
 
@@ -3950,7 +4009,7 @@ class LeoServer:
         if n:  # pragma: no cover
             raise ServerError(f"{tag}: {n} open outlines")
         raise TerminateServer("client requested shut down")
-    #@+node:felix.20210621233316.78: *3* server:server utils
+    #@+node:felix.20210621233316.78: *3* server.server utils
     #@+node:felix.20210621233316.79: *4* server._ap_to_p
     def _ap_to_p(self, ap):
         """
@@ -4548,7 +4607,7 @@ class LeoServer:
             p.moveToNext()
 
     #@-others
-#@+node:felix.20210621233316.105: ** function: main & helpers
+#@+node:felix.20210621233316.105: ** main & helpers
 def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
     # pylint: disable=used-before-assignment
