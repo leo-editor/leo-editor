@@ -695,8 +695,8 @@ class TestCython(BaseTestImporter):
                 print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
 
         '''
-        p = self.run_test(s)
-        if 0:  self.check_outline(p, (
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
             (0, 'check_outlines ignores the first headline',
                     'from libc.math cimport pow\n'
                     '\n'
