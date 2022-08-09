@@ -15,7 +15,7 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -494,8 +494,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     def body(a: int, b: Optional[int], i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
         nonlocal lines  # 'lines' is a kwarg to split_root.
-        xlines = (bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
-        return ''.join(xlines)
+        return ''.join(bodyLine(s, i) for s in lines[a - 1 : b and (b - 1)])
     #@+node:ekr.20220320055103.1: *4* declaration_headline
     def declaration_headline(body_string: str) -> str:  # #2500
         """
