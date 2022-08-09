@@ -53,9 +53,9 @@ class JSON_Scanner:
     def report(self, s: str) -> None:
         """Issue a message."""
         g.es_print(s)
-    #@+node:ekr.20160504092347.1: *3* json.run
-    def run(self, s: str, parent: Position) -> bool:
-        """JSON_Scanner.run."""
+    #@+node:ekr.20160504092347.1: *3* json.import_from_string
+    def import_from_string(self, s: str, parent: Position) -> bool:
+        """JSON_Scanner.import_from_string."""
         c = self.c
         ok = self.scan(s, parent)
         if ok:

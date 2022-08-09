@@ -47,8 +47,8 @@ class Import_IPYNB:
         self.add_markup()
         c.selectPosition(self.root)
         c.redraw()
-    #@+node:ekr.20160412103110.1: *4* ipynb.run
-    def run(self, s: str, parent: Position) -> None:
+    #@+node:ekr.20160412103110.1: *4* ipynb.import_from_string
+    def import_from_string(self, s: str, parent: Position) -> None:
         """
         @auto entry point. Called by code in leoImport.py.
         """

@@ -9,7 +9,7 @@
 **Overview**
 
 Leo's import infrastructure in `leoImport.py` instantiates the
-Importer instance and calls `i.run`, which calls `i.scan_lines`.
+Importer instance and calls `i.import_from_string`, which calls `i.scan_lines`.
 
 New importers copy entire lines from the input file to Leo nodes. This
 makes the new importers much less error prone than the legacy
