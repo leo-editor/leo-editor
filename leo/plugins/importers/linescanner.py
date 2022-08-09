@@ -180,8 +180,8 @@ class Importer:
         self.add_file_context = getBool("add-file-context-to-headlines")
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-    #@+node:ekr.20161108131153.10: *3* i.run (driver) & helpers
-    def run(self, s: str, parent: Position) -> bool:
+    #@+node:ekr.20161108131153.10: *3* i.import_from_string (driver) & helpers
+    def import_from_string(self, s: str, parent: Position) -> bool:
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
@@ -846,7 +846,7 @@ class Importer:
     def do_import(cls: Any) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
         def f(c: Cmdr, s: str, parent: Position) -> Callable:
-            return cls(c).run(s, parent)
+            return cls(c).import_from_string(s, parent)
         return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:

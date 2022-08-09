@@ -178,7 +178,7 @@ class Rst_ScanState:
     #@-others
 #@-others
 def do_import(c: Cmdr, s: str, parent: Position) -> bool:
-    return Rst_Importer(c).run(s, parent)
+    return Rst_Importer(c).import_from_string(s, parent)
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
     'func': Rst_Importer.do_import(),

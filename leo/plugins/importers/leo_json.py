@@ -138,7 +138,7 @@ class JSON_Scanner:
     #@-others
 #@-others
 def do_import(c: Cmdr, s: str, parent: Position) -> bool:
-    return JSON_Scanner(c).run(s, parent)
+    return JSON_Scanner(c).import_from_string(s, parent)
 importer_dict = {
     '@auto': ['@auto-json',],
     'func': do_import,

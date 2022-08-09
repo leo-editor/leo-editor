@@ -110,7 +110,7 @@ class Coffeescript_Importer(Python_Importer):
     def do_import(cls) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
         def f(c: Cmdr, s: str, parent: Position) -> bool:
-            return cls(c).run(s, parent)
+            return cls(c).import_from_string(s, parent)
         return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:

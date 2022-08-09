@@ -264,7 +264,7 @@ class Import_IPYNB:
     #@-others
 #@-others
 def do_import(c: Cmdr, s: str, parent: Position) -> None:
-    Import_IPYNB(c).run(s, parent)
+    Import_IPYNB(c).import_from_string(s, parent)
 importer_dict = {
     '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
     'class': Import_IPYNB,

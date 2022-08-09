@@ -52,9 +52,9 @@ class CText_Importer(Importer):
         """write the body lines to body normalizing whitespace"""
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
-    #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
-    def run(self, s: str, parent: Position) -> bool:
-        """CText_Importer.run()"""
+    #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
+    def import_from_string(self, s: str, parent: Position) -> bool:
+        """CText_Importer.import_from_string()"""
         root = parent.copy()
         cchar = '#'
         if self.fileType.lower() == '.tex':
@@ -97,7 +97,7 @@ class CText_Importer(Importer):
     def do_import(cls) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
         def f(c: Cmdr, s: str, parent: Position) -> bool:
-            return cls(c).run(s, parent)
+            return cls(c).import_from_string(s, parent)
         return f
 #@-others
 importer_dict = {

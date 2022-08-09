@@ -275,7 +275,7 @@ def do_import(c: Cmdr, s: str, parent: Position) -> bool:
 
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
-        Python_Importer(c).run(s, parent)
+        Python_Importer(c).import_from_string(s, parent)
     else:
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')

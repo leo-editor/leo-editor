@@ -91,9 +91,9 @@ class TreePad_Scanner():
                 break
             article.append(line.strip())
         return self.add_node(article, level, title)
-    #@+node:ekr.20180201204000.1: *3* treepad.run
-    def run(self, s: str, parent: Position) -> bool:
-        """TreePad_Scanner.run()."""
+    #@+node:ekr.20180201204000.1: *3* treepad.import_from_string
+    def import_from_string(self, s: str, parent: Position) -> bool:
+        """TreePad_Scanner.import_from_string()."""
         c = self.c
         ok = self.read_file(s, parent)
         if ok:
@@ -106,7 +106,7 @@ class TreePad_Scanner():
     #@-others
 #@-others
 def do_import(c: Cmdr, s: str, parent: Position) -> bool:
-    return TreePad_Scanner(c).run(s, parent)
+    return TreePad_Scanner(c).import_from_string(s, parent)
 importer_dict = {
     'func': do_import,
     'extensions': ['.hjt',],
