@@ -48,7 +48,7 @@ class Import_IPYNB:
         c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.import_from_string
-    def import_from_string(self, parent: Position, s: str) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> None:
         """
         @auto entry point. Called by code in leoImport.py.
         """
@@ -69,6 +69,8 @@ class Import_IPYNB:
             'Note: This node\'s body text is ignored when writing this file.\n\n' +
             'The @others directive is not required\n'
         )
+        # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
         for p in parent.self_and_subtree():
             p.clearDirty()
     #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper

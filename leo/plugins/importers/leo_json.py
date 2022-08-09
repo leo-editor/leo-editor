@@ -54,17 +54,13 @@ class JSON_Scanner:
         """Issue a message."""
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.import_from_string
-    def import_from_string(self, parent: Position, s: str) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> None:
         """JSON_Scanner.import_from_string."""
-        c = self.c
-        ok = self.scan(s, parent)
-        if ok:
-            for p in parent.self_and_subtree():
-                p.clearDirty()
-        else:
-            parent.setDirty()
-            c.setChanged()
-        return ok
+        self.scan(s, parent)
+        # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
+        for p in parent.self_and_subtree():
+            p.clearDirty()
     #@+node:ekr.20160504092347.3: *4* json.checkBlanksAndTabs
     def checkBlanksAndTabs(self, s: str) -> bool:
         """Check for intermixed blank & tabs."""

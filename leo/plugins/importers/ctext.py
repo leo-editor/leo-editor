@@ -53,7 +53,7 @@ class CText_Importer(Importer):
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
-    def import_from_string(self, parent: Position, s: str) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> None:
         """CText_Importer.import_from_string()"""
         root = parent.copy()
         cchar = '#'
@@ -87,10 +87,11 @@ class CText_Importer(Importer):
             else:
                 lines.append(line)
         self.write_lines(nd, lines)
-        # It's always useless for an an import to dirty the outline.
+        # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
-        return True
+
     #@-others
 
     @classmethod

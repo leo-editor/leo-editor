@@ -181,7 +181,7 @@ class Importer:
         self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
     #@+node:ekr.20161108131153.10: *3* i.import_from_string (driver) & helpers
-    def import_from_string(self, parent: Position, s: str) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> None:
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
@@ -202,11 +202,11 @@ class Importer:
         self.gen_lines(lines, parent)
 
         # Importers should never dirty the outline.
+        # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
 
-        # #1451: Do not change the outline's change status.
-        return True  # For unit tests.
+
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: List[str]) -> List[str]:
         """
