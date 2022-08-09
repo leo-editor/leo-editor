@@ -104,7 +104,7 @@ class TreePad_Scanner():
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     TreePad_Scanner(c).import_from_string(parent, s)
-    
+
 importer_dict = {
     'func': do_import,
     'extensions': ['.hjt',],
