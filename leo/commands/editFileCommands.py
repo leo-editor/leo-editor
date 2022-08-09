@@ -890,7 +890,7 @@ class GitDiffController:
     def create_file_node(self, diff_list, fn):
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
-        p.h = fn.strip()
+        p.h = 'diff: ' + fn.strip()
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
