@@ -48,7 +48,7 @@ class MarkdownWriter(basewriter.BaseWriter):
             # self.put(p.h)
             # self.put(kind*max(4,len(p.h)))
         else:
-            self.put('%s %s' % ('#' * level, p.h))
+            self.put(f"{'#' * level}{p.h}")  # Leo 6.6.4: preserve spacing.
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
     def write_root(self, root):
         """Write the root @auto-org node."""
