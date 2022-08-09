@@ -44,7 +44,7 @@ class Org_Importer(Importer):
                     self.tc.add_tag(self.root, tag)
         return super().compute_headline(s)
 
-    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
+    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines (changed)
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
 
@@ -69,9 +69,11 @@ class Org_Importer(Importer):
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!
                 lines_dict [child.v] = []
-            # Append the line.
-            p = parents[-1] if parents else self.root
-            lines_dict [p.v].append(line)
+            else:
+                # Append the line *only* if we haven't created a node.
+                # The writer will create the section.
+                p = parents[-1] if parents else self.root
+                lines_dict [p.v].append(line)
         # Add the top-level directives.
         self.append_directives(lines_dict, language='org')
         # Set p.b from the lines_dict.

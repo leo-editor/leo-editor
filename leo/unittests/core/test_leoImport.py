@@ -70,12 +70,11 @@ class BaseTestImporter(LeoUnitTest):
             self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         return True, 'ok'
 
-    #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip (new)
+    #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str, strict_flag: bool) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
         result_s = c.atFileCommands.atAutoToString(p)
-        # g.printObj(g.splitLines(result_s), tag=p.h)
         if strict_flag:
             s_lines = g.splitLines(s)
             result_lines = g.splitLines(result_s)
@@ -83,6 +82,10 @@ class BaseTestImporter(LeoUnitTest):
             # Ignore leading whitespace and all blank lines.
             s_lines = [z.lstrip() for z in g.splitLines(s) if z.strip()]
             result_lines = [z.lstrip() for z in g.splitLines(result_s) if z.strip()]
+        if s_lines != result_lines:
+            g.trace('FAIL', p.h)
+            g.printObj(s_lines, tag=f"expected: {p.h}")
+            g.printObj(result_lines, tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext):
@@ -2463,26 +2466,21 @@ class TestOrg(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'Section 1',
-                    '* Section 1\n'
                     'Sec 1.\n'
             ),
             (1, 'Section 2',
-                    '* Section 2\n'
                     'Sec 2.\n'
             ),
             (2, 'Section 2-1',
-                    '** Section 2-1\n'
                     'Sec 2.1\n'
             ),
             (3, 'Section 2-1-1',
-                    '*** Section 2-1-1\n'
                     'Sec 2.1.1\n'
             ),
             (1, 'Section 3',
-                    '* Section 3\n'
+                    ''
             ),
             (2, 'Section 3.1',
-                    '** Section 3.1\n'
                     'Sec 3.1\n'
                     '\n'
             ),
