@@ -152,7 +152,7 @@ class BaseTestImporter(LeoUnitTest):
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
-        
+
         # Some tests will never pass round-trip tests.
         if check_flag:
             self.check_round_trip(parent, test_s, strict_flag)
@@ -3576,7 +3576,7 @@ class TestPython(BaseTestImporter):
                        '\n'
             )
         ))
-        
+
     #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_under_indented
     def test_large_class_under_indented(self):
         s = (
