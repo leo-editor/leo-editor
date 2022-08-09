@@ -15,7 +15,7 @@ from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
 #@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
 # The new importer is for leoJS, not Leo.
 # Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
+NEW_PYTHON_IMPORTER = True  # False: use Vitalije's importer.
 #@-<< Define NEW_PYTHON_IMPORTER switch >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
@@ -37,26 +37,6 @@ class Python_Importer(Importer):
         self.add_class_to_headlines = c.config.getBool('put-class-in-imported-headlines')
 
     #@+others
-    #@+node:ekr.20220720060831.2: *3* python_i.body_lines & body_string
-    def massaged_line(self, s: str, i: int) -> str:
-        """Massage line s, adding the underindent string if necessary."""
-        if i == 0 or s[:i].isspace():
-            return s[i:] or '\n'
-        # An underindented string.
-        n = len(s) - len(s.lstrip())
-        # pylint: disable=no-else-return
-        if 0:  # Legacy
-            return f'\\\\-{i-n}.{s[n:]}'
-        else:
-            return s[n:]
-
-    def body_string(self, a: int, b: int, i: int) -> str:
-        """Return the (massaged) concatentation of lines[a: b]"""
-        xlines = (self.massaged_line(s, i) for s in self.lines[a : b])
-        return ''.join(xlines)
-
-    def body_lines(self, a: int, b: int, i: int) -> List[str]:
-        return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20220805071145.1: *3* python_i.compute_headline
     def compute_headline(self, s: str) -> str:
         """
