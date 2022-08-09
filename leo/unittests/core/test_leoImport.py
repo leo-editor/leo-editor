@@ -71,7 +71,7 @@ class BaseTestImporter(LeoUnitTest):
         return True, 'ok'
 
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
-    def check_round_trip(self, p: Position, s: str, strict_flag: bool) -> None:
+    def check_round_trip(self, p: Position, s: str, strict_flag: bool=False) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
         result_s = c.atFileCommands.atAutoToString(p)
@@ -4189,7 +4189,9 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
+        # self.dump_tree(p, tag='Actual results...')
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
@@ -4260,7 +4262,8 @@ class TestRst(BaseTestImporter):
 
             The top chapter.
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
@@ -4327,7 +4330,8 @@ class TestRst(BaseTestImporter):
 
             section 3.1.1, line 1
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
@@ -4395,7 +4399,8 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'
@@ -4429,7 +4434,8 @@ class TestRst(BaseTestImporter):
 
             The top section
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
@@ -4465,7 +4471,8 @@ class TestRst(BaseTestImporter):
 
             The top section.
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language rest\n'
@@ -4510,7 +4517,8 @@ class TestRst(BaseTestImporter):
 
             Sec 2.
         """
-        p = self.run_test(s)
+        # Perfect import must fail: The writer won't use the same underlines.
+        p = self.run_test(s, check_flag=False)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@language rest\n'

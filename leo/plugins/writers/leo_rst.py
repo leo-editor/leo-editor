@@ -13,14 +13,12 @@ import leo.plugins.importers.leo_rst as rst_importer
 # Make *sure* that reader's underlines match the writer's.
 underlines = rst_importer.underlines
 #@+others
-#@+node:ekr.20140726091031.18092: ** class RstWriter
+#@+node:ekr.20140726091031.18092: ** class RstWriter(BaseWriter)
 class RstWriter(basewriter.BaseWriter):
     """
     The writer class for @auto-rst and other reStructuredText nodes.
     This is *very* different from rst3 command's write code.
     """
-    # def __init__(self,c):
-        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char
     def underline_char(self, p, root_level):
@@ -36,6 +34,7 @@ class RstWriter(basewriter.BaseWriter):
         root_level = root.level()
         self.write_root(root)
         for p in root.subtree():
+            g.trace(p.h)
             if hasattr(self.at, 'force_sentinels'):
                 self.put_node_sentinel(p, '.. ')
             ch = self.underline_char(p, root_level)
