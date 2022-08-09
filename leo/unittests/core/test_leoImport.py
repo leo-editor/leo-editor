@@ -52,6 +52,8 @@ class BaseTestImporter(LeoUnitTest):
         # Do the actual tests.
         p0_level = p.level()
         actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+        # g.printObj(expected, tag='expected')
+        # g.printObj(actual, tag='actual')
         self.assertEqual(len(expected), len(actual))
         for i, actual in enumerate(actual):
             try:
@@ -3230,7 +3232,7 @@ class TestPython(BaseTestImporter):
                   main()
         """).replace('AT', '@')
 
-        p = self.run_test(s)
+        p = self.run_test(s, strict_flag=True)
         self.check_outline(p, (
             (0, '', # check_outline ignores the first headline'
                     'import sys\n'
@@ -3341,9 +3343,9 @@ class TestPython(BaseTestImporter):
               "if __name__ == '__main__':\n"
               '    main()\n'
             )
-        p = self.run_test(s)
+        p = self.run_test(s, strict_flag=True)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                        'import sys\n'
                        '@others\n'
                        "if __name__ == '__main__':\n"
@@ -3412,7 +3414,7 @@ class TestPython(BaseTestImporter):
             "if __name__ == '__main__':\n"
             '    main()\n'
         )
-        p = self.run_test(s)
+        p = self.run_test(s, strict_flag=True)
         self.check_outline(p, (
             (0, '', # check_outline ignores the first headline
                     'import sys\n'
@@ -3504,8 +3506,9 @@ class TestPython(BaseTestImporter):
                 pass
             print(7)
         ''')
-        expected = (
-            (0, 'check_outline ignores the first headline',
+        p = self.run_test(input_s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                 self.dedent('''\
                     """A docstring"""
                     switch = 1
@@ -3522,17 +3525,14 @@ class TestPython(BaseTestImporter):
                'def a():\n'
                '    pass\n'
             ),
-        )
-        p = self.run_test(input_s)
-        ok, msg = self.check_outline(p, expected)
-        assert ok, msg
+        ))
     #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
     def test_large_class_no_methods(self):
 
         if sys.version_info < (3, 9, 0):
             self.skipTest('Requires Python 3.9')  # pragma: no cover
-
-        txt = ('class A:\n'
+        s = (
+                'class A:\n'
                 '    a=1\n'
                 '    b=1\n'
                 '    c=1\n'
@@ -3561,8 +3561,9 @@ class TestPython(BaseTestImporter):
                 '    x=1\n'
                 '\n'
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
@@ -3597,13 +3598,12 @@ class TestPython(BaseTestImporter):
                        '    x=1\n'
                        '\n'
             )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
+        
     #@+node:vitalije.20211213125307.1: *3* TestPython: test_large_class_under_indented
     def test_large_class_under_indented(self):
-        txt = ('class A:\n'
+        s = (
+                'class A:\n'
                 '    a=1\n'
                 '    b=1\n'
                 '    c=1\n'
@@ -3635,8 +3635,9 @@ class TestPython(BaseTestImporter):
                 '    x=1\n'
                 '\n'
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=False)  # We expect perfect import to fail.
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
@@ -3679,13 +3680,10 @@ class TestPython(BaseTestImporter):
                        'dummy2\n'
                        'dummy3"""\n'
             )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
     #@+node:ekr.20211202064822.1: *3* TestPython: test_nested_classes
     def test_nested_classes(self):
-        txt = """\
+        s = """\
             class TestCopyFile(unittest.TestCase):
 
                 _delete = False
@@ -3717,9 +3715,9 @@ class TestPython(BaseTestImporter):
                     _raised = False
             """
         # mypy/test-data/stdlib-samples/3.2/test/shutil.py
-        p = self.run_test(txt)
+        p = self.run_test(s, strict_flag=True)
         self.check_outline(p, (
-            (0, 'ignored h',
+            (0, '',  # check_outline ignores the first headline.
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
@@ -3764,7 +3762,8 @@ class TestPython(BaseTestImporter):
         ))
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
     def test_nested_classes_with_async(self):
-        txt = ('class TestCopyFile(unittest.TestCase):\n'
+        s = (
+                'class TestCopyFile(unittest.TestCase):\n'
                 '\n'
                 '    _delete = False\n'
                 '    a00 = 1\n'
@@ -3796,8 +3795,9 @@ class TestPython(BaseTestImporter):
                 '        _exited_with = None # type: tuple\n'
                 '        _raised = False\n'
               )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
@@ -3840,14 +3840,11 @@ class TestPython(BaseTestImporter):
                        '    _exited_with = None # type: tuple\n'
                        '    _raised = False\n\n'
             )
-        ]
-        # mypy/test-data/stdlib-samples/3.2/test/shutil.py
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+       ))
     #@+node:vitalije.20211207183645.1: *3* TestPython: test_no_defs
     def test_no_defs(self):
-        txt = ('a = 1\n'
+        s = (
+                'a = 1\n'
                 'if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
@@ -3873,8 +3870,9 @@ class TestPython(BaseTestImporter):
                 'if 12:\n'
                 "    print('12')\n"
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                'a = 1\n'
                'if 1:\n'
                " print('1')\n"
@@ -3902,14 +3900,12 @@ class TestPython(BaseTestImporter):
                "    print('12')\n\n"
                '@language python\n'
                '@tabwidth -4\n'
-            )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+            ),
+        ))
     #@+node:vitalije.20211207185708.1: *3* TestPython: test_only_docs
     def test_only_docs(self):
-        txt = ('class A:\n'
+        s = (
+                'class A:\n'
                 '    """\n'
                 '    dummy doc\n'
                 "    another line\n"
@@ -3940,8 +3936,9 @@ class TestPython(BaseTestImporter):
                 '        pass\n'
                 '\n'
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        '@others\n'
                        '@language python\n'
                        '@tabwidth -4\n'
@@ -3981,13 +3978,11 @@ class TestPython(BaseTestImporter):
                        '    pass\n'
                        '\n'
             )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
     #@+node:ekr.20211202094115.1: *3* TestPython: test_strange_indentation
     def test_strange_indentation(self):
-        txt = ('if 1:\n'
+        s = (
+                'if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
                 "  print('2')\n"
@@ -4023,8 +4018,9 @@ class TestPython(BaseTestImporter):
                 ' def a(self):\n'
                 '   pass\n'
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        'if 1:\n'
                        " print('1')\n"
                        'if 2:\n'
@@ -4069,14 +4065,12 @@ class TestPython(BaseTestImporter):
                        'def a(self):\n'
                        '  pass\n\n'
             )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
     #@+node:vitalije.20211208210459.1: *3* TestPython: test_strange_indentation_with...
     def test_strange_indentation_with_added_class_in_the_headline(self):
         self.c.config.set(None, 'bool', 'put-class-in-imported-headlines', True)
-        txt = ('if 1:\n'
+        s = (
+                'if 1:\n'
                 " print('1')\n"
                 'if 2:\n'
                 "  print('2')\n"
@@ -4112,8 +4106,9 @@ class TestPython(BaseTestImporter):
                 ' def a(self):\n'
                 '   pass\n'
             )
-        exp_nodes = [
-            (0, 'ignored h',
+        p = self.run_test(s, strict_flag=True)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
                        'if 1:\n'
                        " print('1')\n"
                        'if 2:\n'
@@ -4158,10 +4153,7 @@ class TestPython(BaseTestImporter):
                        'def a(self):\n'
                        '  pass\n\n'
             )
-        ]
-        p = self.run_test(txt)
-        ok, msg = self.check_outline(p, exp_nodes)
-        assert ok, msg
+        ))
     #@-others
 #@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
