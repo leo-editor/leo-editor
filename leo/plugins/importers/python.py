@@ -251,11 +251,11 @@ class Python_ScanState:
         return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
-def do_import(c: Cmdr, s: str, parent: Position) -> bool:
+def do_import(c: Cmdr, parent: Position, s: str) -> bool:
 
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
-        Python_Importer(c).import_from_string(s, parent)
+        Python_Importer(c).import_from_string(parent, s)
     else:
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')

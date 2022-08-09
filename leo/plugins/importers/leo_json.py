@@ -54,7 +54,7 @@ class JSON_Scanner:
         """Issue a message."""
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.import_from_string
-    def import_from_string(self, s: str, parent: Position) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> bool:
         """JSON_Scanner.import_from_string."""
         c = self.c
         ok = self.scan(s, parent)

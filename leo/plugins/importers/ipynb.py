@@ -48,7 +48,7 @@ class Import_IPYNB:
         c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.import_from_string
-    def import_from_string(self, s: str, parent: Position) -> None:
+    def import_from_string(self, parent: Position, s: str) -> bool:
         """
         @auto entry point. Called by code in leoImport.py.
         """

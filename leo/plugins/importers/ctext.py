@@ -53,7 +53,7 @@ class CText_Importer(Importer):
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.import_from_string
-    def import_from_string(self, s: str, parent: Position) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> bool:
         """CText_Importer.import_from_string()"""
         root = parent.copy()
         cchar = '#'

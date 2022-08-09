@@ -92,7 +92,7 @@ class TreePad_Scanner():
             article.append(line.strip())
         return self.add_node(article, level, title)
     #@+node:ekr.20180201204000.1: *3* treepad.import_from_string
-    def import_from_string(self, s: str, parent: Position) -> bool:
+    def import_from_string(self, parent: Position, s: str) -> bool:
         """TreePad_Scanner.import_from_string()."""
         c = self.c
         ok = self.read_file(s, parent)
