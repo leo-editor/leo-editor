@@ -3486,17 +3486,15 @@ class TestPython(BaseTestImporter):
         p = self.run_test(input_s, strict_flag=True)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
-                self.dedent('''\
-                    """A docstring"""
-                    switch = 1
-                    print(3)
-                    print(6)
-                    ATothers
-                    print(7)
-
-                    ATlanguage python
-                    ATtabwidth -4
-                ''').replace('AT', '@')
+                    '"""A docstring"""\n'
+                    'switch = 1\n'
+                    'print(3)\n'
+                    'print(6)\n'
+                    '@others\n'
+                    'print(7)\n'
+                    '\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
             ),
             (1, 'a',  # Unit tests ignore size threshold.
                'def a():\n'
@@ -3728,13 +3726,12 @@ class TestPython(BaseTestImporter):
                             ATothers
                 """).replace('AT', '@')
             ),
-            (2, 'class Faux', self.dedent("""\
-                        class Faux(object):
-                            _entered = False
-                            _exited_with = None # type: tuple
-                            _raised = False
-
-                """)
+            (2, 'class Faux',
+                        'class Faux(object):\n'
+                        '    _entered = False\n'
+                        '    _exited_with = None # type: tuple\n'
+                        '    _raised = False\n'
+                        '\n'
             ),
         ))
     #@+node:vitalije.20211213125810.1: *3* TestPython: test_nested_classes_with_async
