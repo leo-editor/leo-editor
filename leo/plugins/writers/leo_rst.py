@@ -34,7 +34,6 @@ class RstWriter(basewriter.BaseWriter):
         root_level = root.level()
         self.write_root(root)
         for p in root.subtree():
-            g.trace(p.h)
             if hasattr(self.at, 'force_sentinels'):
                 self.put_node_sentinel(p, '.. ')
             ch = self.underline_char(p, root_level)
