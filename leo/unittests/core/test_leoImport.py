@@ -2694,7 +2694,7 @@ class TestOtl(BaseTestImporter):
             \t\tSection 3
             : Sec 3.
         """
-        p = self.run_test(s)
+        p = self.run_test(s, check_flag=False)  # Perfect import must fail.
         self.check_outline(p, (
             (0, 'check_outline ignores the first headline',
                 '@language otl\n'
