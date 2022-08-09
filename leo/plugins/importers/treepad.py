@@ -101,8 +101,10 @@ class TreePad_Scanner():
             p.clearDirty()
     #@-others
 #@-others
-def do_import(c: Cmdr, s: str, parent: Position) -> bool:
-    return TreePad_Scanner(c).import_from_string(s, parent)
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    TreePad_Scanner(c).import_from_string(parent, s)
+    
 importer_dict = {
     'func': do_import,
     'extensions': ['.hjt',],

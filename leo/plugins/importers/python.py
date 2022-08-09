@@ -251,7 +251,7 @@ class Python_ScanState:
         return data.i
     #@-others
 #@+node:ekr.20211209052710.1: ** do_import (python.py)
-def do_import(c: Cmdr, parent: Position, s: str) -> bool:
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
     if NEW_PYTHON_IMPORTER:
         # Use the scanner tables.
@@ -259,14 +259,13 @@ def do_import(c: Cmdr, parent: Position, s: str) -> bool:
     else:
         if sys.version_info < (3, 7, 0):  # pragma: no cover
             g.es_print('The python importer requires python 3.7 or above')
-            return False
+            return
 
         add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
         split_root(add_class_to_headlines, parent, s.splitlines(True))
 
         # Add *trailing* lines, just line the Importer class.
         parent.b += '@language python\n@tabwidth -4\n'
-    return True
 #@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
 SPLIT_THRESHOLD = 10
 

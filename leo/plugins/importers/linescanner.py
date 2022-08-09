@@ -186,7 +186,7 @@ class Importer:
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():
-            return None
+            return
         self.root = root = parent.copy()
 
         # Check for intermixed blanks and tabs.
@@ -845,8 +845,8 @@ class Importer:
     @classmethod
     def do_import(cls: Any) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c: Cmdr, s: str, parent: Position) -> Callable:
-            return cls(c).import_from_string(s, parent)
+        def f(c: Cmdr, parent: Position, s: str) -> None:
+            cls(c).import_from_string(parent, s)
         return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:

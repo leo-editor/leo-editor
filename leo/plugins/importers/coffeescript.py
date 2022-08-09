@@ -109,8 +109,8 @@ class Coffeescript_Importer(Python_Importer):
     @classmethod
     def do_import(cls) -> Callable:
         """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c: Cmdr, s: str, parent: Position) -> bool:
-            return cls(c).import_from_string(s, parent)
+        def f(c: Cmdr, parent: Position, s: str) -> None:
+            cls(c).import_from_string(parent, s)
         return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:
