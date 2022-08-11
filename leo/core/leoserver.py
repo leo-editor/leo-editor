@@ -1346,6 +1346,19 @@ class LeoServer:
         """
         Export Outline (export headlines)
         """
+        tag = 'export_headlines'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.exportHeadlines(fileName)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
 
         return self._make_response()
     #@+node:felix.20220808211111.3: *5* server.export-jupyter-notebook
@@ -1353,21 +1366,56 @@ class LeoServer:
         """
         Export Jupyter Notebook
         """
+        tag = 'export_jupyter_notebook'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    from leo.plugins.writers.ipynb import Export_IPYNB
+                    Export_IPYNB(c).export_outline(c.p, fn=fileName)
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.4: *5* server.flatten-outline
     def flatten_outline(self, param):
         """
         Flatten Selected Outline
         """
+        tag = 'flatten_outline'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.flattenOutline(fileName)
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.5: *5* server.outline-to-cweb
     def outline_to_cweb(self, param):
         """
         Outline To CWEB
         """
+        tag = 'outline_to_cweb'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.outlineToWeb(fileName, "cweb")
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.6: *5* server.outline-to-noweb
 
@@ -1375,29 +1423,111 @@ class LeoServer:
         """
         Outline To Noweb
         """
+        tag = 'outline_to_noweb'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.outlineToWeb(fileName, "noweb")
+                    c.outlineToNowebDefaultFileName = fileName
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.7: *5* server.remove-sentinels
     def remove_sentinels(self, param):
         """
         Remove Sentinels
         """
+        tag = 'remove_sentinels'
+        c = self._check_c()
+        if c and "names" in param:
+            try:
+                names = param.get("names")
+                if names:
+                    g.chdir(names[0])
+                    c.importCommands.removeSentinelsCommand(names)
 
+            except Exception as e:
+                print(f"{tag} Error while running remove_sentinels", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.8: *5* server.weave
     def weave(self, param):
         """
         Weave
         """
+        tag = 'weave'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    g.setGlobalOpenDir(fileName)
+                    g.chdir(fileName)
+                    c.importCommands.weave(fileName)
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808221351.1: *5* server.write-file-from-node
     def write_file_from_node(self, param):
         """
         Write file from node
         """
+        tag = 'write_file_from_node'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    with open(fileName, 'w') as f:
+                        g.chdir(fileName)
+                        if s.startswith('@nocolor\n'):
+                            s = s[len('@nocolor\n') :]
+                        f.write(s)
+                        f.flush()
+                        g.blue('wrote:', fileName)
 
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
         return self._make_response()
+    #@+node:felix.20220810001309.1: *5* server.read-file-into-node
+
+
+    def read_file_into_node(self, param):
+        """
+        Read a file into a single node.
+        """
+        tag = 'read_file_into_node'
+        undoType = 'Read File Into Node'
+        c = self._check_c()
+        if c and "name" in param:
+            try:
+                fileName = param.get("name")
+                if fileName:
+                    s, e = g.readFileIntoString(fileName)
+                    if s is None:
+                        return
+                    g.chdir(fileName)  # TODO : IS THIS NEEDED
+                    s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
+                    p = c.insertHeadline(op_name=undoType)
+                    p.setHeadString('@read-file-into-node ' + fileName)
+                    p.setBodyString(s)
+
+            except Exception as e:
+                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(e, flush=True)
+        return self._make_response()
+
+
+
     #@+node:felix.20220309010334.1: *4* server.nav commands
     #@+node:felix.20220714000930.1: *5* server.chapter_main
     def chapter_main(self, param):
