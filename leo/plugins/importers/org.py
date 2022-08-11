@@ -8,7 +8,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20140723122936.18072: ** class Org_Importer
+#@+node:ekr.20140723122936.18072: ** class Org_Importer(Importer)
 class Org_Importer(Importer):
     """The importer for the org lanuage."""
 

@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161124034614.2: ** class Otl_Importer
+#@+node:ekr.20161124034614.2: ** class Otl_Importer(Importer)
 class Otl_Importer(Importer):
     """The importer for the otl lanuage."""
 

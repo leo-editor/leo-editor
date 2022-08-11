@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161124192050.2: ** class Markdown_Importer
+#@+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
 class Markdown_Importer(Importer):
     """The importer for the markdown lanuage."""
 
@@ -22,9 +22,9 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for markdown importer."""
+        assert parent == self.root
         if all(s.isspace() for s in lines):  # pragma: no cover
             return
-        assert parent == self.root
         p = self.root
         # Use a dict instead of creating a new VNode slot.
         lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.

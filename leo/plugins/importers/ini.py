@@ -7,7 +7,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20140723122936.18043: ** class Ini_Importer
+#@+node:ekr.20140723122936.18043: ** class Ini_Importer(Importer)
 class Ini_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:

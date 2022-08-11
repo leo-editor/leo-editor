@@ -30,6 +30,7 @@ class Rst_Importer(Importer):
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for reStructuredText importer."""
+        assert parent == self.root
         if all(s.isspace() for s in lines):
             return
         # Use a dict instead of creating a new VNode slot.
