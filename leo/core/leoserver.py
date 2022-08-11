@@ -1486,6 +1486,8 @@ class LeoServer:
             try:
                 fileName = param.get("name")
                 if fileName:
+                    p = c.p
+                    s = p.b
                     with open(fileName, 'w') as f:
                         g.chdir(fileName)
                         if s.startswith('@nocolor\n'):
@@ -1499,8 +1501,6 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220810001309.1: *5* server.read-file-into-node
-
-
     def read_file_into_node(self, param):
         """
         Read a file into a single node.
@@ -1514,18 +1514,16 @@ class LeoServer:
                 if fileName:
                     s, e = g.readFileIntoString(fileName)
                     if s is None:
-                        return
+                        return None
                     g.chdir(fileName)  # TODO : IS THIS NEEDED
                     s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
                     p = c.insertHeadline(op_name=undoType)
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
-
-            except Exception as e:
-                print(f"{tag} Error while writing {param['name']}", flush=True)
-                print(e, flush=True)
+            except Exception as err:
+                print(f"{tag} Error while reading {param['name']}", flush=True)
+                print(err, flush=True)
         return self._make_response()
-
 
 
     #@+node:felix.20220309010334.1: *4* server.nav commands
@@ -4494,7 +4492,7 @@ class LeoServer:
 
         ap = param.get("ap")
         if ap:
-            p = self._ap_to_p(ap)  # Convertion
+            p = self._ap_to_p(ap)  # Conversion
             if p:
                 if not c.positionExists(p):  # pragma: no cover
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
@@ -5083,7 +5081,7 @@ def main():  # pragma: no cover (tested in client)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
-                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
+                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e.__str__())
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
@@ -5174,7 +5172,7 @@ def main():  # pragma: no cover (tested in client)
         print("Process interrupted", flush=True)
 
     finally:
-        # Execution continues here after server is interupted (e.g. with ctrl+c)
+        # Execution continues here after server is interrupted (e.g. with ctrl+c)
         realtime_server.close()
         if not wsSkipDirty:
             print("Checking for changed commanders...", flush=True)
