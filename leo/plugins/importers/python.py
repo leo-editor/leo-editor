@@ -73,7 +73,7 @@ class Python_Importer(Importer):
     #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
         """
-        Return an informative headline for s, a group of declarations.
+        Return an informative headline for body, a group of declarations.
         """
         for s in g.splitLines(body):
             strip_s = s.strip()
@@ -88,13 +88,14 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720050740.1: *3* python_i.analyze_block
-    def analyze_block(self, i: int) -> block_tuple:
+    #@+node:ekr.20220720050740.1: *3* python_i.get_block
+    def get_block(self, i: int) -> block_tuple:
         """
-        Look for a def or class at lines[i]
+        Python_Importer.get_block, based on Vitalije's getdefn function.
+        
+        Look for a def or class at lines[i].
+        
         Return None or a block_tuple describing the class or def.
-
-        Based on Vitalije's importer.
         """
         line, state = self.lines[i], self.line_states[i]
         if state.context or not line.strip():
@@ -232,7 +233,7 @@ class Python_ScanState:
     """
     A class representing the state of the python line-oriented scan."""
 
-    # Note: python_i.analyze_block calculates indentaion w/o using this class.
+    # Note: python_i.get_block calculates indentaion w/o using this class.
 
     def __init__(self, d: Dict=None) -> None:
         """Python_ScanState ctor."""
