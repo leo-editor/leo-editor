@@ -11,12 +11,20 @@ import leo.core.leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
-#@+<< Define NEW_PYTHON_IMPORTER switch >>
-#@+node:ekr.20220720181543.1: ** << Define NEW_PYTHON_IMPORTER switch >> python.py
-# The new importer is for leoJS, not Leo.
-# Except for testing, this switch should be *False* within Leo.
-NEW_PYTHON_IMPORTER = False  # False: use Vitalije's importer.
-#@-<< Define NEW_PYTHON_IMPORTER switch >>
+SPLIT_THRESHOLD = 10
+#@+<< define def_tuple >>
+#@+node:ekr.20220724060054.1: ** << define def_tuple >>
+# For the new token-based python importer.
+def_tuple = namedtuple('def_tuple', [
+    'body_indent',  # Indentation of body.
+    'body_line9',  # Line number of the first line after the definition.
+    'decl_indent',  # Indentation of the class or def line.
+    'decl_line1',  # Line number of the first line of this node.
+                   # This line may be a comment or decorator.
+    'kind',  # 'def' or 'class'.
+    'name',  # name of the function, class or method.
+])
+#@-<< define def_tuple >>
 #@+others
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
@@ -250,24 +258,7 @@ class Python_ScanState:
         self.context = data.context
         return data.i
     #@-others
-#@+node:ekr.20211209052710.1: ** do_import (python.py)
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
-
-    if NEW_PYTHON_IMPORTER:
-        Python_Importer(c).import_from_string(parent, s)
-    else:
-        if sys.version_info < (3, 7, 0):  # pragma: no cover
-            g.es_print('The python importer requires python 3.7 or above')
-            return
-
-        add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
-        split_root(add_class_to_headlines, parent, s.splitlines(True))
-
-        # Add *trailing* lines, just line the Importer class.
-        parent.b += '@language python\n@tabwidth -4\n'
 #@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
-SPLIT_THRESHOLD = 10
-
 def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> None:
     """
     Create direct children of root for all top level function definitions and class definitions.
@@ -565,26 +556,28 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     mknode(
         p=root, start=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
+        
+    # Add *trailing* lines, just like the Importer class.
+    root.b += '@language python\n@tabwidth -4\n'
 #@-others
-importer_dict = {
-    'func': do_import,
-    'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
-}
-# For Vitalije's importer.
-#@+<< define def_tuple >>
-#@+node:ekr.20220724060054.1: ** << define def_tuple >> (Vitalije's importer)
-# This named tuple contains all data relating to one declaration of a class or def.
-def_tuple = namedtuple('def_tuple', [
-    'body_indent',  # Indentation of body.
-    'body_line9',  # Line number of the first line after the definition.
-    'decl_indent',  # Indentation of the class or def line.
-    'decl_line1',  # Line number of the first line of this node.
-                   # This line may be a comment or decorator.
-    'kind',  # 'def' or 'class'.
-    'name',  # name of the function, class or method.
-])
-#@-<< define def_tuple >>
 
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for python."""
+    if 1:
+        # For desktop Leo: use an importer based on python tokens.
+        if sys.version_info < (3, 7, 0):  # pragma: no cover
+            g.es_print('The python importer requires python 3.7 or above')
+            return
+        add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
+        split_root(add_class_to_headlines, parent, s.splitlines(True))
+    else:
+        # For leoJS: use a subclass of the Importer class.
+        Python_Importer(c).import_from_string(parent, s)
+
+importer_dict = {
+    'extensions': ['.py', '.pyw', '.pyi'],  # mypy uses .pyi extension.
+    'func': do_import,
+}
 #@@language python
 #@@tabwidth -4
 #@-leo

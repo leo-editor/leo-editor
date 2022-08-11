@@ -85,6 +85,7 @@ class Treepad_Importer(Importer):
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for treepad."""
     Treepad_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
