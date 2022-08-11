@@ -92,9 +92,9 @@ class Python_Importer(Importer):
     def get_block(self, i: int) -> block_tuple:
         """
         Python_Importer.get_block, based on Vitalije's getdefn function.
-        
+
         Look for a def or class at lines[i].
-        
+
         Return None or a block_tuple describing the class or def.
         """
         line, state = self.lines[i], self.line_states[i]
