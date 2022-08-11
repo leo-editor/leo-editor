@@ -39,7 +39,7 @@ class CText_Importer(Importer):
 
     """
     #@-<< ctext docstring >>
-    
+
     def __init__(self, c: Cmdr) -> None:
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(
@@ -61,7 +61,7 @@ class CText_Importer(Importer):
             '/' if ft == '.js' else '#'
         )
         header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
-        lines_dict: Dict[VNode, List[str]] = {root.v: []} 
+        lines_dict: Dict[VNode, List[str]] = {root.v: []}
         parents: List[Position] = [root]
         for line in g.splitLines(s):
             m = header_pat.match(line)
@@ -82,7 +82,7 @@ class CText_Importer(Importer):
 
         for p in root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
-            
+
         # Importers should dirty neither nodes nor the outline.
         for p in root.self_and_subtree():
             p.clearDirty()

@@ -473,7 +473,7 @@ class TestCText(BaseTestImporter):
     #@+others
     #@+node:ekr.20220811091538.1: *3* test_ctext_1
     def test_ctext_1(self):
-        
+
         # From the CText_Importer docstring.
         # Note that '#' is the delim for unit tests.
         s = """
@@ -522,8 +522,8 @@ class TestCText(BaseTestImporter):
                     '\n'
             ),
         ))
-        
-        
+
+
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
