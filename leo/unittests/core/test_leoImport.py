@@ -465,6 +465,13 @@ class TestC(BaseTestImporter):
             ),
         ))
     #@-others
+#@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
+class TestCText(BaseTestImporter):
+
+    ext = '.ctext'
+
+    #@+others
+    #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
 
@@ -1624,6 +1631,20 @@ class TestIni(BaseTestImporter):
                     '\n'
             ),
         ))
+    #@-others
+#@+node:ekr.20220809160909.1: ** class TestIpynb (BaseTestImporter)
+class TestIpynb (BaseTestImporter):
+
+    ext = '.ipynb'
+
+    #@+others
+    #@-others
+#@+node:ekr.20220809160939.1: ** class TestJson (BaseTestImporter)
+class TestJson (BaseTestImporter):
+
+    ext = '.json'
+
+    #@+others
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
@@ -4498,6 +4519,44 @@ class TestRst(BaseTestImporter):
             ),
         ))
     #@-others
+#@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
+class TestTreepad (BaseTestImporter):
+
+    ext = '.hjt'
+
+    #@+others
+    #@+node:ekr.20220810141234.1: *3* test_treepad_1
+    def test_treepad_1(self):
+
+        # 5P9i0s8y19Z is a magic number.
+        # The treepad writer always writes '<Treepad version 3.0>', but any version should work.
+        s = self.dedent("""
+            <Treepad version 2.7>
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 1
+            0
+            <end node>
+            dt=Text
+            <node> 5P9i0s8y19Z
+            headline 2
+            1
+            node 2, line 1
+            <end node>
+        """)
+        # For now, we don't guarantee round-tripping.
+        p = self.run_test(s, check_flag=False)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '<Treepad version 3.0>\n'
+            ),
+            (1, 'headline 1', ''),
+            (2, 'headline 2',
+                    'node 2, line 1\n'
+                    '\n'
+            ),
+        ))
+    #@-others
 #@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
 class TestTypescript(BaseTestImporter):
 
@@ -4691,6 +4750,7 @@ class TestXML(BaseTestImporter):
             self.assertEqual(new_state.tag_level, level, msg=line)
     #@-others
 #@-others
+#@@language python
 
 
 #@-leo

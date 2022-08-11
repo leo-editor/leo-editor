@@ -205,8 +205,6 @@ class Importer:
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
             p.clearDirty()
-
-
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: List[str]) -> List[str]:
         """

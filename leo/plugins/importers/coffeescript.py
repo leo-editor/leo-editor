@@ -9,7 +9,7 @@ from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
-#@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Importer)
+#@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Python_Importer)
 class Coffeescript_Importer(Python_Importer):
 
     #@+others
