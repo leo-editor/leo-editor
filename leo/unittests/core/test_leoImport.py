@@ -91,11 +91,13 @@ class BaseTestImporter(LeoUnitTest):
     def compute_unit_test_kind(self, ext):
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
-        kind = {'.md': '@auto-md'
-               , '.org': '@auto-org'
-               , '.otl': '@auto-otl'
-               , '.rst': '@auto-rst'
-               }.get(ext)
+        kind = {
+            '.json': '@auto-json',
+            '.md': '@auto-md',
+            '.org': '@auto-org',
+            '.otl': '@auto-otl',
+            '.rst': '@auto-rst',
+        }.get(ext)
         if kind:
             return kind
         if aClass:
@@ -471,7 +473,7 @@ class TestCText(BaseTestImporter):
     ext = '.ctext'  # A made-up extension for unit tests.
 
     #@+others
-    #@+node:ekr.20220811091538.1: *3* test_ctext_1
+    #@+node:ekr.20220811091538.1: *3* TestCText.test_ctext_1
     def test_ctext_1(self):
 
         # From the CText_Importer docstring.
@@ -1657,6 +1659,44 @@ class TestJson (BaseTestImporter):
     ext = '.json'
 
     #@+others
+    #@+node:ekr.20220811131926.1: *3* TestJson.test_json_1
+    def test_json_1(self):
+        
+        s = """
+        {
+          "nodes": [
+            {
+              "b": "def spam():\n    pass\n",
+              "children": [],
+              "gnx": "ekr.20220811130300.1",
+              "h": "spam",
+              "ua": {}
+            },
+            {
+              "b": "def eggs():\n    pass",
+              "children": [],
+              "gnx": "ekr.20220811130530.1",
+              "h": "eggs",
+              "ua": {}
+            }
+          ],
+          "top": {
+            "b": "",
+            "children": [
+              "ekr.20220811130300.1",
+              "ekr.20220811130530.1"
+            ],
+            "gnx": "ekr.20220811130232.1",
+            "h": "@auto-json c:\\test\\at-auto-json-test.py",
+            "ua": {}
+          }
+        }
+        """
+        # Round-tripping is not guaranteed.
+        p = self.run_test(s, check_flag=False)
+        self.dump_tree(p, tag='Actual results...')
+        if 0:  self.check_outline(p, (
+        ))
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):

@@ -13,19 +13,15 @@ from leo.core.leoNodes import Position, VNode
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
-    """A class to read .json files."""
+    """A class to read @auto-json files."""
     # Not a subclass of the Importer class.
-    #@+others
-    #@+node:ekr.20160504080826.3: *3* json.__init__
+    
     def __init__(self, c: Cmdr) -> None:
         """The ctor for the JSON_Scanner class."""
         self.c = c
-        # Keys are gnx's. Values are vnode_dicts.
-        self.gnx_dict: Dict[str, Dict] = {}
-        self.language = 'json'
-        self.tab_width = c.tab_width
-        # Keys are gnx's. Values are already-created vnodes.
-        self.vnodes_dict: Dict[str, VNode] = {}
+        self.language = 'plain'  # A reasonable value.
+
+    #@+others
     #@+node:ekr.20160504093537.1: *3* json.create_nodes
     def create_nodes(self, parent: Position, parent_d: Dict) -> None:
         """Create the tree of nodes rooted in parent."""
@@ -49,10 +45,6 @@ class JSON_Scanner:
                 if d2.get('ua'):
                     child.u = d2.get('ua')
                 self.create_nodes(child, d2)
-    #@+node:ekr.20161015213011.1: *3* json.report
-    def report(self, s: str) -> None:
-        """Issue a message."""
-        g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.import_from_string
     def import_from_string(self, parent: Position, s: str) -> None:
         """JSON_Scanner.import_from_string."""
@@ -72,7 +64,7 @@ class JSON_Scanner:
             tabs += lws.count('\t')
         ok = blanks == 0 or tabs == 0
         if not ok:
-            self.report('intermixed blanks and tabs')
+            g.es_print('intermixed blanks and tabs')
         return ok
     #@+node:ekr.20160504092347.4: *4* json.regularizeWhitespace
     def regularizeWhitespace(self, s: str) -> str:
@@ -99,17 +91,24 @@ class JSON_Scanner:
         if changed:
             action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
             message = 'inconsistent leading whitespace. %s' % action
-            self.report(message)
+            g.es_print(message)
         return ''.join(result)
     #@+node:ekr.20160504082809.1: *3* json.scan
-    def scan(self, s: str, parent: Position) -> bool:
+    def scan(self, s: str, parent: Position) -> None:
         """Create an outline from a MindMap (.csv) file."""
         # pylint: disable=no-member
         # pylint confuses this module with the stdlib json module
+        g.pdb()
         c = self.c
-        self.gnx_dict = {}
+        # Keys are gnx's. Values are vnode_dicts.
+        self.gnx_dict: Dict[str, Dict] = {}
+        self.tab_width = c.tab_width
+        # Keys are gnx's. Values are already-created vnodes.
+        self.vnodes_dict: Dict[str, VNode] = {}
         try:
             d = json.loads(s)
+            g.printObj(d)
+            return  ###
             for d2 in d.get('nodes', []):
                 gnx = d2.get('gnx')
                 self.gnx_dict[gnx] = d2
@@ -119,7 +118,7 @@ class JSON_Scanner:
                 parent.b = top_d.get('b') or ''
                 self.create_nodes(parent, top_d)
                 c.redraw()
-            return bool(top_d)
+            return
         except Exception:
             # Fix #1098
             try:
@@ -130,18 +129,18 @@ class JSON_Scanner:
                 obj = s
             parent.b = g.objToString(obj)
             c.redraw()
-            return True
     #@-others
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for .JSON files."""
+    g.pdb()
     JSON_Scanner(c).import_from_string(parent, s)
 
 importer_dict = {
-    '@auto': ['@auto-json',],
+    '@auto': ['@auto-json'],
     'func': do_import,
-    'extensions': ['.json',],
+    # 'extensions': ['.txt'],  # for unit tests.
 }
 #@@language python
 #@@tabwidth -4

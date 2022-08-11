@@ -10,7 +10,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20160504083330.2: ** class JSON_Writer
 class JSON_Writer(basewriter.BaseWriter):
-    """The writer class for .json files."""
+    """The writer class for @auto-json files."""
     # No ctor.
     #@+others
     #@+node:ekr.20160504083330.3: *3* json.write
