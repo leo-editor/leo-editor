@@ -106,7 +106,7 @@ class JSON_Scanner:
         self.vnodes_dict: Dict[str, VNode] = {}
         try:
             d = json.loads(s)
-            g.printObj(d, tag='INPUT')
+            # g.printObj(d, tag='INPUT')
             for d2 in d.get('nodes', []):
                 gnx = d2.get('gnx')
                 self.gnx_dict[gnx] = d2

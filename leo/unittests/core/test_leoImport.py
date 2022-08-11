@@ -1663,34 +1663,43 @@ class TestJson (BaseTestImporter):
     def test_json_1(self):
         
         s = textwrap.dedent(r"""
-        {
-          "nodes": [
             {
-              "b": "def spam():\n    pass\n",
-              "children": [],
-              "gnx": "ekr.20220811130300.1",
-              "h": "spam",
-              "ua": {}
-            },
-            {
-              "b": "def eggs():\n    pass",
-              "children": [],
-              "gnx": "ekr.20220811130530.1",
-              "h": "eggs",
-              "ua": {}
+              "nodes": [
+                {
+                  "b": "def ham():\n    pass",
+                  "children": [],
+                  "gnx": "ekr.20220811162311.1",
+                  "h": "ham",
+                  "ua": {}
+                },
+                {
+                  "b": "def spam():\n    pass\n",
+                  "children": [
+                    "ekr.20220811162311.1"
+                  ],
+                  "gnx": "ekr.20220811130300.1",
+                  "h": "spam",
+                  "ua": {}
+                },
+                {
+                  "b": "def eggs():\n    pass",
+                  "children": [],
+                  "gnx": "ekr.20220811130530.1",
+                  "h": "eggs",
+                  "ua": {}
+                }
+              ],
+              "top": {
+                "b": "",
+                "children": [
+                  "ekr.20220811130300.1",
+                  "ekr.20220811130530.1"
+                ],
+                "gnx": "ekr.20220811130232.1",
+                "h": "@auto-json c:\\test\\at-auto-json-test.py",
+                "ua": {}
+              }
             }
-          ],
-          "top": {
-            "b": "",
-            "children": [
-              "ekr.20220811130300.1",
-              "ekr.20220811130530.1"
-            ],
-            "gnx": "ekr.20220811130232.1",
-            "h": "@auto-json c:\\test\\at-auto-json-test.py",
-            "ua": {}
-          }
-        }
         """)
         # Round-tripping is not guaranteed.
         p = self.run_test(s, check_flag=False)
