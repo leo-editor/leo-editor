@@ -175,7 +175,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Rust_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Rust_Importer.do_import(),
     'extensions': ['.rs',],
     'func': do_import,
 }

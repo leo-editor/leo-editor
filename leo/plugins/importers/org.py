@@ -97,7 +97,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
 importer_dict = {
     '@auto': ['@auto-org', '@auto-org-mode',],
-    ### 'func': Org_Importer.do_import(),
     'extensions': ['.org'],
     'func': do_import,
 }

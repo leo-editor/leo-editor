@@ -30,7 +30,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Html_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Html_Importer.do_import(),
     'extensions': ['.html', '.htm',],
     'func': do_import,
 }

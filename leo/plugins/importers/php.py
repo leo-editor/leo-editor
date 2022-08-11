@@ -229,7 +229,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Php_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Php_Importer.do_import(),
     'extensions': ['.php'],
     'func': do_import,
 }

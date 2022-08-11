@@ -137,7 +137,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
-    ### 'func': Markdown_Importer.do_import(),
     'extensions': ['.md', '.rmd', '.Rmd',],
     'func': do_import,
 }

@@ -145,7 +145,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Perl_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Perl_Importer.do_import(),
     'extensions': ['.pl',],
     'func': do_import,
 }

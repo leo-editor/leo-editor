@@ -54,7 +54,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Ini_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Ini_Importer.do_import(),
     'extensions': ['.ini',],
     'func': do_import,
 }

@@ -165,7 +165,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Lua_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Lua_Importer.do_import(),
     'extensions': ['.lua',],
     'func': do_import,
 }

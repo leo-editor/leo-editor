@@ -72,7 +72,7 @@ class Treepad_Importer(Importer):
                 pass  # No need to change the stack.
             else:
                 # Append the line.
-                p = parents[-1] ### if parents else self.root
+                p = parents[-1]
                 lines_dict [p.v].append(line)
 
         # Add the top-level directives.

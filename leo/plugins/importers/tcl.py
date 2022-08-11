@@ -90,7 +90,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Tcl_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ###'func': Tcl_Importer.do_import(),
     'extensions': ['.tcl'],
     'func': do_import,
 }

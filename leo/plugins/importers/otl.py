@@ -74,7 +74,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
 importer_dict = {
     '@auto': ['@auto-otl', '@auto-vim-outline',],
-    ### 'func': Otl_Importer.do_import(),
     'extensions': ['.otl',],
     'func': do_import,
 }

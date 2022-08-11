@@ -138,7 +138,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Java_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Java_Importer.do_import(),
     'extensions': ['.java'],
     'func': do_import,
 }

@@ -137,7 +137,6 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Pascal_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ###'func': Pascal_Importer.do_import(),
     'extensions': ['.pas'],
     'func': do_import,
 }
