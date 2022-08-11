@@ -5085,7 +5085,7 @@ def main():  # pragma: no cover (tested in client)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     # pylint: disable=no-value-for-parameter,unexpected-keyword-arg
-                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
+                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e.__str__())
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
