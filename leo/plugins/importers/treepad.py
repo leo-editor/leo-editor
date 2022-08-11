@@ -74,10 +74,8 @@ class Treepad_Importer(Importer):
                 # Append the line.
                 p = parents[-1]
                 lines_dict [p.v].append(line)
-
         # Add the top-level directives.
         self.append_directives(lines_dict, language='plain')
-
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
