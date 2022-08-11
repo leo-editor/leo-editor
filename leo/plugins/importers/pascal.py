@@ -5,6 +5,7 @@ import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
@@ -130,9 +131,15 @@ class Pascal_ScanState:
         return data.i
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for pascal."""
+    Pascal_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Pascal_Importer.do_import(),
+    ###'func': Pascal_Importer.do_import(),
     'extensions': ['.pas'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

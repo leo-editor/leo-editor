@@ -82,9 +82,17 @@ class Tcl_ScanState:
         return data.i
     #@-others
 #@-others
+
+from leo.core.leoNodes import Position
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for tcl."""
+    Tcl_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Tcl_Importer.do_import(),
+    ###'func': Tcl_Importer.do_import(),
     'extensions': ['.tcl'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

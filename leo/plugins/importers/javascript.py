@@ -5,6 +5,7 @@ import re
 from typing import Any, Dict, Generator, List
 from leo.core import leoGlobals as g  # Required
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
@@ -383,9 +384,15 @@ class JsLexer(Lexer):
     def __init__(self) -> None:
         super().__init__(self.states, 'reg')
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for javascript."""
+    JS_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': JS_Importer.do_import(),
+    ###'func': JS_Importer.do_import(),
     'extensions': ['.js',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

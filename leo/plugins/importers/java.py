@@ -4,6 +4,7 @@
 import re
 from typing import Dict, Optional
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161126161824.2: ** class Java_Importer
@@ -131,9 +132,15 @@ class Java_ScanState:
         return data.i
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for java."""
+    Java_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Java_Importer.do_import(),
+    ### 'func': Java_Importer.do_import(),
     'extensions': ['.java'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

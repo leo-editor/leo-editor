@@ -4,6 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer
@@ -138,9 +139,15 @@ class Perl_ScanState:
     #@-others
 
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for perl."""
+    Perl_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Perl_Importer.do_import(),
+    ### 'func': Perl_Importer.do_import(),
     'extensions': ['.pl',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

@@ -67,10 +67,16 @@ class Otl_Importer(Importer):
         return lines
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .otl files."""
+    Otl_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
     '@auto': ['@auto-otl', '@auto-vim-outline',],
-    'func': Otl_Importer.do_import(),
+    ### 'func': Otl_Importer.do_import(),
     'extensions': ['.otl',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

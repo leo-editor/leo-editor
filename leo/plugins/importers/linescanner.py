@@ -77,7 +77,7 @@ need to do so.
 import io
 import re
 from collections import namedtuple
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
@@ -840,12 +840,13 @@ class Importer:
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
 
-    @classmethod
-    def do_import(cls: Any) -> Callable:
-        """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c: Cmdr, parent: Position, s: str) -> None:
-            cls(c).import_from_string(parent, s)
-        return f
+    ###
+    # @classmethod
+    # def do_import(cls: Any) -> Callable:
+        # """Instantiate cls, the (subclass of) the Importer class."""
+        # def f(c: Cmdr, parent: Position, s: str) -> None:
+            # cls(c).import_from_string(parent, s)
+        # return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
     """

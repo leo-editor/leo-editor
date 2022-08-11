@@ -90,10 +90,16 @@ class Org_Importer(Importer):
         return getattr(c, 'theTagController', None)
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .org files."""
+    Org_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
     '@auto': ['@auto-org', '@auto-org-mode',],
-    'func': Org_Importer.do_import(),
+    ### 'func': Org_Importer.do_import(),
     'extensions': ['.org'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

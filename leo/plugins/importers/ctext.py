@@ -2,7 +2,7 @@
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
 #@@language python
 #@@tabwidth -4
-from typing import Callable, List
+from typing import List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
@@ -94,12 +94,13 @@ class CText_Importer(Importer):
 
     #@-others
 
-    @classmethod
-    def do_import(cls) -> Callable:
-        """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c: Cmdr, parent: Position, s: str) -> None:
-            cls(c).import_from_string(parent, s)
-        return f
+    ###
+    # @classmethod
+    # def do_import(cls) -> Callable:
+        # """Instantiate cls, the (subclass of) the Importer class."""
+        # def f(c: Cmdr, parent: Position, s: str) -> None:
+            # cls(c).import_from_string(parent, s)
+        # return f
 #@-others
         
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

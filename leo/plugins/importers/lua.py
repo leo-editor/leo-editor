@@ -9,6 +9,7 @@ import re
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 delete_blank_lines = True
 #@+others
@@ -158,9 +159,15 @@ class Lua_ScanState:
     #@-others
 
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for lua."""
+    Lua_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Lua_Importer.do_import(),
+    ### 'func': Lua_Importer.do_import(),
     'extensions': ['.lua',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

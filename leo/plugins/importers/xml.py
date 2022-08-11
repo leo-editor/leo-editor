@@ -5,6 +5,7 @@ import re
 from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g  # required.
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161121204146.3: ** class Xml_Importer
@@ -244,9 +245,15 @@ class Xml_ScanState:
         return self.tag_level
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for xml."""
+    Xml_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Xml_Importer.do_import(),
+    ### 'func': Xml_Importer.do_import(),
     'extensions': ['.xml',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

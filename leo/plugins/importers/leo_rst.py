@@ -183,8 +183,9 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
 importer_dict = {
     '@auto': ['@auto-rst',],  # Fix #392: @auto-rst file.txt: -rst ignored on read
-    'func': Rst_Importer.do_import(),
+    ### 'func': Rst_Importer.do_import(),
     'extensions': ['.rst', '.rest'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

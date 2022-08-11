@@ -167,9 +167,17 @@ class Rust_ScanState:
     #@-others
 
 #@-others
+
+from leo.core.leoNodes import Position
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for rust."""
+    Rust_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Rust_Importer.do_import(),
+    ### 'func': Rust_Importer.do_import(),
     'extensions': ['.rs',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

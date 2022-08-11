@@ -130,10 +130,16 @@ class Markdown_Importer(Importer):
 
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for markdown."""
+    Markdown_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
-    'func': Markdown_Importer.do_import(),
+    ### 'func': Markdown_Importer.do_import(),
     'extensions': ['.md', '.rmd', '.Rmd',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

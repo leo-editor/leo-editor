@@ -48,9 +48,15 @@ class Ini_Importer(Importer):
         return None
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .ini files."""
+    Ini_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Ini_Importer.do_import(),
+    ### 'func': Ini_Importer.do_import(),
     'extensions': ['.ini',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4
