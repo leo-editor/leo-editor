@@ -4496,7 +4496,7 @@ class LeoServer:
 
         ap = param.get("ap")
         if ap:
-            p = self._ap_to_p(ap)  # Convertion
+            p = self._ap_to_p(ap)  # Conversion
             if p:
                 if not c.positionExists(p):  # pragma: no cover
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
@@ -5176,7 +5176,7 @@ def main():  # pragma: no cover (tested in client)
         print("Process interrupted", flush=True)
 
     finally:
-        # Execution continues here after server is interupted (e.g. with ctrl+c)
+        # Execution continues here after server is interrupted (e.g. with ctrl+c)
         realtime_server.close()
         if not wsSkipDirty:
             print("Checking for changed commanders...", flush=True)
