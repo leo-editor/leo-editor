@@ -4,6 +4,7 @@
 import re
 from typing import Any, Dict, List
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
@@ -167,8 +168,6 @@ class Rust_ScanState:
     #@-others
 
 #@-others
-
-from leo.core.leoNodes import Position
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for rust."""

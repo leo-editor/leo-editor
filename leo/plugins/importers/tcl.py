@@ -8,6 +8,7 @@ Created 2017/06/15 by the `importer;;` abbreviation.
 import re
 from typing import Any, Dict, List
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20170615153639.3: ** class Tcl_Importer
@@ -82,8 +83,6 @@ class Tcl_ScanState:
         return data.i
     #@-others
 #@-others
-
-from leo.core.leoNodes import Position
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for tcl."""
