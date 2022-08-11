@@ -2,7 +2,7 @@
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 """The @auto importer for coffeescript."""
 import re
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
@@ -106,7 +106,7 @@ class Coffeescript_Importer(Python_Importer):
         )
     #@-others
 
-    # @classmethod
+    ### @classmethod
     # def do_import(cls) -> Callable:
         # """Instantiate cls, the (subclass of) the Importer class."""
         # def f(c: Cmdr, parent: Position, s: str) -> None:
@@ -156,14 +156,12 @@ class Coffeescript_ScanState:
     #@-others
 #@-others
 
-def do_import(cls) -> Callable:
-    """Instantiate cls, the (subclass of) the Importer class."""
-    def f(c: Cmdr, parent: Position, s: str) -> None:
-        Coffeescript_Importer(c).import_from_string(parent, s)
-    return f
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """Instantiate the Coffeescript_Importer class."""
+    Coffeescript_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    'func': Coffeescript_Importer.do_import(),
+    'func': do_import,
     'extensions': ['.coffee',],
 }
 #@@language python

@@ -4,6 +4,7 @@
 import re
 from typing import Dict, Optional
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
@@ -107,9 +108,15 @@ class Cython_ScanState:
     #@-others
 
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """Instantiate the cython importer class."""
+    Cython_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Cython_Importer.do_import(),
+    ### 'func': Cython_Importer.do_import(),
     'extensions': ['.pyx',],
+    'func': do_import
 }
 #@@language python
 #@@tabwidth -4

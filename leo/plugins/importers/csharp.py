@@ -3,6 +3,7 @@
 """The @auto importer for the csharp language."""
 from typing import Dict
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer
@@ -66,8 +67,14 @@ class Csharp_ScanState:
     #@-others
 
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """Instantiate the csharp importer class."""
+    Csharp_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Csharp_Importer.do_import(),
+    ### 'func': Csharp_Importer.do_import(),  # Same as Importer.do_import
+    'func': do_import,
     'extensions': ['.cs', '.c#'],
 }
 #@@language python
