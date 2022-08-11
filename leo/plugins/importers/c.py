@@ -164,7 +164,7 @@ class C_ScanState:
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for c."""
     C_Importer(c).import_from_string(parent, s)
-    
+
 importer_dict = {
     'extensions': ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++',],
     'func': do_import,
