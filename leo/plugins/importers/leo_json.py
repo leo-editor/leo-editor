@@ -135,6 +135,7 @@ class JSON_Scanner:
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .JSON files."""
     JSON_Scanner(c).import_from_string(parent, s)
 
 importer_dict = {

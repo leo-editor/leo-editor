@@ -11,7 +11,6 @@ import leo.core.leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
-SPLIT_THRESHOLD = 10
 #@+<< define def_tuple >>
 #@+node:ekr.20220724060054.1: ** << define def_tuple >>
 # For the new token-based python importer.
@@ -258,9 +257,14 @@ class Python_ScanState:
         self.context = data.context
         return data.i
     #@-others
-#@+node:vitalije.20211201230203.1: ** split_root & helpers (Vitalije's importer)
-def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> None:
+#@+node:vitalije.20211201230203.1: ** function: token_based_python_importer
+SPLIT_THRESHOLD = 10  # Don't split blocks shorter than this threshold.
+
+def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
     """
+    An importer that uses python's tokenizer module to analyze program structure.
+    By Виталије Милошевић, (Vitalije Milosevic).
+
     Create direct children of root for all top level function definitions and class definitions.
 
     For longer class nodes, create separate child nodes for each method.
@@ -273,7 +277,13 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     t.start:  a tuple (srow, scol) of starting row/column numbers.
     """
     trace = False
+    add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
+    lines: List[str] = s.splitlines(True)
     rawtokens: List
+
+    if sys.version_info < (3, 7, 0):  # pragma: no cover
+        g.es_print('The python importer requires python 3.7 or above')
+        return
 
     #@+others
     #@+node:vitalije.20211208092910.1: *3* function: getdefn & helper
@@ -282,6 +292,7 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
         Look for an 'async', 'def' or `class` token at rawtokens[start].
         Return None or a def_tuple describing the def or class.
         """
+        nonlocal add_class_to_headlines
         nonlocal lines  # 'lines' is a kwarg to split_root.
         nonlocal rawtokens
 
@@ -556,22 +567,16 @@ def split_root(add_class_to_headlines: bool, root: Any, lines: List[str]) -> Non
     mknode(
         p=root, start=1, end=len(lines)+1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
-        
+
     # Add *trailing* lines, just like the Importer class.
     root.b += '@language python\n@tabwidth -4\n'
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for python."""
-    if 1:
-        # For desktop Leo: use an importer based on python tokens.
-        if sys.version_info < (3, 7, 0):  # pragma: no cover
-            g.es_print('The python importer requires python 3.7 or above')
-            return
-        add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
-        split_root(add_class_to_headlines, parent, s.splitlines(True))
-    else:
-        # For leoJS: use a subclass of the Importer class.
+    if 1:  # For desktop Leo: use an importer based on python tokens.
+        token_based_python_importer(c, parent, s)
+    else:  # For leoJS: use a subclass of the Importer class.
         Python_Importer(c).import_from_string(parent, s)
 
 importer_dict = {

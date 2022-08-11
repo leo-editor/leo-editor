@@ -267,6 +267,7 @@ class Import_IPYNB:
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for jupyter notebooks."""
     Import_IPYNB(c).import_from_string(parent, s)
 
 importer_dict = {
