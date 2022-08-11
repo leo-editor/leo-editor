@@ -106,12 +106,12 @@ class Coffeescript_Importer(Python_Importer):
         )
     #@-others
 
-    @classmethod
-    def do_import(cls) -> Callable:
-        """Instantiate cls, the (subclass of) the Importer class."""
-        def f(c: Cmdr, parent: Position, s: str) -> None:
-            cls(c).import_from_string(parent, s)
-        return f
+    # @classmethod
+    # def do_import(cls) -> Callable:
+        # """Instantiate cls, the (subclass of) the Importer class."""
+        # def f(c: Cmdr, parent: Position, s: str) -> None:
+            # cls(c).import_from_string(parent, s)
+        # return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:
     """A class representing the state of the coffeescript line-oriented scan."""
@@ -155,6 +155,13 @@ class Coffeescript_ScanState:
         return data.i
     #@-others
 #@-others
+
+def do_import(cls) -> Callable:
+    """Instantiate cls, the (subclass of) the Importer class."""
+    def f(c: Cmdr, parent: Position, s: str) -> None:
+        Coffeescript_Importer(c).import_from_string(parent, s)
+    return f
+
 importer_dict = {
     'func': Coffeescript_Importer.do_import(),
     'extensions': ['.coffee',],

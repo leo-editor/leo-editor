@@ -254,7 +254,6 @@ class Python_ScanState:
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
     if NEW_PYTHON_IMPORTER:
-        # Use the scanner tables.
         Python_Importer(c).import_from_string(parent, s)
     else:
         if sys.version_info < (3, 7, 0):  # pragma: no cover
