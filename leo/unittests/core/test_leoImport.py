@@ -757,7 +757,7 @@ class TestCython(BaseTestImporter):
         '''
         p = self.run_test(s, strict_flag=True)
         self.check_outline(p, (
-            (0, 'check_outlines ignores the first headline',
+            (0, '',  # check_outlines ignores the first headline.
                     'from libc.math cimport pow\n'
                     '\n'
                     '@others\n'
@@ -811,7 +811,7 @@ class TestDart(BaseTestImporter):
         '''
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                     "var name = 'Bob';\n"
                     '\n'
                     '@others\n'
@@ -875,7 +875,7 @@ class TestElisp(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '', # check_outline ignores the first headline.
                     '@others\n'
                     '@language lisp\n'
                     '@tabwidth -4\n'
@@ -1643,47 +1643,6 @@ class TestIni(BaseTestImporter):
     ext = '.ini'
 
     #@+others
-    #@+node:ekr.20210904065459.29: *3* TestIni.test_1
-    def test_1(self):
-
-        s = '''
-            ; last modified 1 April 2001 by John Doe
-            [owner]
-            name=John Doe
-            organization=Acme Widgets Inc.
-
-            ; [ not a section ]
-
-            [database]
-            server=192.0.2.62
-                ; use IP address
-            port=143
-            file = "payroll.dat"
-        '''
-        p = self.run_test(s, check_flag=False)  ### Possible real failure.
-        self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
-                    '; last modified 1 April 2001 by John Doe\n'
-                    '@language ini\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '[owner]',
-                    '[owner]\n'
-                    'name=John Doe\n'
-                    'organization=Acme Widgets Inc.\n'
-                    '\n'
-                    '; [ not a section ]\n'
-                    '\n'
-            ),
-            (1, '[database]',
-                    '[database]\n'
-                    'server=192.0.2.62\n'
-                    '    ; use IP address\n'
-                    'port=143\n'
-                    'file = "payroll.dat"\n'
-                    '\n'
-            ),
-        ))
     #@-others
 #@+node:ekr.20220809160909.1: ** class TestIpynb (BaseTestImporter)
 class TestIpynb (BaseTestImporter):
@@ -2194,7 +2153,7 @@ class TestMarkdown(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outlines ignores the first headline',
+            (0, '',  # check_outlines ignores the first headline.
                     '@language md\n'
                     '@tabwidth -4\n'
             ),
@@ -2495,7 +2454,7 @@ class TestOrg(BaseTestImporter):
         """
         p = self.run_test(s)
         expected = (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
             ),
@@ -2579,7 +2538,7 @@ class TestOrg(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                 'Intro line.\n'
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2626,7 +2585,7 @@ class TestOrg(BaseTestImporter):
         """
         p = self.run_test(s, check_flag=False)  # Perfect import must fail.
         expected = (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
             ),
@@ -2666,7 +2625,7 @@ class TestOrg(BaseTestImporter):
         """
         p = self.run_test(s)
         expected = (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
             ),
@@ -2705,7 +2664,7 @@ class TestOtl(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
@@ -2730,7 +2689,7 @@ class TestOtl(BaseTestImporter):
         """
         p = self.run_test(s, check_flag=False)  # Perfect import must fail.
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
@@ -2801,7 +2760,7 @@ class TestPascal(BaseTestImporter):
         """
         p = self.run_test(s)
         self.check_outline(p, (
-            (0, 'check_outline ignores the first headline',
+            (0, '',  # check_outline ignores the first headline.
                     'unit Unit1;\n'
                     '\n'
                     '@others\n'
@@ -4602,6 +4561,8 @@ class TestTreepad (BaseTestImporter):
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '<Treepad version 3.0>\n'
+                '@language plain\n'
+                '@tabwidth -4\n'
             ),
             (1, 'headline 1', ''),
             (2, 'headline 2',
