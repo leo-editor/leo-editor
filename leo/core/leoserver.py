@@ -1501,8 +1501,6 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220810001309.1: *5* server.read-file-into-node
-
-
     def read_file_into_node(self, param):
         """
         Read a file into a single node.
@@ -1516,18 +1514,16 @@ class LeoServer:
                 if fileName:
                     s, e = g.readFileIntoString(fileName)
                     if s is None:
-                        return
+                        return None
                     g.chdir(fileName)  # TODO : IS THIS NEEDED
                     s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
                     p = c.insertHeadline(op_name=undoType)
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
-
             except Exception as e:
                 print(f"{tag} Error while reading {param['name']}", flush=True)
                 print(e, flush=True)
         return self._make_response()
-
 
 
     #@+node:felix.20220309010334.1: *4* server.nav commands
