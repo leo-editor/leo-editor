@@ -1662,7 +1662,7 @@ class TestJson (BaseTestImporter):
     #@+node:ekr.20220811131926.1: *3* TestJson.test_json_1
     def test_json_1(self):
         
-        s = """
+        s = textwrap.dedent(r"""
         {
           "nodes": [
             {
@@ -1691,7 +1691,7 @@ class TestJson (BaseTestImporter):
             "ua": {}
           }
         }
-        """
+        """)
         # Round-tripping is not guaranteed.
         p = self.run_test(s, check_flag=False)
         self.dump_tree(p, tag='Actual results...')

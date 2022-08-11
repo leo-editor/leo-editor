@@ -98,7 +98,6 @@ class JSON_Scanner:
         """Create an outline from a MindMap (.csv) file."""
         # pylint: disable=no-member
         # pylint confuses this module with the stdlib json module
-        g.pdb()
         c = self.c
         # Keys are gnx's. Values are vnode_dicts.
         self.gnx_dict: Dict[str, Dict] = {}
@@ -107,8 +106,7 @@ class JSON_Scanner:
         self.vnodes_dict: Dict[str, VNode] = {}
         try:
             d = json.loads(s)
-            g.printObj(d)
-            return  ###
+            g.printObj(d, tag='INPUT')
             for d2 in d.get('nodes', []):
                 gnx = d2.get('gnx')
                 self.gnx_dict[gnx] = d2
@@ -134,13 +132,11 @@ class JSON_Scanner:
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for .JSON files."""
-    g.pdb()
     JSON_Scanner(c).import_from_string(parent, s)
 
 importer_dict = {
     '@auto': ['@auto-json'],
     'func': do_import,
-    # 'extensions': ['.txt'],  # for unit tests.
 }
 #@@language python
 #@@tabwidth -4
