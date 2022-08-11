@@ -45,7 +45,7 @@ class CText_Importer(Importer):
             c,
             language='ctext',
         )
-        importCommands = c.importCommands  ###
+        importCommands = c.importCommands
         self.fileType = importCommands.fileType
     #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines
     def write_lines(self, node: Position, lines: List[str]) -> None:

@@ -17,7 +17,6 @@ class Org_Importer(Importer):
         super().__init__(
             c,
             language='plain',  # A reasonable @language
-            state_class=None,
         )
         self.tc = self.load_nodetags()
 

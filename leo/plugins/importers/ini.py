@@ -15,7 +15,6 @@ class Ini_Importer(Importer):
         super().__init__(
             c,
             language='ini',
-            state_class=None,
         )
 
     #@+others

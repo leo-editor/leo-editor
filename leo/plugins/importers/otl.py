@@ -16,7 +16,6 @@ class Otl_Importer(Importer):
         super().__init__(
             c,
             language='plain',
-            state_class=None,
         )
 
     #@+others

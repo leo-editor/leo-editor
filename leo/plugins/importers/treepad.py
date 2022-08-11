@@ -12,12 +12,11 @@ from leo.plugins.importers.linescanner import Importer
 class Treepad_Importer(Importer):
     """The importer for the TreePad file format."""
 
-    def __init__(self, c: Cmdr) -> None:  # language: str='python', state_class: Any=None
+    def __init__(self, c: Cmdr) -> None:
         """Org_Importer.__init__"""
         super().__init__(
             c,
-            language='treepad',
-            state_class=None,
+            language='plain',  # A reasonable default.
         )
 
     #@+others
