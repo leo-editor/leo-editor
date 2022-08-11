@@ -69,13 +69,12 @@ class Csharp_ScanState:
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
-    """Instantiate the csharp importer class."""
+    """The importer callback for csharp."""
     Csharp_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Csharp_Importer.do_import(),  # Same as Importer.do_import
-    'func': do_import,
     'extensions': ['.cs', '.c#'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

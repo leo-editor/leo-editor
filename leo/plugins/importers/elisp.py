@@ -4,6 +4,7 @@
 import re
 from typing import Any, Dict, List, Optional
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
@@ -117,9 +118,15 @@ class Elisp_ScanState:
         return data.i
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for elisp."""
+    Elisp_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Elisp_Importer.do_import(),  # Also clojure, clojurescript
+    ## 'func': Elisp_Importer.do_import(),  # Also clojure, clojurescript
     'extensions': ['.el', '.clj', '.cljs', '.cljc',],
+    'func': do_import,  # Also clojure, clojurescript
 }
 #@@language python
 #@@tabwidth -4

@@ -4,6 +4,7 @@
 import re
 from typing import Dict
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer
@@ -66,9 +67,14 @@ class Dart_ScanState:
         return data.i
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for dart."""
+    Dart_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Dart_Importer.do_import(),
     'extensions': ['.dart'],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

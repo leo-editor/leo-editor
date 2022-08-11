@@ -2,8 +2,8 @@
 #@+node:ekr.20140723122936.18138: * @file ../plugins/importers/html.py
 """The @auto importer for HTML."""
 from leo.core.leoCommands import Commands as Cmdr
-from leo.plugins.importers import xml
-Xml_Importer = xml.Xml_Importer
+from leo.core.leoNodes import Position
+from leo.plugins.importers.xml import Xml_Importer
 #@+others
 #@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)
 class Html_Importer(Xml_Importer):
@@ -24,9 +24,15 @@ class Html_Importer(Xml_Importer):
             'command', 'keygen', 'source',
         ]
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for html."""
+    Html_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Html_Importer.do_import(),
+    ### 'func': Html_Importer.do_import(),
     'extensions': ['.html', '.htm',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

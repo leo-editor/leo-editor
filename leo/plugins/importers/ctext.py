@@ -101,21 +101,13 @@ class CText_Importer(Importer):
             cls(c).import_from_string(parent, s)
         return f
 #@-others
-
-###
-# def do_import(cls) -> Callable:
-        # """Instantiate cls, the (subclass of) the Importer class."""
-        # def f(c: Cmdr, parent: Position, s: str) -> None:
-            # CText_Importer(c).import_from_string(parent, s)
-        # return f
         
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
-    """Instantiate the ctext importer class."""
+    """The importer callback for ctext."""
     CText_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
     '@auto': ['@auto-ctext',],
-    ### 'func': CText_Importer.do_import(),  # Same as Importer.do_import.
     'func': do_import,
 }
 #@@language python

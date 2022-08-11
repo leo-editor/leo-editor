@@ -110,13 +110,12 @@ class Cython_ScanState:
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
-    """Instantiate the cython importer class."""
+    """The importer callback for cython."""
     Cython_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    ### 'func': Cython_Importer.do_import(),
     'extensions': ['.pyx',],
-    'func': do_import
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

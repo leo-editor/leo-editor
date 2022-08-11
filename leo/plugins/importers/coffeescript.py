@@ -157,12 +157,12 @@ class Coffeescript_ScanState:
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
-    """Instantiate the Coffeescript_Importer class."""
+    """The importer callback for coffeescript."""
     Coffeescript_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    'func': do_import,
     'extensions': ['.coffee',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4
