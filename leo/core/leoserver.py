@@ -1520,9 +1520,9 @@ class LeoServer:
                     p = c.insertHeadline(op_name=undoType)
                     p.setHeadString('@read-file-into-node ' + fileName)
                     p.setBodyString(s)
-            except Exception as e:
+            except Exception as err:
                 print(f"{tag} Error while reading {param['name']}", flush=True)
-                print(e, flush=True)
+                print(err, flush=True)
         return self._make_response()
 
 
