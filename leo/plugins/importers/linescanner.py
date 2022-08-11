@@ -112,10 +112,11 @@ scan_tuple = namedtuple('scan_tuple', [
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
     """
-    The new, unified, simplified, interface to Leo's importer code.
-
-    Eventually, most importers will use this class.
+    The base class for many of Leo's importers.
     """
+
+    # Don't split classes, functions or methods smaller than this value.
+    SPLIT_THRESHOLD = 10
 
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
@@ -836,17 +837,6 @@ class Importer:
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
     #@-others
-
-    # Don't split classes, functions or methods smaller than this value.
-    SPLIT_THRESHOLD = 10
-
-    ###
-    # @classmethod
-    # def do_import(cls: Any) -> Callable:
-        # """Instantiate cls, the (subclass of) the Importer class."""
-        # def f(c: Cmdr, parent: Position, s: str) -> None:
-            # cls(c).import_from_string(parent, s)
-        # return f
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
     """

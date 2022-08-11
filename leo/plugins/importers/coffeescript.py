@@ -105,13 +105,6 @@ class Coffeescript_Importer(Python_Importer):
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
     #@-others
-
-    ### @classmethod
-    # def do_import(cls) -> Callable:
-        # """Instantiate cls, the (subclass of) the Importer class."""
-        # def f(c: Cmdr, parent: Position, s: str) -> None:
-            # cls(c).import_from_string(parent, s)
-        # return f
 #@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
 class Coffeescript_ScanState:
     """A class representing the state of the coffeescript line-oriented scan."""

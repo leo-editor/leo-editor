@@ -93,14 +93,6 @@ class CText_Importer(Importer):
             p.clearDirty()
 
     #@-others
-
-    ###
-    # @classmethod
-    # def do_import(cls) -> Callable:
-        # """Instantiate cls, the (subclass of) the Importer class."""
-        # def f(c: Cmdr, parent: Position, s: str) -> None:
-            # cls(c).import_from_string(parent, s)
-        # return f
 #@-others
         
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
