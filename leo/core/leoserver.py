@@ -1486,6 +1486,8 @@ class LeoServer:
             try:
                 fileName = param.get("name")
                 if fileName:
+                    p = c.p
+                    s = p.b
                     with open(fileName, 'w') as f:
                         g.chdir(fileName)
                         if s.startswith('@nocolor\n'):
@@ -1522,7 +1524,7 @@ class LeoServer:
                     p.setBodyString(s)
 
             except Exception as e:
-                print(f"{tag} Error while writing {param['name']}", flush=True)
+                print(f"{tag} Error while reading {param['name']}", flush=True)
                 print(e, flush=True)
         return self._make_response()
 
