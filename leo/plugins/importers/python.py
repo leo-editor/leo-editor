@@ -88,8 +88,8 @@ class Python_Importer(Importer):
                     return strip_s
         # Return legacy headline.
         return "...some declarations"  # pragma: no cover
-    #@+node:ekr.20220720050740.1: *3* python_i.get_class_or_def
-    def get_class_or_def(self, i: int) -> block_tuple:
+    #@+node:ekr.20220720050740.1: *3* python_i.analyze_block
+    def analyze_block(self, i: int) -> block_tuple:
         """
         Look for a def or class at lines[i]
         Return None or a block_tuple describing the class or def.
@@ -232,7 +232,7 @@ class Python_ScanState:
     """
     A class representing the state of the python line-oriented scan."""
 
-    # Note: python_i.get_class_or_def calculates indentaion w/o using this class.
+    # Note: python_i.analyze_block calculates indentaion w/o using this class.
 
     def __init__(self, d: Dict=None) -> None:
         """Python_ScanState ctor."""

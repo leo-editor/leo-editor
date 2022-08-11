@@ -297,7 +297,7 @@ class Importer:
                 print(f"{i:3} {state!r} {line!r}")
 
         # Prepass 2: Find *all* definitions.
-        aList = [self.get_class_or_def(i) for i in range(len(lines))]
+        aList = [self.analyze_block(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
         if trace:
@@ -316,6 +316,54 @@ class Importer:
         )
         # Add trailing lines.
         parent.b += f"@language {self.name}\n@tabwidth {self.tab_width}\n"
+    #@+node:ekr.20220727074602.1: *5* i.analyze_block
+    def analyze_block(self, i: int) -> block_tuple:
+        """
+        Importer.analyze_block, based on Vitalije's python importer.
+
+        Look for a def or class at self.lines[i]
+        Return None or a block_tuple describing the class or def.
+        """
+        self.headline =  ''  # May be set in new_starts_block.
+        lines = self.lines
+        states = self.line_states
+
+        # Return if lines[i] does not start a block.
+        first_body_line = self.new_starts_block(i)
+        if first_body_line is None:
+            return None
+
+        # Compute declaration data.
+        decl_line = i
+        decl_indent = self.get_int_lws(self.lines[i])
+        decl_level = states[i].level()
+
+        # Scan to the end of the block.
+        i = self.new_skip_block(first_body_line)
+
+        # Calculate the indentation of the first non-blank body line.
+        j = first_body_line
+        while j < i and j < len(lines):
+            if not lines[j].isspace():
+                body_indent = self.get_int_lws(lines[j])
+                break
+            j += 1
+        else:
+            body_indent = 0
+
+        # Include all following blank lines.
+        while i < len(lines) and lines[i].isspace():
+            i += 1
+
+        # Return the description of the block.
+        return block_tuple(
+            body_indent = body_indent,
+            body_line9 = i,
+            decl_indent = decl_indent,
+            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level = decl_level,
+            name = self.compute_headline(self.headline or lines[decl_line])
+        )
     #@+node:ekr.20220807083207.1: *5* i.append_directives
     def append_directives(self, lines_dict: Dict[VNode, List[str]], language: str=None) -> None:
         """
@@ -399,54 +447,6 @@ class Importer:
     def gen_lines_prepass(self) -> None:
         """A hook for pascal. Called by i.gen_lines()."""
         pass
-    #@+node:ekr.20220727074602.1: *5* i.get_class_or_def
-    def get_class_or_def(self, i: int) -> block_tuple:
-        """
-        Importer.get_class_or_def, based on Vitalije's python importer.
-
-        Look for a def or class at self.lines[i]
-        Return None or a block_tuple describing the class or def.
-        """
-        self.headline =  ''  # May be set in new_starts_block.
-        lines = self.lines
-        states = self.line_states
-
-        # Return if lines[i] does not start a block.
-        first_body_line = self.new_starts_block(i)
-        if first_body_line is None:
-            return None
-
-        # Compute declaration data.
-        decl_line = i
-        decl_indent = self.get_int_lws(self.lines[i])
-        decl_level = states[i].level()
-
-        # Scan to the end of the block.
-        i = self.new_skip_block(first_body_line)
-
-        # Calculate the indentation of the first non-blank body line.
-        j = first_body_line
-        while j < i and j < len(lines):
-            if not lines[j].isspace():
-                body_indent = self.get_int_lws(lines[j])
-                break
-            j += 1
-        else:
-            body_indent = 0
-
-        # Include all following blank lines.
-        while i < len(lines) and lines[i].isspace():
-            i += 1
-
-        # Return the description of the block.
-        return block_tuple(
-            body_indent = body_indent,
-            body_line9 = i,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            decl_level = decl_level,
-            name = self.compute_headline(self.headline or lines[decl_line])
-        )
     #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
