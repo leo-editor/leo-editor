@@ -1361,24 +1361,6 @@ class LeoServer:
                 print(e, flush=True)
 
         return self._make_response()
-    #@+node:felix.20220808211111.3: *5* server.export-jupyter-notebook
-    def export_jupyter_notebook(self, param):
-        """
-        Export Jupyter Notebook
-        """
-        tag = 'export_jupyter_notebook'
-        c = self._check_c()
-        if c and "name" in param:
-            try:
-                fileName = param.get("name")
-                if fileName:
-                    from leo.plugins.writers.ipynb import Export_IPYNB
-                    Export_IPYNB(c).export_outline(c.p, fn=fileName)
-
-            except Exception as e:
-                print(f"{tag} Error while writing {param['name']}", flush=True)
-                print(e, flush=True)
-        return self._make_response()
     #@+node:felix.20220808211111.4: *5* server.flatten-outline
     def flatten_outline(self, param):
         """

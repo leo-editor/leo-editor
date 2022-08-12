@@ -4326,7 +4326,7 @@ def on_event(self, *events):
         text = '%10s: %s' % (id_, kind + ev.type)
         assert text
         # self.label.set_html(text + '<br />' + self.label.html)
-#@+node:ekr.20220812084920.1: *3* Abandoned importers, writers & tests
+#@+node:ekr.20220812084920.1: *3* Abandoned importers, writers, commands & tests
 #@+node:ekr.20160504080826.1: *4* ../plugins/importers/leo_json.py
 """The @auto importer for .json files."""
 #
@@ -5086,6 +5086,94 @@ def ham():
 #@+node:ekr.20220811130530.1: *5* eggs
 def eggs():
     pass
+#@+node:ekr.20160321072007.1: *4* ccc.export-jupyter-notebook
+@cmd('export-jupyter-notebook')
+def exportJupyterNotebook(self, event):  # pragma: no cover
+    """Convert the present outline to a .ipynb file."""
+    from leo.plugins.writers.ipynb import Export_IPYNB
+    c = self.c
+    Export_IPYNB(c).export_outline(c.p)
+#@+node:ekr.20160321042444.1: *4* ccc.import-jupyter-notebook
+@cmd('import-jupyter-notebook')
+def importJupyterNotebook(self, event):  # pragma: no cover
+    """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
+    try:
+        import nbformat
+        assert nbformat
+    except ImportError:
+        g.es_print('import-jupyter-notebook requires nbformat package')
+        return
+    from leo.plugins.importers.ipynb import Import_IPYNB
+    # was @-others
+    c = self.c
+    x = Import_IPYNB(c)
+    fn = x.get_file_name()
+    if fn:
+        p = c.lastTopLevel()
+        root = p.insertAfter()
+        root.h = fn
+        x.import_file(fn, root)
+        c.redraw(root)
+    c.bodyWantsFocus()
+#@+node:ekr.20201013034742.26: *4* @@button test-jup-import
+"""Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb"""
+import nbformat
+@others
+g.cls()
+if 0:
+    # fn = r'c:\test\Julia.ipynb'
+    fn = r'c:\test\export-neural-networds.ipynb'
+    h = 'import-Julia.ipynb'
+else:
+    h = fn = r'c:\test\04_Neural_Networks.ipynb'
+root = g.findTopLevelNode(c, h)
+if root:
+    while root.hasChildren():
+        root.lastChild().doDelete()
+else:
+    p = c.lastTopLevel()
+    root = p.insertAfter()
+    root.h = h
+x = Import_IPYNB(c)
+x.import_file(fn, root)
+if not g.unitTesting:
+    # These don't work when running unit tests.
+    c.selectPosition(root)
+    # c.expandAllSubheads()
+    c.redraw() 
+    g.es_print('done')
+#@+node:ekr.20201013034742.25: *4* @@button test-jup-export
+# g.cls()
+import re
+import sys
+if 1:
+    h = 'import-neural-networks.ipynb'
+    fn = r'c:\test\export-neural-networds.ipynb'
+else:
+    h = 'import-Julia.ipynb'
+    fn = r'c:\test\export-julia.ipynb'
+p = g.findTopLevelNode(c, h)
+assert p, h
+@others
+Export_IPYNB(c).export_outline(p, fn=fn)
+#@+node:felix.20220808211111.3: *4* server.export-jupyter-notebook
+def export_jupyter_notebook(self, param):
+    """
+    Export Jupyter Notebook
+    """
+    tag = 'export_jupyter_notebook'
+    c = self._check_c()
+    if c and "name" in param:
+        try:
+            fileName = param.get("name")
+            if fileName:
+                from leo.plugins.writers.ipynb import Export_IPYNB
+                Export_IPYNB(c).export_outline(c.p, fn=fileName)
+
+        except Exception as e:
+            print(f"{tag} Error while writing {param['name']}", flush=True)
+            print(e, flush=True)
+    return self._make_response()
 #@+node:ekr.20190412154439.1: ** Abandoned projects
 #@+node:ekr.20211226081112.1: *3* script: iterative traverse
 # See ENB: Recent studies and thoughts.

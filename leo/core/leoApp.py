@@ -325,7 +325,7 @@ class LeoApp:
             "info":     "texinfo",
             "ini":      "ini",
             "io":       "io",
-            "ipynb":    "jupyter",
+            # "ipynb":    "jupyter",
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
@@ -709,7 +709,7 @@ class LeoApp:
             "jmk"           : "jmk",
             "json"          : "json",
             "jsp"           : "jsp",
-            "jupyter"       : "ipynb",
+            # "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
