@@ -19,7 +19,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         self.root = root
         self.write_root(root)
         for p in root.subtree():
-            if hasattr(self.at, 'force_sentinels'):
+            if g.app.force_at_auto_sentinels:  # pragma: no cover
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             self.write_headline(p)
             # Ensure that every section ends with exactly two newlines.

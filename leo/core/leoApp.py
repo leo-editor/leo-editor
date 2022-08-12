@@ -190,10 +190,15 @@ class LeoApp:
         # From leoAtFile.py.
         self.atAutoWritersDict = {}
         self.writersDispatchDict = {}
+
         # From leoImport.py
         # Keys are @auto names, values are scanner classes.
         self.atAutoDict = {}
         self.classDispatchDict = {}
+
+        # True if an @auto writer should write sentinels,
+        # even if the external file doesn't actually contain sentinels.
+        self.force_at_auto_sentinels = False
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>

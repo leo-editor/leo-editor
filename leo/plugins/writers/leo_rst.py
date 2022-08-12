@@ -34,7 +34,7 @@ class RstWriter(basewriter.BaseWriter):
         root_level = root.level()
         self.write_root(root)
         for p in root.subtree():
-            if hasattr(self.at, 'force_sentinels'):
+            if g.app.force_at_auto_sentinels:  # pragma: no cover
                 self.put_node_sentinel(p, '.. ')
             ch = self.underline_char(p, root_level)
             # Put the underlined headline

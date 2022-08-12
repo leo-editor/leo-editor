@@ -280,23 +280,19 @@ class GoToCommands:
     #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root):
         """
-        root is an @<file> node.
-
-        Return the result of writing the file *with* sentinels, even if the
-        external file would normally *not* have sentinels.
+        root is an @<file> node. If root is an @auto node, return the result of
+        writing the file *with* sentinels, even if the external file normally
+        would *not* have sentinels.
         """
         c = self.c
         if root.isAtAutoNode():
             # Special case @auto nodes:
             # Leo does not write sentinels in the root @auto node.
-            at = c.atFileCommands
-            ivar = 'force_sentinels'
             try:
-                setattr(at, ivar, True)
-                s = at.atAutoToString(root)
+                g.app.force_at_auto_sentinels = True
+                s = c.atFileCommands.atAutoToString(root)
             finally:
-                if hasattr(at, ivar):
-                    delattr(at, ivar)
+                g.app.force_at_auto_sentinels = True
             return s
         return g.composeScript(  # Fix # 429.
             c=c,
