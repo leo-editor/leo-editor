@@ -5,7 +5,7 @@
 from leo.core import leoGlobals as g  # Required.
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:tbrown.20140804103545.29977: ** class CTextWriter
+#@+node:tbrown.20140804103545.29977: ** class CTextWriter(BaseWriter)
 class CTextWriter(basewriter.BaseWriter):
     #@+others
     #@+node:tbrown.20140804103545.29978: *3* put_node

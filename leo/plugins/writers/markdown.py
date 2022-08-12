@@ -5,10 +5,9 @@
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:ekr.20140726091031.18075: ** class MarkdownWriter
+#@+node:ekr.20140726091031.18075: ** class MarkdownWriter(BaseWriter)
 class MarkdownWriter(basewriter.BaseWriter):
     """The writer class for markdown files."""
-
     #@+others
     #@+node:ekr.20140726091031.18076: *3* mdw.write
     def write(self, root):

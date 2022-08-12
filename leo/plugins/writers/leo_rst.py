@@ -6,8 +6,7 @@ This is very different from rst3's write code.
 
 This module must **not** be named rst, so as not to conflict with docutils.
 """
-# pylint: disable=unused-import
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # Required
 import leo.plugins.writers.basewriter as basewriter
 import leo.plugins.importers.leo_rst as rst_importer
 # Make *sure* that reader's underlines match the writer's.

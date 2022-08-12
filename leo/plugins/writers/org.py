@@ -4,7 +4,7 @@
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:ekr.20140726091031.18155: ** class OrgModeWriter
+#@+node:ekr.20140726091031.18155: ** class OrgModeWriter(BaseWriter)
 class OrgModeWriter(basewriter.BaseWriter):
     """The writer class for .org files."""
 

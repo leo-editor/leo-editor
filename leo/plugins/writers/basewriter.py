@@ -9,6 +9,7 @@ class BaseWriter:
         """Ctor for leo.plugins.writers.BaseWriter."""
         self.c = c
         self.at = c.atFileCommands
+        self.at.outputList = []
 
     #@+others
     #@+node:ekr.20150626092123.1: ** basewriter.put

@@ -163,13 +163,7 @@ class BaseTestImporter(LeoUnitTest):
     #@-others
 #@+node:ekr.20220812144517.1: ** class BaseTestWriter(LeoUnitTest)
 class BaseTestWriter(LeoUnitTest):
-
-    def setUp(self):
-        super().setUp()
-        # Leo's file writers init at.outputList.
-        # We can safely do this automatically for unit tests.
-        at = self.c.atFileCommands
-        at.outputList = []
+    """The base class for all tests of Leo's writer plugins."""
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto(BaseTestImporter):
 

@@ -4,10 +4,9 @@
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:ekr.20180202053206.2: ** class TreePad_Writer
+#@+node:ekr.20180202053206.2: ** class TreePad_Writer(BaseWriter)
 class TreePad_Writer(basewriter.BaseWriter):
     """The writer class for TreePad (.hjt) files."""
-    # No ctor.
     #@+others
     #@+node:ekr.20180202053206.3: *3* treepad_w.write
     def write(self, root):

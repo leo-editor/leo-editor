@@ -1,16 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.2: * @file ../plugins/writers/dart.py
 """The @auto write code for Emacs org-mode (.org) files."""
-# pylint: disable=unused-import
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # Required
 import leo.plugins.writers.basewriter as basewriter
-
+#@+others
+#@+node:ekr.20220812173827.1: ** class DartWriter(BaseWriter)
 class DartWriter(basewriter.BaseWriter):
     """The writer class for .dart files."""
-    # def __init__(self,c):
-        # super().__init__(c)
     #@+others
-    #@+node:ekr.20141116100154.4: ** dart.write
+    #@+node:ekr.20141116100154.4: *3* dart.write
     def write(self, root):
         """Write all the *descendants* of an .dart node."""
         root_level = root.level()
@@ -23,7 +21,7 @@ class DartWriter(basewriter.BaseWriter):
         root.setVisited()
         return True
     #@-others
-
+#@-others
 writer_dict = {
     '@auto': [],
     'class': DartWriter,

@@ -4,7 +4,7 @@
 from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
-#@+node:ekr.20140726091031.18083: ** class OtlWriter
+#@+node:ekr.20140726091031.18083: ** class OtlWriter(BaseWriter)
 class OtlWriter(basewriter.BaseWriter):
     """The writer class for .otl files."""
 
