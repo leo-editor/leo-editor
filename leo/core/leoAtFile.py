@@ -2026,7 +2026,7 @@ class AtFile:
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
         at = self
-        if at.sentinels or hasattr(at, 'force_sentinels'):
+        if at.sentinels or g.app.force_at_auto_sentinels:
             s = s + "-thin"
             encoding = at.encoding.lower()
             if encoding != "utf-8":  # pragma: no cover
@@ -2052,7 +2052,7 @@ class AtFile:
         This method outputs all sentinels.
         """
         at = self
-        if at.sentinels or hasattr(at, 'force_sentinels'):
+        if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
             # #2194. The following would follow the black convention,
