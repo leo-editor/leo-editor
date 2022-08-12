@@ -15,7 +15,7 @@ from leo.core.leoNodes import Position, VNode
 class JSON_Scanner:
     """A class to read @auto-json files."""
     # Not a subclass of the Importer class.
-    
+
     def __init__(self, c: Cmdr) -> None:
         """The ctor for the JSON_Scanner class."""
         self.c = c

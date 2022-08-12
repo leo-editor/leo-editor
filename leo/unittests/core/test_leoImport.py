@@ -1661,7 +1661,7 @@ class TestJson (BaseTestImporter):
     #@+others
     #@+node:ekr.20220811131926.1: *3* TestJson.test_json_1
     def test_json_1(self):
-        
+
         s = textwrap.dedent(r"""
             {
               "nodes": [
