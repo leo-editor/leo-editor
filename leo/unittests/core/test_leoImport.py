@@ -19,6 +19,7 @@ import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
 import leo.plugins.importers.xml as xml
+from leo.plugins.writers.ctext import CTextWriter
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
 class BaseTestImporter(LeoUnitTest):
@@ -160,6 +161,30 @@ class BaseTestImporter(LeoUnitTest):
             self.check_round_trip(parent, test_s, strict_flag)
         return parent
     #@-others
+#@+node:ekr.20220812144517.1: ** class BaseTestWriter(LeoUnitTest)
+class BaseTestWriter(LeoUnitTest):
+
+    def setUp(self):
+        super().setUp()
+        # Leo's file writers init at.outputList.
+        # We can safely do this automatically for unit tests.
+        at = self.c.atFileCommands
+        at.outputList = []
+#@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
+class TestAtAuto(BaseTestImporter):
+
+    ### pass
+    #@+others
+    #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
+    def test_importers_can_be_imported(self):
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
+        assert g.os_path_exists(path), repr(path)
+        pattern = g.os_path_finalize_join(path, '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+            assert m
+    #@-others
 #@+node:ekr.20220812141705.1: ** class TestBaseWriter(BaseTestImporter)
 class TestBaseWriter(BaseTestImporter):
 
@@ -185,20 +210,6 @@ class TestBaseWriter(BaseTestImporter):
             for delim1, delim2 in table:
                 at.outputList = []
                 x.put_node_sentinel(p, delim1, delim2)
-    #@-others
-#@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
-class TestAtAuto(BaseTestImporter):
-
-    #@+others
-    #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
-    def test_importers_can_be_imported(self):
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
-        assert g.os_path_exists(path), repr(path)
-        pattern = g.os_path_finalize_join(path, '*.py')
-        for fn in glob.glob(pattern):
-            sfn = g.shortFileName(fn)
-            m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
-            assert m
     #@-others
 #@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
 class TestC(BaseTestImporter):
@@ -493,66 +504,6 @@ class TestC(BaseTestImporter):
             ),
         ))
     #@-others
-#@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
-class TestCText(BaseTestImporter):
-
-    ext = '.ctext'  # A made-up extension for unit tests.
-
-    #@+others
-    #@+node:ekr.20220811091538.1: *3* TestCText.test_ctext_1
-    def test_ctext_1(self):
-
-        # From the CText_Importer docstring.
-        # Note that '#' is the delim for unit tests.
-        s = """
-        Leading text in root node of subtree
-
-        Etc. etc.
-
-        ### A level one node #####################################
-
-        This would be the text in this level one node.
-
-        And this.
-
-        ### Another level one node ###############################
-
-        Another one
-
-        #### A level 2 node ######################################
-
-        See what we did there - one more '#' - this is a subnode.
-        """
-        # Round-tripping is not guaranteed.
-        p = self.run_test(s, check_flag=False)
-        self.check_outline(p, (
-            (0, '', # check_outline ignores the first headline.
-                    'Leading text in root node of subtree\n'
-                    '\n'
-                    'Etc. etc.\n'
-                    '\n'
-            ),
-            (1, 'A level one node',
-                    '\n'
-                    'This would be the text in this level one node.\n'
-                    '\n'
-                    'And this.\n'
-                    '\n'
-            ),
-            (1, 'Another level one node',
-                    '\n'
-                    'Another one\n'
-                    '\n'
-            ),
-            (2, 'A level 2 node',
-                    '\n'
-                    "See what we did there - one more '#' - this is a subnode.\n"
-                    '\n'
-            ),
-        ))
-
-
-    #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
 
@@ -758,6 +709,80 @@ class TestCSharp(BaseTestImporter):
                     '}\n'
             ),
         ))
+    #@-others
+#@+node:ekr.20220809160735.1: ** class TestCText (BaseTestImporter)
+class TestCText(BaseTestImporter):
+
+    ext = '.ctext'  # A made-up extension for unit tests.
+
+    #@+others
+    #@+node:ekr.20220811091538.1: *3* TestCText.test_importer
+    def test_importer(self):
+
+        # From the CText_Importer docstring.
+        # Note that '#' is the delim for unit tests.
+        s = """
+        Leading text in root node of subtree
+
+        Etc. etc.
+
+        ### A level one node #####################################
+
+        This would be the text in this level one node.
+
+        And this.
+
+        ### Another level one node ###############################
+
+        Another one
+
+        #### A level 2 node ######################################
+
+        See what we did there - one more '#' - this is a subnode.
+        """
+        # Round-tripping is not guaranteed.
+        p = self.run_test(s, check_flag=False)
+        self.check_outline(p, (
+            (0, '', # check_outline ignores the first headline.
+                    'Leading text in root node of subtree\n'
+                    '\n'
+                    'Etc. etc.\n'
+                    '\n'
+            ),
+            (1, 'A level one node',
+                    '\n'
+                    'This would be the text in this level one node.\n'
+                    '\n'
+                    'And this.\n'
+                    '\n'
+            ),
+            (1, 'Another level one node',
+                    '\n'
+                    'Another one\n'
+                    '\n'
+            ),
+            (2, 'A level 2 node',
+                    '\n'
+                    "See what we did there - one more '#' - this is a subnode.\n"
+                    '\n'
+            ),
+        ))
+
+
+    #@-others
+#@+node:ekr.20220812144913.1: ** class TestCTextWriter (BaseTestWriter)
+class TestCTextWriter (BaseTestWriter):
+
+    #@+others
+    #@+node:ekr.20220812144243.1: *3* TestCTextWriter.test_1
+    def test_1(self):
+        
+        c, root = self.c, self.c.p
+
+        child = root.insertAsLastChild()
+        child.h = 'h'
+        x = CTextWriter(c)
+        x.write(root)
     #@-others
 #@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython(BaseTestImporter):
@@ -980,6 +1005,8 @@ class TestHtml(BaseTestImporter):
         ))
     #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line (poor)
     def test_multiple_tags_on_a_line(self):
+
+        # pylint: disable=line-too-long
 
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
