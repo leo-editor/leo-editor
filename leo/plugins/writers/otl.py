@@ -17,7 +17,7 @@ class OtlWriter(basewriter.BaseWriter):
         for child in root.children():
             n = child.level()
             for p in child.self_and_subtree():
-                if hasattr(self.at, 'force_sentinels'):
+                if g.app.force_at_auto_sentinels:  # pragma: no cover
                     self.put_node_sentinel(p, '#')
                 indent = '\t' * (p.level() - n)
                 self.put('%s%s' % (indent, p.h))
