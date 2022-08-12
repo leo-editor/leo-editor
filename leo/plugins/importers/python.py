@@ -243,7 +243,7 @@ class Python_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Py_State.__repr__"""
         return f"Python_ScanState: {self.context}"
 

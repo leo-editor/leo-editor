@@ -56,7 +56,7 @@ class Tcl_ScanState:
             self.context = ''
             self.curlies = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Tcl_ScanState.__repr__"""
         return "Tcl_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)

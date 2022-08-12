@@ -138,7 +138,7 @@ class Typescript_ScanState:
 
     #@+others
     #@+node:ekr.20161118071747.15: *3* typescript_state.__repr__
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """ts_state.__repr__"""
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 

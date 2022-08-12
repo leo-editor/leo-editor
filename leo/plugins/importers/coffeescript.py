@@ -126,7 +126,7 @@ class Coffeescript_ScanState:
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* coffeescript_state.__repr__
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """CS_State.__repr__"""
         return '<CSState %r indent: %s>' % (self.context, self.indent)
 

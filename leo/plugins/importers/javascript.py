@@ -167,7 +167,7 @@ class JS_ScanState:
             self.context = ''
             self.curlies = self.parens = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """JS_ScanState.__repr__"""
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)

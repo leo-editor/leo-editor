@@ -64,7 +64,7 @@ class Cython_ScanState:
             self.curlies = self.parens = self.squares = 0
             self.indent = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Py_State.__repr__"""
         return self.short_description()
 

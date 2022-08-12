@@ -863,7 +863,7 @@ class ScanState:
 
     #@+others
     #@+node:ekr.20161118043146.1: *3* ScanState.__repr__
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """ScanState.__repr__"""
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)

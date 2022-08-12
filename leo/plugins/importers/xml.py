@@ -228,7 +228,7 @@ class Xml_ScanState:
             self.context = ''
             self.tag_level = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Xml_ScanState.__repr__"""
         return "Xml_ScanState context: %r tag_level: %s" % (
             self.context, self.tag_level)

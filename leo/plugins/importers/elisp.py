@@ -92,7 +92,7 @@ class Elisp_ScanState:
             self.context = ''
             self.parens = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Elisp_ScanState.__repr__"""
         return "Elisp_ScanState context: %r parens: %s" % (
             self.context, self.parens)

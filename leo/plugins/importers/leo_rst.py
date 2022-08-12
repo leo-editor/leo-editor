@@ -157,7 +157,7 @@ class Rst_ScanState:
         else:
             self.context = ''
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Rst_ScanState.__repr__"""
         return "Rst_ScanState context: %r " % (self.context)
 

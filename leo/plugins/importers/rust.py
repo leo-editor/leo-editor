@@ -141,7 +141,7 @@ class Rust_ScanState:
             self.curlies = 0
             self.parens = 0
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
         """Rust_ScanState.__repr__"""
         return (
             f"<Rust_ScanState "
