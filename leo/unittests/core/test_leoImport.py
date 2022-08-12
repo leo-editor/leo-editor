@@ -1703,7 +1703,7 @@ class TestJson (BaseTestImporter):
         """)
         # Round-tripping is not guaranteed.
         p = self.run_test(s, check_flag=False)
-        self.dump_tree(p, tag='Actual results...')
+        # self.dump_tree(p, tag='Actual results...')
         if 0:  self.check_outline(p, (
         ))
     #@-others
