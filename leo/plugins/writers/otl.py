@@ -7,12 +7,12 @@ import leo.plugins.writers.basewriter as basewriter
 #@+node:ekr.20140726091031.18083: ** class OtlWriter
 class OtlWriter(basewriter.BaseWriter):
     """The writer class for .otl files."""
-    # def __init__(self,c):
-        # super().__init__(c)
+
     #@+others
     #@+node:ekr.20140726091031.18082: *3* otlw.write
     def write(self, root):
         """Write all the *descendants* of an @auto-otl node."""
+        # g.printObj(g.splitLines(root.b), tag='oltw.write')
         self.write_root(root)
         for child in root.children():
             n = child.level()
@@ -29,7 +29,7 @@ class OtlWriter(basewriter.BaseWriter):
     def write_root(self, root):
         """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
-        for s in lines:
+        for s in lines:  # pragma: no cover (the root node usually contains no extra text).
             self.put(s)
     #@-others
 #@-others

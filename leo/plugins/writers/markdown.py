@@ -8,8 +8,7 @@ import leo.plugins.writers.basewriter as basewriter
 #@+node:ekr.20140726091031.18075: ** class MarkdownWriter
 class MarkdownWriter(basewriter.BaseWriter):
     """The writer class for markdown files."""
-    # def __init__(self,c):
-        # super().__init__(c)
+
     #@+others
     #@+node:ekr.20140726091031.18076: *3* mdw.write
     def write(self, root):
@@ -53,7 +52,7 @@ class MarkdownWriter(basewriter.BaseWriter):
     def write_root(self, root):
         """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
-        for s in lines:
+        for s in lines:  # pragma: no cover (the root node usually contains no extra text).
             self.put(s)
     #@-others
 #@-others

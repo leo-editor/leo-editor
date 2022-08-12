@@ -160,6 +160,32 @@ class BaseTestImporter(LeoUnitTest):
             self.check_round_trip(parent, test_s, strict_flag)
         return parent
     #@-others
+#@+node:ekr.20220812141705.1: ** class TestBaseWriter(BaseTestImporter)
+class TestBaseWriter(BaseTestImporter):
+
+    #@+others
+    #@+node:ekr.20220812141805.1: *3* TestBaseWriter.test_put_node_sentinel
+    def test_put_node_sentinel(self):
+
+        from leo.plugins.writers.basewriter import BaseWriter
+        c, root = self.c, self.c.p
+        at = c.atFileCommands
+        x = BaseWriter(c)
+        table = (
+            ('#', None),
+            ('<--', '-->'),
+        )
+        child = root.insertAsLastChild()
+        child.h = 'child'
+        grandchild = child.insertAsLastChild()
+        grandchild.h = 'grandchild'
+        greatgrandchild = grandchild.insertAsLastChild()
+        greatgrandchild.h = 'greatgrandchild'
+        for p in (root, child, grandchild, greatgrandchild):
+            for delim1, delim2 in table:
+                at.outputList = []
+                x.put_node_sentinel(p, delim1, delim2)
+    #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto(BaseTestImporter):
 
@@ -2140,8 +2166,12 @@ class TestMarkdown(BaseTestImporter):
             Section 3, line 1
         """
         p = self.run_test(s)
+        # A hack, to simulate an unexpected line in the root node.
+        # Alas, this does not affect coverage testing.
+        p.b = 'line in root node\n' + p.b
         self.check_outline(p, (
             (0, '',  # check_outlines ignores the first headline.
+                    'line in root node\n'
                     '@language md\n'
                     '@tabwidth -4\n'
             ),
@@ -2441,7 +2471,7 @@ class TestOrg(BaseTestImporter):
             Sec 3.1
         """
         p = self.run_test(s)
-        expected = (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                 '@language org\n'
                 '@tabwidth -4\n'
@@ -2465,8 +2495,7 @@ class TestOrg(BaseTestImporter):
                     'Sec 3.1\n'
                     '\n'
             ),
-        )
-        self.check_outline(p, expected)
+        ))
     #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
 
@@ -2612,7 +2641,7 @@ class TestOrg(BaseTestImporter):
             * Section 3 :tag3:tag4:
         """
         p = self.run_test(s)
-        expected = (
+        self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
                     '@language org\n'
                     '@tabwidth -4\n'
@@ -2622,8 +2651,7 @@ class TestOrg(BaseTestImporter):
             (1, 'Section 3 :tag3:tag4:',
                     '\n'
             ),
-        )
-        self.check_outline(p, expected)
+        ))
     #@-others
 #@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl(BaseTestImporter):
@@ -2651,8 +2679,12 @@ class TestOtl(BaseTestImporter):
             : Sec 3.1
         """
         p = self.run_test(s)
+        # A hack, to simulate an unexpected line in the root node.
+        # Alas, this does not affect coverage testing.
+        p.b = 'line in root node\n' + p.b
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
+                'line in root node\n'
                 '@language otl\n'
                 '@tabwidth -4\n'
             ),
