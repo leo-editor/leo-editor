@@ -173,7 +173,6 @@ class BaseTestWriter(LeoUnitTest):
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto(BaseTestImporter):
 
-    ### pass
     #@+others
     #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
     def test_importers_can_be_imported(self):
@@ -776,9 +775,8 @@ class TestCTextWriter (BaseTestWriter):
     #@+others
     #@+node:ekr.20220812144243.1: *3* TestCTextWriter.test_1
     def test_1(self):
-        
-        c, root = self.c, self.c.p
 
+        c, root = self.c, self.c.p
         child = root.insertAsLastChild()
         child.h = 'h'
         x = CTextWriter(c)
