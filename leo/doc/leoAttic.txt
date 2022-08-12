@@ -4326,6 +4326,766 @@ def on_event(self, *events):
         text = '%10s: %s' % (id_, kind + ev.type)
         assert text
         # self.label.set_html(text + '<br />' + self.label.html)
+#@+node:ekr.20220812084920.1: *3* Abandoned importers, writers & tests
+#@+node:ekr.20160504080826.1: *4* ../plugins/importers/leo_json.py
+"""The @auto importer for .json files."""
+#
+# This module must **not** be named json, to avoid conflicts with the json standard library.
+import json
+from typing import  Dict
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
+
+@others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .JSON files."""
+    JSON_Scanner(c).import_from_string(parent, s)
+
+importer_dict = {
+    '@auto': ['@auto-json'],
+    'func': do_import,
+}
+@language python
+@tabwidth -4
+#@+node:ekr.20160504080826.2: *5* class JSON_Scanner
+class JSON_Scanner:
+    """A class to read @auto-json files."""
+    # Not a subclass of the Importer class.
+
+    def __init__(self, c: Cmdr) -> None:
+        """The ctor for the JSON_Scanner class."""
+        self.c = c
+        self.language = 'plain'  # A reasonable value.
+
+    @others
+#@+node:ekr.20160504093537.1: *6* json.create_nodes
+def create_nodes(self, parent: Position, parent_d: Dict) -> None:
+    """Create the tree of nodes rooted in parent."""
+    d = self.gnx_dict
+    for child_gnx in parent_d.get('children'):
+        d2 = d.get(child_gnx)
+        if child_gnx in self.vnodes_dict:
+            # It's a clone.
+            v = self.vnodes_dict.get(child_gnx)
+            n = parent.numberOfChildren()
+            child = leoNodes.Position(v)
+            child._linkAsNthChild(parent, n)
+            # Don't create children again.
+        else:
+            child = parent.insertAsLastChild()
+            child.h = d2.get('h') or '<**no h**>'
+            child.b = d2.get('b') or ''
+            if d2.get('gnx'):
+                child.v.findIndex = gnx = d2.get('gnx')
+                self.vnodes_dict[gnx] = child.v
+            if d2.get('ua'):
+                child.u = d2.get('ua')
+            self.create_nodes(child, d2)
+#@+node:ekr.20160504092347.1: *6* json.import_from_string
+def import_from_string(self, parent: Position, s: str) -> None:
+    """JSON_Scanner.import_from_string."""
+    self.scan(s, parent)
+    # Importers should never dirty the outline.
+    # #1451: Do not change the outline's change status.
+    for p in parent.self_and_subtree():
+        p.clearDirty()
+#@+node:ekr.20160504092347.3: *7* json.checkBlanksAndTabs
+def checkBlanksAndTabs(self, s: str) -> bool:
+    """Check for intermixed blank & tabs."""
+    # Do a quick check for mixed leading tabs/blanks.
+    blanks = tabs = 0
+    for line in g.splitLines(s):
+        lws = line[0 : g.skip_ws(line, 0)]
+        blanks += lws.count(' ')
+        tabs += lws.count('\t')
+    ok = blanks == 0 or tabs == 0
+    if not ok:
+        g.es_print('intermixed blanks and tabs')
+    return ok
+#@+node:ekr.20160504092347.4: *7* json.regularizeWhitespace
+def regularizeWhitespace(self, s: str) -> str:
+    """Regularize leading whitespace in s:
+    Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+    This is only called for strict languages."""
+    changed = False
+    lines = g.splitLines(s)
+    result = []
+    tab_width = self.tab_width
+    if tab_width < 0:  # Convert tabs to blanks.
+        for line in lines:
+            i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]  # Use negative width.
+            if s != line:
+                changed = True
+            result.append(s)
+    elif tab_width > 0:  # Convert blanks to tabs.
+        for line in lines:
+            s = g.optimizeLeadingWhitespace(line, abs(tab_width))  # Use positive width.
+            if s != line:
+                changed = True
+            result.append(s)
+    if changed:
+        action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
+        message = 'inconsistent leading whitespace. %s' % action
+        g.es_print(message)
+    return ''.join(result)
+#@+node:ekr.20160504082809.1: *6* json.scan
+def scan(self, s: str, parent: Position) -> None:
+    """Create an outline from a MindMap (.csv) file."""
+    # pylint: disable=no-member
+    # pylint confuses this module with the stdlib json module
+    c = self.c
+    # Keys are gnx's. Values are vnode_dicts.
+    self.gnx_dict: Dict[str, Dict] = {}
+    self.tab_width = c.tab_width
+    # Keys are gnx's. Values are already-created vnodes.
+    self.vnodes_dict: Dict[str, VNode] = {}
+    try:
+        d = json.loads(s)
+        # g.printObj(d, tag='INPUT')
+        for d2 in d.get('nodes', []):
+            gnx = d2.get('gnx')
+            self.gnx_dict[gnx] = d2
+        top_d = d.get('top')
+        if top_d:
+            # Don't set parent.h or parent.gnx or parent.v.u.
+            parent.b = top_d.get('b') or ''
+            self.create_nodes(parent, top_d)
+            c.redraw()
+        return
+    except Exception:
+        # Fix #1098
+        try:
+            obj = json.loads(s)
+        except Exception:
+            g.error('Bad .json file: %s' % parent.h)
+            g.es_exception()
+            obj = s
+        parent.b = g.objToString(obj)
+        c.redraw()
+#@+node:ekr.20160504083330.1: *4* ../plugins/writers/leo_json.py
+"""The @auto write code for .json files."""
+#
+# This module must **not** be named json, to avoid conflicts with the json standard library.
+import copy
+import json
+import leo.plugins.writers.basewriter as basewriter
+
+@others
+writer_dict = {
+    '@auto': ['@auto-json',],
+    'class': JSON_Writer,
+    'extensions': ['.json',],
+}
+@language python
+@tabwidth -4
+#@+node:ekr.20160504083330.2: *5* class JSON_Writer
+class JSON_Writer(basewriter.BaseWriter):
+    """The writer class for @auto-json files."""
+    # No ctor.
+    @others
+#@+node:ekr.20160504083330.3: *6* json.write
+def write(self, root):
+    """Write all the @auto-json node."""
+    nodes = list(set([p.v for p in root.subtree()]))
+    nodes = [self.vnode_dict(v) for v in nodes]
+    d = {
+        'top': self.vnode_dict(root.v),
+        'nodes': nodes,
+    }
+    # pylint: disable=no-member
+    # pylint confuses this module with the stdlib json module
+    s = json.dumps(d,
+        sort_keys=True,
+        indent=2,  # Pretty print.
+        separators=(',', ': '))
+    self.put(s)
+    root.setVisited()
+    return True
+#@+node:ekr.20160504085408.1: *6* json.vnode_dict
+def vnode_dict(self, v):
+    """Return a json dict for v."""
+    return {
+        'gnx': v.gnx,
+        'h': v.h, 'b': v.b,
+        'ua': copy.deepcopy(v.u),
+        'children': [z.gnx for z in v.children]
+    }
+#@+node:ekr.20160412101008.1: *4* ../plugins/importers/ipynb.py
+"""The @auto importer for Jupyter (.ipynb) files."""
+import re
+from typing import Any, Dict, List, Optional
+from leo.core import leoGlobals as g  # Required.
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
+try:
+    import nbformat
+except ImportError:
+    nbformat = None
+@others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for jupyter notebooks."""
+    Import_IPYNB(c).import_from_string(parent, s)
+
+importer_dict = {
+    '@auto': [],  # '@auto-jupyter', '@auto-ipynb',],
+    'class': Import_IPYNB,
+    'func': do_import,
+    'extensions': ['.ipynb',],
+}
+@language python
+@tabwidth -4
+#@+node:ekr.20160412101537.2: *5* class Import_IPYNB
+class Import_IPYNB:
+    """A class to import .ipynb files."""
+
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
+        self.cell_n = 0  # The number of untitled cells.
+        self.parent: Position = None  # The parent for the next created node.
+        self.root: Position = None  # The root of the to-be-created outline.
+
+    @others
+#@+node:ekr.20180408112531.1: *6* ipynb.Entries & helpers
+#@+node:ekr.20160412101537.14: *7* ipynb.import_file
+def import_file(self, fn: str, root: Position) -> None:
+    """
+    Import the given .ipynb file.
+    https://nbformat.readthedocs.org/en/latest/format_description.html
+    """
+    # #1601:
+    if not nbformat:
+        g.es_print('import-jupyter-notebook requires nbformat package')
+        return
+    c = self.c
+    self.fn = fn
+    self.parent = None
+    self.root = root.copy()
+    d = self.parse(fn)
+    if not d:
+        return
+    self.do_prefix(d)
+    for cell in self.cells:
+        self.do_cell(cell)
+    self.indent_cells()
+    self.add_markup()
+    c.selectPosition(self.root)
+    c.redraw()
+#@+node:ekr.20160412103110.1: *7* ipynb.import_from_string
+def import_from_string(self, parent: Position, s: str) -> None:
+    """
+    @auto entry point. Called by code in leoImport.py.
+    """
+    # #1601:
+    if not nbformat:
+        g.es_print('import-jupyter-notebook requires nbformat package')
+        return
+    c = self.c
+    if not c:
+        return
+    fn = parent.atAutoNodeName()
+    if not fn:
+        g.trace('Can not happen: no file name')
+        return
+    self.import_file(fn, parent)
+    parent.b = (
+        '@nocolor-node\n\n' +
+        'Note: This node\'s body text is ignored when writing this file.\n\n' +
+        'The @others directive is not required\n'
+    )
+    # Importers should never dirty the outline.
+    # #1451: Do not change the outline's change status.
+    for p in parent.self_and_subtree():
+        p.clearDirty()
+#@+node:ekr.20160412101537.15: *7* ipynb.indent_cells & helper
+re_header1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+re_header2 = re.compile(r'^\s*([#]+)')
+
+def indent_cells(self) -> None:
+    """
+    Indent md nodes in self.root.children().
+    <h1> nodes and non-md nodes stay where they are,
+    <h2> nodes become children of <h1> nodes, etc.
+
+    Similarly for indentation based on '#' headline markup.
+    """
+    def to_int(n: Any) -> int:
+        try:
+            return int(n)
+        except Exception:
+            return None
+
+    # Careful: links change during this loop.
+    p = self.root.firstChild()
+    stack: List[Position] = []
+    after = self.root.nodeAfterTree()
+    root_level = self.root.level()
+    n = 1
+    while p and p != self.root and p != after:
+        # Check the first 5 lines of p.b.
+        lines = g.splitLines(p.b)
+        found = None
+        for i, s in enumerate(lines[:5]):
+            m1 = self.re_header1.search(s)
+            m2 = self.re_header2.search(s)
+            if m1:
+                n = to_int(m1.group(1))
+                if n is not None:
+                    found = i
+                    break
+            elif m2:
+                n = len(m2.group(1))
+                found = i
+                break
+        if found is None:
+            cell = self.get_ua(p, 'cell')
+            meta = cell.get('metadata')
+            n = meta and meta.get('leo_level')
+            n = to_int(n)
+        else:
+            p.b = ''.join(lines[:found] + lines[found + 1 :])
+        assert p.level() == root_level + 1, (p.level(), p.h)
+        stack = self.move_node(n, p, stack)
+        p.moveToNodeAfterTree()
+#@+node:ekr.20160412101537.9: *7* ipynb.add_markup
+def add_markup(self) -> None:
+    """Add @language directives, but only if necessary."""
+    for p in self.root.subtree():
+        level = p.level() - self.root.level()
+        language = g.getLanguageAtPosition(self.c, p)
+        cell = self.get_ua(p, 'cell')
+        # # Always put @language directives in top-level imported nodes.
+        if cell.get('cell_type') == 'markdown':
+            if level < 2 or language not in ('md', 'markdown'):
+                p.b = '@language md\n@wrap\n\n%s' % p.b
+        else:
+            if level < 2 or language != 'python':
+                p.b = '@language python\n\n%s' % p.b
+#@+node:ekr.20180408112600.1: *6* ipynb.JSON handlers
+#@+node:ekr.20160412101537.12: *7* ipynb.do_cell
+def do_cell(self, cell: Dict) -> None:
+
+    if self.is_empty_code(cell):
+        return
+    self.parent = cell_p = self.root.insertAsLastChild()
+    # Expand the node if metadata: collapsed is False
+    meta = cell.get('metadata')
+    collapsed = meta and meta.get('collapsed')
+    h = meta.get('leo_headline')
+    if not h:
+        self.cell_n += 1
+        h = 'cell %s' % self.cell_n
+    self.parent.h = h
+    if collapsed is not None and not collapsed:
+        cell_p.v.expand()
+    # Handle the body text.
+    val = cell.get('source')
+    if val and val.strip():
+        # add_markup will add directives later.
+        cell_p.b = val.strip() + '\n'
+    del cell['source']
+    self.set_ua(cell_p, 'cell', cell)
+#@+node:ekr.20160412101537.13: *7* ipynb.do_prefix
+def do_prefix(self, d: Dict) -> Any:
+    """Handle everything except the 'cells' attribute."""
+    if d:
+        # Expand the root if requested.
+        if 1:  # The @auto logic defeats this, but this is correct.
+            meta = d.get('metadata')
+            collapsed = meta and meta.get('collapsed')
+            if collapsed is not None and not collapsed:
+                self.root.v.expand()
+        self.cells = d.get('cells', [])
+        if self.cells:
+            del d['cells']
+        self.set_ua(self.root, 'prefix', d)
+#@+node:ekr.20160412101537.22: *7* ipynb.is_empty_code
+def is_empty_code(self, cell: Dict) -> bool:
+    """Return True if cell is an empty code cell."""
+    if cell.get('cell_type') != 'code':
+        return False
+    metadata = cell.get('metadata')
+    outputs = cell.get('outputs')
+    source = cell.get('source')
+    keys = sorted(metadata.keys())
+    if 'collapsed' in metadata:
+        keys.remove('collapsed')
+    return not source and not keys and not outputs
+#@+node:ekr.20160412101537.24: *7* ipynb.parse
+nb_warning_given = False
+
+def parse(self, fn: str) -> Optional[Dict]:
+    """Parse the file, which should be JSON format."""
+    if not nbformat:
+        if not self.nb_warning_given:
+            self.nb_warning_given = True
+            g.es_print('@auto for .ipynb files requires the nbformat package', color='red')
+        return None
+    if g.os_path_exists(fn):
+        with open(fn) as f:
+            # payload_source = f.name
+            payload = f.read()
+        try:
+            nb = nbformat.reads(payload, as_version=4)
+            return nb
+        except Exception:
+            g.es_exception()
+            return None
+    else:
+        g.es_print('not found', fn)
+        return None
+#@+node:ekr.20180408112636.1: *6* ipynb.Utils
+#@+node:ekr.20160412101845.24: *7* ipynb.get_file_name
+def get_file_name(self) -> str:
+    """Open a dialog to write a Jupyter (.ipynb) file."""
+    c = self.c
+    fn = g.app.gui.runOpenFileDialog(
+        c,
+        defaultextension=".ipynb",
+        filetypes=[
+            ("Jupyter notebooks", "*.ipynb"),
+            ("All files", "*"),
+        ],
+        title="Import Jupyter Notebook",
+    )
+    c.bringToFront()
+    return fn
+#@+node:ekr.20180409152738.1: *7* ipynb.get_ua
+def get_ua(self, p: Position, key: str=None) -> Dict:
+    """Return the ipynb uA. If key is given, return the inner dict."""
+    d = p.v.u.get('ipynb')
+    if not d:
+        return {}
+    if key:
+        return d.get(key)
+    return d
+#@+node:ekr.20160412101537.16: *7* ipynb.move_node
+def move_node(self, n: int, p: Position, stack: List[Position]) -> List[Position]:
+    """Move node to level n"""
+    # Cut back the stack so that p will be at level n (if possible).
+    if n is None:
+        n = 1
+    if stack:
+        stack = stack[:n]
+        if len(stack) == n:
+            prev = stack.pop()
+            p.moveAfter(prev)
+        else:
+            # p will be under-indented if len(stack) < n-1
+            # This depends on user markup, so it can't be helped.
+            parent = stack[-1]
+            n2 = parent.numberOfChildren()
+            p.moveToNthChildOf(parent, n2)
+    # Push p *after* moving p.
+    stack.append(p.copy())
+    return stack
+#@+node:ekr.20180407175655.1: *7* ipynb.set_ua
+def set_ua(self, p: Position, key: str, val: Any) -> None:
+    """Set p.v.u"""
+    d = p.v.u
+    d2 = d.get('ipynb') or {}
+    d2[key] = val
+    d['ipynb'] = d2
+    p.v.u = d
+#@+node:ekr.20160412101901.1: *4* ../plugins/writers/ipynb.py
+"""The @auto write code for jupyter (.ipynb) files."""
+import json
+import re
+import sys
+from leo.core import leoGlobals as g
+import leo.plugins.writers.basewriter as basewriter
+
+@others
+writer_dict = {
+    '@auto': ['@auto-jupyter', '@auto-ipynb',],
+    'class': Export_IPYNB,
+    'extensions': ['.ipynb',],
+}
+@language python
+@tabwidth -4
+#@+node:ekr.20160412101845.2: *5* class Export_IPYNB
+class Export_IPYNB(basewriter.BaseWriter):
+    """A class to export outlines to .ipynb files."""
+
+    def __init__(self, c):
+        """Ctor for Import_IPYNB class."""
+        super().__init__(c)
+        self.c = c  # Commander of present outline.
+        self.root = None  # The root of the outline.
+
+    @others
+#@+node:ekr.20160412114852.1: *6*  ipy_w.Entries
+#@+node:ekr.20160412101845.4: *7* ipy_w.export_outline
+def export_outline(self, root, fn=None):
+    """
+    Entry point for export-jupyter-notebook
+    Export the given .ipynb file.
+    """
+    self.root = root
+    if not fn:
+        fn = self.get_file_name()
+    if not fn:
+        return False
+    try:
+        nb = self.make_notebook()
+        s = self.convert_notebook(nb)
+    except Exception:
+        g.es_exception()
+        return False
+    if not s:
+        return False
+    s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
+    try:
+        with open(fn, 'wb') as f:
+            f.write(s)
+        g.es_print('wrote: %s' % fn)
+    except IOError:
+        g.es_print('can not open: %s' % fn)
+    return True
+#@+node:ekr.20160412114239.1: *7* ipy_w.write: @auto entry
+def write(self, root):
+    """
+    Export_IPYNB: entry point for @auto writes.
+    Signature must match signature of BaseWriter.write().
+    """
+    if not root:
+        g.trace('can not happen: no root')
+        return False
+    self.root = root
+    try:
+        nb = self.make_notebook()
+        s = self.convert_notebook(nb)
+    except Exception:
+        g.es_exception()
+        return False
+    if not s:
+        return False
+    self.put(g.toUnicode(s))
+    return True
+#@+node:ekr.20180409081735.1: *6* ipy_w.cell_type
+def cell_type(self, p):
+    """Return the Jupyter cell type of p.b, honoring ancestor directives."""
+    c = self.c
+    language = g.getLanguageAtPosition(c, p)
+    return 'code' if language == 'python' else 'markdown'
+#@+node:ekr.20180410045324.1: *6* ipy_w.clean_headline
+def clean_headline(self, s):
+    """
+    Return a cleaned version of a headline.
+
+    Used to clean section names and the [ ] part of markdown links.
+    """
+    aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
+    return ''.join(aList).rstrip('-').strip()
+#@+node:ekr.20180407191227.1: *6* ipy_w.convert_notebook
+def convert_notebook(self, nb):
+    """Convert the notebook to a string."""
+    # Do *not* catch exceptions here.
+    s = json.dumps(nb,
+        sort_keys=True,
+        indent=4, separators=(',', ': '))
+    return g.toUnicode(s)
+#@+node:ekr.20160412101845.21: *6* ipy_w.default_metadata
+def default_metadata(self):
+    """Return the default top-level metadata."""
+    n1, n2 = sys.version_info[0], sys.version_info[1]
+    version = n1
+    long_version = '%s.%s' % (n1, n2)
+    return {
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python %s" % version,
+                "language": "python",
+                "name": "python%s" % version,
+             },
+             "language_info": {
+                "codemirror_mode": {
+                    "name": "ipython",
+                    "version": version,
+                },
+              "file_extension": ".py",
+              "mimetype": "text/x-python",
+              "name": "python",
+              "nbconvert_exporter": "python",
+              "pygments_lexer": "ipython3",
+              "version": long_version,
+             }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 0
+    }
+#@+node:ekr.20180408103729.1: *6* ipy_w.get_file_name
+def get_file_name(self):
+    """Open a dialog to write a Jupyter (.ipynb) file."""
+    c = self.c
+    fn = g.app.gui.runSaveFileDialog(
+        c,
+        defaultextension=".ipynb",
+        filetypes=[
+            ("Jupyter files", "*.ipynb"),
+            ("All files", "*"),
+        ],
+        title="Export To Jupyter File",
+    )
+    c.bringToFront()
+    return fn
+#@+node:ekr.20180407193222.1: *6* ipy_w.get_ua
+def get_ua(self, p, key=None):
+    """Return the ipynb uA. If key is given, return the inner dict."""
+    d = p.v.u.get('ipynb')
+    if not d:
+        return {}
+    if key:
+        return d.get(key)
+    return d
+#@+node:ekr.20180407191219.1: *6* ipy_w.make_notebook
+def make_notebook(self):
+    """Create a JSON notebook"""
+    root = self.root
+    nb = self.get_ua(root, key='prefix') or self.default_metadata()
+    # Write the expansion status of the root.
+    meta = nb.get('metadata') or {}
+    meta['collapsed'] = not root.isExpanded()
+    nb['metadata'] = meta
+    # Put all the cells.
+    nb['cells'] = [self.put_body(p) for p in root.subtree()]
+    return nb
+#@+node:ekr.20180407195341.1: *6* ipy_w.put_body & helpers
+def put_body(self, p):
+    """Put the body text of p, as an element of dict d."""
+    cell = self.get_ua(p, 'cell') or {}
+    meta = cell.get('metadata') or {}
+    self.update_cell_properties(cell, meta, p)
+    self.update_cell_body(cell, meta, p)
+    # g.printObj(meta, tag='metadata')
+    # g.printObj(cell, tag='cell')
+    return cell
+#@+node:ekr.20180409120613.1: *7* ipy_w.update_cell_body
+pat1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+pat2 = re.compile(r'^\s*([#]+)')
+
+def update_cell_body(self, cell, meta, p):
+    """Create a new body text, depending on kind."""
+
+    def clean(lines):
+        lines = [z for z in lines if not g.isDirective(z)]
+        s = ''.join(lines).strip() + '\n'
+        return g.splitLines(s)
+
+    kind = self.cell_type(p)
+    lines = g.splitLines(p.b)
+    level = p.level() - self.root.level()
+    if kind == 'markdown':
+        # Remove all header markup lines.
+        lines = [z for z in lines if
+            not self.pat1.match(z) and not self.pat2.match(z)]
+        lines = clean(lines)
+        # Insert a new header markup line.
+        if level > 0:
+            lines.insert(0, '%s %s\n' % ('#' * level, self.clean_headline(p.h)))
+    else:
+        # Remember the level for the importer.
+        meta['leo_level'] = level
+        lines = clean(lines)
+        # Remove leading whitespace lines inserted during import.
+    cell['source'] = lines
+#@+node:ekr.20180409120454.1: *7* ipy_w.update_cell_properties
+def update_cell_properties(self, cell, meta, p):
+    """Update cell properties."""
+    # Update the metadata.
+    meta['leo_headline'] = p.h
+    meta['collapsed'] = not p.isExpanded()
+    # "cell_type" should not be in the metadata.
+    if meta.get('cell_type'):
+        del meta['cell_type']
+    cell['metadata'] = meta
+    # Update required properties.
+    cell['cell_type'] = kind = self.cell_type(p)
+    if kind == 'code':
+        if cell.get('outputs') is None:
+            cell['outputs'] = []
+        if cell.get('execution_count') is None:
+            cell['execution_count'] = 0
+    else:
+        # These properties are invalid!
+        for prop in ('execution_count', 'outputs'):
+            if cell.get(prop) is not None:
+                del cell[prop]
+    return kind
+
+#@+node:ekr.20220809160909.1: *4* class TestIpynb (BaseTestImporter)
+class TestIpynb (BaseTestImporter):
+
+    ext = '.ipynb'
+
+    @others
+#@+node:ekr.20220809160939.1: *4* class TestJson (BaseTestImporter)
+class TestJson (BaseTestImporter):
+
+    ext = '.json'
+
+    @others
+#@+node:ekr.20220811131926.1: *5* TestJson.test_json_1
+def test_json_1(self):
+
+    s = textwrap.dedent(r"""
+        {
+          "nodes": [
+            {
+              "b": "def ham():\n    pass",
+              "children": [],
+              "gnx": "ekr.20220811162311.1",
+              "h": "ham",
+              "ua": {}
+            },
+            {
+              "b": "def spam():\n    pass\n",
+              "children": [
+                "ekr.20220811162311.1"
+              ],
+              "gnx": "ekr.20220811130300.1",
+              "h": "spam",
+              "ua": {}
+            },
+            {
+              "b": "def eggs():\n    pass",
+              "children": [],
+              "gnx": "ekr.20220811130530.1",
+              "h": "eggs",
+              "ua": {}
+            }
+          ],
+          "top": {
+            "b": "",
+            "children": [
+              "ekr.20220811130300.1",
+              "ekr.20220811130530.1"
+            ],
+            "gnx": "ekr.20220811130232.1",
+            "h": "@auto-json c:\\test\\at-auto-json-test.py",
+            "ua": {}
+          }
+        }
+    """)
+    # Round-tripping is not guaranteed.
+    p = self.run_test(s, check_flag=False)
+    # self.dump_tree(p, tag='Actual results...')
+    if 0:  self.check_outline(p, (
+    ))
+#@+node:ekr.20220811130232.1: *4* @@auto-json c:\test\at-auto-json-test.py
+#@+node:ekr.20220811130300.1: *5* spam
+def spam():
+    pass
+#@+node:ekr.20220811162311.1: *6* ham
+def ham():
+    pass
+#@+node:ekr.20220811130530.1: *5* eggs
+def eggs():
+    pass
 #@+node:ekr.20190412154439.1: ** Abandoned projects
 #@+node:ekr.20211226081112.1: *3* script: iterative traverse
 # See ENB: Recent studies and thoughts.

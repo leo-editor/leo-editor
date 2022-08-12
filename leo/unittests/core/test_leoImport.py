@@ -1646,67 +1646,6 @@ class TestIni(BaseTestImporter):
 
     #@+others
     #@-others
-#@+node:ekr.20220809160909.1: ** class TestIpynb (BaseTestImporter)
-class TestIpynb (BaseTestImporter):
-
-    ext = '.ipynb'
-
-    #@+others
-    #@-others
-#@+node:ekr.20220809160939.1: ** class TestJson (BaseTestImporter)
-class TestJson (BaseTestImporter):
-
-    ext = '.json'
-
-    #@+others
-    #@+node:ekr.20220811131926.1: *3* TestJson.test_json_1
-    def test_json_1(self):
-
-        s = textwrap.dedent(r"""
-            {
-              "nodes": [
-                {
-                  "b": "def ham():\n    pass",
-                  "children": [],
-                  "gnx": "ekr.20220811162311.1",
-                  "h": "ham",
-                  "ua": {}
-                },
-                {
-                  "b": "def spam():\n    pass\n",
-                  "children": [
-                    "ekr.20220811162311.1"
-                  ],
-                  "gnx": "ekr.20220811130300.1",
-                  "h": "spam",
-                  "ua": {}
-                },
-                {
-                  "b": "def eggs():\n    pass",
-                  "children": [],
-                  "gnx": "ekr.20220811130530.1",
-                  "h": "eggs",
-                  "ua": {}
-                }
-              ],
-              "top": {
-                "b": "",
-                "children": [
-                  "ekr.20220811130300.1",
-                  "ekr.20220811130530.1"
-                ],
-                "gnx": "ekr.20220811130232.1",
-                "h": "@auto-json c:\\test\\at-auto-json-test.py",
-                "ua": {}
-              }
-            }
-        """)
-        # Round-tripping is not guaranteed.
-        p = self.run_test(s, check_flag=False)
-        # self.dump_tree(p, tag='Actual results...')
-        if 0:  self.check_outline(p, (
-        ))
-    #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
 
