@@ -96,8 +96,6 @@
 <v t="ekr.20220213142735.1"><vh>function: full_match</vh></v>
 </v>
 </v>
-<v t="ekr.20201013034742.25"><vh>@@button test-jup-export</vh></v>
-<v t="ekr.20201013034742.26"><vh>@@button test-jup-import</vh></v>
 <v t="ekr.20220211154839.1"><vh>@@button test-show-clones</vh>
 <v t="ekr.20191010112910.1"><vh>@g.command('show-clone-ancestors')</vh></v>
 </v>
@@ -161,6 +159,9 @@
 </v>
 <v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
 <v t="ekr.20211107080227.7"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20220811130331.1"><vh>@data:@auto-json c:\test\at-auto-json-test.py</vh>
+<v t="ekr.20220811162331.1"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
@@ -521,10 +522,8 @@
 <v t="ekr.20140723122936.18141"><vh>@file ../plugins/importers/elisp.py</vh></v>
 <v t="ekr.20140723122936.18138"><vh>@file ../plugins/importers/html.py</vh></v>
 <v t="ekr.20140723122936.18142"><vh>@file ../plugins/importers/ini.py</vh></v>
-<v t="ekr.20160412101008.1"><vh>@file ../plugins/importers/ipynb.py</vh></v>
 <v t="ekr.20140723122936.18143"><vh>@file ../plugins/importers/java.py</vh></v>
 <v t="ekr.20140723122936.18144"><vh>@file ../plugins/importers/javascript.py</vh></v>
-<v t="ekr.20160504080826.1"><vh>@file ../plugins/importers/leo_json.py</vh></v>
 <v t="ekr.20140723122936.18151"><vh>@file ../plugins/importers/leo_rst.py</vh></v>
 <v t="ekr.20161108125620.1"><vh>@file ../plugins/importers/linescanner.py</vh></v>
 <v t="ekr.20170530024520.2"><vh>@file ../plugins/importers/lua.py</vh></v>
@@ -641,16 +640,13 @@
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file ../plugins/writers/__init__.py</vh></v>
-<v t="ekr.20140726091031.18143"><vh>@file ../plugins/writers/basewriter.py</vh></v>
 <v t="tbrown.20140804103545.29975"><vh>@file ../plugins/writers/ctext.py</vh></v>
 <v t="ekr.20141116100154.2"><vh>@file ../plugins/writers/dart.py</vh></v>
-<v t="ekr.20160412101901.1"><vh>@file ../plugins/writers/ipynb.py</vh></v>
-<v t="ekr.20160504083330.1"><vh>@file ../plugins/writers/leo_json.py</vh></v>
-<v t="ekr.20180202053206.1"><vh>@file ../plugins/writers/treepad.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file ../plugins/writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file ../plugins/writers/markdown.py</vh></v>
 <v t="ekr.20140726091031.18079"><vh>@file ../plugins/writers/org.py</vh></v>
 <v t="ekr.20140726091031.18078"><vh>@file ../plugins/writers/otl.py</vh></v>
+<v t="ekr.20180202053206.1"><vh>@file ../plugins/writers/treepad.py</vh></v>
 </v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
@@ -689,6 +685,12 @@
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
+<v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
+<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
+<v t="ekr.20210904064440.2"><vh>@file ../unittests/test_importers.py</vh></v>
+<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
+<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
+<v t="ekr.20220812224747.1"><vh>@file ../unittests/test_writers.py</vh></v>
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
 <v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
 <v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
@@ -699,15 +701,14 @@
 <v t="ekr.20210902073413.1"><vh>@file ../unittests/core/test_leoAst.py</vh></v>
 <v t="ekr.20210901172411.1"><vh>@file ../unittests/core/test_leoAtFile.py</vh></v>
 <v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
-<v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
 <v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
+<v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
 <v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
 <v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
 <v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
 <v t="ekr.20210829124658.1"><vh>@file ../unittests/core/test_leoFind.py</vh></v>
 <v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
 <v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
-<v t="ekr.20210904064440.2"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
@@ -717,10 +718,6 @@
 <v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
 </v>
-<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
-<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
-<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
-<v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
@@ -732,13 +729,12 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">show-bindings
-show-commands
-find-non-calls
-pylint
+<t tx="ekr.20150425145248.1">test-import
 test-one
-test-import
-backup</t>
+pylint
+backup
+show-commands
+show-bindings</t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
 # Format: language-name: command
 
@@ -1007,15 +1003,16 @@ print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
 import os
 leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
 os.chdir(leo_editor_dir)
-prolog = 'python3 -m unittest leo.unittests'
-# command = f"{prolog}.commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606"
-# command = f"{prolog}.commands.test_editCommands.TestEditCommands.test_merge_node_with_prev_node"
-# command = f"{prolog}.commands.test_editCommands.TestEditCommands.test_merge_node_with_next_node"
-# command = f"{prolog}.test_gui.TestQtGui.test_put_html_links"
-# command = f"{prolog}.core.test_leoConfig.TestConfig.test_local_settings_c_page_width"
-# command = f"{prolog}.core.test_leoserver.TestLeoServer.test_find_commands"
-command = f"{prolog}.core.test_leoNodes.TestNodes.test_p_moveToVisBack_in_a_chapter"
-g.execute_shell_commands(command)</t>
+# prolog = 'python3 -m unittest leo.unittests'
+# test = 'commands.test_convertCommands.TestAddMypyAnnotations.test_bug_2606'
+# test = 'commands.test_editCommands.TestEditCommands.test_merge_node_with_prev_node'
+# test = 'commands.test_editCommands.TestEditCommands.test_merge_node_with_next_node'
+# test = 'test_gui.TestQtGui.test_put_html_links'
+# test = 'core.test_leoConfig.TestConfig.test_local_settings_c_page_width'
+# test = 'core.test_leoserver.TestLeoServer.test_find_commands'
+# test = 'core.test_leoNodes.TestNodes.test_p_moveToVisBack_in_a_chapter'
+test = 'core.test_leoImport.TestPython.test_short_file'
+g.execute_shell_commands(f"python3 -m unittest leo.unittests.{test}")</t>
 <t tx="ekr.20201013034659.1"></t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
@@ -1534,15 +1531,13 @@ importer_dict = {
 <t tx="ekr.20201013034742.9">class {{cap_name}}_Importer(Importer):
     """The importer for the {{name}} lanuage."""
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, c):
         """{{cap_name}}_Importer.__init__"""
         # Init the base class.
         Importer.__init__(self,
-            importCommands,
-            atAuto = atAuto,
+            c,
             language = '{{language}}',
             state_class = {{cap_name}}_ScanState,
-            strict = {{strict}},
         )
         
     @others
@@ -1777,47 +1772,6 @@ unlList = [
 
 p = findUNL(unlList, c)
 print(p and p.h or '&lt;None&gt;')</t>
-<t tx="ekr.20201013034742.25"># g.cls()
-import re
-import sys
-if 1:
-    h = 'import-neural-networks.ipynb'
-    fn = r'c:\test\export-neural-networds.ipynb'
-else:
-    h = 'import-Julia.ipynb'
-    fn = r'c:\test\export-julia.ipynb'
-p = g.findTopLevelNode(c, h)
-assert p, h
-@others
-Export_IPYNB(c).export_outline(p, fn=fn)
-</t>
-<t tx="ekr.20201013034742.26">"""Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb"""
-import nbformat
-@others
-g.cls()
-if 0:
-    # fn = r'c:\test\Julia.ipynb'
-    fn = r'c:\test\export-neural-networds.ipynb'
-    h = 'import-Julia.ipynb'
-else:
-    h = fn = r'c:\test\04_Neural_Networks.ipynb'
-root = g.findTopLevelNode(c, h)
-if root:
-    while root.hasChildren():
-        root.lastChild().doDelete()
-else:
-    p = c.lastTopLevel()
-    root = p.insertAfter()
-    root.h = h
-x = Import_IPYNB(c)
-x.import_file(fn, root)
-if not g.unitTesting:
-    # These don't work when running unit tests.
-    c.selectPosition(root)
-    # c.expandAllSubheads()
-    c.redraw() 
-    g.es_print('done')
-</t>
 <t tx="ekr.20220211154839.1">g.cls()
 @others
 p = c.lastTopLevel()
@@ -2044,6 +1998,15 @@ unl: section 1
 gnx: ekr.20210911191226.20
 unl: section 2
 </t>
+<t tx="ekr.20220811130331.1">gnx: ekr.20220811130232.1
+</t>
+<t tx="ekr.20220811162331.1">gnx: ekr.20220811130300.1
+unl: spam
+gnx: ekr.20220811162311.1
+unl: spam--&gt;ham
+gnx: ekr.20220811130530.1
+unl: eggs
+</t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
@@ -2265,7 +2228,7 @@ efc.GitDiffController(c).diff_two_revs(
     # rev1='f85969ae8cb',  # Before.
     # rev2='dd0fadf7b15',  # After.
     rev1='devel',               # Old
-    rev2='ekr-6.6.4-convert',   # New
+    rev2='ekr-new-importers',   # New
 )
 </t>
 <t tx="ekr.20180816105258.1">g.cls()
