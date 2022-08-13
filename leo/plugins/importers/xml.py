@@ -172,7 +172,6 @@ class Xml_Importer(Importer):
         if tag in self.stack:
             while self.stack:
                 top = self.stack.pop()
-                # if trace: g.trace('POP: ', top)
                 if top == tag:
                     return
     #@+node:ekr.20161121212858.1: *3* xml_i.is_ws_line
