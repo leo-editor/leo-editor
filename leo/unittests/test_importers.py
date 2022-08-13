@@ -1679,6 +1679,64 @@ class TestIni(BaseTestImporter):
     ext = '.ini'
 
     #@+others
+    #@+node:ekr.20220813054952.1: *3* TestIni.test_1
+    def test_1(self):
+        # This is just a coverage test for the importer.
+        s = """
+                ATlanguage ini
+                # Config file for mypy
+
+                # Note: Do not put comments after settings.
+
+                [mypy]
+                python_version = 3.9
+                ignore_missing_imports  = True
+                incremental = True
+                # cache_dir=nul
+                cache_dir = mypy_stubs
+                show_error_codes = True
+                check_untyped_defs = True
+                strict_optional = False
+                disable_error_code=attr-defined
+
+                # For v0.931, per https://github.com/python/mypy/issues/11936
+
+                exclude =
+
+                    # The first line must *not* start with |.
+                    # Thereafter, each line *must* start with |.
+                    # No trailing '|' on last entry!
+
+                    # Directories...
+                    doc/|dist/|editpane/|examples/|extensions/|external/|modes/|obsolete/|scripts/|themes/|unittests/|www/|
+
+
+                # Settings for particular files...
+
+                # Core files that should be fully annotated...
+                [mypy-leo.core.leoGlobals,leo.core.leoNodes,leo.core.leoAst,leo.core.leoBackground]
+                disallow_untyped_defs = True
+                disallow_incomplete_defs = False
+
+                # Importer and writer plugins should be fully annotated...
+                [mypy-leo.plugins.importers.*,leo.plugins.writers.*]
+                disallow_untyped_defs = True
+                disallow_incomplete_defs = True
+
+                # mypy generates lots of useless errors for leoQt.py
+                [mypy-leo.core.leoQt,leo.core.leoQt5,leo.core.leoQt6]
+                follow_imports = skip
+                ignore_missing_imports  = True
+
+                # don't require annotations for leo/modes
+                [mypy-leo.modes]
+                follow_imports = skip
+                ignore_missing_imports  = True
+                disallow_untyped_defs = False
+                disallow_incomplete_defs = False
+
+        """.replace('AT', '@')
+        self.run_test(s, check_flag=False)
     #@-others
 #@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
