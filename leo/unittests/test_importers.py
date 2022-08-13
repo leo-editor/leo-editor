@@ -2706,6 +2706,11 @@ class TestOrg(BaseTestImporter):
             * Section 2 :tag2:
             * Section 3 :tag3:tag4:
         """
+        c = self.c
+        # Create the TagController by hand.
+        from leo.plugins.nodetags import TagController
+        c.theTagController = TagController(c)
+        # Run the test.
         p = self.run_test(s)
         self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
