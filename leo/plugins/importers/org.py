@@ -63,7 +63,7 @@ class Org_Importer(Importer):
     def add_headline_tags(self, s: str) -> None:
         """
         Support for #578: org-mode tags.
-        
+
         Call tag_controller.add_tag for all tags at the end of the headline s.
         """
         c = self.c
