@@ -119,7 +119,7 @@ class C_Importer(Importer):
             if this_state.level() > prev_state.level():
                 return i + 1
             i += 1
-        return None
+        return None  # pragma: no cover
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:

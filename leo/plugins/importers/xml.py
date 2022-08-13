@@ -203,7 +203,7 @@ class Xml_Importer(Importer):
         line = lines[i]
         prev_state = line_states[i - 1] if i > 0 else self.state_class()
         this_state = line_states[i]
-        if 0:
+        if 0:  # pragma: no cover
             g.trace(
                 f"{this_state.tag_level > prev_state.tag_level:1} "
                 f"i: {i} "

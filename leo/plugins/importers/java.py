@@ -90,7 +90,7 @@ class Java_Importer(Importer):
             if this_state.level() > prev_state.level():
                 return i + 1
             i += 1
-        return None
+        return None  # pragma: no cover
     #@-others
 #@+node:ekr.20161126161824.6: ** class class Java_ScanState
 class Java_ScanState:
