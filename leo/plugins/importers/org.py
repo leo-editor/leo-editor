@@ -3,7 +3,6 @@
 """The @auto importer for the org language."""
 import re
 from typing import Any, Dict, List
-from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
@@ -26,13 +25,7 @@ class Org_Importer(Importer):
 
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Org_Importer.gen_lines. Allocate nodes to lines."""
-        c = self.c
         assert parent == self.root
-        # Support for #578: org-mode tags. Load the nodetags plugin.
-        tag_controller = getattr(c, 'theTagController', None)
-        if not tag_controller:
-            g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
-            tag_controller = getattr(c, 'theTagController', None)
         p = self.root
         parents: List[Position] = [self.root]
         # Use a dict instead of creating a new VNode slot.
@@ -41,7 +34,7 @@ class Org_Importer(Importer):
             m = self.org_pattern.match(line)
             if m:
                 level, headline = len(m.group(1)), m.group(2)
-                self.add_headline_tags(headline, tag_controller)
+                self.add_headline_tags(headline)
                 # Cut back the stack.
                 parents = parents[:level]
                 # Create any needed placeholders.
@@ -67,14 +60,19 @@ class Org_Importer(Importer):
     # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
     tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
 
-    def add_headline_tags(self, s: str, tag_controller: Any) -> None:
+    def add_headline_tags(self, s: str) -> None:
         """
+        Support for #578: org-mode tags.
+        
         Call tag_controller.add_tag for all tags at the end of the headline s.
         """
+        c = self.c
+        tag_controller: Any = getattr(c, 'theTagController', None)
         if not tag_controller:
-            return
+            # It would be useless to load the nodetags plugin.
+            return  # pragma: no cover
         m = self.tag_pattern.search(s)
-        if not m:
+        if not m:  # pragma: no cover
             return
         i = m.start()
         tail = s[i + 1 : -1].strip()
