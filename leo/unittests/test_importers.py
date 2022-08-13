@@ -2840,6 +2840,7 @@ class TestPascal(BaseTestImporter):
             begin
             x:= 4;
             Y := x/2;
+            z := 'abc'
             end;
 
             end. // interface
@@ -2892,6 +2893,7 @@ class TestPascal(BaseTestImporter):
                     'begin\n'
                     'x:= 4;\n'
                     'Y := x/2;\n'
+                    "z := 'abc'\n"
                     'end;\n'
                     '\n'
             ),
