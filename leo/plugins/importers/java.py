@@ -35,16 +35,6 @@ class Java_Importer(Importer):
     java_keywords_pattern = re.compile(java_keywords)
 
     #@+others
-    #@+node:ekr.20161205042019.2: *3* java_i.match_name_patterns
-    java_name_pattern = re.compile(r'\s*([\w:]+)')
-
-    def match_name_patterns(self, line: str) -> None:
-        """Set self.headline if the line defines a typedef name."""
-        m = self.java_name_pattern.match(line)
-        if m:
-            word = m.group(1)
-            if not self.java_types_pattern.match(word):
-                self.headline = word
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
     # Define patterns that can start a block
     java_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (java_types_list))
