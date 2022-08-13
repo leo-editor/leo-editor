@@ -85,10 +85,10 @@ class Coffeescript_Importer(Python_Importer):
         lines, line_states = self.lines, self.line_states
         line = lines[i]
         if line.isspace() or line_states[i].in_context():
-            return None
+            return None  # pragma: no cover (defensive)
         prev_state = line_states[i - 1] if i > 0 else self.state_class()
         if prev_state.in_context():
-            return None
+            return None  # pragma: no cover (defensive)
         line = lines[i]
         for pattern in self.pattern_table:
             if pattern.match(line):
@@ -131,10 +131,6 @@ class Coffeescript_ScanState:
         return '<CSState %r indent: %s>' % (self.context, self.indent)
 
     __str__ = __repr__
-    #@+node:ekr.20161119115413.1: *3* coffeescript_state.level
-    def level(self) -> int:
-        """Coffeescript_ScanState.level."""
-        return self.indent
     #@+node:ekr.20161118140100.1: *3* coffeescript_state.in_context
     def in_context(self) -> bool:
         """True if in a special context."""

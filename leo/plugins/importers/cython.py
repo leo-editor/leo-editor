@@ -37,10 +37,13 @@ class Cython_Importer(Python_Importer):
 
         Otherwise, return the index of the first line of the body.
         """
-        line = self.lines[i]
+        lines, line_states = self.lines, self.line_states
+        line = lines[i]
+        if line.isspace() or line_states[i].in_context():
+            return None  # pragma: no cover (defensive)
         m = self.class_pat.match(line) or self.def_pat.match(line)
         if not m:
-            return None
+            return None  # pragma: no cover (defensive)
         newlines = m.group(0).count('\n')
         return i + newlines + 1
     #@-others
@@ -70,7 +73,7 @@ class Cython_ScanState:
 
     __str__ = __repr__
 
-    def short_description(self) -> str:  # pylint: disable=no-else-return
+    def short_description(self) -> str:  # pragma: no cover
         bsnl = 'bs-nl' if self.bs_nl else ''
         context = f"{self.context} " if self.context else ''
         indent = self.indent
@@ -80,10 +83,6 @@ class Cython_ScanState:
         return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
 
     #@+others
-    #@+node:ekr.20220730072650.1: *3* cython_state.level
-    def level(self) -> int:
-        """Cython_ScanState.level."""
-        return self.indent
     #@+node:ekr.20220730072654.1: *3* cython_state.in_context
     def in_context(self) -> bool:
         """Cython_State.in_context"""
