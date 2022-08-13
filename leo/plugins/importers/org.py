@@ -2,7 +2,8 @@
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
 import re
-from typing import Dict, List
+from typing import Any, Dict, List
+from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
@@ -25,7 +26,13 @@ class Org_Importer(Importer):
 
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Org_Importer.gen_lines. Allocate nodes to lines."""
+        c = self.c
         assert parent == self.root
+        # Support for #578: org-mode tags. Load the nodetags plugin.
+        tag_controller = getattr(c, 'theTagController', None)
+        if not tag_controller:
+            g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
+            tag_controller = getattr(c, 'theTagController', None)
         p = self.root
         parents: List[Position] = [self.root]
         # Use a dict instead of creating a new VNode slot.
@@ -34,6 +41,7 @@ class Org_Importer(Importer):
             m = self.org_pattern.match(line)
             if m:
                 level, headline = len(m.group(1)), m.group(2)
+                self.add_headline_tags(headline, tag_controller)
                 # Cut back the stack.
                 parents = parents[:level]
                 # Create any needed placeholders.
@@ -54,6 +62,25 @@ class Org_Importer(Importer):
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
+    #@+node:ekr.20220813162702.1: *3* org_i.add_headline_tags
+    # Recognize :tag: syntax only at the end of headlines.
+    # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
+    tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
+
+    def add_headline_tags(self, s: str, tag_controller: Any) -> None:
+        """
+        Call tag_controller.add_tag for all tags at the end of the headline s.
+        """
+        if not tag_controller:
+            return
+        m = self.tag_pattern.search(s)
+        if not m:
+            return
+        i = m.start()
+        tail = s[i + 1 : -1].strip()
+        tags = tail.split(':')
+        for tag in tags:
+            tag_controller.add_tag(self.root, tag)
     #@-others
 #@-others
 
