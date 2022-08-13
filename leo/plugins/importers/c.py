@@ -10,10 +10,6 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
 
-    # For cleaning headlines.
-    c_name_pattern = re.compile(r'\s*([\w:]+)')
-    headline = None
-
     # #545: Support @data c_import_typedefs.
     type_keywords = [
         'auto', 'bool', 'char', 'const', 'double',
@@ -41,14 +37,6 @@ class C_Importer(Importer):
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
-    def match_name_patterns(self, line: str) -> None:
-        """Set self.headline if the line defines a typedef name."""
-        m = self.c_name_pattern.match(line)
-        if m:
-            word = m.group(1)
-            if not self.c_types_pattern.match(word):
-                self.headline = word
     #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
     # Patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
