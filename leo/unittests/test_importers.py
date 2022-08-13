@@ -465,6 +465,34 @@ class TestC(BaseTestImporter):
                 '\n'
             ),
         ))
+    #@+node:ekr.20220812232648.1: *3* TestC.test_template
+    def test_template(self):
+
+        s = """
+            template <class T>
+            T GetMax (T a, T b) {
+              T result;
+              result = (a>b)? a : b;
+              return (result);
+            }
+        """
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                '@others\n'
+                '@language c\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'template <class T>',
+                    'template <class T>\n'
+                    'T GetMax (T a, T b) {\n'
+                    '  T result;\n'
+                    '  result = (a>b)? a : b;\n'
+                    '  return (result);\n'
+                    '}\n'
+                    '\n'
+            ),
+        ))
     #@-others
 #@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
 class TestCoffeescript(BaseTestImporter):
