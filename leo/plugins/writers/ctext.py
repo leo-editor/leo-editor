@@ -3,13 +3,14 @@
 #@@language python
 #@@tabwidth -4
 from leo.core import leoGlobals as g  # Required.
+from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:tbrown.20140804103545.29977: ** class CTextWriter(BaseWriter)
 class CTextWriter(basewriter.BaseWriter):
     #@+others
     #@+node:tbrown.20140804103545.29978: *3* put_node
-    def put_node(self, p, level=0):
+    def put_node(self, p: Position, level: int=0) -> None:
         self.put(p.b.strip() + '\n\n')
         for child in p.children():
             txt = self.cchar * 3 + self.cchar * level + ' ' + child.h.strip() + ' '
@@ -17,7 +18,7 @@ class CTextWriter(basewriter.BaseWriter):
             self.put(txt + '\n\n')
             self.put_node(child, level + 1)
     #@+node:tbrown.20140804103545.29979: *3* write
-    def write(self, root):
+    def write(self, root: Position) -> None:
 
         h = root.h.lower()
         self.cchar = (
@@ -27,7 +28,6 @@ class CTextWriter(basewriter.BaseWriter):
             '/' if h.startswith('.js') else '#'
         )
         self.put_node(root, 0)
-        return True
     #@-others
 #@-others
 writer_dict = {

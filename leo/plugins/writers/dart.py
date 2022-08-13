@@ -2,6 +2,7 @@
 #@+node:ekr.20141116100154.2: * @file ../plugins/writers/dart.py
 """The @auto write code for Emacs org-mode (.org) files."""
 from leo.core import leoGlobals as g  # Required
+from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20220812173827.1: ** class DartWriter(BaseWriter)
@@ -9,7 +10,7 @@ class DartWriter(basewriter.BaseWriter):
     """The writer class for .dart files."""
     #@+others
     #@+node:ekr.20141116100154.4: *3* dart.write
-    def write(self, root):
+    def write(self, root: Position) -> None:
         """Write all the *descendants* of an .dart node."""
         root_level = root.level()
         for p in root.subtree():
@@ -19,7 +20,6 @@ class DartWriter(basewriter.BaseWriter):
                 if not g.isDirective(s):
                     self.put(s)
         root.setVisited()
-        return True
     #@-others
 #@-others
 writer_dict = {

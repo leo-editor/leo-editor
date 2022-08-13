@@ -2,10 +2,13 @@
 #@+node:ekr.20140726091031.18143: * @file ../plugins/writers/basewriter.py
 """A module defining the base class for all writers in leo.plugins.writers."""
 
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
+
 class BaseWriter:
     """The base writer class for all writers in leo.plugins.writers."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for leo.plugins.writers.BaseWriter."""
         self.c = c
         self.at = c.atFileCommands
@@ -13,13 +16,13 @@ class BaseWriter:
 
     #@+others
     #@+node:ekr.20150626092123.1: ** basewriter.put
-    def put(self, s):
+    def put(self, s: str) -> None:
         """Write line s using at.os, taking special care of newlines."""
         at = self.at
         at.os(s[:-1] if s.endswith('\n') else s)
         at.onl()
     #@+node:ekr.20150626092140.1: ** basewriter.put_node_sentinel
-    def put_node_sentinel(self, p, delim, delim2=''):
+    def put_node_sentinel(self, p: Position, delim: str, delim2: str='') -> None:
         """Put an @+node sentinel for node p."""
         at = self.at
         # Like at.nodeSentinelText.
