@@ -139,7 +139,7 @@ class BaseTestImporter(LeoUnitTest):
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20211127042843.1: *4* BaseTestImporter.run_test
-    def run_test(self, s, check_flag=True, strict_flag=False):
+    def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -3148,6 +3148,19 @@ class TestPython(BaseTestImporter):
         if sys.version_info < (3, 7, 0):
             self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
 
+    def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
+        """Run tests with both values of python.USE_PYTHON_TOKENS."""
+        import leo.plugins.importers.python as python
+        try:
+            p = None
+            self.assertTrue(python.USE_PYTHON_TOKENS)
+            super().run_test(s, check_flag, strict_flag)
+            python.USE_PYTHON_TOKENS = False
+            p = super().run_test(s, check_flag, strict_flag)
+        finally:
+            python.USE_PYTHON_TOKENS = True
+        return p
+
     #@+others
     #@+node:vitalije.20211206201240.1: *4* TestPython.test_longer_classes
     def test_longer_classes(self):
@@ -3196,6 +3209,7 @@ class TestPython(BaseTestImporter):
                       pass
 
               # About main.
+
               def main():
                   pass
 
@@ -3288,6 +3302,7 @@ class TestPython(BaseTestImporter):
             ),
             (1, 'main',
                        '# About main.\n'
+                       '\n'
                        'def main():\n'
                        '    pass\n'
                        '\n'

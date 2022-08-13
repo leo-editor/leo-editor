@@ -58,9 +58,9 @@ class Python_Importer(Importer):
             if i > -1:
                 s = s[:i]
         # Remove leading 'def'
-        if s.startswith('def '):
+        if s.startswith('def '):  # pragma: no cover
             s = s[len('def'):]
-        elif s.startswith('async def '):
+        elif s.startswith('async def '):  # pragma: no cover
             s = s[len('async def'):]
         # Remove leading 'class'.
         elif (
@@ -68,7 +68,7 @@ class Python_Importer(Importer):
             and not g.unitTesting
             and not self.add_class_to_headlines
         ):
-            s = s[5:]
+            s = s[5:]  # pragma: no cover (not executed in unit tests).
         return s.strip()
     #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
@@ -120,7 +120,7 @@ class Python_Importer(Importer):
                 body_indent = self.get_int_lws(line)
                 single_line = body_indent == decl_indent
                 break
-        else:
+        else:  # pragma: no cover (defensive)
             single_line = True
             body_indent = decl_indent
 
@@ -144,7 +144,7 @@ class Python_Importer(Importer):
                 i += 1
 
         # Include all following blank lines.
-        while i < len(self.lines) and self.lines[i].isspace():
+        while i < len(self.lines) and self.lines[i].isspace():  # pragma: no cover (may never happen).
             i += 1
 
         # Return the description of the block.
@@ -521,7 +521,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
         for j, t in itoks(i):
             if t.type == k:
                 return j, t
-        return None, None
+        return None, None  # pragma: no cover
     #@+node:vitalije.20211208092828.1: *4* itoks
     def itoks(i: int) -> Generator:
         """Generate (n, rawtokens[n]) starting with i."""
@@ -558,7 +558,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
     aList = [getdefn(i) for i, z in enumerate(rawtokens)]
     all_definitions = [z for z in aList if z]
 
-    if trace:
+    if trace:  # pragma: no cover
         # trace results.
         for i, z in enumerate(all_definitions):
             g.trace(i, repr(z))
@@ -573,9 +573,12 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
     root.b += '@language python\n@tabwidth -4\n'
 #@-others
 
+# Define this top-level for unit/coverage tests
+USE_PYTHON_TOKENS = True
+
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """The importer callback for python."""
-    if 1:  # For desktop Leo: use an importer based on python tokens.
+    if USE_PYTHON_TOKENS:  # For desktop Leo: use an importer based on python tokens.
         token_based_python_importer(c, parent, s)
     else:  # For leoJS: use a subclass of the Importer class.
         Python_Importer(c).import_from_string(parent, s)
