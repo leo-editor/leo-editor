@@ -62,7 +62,7 @@ class Elisp_Importer(Importer):
         m = self.elisp_defun_pattern.match(s)
         if m and m.group(1):
             return 'defun %s' % m.group(1)
-        return s.strip()
+        return s.strip()  # pragma: no cover (defensive)
     #@+node:ekr.20220804055254.1: *3* elisp_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """

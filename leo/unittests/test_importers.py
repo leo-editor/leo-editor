@@ -890,12 +890,15 @@ class TestElisp(BaseTestImporter):
     #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
     def test_1(self):
 
+        # Add weird assignments for coverage.
         s = """
             ;;; comment
             ;;; continue
             ;;;
 
             (defun abc (a b)
+               (assn a "abc")
+               (assn b \\x)
                (+ 1 2 3))
 
             ; comment re cde
@@ -915,6 +918,8 @@ class TestElisp(BaseTestImporter):
                     ';;;\n'
                     '\n'
                     '(defun abc (a b)\n'
+                    '   (assn a "abc")\n'
+                    '   (assn b \\x)\n'
                     '   (+ 1 2 3))\n'
                     '\n'
             ),
