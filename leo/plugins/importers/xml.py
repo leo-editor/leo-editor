@@ -115,7 +115,7 @@ class Xml_Importer(Importer):
                 top = self.stack[-1]
                 if top in self.void_tags:
                     self.stack.pop()
-        elif tag == '/>':
+        elif tag == '/>':  # pragma: no cover
             g.es_print("Warning: ignoring dubious /> in...")
             g.es_print(repr(s))
         return tag_level
@@ -138,7 +138,7 @@ class Xml_Importer(Importer):
         if m:
             tag = m.group(0).lower()
             i += len(m.group(0))
-        else:
+        else:  # pragma: no cover (defensive)
             # All other '<' characters should have had xml/html escapes applied to them.
             self.error('missing tag in position %s of %r' % (i, s))
             g.es_print(repr(s))
@@ -159,7 +159,7 @@ class Xml_Importer(Importer):
 
         If the top doesn't match, issue a warning and attempt to recover.
         """
-        if not self.stack:
+        if not self.stack:  # pragma: no cover (defensive).
             self.error('Empty tag stack: %s' % tag)
             g.es_print(repr(s))
             return
@@ -188,10 +188,6 @@ class Xml_Importer(Importer):
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
-    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-        """True if the line startswith an xml block"""
-        return new_state.tag_level > prev_state.tag_level
     #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
     def new_starts_block(self, i: int) -> Optional[int]:
         """
