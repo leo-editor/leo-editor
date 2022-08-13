@@ -29,7 +29,7 @@ class Treepad_Importer(Importer):
 
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Treepad_Importer.gen_lines. Allocate nodes to lines."""
-        if not lines:
+        if not lines:  # pragma: no cover (defensive)
             return
         assert parent == self.root
         p = self.root
@@ -39,7 +39,7 @@ class Treepad_Importer(Importer):
         if self.header_pat.match(lines[0]):
             i = 1
             lines_dict [self.root.v] = ['<Treepad version 3.0>\n']
-        else:
+        else:  # pragma: no cover
             g.trace('No header line')
             i = 0
         while i < len(lines):
@@ -56,7 +56,7 @@ class Treepad_Importer(Importer):
                 i += 2
                 try:
                     level = 1 + int(level_s)
-                except ValueError:
+                except ValueError:  # pragma: no cover (user error)
                     level = 1
                 # Cut back the stack.
                 parents = parents[:level]
