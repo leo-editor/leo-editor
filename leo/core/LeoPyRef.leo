@@ -640,6 +640,7 @@
 </v>
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file ../plugins/writers/__init__.py</vh></v>
+<v t="ekr.20140726091031.18143"><vh>@file ../plugins/writers/basewriter.py</vh></v>
 <v t="tbrown.20140804103545.29975"><vh>@file ../plugins/writers/ctext.py</vh></v>
 <v t="ekr.20141116100154.2"><vh>@file ../plugins/writers/dart.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file ../plugins/writers/leo_rst.py</vh></v>
