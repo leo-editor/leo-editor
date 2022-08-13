@@ -2,8 +2,7 @@
 #@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 """The @auto importer for the org language."""
 import re
-from typing import Any, Dict, List
-from leo.core import leoGlobals as g
+from typing import Dict, List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
@@ -18,31 +17,8 @@ class Org_Importer(Importer):
             c,
             language='plain',  # A reasonable @language
         )
-        self.tc = self.load_nodetags()
 
     #@+others
-    #@+node:ekr.20171120084611.2: *3* org_i.compute_headline
-    # Recognize :tag: syntax only at the end of headlines.
-    # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
-    tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
-
-    def compute_headline(self, s: str) -> str:
-        """
-        Return a cleaned up headline for p.
-        Also parses org-mode tags.
-        """
-        if self.tc:
-            # Support for #578: org-mode tags.
-            m = self.tag_pattern.search(s)
-            if m:
-                i = m.start()
-                # head = s[:i].strip()
-                tail = s[i + 1 : -1].strip()
-                tags = tail.split(':')
-                for tag in tags:
-                    self.tc.add_tag(self.root, tag)
-        return super().compute_headline(s)
-
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines
     # #1037: eat only one space.
     org_pattern = re.compile(r'^(\*+)\s(.*)$')
@@ -78,16 +54,6 @@ class Org_Importer(Importer):
         # Set p.b from the lines_dict.
         for p in self.root.self_and_subtree():
             p.b = ''.join(lines_dict[p.v])
-    #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
-    def load_nodetags(self) -> Any:
-        """
-        Load the nodetags.py plugin if necessary.
-        Return c.theTagController.
-        """
-        c = self.c
-        if not getattr(c, 'theTagController', None):
-            g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
-        return getattr(c, 'theTagController', None)
     #@-others
 #@-others
 
