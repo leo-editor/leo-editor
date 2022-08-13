@@ -110,14 +110,10 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
     def make_markdown_node(self, level: int, lines_dict: Dict[VNode, List[str]], name: str) -> Position:
         """Create a new node."""
+        # Cut back the stack.
         self.stack = self.stack[:level]
         # #877: Insert placeholder nodes.
-        while level > len(self.stack):
-            parent = self.stack[-1]
-            child = parent.insertAsLastChild()
-            child.h = f"Inserted node at level {level}"
-            lines_dict [child.v] = []
-            self.stack.append(child)
+        self.create_placeholders(level, lines_dict, self.stack)
         assert level == len(self.stack), (level, len(self.stack))
         parent = self.stack[-1]
         child = parent.insertAsLastChild()
