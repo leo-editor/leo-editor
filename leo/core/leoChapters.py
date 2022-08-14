@@ -65,6 +65,10 @@ class ChapterController:
             return
 
         def select_chapter_callback(event, cc=cc, name=chapterName):
+            """
+            Select specific chapter.
+            """
+            # docstring will be replaced below with specific chapterName string
             chapter = cc.chaptersDict.get(name)
             if chapter:
                 try:
@@ -81,6 +85,11 @@ class ChapterController:
         # This will create the command bound to any existing settings.
 
         bindings = (None, binding) if binding else (None,)
+        # Replace the docstring for proper details label in minibuffer, etc.
+        if chapterName == 'main':
+            select_chapter_callback.__doc__ = "Select the main chapter"
+        else:
+            select_chapter_callback.__doc__ = "Select chapter \"" + chapterName  +"\"."
         for shortcut in bindings:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
@@ -102,7 +111,7 @@ class ChapterController:
     #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
     def backChapter(self, event=None):
-        """Select the previous chapter"""
+        """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
@@ -112,7 +121,7 @@ class ChapterController:
 
     @cmd('chapter-next')
     def nextChapter(self, event=None):
-        """Select the next chapter"""
+        """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()
         sel_name = cc.selectedChapter.name if cc.selectedChapter else 'main'
