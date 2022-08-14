@@ -173,7 +173,7 @@ class Importer:
 
     def reloadSettings(self) -> None:
         c = self.c
-        if not c:
+        if not c:  # pragma: no cover
             return
         getBool = c.config.getBool
         c.registerReloadSettings(self)
@@ -186,7 +186,7 @@ class Importer:
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
-        if parent.isCloned() and parent.hasChildren():
+        if parent.isCloned() and parent.hasChildren():  # pragma: no cover
             return
         self.root = root = parent.copy()
 
@@ -207,7 +207,7 @@ class Importer:
         for p in root.self_and_subtree():
             p.clearDirty()
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover
         """
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -243,7 +243,7 @@ class Importer:
                 self.report('changed %s lines' % count)
         return result
     #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: List[str]) -> bool:
+    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover
         """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         fn = g.shortFileName(self.root.h)
@@ -290,7 +290,7 @@ class Importer:
         # Additional prepass, for pascal.
         self.gen_lines_prepass()
 
-        if trace and trace_states:
+        if trace and trace_states:  # pragma: no cover
             g.trace(f"{self.__class__.__name__} states & lines...")
             for i, line in enumerate(self.lines):
                 state = self.line_states[i]
@@ -300,7 +300,7 @@ class Importer:
         aList = [self.get_block(i) for i in range(len(lines))]
         all_definitions = [z for z in aList if z]
 
-        if trace:
+        if trace:  # pragma: no cover
             g.trace(self.__class__.__name__, 'all definitions...')
             for z in all_definitions:
                 print(repr(z))
@@ -323,7 +323,7 @@ class Importer:
         """
         # Ensure a newline before the directives.
         root_lines = lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):
+        if root_lines and not root_lines[-1].endswith('\n'):  # pragma: no cover
             root_lines.append('\n')
 
         # Insert the directive lines.
@@ -331,7 +331,7 @@ class Importer:
             f"@language {language or self.name}\n",
             f"@tabwidth {self.tab_width}\n",
         ])
-    #@+node:ekr.20220727085532.1: *5* i.body_lines & body_string
+    #@+node:ekr.20220727085532.1: *5* i.body_string
     def massaged_line(self, s: str, i: int) -> str:
         """Massage line s, adding the underindent string if necessary."""
         legacy = False  # Generating escape strings seems unlikely to be useful.
@@ -345,8 +345,8 @@ class Importer:
         """Return the (massaged) concatentation of lines[a: b]"""
         return ''.join(self.massaged_line(s, i) for s in self.lines[a : b])
 
-    def body_lines(self, a: int, b: int, i: int) -> List[str]:
-        return [self.massaged_line(s, i) for s in self.lines[a : b]]
+    # def body_lines(self, a: int, b: int, i: int) -> List[str]:
+        # return [self.massaged_line(s, i) for s in self.lines[a : b]]
     #@+node:ekr.20161108131153.9: *5* i.compute_headline
     def compute_headline(self, s: str) -> str:
         """
@@ -385,7 +385,7 @@ class Importer:
         for s in g.splitLines(body):
             strip_s = s.strip()
             if strip_s:
-                if strip_s.startswith('#'):
+                if strip_s.startswith('#'):  # pragma: no cover
                     strip_comment = strip_s[1:].strip()
                     if strip_comment:
                         # A non-trivial comment: Return the comment w/o the leading '#'.
@@ -433,7 +433,7 @@ class Importer:
                 break
             j += 1
         else:
-            body_indent = 0
+            body_indent = 0  # pragma: no cover
 
         # Include all following blank lines.
         while i < len(lines) and lines[i].isspace():
@@ -498,7 +498,7 @@ class Importer:
         # This algorithm is a generalization of Vitalije's original python importer.
         # It calculates top-level methods using neither def.body_indent nor def.decl_level!
         trace, trace_body = False, False
-        if trace:
+        if trace:  # pragma: no cover
             print('')
             g.trace('ENTRY! start:', start, 'end:', end,
                 '@others indent:', others_indent, 'inner_indent', inner_indent)
@@ -522,7 +522,7 @@ class Importer:
             top_level_inner_defs = []
             new_indent = 0  # Not used.
 
-        if trace and top_level_inner_defs:
+        if trace and top_level_inner_defs:  # pragma: no cover
             g.printObj([repr(z) for z in top_level_inner_defs],
                 tag=f"Importer.make_node top_level_inner_defs: new_indent: {new_indent}")
             if trace_body:
@@ -592,11 +592,11 @@ class Importer:
         lines, line_states = self.lines, self.line_states
         if i == 0:  # # pragma: no cover (defenesive)
             return i  # Should never happen: new_start_block returns i + 1.
-        if i >= len(lines):
+        if i >= len(lines):  # pragma: no cover
             return len(lines)
         # The level of the previouis line.
         prev_level = line_states[i-1].level()
-        if trace:
+        if trace:  # pragma: no cover
             g.trace(f"i: {i:2} {prev_level} {lines[i-1]!r}")
         while i + 1 < len(lines):
             i += 1
@@ -630,23 +630,23 @@ class Importer:
         return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
     #@+node:ekr.20161108131153.18: *4* i.Messages
-    def error(self, s: str) -> None:
+    def error(self, s: str) -> None:  # pragma: no cover
         """Issue an error and cause a unit test to fail."""
         self.errors += 1
         self.importCommands.errors += 1
 
-    def report(self, message: str) -> None:
+    def report(self, message: str) -> None:  # pragma: no cover
         if self.strict:
             self.error(message)
         else:
             self.warning(message)
 
-    def warning(self, s: str) -> None:
+    def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
     #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
-    def all_contexts(self, table: Dict) -> List:
+    def all_contexts(self, table: Dict) -> List:  # pragma: no cover
         """
         Return a list of all contexts contained in the third column of the given table.
 
@@ -817,19 +817,6 @@ class Importer:
         """Return the the lws (a number) of line s."""
         # Important: use self.tab_width, *not* c.tab_width.
         return g.computeLeadingWhitespaceWidth(s, self.tab_width)
-    #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
-    def get_leading_indent(self, lines: List[str], i: int, ignoreComments: bool=True) -> int:
-        """
-        Return the leading whitespace (an int) of the first significant line.
-        Ignore blank and comment lines if ignoreComments is True
-        """
-        if ignoreComments:
-            while i < len(lines):
-                if self.is_ws_line(lines[i]):
-                    i += 1
-                else:
-                    break
-        return self.get_int_lws(lines[i]) if i < len(lines) else 0
     #@+node:ekr.20161108131153.17: *4* i.get_str_lws
     def get_str_lws(self, s: str) -> str:
         """Return the characters of the lws of s."""
@@ -849,7 +836,7 @@ class ScanState:
 
     def __init__(self, d: Dict[str, Any]=None) -> None:
         """ScanState ctor."""
-        if d:
+        if d:  # pragma: no cover
             indent = d.get('indent')
             prev = d.get('prev')
             self.indent = indent  # NOT prev.indent
@@ -874,7 +861,7 @@ class ScanState:
         """ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update
-    def update(self, data: scan_tuple) -> int:
+    def update(self, data: scan_tuple) -> int:  # pragma: no cover
         """
         Importer.ScanState: Update the state using given scan_tuple.
         """
