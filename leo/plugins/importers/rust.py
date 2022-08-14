@@ -9,7 +9,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
 class Rust_Importer(Importer):
-
+    
     def __init__(self, c: Cmdr) -> None:
         """rust_Importer.__init__"""
         # Init the base class.
@@ -22,6 +22,7 @@ class Rust_Importer(Importer):
 
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.compute_headline
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
     arg_pat = re.compile(r'(\(.*?\))')
     type_pat = re.compile(r'(\s*->.*)')
     life_pat = re.compile(r'(\<.*\>)')
@@ -33,7 +34,7 @@ class Rust_Importer(Importer):
         """
         s = s.strip()
         m = self.func_pattern.match(s)
-        if not m:
+        if not m:  # pragma: no cover (defensive)
             return s
         g1 = m.group(1) or ''
         g2 = m.group(2) or ''
@@ -51,35 +52,9 @@ class Rust_Importer(Importer):
         while tail.endswith(('{', '(', ',', ')')):
             tail = tail[:-1].rstrip()
         # Remove trailing '>' sometimes.
-        while '<' not in tail and tail.endswith('>'):
+        while '<' not in tail and tail.endswith('>'):  # pragma: no cover (missing test)
             tail = tail[:-1].rstrip()
         return f"{head} {tail}".strip().replace('  ', ' ')
-    #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
-    # compute_headline also uses this pattern.
-    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
-
-    def match_start_patterns(self, line: str) -> bool:
-        """
-        True if line matches any block-starting pattern.
-        If true, set self.headline.
-        """
-        m = self.func_pattern.match(line)
-        if m:
-            self.headline = line.strip()
-        return bool(m)
-    #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
-    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-        """True if the new state starts a block."""
-        self.headline = None
-        line = lines[i]
-        if prev_state.context:
-            return False
-        if not self.match_start_patterns(line):
-            return False
-        # Must not be a complete statement.
-        if line.find(';') > -1:
-            return False
-        return True
     #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict
     #@@nobeautify
 
@@ -152,6 +127,10 @@ class Rust_ScanState:
     __str__ = __repr__
 
     #@+others
+    #@+node:ekr.20220814095533.1: *3* rust_state.in_context
+    def in_context(self) -> bool:
+        """True if in a special context."""
+        return bool(self.context)
     #@+node:ekr.20200316101240.8: *3* rust_state.level
     def level(self) -> int:
         """Rust_ScanState.level."""
