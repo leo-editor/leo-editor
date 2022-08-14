@@ -748,7 +748,10 @@ def outlineToNoweb(self, event=None):
 #@+node:ekr.20031218072017.2859: *3* c_file.removeSentinels
 @g.commander_command('remove-sentinels')
 def removeSentinels(self, event=None):
-    """Import one or more files, removing any sentinels."""
+    """
+    Convert one or more files, replacing the original files
+    while removing any sentinels they contain.
+    """
     c = self
     types = [
         ("All files", "*"),
