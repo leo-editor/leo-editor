@@ -4641,13 +4641,13 @@ class TestRst(BaseTestImporter):
     #@-others
 #@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
 class TestTcl (BaseTestImporter):
-    
+
     ext = '.tcl'
 
     #@+others
     #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
-        
+
         s = r"""
             proc dumpFile { fileName { channel stdout } } {
 
