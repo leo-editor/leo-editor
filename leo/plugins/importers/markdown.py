@@ -23,7 +23,7 @@ class Markdown_Importer(Importer):
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for markdown importer."""
         assert parent == self.root
-        if all(s.isspace() for s in lines):  # pragma: no cover
+        if all(s.isspace() for s in lines):  # pragma: no cover (mysterious)
             return
         p = self.root
         # Use a dict instead of creating a new VNode slot.

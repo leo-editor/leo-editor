@@ -72,7 +72,7 @@ class Org_Importer(Importer):
             # It would be useless to load the nodetags plugin.
             return  # pragma: no cover
         m = self.tag_pattern.search(s)
-        if not m:  # pragma: no cover
+        if not m:  # pragma: no cover (missing test)
             return
         i = m.start()
         tail = s[i + 1 : -1].strip()

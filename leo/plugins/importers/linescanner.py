@@ -173,7 +173,7 @@ class Importer:
 
     def reloadSettings(self) -> None:
         c = self.c
-        if not c:  # pragma: no cover
+        if not c:  # pragma: no cover (defensive)
             return
         getBool = c.config.getBool
         c.registerReloadSettings(self)
@@ -186,7 +186,7 @@ class Importer:
         """The common top-level code for all scanners."""
         c = self.c
         # Fix #449: Cloned @auto nodes duplicates section references.
-        if parent.isCloned() and parent.hasChildren():  # pragma: no cover
+        if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
         self.root = root = parent.copy()
 
@@ -207,7 +207,7 @@ class Importer:
         for p in root.self_and_subtree():
             p.clearDirty()
     #@+node:ekr.20161108131153.14: *4* i.regularize_whitespace
-    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover
+    def regularize_whitespace(self, lines: List[str]) -> List[str]:  # pragma: no cover (missing test)
         """
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -243,7 +243,7 @@ class Importer:
                 self.report('changed %s lines' % count)
         return result
     #@+node:ekr.20161108131153.11: *4* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover
+    def check_blanks_and_tabs(self, lines: List[str]) -> bool:  # pragma: no cover (missing test)
         """Check for intermixed blank & tabs."""
         # Do a quick check for mixed leading tabs/blanks.
         fn = g.shortFileName(self.root.h)
@@ -323,7 +323,7 @@ class Importer:
         """
         # Ensure a newline before the directives.
         root_lines = lines_dict[self.root.v]
-        if root_lines and not root_lines[-1].endswith('\n'):  # pragma: no cover
+        if root_lines and not root_lines[-1].endswith('\n'):  # pragma: no cover (missing test)
             root_lines.append('\n')
 
         # Insert the directive lines.
@@ -385,7 +385,7 @@ class Importer:
         for s in g.splitLines(body):
             strip_s = s.strip()
             if strip_s:
-                if strip_s.startswith('#'):  # pragma: no cover
+                if strip_s.startswith('#'):  # pragma: no cover (missing test)
                     strip_comment = strip_s[1:].strip()
                     if strip_comment:
                         # A non-trivial comment: Return the comment w/o the leading '#'.
@@ -394,7 +394,7 @@ class Importer:
                     # A non-trivial non-comment: perform the standard cleanings.
                     return self.compute_headline(strip_s)
         # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
+        return "...some declarations"  # pragma: no cover (missing test)
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
         """A hook for pascal. Called by i.gen_lines()."""
@@ -433,7 +433,7 @@ class Importer:
                 break
             j += 1
         else:
-            body_indent = 0  # pragma: no cover
+            body_indent = 0  # pragma: no cover (missing test)
 
         # Include all following blank lines.
         while i < len(lines) and lines[i].isspace():
@@ -590,9 +590,11 @@ class Importer:
         """Return the index of line *after* the last line of the block."""
         trace = False
         lines, line_states = self.lines, self.line_states
-        if i == 0:  # # pragma: no cover (defenesive)
-            return i  # Should never happen: new_start_block returns i + 1.
-        if i >= len(lines):  # pragma: no cover
+        if i == 0:
+            g.trace(f"{self.language} can not happen: i == 0")
+            g.printObj(self.lines)
+            return i
+        if i >= len(lines):  # pragma: no cover (defensive)
             return len(lines)
         # The level of the previouis line.
         prev_level = line_states[i - 1].level()
@@ -836,7 +838,7 @@ class ScanState:
 
     def __init__(self, d: Dict[str, Any]=None) -> None:
         """ScanState ctor."""
-        if d:  # pragma: no cover
+        if d:  # pragma: no cover (mysterious)
             indent = d.get('indent')
             prev = d.get('prev')
             self.indent = indent  # NOT prev.indent
@@ -861,7 +863,7 @@ class ScanState:
         """ScanState.level."""
         return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update
-    def update(self, data: scan_tuple) -> int:  # pragma: no cover
+    def update(self, data: scan_tuple) -> int:  # pragma: no cover (mysterious)
         """
         Importer.ScanState: Update the state using given scan_tuple.
         """

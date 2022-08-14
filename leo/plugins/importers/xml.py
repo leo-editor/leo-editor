@@ -115,7 +115,7 @@ class Xml_Importer(Importer):
                 top = self.stack[-1]
                 if top in self.void_tags:
                     self.stack.pop()
-        elif tag == '/>':  # pragma: no cover
+        elif tag == '/>':  # pragma: no cover (missing test)
             g.es_print("Warning: ignoring dubious /> in...")
             g.es_print(repr(s))
         return tag_level
@@ -138,7 +138,7 @@ class Xml_Importer(Importer):
         if m:
             tag = m.group(0).lower()
             i += len(m.group(0))
-        else:  # pragma: no cover (defensive)
+        else:  # pragma: no cover (missing test)
             # All other '<' characters should have had xml/html escapes applied to them.
             self.error('missing tag in position %s of %r' % (i, s))
             g.es_print(repr(s))

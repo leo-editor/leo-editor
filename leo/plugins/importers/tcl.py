@@ -36,10 +36,10 @@ class Tcl_Importer(Importer):
         lines, line_states = self.lines, self.line_states
         line = lines[i]
         if line.isspace() or line_states[i].in_context():
-            return None  # pragma: no cover (defensive)
+            return None  # pragma: no cover (mysterious)
         prev_state = line_states[i - 1] if i > 0 else self.state_class()
         if prev_state.in_context():
-            return None  # pragma: no cover (defensive)
+            return None  # pragma: no cover (mysterious)
         m = re.match(self.tcl_start_pattern, line)
         return i + 1 if m and 'proc ' + m.group(1) else None
     #@+node:ekr.20170615153639.5: *3* tcl.compute_headline

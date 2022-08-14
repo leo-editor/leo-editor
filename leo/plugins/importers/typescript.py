@@ -67,7 +67,7 @@ class TS_Importer(Importer):
         """Return a cleaned up headline s."""
         s = s.strip()
         # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover.
+        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover (missing test)
             return s
         # Try to match patterns.
         for group_n, pattern in self.function_patterns:

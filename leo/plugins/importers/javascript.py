@@ -39,7 +39,7 @@ class JS_Importer(Importer):
         for kind, val in JsLexer().lex(s):
             if context:
                 if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                    context = ''  # pragma: no cover
+                    context = ''  # pragma: no cover (mysterious)
                 elif (
                     context == '/*'
                     and kind in ('other', 'punct')
@@ -54,7 +54,7 @@ class JS_Importer(Importer):
             elif kind in ('other', 'punct'):
                 if val == '*' and prev_val == '/':
                     # TestJavascript.test_comments casts doubt on whether this case is possible.
-                    context = '/*'  # pragma: no cover
+                    context = '/*'  # pragma: no cover (mysterious)
                 elif val == '{':
                     curlies += 1
                 elif val == '}':
@@ -95,7 +95,7 @@ class JS_Importer(Importer):
         # pylint: disable=arguments-differ
         s = s.strip()
         # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover
+        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover (missing test)
             return s
         for ch in '{(=':
             if s.endswith(ch):
@@ -119,7 +119,7 @@ class JS_Importer(Importer):
                 s = m.group(1) + ' ' + m.group(2)
                 break
         # Fourth cleanup. Use \1 + ' ' + \2 again
-        for pattern in self.clean_regex_list4:  # pragma: no cover
+        for pattern in self.clean_regex_list4:  # pragma: no cover (mysterious)
             m = pattern.match(s)
             if m:
                 s = m.group(1) + ' ' + m.group(2)
@@ -160,7 +160,7 @@ class JS_ScanState:
         """JS_ScanState.level."""
         return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
-    def update(self, data: scan_tuple) -> int:  # pragma: no cover
+    def update(self, data: scan_tuple) -> int:  # pragma: no cover (mysterious)
         """
         Javascript_ScanState: Update the state using the given scan_tuple.
         """

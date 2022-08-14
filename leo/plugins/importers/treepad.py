@@ -39,7 +39,7 @@ class Treepad_Importer(Importer):
         if self.header_pat.match(lines[0]):
             i = 1
             lines_dict[self.root.v] = ['<Treepad version 3.0>\n']
-        else:  # pragma: no cover
+        else:  # pragma: no cover (user error)
             g.trace('No header line')
             i = 0
         while i < len(lines):

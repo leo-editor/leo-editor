@@ -60,7 +60,7 @@ class Python_Importer(Importer):
         # Remove leading 'def'
         if s.startswith('def '):  # pragma: no cover
             s = s[len('def') :]
-        elif s.startswith('async def '):  # pragma: no cover
+        elif s.startswith('async def '):  # pragma: no cover (missing test)
             s = s[len('async def') :]
         # Remove leading 'class'.
         elif (
@@ -68,7 +68,7 @@ class Python_Importer(Importer):
             and not g.unitTesting
             and not self.add_class_to_headlines
         ):
-            s = s[5:]  # pragma: no cover (not executed in unit tests).
+            s = s[5:]  # pragma: no cover (missing test).
         return s.strip()
     #@+node:ekr.20220720060831.3: *3* python_i.declaration_headline
     def declaration_headline(self, body: str) -> str:  # #2500
@@ -87,7 +87,7 @@ class Python_Importer(Importer):
                     # A non-trivial non-comment.
                     return strip_s
         # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
+        return "...some declarations"  # pragma: no cover (missing test)
     #@+node:ekr.20220720050740.1: *3* python_i.get_block
     def get_block(self, i: int) -> block_tuple:
         """
@@ -120,7 +120,7 @@ class Python_Importer(Importer):
                 body_indent = self.get_int_lws(line)
                 single_line = body_indent == decl_indent
                 break
-        else:  # pragma: no cover (defensive)
+        else:  # pragma: no cover (mysterious)
             single_line = True
             body_indent = decl_indent
 
@@ -144,7 +144,7 @@ class Python_Importer(Importer):
                 i += 1
 
         # Include all following blank lines.
-        while i < len(self.lines) and self.lines[i].isspace():  # pragma: no cover (may never happen).
+        while i < len(self.lines) and self.lines[i].isspace():  # pragma: no cover (mysterious).
             i += 1
 
         # Return the description of the block.
@@ -510,7 +510,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
                 # A non-trivial non-comment.
                 return s
         # Return legacy headline.
-        return "...some declarations"  # pragma: no cover
+        return "...some declarations"  # pragma: no cover (missing tests)
     #@+node:ekr.20220717080934.1: *3* utils
     #@+node:vitalije.20211208092833.1: *4* find_token
     def find_token(i: int, k: int) -> Tuple[int, int]:
@@ -521,7 +521,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
         for j, t in itoks(i):
             if t.type == k:
                 return j, t
-        return None, None  # pragma: no cover
+        return None, None  # pragma: no cover (missing test)
     #@+node:vitalije.20211208092828.1: *4* itoks
     def itoks(i: int) -> Generator:
         """Generate (n, rawtokens[n]) starting with i."""
