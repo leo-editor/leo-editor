@@ -101,7 +101,7 @@ block_tuple = namedtuple('block_tuple', [
 # This named tuple contains all data for updating the scan state.
 scan_tuple = namedtuple('scan_tuple', [
     'context',  # The new context.
-    'i', # The new line number.
+    'i',  # The new line number.
     'delta_c',  # Change in curly brackets count.
     'delta_p',  # Change in parens count.
     'delta_s',  # Change in square_brackets count.
@@ -155,7 +155,7 @@ class Importer:
         else:
             self.ws_pattern = re.compile(r'^\s*$')
         self.escape = c.atFileCommands.underindentEscapeString
-        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape) # m.group(1) is the unindent value.
+        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)  # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
         self.ScanState = ScanState  # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0  # Must be set in run, using self.root.
@@ -305,7 +305,7 @@ class Importer:
             for z in all_definitions:
                 print(repr(z))
                 if trace_body:
-                    g.printObj(lines[z.decl_line1 : z.body_line9])
+                    g.printObj(lines[z.decl_line1:z.body_line9])
 
         # Start the recursion.
         parent.deleteAllChildren()
@@ -343,7 +343,7 @@ class Importer:
 
     def body_string(self, a: int, b: int, i: int) -> str:
         """Return the (massaged) concatentation of lines[a: b]"""
-        return ''.join(self.massaged_line(s, i) for s in self.lines[a : b])
+        return ''.join(self.massaged_line(s, i) for s in self.lines[a:b])
 
     # def body_lines(self, a: int, b: int, i: int) -> List[str]:
         # return [self.massaged_line(s, i) for s in self.lines[a : b]]
@@ -408,7 +408,7 @@ class Importer:
 
         Return None or a block_tuple describing the class or def.
         """
-        self.headline =  ''  # May be set in new_starts_block.
+        self.headline = ''  # May be set in new_starts_block.
         lines = self.lines
         states = self.line_states
 
@@ -441,12 +441,12 @@ class Importer:
 
         # Return the description of the block.
         return block_tuple(
-            body_indent = body_indent,
-            body_line9 = i,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            decl_level = decl_level,
-            name = self.compute_headline(self.headline or lines[decl_line])
+            body_indent=body_indent,
+            body_line9=i,
+            decl_indent=decl_indent,
+            decl_line1=decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level=decl_level,
+            name=self.compute_headline(self.headline or lines[decl_line])
         )
     #@+node:ekr.20220727074602.2: *5* i.get_intro
     def get_intro(self, row: int, col: int) -> int:
@@ -456,7 +456,7 @@ class Importer:
         i.is_intro_line defines what an intro line is. By default it is a
         single-line comment at the same indentation as col.
         """
-        lines =self.lines
+        lines = self.lines
 
         # Scan backward for blank or intro lines.
         i = row - 1
@@ -528,7 +528,7 @@ class Importer:
             if trace_body:
                 for z in top_level_inner_defs:
                     g.printObj(
-                        self.lines[z.decl_line1 : z.body_line9],
+                        self.lines[z.decl_line1:z.body_line9],
                         tag=f"Importer.make_node: Lines[{z.decl_line1} : {z.body_line9}]")
 
         # Don't use the threshold for unit tests. It's too confusing.
@@ -595,7 +595,7 @@ class Importer:
         if i >= len(lines):  # pragma: no cover
             return len(lines)
         # The level of the previouis line.
-        prev_level = line_states[i-1].level()
+        prev_level = line_states[i - 1].level()
         if trace:  # pragma: no cover
             g.trace(f"i: {i:2} {prev_level} {lines[i-1]!r}")
         while i + 1 < len(lines):

@@ -35,16 +35,16 @@ class Treepad_Importer(Importer):
         p = self.root
         parents: List[Position] = [self.root]
         # Use a dict instead of creating a new VNode slot.
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         if self.header_pat.match(lines[0]):
             i = 1
-            lines_dict [self.root.v] = ['<Treepad version 3.0>\n']
+            lines_dict[self.root.v] = ['<Treepad version 3.0>\n']
         else:  # pragma: no cover
             g.trace('No header line')
             i = 0
         while i < len(lines):
             line = lines[i]
-            line2 = lines[i+1] if i + 2 < len(lines) else ''
+            line2 = lines[i + 1] if i + 2 < len(lines) else ''
             i += 1
             start1_m = self.start1_pat.match(line)
             start2_m = self.start2_pat.match(line2)
@@ -67,13 +67,13 @@ class Treepad_Importer(Importer):
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline
-                lines_dict [child.v] = []
+                lines_dict[child.v] = []
             elif end_m:
                 pass  # No need to change the stack.
             else:
                 # Append the line.
                 p = parents[-1]
-                lines_dict [p.v].append(line)
+                lines_dict[p.v].append(line)
         # Add the top-level directives.
         self.append_directives(lines_dict, language='plain')
         # Set p.b from the lines_dict.

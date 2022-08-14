@@ -24,13 +24,13 @@ class Ini_Importer(Importer):
         assert parent == self.root
         p = self.root
         # Use a dict instead of creating a new VNode slot.
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
             headline = self.starts_block(line)
             if headline:
                 p = self.root.insertAsLastChild()
                 p.h = headline
-                lines_dict [p.v] = []
+                lines_dict[p.v] = []
             lines_dict[p.v].append(line)
         # Add the top-level directives.
         self.append_directives(lines_dict)

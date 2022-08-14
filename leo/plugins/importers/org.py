@@ -29,7 +29,7 @@ class Org_Importer(Importer):
         p = self.root
         parents: List[Position] = [self.root]
         # Use a dict instead of creating a new VNode slot.
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
             m = self.org_pattern.match(line)
             if m:
@@ -44,12 +44,12 @@ class Org_Importer(Importer):
                 child = parent.insertAsLastChild()
                 parents.append(child)
                 child.h = headline  # #1087: Don't strip!
-                lines_dict [child.v] = []
+                lines_dict[child.v] = []
             else:
                 # Append the line *only* if we haven't created a node.
                 # The writer will create the section.
                 p = parents[-1] if parents else self.root
-                lines_dict [p.v].append(line)
+                lines_dict[p.v].append(line)
         # Add the top-level directives.
         self.append_directives(lines_dict, language='org')
         # Set p.b from the lines_dict.

@@ -95,7 +95,7 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
 
 importer_dict = {
     '@auto': ['@auto-ctext'],
-    'extensions': ['.ctext'], # A made-up extension for unit tests.
+    'extensions': ['.ctext'],  # A made-up extension for unit tests.
     'func': do_import,
 }
 #@@language python

@@ -28,15 +28,15 @@ class Otl_Importer(Importer):
         """Node generator for otl (vim-outline) mode."""
         assert parent == self.root
         # Use a dict instead of creating a new VNode slot.
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         parents: List[Position] = [self.root]
         for line in lines:
             if not line.strip():
                 continue  # New.
             m = self.otl_body_pattern.match(line)
             if m:
-                parent =  parents[-1]
-                lines_dict [parent.v].append(m.group(1) + '\n')
+                parent = parents[-1]
+                lines_dict[parent.v].append(m.group(1) + '\n')
                 continue
             m = self.otl_node_pattern.match(line)
             if m:
@@ -44,11 +44,11 @@ class Otl_Importer(Importer):
                 level = 1 + len(m.group(1))
                 parents = parents[:level]
                 self.create_placeholders(level, lines_dict, parents)
-                parent =  parents[-1] if parents else self.root
+                parent = parents[-1] if parents else self.root
                 child = parent.insertAsLastChild()
                 child.h = m.group(2)
                 parents.append(child)
-                lines_dict [child.v] = []
+                lines_dict[child.v] = []
             else:  # pragma: no cover
                 self.error(f"Bad otl line: {line!r}")
         # Add the top-level directives.

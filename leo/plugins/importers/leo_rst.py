@@ -34,7 +34,7 @@ class Rst_Importer(Importer):
         if all(s.isspace() for s in lines):
             return
         # Use a dict instead of creating a new VNode slot.
-        self.lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        self.lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         self.lines = lines
         self.stack: List[Position] = [parent]
         skip = 0

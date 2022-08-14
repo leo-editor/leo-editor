@@ -27,7 +27,7 @@ class Markdown_Importer(Importer):
             return
         p = self.root
         # Use a dict instead of creating a new VNode slot.
-        lines_dict : Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         self.stack: List[Position] = [self.root]
         in_code = False
         skip = 0
@@ -47,12 +47,12 @@ class Markdown_Importer(Importer):
             elif in_code:
                 if line.startswith("```"):
                     in_code = False
-                lines_dict [top.v].append(line)
+                lines_dict[top.v].append(line)
             elif line.startswith("```"):
                 in_code = True
-                lines_dict [top.v].append(line)
+                lines_dict[top.v].append(line)
             else:
-                lines_dict [top.v].append(line)
+                lines_dict[top.v].append(line)
         # Add the top-level directives.
         self.append_directives(lines_dict)
         # Set p.b from the lines_dict.
@@ -105,7 +105,7 @@ class Markdown_Importer(Importer):
         assert parent == self.root, repr(parent)
         child = parent.insertAsLastChild()
         child.h = '!Declarations'
-        lines_dict [child.v] = [line]
+        lines_dict[child.v] = [line]
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_markdown_node
     def make_markdown_node(self, level: int, lines_dict: Dict[VNode, List[str]], name: str) -> Position:
@@ -118,7 +118,7 @@ class Markdown_Importer(Importer):
         parent = self.stack[-1]
         child = parent.insertAsLastChild()
         child.h = name
-        lines_dict [child.v] = []
+        lines_dict[child.v] = []
         self.stack.append(child)
         assert self.stack
         assert 0 <= level < len(self.stack), (level, len(self.stack))

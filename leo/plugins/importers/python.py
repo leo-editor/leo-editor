@@ -59,9 +59,9 @@ class Python_Importer(Importer):
                 s = s[:i]
         # Remove leading 'def'
         if s.startswith('def '):  # pragma: no cover
-            s = s[len('def'):]
+            s = s[len('def') :]
         elif s.startswith('async def '):  # pragma: no cover
-            s = s[len('async def'):]
+            s = s[len('async def') :]
         # Remove leading 'class'.
         elif (
             s.startswith('class ')
@@ -149,12 +149,12 @@ class Python_Importer(Importer):
 
         # Return the description of the block.
         return block_tuple(
-            body_indent = body_indent,
-            body_line9 = i,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - self.get_intro(decl_line, decl_indent),
-            decl_level = decl_level,
-            name = self.compute_headline(self.lines[decl_line])
+            body_indent=body_indent,
+            body_line9=i,
+            decl_indent=decl_indent,
+            decl_line1=decl_line - self.get_intro(decl_line, decl_indent),
+            decl_level=decl_level,
+            name=self.compute_headline(self.lines[decl_line])
         )
     #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
     #@@nobeautify
@@ -357,12 +357,12 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
 
         # This is the only instantiation of def_tuple.
         return def_tuple(
-            body_indent = body_indent,
-            body_line9 = body_line9,
-            decl_indent = decl_indent,
-            decl_line1 = decl_line - get_intro(decl_line, decl_indent),
-            kind = kind,
-            name = name,
+            body_indent=body_indent,
+            body_line9=body_line9,
+            decl_indent=decl_indent,
+            decl_line1=decl_line - get_intro(decl_line, decl_indent),
+            kind=kind,
+            name=name,
         )
     #@+node:vitalije.20211208084231.1: *4* function: get_intro (Vitalije's importer)
     def get_intro(row: int, col: int) -> int:
@@ -529,7 +529,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
 
         # Same as `enumerate(rawtokens[i:], start=i)` without allocating substrings.
         while i < len(rawtokens):
-            yield (i, rawtokens[i])
+            yield(i, rawtokens[i])
             i += 1
     #@+node:vitalije.20211206182505.1: *4* mkreadline
     def mkreadline(lines: List[str]) -> Callable:
@@ -566,7 +566,7 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
     # Start the recursion.
     root.deleteAllChildren()
     mknode(
-        p=root, start=1, end=len(lines)+1,
+        p=root, start=1, end=len(lines) + 1,
         others_indent=0, inner_indent=0, definitions=all_definitions)
 
     # Add *trailing* lines, just like the Importer class.

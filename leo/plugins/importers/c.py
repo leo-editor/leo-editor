@@ -89,7 +89,7 @@ class C_Importer(Importer):
         if (
             line.isspace()
             or line_states[i].context
-            or line.find(';') > -1 # One-line declaration.
+            or line.find(';') > -1  # One-line declaration.
             or self.c_keywords_pattern.match(line)  # A statement.
             or not self.match_start_patterns(line)
         ):
