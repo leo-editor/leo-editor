@@ -6,7 +6,7 @@ The @auto importer for the tcl language.
 Created 2017/06/15 by the `importer;;` abbreviation.
 """
 import re
-from typing import Any, Dict, List
+from typing import Dict, Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer, scan_tuple
@@ -24,16 +24,24 @@ class Tcl_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20170615155627.1: *3* tcl.starts_block
-    starts_pattern = re.compile(r'\s*(proc)\s+')
+    #@+node:ekr.20220813175036.1: *3* tcl.new_starts_block
+    tcl_start_pattern = re.compile(r'\s*(proc)\s+')
 
-    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-        """True if the line startswith proc outside any context."""
-        if prev_state.in_context():
-            return False
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        lines, line_states = self.lines, self.line_states
         line = lines[i]
-        m = self.starts_pattern.match(line)
-        return bool(m)
+        if line.isspace() or line_states[i].in_context():
+            return None  # pragma: no cover (defensive)
+        prev_state = line_states[i - 1] if i > 0 else self.state_class()
+        if prev_state.in_context():
+            return None  # pragma: no cover (defensive)
+        m = re.match(self.tcl_start_pattern, line)
+        return i + 1 if m and 'proc ' + m.group(1) else None
     #@+node:ekr.20170615153639.5: *3* tcl.compute_headline
     proc_pattern = re.compile(r'\s*proc\s+([\w$]+)')
 

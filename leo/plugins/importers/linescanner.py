@@ -276,7 +276,7 @@ class Importer:
 
         Based on Vitalije's python importer.
         """
-        trace, trace_body, trace_states = False, False, False
+        trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
@@ -590,12 +590,14 @@ class Importer:
         """Return the index of line *after* the last line of the block."""
         trace = False
         lines, line_states = self.lines, self.line_states
+        if i == 0:  # # pragma: no cover (defenesive)
+            return i  # Should never happen: new_start_block returns i + 1.
         if i >= len(lines):
             return len(lines)
-        # The opening state, *before* lines[i].
-        state0_level = -1 if i == 0 else  line_states[i-1].level()
+        # The level of the previouis line.
+        prev_level = line_states[i-1].level()
         if trace:
-            g.trace(f"----- Entry i: {i} state0 level: {state0_level} {lines[max(0, i-1)]!r}")
+            g.trace(f"i: {i:2} {prev_level} {lines[i-1]!r}")
         while i + 1 < len(lines):
             i += 1
             line = lines[i]
@@ -603,7 +605,7 @@ class Importer:
             if (
                 not line.isspace()
                 and not state.in_context()
-                and state.level() < state0_level
+                and state.level() < prev_level
             ):
                 # Remove lines that would be added later by get_intro!
                 lws = self.get_int_lws(lines[i + 1])

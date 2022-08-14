@@ -4639,6 +4639,72 @@ class TestRst(BaseTestImporter):
             ),
         ))
     #@-others
+#@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
+class TestTcl (BaseTestImporter):
+    
+    ext = '.tcl'
+
+    #@+others
+    #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
+    def test_1(self):
+        
+        s = r"""
+            proc dumpFile { fileName { channel stdout } } {
+
+                 # Open the file, and set up to process it in binary mode.
+                 set f [open $fileName r]
+                 fconfigure $f \
+                     -translation binary \
+                     -encoding binary \
+                     -buffering full -buffersize 16384
+
+                 close $f
+                 return
+             }
+
+             # Main program
+
+             if { [info exists argv0] && [string equal $argv0 [info script]] } {
+                 foreach file $argv {
+                     puts "$file:"
+                     dumpFile $file
+                 }
+             }
+        """
+        p = self.run_test(s)
+        # self.dump_tree(p, tag='Actual results...')
+        self.check_outline(p, (
+            (0, '', # check_outline ignores the first headline'
+                    '@others\n'
+                    ' # Main program\n'
+                    '\n'
+                    ' if { [info exists argv0] && [string equal $argv0 [info script]] } {\n'
+                    '     foreach file $argv {\n'
+                    '         puts "$file:"\n'
+                    '         dumpFile $file\n'
+                    '     }\n'
+                    ' }\n'
+                    '\n'
+                    '@language tcl\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'proc dumpFile',
+                    'proc dumpFile { fileName { channel stdout } } {\n'
+                    '\n'
+                    '     # Open the file, and set up to process it in binary mode.\n'
+                    '     set f [open $fileName r]\n'
+                    '     fconfigure $f \\\n'
+                    '         -translation binary \\\n'
+                    '         -encoding binary \\\n'
+                    '         -buffering full -buffersize 16384\n'
+                    '\n'
+                    '     close $f\n'
+                    '     return\n'
+                    ' }\n'
+                    '\n'
+            ),
+        ))
+    #@-others
 #@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
 class TestTreepad (BaseTestImporter):
 
@@ -4797,8 +4863,9 @@ class TestXML(BaseTestImporter):
             </body>
             </html>
         """
-        # (level, headline, body_lines).
-        expected = (
+        p = self.run_test(s)
+        ### self.dump_tree(p, tag='Actual results...')
+        self.check_outline(p, (
             (0, '@file TestXML.test_xml_1',  # Ignore level 0 headlines.
                     '@others\n'
                     '@language xml\n'
@@ -4820,11 +4887,7 @@ class TestXML(BaseTestImporter):
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'
             ),
-        )
-
-        p = self.run_test(s)
-        self.check_outline(p , expected)
-
+        ))
     #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
