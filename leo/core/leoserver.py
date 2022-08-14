@@ -2989,14 +2989,16 @@ class LeoServer:
             'delete-node-icons',
             'insert-icon',
 
-            'export-headlines',  # export TODO
-            'export-jupyter-notebook',  # export TODO
-            'flatten-outline',  # export TODO
-            'outline-to-cweb',  # export TODO
-            'outline-to-noweb', # export TODO
-            'remove-sentinels',  # open, reads and then replaces without sentinels TODO
-            'weave',  # export TODO
-            'write-file-from-node', # export TODO
+            'count-region'  # Uses wrapper, already available in client
+
+            'export-headlines',  # (overridden by client)
+            'export-jupyter-notebook',  # (overridden by client)
+            'flatten-outline',  # (overridden by client)
+            'outline-to-cweb',  # (overridden by client)
+            'outline-to-noweb', # (overridden by client)
+            'remove-sentinels',  # (overridden by client)
+            'weave',  # (overridden by client)
+            'write-file-from-node', # (overridden by client)
 
             'save-all',
             'save-file-as-zipped',
@@ -3834,12 +3836,6 @@ class LeoServer:
             'show-clone-ancestors',
             'show-clone-parents',
 
-            # TODO Export files...
-            #'export-headlines', # export
-            #'export-jupyter-notebook', # export
-            #'outline-to-cweb', # export
-            #'outline-to-noweb', # export
-            #'remove-sentinels', # import
             'typescript-to-py',
 
             # Import files... # done through import all
@@ -3963,7 +3959,7 @@ class LeoServer:
             'convert-all-tabs',
             'count-children',
             'count-pages',
-            'count-region',
+            # 'count-region',
 
             #'desktop-integration-leo',
 

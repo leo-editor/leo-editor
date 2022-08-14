@@ -1769,6 +1769,7 @@ def cantMoveMessage(c):
 #@+node:ekr.20180201040936.1: ** count-children
 @g.command('count-children')
 def count_children(event=None):
+    """Print out the number of children for the currently selected node"""
     c = event and event.get('c')
     if c:
         g.es_print(f"{c.p.numberOfChildren()} children")
