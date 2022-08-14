@@ -1958,19 +1958,6 @@ class TestJavascript(BaseTestImporter):
     ext = '.js'
 
     #@+others
-    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
-    def test_regex_1(self):
-
-        s = """
-            String.prototype.toJSONString = function()
-            {
-                if(/["\\\\\\x00-\\x1f]/.test(this))
-                    return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-
-                return '"' + this + '"';
-            };
-        """
-        self.run_test(s)
     #@+node:ekr.20210904065459.35: *3* TestJavascript.test_3
     def test_3(self):
 
@@ -2023,40 +2010,6 @@ class TestJavascript(BaseTestImporter):
             app.listen(port, function() {
             console.log("Listening on " + port);
             });
-        """
-        self.run_test(s)
-    #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
-    def test_639_many_top_level_nodes(self):
-
-        s = """
-            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
-
-            //=============================================================================
-            // rpg_core.js v1.3.0
-            //=============================================================================
-
-            //-----------------------------------------------------------------------------
-            /**
-             * This is not a class, but contains some methods that will be added to the
-             * standard Javascript objects.
-             *
-             * @class JsExtensions
-             */
-            function JsExtensions() {
-                throw new Error('This is not a class');
-            }
-
-            /**
-             * Returns a number whose value is limited to the given range.
-             *
-             * @method Number.prototype.clamp
-             * @param {Number} min The lower boundary
-             * @param {Number} max The upper boundary
-             * @return {Number} A number in the range (min, max)
-             */
-            Number.prototype.clamp = function(min, max) {
-                return Math.min(Math.max(this, min), max);
-            };
         """
         self.run_test(s)
     #@+node:ekr.20210904065459.39: *3* TestJavascript.test_639_acid_test_1
@@ -2124,6 +2077,49 @@ class TestJavascript(BaseTestImporter):
             });
         """
         self.run_test(s)
+    #@+node:ekr.20210904065459.38: *3* TestJavascript.test_639_many_top_level_nodes
+    def test_639_many_top_level_nodes(self):
+
+        s = """
+            // Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
+
+            //=============================================================================
+            // rpg_core.js v1.3.0
+            //=============================================================================
+
+            //-----------------------------------------------------------------------------
+            /**
+             * This is not a class, but contains some methods that will be added to the
+             * standard Javascript objects.
+             *
+             * @class JsExtensions
+             */
+            function JsExtensions() {
+                throw new Error('This is not a class');
+            }
+
+            /**
+             * Returns a number whose value is limited to the given range.
+             *
+             * @method Number.prototype.clamp
+             * @param {Number} min The lower boundary
+             * @param {Number} max The upper boundary
+             * @return {Number} A number in the range (min, max)
+             */
+            Number.prototype.clamp = function(min, max) {
+                return Math.min(Math.max(this, min), max);
+            };
+        """
+        self.run_test(s)
+    #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
+    def test_comments(self):
+
+        s = """
+            /* Test of multi-line comments.
+             * line 2.
+             */
+        """
+        self.run_test(s)
     #@+node:ekr.20200202104932.1: *3* TestJavascript.test_JsLex
     def test_JsLex(self):
 
@@ -2140,29 +2136,19 @@ class TestJavascript(BaseTestImporter):
                     assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
                     # print(f"{kind!s:10} {tok!r:10}")
 
-    #@+node:ekr.20200203051839.1: *3* TestJavascript.test_starts_block
-    def test_starts_block(self):
+    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex_1
+    def test_regex_1(self):
 
-        c = self.c
-        table = (
-            (1, 'xx) => {}'),
-            (1, 'class c1'),
-            (1, 'function f1'),
-            (1, 'xx(function f2'),
-            (1, 'xx = function f3'),
-            (1, 'xx, function f4'),
-            (0, 'a = "function"'),
-            (0, 'a = /function/'),
-        )
-        for expected, line in table:
-            x = JS_Importer(c)
-            lines = [line]
-            new_state = JS_ScanState()
-            new_state.curlies += 1
-            prev_state = JS_ScanState()
-            results = x.starts_block(0, lines, new_state, prev_state)
-            # if expected != results: x.scan_line(line, prev_state
-            assert expected == results, f"expected: {expected} got: {int(results)} {line!r}\n"
+        s = """
+            String.prototype.toJSONString = function()
+            {
+                if(/["\\\\\\x00-\\x1f]/.test(this))
+                    return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+                return '"' + this + '"';
+            };
+        """
+        self.run_test(s)
     #@+node:ekr.20200203060718.1: *3* TestJavascript.test_scan_line
     def test_scan_line(self):
 

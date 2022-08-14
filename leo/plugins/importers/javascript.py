@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
 """The @auto importer for JavaScript."""
 import re
-from typing import Any, Dict, Generator, List
+from typing import Any, Dict, Generator
 from leo.core import leoGlobals as g  # Required
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
@@ -37,10 +37,9 @@ class JS_Importer(Importer):
         # Scan tokens, updating context and counts.
         prev_val = None
         for kind, val in JsLexer().lex(s):
-            # g.trace(f"context: {context:2} kind: {kind:10} val: {val!r}")
             if context:
                 if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                    context = ''
+                    context = ''  # pragma: no cover
                 elif (
                     context == '/*'
                     and kind in ('other', 'punct')
@@ -54,7 +53,8 @@ class JS_Importer(Importer):
                 context = '/*'
             elif kind in ('other', 'punct'):
                 if val == '*' and prev_val == '/':
-                    context = '/*'
+                    # TestJavascript.test_comments casts doubt on whether this case is possible.
+                    context = '/*'  # pragma: no cover
                 elif val == '{':
                     curlies += 1
                 elif val == '}':
@@ -67,29 +67,6 @@ class JS_Importer(Importer):
         d = {'context': context, 'curlies': curlies, 'parens': parens}
         state = JS_ScanState(d)
         return state
-    #@+node:ekr.20171224145755.1: *3* js_i.starts_block
-    func_patterns = [
-        re.compile(r'.*?\)\s*=>\s*\{'),
-        re.compile(r'\s*class\b'),
-        re.compile(r'\s*function\b'),
-        re.compile(r'.*?[(=,]\s*function\b'),
-    ]
-
-    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-        """True if the new state starts a block."""
-        if new_state.level() <= prev_state.level():
-            return False
-        # Remove strings and regexs from the line before applying the patterns.
-        cleaned_line = []
-        for kind, val in JsLexer().lex(lines[i]):
-            if kind not in ('string', 'regex'):
-                cleaned_line.append(val)
-        # Search for any of the patterns.
-        line = ''.join(cleaned_line)
-        for pattern in self.func_patterns:
-            if pattern.match(line) is not None:
-                return True
-        return False
     #@+node:ekr.20161101183354.1: *3* js_i.compute_headline
     clean_regex_list1 = [
         # (function name (
@@ -118,7 +95,7 @@ class JS_Importer(Importer):
         # pylint: disable=arguments-differ
         s = s.strip()
         # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):
+        if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover
             return s
         for ch in '{(=':
             if s.endswith(ch):
@@ -142,7 +119,7 @@ class JS_Importer(Importer):
                 s = m.group(1) + ' ' + m.group(2)
                 break
         # Fourth cleanup. Use \1 + ' ' + \2 again
-        for pattern in self.clean_regex_list4:
+        for pattern in self.clean_regex_list4:  # pragma: no cover
             m = pattern.match(s)
             if m:
                 s = m.group(1) + ' ' + m.group(2)
@@ -183,7 +160,7 @@ class JS_ScanState:
         """JS_ScanState.level."""
         return self.curlies  # (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
-    def update(self, data: scan_tuple) -> int:
+    def update(self, data: scan_tuple) -> int:  # pragma: no cover
         """
         Javascript_ScanState: Update the state using the given scan_tuple.
         """
