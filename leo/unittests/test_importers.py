@@ -4625,6 +4625,58 @@ class TestRst(BaseTestImporter):
             ),
         ))
     #@-others
+#@+node:ekr.20220814094900.1: ** class TestRust (BaseTestImporter)
+class TestRust(BaseTestImporter):
+
+    ext = '.rs'
+
+    #@+others
+    #@+node:ekr.20220814095025.1: *3* TestRust.test_1
+    def test_1(self):
+        
+        s = """
+            fn main() {
+                let width1 = 30;
+                let height1 = 50;
+
+                println!(
+                    "The area of the rectangle is {} square pixels.",
+                    area(width1, height1)
+                );
+            }
+
+            fn area(width: u32, height: u32) -> u32 {
+                width * height
+            }
+        """
+        p = self.run_test(s, strict_flag=True)
+        # self.dump_tree(p, tag='Actual results...')
+        self.check_outline(p, (
+            (0, '', # check_outline ignores the first headline'
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'fn main',
+                    'fn main() {\n'
+                    '    let width1 = 30;\n'
+                    '    let height1 = 50;\n'
+                    '\n'
+                    '    println!(\n'
+                    '        "The area of the rectangle is {} square pixels.",\n'
+                    '        area(width1, height1)\n'
+                    '    );\n'
+                    '}\n'
+                    '\n'
+            ),
+            (1, 'fn area',
+                    'fn area(width: u32, height: u32) -> u32 {\n'
+                    '    width * height\n'
+                    '}\n'
+                    '\n'
+            ),
+        ))
+    #@-others
 #@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
 class TestTcl (BaseTestImporter):
 
