@@ -638,7 +638,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
-    """Contract all nodes in the outline."""
+    """Contract all nodes except ancestors of the selected node."""
     c = self
     level = 1
     if p:
