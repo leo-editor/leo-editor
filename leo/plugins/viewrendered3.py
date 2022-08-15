@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.83
+About Viewrendered3 V3.84
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,13 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Correct Asciidoc rendering bug when rendering entire tree.
+Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they 
+correctly lock or unlock the rendering to the current subtree, including
+changing the checked/unchecked character of the toolbar menu "locked to tree" item.
 
 Previous Recent Changes
 ========================
+Correct Asciidoc rendering bug when rendering entire tree.
 Correct handling of case when markdown package is not installed.
 Mathjax, html pages with script imports work with PyQt6.
 Added new command *vr3-render-html-from-clip*.
@@ -1517,12 +1520,11 @@ close_rendering_pane = hide_rendering_pane
 #@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
 @g.command('vr3-lock')
 def lock_rendering_pane(event):
-    """Lock the rendering pane to prevent updates."""
+    """Lock the rendering pane to the current node."""
     vr3 = getVr3(event)
     if not vr3: return
 
-    if not vr3.locked:
-        vr3.lock()
+    vr3.lock()
 #@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
 @g.command('vr3-pause-play-movie')
 def pause_play_movie(event):
@@ -1575,12 +1577,11 @@ def toggle_rendering_pane(event):
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
-    """Pause or play a movie in the rendering pane."""
+    """Allow rendering pane to witch to current node."""
     vr3 = getVr3(event)
     if not vr3: return
 
-    if vr3.locked:
-        vr3.unlock()
+    vr3.unlock()
 #@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
 @g.command('vr3-update')
 def update_rendering_pane(event):
@@ -1636,9 +1637,9 @@ def lock_unlock_tree(event):
     if not vr3: return
 
     if vr3.lock_to_tree:
-        vr3.lock()
-    else:
         vr3.unlock()
+    else:
+        vr3.lock()
 #@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
@@ -2189,6 +2190,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.c.k.simulateCommand('vr3-update')
         #@+node:TomP.20200329223820.12: *5* function: vr3.set_tree_lock
         def set_tree_lock(checked):
+            action = self.action_lock_to_tree
+            action.setChecked(checked)
             self.lock_to_tree = checked
             self.current_tree_root = self.c.p if checked else None
         #@-others
@@ -2199,6 +2202,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action = QAction('Lock to Tree Root', self, checkable=True)
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
+        self.action_lock_to_tree = _action
 
         _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
@@ -4506,12 +4510,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def lock(self):
         """Lock the vr3 pane to the current node ."""
         #g.note('rendering pane locked')
+        action = self.action_lock_to_tree
+        action.setChecked(True)
         self.lock_to_tree = True
         self.current_tree_root = self.c.p
 
     def unlock(self):
         """Unlock the vr3 pane."""
         #g.note('rendering pane unlocked')
+        action = self.action_lock_to_tree
+        action.setChecked(False)
         self.lock_to_tree = False
         self.current_tree_root = None
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
