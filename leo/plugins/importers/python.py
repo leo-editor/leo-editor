@@ -28,9 +28,9 @@ def_tuple = namedtuple('def_tuple', [
 #@+node:ekr.20220720043557.1: ** class Python_Importer(Importer)
 class Python_Importer(Importer):
     """
-    An importer for eventual use by leoJS.
-
-    Leo uses this class *only* as the base class for the cython importer.
+    A Python importer for eventual use by leoJS.
+    
+    Also, the base class of other importers.
     """
 
     def __init__(self, c: Cmdr, language: str='python', state_class: Any=None) -> None:
@@ -41,6 +41,7 @@ class Python_Importer(Importer):
             state_class=state_class or Python_ScanState,
             strict=True,
         )
+        self.string_list = ['"""', "'''", '"', "'"]  # longest first.
         self.add_class_to_headlines = c.config.getBool('put-class-in-imported-headlines')
 
     #@+others

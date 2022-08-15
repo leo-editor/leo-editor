@@ -115,7 +115,7 @@ class Importer:
     The base class for many of Leo's importers.
     """
 
-    NEW = False
+    NEW = True
 
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
@@ -288,9 +288,12 @@ class Importer:
         state = self.state_class()
 
         # Prepass 1: calculate line states.
-        for line in lines:
-            state = self.scan_line(line, state)
-            self.line_states.append(state)
+        if self.NEW:
+            self.line_states = self.scan_all_lines()
+        else:
+            for line in lines:
+                state = self.scan_line(line, state)
+                self.line_states.append(state)
 
         # Additional prepass, for pascal.
         self.gen_lines_prepass()
@@ -792,8 +795,7 @@ class Importer:
 
         Create all entries in self.scan_states.
         """
-        context = ''
-        level = 0  # By default, level is the net count of curly brackets.
+        context, level = '', 0
         states: List[NewScanState] = []
         for line in self.lines:
             context, level = self.scan_one_line(context, level, line)
@@ -811,17 +813,17 @@ class Importer:
             rest = line[i:]
             if context:
                 assert context in string_list + [block1], repr(context)
-                if context in string_list and ch == context:
-                    context = ''  # End the string
+                if context in string_list and rest.startswith(context):
                     i += len(context)
-                elif context == block1 and rest.startswith(block2):
-                    context = ''  # End the comment.
+                    context = ''  # End the string
+                elif block1 and context == block1 and rest.startswith(block2):
                     i += len(block2)
+                    context = ''  # End the comment.
                 else:
                     i += 1  # Still in the context.
-            elif rest.startswith(comment1):
+            elif comment1 and rest.startswith(comment1):
                 i = len(line)  # Skip the entire single-line comment.
-            elif rest.startswith(block1):
+            elif block1 and block2 and rest.startswith(block1):
                 context = block1
                 i += len(block1)
             else:
@@ -831,13 +833,13 @@ class Importer:
                         i += len(s)
                         break
                 else:  # Still not in any context.
-                    # Search for level characters.
+                    # Handle level characters.
                     if ch == self.level_up_ch:
                         level += 1
                     elif ch == self.level_down_ch:
                         level = max(0, level - 1)
-                    i += 1  # Still not in any context.
-            assert progress < i
+                    i += 1
+            assert progress < i, (repr(context), repr(line))
         return context, level
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s: str, prev_state: Any) -> Any:
