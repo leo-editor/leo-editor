@@ -880,8 +880,10 @@ class LeoServer:
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig = None
+        #
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
+        g.es_print = self._es  # Also like es, because es_print would double strings in client
         #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
@@ -2398,16 +2400,44 @@ class LeoServer:
     def copy_node(self, param):  # pragma: no cover (too dangerous, for now)
         """
         Copy a node, don't select it.
+        Also supports 'asJSON' parameter to get as JSON
         Try to keep selection, then return the selected node.
         """
         c = self._check_c()
         p = self._get_p(param)
+
+        copyMethod = c.copyOutline
+        if hasattr(param, "asJSON"):
+            if param["asJSON"]:
+                copyMethod = c.copyOutlineAsJSON
+
         if p == c.p:
-            s = c.fileCommands.outline_to_clipboard_string()
+            s = copyMethod()
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
-            s = c.fileCommands.outline_to_clipboard_string()
+            s = copyMethod()
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+        return self._make_response({"string": s})
+
+    #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
+    def copy_node_as_json(self, param):  # pragma: no cover (too dangerous, for now)
+        """
+        Copy a node as JSON, don't select it.
+        Also supports 'asJSON' parameter to get as JSON
+        Try to keep selection, then return the selected node.
+        """
+        c = self._check_c()
+        p = self._get_p(param)
+
+        if p == c.p:
+            s = c.copyOutlineAsJSON()
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            s = c.copyOutlineAsJSON()
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
@@ -2421,13 +2451,17 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
+        copyMethod = c.copyOutline
+        if hasattr(param, "asJSON"):
+            if param["asJSON"]:
+                copyMethod = c.copyOutlineAsJSON
         if p == c.p:
-            s = c.fileCommands.outline_to_clipboard_string()
+            s = copyMethod()
             c.cutOutline()  # already on this node, so cut it
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
-            s = c.fileCommands.outline_to_clipboard_string()
+            s = copyMethod()
             c.cutOutline()
             if c.positionExists(oldPosition):
                 # select if old position still valid
@@ -3161,6 +3195,8 @@ class LeoServer:
             'file-delete',
             'file-diff-files',
             'file-insert',
+            'file-save-by-name'  # only body pane to file (confusing w/ save as...)
+            'save-file-by-name'  # only body pane to file (confusing w/ save as...)
             #'file-new',
             #'file-open-by-name',
 
@@ -3329,6 +3365,9 @@ class LeoServer:
             'iconify-frame',
 
             'find-tab-hide',
+            'help-for-highlight-current-line',
+            'help-for-right-margin-guide',
+
             #'find-tab-open',
 
             'hide-body-dock',
@@ -3521,11 +3560,18 @@ class LeoServer:
             'vs-dump',
             'vs-reset',
             'vs-update',
+
             # Connected client's text editing commands should cover all of these...
             'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
             'align-eq-signs',
+            'always-indent-region',
+            'capitalize-words-or-selection',
+            'cls',
+            'reformat-body',
+            'reformat-paragraph',
+            'reformat-selection',
 
             'back-char',
             'back-char-extend-selection',
@@ -3948,7 +3994,7 @@ class LeoServer:
 
             'beautify-c',
 
-            'cls',
+            # 'cls',
             'c-to-python',
             'c-to-python-clean-docs',
             'check-derived-file',

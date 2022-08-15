@@ -21,6 +21,8 @@ def copyOutline(self, event=None):
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
+    if g.app.inBridge:
+        return s
     g.app.gui.replaceClipboardWith(s)
 #@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
@@ -73,6 +75,8 @@ def copyOutlineAsJSON(self, event=None):
     c.endEditing()
     s = outline_to_json(c)
     g.app.paste_c = c
+    if g.app.inBridge:
+        return s
     g.app.gui.replaceClipboardWith(s)
 #@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')

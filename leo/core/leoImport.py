@@ -2587,7 +2587,7 @@ def import_zim_command(event):
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
 def parse_body_command(event):
-    """The parse-body command."""
+    """Parse p.b as source code, creating a tree of descendant nodes."""
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)

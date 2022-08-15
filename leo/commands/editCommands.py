@@ -403,7 +403,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # see if the widget already contains the start of a path
 
         start_text = w.getSelectedText()
-        if not start_text:  # look at text preceeding insert point
+        if not start_text:  # look at text preceding insert point
             start_text = w.getAllText()[: w.getInsertPoint()]
             if start_text:
                 # make non-path characters whitespace
@@ -441,12 +441,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             c.endEditing()
             time = c.getTime(body=False)
+
+            u = self.c.undoer
+            undoType = 'insert-headline-time'
+            undoData = u.beforeChangeNodeContents(p)
+
             s = p.h.rstrip()
             if s:
                 p.h = ' '.join([s, time])
             else:
                 p.h = time
-            c.redrawAndEdit(p, selectAll=True)
+
+            # For external clients
+            if g.app.inBridge:
+                c.setChanged()
+                p.setDirty()
+                u.afterChangeNodeContents(p, undoType, undoData)
+                c.redraw()
+            else:
+                c.redrawAndEdit(p, selectAll=True)
     #@+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
     def capitalizeHeadline(self, event=None):

@@ -950,7 +950,7 @@ def sortRecentFiles(self, event=None):
 def writeEditedRecentFiles(self, event=None):
     """
     Write content of "edit_headline" node as recentFiles and recreates
-    menues.
+    menus.
     """
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
