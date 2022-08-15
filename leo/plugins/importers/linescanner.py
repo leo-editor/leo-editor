@@ -159,6 +159,10 @@ class Importer:
         self.escape = c.atFileCommands.underindentEscapeString
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)  # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
+        if self.NEW:
+            self.level_up_ch = '{'
+            self.level_down_ch = '}'
+            self.string_list: List[str] = ['"', "'"]
         self.tab_width = 0  # Must be set in run, using self.root.
 
         # Settings...
@@ -781,7 +785,7 @@ class Importer:
         # No match: stay in present state. All deltas are zero.
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines (experimental)
+    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines & helper (new, experimental)
     def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.
@@ -795,61 +799,44 @@ class Importer:
             context, level = self.scan_one_line(context, level, line)
             states.append(NewScanState(context, level))
         return states
-    #@+node:ekr.20220814213148.1: *5* i.scan_one_line
+    #@+node:ekr.20220814213148.1: *5* i.scan_one_line (new, experimental)
     def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
         """Fully scan one line. Return the context and level at the end of the line."""
         i = 0
+        comment1, block1, block2 = self.single_comment, self.block1, self.block2
+        string_list = self.string_list
         while i < len(line):
             progress = i
-            d = self.get_table(context)
-            aList = d.get(line[i])
-            if aList:
-                found = False
-                if context:
-                    #@+<< handle context data >>
-                    #@+node:ekr.20220814214357.1: *6* << handle context data >>
-                    for data in aList:
-                        kind, pattern, ends = data
-                        if self.match(line, i, pattern):
-                            if ends is None:
-                                found = True
-                                new_context = context
-                                break
-                            elif ends:
-                                found = True
-                                new_context = ''
-                                break
-                            else:
-                                pass  # Ignore this match.
-                    #@-<< handle context data >>
-                else: # Not in context.
-                    #@+<< handle non-context data >>
-                    #@+node:ekr.20220814214419.1: *6* << handle non-context data >>
-                    for data in aList:
-                        kind, pattern, new_context, deltas = data
-                        if self.match(line, i, pattern):
-                            found = True
-                            if deltas:
-                                delta_c, delta_p, delta_s = deltas
-                                level += delta_c
-                            break
-                    #@-<< handle non-context data >>
-                #@+<< update i >>
-                #@+node:ekr.20220814214451.1: *6* << update i >>
-                if not found:
-                    i += 1
-                # Compute the new context and level
-                elif kind == 'all':
-                    i = len(line)
-                elif kind == 'len+1':
-                    i += (len(pattern) + 1)
+            ch = line[i]
+            rest = line[i:]
+            if context:
+                assert context in string_list + [block1], repr(context)
+                if context in string_list and ch == context:
+                    context = ''  # End the string
+                    i += len(context)
+                elif context == block1 and rest.startswith(block2):
+                    context = ''  # End the comment.
+                    i += len(block2)
                 else:
-                    assert kind == 'len', (kind, self.name)
-                    i += len(pattern)
-                ### bs_nl = pattern == '\\\n'
-                #@-<< update i >>
+                    i += 1  # Still in the context.
+            elif rest.startswith(comment1):
+                i = len(line)  # Skip the entire single-line comment.
+            elif rest.startswith(block1):
+                context = block1
+                i += len(block1)
             else:
-                i += 1
+                for s in string_list:
+                    if rest.startswith(s):
+                        context = s  # Enter the string context.
+                        i += len(s)
+                        break
+                else:  # Still not in any context.
+                    # Search for level characters.
+                    if ch == self.level_up_ch:
+                        level += 1
+                    elif ch == self.level_down_ch:
+                        level = max(0, level - 1)
+                    i += 1  # Still not in any context.
             assert progress < i
         return context, level
     #@+node:ekr.20161108170435.1: *4* i.scan_line
