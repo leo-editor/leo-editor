@@ -781,7 +781,7 @@ class Importer:
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20220814202903.1: *4* i.scan_all_lines (experimental)
-    def scan_all_lines(self):
+    def scan_all_lines(self) -> None:
         """
         Importer.scan_all_lines.
         
@@ -894,7 +894,7 @@ class NewScanState:
         self.context = context
         self._level = level
         
-    def __repr__ (self):
+    def __repr__ (self) -> str:
         return f"NewScanState: level: {self._level} context: {self.context}"
         
     ### Temp, for gen_lines and helpers.
