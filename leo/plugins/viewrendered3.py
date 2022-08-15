@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.84
+About Viewrendered3 V3.85
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,16 +57,24 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer 
+has to be the second item in the headline after the string "@jupyter".  If
+a URL is not found in the headline, the first line of the body is tried.
+
+Previous Recent Changes
+========================
 Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they 
 correctly lock or unlock the rendering to the current subtree, including
 changing the checked/unchecked character of the toolbar menu "locked to tree" item.
 
-Previous Recent Changes
-========================
 Correct Asciidoc rendering bug when rendering entire tree.
+
 Correct handling of case when markdown package is not installed.
+
 Mathjax, html pages with script imports work with PyQt6.
+
 Added new command *vr3-render-html-from-clip*.
+
 Added Lua to the list of supported languages.  Lua programs can be syntax-colored
 and executed using the ``@language lua`` directive. For Lua programs to be executable,
 the path to a Lua processor must be added to the *.leo/vr3/vr3_config.ini* file.
@@ -3324,9 +3332,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Leo 5.7.1: Allow raw JSON.
             s = body
         else:
-            url = c.p.h.split()[1]
+            url = ''
+            fields = c.p.h.split()
+            if len(fields) > 1:
+                for f in fields:
+                    if '://' in f:
+                        url = f
             if not url:
-                return ''
+                # Try first line of body
+                url = c.p.b.split('\n')[0]
+                if not url:
+                    return ''
             try:
                 with urlopen(url) as u:
                     s = u.read().decode()
