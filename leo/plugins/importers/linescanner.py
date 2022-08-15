@@ -77,7 +77,7 @@ need to do so.
 import io
 import re
 from collections import namedtuple
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
@@ -114,7 +114,7 @@ class Importer:
     """
     The base class for many of Leo's importers.
     """
-    
+
     NEW = False
 
     # Don't split classes, functions or methods smaller than this value.
@@ -686,9 +686,9 @@ class Importer:
         if context:
             d = {
                 # key    kind      pattern  ends?
-                '\\':   [('len+1', '\\',    None),],
-                '"':    [('len',   '"',     context == '"'),],
-                "'":    [('len',   "'",     context == "'"),],
+                '\\':   [('len+1', '\\',    None)],
+                '"':    [('len',   '"',     context == '"')],
+                "'":    [('len',   "'",     context == "'")],
             }
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
@@ -696,15 +696,16 @@ class Importer:
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
+                '\\':[('len+1', '\\', '', None)],
+                '"':    [('len', '"', '"', None)],
+                "'":    [('len', "'", "'", None)],
+                ### To do: just return the curly delta.  ###
+                '{':    [('len', '{', '', (1,0,0))],
+                '}':    [('len', '}', '', (-1,0,0))],
+                '(':    [('len', '(', '', (0,1,0))],
+                ')':    [('len', ')', '', (0,-1,0))],
+                '[':    [('len', '[', '', (0,0,1))],
+                ']':    [('len', ']', '', (0,0,-1))],
             }
             if comment:
                 add_key(d, comment, ('all', comment, '', None))
@@ -734,7 +735,7 @@ class Importer:
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
     def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
         """
-        i.scan_dict: Scan at position i of s with the give context and dict.
+        i.scan_dict: Scan at position i of s with the given context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         """
         found = False
@@ -781,14 +782,76 @@ class Importer:
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
     #@+node:ekr.20220814202903.1: *4* i.scan_all_lines (experimental)
-    def scan_all_lines(self) -> None:
+    def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.
-        
+
         Create all entries in self.scan_states.
         """
-        ### Replaces *all* of the previous state machinery.
-        
+        context = ''
+        level = 0  # By default, level is the net count of curly brackets.
+        states: List[NewScanState] = []
+        for line in self.lines:
+            context, level = self.scan_one_line(context, level, line)
+            states.append(NewScanState(context, level))
+        return states
+    #@+node:ekr.20220814213148.1: *5* i.scan_one_line
+    def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
+        """Fully scan one line. Return the context and level at the end of the line."""
+        i = 0
+        while i < len(line):
+            progress = i
+            d = self.get_table(context)
+            aList = d.get(line[i])
+            if aList:
+                found = False
+                if context:
+                    #@+<< handle context data >>
+                    #@+node:ekr.20220814214357.1: *6* << handle context data >>
+                    for data in aList:
+                        kind, pattern, ends = data
+                        if self.match(line, i, pattern):
+                            if ends is None:
+                                found = True
+                                new_context = context
+                                break
+                            elif ends:
+                                found = True
+                                new_context = ''
+                                break
+                            else:
+                                pass  # Ignore this match.
+                    #@-<< handle context data >>
+                else: # Not in context.
+                    #@+<< handle non-context data >>
+                    #@+node:ekr.20220814214419.1: *6* << handle non-context data >>
+                    for data in aList:
+                        kind, pattern, new_context, deltas = data
+                        if self.match(line, i, pattern):
+                            found = True
+                            if deltas:
+                                delta_c, delta_p, delta_s = deltas
+                                level += delta_c
+                            break
+                    #@-<< handle non-context data >>
+                #@+<< update i >>
+                #@+node:ekr.20220814214451.1: *6* << update i >>
+                if not found:
+                    i += 1
+                # Compute the new context and level
+                elif kind == 'all':
+                    i = len(line)
+                elif kind == 'len+1':
+                    i += (len(pattern) + 1)
+                else:
+                    assert kind == 'len', (kind, self.name)
+                    i += len(pattern)
+                ### bs_nl = pattern == '\\\n'
+                #@-<< update i >>
+            else:
+                i += 1
+            assert progress < i
+        return context, level
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s: str, prev_state: Any) -> Any:
         """
@@ -887,21 +950,21 @@ class ScanState:
 #@+node:ekr.20220814203303.1: ** class NewScanState
 class NewScanState:
     """A class representing scan state."""
-    
+
     __slots__ = ['context', '_level']
-    
+
     def __init__ (self, context: str, level: int) -> None:
         self.context = context
         self._level = level
-        
+
     def __repr__ (self) -> str:
         return f"NewScanState: level: {self._level} context: {self.context}"
-        
+
     ### Temp, for gen_lines and helpers.
-    
+
     def in_context(self) -> bool:
         return bool(self.context)
-        
+
     def level(self) -> int:
         return self._level
 #@-others
