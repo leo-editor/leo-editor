@@ -212,7 +212,7 @@ class Xml_Importer(Importer):
         if this_state.level() > prev_state.level():
             return i + 1
         return None
-    #@+node:ekr.20220815111538.1: *3* xml_i.update_level (NEW)
+    #@+node:ekr.20220815111538.1: *3* xml_i.update_level (NEW, TO DO)
     tag_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
     def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:

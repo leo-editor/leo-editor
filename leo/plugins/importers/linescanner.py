@@ -738,10 +738,16 @@ class Importer:
             table = self.get_new_dict(context)
             self.cached_scan_tables[key] = table
         return table
-    #@+node:ekr.20161108155143.4: *4* i.match
+    #@+node:ekr.20161108155143.4: *4* i.match (to be removed)
     def match(self, s: str, i: int, pattern: str) -> bool:
-        """Return True if the pattern matches at s[i:]"""
-        return s[i : i + len(pattern)] == pattern
+        """
+        Return True if the pattern matches at s[i:].
+        """
+        # Does not create substrings.
+        return s.find(pattern, i) == i
+        # This creates substrings.
+        # return s[i : i + len(pattern)] == pattern
+        
     #@+node:ekr.20161128025444.1: *4* i.scan_dict (to be removed)
     def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
         """
@@ -846,25 +852,24 @@ class Importer:
         string_list = self.string_list
         while i < len(line):
             progress = i
-            rest = line[i:]
             if context:
                 assert context in string_list + [block1], repr(context)
-                if context in string_list and rest.startswith(context):
+                if context in string_list and line.find(context, i) == i:
                     i += len(context)
                     context = ''  # End the string
-                elif block1 and context == block1 and rest.startswith(block2):
+                elif block1 and context == block1 and line.find(block2, i) == i:
                     i += len(block2)
                     context = ''  # End the comment.
                 else:
                     i += 1  # Still in the context.
-            elif comment1 and rest.startswith(comment1):
+            elif comment1 and line.find(comment1, i) == i:
                 i = len(line)  # Skip the entire single-line comment.
-            elif block1 and block2 and rest.startswith(block1):
+            elif block1 and block2 and line.find(block1, i) == i:
                 context = block1
                 i += len(block1)
             else:
                 for s in string_list:
-                    if rest.startswith(s):
+                    if line.find(s, i) == i:
                         context = s  # Enter the string context.
                         i += len(s)
                         break
