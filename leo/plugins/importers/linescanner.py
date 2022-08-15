@@ -114,6 +114,8 @@ class Importer:
     """
     The base class for many of Leo's importers.
     """
+    
+    NEW = False
 
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
@@ -157,7 +159,6 @@ class Importer:
         self.escape = c.atFileCommands.underindentEscapeString
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)  # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
-        self.ScanState = ScanState  # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0  # Must be set in run, using self.root.
 
         # Settings...
@@ -625,7 +626,7 @@ class Importer:
         line = lines[i]
         if line.isspace() or line_states[i].context:
             return None
-        prev_state = line_states[i - 1] if i > 0 else self.ScanState()
+        prev_state = line_states[i - 1] if i > 0 else self.state_class()
         this_state = line_states[i]
         if this_state.level() > prev_state.level():
             return i + 1
@@ -779,6 +780,15 @@ class Importer:
         # No match: stay in present state. All deltas are zero.
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
+    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines (experimental)
+    def scan_all_lines(self):
+        """
+        Importer.scan_all_lines.
+        
+        Create all entries in self.scan_states.
+        """
+        ### Replaces *all* of the previous state machinery.
+        
     #@+node:ekr.20161108170435.1: *4* i.scan_line
     def scan_line(self, s: str, prev_state: Any) -> Any:
         """
@@ -874,6 +884,26 @@ class ScanState:
         self.squares += data.delta_s
         return data.i
     #@-others
+#@+node:ekr.20220814203303.1: ** class NewScanState
+class NewScanState:
+    """A class representing scan state."""
+    
+    __slots__ = ['context', '_level']
+    
+    def __init__ (self, context: str, level: int) -> None:
+        self.context = context
+        self._level = level
+        
+    def __repr__ (self):
+        return f"NewScanState: level: {self._level} context: {self.context}"
+        
+    ### Temp, for gen_lines and helpers.
+    
+    def in_context(self) -> bool:
+        return bool(self.context)
+        
+    def level(self) -> int:
+        return self._level
 #@-others
 #@@language python
 #@@tabwidth -4
