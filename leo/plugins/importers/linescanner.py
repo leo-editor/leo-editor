@@ -142,7 +142,10 @@ class Importer:
         name = self.name
         assert language and name
         assert self.language and self.name
-        self.state_class = state_class
+        if self.NEW:
+            self.state_class = NewScanState
+        else:
+            self.state_class = state_class
         self.strict = strict  # True: leading whitespace is significant.
 
         # Set from ivars...
@@ -285,12 +288,12 @@ class Importer:
         assert self.root == parent, (self.root, parent)
         self.line_states: List[ScanState] = []
         self.lines = lines
-        state = self.state_class()
 
         # Prepass 1: calculate line states.
         if self.NEW:
             self.line_states = self.scan_all_lines()
         else:
+            state = self.state_class()
             for line in lines:
                 state = self.scan_line(line, state)
                 self.line_states.append(state)
@@ -654,7 +657,7 @@ class Importer:
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables
+    #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables (to be removed)
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table: Dict) -> List:  # pragma: no cover
         """
@@ -672,7 +675,7 @@ class Importer:
                     contexts.add(data[2])
         # Order must not matter, so sorting is ok.
         return sorted(contexts)
-    #@+node:ekr.20161128025508.1: *4* i.get_new_dict
+    #@+node:ekr.20161128025508.1: *4* i.get_new_dict(to be removed)
     #@@nobeautify
 
     def get_new_dict(self, context: str) -> Dict:
@@ -719,7 +722,7 @@ class Importer:
             if block1 and block2:
                 add_key(d, block1, ('len', block1, block1, None))
         return d
-    #@+node:ekr.20161113135037.1: *4* i.get_table
+    #@+node:ekr.20161113135037.1: *4* i.get_table (to be removed)
     #@@nobeautify
     cached_scan_tables: Dict[str, Dict] = {}
 
@@ -739,7 +742,7 @@ class Importer:
     def match(self, s: str, i: int, pattern: str) -> bool:
         """Return True if the pattern matches at s[i:]"""
         return s[i : i + len(pattern)] == pattern
-    #@+node:ekr.20161128025444.1: *4* i.scan_dict
+    #@+node:ekr.20161128025444.1: *4* i.scan_dict (to be removed)
     def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
         """
         i.scan_dict: Scan at position i of s with the given context and dict.
@@ -788,60 +791,7 @@ class Importer:
         # No match: stay in present state. All deltas are zero.
         new_context = context
         return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-    #@+node:ekr.20220814202903.1: *4* i.scan_all_lines & helper (new, experimental)
-    def scan_all_lines(self) -> List["NewScanState"]:
-        """
-        Importer.scan_all_lines.
-
-        Create all entries in self.scan_states.
-        """
-        context, level = '', 0
-        states: List[NewScanState] = []
-        for line in self.lines:
-            context, level = self.scan_one_line(context, level, line)
-            states.append(NewScanState(context, level))
-        return states
-    #@+node:ekr.20220814213148.1: *5* i.scan_one_line (new, experimental)
-    def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
-        """Fully scan one line. Return the context and level at the end of the line."""
-        i = 0
-        comment1, block1, block2 = self.single_comment, self.block1, self.block2
-        string_list = self.string_list
-        while i < len(line):
-            progress = i
-            ch = line[i]
-            rest = line[i:]
-            if context:
-                assert context in string_list + [block1], repr(context)
-                if context in string_list and rest.startswith(context):
-                    i += len(context)
-                    context = ''  # End the string
-                elif block1 and context == block1 and rest.startswith(block2):
-                    i += len(block2)
-                    context = ''  # End the comment.
-                else:
-                    i += 1  # Still in the context.
-            elif comment1 and rest.startswith(comment1):
-                i = len(line)  # Skip the entire single-line comment.
-            elif block1 and block2 and rest.startswith(block1):
-                context = block1
-                i += len(block1)
-            else:
-                for s in string_list:
-                    if rest.startswith(s):
-                        context = s  # Enter the string context.
-                        i += len(s)
-                        break
-                else:  # Still not in any context.
-                    # Handle level characters.
-                    if ch == self.level_up_ch:
-                        level += 1
-                    elif ch == self.level_down_ch:
-                        level = max(0, level - 1)
-                    i += 1
-            assert progress < i, (repr(context), repr(line))
-        return context, level
-    #@+node:ekr.20161108170435.1: *4* i.scan_line
+    #@+node:ekr.20161108170435.1: *4* i.scan_line (to be removed)
     def scan_line(self, s: str, prev_state: Any) -> Any:
         """
         A generalized scan-line method.
@@ -875,6 +825,68 @@ class Importer:
             i = new_state.update(data)
             assert progress < i
         return new_state
+    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper (new, experimental)
+    def scan_all_lines(self) -> List["NewScanState"]:
+        """
+        Importer.scan_all_lines.
+
+        Create all entries in self.scan_states.
+        """
+        context, level = '', 0
+        states: List[NewScanState] = []
+        for line in self.lines:
+            context, level = self.scan_one_line(context, level, line)
+            states.append(NewScanState(context, level))
+        return states
+    #@+node:ekr.20220814213148.1: *4* i.scan_one_line & helper(new, experimental)
+    def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
+        """Fully scan one line. Return the context and level at the end of the line."""
+        i = 0
+        comment1, block1, block2 = self.single_comment, self.block1, self.block2
+        string_list = self.string_list
+        while i < len(line):
+            progress = i
+            rest = line[i:]
+            if context:
+                assert context in string_list + [block1], repr(context)
+                if context in string_list and rest.startswith(context):
+                    i += len(context)
+                    context = ''  # End the string
+                elif block1 and context == block1 and rest.startswith(block2):
+                    i += len(block2)
+                    context = ''  # End the comment.
+                else:
+                    i += 1  # Still in the context.
+            elif comment1 and rest.startswith(comment1):
+                i = len(line)  # Skip the entire single-line comment.
+            elif block1 and block2 and rest.startswith(block1):
+                context = block1
+                i += len(block1)
+            else:
+                for s in string_list:
+                    if rest.startswith(s):
+                        context = s  # Enter the string context.
+                        i += len(s)
+                        break
+                else:  # Still not in any context.
+                    # Use a method to provide an override point.
+                    i, level = self.update_level(i, level, line)
+            assert progress < i, (repr(context), repr(line))
+        return context, level
+    #@+node:ekr.20220815111151.1: *5* i.update_level
+    def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:
+        """
+        Importer.update_level.  xml importer overrides this method.
+
+        Update level at line[i].
+        """
+        ch = line[i]
+        if ch == self.level_up_ch:
+            level += 1
+        elif ch == self.level_down_ch:
+            level = max(0, level - 1)
+        i += 1
+        return i, level
     #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s: str) -> int:
@@ -942,7 +954,7 @@ class NewScanState:
 
     __slots__ = ['context', '_level']
 
-    def __init__ (self, context: str, level: int) -> None:
+    def __init__ (self, context: str='', level: int=0) -> None:
         self.context = context
         self._level = level
 

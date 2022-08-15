@@ -8,7 +8,7 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20161121204146.3: ** class Xml_Importer
+#@+node:ekr.20161121204146.3: ** class Xml_Importer(Importer)
 class Xml_Importer(Importer):
     """The importer for the xml lanuage."""
 
@@ -20,7 +20,7 @@ class Xml_Importer(Importer):
         super().__init__(
             c,
             language='xml',
-            state_class=Xml_ScanState,
+            ### state_class=Xml_ScanState,
         )
         self.tags_setting = tags_setting
         self.start_tags = self.add_tags()
@@ -43,9 +43,10 @@ class Xml_Importer(Importer):
         """xml and html: Return a cleaned up headline s."""
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()
-    #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
+    #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers (no longer used)
     def scan_line(self, s: str, prev_state: Any) -> Any:
         """Update the xml scan state by scanning line s."""
+        assert False, g.callers()  ### No longer used.
         context, tag_level = prev_state.context, prev_state.tag_level
         i = 0
         while i < len(s):
@@ -74,12 +75,13 @@ class Xml_Importer(Importer):
         else:
             i += 1
         return context, i
-    #@+node:ekr.20161122073938.1: *4* xml_i.scan_out_context & helpers
+    #@+node:ekr.20161122073938.1: *4* xml_i.scan_out_context & helpers (no longer used)
     def scan_out_context(self, i: int, s: str, tag_level: int) -> Tuple[str, int, int]:
         """
         Scan s from i, outside any context.
         Return (context, i, tag_level)
         """
+        assert False, g.callers()
         context = ''
         if self.match(s, i, '"'):
             context = '"'  # Only double-quoted strings are xml/html strings.
@@ -99,7 +101,7 @@ class Xml_Importer(Importer):
         else:
             i += 1
         return context, i, tag_level
-    #@+node:ekr.20161122084808.1: *5* xml_i.end_tag
+    #@+node:ekr.20161122084808.1: *5* xml_i.end_tag (no longer used)
     def end_tag(self, s: str, tag: str, tag_level: int) -> int:
         """
         Handle the ">" or "/>" that ends an element.
@@ -119,7 +121,7 @@ class Xml_Importer(Importer):
             g.es_print("Warning: ignoring dubious /> in...")
             g.es_print(repr(s))
         return tag_level
-    #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper
+    #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper (no longer used)
     ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
     def scan_tag(self, s: str, i: int, tag_level: int) -> Tuple[int, int]:
@@ -187,7 +189,7 @@ class Xml_Importer(Importer):
         Return the number of preceeding lines that should be added to this class or def.
         """
         return 0
-    #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block
+    #@+node:ekr.20220801082146.1: *3* xml_i.new_starts_block (changed)
     def new_starts_block(self, i: int) -> Optional[int]:
         """
         Return None if lines[i] does not start a class, function or method.
@@ -202,13 +204,52 @@ class Xml_Importer(Importer):
             g.trace(
                 f"{this_state.tag_level > prev_state.tag_level:1} "
                 f"i: {i} "
-                f"old level: {prev_state.tag_level} "
-                f"new level: {this_state.tag_level} "
+                f"old level: {prev_state.level()} "
+                f"new level: {this_state.level()} "
                 f"{line!r}"
             )
-        if this_state.tag_level > prev_state.tag_level:
+        ### if this_state.tag_level > prev_state.tag_level:
+        if this_state.level() > prev_state.level():
             return i + 1
         return None
+    #@+node:ekr.20220815111538.1: *3* xml_i.update_level (NEW)
+    tag_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
+
+    def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:
+        """
+        XML_Importer.update_level.  Overrides Importer.update_level.
+        
+        Update level at line[i].
+        """
+        ch = line[i]
+        rest = line[i:]
+        assert ch, rest  ###
+        # if rest.startswith('</'):
+            # The end of a tag.
+            
+        return i, level
+        
+        ### REF (scan_tag)
+            # if self.match(s, i, '<'):
+                # xml/html tags do *not* start contexts.
+                # i, tag_level = self.scan_tag(s, i, tag_level)
+            # elif self.match(s, i, '/>'):
+                # i += 2
+                # tag_level = self.end_tag(s, tag='/>', tag_level=tag_level)
+            # elif self.match(s, i, '>'):
+                # tag_level = self.end_tag(s, tag='>', tag_level=tag_level)
+                # i += 1
+            # else:
+                # i += 1
+
+
+        ### REF
+            # if ch == self.level_up_ch:
+                # level += 1
+            # elif ch == self.level_down_ch:
+                # level = max(0, level - 1)
+            # i += 1
+            # return i, level
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:
