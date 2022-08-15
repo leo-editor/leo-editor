@@ -212,44 +212,31 @@ class Xml_Importer(Importer):
         if this_state.level() > prev_state.level():
             return i + 1
         return None
-    #@+node:ekr.20220815111538.1: *3* xml_i.update_level (NEW, TO DO)
-    tag_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
+    #@+node:ekr.20220815111538.1: *3* xml_i.update_level
+    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
     def update_level(self, i: int, level: int, line: str) -> Tuple[int, int]:
         """
         XML_Importer.update_level.  Overrides Importer.update_level.
         
-        Update level at line[i].
+        Update level at line[i] and return (i, level).
         """
-        ch = line[i]
-        rest = line[i:]
-        assert ch, rest  ###
-        # if rest.startswith('</'):
-            # The end of a tag.
-            
+        if line[i] != '<':
+            return i + 1, level  # Make progress.
+        # Scan the tag.
+        end_tag = line.find('</', i) == i
+        i += (2 if end_tag else 1)  # Ensure progress, whatever happens.
+        m = self.ch_pattern.match(line, i)
+        if not m:
+            # pragma: no cover (missing test)
+            # All other '<' characters should have had xml/html escapes applied to them.
+            self.error(f"missing tag in position {i} of {line!r}")
+            return i, level
+        tag = m.group(0).lower()
+        i += len(tag)
+        if tag in self.start_tags:
+            level = level - 1 if end_tag else level + 1
         return i, level
-        
-        ### REF (scan_tag)
-            # if self.match(s, i, '<'):
-                # xml/html tags do *not* start contexts.
-                # i, tag_level = self.scan_tag(s, i, tag_level)
-            # elif self.match(s, i, '/>'):
-                # i += 2
-                # tag_level = self.end_tag(s, tag='/>', tag_level=tag_level)
-            # elif self.match(s, i, '>'):
-                # tag_level = self.end_tag(s, tag='>', tag_level=tag_level)
-                # i += 1
-            # else:
-                # i += 1
-
-
-        ### REF
-            # if ch == self.level_up_ch:
-                # level += 1
-            # elif ch == self.level_down_ch:
-                # level = max(0, level - 1)
-            # i += 1
-            # return i, level
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:
