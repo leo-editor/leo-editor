@@ -4633,7 +4633,7 @@ class TestRust(BaseTestImporter):
     #@+others
     #@+node:ekr.20220814095025.1: *3* TestRust.test_1
     def test_1(self):
-        
+
         s = """
             fn main() {
                 let width1 = 30;

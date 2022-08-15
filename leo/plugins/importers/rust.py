@@ -9,7 +9,7 @@ from leo.plugins.importers.linescanner import Importer, scan_tuple
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
 class Rust_Importer(Importer):
-    
+
     def __init__(self, c: Cmdr) -> None:
         """rust_Importer.__init__"""
         # Init the base class.

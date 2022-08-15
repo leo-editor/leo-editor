@@ -292,11 +292,11 @@ class Importer:
         # Prepass 1: calculate line states.
         if self.NEW:
             self.line_states = self.scan_all_lines()
-        else:
-            state = self.state_class()
-            for line in lines:
-                state = self.scan_line(line, state)
-                self.line_states.append(state)
+        ###
+            # state = self.state_class()
+            # for line in lines:
+                # state = self.scan_line(line, state)
+                # self.line_states.append(state)
 
         # Additional prepass, for pascal.
         self.gen_lines_prepass()
@@ -657,180 +657,6 @@ class Importer:
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161120022121.1: *3* i: Scanning & scan tables (to be removed)
-    #@+node:ekr.20161114012522.1: *4* i.all_contexts
-    def all_contexts(self, table: Dict) -> List:  # pragma: no cover
-        """
-        Return a list of all contexts contained in the third column of the given table.
-
-        This is a support method for unit tests.
-        """
-        contexts = set()
-        d = table
-        for key in d:
-            aList = d.get(key)
-            for data in aList:
-                if len(data) == 4:
-                    # It's an out-of-context entry.
-                    contexts.add(data[2])
-        # Order must not matter, so sorting is ok.
-        return sorted(contexts)
-    #@+node:ekr.20161128025508.1: *4* i.get_new_dict(to be removed)
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-
-        def add_key(d: Dict, pattern: str, data: Any) -> None:
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind      pattern  ends?
-                '\\':   [('len+1', '\\',    None)],
-                '"':    [('len',   '"',     context == '"')],
-                "'":    [('len',   "'",     context == "'")],
-            }
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', '', None)],
-                '"':    [('len', '"', '"', None)],
-                "'":    [('len', "'", "'", None)],
-                ### To do: just return the curly delta.  ###
-                '{':    [('len', '{', '', (1,0,0))],
-                '}':    [('len', '}', '', (-1,0,0))],
-                '(':    [('len', '(', '', (0,1,0))],
-                ')':    [('len', ')', '', (0,-1,0))],
-                '[':    [('len', '[', '', (0,0,1))],
-                ']':    [('len', ']', '', (0,0,-1))],
-            }
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
-        return d
-    #@+node:ekr.20161113135037.1: *4* i.get_table (to be removed)
-    #@@nobeautify
-    cached_scan_tables: Dict[str, Dict] = {}
-
-    def get_table(self, context: str) -> Dict:
-        """
-        Return the state table for the given context.
-
-        This method handles caching.  x.get_new_table returns the actual table.
-        """
-        key = f"{self.name}.{context!r}"  # Keep tables separate!
-        table = self.cached_scan_tables.get(key)
-        if not table:
-            table = self.get_new_dict(context)
-            self.cached_scan_tables[key] = table
-        return table
-    #@+node:ekr.20161108155143.4: *4* i.match (to be removed)
-    def match(self, s: str, i: int, pattern: str) -> bool:
-        """
-        Return True if the pattern matches at s[i:].
-        """
-        # Does not create substrings.
-        return s.find(pattern, i) == i
-        # This creates substrings.
-        # return s[i : i + len(pattern)] == pattern
-        
-    #@+node:ekr.20161128025444.1: *4* i.scan_dict (to be removed)
-    def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
-        """
-        i.scan_dict: Scan at position i of s with the given context and dict.
-        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        """
-        found = False
-        delta_c = delta_p = delta_s = 0
-        ch = s[i]
-        aList = d.get(ch)
-        if aList and context:
-            # In context.
-            for data in aList:
-                kind, pattern, ends = data
-                if self.match(s, i, pattern):
-                    if ends is None:
-                        found = True
-                        new_context = context
-                        break
-                    elif ends:
-                        found = True
-                        new_context = ''
-                        break
-                    else:
-                        pass  # Ignore this match.
-        elif aList:
-            # Not in context.
-            for data in aList:
-                kind, pattern, new_context, deltas = data
-                if self.match(s, i, pattern):
-                    found = True
-                    if deltas:
-                        delta_c, delta_p, delta_s = deltas
-                    break
-        if found:
-            if kind == 'all':
-                i = len(s)
-            elif kind == 'len+1':
-                i += (len(pattern) + 1)
-            else:
-                assert kind == 'len', (kind, self.name)
-                i += len(pattern)
-            bs_nl = pattern == '\\\n'
-            # return new_context, i, delta_c, delta_p, delta_s, bs_nl
-            return scan_tuple(new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        #
-        # No match: stay in present state. All deltas are zero.
-        new_context = context
-        return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-    #@+node:ekr.20161108170435.1: *4* i.scan_line (to be removed)
-    def scan_line(self, s: str, prev_state: Any) -> Any:
-        """
-        A generalized scan-line method.
-
-        SCAN STATE PROTOCOL:
-
-        The Importer class should have a state_class ivar that references a
-        **state class**. This class probably should *not* be subclass of the
-        ScanState class, but it should observe the following protocol:
-
-        1. The state class's ctor must have the following signature:
-
-            def __init__(self, d)
-
-        2. The state class must have an update method.
-        """
-        # This dict allows new data to be added without changing ScanState signatures.
-        d = {
-            'indent': self.get_int_lws(s),
-            'is_ws_line': self.is_ws_line(s),
-            'prev': prev_state,
-            's': s,
-        }
-        new_state = self.state_class(d)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_dict(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        return new_state
     #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper (new, experimental)
     def scan_all_lines(self) -> List["NewScanState"]:
         """
@@ -844,7 +670,7 @@ class Importer:
             context, level = self.scan_one_line(context, level, line)
             states.append(NewScanState(context, level))
         return states
-    #@+node:ekr.20220814213148.1: *4* i.scan_one_line & helper(new, experimental)
+    #@+node:ekr.20220814213148.1: *4* i.scan_one_line & helper
     def scan_one_line(self, context: str, level: int, line: str) -> Tuple[str, int]:
         """Fully scan one line. Return the context and level at the end of the line."""
         i = 0

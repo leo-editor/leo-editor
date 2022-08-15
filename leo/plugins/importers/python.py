@@ -29,7 +29,7 @@ def_tuple = namedtuple('def_tuple', [
 class Python_Importer(Importer):
     """
     A Python importer for eventual use by leoJS.
-    
+
     Also, the base class of other importers.
     """
 

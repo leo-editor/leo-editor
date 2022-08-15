@@ -57,7 +57,7 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they 
+Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they
 correctly lock or unlock the rendering to the current subtree, including
 changing the checked/unchecked character of the toolbar menu "locked to tree" item.
 
