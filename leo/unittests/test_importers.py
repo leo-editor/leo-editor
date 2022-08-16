@@ -4950,27 +4950,6 @@ class TestXML(BaseTestImporter):
         for expected, line in table:
             got = x.is_ws_line(line)
             self.assertEqual(expected, got, msg=repr(line))
-    #@+node:ekr.20210904065459.133: *3* TestXml.test_scan_line
-    def test_scan_line(self):
-        c = self.c
-        x = xml.Xml_Importer(c)
-        x.start_tags.append('html')  # Don't rely on settings.
-        table = (
-            (0, '<tag>'),
-            (0, '<tag></tag'),
-            (1, '<html'),
-            (1, '<html attrib="<">'),
-            (0, '<html attrib="<" />'),
-            (0, '<html>x</html>'),
-            (0, '</br>'),  # Tag underflow
-            (0, '<br />'),
-            (0, '<br/>'),
-        )
-        for level, line in table:
-            prev_state = x.state_class()  # Start in level 0
-            self.assertEqual(prev_state.tag_level, 0, msg=line)
-            new_state = x.scan_line(line, prev_state)
-            self.assertEqual(new_state.tag_level, level, msg=line)
     #@-others
 #@-others
 #@@language python
