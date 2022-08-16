@@ -587,13 +587,13 @@ class Importer:
         """Return the index of line *after* the last line of the block."""
         trace = False
         lines, line_states = self.lines, self.line_states
-        if i == 0:
+        if i == 0:  # pragma: no cover (defensive)
             g.trace(f"{self.language} can not happen: i == 0")
             g.printObj(self.lines)
             return i
         if i >= len(lines):  # pragma: no cover (defensive)
             return len(lines)
-        # The level of the previouis line.
+        # The level of the previous line.
         prev_level = line_states[i - 1].level
         if trace:  # pragma: no cover
             g.trace(f"i: {i:2} {prev_level} {lines[i-1]!r}")
