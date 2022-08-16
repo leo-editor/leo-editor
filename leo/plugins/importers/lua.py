@@ -6,32 +6,24 @@ The @auto importer for the lua language.
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
 import re
-from typing import Any, Dict, List
-from leo.core import leoGlobals as g
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
-Target = linescanner.Target
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
+from leo.plugins.importers.linescanner import Importer
 delete_blank_lines = True
 #@+others
-#@+node:ekr.20170530024520.3: ** class Lua_Importer
+#@+node:ekr.20170530024520.3: ** class Lua_Importer(Importer)
 class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c: Cmdr) -> None:
         """Lua_Importer.__init__"""
-        super().__init__(
-            importCommands,
-            language='lua',
-            state_class=Lua_ScanState,
-            strict=False,
-        )
+        super().__init__(c, language='lua')
         # Contains entries for all constructs that end with 'end'.
-        self.start_stack = []
 
     # Define necessary overrides.
     #@+others
-    #@+node:ekr.20170530024520.5: *3* lua_i.clean_headline
-    def clean_headline(self, s, p=None):
+    #@+node:ekr.20170530024520.5: *3* lua_i.compute_headline
+    def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         s = s.strip()
         for tag in ('local', 'function'):
@@ -41,224 +33,39 @@ class Lua_Importer(Importer):
         if i > -1:
             s = s[:i]
         return s.strip()
-    #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
-    def cut_stack(self, new_state, stack):
-        """Cut back the stack until stack[-1] matches new_state."""
-        # function/end's are strictly nested, so this suffices.
-        assert len(stack) > 1  # Fail on entry.
-        stack.pop()
-        # Restore the guard entry if necessary.
-        if len(stack) == 1:
-            stack.append(stack[-1])
-        assert len(stack) > 1  # Fail on exit.
-    #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
-    def ends_block(self, i, lines, new_state, prev_state, stack):
-        """True if line ends the block."""
-        # pylint: disable=arguments-differ
-        if prev_state.context:
-            return False
-        line = lines[i]
-        # if line.strip().startswith('end'):
-        if g.match_word(line.strip(), 0, 'end'):
-            if self.start_stack:
-                top = self.start_stack.pop()
-                return top == 'function'
-            g.trace('unmatched "end" statement at line', i)
-        return False
-    #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
-    def gen_lines(self, lines, parent):
-        """
-        Non-recursively parse all lines of s into parent, creating descendant
-        nodes as needed.
-        """
-        tail_p = None
-        self.tail_lines = []
-        prev_state = self.state_class()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        self.vnode_info = {
-            # Keys are vnodes, values are inner dicts.
-            parent.v: {
-                'lines': [],
-            }
-        }
+    #@+node:ekr.20220816084846.1: *3* lua_i.gen_lines_prepass
+    function_pat = re.compile(r'^(\s*function\b)|^(.*?\(function\b)')
+    end_pat = re.compile(r'^.*end\b.*$')
 
-        self.skip = 0
+    def gen_lines_prepass(self) -> None:
+        """
+        lua.gen_lines_prepass.
+        Set scan_state.level for all scan states.
+        """
+        lines, line_states = self.lines, self.line_states
+        level = 0
         for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
-            if self.skip > 0:
-                self.skip -= 1
-            elif line.isspace() and delete_blank_lines and not prev_state.context:
-                # Delete blank lines, but not inside strings and --[[ comments.
-                pass
-            elif self.is_ws_line(line):
-                if tail_p:
-                    self.tail_lines.append(line)
-                else:
-                    self.add_line(top.p, line)
-            elif self.starts_block(i, lines, new_state, prev_state):
-                tail_p = None
-                self.start_new_block(i, lines, new_state, prev_state, stack)
-            elif self.ends_block(i, lines, new_state, prev_state, stack):
-                tail_p = self.end_block(line, new_state, stack)
-            else:
-                if tail_p:
-                    self.tail_lines.append(line)
-                else:
-                    self.add_line(top.p, line)
-            prev_state = new_state
-        if self.tail_lines:
-            target = stack[-1]
-            self.extend_lines(target.p, self.tail_lines)
-            self.tail_lines = []
-
-    #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context):
-        """The scan dict for the lua language."""
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert comment
-
-        def add_key(d, pattern, data):
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [('len', '"',    context == '"'),],
-                "'":    [('len', "'",    context == "'"),],
-            }
-            # End Lua long brackets.
-            for i in range(10):
-                open_pattern = '--[%s[' % ('='*i)
-                # Both --]] and ]]-- end the long bracket.
-                pattern = ']%s]--' % ('='*i)
-                add_key(d, pattern, ('len', pattern, context==open_pattern))
-                pattern = '--]%s]' % ('='*i)
-                add_key(d, pattern, ('len', pattern, context==open_pattern))
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
-            }
-            # Start Lua long brackets.
-            for i in range(10):
-                pattern = '--[%s[' % ('='*i)
-                add_key(d, pattern, ('len', pattern, pattern, None))
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
-        return d
-    #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
-    def start_new_block(self, i, lines, new_state, prev_state, stack):
-        """Create a child node and update the stack."""
-        if hasattr(new_state, 'in_context'):
-            assert not new_state.in_context(), ('start_new_block', new_state)
-        line = lines[i]
-        target = stack[-1]
-        # Insert the reference in *this* node.
-        h = self.gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        child = self.create_child_node(target.p, line, h)
-        if self.tail_lines:
-            self.prepend_lines(child, self.tail_lines)
-            self.tail_lines = []
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
-    # Buggy: this could appear in a string or comment.
-    # The function must be an "outer" function, without indentation.
-    function_pattern = re.compile(r'^(local\s+)?function')
-    function_pattern2 = re.compile(r'(local\s+)?function')
-
-    def starts_block(self, i, lines, new_state, prev_state):
-        """True if the new state starts a block."""
-
-        def end(line):
-            # Buggy: 'end' could appear in a string or comment.
-            # However, this code is much better than before.
-            i = line.find('end')
-            return i if i > -1 and g.match_word(line, i, 'end') else -1
-
-        if prev_state.context:
-            return False
-        line = lines[i]
-        m = self.function_pattern.match(line)
-        if m and end(line) < m.start():
-            self.start_stack.append('function')
-            return True
-        # Don't create separate nodes for assigned functions,
-        # but *do* push 'function2' on the start_stack for the later 'end' statement.
-        m = self.function_pattern2.search(line)
-        if m and end(line) < m.start():
-            self.start_stack.append('function2')
-            return False
-        # Not a function. Handle constructs ending with 'end'.
-        line = line.strip()
-        if end(line) == -1:
-            for z in ('do', 'for', 'if', 'while',):
-                if g.match_word(line, 0, z):
-                    self.start_stack.append(z)
-                    break
-        return False
+            state = line_states[i]
+            if line.isspace() or state.context:
+                state.level = level
+                continue
+            m1 = self.function_pat.match(line)
+            m2 = self.end_pat.match(line)
+            if m1:
+                level += 1
+            elif m2:
+                level -= 1
+            state.level = level
     #@-others
-#@+node:ekr.20170530024520.7: ** class Lua_ScanState
-class Lua_ScanState:
-    """A class representing the state of the lua line-oriented scan."""
-
-    def __init__(self, d=None):
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self):
-        return "Lua_ScanState context: %r " % (self.context)
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20170530024520.8: *3* lua_state.level
-    def level(self):
-        """Lua_ScanState.level."""
-        return 0  # Never used.
-    #@+node:ekr.20170530024520.9: *3* lua_state.update
-    def update(self, data):
-        """
-        Lua_ScanState.update
-
-        Update the state using the 6-tuple returned by v2_scan_line.
-        Return i = data[1]
-        """
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        return i
-    #@-others
-
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for lua."""
+    Lua_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Lua_Importer.do_import(),
     'extensions': ['.lua',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4

@@ -248,10 +248,6 @@ class LeoApp:
         self.scriptResult = None  # For use by leoPymacs.
         self.permanentScriptDict = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
-        #@+<< LeoApp: unit testing ivars >>
-        #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>
-        self.suppressImportChecks = False  # True: suppress importCommands.check
-        #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
         self.init_at_file_names()
@@ -334,7 +330,7 @@ class LeoApp:
             "info":     "texinfo",
             "ini":      "ini",
             "io":       "io",
-            "ipynb":    "jupyter",
+            # "ipynb":    "jupyter",
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
@@ -718,7 +714,7 @@ class LeoApp:
             "jmk"           : "jmk",
             "json"          : "json",
             "jsp"           : "jsp",
-            "jupyter"       : "ipynb",
+            # "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
