@@ -3319,7 +3319,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.62: *5* vr3.get_jupyter_source
     def get_jupyter_source(self, c):
-        """Return the html for the @jupyer node."""
+        """Return the html for the @jupyter node."""
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -3339,10 +3339,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     if '://' in f:
                         url = f
             if not url:
-                # Try first line of body
-                url = c.p.b.split('\n')[0]
+                if c.p.b:
+                    # Try first line of body
+                    url = c.p.b.split('\n')[0]
                 if not url:
-                    return ''
+                    return 'No url found'
             try:
                 with urlopen(url) as u:
                     s = u.read().decode()
