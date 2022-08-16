@@ -734,8 +734,6 @@ class NewScanState:
     def __repr__ (self) -> str:
         return f"NewScanState: level: {self._level} context: {self.context}"
 
-    ### Temp, for gen_lines and helpers.
-
     def in_context(self) -> bool:
         return bool(self.context)
 

@@ -10,7 +10,7 @@ from leo.plugins.importers.python import Python_Importer
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
-    
+
     def __init__(self, c: Cmdr) -> None:
         """Cython_Importer.ctor."""
         super().__init__(c, language='cython')

@@ -69,7 +69,6 @@ class CText_Importer(Importer):
                 level = len(m.group(1)) - 2
                 assert level >= 1, m.group(1)
                 parents = parents[:level]
-                ### g.trace('level', level, 'len(parents)', len(parents))
                 self.create_placeholders(level, lines_dict, parents)
                 parent = parents[-1]
                 child = parent.insertAsLastChild()

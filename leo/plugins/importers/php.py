@@ -14,7 +14,7 @@ class Php_Importer(Importer):
     def __init__(self, c: Cmdr) -> None:
         """Php_Importer.__init__"""
         super().__init__(c, language='php')
-        
+
         # self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
         # self.here_doc_target: str = None
 
