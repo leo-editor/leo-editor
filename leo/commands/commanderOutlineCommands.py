@@ -24,6 +24,7 @@ def copyOutline(self, event=None):
     if g.app.inBridge:
         return s
     g.app.gui.replaceClipboardWith(s)
+    return s
 #@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
 def copyOutlineAsJSON(self, event=None):
