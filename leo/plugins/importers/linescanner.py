@@ -643,16 +643,6 @@ class Importer:
     def warning(self, s: str) -> None:  # pragma: no cover
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161108155143.4: *3* i.match (to be removed)
-    def match(self, s: str, i: int, pattern: str) -> bool:
-        """
-        Return True if the pattern matches at s[i:].
-        """
-        # Does not create substrings.
-        return s.find(pattern, i) == i
-        # This creates substrings.
-        # return s[i : i + len(pattern)] == pattern
-
     #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper
     def scan_all_lines(self) -> List["NewScanState"]:
         """
