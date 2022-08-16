@@ -89,7 +89,7 @@ class ChapterController:
         if chapterName == 'main':
             select_chapter_callback.__doc__ = "Select the main chapter"
         else:
-            select_chapter_callback.__doc__ = "Select chapter \"" + chapterName  +"\"."
+            select_chapter_callback.__doc__ = "Select chapter \"" + chapterName + "\"."
         for shortcut in bindings:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select

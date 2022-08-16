@@ -3044,10 +3044,10 @@ class LeoServer:
             'export-jupyter-notebook',  # (overridden by client)
             'flatten-outline',  # (overridden by client)
             'outline-to-cweb',  # (overridden by client)
-            'outline-to-noweb', # (overridden by client)
+            'outline-to-noweb',  # (overridden by client)
             'remove-sentinels',  # (overridden by client)
             'weave',  # (overridden by client)
-            'write-file-from-node', # (overridden by client)
+            'write-file-from-node',  # (overridden by client)
 
             'save-all',
             'save-file-as-zipped',

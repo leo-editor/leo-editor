@@ -32,11 +32,11 @@ class NewScanState:
 
     __slots__ = ['context', 'level']
 
-    def __init__ (self, context: str='', level: int=0) -> None:
+    def __init__(self, context: str='', level: int=0) -> None:
         self.context = context
         self.level = level
 
-    def __repr__ (self) -> str:  # pragma: no cover
+    def __repr__(self) -> str:  # pragma: no cover
         return f"level: {self.level} context: {self.context!r}"
 
     __str__ = __repr__
