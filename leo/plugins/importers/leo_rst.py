@@ -27,7 +27,7 @@ class Rst_Importer(Importer):
     def gen_lines(self, lines: List[str], parent: Position) -> None:
         """Node generator for reStructuredText importer."""
         assert parent == self.root
-        if all(s.isspace() for s in lines):
+        if all(s.isspace() for s in lines):  # pragma: no cover (defensive).
             return
         # Use a dict instead of creating a new VNode slot.
         self.lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.

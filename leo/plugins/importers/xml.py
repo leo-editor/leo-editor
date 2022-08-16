@@ -71,8 +71,7 @@ class Xml_Importer(Importer):
         end_tag = line.find('</', i) == i
         i += (2 if end_tag else 1)  # Ensure progress, whatever happens.
         m = self.ch_pattern.match(line, i)
-        if not m:
-            # pragma: no cover (missing test)
+        if not m:  # pragma: no cover (missing test)
             # All other '<' characters should have had xml/html escapes applied to them.
             self.error(f"missing tag in position {i} of {line!r}")
             return i, level
