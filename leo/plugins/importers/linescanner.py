@@ -96,18 +96,6 @@ block_tuple = namedtuple('block_tuple', [
     'name',  # name of the function, class or method.
 ])
 #@-<< define block_tuple >>
-#@+<< define scan_tuple >>
-#@+node:ekr.20220730064213.1: ** << define scan_tuple >> (linescanner.py)
-# This named tuple contains all data for updating the scan state.
-scan_tuple = namedtuple('scan_tuple', [
-    'context',  # The new context.
-    'i',  # The new line number.
-    'delta_c',  # Change in curly brackets count.
-    'delta_p',  # Change in parens count.
-    'delta_s',  # Change in square_brackets count.
-    'bs_nl',  # Backslash-newline flag.
-])
-#@-<< define scan_tuple >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
