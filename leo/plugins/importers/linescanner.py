@@ -627,22 +627,6 @@ class Importer:
         if this_state.level > prev_state.level:
             return i + 1
         return None
-    #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
-    #@+node:ekr.20161108131153.18: *4* i.Messages
-    def error(self, s: str) -> None:  # pragma: no cover
-        """Issue an error and cause a unit test to fail."""
-        self.errors += 1
-        self.importCommands.errors += 1
-
-    def report(self, message: str) -> None:  # pragma: no cover
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
-
-    def warning(self, s: str) -> None:  # pragma: no cover
-        if not g.unitTesting:
-            g.warning('Warning:', s)
     #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper
     def scan_all_lines(self) -> List["NewScanState"]:
         """
@@ -704,6 +688,21 @@ class Importer:
             level = max(0, level - 1)
         i += 1
         return i, level
+    #@+node:ekr.20161108131153.18: *3* i: Messages
+    def error(self, s: str) -> None:  # pragma: no cover
+        """Issue an error and cause a unit test to fail."""
+        self.errors += 1
+        self.importCommands.errors += 1
+
+    def report(self, message: str) -> None:  # pragma: no cover
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
+
+    def warning(self, s: str) -> None:  # pragma: no cover
+        if not g.unitTesting:
+            g.warning('Warning:', s)
     #@+node:ekr.20161109045312.1: *3* i: Whitespace
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s: str) -> int:
