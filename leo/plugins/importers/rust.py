@@ -2,10 +2,9 @@
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
 """The @auto importer for rust."""
 import re
-from typing import Any, Dict, List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20200316101240.2: ** class Rust_Importer
 class Rust_Importer(Importer):
@@ -13,12 +12,7 @@ class Rust_Importer(Importer):
     def __init__(self, c: Cmdr) -> None:
         """rust_Importer.__init__"""
         # Init the base class.
-        super().__init__(
-            c,
-            language='rust',
-            state_class=Rust_ScanState,
-        )
-        self.headline = None
+        super().__init__(c, language='rust')
 
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.compute_headline
@@ -55,97 +49,7 @@ class Rust_Importer(Importer):
         while '<' not in tail and tail.endswith('>'):  # pragma: no cover (missing test)
             tail = tail[:-1].rstrip()
         return f"{head} {tail}".strip().replace('  ', ' ')
-    #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('//', '/*', '*/'), f"rust: {comment!r} {block1!r} {block2!r}"
-
-        # About context dependent lifetime tokens:
-        # https://doc.rust-lang.org/stable/reference/tokens.html#lifetimes-and-loop-labels
-        #
-        # It looks like we can just ignore 'x' and 'x tokens.
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind  pattern  ends?
-                '\\':   [('len+1', '\\', None)],
-                '"':    [('len',   '"', context == '"')],
-                # "'":    [('len', "'", context == "'"),],
-                '*':    [('len', '*/', context == '/*')],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '/':    [
-                    ('all', '//', context, None),
-                    ('len', '/*', '/*', None),
-                ],
-                '\\':   [('len+1', '\\', context, None)],
-                '"':    [('len', '"', '"',     None)],
-                # "'":    [('len', "'", "'",     None)],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-        return d
     #@-others
-#@+node:ekr.20200316101240.7: ** class Rust_ScanState
-class Rust_ScanState:
-    """A class representing the state of the line-oriented scan for rust."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Rust_ScanSate ctor"""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.curlies = prev.curlies
-            self.parens = prev.parens
-        else:
-            self.context = ''
-            self.curlies = 0
-            self.parens = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Rust_ScanState.__repr__"""
-        return (
-            f"<Rust_ScanState "
-            f"context: {self.context!r} "
-            f"curlies: {self.curlies} "
-            f"parens: {self.parens}>")
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220814095533.1: *3* rust_state.in_context
-    def in_context(self) -> bool:
-        """True if in a special context."""
-        return bool(self.context)
-    #@+node:ekr.20200316101240.8: *3* rust_state.level
-    def level(self) -> int:
-        """Rust_ScanState.level."""
-        return self.curlies  # (self.curlies, self.parens)
-    #@+node:ekr.20200316101240.9: *3* rust_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Rust_ScanState: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        self.curlies += data.delta_c
-        self.parens += data.delta_p
-        return data.i
-    #@-others
-
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:
