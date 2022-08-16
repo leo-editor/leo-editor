@@ -1,79 +1,8 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
-#@+<< linescanner docstring >>
-#@+node:ekr.20161108125805.1: ** << linescanner docstring >>
-"""
-#@@language rest
-#@@wrap
-
-**Overview**
-
-Leo's import infrastructure in `leoImport.py` instantiates the
-Importer instance and calls `i.import_from_string`, which calls `i.scan_lines`.
-
-New importers copy entire lines from the input file to Leo nodes. This
-makes the new importers much less error prone than the legacy
-(character-by-character) importers.
-
-New importers know *nothing* about parsing. They know only about how to
-scan tokens *accurately*.
-
-**Writing a new importer**
-
-Just run the importer;; abbreviation!
-
-To make the importer importer;; functional you must:
-
-1. Copy it from leoSettings (@settings-->Abbreviations-->@outline-data tree-abbreviations)
-   to the corresponding location in myLeoSettings.leo.
-
-2. Make sure @bool scripting-abbreviations is True in myLeoSettings.leo.
-
-**Using the abbreviation**
-
-1. Just type importer;; in the body pane of an empty node.
-
-A dialog will prompt you for the name of the language.  Suppose you type x.
-
-2. Now you will be prompted for to fill in the first field::
-
-    'extensions': [comma-separated lists of extensions, with leading periods],
-
-The italicized field will be highlighted.  Type '.x' (including quotes) followed by two commas.
-
-3. You will then be prompted to fill in the second field::
-
-    strict = True leading whitespace is significant. Otherwise False,
-
-Again, the italicized field will be highlighted.
-
-Type False, followed by two commas.
-
-4. You will then be prompted for the last field::
-
-    ### Examples:
-    # self.indent # for python, coffeescript.
-    # self.curlies
-    # (self, curlies, self.parens)
-    return level
-
-Only "level" is highlighted. The comments provide some hints about what to type.
-
-Let's type "self.curlies" followed by two commas.
-
-5. Nothing more is highlighted, so that's it! No more substitutions remain.
-   The outline is ready to use!
-
-Take a look at the result. The new tree is an almost complete @@file node
-for the importer. Subtrees contain an X_Importer class and an X_ScanState
-class. Docstrings, ctors and __repr__ methods are complete.
-
-Note: The generated tree contain ### comments showing where more work may
-be needed. I might remove the need for some of them, but there is no great
-need to do so.
-
-"""
-#@-<< linescanner docstring >>
+#@@first
+"""linescanner.py: The base Importer class used by some importers."""
 import io
 import re
 from collections import namedtuple
