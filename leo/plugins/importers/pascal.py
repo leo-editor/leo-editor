@@ -28,29 +28,29 @@ class Pascal_Importer(Importer):
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
     #@+node:ekr.20220804120455.1: *3* pascal_i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
-        """Set scan_state._level for all scan states."""
+        """Set scan_state.level for all scan states."""
         lines, line_states = self.lines, self.line_states
         begin_level, nesting_level = 0, 0
         for i, line in enumerate(lines):
             state = line_states[i]
-            if line.isspace() or state.in_context():
-                state._level = nesting_level
+            if line.isspace() or state.context:
+                state.level = nesting_level
                 continue
             m = self.pascal_start_pat1.match(line) or self.pascal_start_pat2.match(line)
             if m:
                 nesting_level += 1
-                state._level = nesting_level
+                state.level = nesting_level
             elif g.match_word(line.lstrip(), 0, 'begin'):
                 begin_level += 1
-                state._level = nesting_level  # The 'end' is part of the block.
+                state.level = nesting_level  # The 'end' is part of the block.
             elif g.match_word(line.lstrip(), 0, 'end'):
                 if begin_level > 0:
                     begin_level -= 1
                 else:
-                    state._level = nesting_level  # The 'end' is part of the block.
+                    state.level = nesting_level  # The 'end' is part of the block.
                     nesting_level -= 1
             else:
-                state._level = nesting_level
+                state.level = nesting_level
     #@-others
 #@-others
 

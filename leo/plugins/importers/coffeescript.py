@@ -42,10 +42,10 @@ class Coffeescript_Importer(Python_Importer):
         """
         lines, line_states = self.lines, self.line_states
         line = lines[i]
-        if line.isspace() or line_states[i].in_context():
+        if line.isspace() or line_states[i].context:
             return None  # pragma: no cover (mysterious)
         prev_state = line_states[i - 1] if i > 0 else self.state_class()
-        if prev_state.in_context():
+        if prev_state.context:
             return None  # pragma: no cover (mysterious)
         line = lines[i]
         for pattern in self.pattern_table:

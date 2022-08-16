@@ -35,7 +35,7 @@ class Cython_Importer(Python_Importer):
         """
         lines, line_states = self.lines, self.line_states
         line = lines[i]
-        if line.isspace() or line_states[i].in_context():
+        if line.isspace() or line_states[i].context:
             return None  # pragma: no cover (mysterious)
         m = self.class_pat.match(line) or self.def_pat.match(line)
         if not m:

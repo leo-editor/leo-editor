@@ -60,7 +60,7 @@ class Xml_Importer(Importer):
         this_state = states[i]
         if lines[i].isspace() or this_state.context:
             return None
-        if this_state.level() > prev_state.level():
+        if this_state.level > prev_state.level:
             return i + 1
         return None
     #@+node:ekr.20220815111538.1: *3* xml_i.update_level

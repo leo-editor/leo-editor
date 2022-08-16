@@ -73,7 +73,7 @@ class Java_Importer(Importer):
         while i < len(lines) and i <= i0 + 10:
             prev_state = line_states[i - 1] if i > 0 else self.state_class()
             this_state = line_states[i]
-            if this_state.level() > prev_state.level():
+            if this_state.level > prev_state.level:
                 return i + 1
             i += 1
         return None  # pragma: no cover

@@ -407,7 +407,7 @@ class Importer:
         # Compute declaration data.
         decl_line = i
         decl_indent = self.get_int_lws(self.lines[i])
-        decl_level = states[i].level()
+        decl_level = states[i].level
 
         # Scan to the end of the block.
         i = self.new_skip_block(first_body_line)
@@ -584,7 +584,7 @@ class Importer:
         if i >= len(lines):  # pragma: no cover (defensive)
             return len(lines)
         # The level of the previouis line.
-        prev_level = line_states[i - 1].level()
+        prev_level = line_states[i - 1].level
         if trace:  # pragma: no cover
             g.trace(f"i: {i:2} {prev_level} {lines[i-1]!r}")
         while i + 1 < len(lines):
@@ -593,8 +593,8 @@ class Importer:
             state = line_states[i]
             if (
                 not line.isspace()
-                and not state.in_context()
-                and state.level() < prev_level
+                and not state.context
+                and state.level < prev_level
             ):
                 # Remove lines that would be added later by get_intro!
                 lws = self.get_int_lws(lines[i + 1])
@@ -614,7 +614,7 @@ class Importer:
             return None
         prev_state = line_states[i - 1] if i > 0 else self.state_class()
         this_state = line_states[i]
-        if this_state.level() > prev_state.level():
+        if this_state.level > prev_state.level:
             return i + 1
         return None
     #@+node:ekr.20161108131153.15: *3* i: Dumps & messages
@@ -724,20 +724,11 @@ class Importer:
 class NewScanState:
     """A class representing scan state."""
 
-    __slots__ = ['context', '_level']
+    __slots__ = ['context', 'level']
 
     def __init__ (self, context: str='', level: int=0) -> None:
         self.context = context
-        self._level = level
-
-    def __repr__ (self) -> str:
-        return f"NewScanState: level: {self._level} context: {self.context}"
-
-    def in_context(self) -> bool:
-        return bool(self.context)
-
-    def level(self) -> int:
-        return self._level
+        self.level = level
 #@-others
 #@@language python
 #@@tabwidth -4
