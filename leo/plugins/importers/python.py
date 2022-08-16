@@ -10,7 +10,7 @@ from collections import defaultdict, namedtuple
 import leo.core.leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, block_tuple, scan_tuple
+from leo.plugins.importers.linescanner import Importer, block_tuple
 #@+<< define def_tuple >>
 #@+node:ekr.20220724060054.1: ** << define def_tuple >>
 # For the new token-based python importer.
@@ -35,12 +35,7 @@ class Python_Importer(Importer):
 
     def __init__(self, c: Cmdr, language: str='python', state_class: Any=None) -> None:
         """Py_Importer.ctor."""
-        super().__init__(
-            c,
-            language=language,
-            state_class=state_class or Python_ScanState,
-            strict=True,
-        )
+        super().__init__(c, language=language, strict=True)
         self.string_list = ['"""', "'''", '"', "'"]  # longest first.
         self.add_class_to_headlines = c.config.getBool('put-class-in-imported-headlines')
 
@@ -188,36 +183,6 @@ class Python_Importer(Importer):
             return None
         newlines = m.group(0).count('\n')
         return i + newlines + 1
-    #@-others
-#@+node:ekr.20220720044208.1: ** class Python_ScanState
-class Python_ScanState:
-    """
-    A class representing the state of the python line-oriented scan."""
-
-    # Note: python_i.get_block calculates indentaion w/o using this class.
-
-    def __init__(self, d: Dict=None) -> None:
-        """Python_ScanState ctor."""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Py_State.__repr__"""
-        return f"Python_ScanState: {self.context}"
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220720044208.5: *3* py_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Python_ScanState: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        return data.i
     #@-others
 #@+node:vitalije.20211201230203.1: ** function: token_based_python_importer
 SPLIT_THRESHOLD = 10  # Don't split blocks shorter than this threshold.

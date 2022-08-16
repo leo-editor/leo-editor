@@ -2,11 +2,10 @@
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 """The @auto importer for TypeScript."""
 import re
-from typing import Dict
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
@@ -51,11 +50,7 @@ class TS_Importer(Importer):
     def __init__(self, c: Cmdr) -> None:
         """The ctor for the TS_ImportController class."""
         # Init the base class.
-        super().__init__(
-            c,
-            language='typescript',  # Case is important.
-            state_class=Typescript_ScanState,
-        )
+        super().__init__(c, language='typescript')
 
     #@+others
     #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
@@ -81,43 +76,6 @@ class TS_Importer(Importer):
         s = s.replace('  ', ' ')
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
-    #@-others
-#@+node:ekr.20161118071747.14: ** class Typescript_ScanState
-class Typescript_ScanState:
-    """A class representing the state of the typescript line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Typescript_ScanState ctor."""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.curlies = prev.curlies
-        else:
-            self.context = ''
-            self.curlies = 0
-
-    #@+others
-    #@+node:ekr.20161118071747.15: *3* typescript_state.__repr__
-    def __repr__(self) -> str:  # pragma: no cover
-        """ts_state.__repr__"""
-        return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
-
-    __str__ = __repr__
-    #@+node:ekr.20220731103111.1: *3* typescript_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context)
-    #@+node:ekr.20161119115736.1: *3* typescript_state.level
-    def level(self) -> int:
-        """Typescript_ScanState.level."""
-        return self.curlies
-    #@+node:ekr.20161118072957.1: *3* typescript_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Typescript_ScanState: Update the state using the given scan_tuple.
-        """
-        self.context = data.context
-        self.curlies += data.delta_c
-        return data.i
     #@-others
 #@-others
 

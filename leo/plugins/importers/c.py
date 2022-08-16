@@ -5,7 +5,7 @@ import re
 from typing import Dict, Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -24,7 +24,7 @@ class C_Importer(Importer):
         """C_Importer.__init__"""
 
         # Init the base class.
-        super().__init__(c, language='c', state_class=C_ScanState)
+        super().__init__(c, language='c')
 
         # These must be defined here because they use configuration data..
         aSet = set(self.type_keywords + (c.config.getData('c_import_typedefs') or []))
@@ -37,7 +37,38 @@ class C_Importer(Importer):
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-    #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
+    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block & helper
+    def new_starts_block(self, i: int) -> Optional[int]:
+        """
+        Return None if lines[i] does not start a class, function or method.
+
+        Otherwise, return the index of the first line of the body.
+        """
+        i0, lines, line_states = i, self.lines, self.line_states
+        line = lines[i]
+        if (
+            line.isspace()
+            or line_states[i].context
+            or line.find(';') > -1  # One-line declaration.
+            or self.c_keywords_pattern.match(line)  # A statement.
+            or not self.match_start_patterns(line)
+        ):
+            return None
+        # Try to set self.headline.
+        if not self.headline and i0 + 1 < len(lines):
+            self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
+        # Now clean the headline.
+        if self.headline:
+            self.headline = self.compute_headline(self.headline)
+        # Scan ahead at most 10 lines until an open { is seen.
+        while i < len(lines) and i <= i0 + 10:
+            prev_state = line_states[i - 1] if i > 0 else self.state_class()
+            this_state = line_states[i]
+            if this_state.level() > prev_state.level():
+                return i + 1
+            i += 1
+        return None  # pragma: no cover
+    #@+node:ekr.20161204165700.1: *4* c_i.match_start_patterns
     # Patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
     c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
@@ -77,76 +108,7 @@ class C_Importer(Importer):
             return True
         m = self.c_types_pattern.match(line)
         return bool(m)
-    #@+node:ekr.20220728055719.1: *3* c_i.new_starts_block
-    def new_starts_block(self, i: int) -> Optional[int]:
-        """
-        Return None if lines[i] does not start a class, function or method.
-
-        Otherwise, return the index of the first line of the body.
-        """
-        i0, lines, line_states = i, self.lines, self.line_states
-        line = lines[i]
-        if (
-            line.isspace()
-            or line_states[i].context
-            or line.find(';') > -1  # One-line declaration.
-            or self.c_keywords_pattern.match(line)  # A statement.
-            or not self.match_start_patterns(line)
-        ):
-            return None
-        # Try to set self.headline.
-        if not self.headline and i0 + 1 < len(lines):
-            self.headline = f"{lines[i0].strip()} {lines[i0+1].strip()}"
-        # Now clean the headline.
-        if self.headline:
-            self.headline = self.compute_headline(self.headline)
-        # Scan ahead at most 10 lines until an open { is seen.
-        while i < len(lines) and i <= i0 + 10:
-            prev_state = line_states[i - 1] if i > 0 else self.state_class()
-            this_state = line_states[i]
-            if this_state.level() > prev_state.level():
-                return i + 1
-            i += 1
-        return None  # pragma: no cover
     #@-others
-#@+node:ekr.20161108223159.1: ** class C_ScanState
-class C_ScanState:
-    """A class representing the state of the C line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """C_ScanSate ctor"""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.curlies = prev.curlies
-        else:
-            self.context = ''
-            self.curlies = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """C_ScanState.__repr__"""
-        return 'C_ScanState context: %r curlies: %s' % (self.context, self.curlies)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220729124756.1: *3* c_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context)
-    #@+node:ekr.20161119115315.1: *3* c_state.level
-    def level(self) -> int:
-        """C_ScanState.level."""
-        return self.curlies
-    #@+node:ekr.20161118051111.1: *3* c_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        C_ScanState: Update the state using the given scan_tuple.
-        """
-        self.context = data.context
-        self.curlies += data.delta_c
-        return data.i
-    #@-others
-
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

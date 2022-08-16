@@ -2,26 +2,22 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 """@auto importer for cython."""
 import re
-from typing import Dict, Optional
+from typing import Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
 #@+node:ekr.20200619141201.2: ** class Cython_Importer(Python_Importer)
 class Cython_Importer(Python_Importer):
     """A class to store and update scanning state."""
-
-    #@+others
-    #@+node:ekr.20200619144343.1: *3* cython_i.ctor
+    
     def __init__(self, c: Cmdr) -> None:
         """Cython_Importer.ctor."""
-        super().__init__(
-            c,
-            language='cython',
-            state_class=Cython_ScanState,
-        )
+        super().__init__(c, language='cython')
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
+
+
+    #@+others
     #@+node:ekr.20220806173547.1: *3* cython_i.new_starts_block
     class_pat_s = r'\s*(class|async class)\s+([\w_]+)\s*(\(.*?\))?(.*?):'
     class_pat = re.compile(class_pat_s, re.MULTILINE)
@@ -47,65 +43,6 @@ class Cython_Importer(Python_Importer):
         newlines = m.group(0).count('\n')
         return i + newlines + 1
     #@-others
-#@+node:vitalije.20211207174609.1: ** class Cython_State
-class Cython_ScanState:
-    """A class representing the state of the python line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Cython_ScanState ctor."""
-        if d:
-            indent = d.get('indent')
-            prev = d.get('prev')
-            self.indent = prev.indent if prev.bs_nl else indent
-            self.context = prev.context
-            self.curlies = prev.curlies
-            self.parens = prev.parens
-            self.squares = prev.squares
-        else:
-            self.bs_nl = False
-            self.context = ''
-            self.curlies = self.parens = self.squares = 0
-            self.indent = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Py_State.__repr__"""
-        return self.short_description()
-
-    __str__ = __repr__
-
-    def short_description(self) -> str:  # pragma: no cover
-        bsnl = 'bs-nl' if self.bs_nl else ''
-        context = f"{self.context} " if self.context else ''
-        indent = self.indent
-        curlies = f"{{{self.curlies}}}" if self.curlies else ''
-        parens = f"({self.parens})" if self.parens else ''
-        squares = f"[{self.squares}]" if self.squares else ''
-        return f"{context}indent:{indent}{curlies}{parens}{squares}{bsnl}"
-
-    #@+others
-    #@+node:ekr.20220730072654.1: *3* cython_state.in_context
-    def in_context(self) -> bool:
-        """Cython_State.in_context"""
-        return (
-            self.context or
-            self.curlies > 0 or
-            self.parens > 0 or
-            self.squares > 0 or
-            self.bs_nl
-        )
-    #@+node:ekr.20220730072654.2: *3* cython_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Cython_State: Update the state given scan_tuple.
-        """
-        self.bs_nl = data.bs_nl
-        self.context = data.context
-        self.curlies += data.delta_c
-        self.parens += data.delta_p
-        self.squares += data.delta_s
-        return data.i
-    #@-others
-
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

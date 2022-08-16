@@ -6,7 +6,7 @@ from typing import Any, Dict, Generator
 from leo.core import leoGlobals as g  # Required
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
@@ -14,59 +14,9 @@ class JS_Importer(Importer):
     def __init__(self, c: Cmdr) -> None:
         """The ctor for the JS_ImportController class."""
         # Init the base class.
-        super().__init__(
-            c,
-            language='javascript',
-            state_class=JS_ScanState,
-        )
+        super().__init__(c, language='javascript')
 
     #@+others
-    #@+node:ekr.20161105140842.5: *3* js_i.scan_line
-    def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
-        """
-        Update the scan state at the *end* of the line.
-        Return JS_ScanState({'context':context, 'curlies':curlies, 'parens':parens})
-
-        This code uses JsLex to scan the tokens, which scans strings and regexs properly.
-
-        This code also handles *partial* tokens: tokens continued from the
-        previous line or continued to the next line.
-        """
-        context = prev_state.context
-        curlies, parens = prev_state.curlies, prev_state.parens
-        # Scan tokens, updating context and counts.
-        prev_val = None
-        for kind, val in JsLexer().lex(s):
-            if context:
-                if context in ('"', "'") and kind in ('other', 'punct') and val == context:
-                    context = ''  # pragma: no cover (mysterious)
-                elif (
-                    context == '/*'
-                    and kind in ('other', 'punct')
-                    and prev_val == '*'
-                    and val == '/'
-                ):
-                    context = ''
-            elif kind in ('other', 'punct') and val in ('"', "'"):
-                context = val
-            elif kind in ('other', 'punct') and val == '*' and prev_val == '/':
-                context = '/*'
-            elif kind in ('other', 'punct'):
-                if val == '*' and prev_val == '/':
-                    # TestJavascript.test_comments casts doubt on whether this case is possible.
-                    context = '/*'  # pragma: no cover (mysterious)
-                elif val == '{':
-                    curlies += 1
-                elif val == '}':
-                    curlies -= 1
-                elif val == '(':
-                    parens += 1
-                elif val == ')':
-                    parens -= 1
-            prev_val = val
-        d = {'context': context, 'curlies': curlies, 'parens': parens}
-        state = JS_ScanState(d)
-        return state
     #@+node:ekr.20161101183354.1: *3* js_i.compute_headline
     clean_regex_list1 = [
         # (function name (
@@ -129,47 +79,6 @@ class JS_Importer(Importer):
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
     #@-others
-#@+node:ekr.20161105092745.1: ** class JS_ScanState
-class JS_ScanState:
-    """A class representing the state of the javascript line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """JS_ScanState ctor"""
-        if d:
-            # d is *different* from the dict created by i.scan_line.
-            self.context = d.get('context')
-            self.curlies = d.get('curlies')
-            self.parens = d.get('parens')
-        else:
-            self.context = ''
-            self.curlies = self.parens = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """JS_ScanState.__repr__"""
-        return 'JS_ScanState context: %r curlies: %s parens: %s' % (
-            self.context, self.curlies, self.parens)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220731093145.1: *3* js_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context or self.parens)
-    #@+node:ekr.20161119115505.1: *3* js_state.level
-    def level(self) -> int:
-        """JS_ScanState.level."""
-        return self.curlies  # (self.curlies, self.parens)
-    #@+node:ekr.20161119051049.1: *3* js_state.update
-    def update(self, data: scan_tuple) -> int:  # pragma: no cover (mysterious)
-        """
-        Javascript_ScanState: Update the state using the given scan_tuple.
-        """
-        self.context = data.context
-        self.curlies += data.delta_c
-        self.parens += data.delta_p
-        return data.i
-    #@-others
-
 #@+node:ekr.20200131110322.2: ** JsLexer...
 # JsLex: a lexer for Javascript
 # Written by Ned Batchelder. Used by permission.

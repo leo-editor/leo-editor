@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18140: * @file ../plugins/importers/csharp.py
 """The @auto importer for the csharp language."""
-from typing import Dict
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer
 class Csharp_Importer(Importer):
@@ -12,11 +11,7 @@ class Csharp_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:
         """Csharp_Importer.__init__"""
-        super().__init__(
-            c,
-            language='csharp',
-            state_class=Csharp_ScanState,
-        )
+        super().__init__(c, language='csharp')
 
     #@+others
     #@+node:ekr.20161121200106.5: *3* csharp.compute_headline
@@ -27,45 +22,6 @@ class Csharp_Importer(Importer):
             s = s[:-1].strip()
         return s
     #@-others
-#@+node:ekr.20161121200106.7: ** class class Csharp_ScanState
-class Csharp_ScanState:
-    """A class representing the state of the csharp line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Csharp_ScanState.__init__"""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.curlies = prev.curlies
-        else:
-            self.context = ''
-            self.curlies = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Csharp_ScanState.__repr__"""
-        return "Csharp_ScanState context: %r curlies: %s" % (
-            self.context, self.curlies)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220729152938.1: *3* csharp_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context)
-    #@+node:ekr.20161121200106.8: *3* csharp_state.level
-    def level(self) -> int:
-        """Csharp_ScanState.level."""
-        return self.curlies
-    #@+node:ekr.20161121200106.9: *3* csharp_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Csharp_ScanState.update: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        self.curlies += data.delta_c
-        return data.i
-    #@-others
-
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

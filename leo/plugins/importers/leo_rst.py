@@ -8,7 +8,7 @@ This module must **not** be named rst, so as not to conflict with docutils.
 from typing import Dict, List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 
 # Used by writers.leo_rst as well as in this file.
 # All valid rst underlines, with '#' *last*, so it is effectively reserved.
@@ -20,11 +20,7 @@ class Rst_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:
         """Rst_Importer.__init__"""
-        super().__init__(
-            c,
-            language='rest',
-            state_class=Rst_ScanState,
-        )
+        super().__init__(c, language='rest')
 
     #@+others
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
@@ -144,38 +140,6 @@ class Rst_Importer(Importer):
         self.lines_dict[child.v] = []
         self.stack.append(child)
         return self.stack[level]
-    #@-others
-#@+node:ekr.20161127192007.6: ** class Rst_ScanState
-class Rst_ScanState:
-    """A class representing the state of the rst line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Rst_ScanState.__init__"""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Rst_ScanState.__repr__"""
-        return "Rst_ScanState context: %r " % (self.context)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20161127192007.7: *3* rst_state.level
-    def level(self) -> int:
-        """Rst_ScanState.level."""
-        return 0
-
-    #@+node:ekr.20161127192007.8: *3* rst_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Rst_ScanState.update: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        return data.i
     #@-others
 #@-others
 

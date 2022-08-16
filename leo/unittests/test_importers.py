@@ -12,7 +12,7 @@ from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.dart as dart
-from leo.plugins.importers.javascript import JS_Importer, JsLexer, JS_ScanState
+from leo.plugins.importers.javascript import JsLexer
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
@@ -2149,40 +2149,6 @@ class TestJavascript(BaseTestImporter):
             };
         """
         self.run_test(s)
-    #@+node:ekr.20200203060718.1: *3* TestJavascript.test_scan_line
-    def test_scan_line(self):
-
-        c = self.c
-        table = (
-            # result        prev_context    s
-            ((0, 0, '"'), "", r'"string'),
-            ((0, 0, '/*'), "", r'/* line 1'),
-            ((0, 0, '/*'), "/*", r'line 2'),  # New.
-            ((0, 0, ''), "/*", r'line 3 */'),  # New.
-            ((0, 0, ''), "", r'a + b // /*'),
-            ((0, 1, ''), "", r'(function'),
-            ((1, 1, ''), "", r'(function(a) {'),
-            ((0, 0, ''), "", r'var x = /abc/'),
-            ((0, 0, ''), "", r'var x = /a"c/'),
-            ((0, 0, ''), "", r'var x = /a\//'),
-            ((0, 0, ''), "", r'var x = /a\//'),
-            ((0, 1, ''), "", r'var x = (0,'),
-        )
-        for result, prev_context, s in table:
-            importer = JS_Importer(c)
-            prev_state = JS_ScanState()
-            prev_state.context = prev_context
-            new_state = importer.scan_line(s, prev_state)
-            curlies, parens, context = result
-            ok = (
-                new_state.curlies == curlies and
-                new_state.parens == parens and
-                new_state.context == context)
-            assert ok, (
-                    f"\n"
-                    f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
-                    f"new_state: {new_state}\n"
-                    f"        s: {s!r}")
     #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):

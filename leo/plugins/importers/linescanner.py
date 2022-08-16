@@ -281,7 +281,7 @@ class Importer:
         """
         trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
-        self.line_states: List[ScanState] = []
+        self.line_states: List[NewScanState] = []
         self.lines = lines
 
         # Prepass 1: calculate line states.
@@ -732,51 +732,6 @@ class Importer:
     def is_ws_line(self, s: str) -> bool:
         """Return True if s is nothing but whitespace and single-line comments."""
         return bool(self.ws_pattern.match(s))
-    #@-others
-#@+node:ekr.20161108171914.1: ** class ScanState
-class ScanState:
-    """
-    The base class for classes representing the state of the line-oriented
-    scan.
-    """
-
-    def __init__(self, d: Dict[str, Any]=None) -> None:
-        """ScanState ctor."""
-        if d:  # pragma: no cover (mysterious)
-            indent = d.get('indent')
-            prev = d.get('prev')
-            self.indent = indent  # NOT prev.indent
-            self.bs_nl = prev.bs_nl
-            self.context = prev.context
-            self.curlies = prev.curlies
-            self.parens = prev.parens
-            self.squares = prev.squares
-        else:
-            self.bs_nl = False
-            self.context = ''
-            self.curlies = self.indent = self.parens = self.squares = 0
-
-    #@+others
-    #@+node:ekr.20161118043146.1: *3* ScanState.__repr__
-    def __repr__(self) -> str:  # pragma: no cover
-        """ScanState.__repr__"""
-        return 'ScanState context: %r curlies: %s' % (
-            self.context, self.curlies)
-    #@+node:ekr.20161119115215.1: *3* ScanState.level
-    def level(self) -> int:
-        """ScanState.level."""
-        return self.curlies
-    #@+node:ekr.20161118043530.1: *3* ScanState.update
-    def update(self, data: scan_tuple) -> int:  # pragma: no cover (mysterious)
-        """
-        Importer.ScanState: Update the state using given scan_tuple.
-        """
-        self.bs_nl = data.bs_nl
-        self.context = data.context
-        self.curlies += data.delta_c
-        self.parens += data.delta_p
-        self.squares += data.delta_s
-        return data.i
     #@-others
 #@+node:ekr.20220814203303.1: ** class NewScanState
 class NewScanState:
