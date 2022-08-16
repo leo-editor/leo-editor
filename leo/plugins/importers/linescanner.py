@@ -107,6 +107,10 @@ class NewScanState:
         self.context = context
         self.level = level
 
+    def __repr__ (self) -> str:  # pragma: no cover
+        return f"level: {self.level} context: {self.context!r}"
+
+    __str__ = __repr__
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
     """
@@ -394,7 +398,7 @@ class Importer:
         return "...some declarations"  # pragma: no cover (missing test)
     #@+node:ekr.20220804120240.1: *5* i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
-        """A hook for pascal. Called by i.gen_lines()."""
+        """A hook for pascal and lua. Called by i.gen_lines()."""
         pass
     #@+node:ekr.20220727074602.1: *5* i.get_block
     def get_block(self, i: int) -> block_tuple:

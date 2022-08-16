@@ -2149,6 +2149,67 @@ class TestJavascript(BaseTestImporter):
         """
         self.run_test(s)
     #@-others
+#@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
+class TestLua (BaseTestImporter):
+
+    ext = '.lua'
+
+    #@+others
+    #@+node:ekr.20220816082722.1: *3* TestLua.test_1
+    def test_lua_1(self):
+
+        s = """
+             function foo (a)
+               print("foo", a)
+               return coroutine.yield(2*a)
+             end
+
+             co = coroutine.create(function (a,b)
+                   print("co-body", a, b)
+                   local r = foo(a+1)
+                   print("co-body", r)
+                   local r, s = coroutine.yield(a+b, a-b)
+                   print("co-body", r, s)
+                   return b, "end"
+             end)
+
+             print("main", coroutine.resume(co, 1, 10))
+             print("main", coroutine.resume(co, "r"))
+             print("main", coroutine.resume(co, "x", "y"))
+             print("main", coroutine.resume(co, "x", "y"))
+        """
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '', # check_outline ignores the first headline'
+                    '@others\n'
+                    'end)\n'
+                    '\n'
+                    'print("main", coroutine.resume(co, 1, 10))\n'
+                    'print("main", coroutine.resume(co, "r"))\n'
+                    'print("main", coroutine.resume(co, "x", "y"))\n'
+                    'print("main", coroutine.resume(co, "x", "y"))\n'
+                    '\n'
+                    '@language lua\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'foo',
+                    'function foo (a)\n'
+                    '  print("foo", a)\n'
+                    '  return coroutine.yield(2*a)\n'
+                    'end\n'
+                    '\n'
+            ),
+            (1, 'co = coroutine.create',
+                    'co = coroutine.create(function (a,b)\n'
+                    '      print("co-body", a, b)\n'
+                    '      local r = foo(a+1)\n'
+                    '      print("co-body", r)\n'
+                    '      local r, s = coroutine.yield(a+b, a-b)\n'
+                    '      print("co-body", r, s)\n'
+                    '      return b, "end"\n'
+            ),
+        ))
+    #@-others
 #@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
 

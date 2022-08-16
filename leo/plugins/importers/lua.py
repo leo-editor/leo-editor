@@ -6,14 +6,12 @@ The @auto importer for the lua language.
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
 import re
-from typing import Any, List
-from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
 delete_blank_lines = True
 #@+others
-#@+node:ekr.20170530024520.3: ** class Lua_Importer
+#@+node:ekr.20170530024520.3: ** class Lua_Importer(Importer)
 class Lua_Importer(Importer):
     """The importer for the lua lanuage."""
 
@@ -21,7 +19,6 @@ class Lua_Importer(Importer):
         """Lua_Importer.__init__"""
         super().__init__(c, language='lua')
         # Contains entries for all constructs that end with 'end'.
-        self.start_stack: List[str] = []
 
     # Define necessary overrides.
     #@+others
@@ -36,42 +33,29 @@ class Lua_Importer(Importer):
         if i > -1:
             s = s[:i]
         return s.strip()
-    #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
-    # Buggy: this could appear in a string or comment.
-    # The function must be an "outer" function, without indentation.
-    function_pattern = re.compile(r'^(local\s+)?function')
-    function_pattern2 = re.compile(r'(local\s+)?function')
+    #@+node:ekr.20220816084846.1: *3* lua_i.gen_lines_prepass
+    function_pat = re.compile(r'^(\s*function\b)|^(.*?\(function\b)')
+    end_pat = re.compile(r'^.*end\b.*$')
 
-    def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any) -> bool:
-        """True if the new state starts a block."""
-
-        def end(line: str) -> int:
-            # Buggy: 'end' could appear in a string or comment.
-            # However, this code is much better than before.
-            i = line.find('end')
-            return i if i > -1 and g.match_word(line, i, 'end') else -1
-
-        if prev_state.context:
-            return False
-        line = lines[i]
-        m = self.function_pattern.match(line)
-        if m and end(line) < m.start():
-            self.start_stack.append('function')
-            return True
-        # Don't create separate nodes for assigned functions,
-        # but *do* push 'function2' on the start_stack for the later 'end' statement.
-        m = self.function_pattern2.search(line)
-        if m and end(line) < m.start():
-            self.start_stack.append('function2')
-            return False
-        # Not a function. Handle constructs ending with 'end'.
-        line = line.strip()
-        if end(line) == -1:
-            for z in ('do', 'for', 'if', 'while',):
-                if g.match_word(line, 0, z):
-                    self.start_stack.append(z)
-                    break
-        return False
+    def gen_lines_prepass(self) -> None:
+        """
+        lua.gen_lines_prepass.
+        Set scan_state.level for all scan states.
+        """
+        lines, line_states = self.lines, self.line_states
+        level = 0
+        for i, line in enumerate(lines):
+            state = line_states[i]
+            if line.isspace() or state.context:
+                state.level = level
+                continue
+            m1 = self.function_pat.match(line)
+            m2 = self.end_pat.match(line)
+            if m1:
+                level += 1
+            elif m2:
+                level -= 1
+            state.level = level
     #@-others
 #@-others
 
