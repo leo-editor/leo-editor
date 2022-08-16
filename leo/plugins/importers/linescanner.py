@@ -77,7 +77,7 @@ need to do so.
 import io
 import re
 from collections import namedtuple
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
@@ -112,7 +112,6 @@ class Importer:
         c: Cmdr,
         language: str=None,  # For @language directive.
         name: str=None,  # The kind of importer, usually the same as language
-        state_class: Any=None,  # For i.scan_line
         strict: bool=False,
     ) -> None:
         """
