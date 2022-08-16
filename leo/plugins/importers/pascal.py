@@ -2,11 +2,10 @@
 #@+node:ekr.20140723122936.18147: * @file ../plugins/importers/pascal.py
 """The @auto importer for the pascal language."""
 import re
-from typing import Any, Dict, List
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer
 class Pascal_Importer(Importer):
@@ -17,11 +16,7 @@ class Pascal_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:
         """Pascal_Importer.__init__"""
-        super().__init__(
-            c,
-            language='pascal',
-            state_class=Pascal_ScanState,
-        )
+        super().__init__(c, language='pascal')
 
     #@+others
     #@+node:ekr.20161126171035.4: *3* pascal_i.compute_headline
@@ -31,43 +26,6 @@ class Pascal_Importer(Importer):
         """Return a cleaned up headline s."""
         m = self.pascal_clean_pattern.match(s)
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
-    #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('//', '{', '}'), f"pascal: {comment!r} {block1!r} {block2!r}"
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None)],
-                '"':    [('len', '"', context == '"')],
-                "'":    [('len', "'", context == "'")],
-                '}':    [('len', '{', True)],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '/':    [('all', '//', context, None)],  # Single-line comment.
-                '\\':   [('len+1', '\\', context, None)],
-                '"':    [('len', '"', '"', None)],
-                "'":    [('len', "'", "'", None)],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-        return d
     #@+node:ekr.20220804120455.1: *3* pascal_i.gen_lines_prepass
     def gen_lines_prepass(self) -> None:
         """Set scan_state._level for all scan states."""
@@ -93,42 +51,6 @@ class Pascal_Importer(Importer):
                     nesting_level -= 1
             else:
                 state._level = nesting_level
-    #@-others
-#@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
-class Pascal_ScanState:
-    """A class representing the state of the pascal line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Pascal_ScanState.__init__"""
-        self.decl_level = 0  # A hack, for self.level()
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Pascal_ScanState.__repr__"""
-        return "Pascal_ScanState context: %r" % (self.context)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220804080833.1: *3* pascal_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context)
-    #@+node:ekr.20161126171035.7: *3* pascal_state.level
-    def level(self) -> int:
-        """Pascal_ScanState.level."""
-        return self.decl_level
-
-    #@+node:ekr.20161126171035.8: *3* pascal_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Pascal_ScanState.update: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        return data.i
     #@-others
 #@-others
 

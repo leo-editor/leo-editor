@@ -2,10 +2,10 @@
 #@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
 """The @auto importer for the elisp language."""
 import re
-from typing import Any, Dict, List, Optional
+from typing import Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer(Importer)
 class Elisp_Importer(Importer):
@@ -16,48 +16,11 @@ class Elisp_Importer(Importer):
     def __init__(self, c: Cmdr) -> None:
         """Elisp_Importer.__init__"""
         # Init the base class.
-        super().__init__(
-            c,
-            language='lisp',
-            state_class=Elisp_ScanState,
-        )
+        super().__init__(c, language='lisp')
         self.level_up_ch = '('
         self.level_down_ch = ')'
 
     #@+others
-    #@+node:ekr.20170205195239.1: *3* elisp_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """elisp state dictionary for the given context."""
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == (';', '', ''), f"elisp: {comment!r} {block1!r} {block2!r}"
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None)],
-                '"':    [('len', '"', context == '"')],
-                # "'":    [('len', "'",    context == "'"),],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind   pattern   new-ctx  deltas
-                ';':    [('all', comment, context, None)],
-                '\\':   [('len+1', '\\', context, None)],
-                '"':    [('len', '"', '"', None)],
-                # "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-        return d
     #@+node:ekr.20161127184128.4: *3* elisp_i.compute_headline
     def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
@@ -79,45 +42,6 @@ class Elisp_Importer(Importer):
         if self.elisp_defun_pattern.match(line):
             return i + 1
         return None
-    #@-others
-#@+node:ekr.20161127184128.6: ** class Elisp_ScanState
-class Elisp_ScanState:
-    """A class representing the state of the elisp line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Elisp_ScanState.__init__"""
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.parens = prev.parens
-        else:
-            self.context = ''
-            self.parens = 0
-
-    def __repr__(self) -> str:  # pragma: no cover
-        """Elisp_ScanState.__repr__"""
-        return "Elisp_ScanState context: %r parens: %s" % (
-            self.context, self.parens)
-
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20220731123531.1: *3* elisp_state.in_context
-    def in_context(self) -> bool:
-        return bool(self.context or self.parens)
-    #@+node:ekr.20161127184128.7: *3* elisp_state.level
-    def level(self) -> int:
-        """Elisp_ScanState.level."""
-        return self.parens
-
-    #@+node:ekr.20161127184128.8: *3* elisp_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Elisp_ScanState.update: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        self.parens += data.delta_p
-        return data.i
     #@-others
 #@-others
 

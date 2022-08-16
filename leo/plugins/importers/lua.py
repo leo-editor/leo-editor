@@ -6,11 +6,11 @@ The @auto importer for the lua language.
 Created 2017/05/30 by the `importer;;` abbreviation.
 """
 import re
-from typing import Any, Dict, List
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import Importer, scan_tuple
+from leo.plugins.importers.linescanner import Importer
 delete_blank_lines = True
 #@+others
 #@+node:ekr.20170530024520.3: ** class Lua_Importer
@@ -19,11 +19,7 @@ class Lua_Importer(Importer):
 
     def __init__(self, c: Cmdr) -> None:
         """Lua_Importer.__init__"""
-        super().__init__(
-            c,
-            language='lua',
-            state_class=Lua_ScanState,
-        )
+        super().__init__(c, language='lua')
         # Contains entries for all constructs that end with 'end'.
         self.start_stack: List[str] = []
 
@@ -40,57 +36,6 @@ class Lua_Importer(Importer):
         if i > -1:
             s = s[:i]
         return s.strip()
-    #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """The scan dict for the lua language."""
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('--', '', ''), f"lua: {comment!r} {block1!r} {block2!r}"
-
-        def add_key(d: Dict, pattern: str, data: Any) -> None:
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key    kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [('len', '"',    context == '"'),],
-                "'":    [('len', "'",    context == "'"),],
-            }
-            # End Lua long brackets.
-            for i in range(10):
-                open_pattern = '--[%s[' % ('='*i)
-                # Both --]] and ]]-- end the long bracket.
-                pattern = ']%s]--' % ('='*i)
-                add_key(d, pattern, ('len', pattern, context==open_pattern))
-                pattern = '--]%s]' % ('='*i)
-                add_key(d, pattern, ('len', pattern, context==open_pattern))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '--':   [('all', comment, context, None)],  # Regular comment.
-                '\\':   [('len+1', '\\', context, None)],
-                '"':    [('len', '"', '"',     None)],
-                "'":    [('len', "'", "'",     None)],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-            # Start Lua long brackets.
-            for i in range(10):
-                pattern = '--[%s[' % ('='*i)
-                add_key(d, pattern, ('len', pattern, pattern, None))
-        return d
     #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
     # Buggy: this could appear in a string or comment.
     # The function must be an "outer" function, without indentation.
@@ -128,36 +73,6 @@ class Lua_Importer(Importer):
                     break
         return False
     #@-others
-#@+node:ekr.20170530024520.7: ** class Lua_ScanState
-class Lua_ScanState:
-    """A class representing the state of the lua line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        if d:
-            prev = d.get('prev')
-            self.context = prev.context
-        else:
-            self.context = ''
-
-    def __repr__(self) -> str:  # pragma: no cover
-        return "Lua_ScanState context: %r " % (self.context)
-    __str__ = __repr__
-
-    #@+others
-    #@+node:ekr.20170530024520.8: *3* lua_state.level
-    def level(self) -> int:
-        """Lua_ScanState.level."""
-        return 0  # Never used.
-    #@+node:ekr.20170530024520.9: *3* lua_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Lua_ScanState.update: Update the state using the given scan_tuple.
-        Return i = data[1]
-        """
-        self.context = data.context
-        return data.i
-    #@-others
-
 #@-others
 
 def do_import(c: Cmdr, parent: Position, s: str) -> None:

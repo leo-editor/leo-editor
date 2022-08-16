@@ -2,25 +2,23 @@
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 """The @auto importer for coffeescript."""
 import re
-from typing import Any, Dict, List, Optional
+from typing import Optional
 from leo.core import leoGlobals as g  # Required.
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
-from leo.plugins.importers.linescanner import scan_tuple
 from leo.plugins.importers.python import Python_Importer
 #@+others
 #@+node:ekr.20160505094722.2: ** class Coffeescript_Importer(Python_Importer)
 class Coffeescript_Importer(Python_Importer):
 
-    #@+others
-    #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for CoffeeScriptScanner class."""
-        super().__init__(
-            c,
-            language='coffeescript',
-            state_class=Coffeescript_ScanState,
-        )
+        super().__init__(c, language='coffeescript')
+            ### state_class=Coffeescript_ScanState,
+
+    #@+others
+    #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
+
     #@+node:ekr.20220729104712.1: *3* coffee_i.compute_headline
     def compute_headline(self, s: str) -> str:
         """
@@ -29,46 +27,6 @@ class Coffeescript_Importer(Python_Importer):
         Don't strip arguments.
         """
         return s.strip()
-    #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        """
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('#', '', ''), f"coffeescript: {comment!r} {block1!r} {block2!r}"
-
-        d: Dict[str, List[Any]]
-
-        if context:
-            d = {
-                # key   kind   pattern  ends?
-                '\\':   [('len+1', '\\', None),],
-                '#':    [('len', '###', context == '###')],
-                '"':    [('len', '"', context == '"')],
-                "'":    [('len', "'", context == "'")],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':   [('len+1', '\\', context, None)],
-                '#':    [
-                            ('len','###','###', None), # Docstring
-                            ('all', '#', context, None),
-                        ],
-                '"':    [('len', '"', '"', None)],
-                "'":    [('len', "'", "'", None)],
-                '{':    [('len', '{', context, (1,0,0))],
-                '}':    [('len', '}', context, (-1,0,0))],
-                '(':    [('len', '(', context, (0,1,0))],
-                ')':    [('len', ')', context, (0,-1,0))],
-                '[':    [('len', '[', context, (0,0,1))],
-                ']':    [('len', ']', context, (0,0,-1))],
-            }
-        return d
     #@+node:ekr.20161118134555.7: *3* coffee_i.new_starts_block
     pattern_table = [
         re.compile(r'^\s*class'),
@@ -104,44 +62,6 @@ class Coffeescript_Importer(Python_Importer):
             line.strip().startswith('#')
             and col == g.computeLeadingWhitespaceWidth(line, self.tab_width)
         )
-    #@-others
-#@+node:ekr.20161110045131.1: ** class Coffeescript_ScanState
-class Coffeescript_ScanState:
-    """A class representing the state of the coffeescript line-oriented scan."""
-
-    def __init__(self, d: Dict=None) -> None:
-        """Coffeescript_ScanState ctor."""
-        if d:
-            indent = d.get('indent')
-            is_ws_line = d.get('is_ws_line')
-            prev = d.get('prev')
-            assert indent is not None and is_ws_line is not None
-            self.bs_nl = False
-            self.context = prev.context
-            self.indent = prev.indent if prev.bs_nl else indent
-        else:
-            self.bs_nl = False
-            self.context = ''
-            self.indent = 0
-
-    #@+others
-    #@+node:ekr.20161118064325.1: *3* coffeescript_state.__repr__
-    def __repr__(self) -> str:  # pragma: no cover
-        """CS_State.__repr__"""
-        return '<CSState %r indent: %s>' % (self.context, self.indent)
-
-    __str__ = __repr__
-    #@+node:ekr.20161118140100.1: *3* coffeescript_state.in_context
-    def in_context(self) -> bool:
-        """True if in a special context."""
-        return bool(self.context or self.bs_nl)
-    #@+node:ekr.20161119052920.1: *3* coffeescript_state.update
-    def update(self, data: scan_tuple) -> int:
-        """
-        Coffeescript_ScanState: Update the state using given scan_tuple.
-        """
-        self.context = data.context
-        return data.i
     #@-others
 #@-others
 
