@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 """The @auto importer for the C language and other related languages."""
 import re
-from typing import Dict, Optional
+from typing import Optional
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
 from leo.plugins.importers.linescanner import Importer
