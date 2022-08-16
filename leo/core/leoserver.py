@@ -4090,8 +4090,8 @@ class LeoServer:
 
             #'quit-leo',
 
-            'reformat-body',
-            'reformat-paragraph',
+            #'reformat-body',
+            #'reformat-paragraph',
             'refresh-from-disk',
             'reload-settings',
             #'reload-style-sheets',
