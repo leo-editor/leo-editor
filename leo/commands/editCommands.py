@@ -431,10 +431,11 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         # #131: Do not get w from self.editWidget()!
         w = c.frame.tree.edit_widget(p)
-        if w:
+        if w and not g.app.inBridge:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
             # insert-headline-time should insert at cursor.
             # Note: The command must be bound to a key for this to work.
+
             ins = w.getInsertPoint()
             s = c.getTime(body=False)
             w.insert(ins, s)
@@ -452,14 +453,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 p.h = time
 
+            c.setChanged()
+            p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData)
             # For external clients
             if g.app.inBridge:
-                c.setChanged()
-                p.setDirty()
-                u.afterChangeNodeContents(p, undoType, undoData)
                 c.redraw()
             else:
-                c.redrawAndEdit(p, selectAll=True)
+                c.redrawAndEdit(p, selectAll=True)  # regular client
     #@+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
     def capitalizeHeadline(self, event=None):

@@ -93,6 +93,7 @@ class TestLeoServer(LeoUnitTest):
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
             'paste_node', 'paste_as_clone_node',  # New exclusion.
+            'paste_as_template',  # New exclusion.
             'save_file',  # way too dangerous!
             # 'set_selection',  # Not ready yet.
             'open_file', 'close_file',  # Done by hand.

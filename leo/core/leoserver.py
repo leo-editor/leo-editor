@@ -1363,24 +1363,6 @@ class LeoServer:
                 print(e, flush=True)
 
         return self._make_response()
-    #@+node:felix.20220808211111.3: *5* server.export-jupyter-notebook
-    def export_jupyter_notebook(self, param):
-        """
-        Export Jupyter Notebook
-        """
-        tag = 'export_jupyter_notebook'
-        c = self._check_c()
-        if c and "name" in param:
-            try:
-                fileName = param.get("name")
-                if fileName:
-                    from leo.plugins.writers.ipynb import Export_IPYNB
-                    Export_IPYNB(c).export_outline(c.p, fn=fileName)
-
-            except Exception as e:
-                print(f"{tag} Error while writing {param['name']}", flush=True)
-                print(e, flush=True)
-        return self._make_response()
     #@+node:felix.20220808211111.4: *5* server.flatten-outline
     def flatten_outline(self, param):
         """
@@ -2420,6 +2402,7 @@ class LeoServer:
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
+        g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
 
     #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
@@ -2441,6 +2424,7 @@ class LeoServer:
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
+        g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
 
     #@+node:felix.20220222172507.1: *5* server.cut_node
@@ -2472,6 +2456,7 @@ class LeoServer:
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
+        g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
     #@+node:felix.20210621233316.53: *5* server.delete_node
     def delete_node(self, param):  # pragma: no cover (too dangerous, for now)
@@ -2647,6 +2632,7 @@ class LeoServer:
         s = param.get('name')
         if s is None:  # pragma: no cover
             raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
         if p == c.p:
             c.pasteOutline(s=s)
         else:
@@ -2675,12 +2661,41 @@ class LeoServer:
         s = param.get('name')
         if s is None:  # pragma: no cover
             raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
         if p == c.p:
             c.pasteOutlineRetainingClones(s=s)
         else:
             oldPosition = c.p  # not same node, save position to possibly return to
             c.selectPosition(p)
             c.pasteOutlineRetainingClones(s=s)
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with higher childIndex
+                    c.selectPosition(oldPosition)
+        return self._make_response()
+    #@+node:felix.20220815220429.1: *5* server.paste_as_template
+    def paste_as_template(self, param):
+        """
+        Paste as template clones only nodes that were already clones
+        """
+        tag = 'paste_as_template'
+        c = self._check_c()
+        p = self._get_p(param)
+        s = param.get('name')
+        if s is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
+        if p == c.p:
+            c.pasteAsTemplate()
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.pasteAsTemplate()
             if c.positionExists(oldPosition):
                 # select if old position still valid
                 c.selectPosition(oldPosition)
@@ -3023,7 +3038,7 @@ class LeoServer:
             'delete-node-icons',
             'insert-icon',
 
-            'count-region'  # Uses wrapper, already available in client
+            'count-region',  # Uses wrapper, already available in client
 
             'export-headlines',  # (overridden by client)
             'export-jupyter-notebook',  # (overridden by client)
@@ -3133,11 +3148,11 @@ class LeoServer:
             'my-leo-settings',
             'open-my-leo-settings',
             'open-my-leo-settings-leo',
-            'leo-settings'
+            'leo-settings',
             'open-quickstart-leo',
-            'leo-quickstart-leo'
+            'leo-quickstart-leo',
             'open-scripts-leo',
-            'leo-scripts-leo'
+            'leo-scripts-leo',
             'open-unittest-leo',
             'leo-unittest-leo',
 
@@ -3195,8 +3210,8 @@ class LeoServer:
             'file-delete',
             'file-diff-files',
             'file-insert',
-            'file-save-by-name'  # only body pane to file (confusing w/ save as...)
-            'save-file-by-name'  # only body pane to file (confusing w/ save as...)
+            'file-save-by-name',  # only body pane to file (confusing w/ save as...)
+            'save-file-by-name',  # only body pane to file (confusing w/ save as...)
             #'file-new',
             #'file-open-by-name',
 
@@ -3410,6 +3425,8 @@ class LeoServer:
             'history',
 
             'insert-file-name',
+            'insert-jupyter-toc',
+            'insert-markdown-toc',
 
             'justify-toggle-auto',
 
@@ -3906,13 +3923,13 @@ class LeoServer:
             # Save Files.
             'file-save',
             'file-save-as',
-            'file-save-by-name',
+            #'file-save-by-name',
             'file-save-to',
             'save',
             'save-as',
             'save-file',
             'save-file-as',
-            'save-file-by-name',
+            #'save-file-by-name',
             'save-file-to',
             'save-to',
 
@@ -4046,8 +4063,8 @@ class LeoServer:
 
             'insert-body-time',  # ?
             'insert-headline-time',
-            'insert-jupyter-toc',
-            'insert-markdown-toc',
+            #'insert-jupyter-toc',
+            #'insert-markdown-toc',
 
             'find-var',
 
