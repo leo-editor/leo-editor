@@ -3338,6 +3338,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 for f in fields:
                     if '://' in f:
                         url = f
+                        break
             if not url:
                 if c.p.b:
                     # Try first line of body
