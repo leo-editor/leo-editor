@@ -30,7 +30,7 @@ class Php_Importer(Importer):
     # php_i.scan dict uses r'<<<\s*([\w_]+)' instead of the more complex pattern below.
     # This is likely good enough. Importers can assume that code is well formed.
 
-    def skip_heredoc_string(self, s: str, i: int) -> int:
+    def skip_heredoc_string(self, s: str, i: int) -> int:  # pragma: no cover (not used)
         #@+<< skip_heredoc docstrig >>
         #@+node:ekr.20161130044051.2: *4* << skip_heredoc docstrig >>
         #@@nocolor-node
