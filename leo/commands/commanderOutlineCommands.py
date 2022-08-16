@@ -21,7 +21,10 @@ def copyOutline(self, event=None):
     c.endEditing()
     s = c.fileCommands.outline_to_clipboard_string()
     g.app.paste_c = c
+    if g.app.inBridge:
+        return s
     g.app.gui.replaceClipboardWith(s)
+    return s
 #@+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
 def copyOutlineAsJSON(self, event=None):
@@ -73,6 +76,8 @@ def copyOutlineAsJSON(self, event=None):
     c.endEditing()
     s = outline_to_json(c)
     g.app.paste_c = c
+    if g.app.inBridge:
+        return s
     g.app.gui.replaceClipboardWith(s)
 #@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')
@@ -638,7 +643,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
 #@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
-    """Contract all nodes in the outline."""
+    """Contract all nodes except ancestors of the selected node."""
     c = self
     level = 1
     if p:
@@ -1769,6 +1774,7 @@ def cantMoveMessage(c):
 #@+node:ekr.20180201040936.1: ** count-children
 @g.command('count-children')
 def count_children(event=None):
+    """Print out the number of children for the currently selected node"""
     c = event and event.get('c')
     if c:
         g.es_print(f"{c.p.numberOfChildren()} children")

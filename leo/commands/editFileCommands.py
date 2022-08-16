@@ -741,6 +741,7 @@ class GitDiffController:
         if aList:
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
+            g.trace('devel_rev', devel_rev)
             self.diff_two_revs(
                 rev1=devel_rev,  # Before: Latest devel commit.
                 rev2='HEAD',  # After: Latest branch commit

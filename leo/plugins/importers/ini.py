@@ -2,66 +2,57 @@
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 """The @auto importer for .ini files."""
 import re
-from leo.plugins.importers import linescanner
-Importer = linescanner.Importer
+from typing import Dict, List, Optional
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
+from leo.plugins.importers.linescanner import Importer
 #@+others
-#@+node:ekr.20140723122936.18043: ** class Ini_Importer
+#@+node:ekr.20140723122936.18043: ** class Ini_Importer(Importer)
 class Ini_Importer(Importer):
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, c: Cmdr) -> None:
         """Ini_Importer.__init__"""
-        super().__init__(
-            importCommands,
-            language='ini',
-            state_class=None,
-            strict=False,
-        )
+        super().__init__(c, language='ini')
 
     #@+others
-    #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines & helpers
-    def gen_lines(self, lines, parent):
-        """
-        Non-recursively parse all lines of s into parent, creating descendant
-        nodes as needed.
-        """
-        self.at_others_flag = False
+    #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines
+    def gen_lines(self, lines: List[str], parent: Position) -> None:
+        """Ini_Importer.gen_lines. Allocate nodes to lines."""
+        assert parent == self.root
         p = self.root
-        self.vnode_info = {
-            # Keys are vnodes, values are inner dicts.
-            p.v: {
-                'lines': [],
-            }
-        }
+        # Use a dict instead of creating a new VNode slot.
+        lines_dict: Dict[VNode, List[str]] = {self.root.v: []}  # Lines for each vnode.
         for line in lines:
-            if self.starts_block(line):
-                p = self.start_block(line)
-            else:
-                self.add_line(p, line)
-    #@+node:ekr.20161123103554.1: *4* ini_i.starts_block
-    ini_pattern = re.compile(r'^\s*\[(.*)\]')
+            headline = self.starts_block(line)
+            if headline:
+                p = self.root.insertAsLastChild()
+                p.h = headline
+                lines_dict[p.v] = []
+            lines_dict[p.v].append(line)
+        # Add the top-level directives.
+        self.append_directives(lines_dict)
+        # Set p.b from the lines_dict.
+        for p in self.root.self_and_subtree():
+            p.b = ''.join(lines_dict[p.v])
+    #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
+    ini_pattern = re.compile(r'^\s*(\[.*\])')
 
-    def starts_block(self, line):
-        """name if the line is [ a name ]."""
-        # pylint: disable=arguments-differ
-        m = self.ini_pattern.match(line)
-        return bool(m and m.group(1).strip())
-    #@+node:ekr.20161123112121.1: *4* ini_i.start_block
-    def start_block(self, line):
-        """Start a block consisting of a new child of self.root."""
-        # Insert @others if needed.
-        if not self.at_others_flag:
-            self.at_others_flag = True
-            self.add_line(self.root, '@others\n')
-        # Create the new node.
-        return self.create_child_node(
-            parent=self.root,
-            line=line,
-            headline=line.strip())
+    def starts_block(self, line: str) -> Optional[str]:
+        """Return the name of the section or None"""
+        m = self.ini_pattern.match(line)  # Won't match a comment.
+        if m:
+            return m.group(1).strip()
+        return None
     #@-others
 #@-others
+
+def do_import(c: Cmdr, parent: Position, s: str) -> None:
+    """The importer callback for .ini files."""
+    Ini_Importer(c).import_from_string(parent, s)
+
 importer_dict = {
-    'func': Ini_Importer.do_import(),
     'extensions': ['.ini',],
+    'func': do_import,
 }
 #@@language python
 #@@tabwidth -4
