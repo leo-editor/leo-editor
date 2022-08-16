@@ -157,46 +157,6 @@ class Python_Importer(Importer):
             decl_level=decl_level,
             name=self.compute_headline(self.lines[decl_line])
         )
-    #@+node:ekr.20220720043557.30: *3* python_i.get_new_dict
-    #@@nobeautify
-
-    def get_new_dict(self, context: str) -> Dict:
-        """Return the state dictionary for python."""
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-        assert (comment, block1, block2) == ('#', '', ''), f"python: {comment!r} {block1!r} {block2!r}"
-
-        d: Dict
-        if context:
-            d = {
-                # key   kind    pattern ends?
-                '\\':   [('len+1', '\\', None),],
-                '"':    [
-                            ('len', '"""', context == '"""'),
-                            ('len', '"', context == '"'),
-                        ],
-                "'":    [
-                            ('len', "'''", context == "'''"),
-                            ('len', "'", context == "'"),
-                        ],
-            }
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\': [('len+1','\\', context, None),],
-                '#':  [('all', '#', context, None),],
-                '"':  [
-                        # order matters.
-                        ('len', '"""', '"""', None),
-                        ('len', '"', '"', None),
-                      ],
-                "'":  [
-                        # order matters.
-                        ('len', "'''",  "'''", None),
-                        ('len', "'", "'", None),
-                      ],
-            }
-        return d
     #@+node:ekr.20220729081229.1: *3* python_i.is_intro_line
     def is_intro_line(self, n: int, col: int) -> bool:
         """

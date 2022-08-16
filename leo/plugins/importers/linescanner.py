@@ -115,8 +115,6 @@ class Importer:
     The base class for many of Leo's importers.
     """
 
-    NEW = True
-
     # Don't split classes, functions or methods smaller than this value.
     SPLIT_THRESHOLD = 10
 
@@ -142,10 +140,7 @@ class Importer:
         name = self.name
         assert language and name
         assert self.language and self.name
-        if self.NEW:
-            self.state_class = NewScanState
-        else:
-            self.state_class = state_class
+        self.state_class = NewScanState
         self.strict = strict  # True: leading whitespace is significant.
 
         # Set from ivars...
@@ -162,10 +157,10 @@ class Importer:
         self.escape = c.atFileCommands.underindentEscapeString
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)  # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
-        if self.NEW:
-            self.level_up_ch = '{'
-            self.level_down_ch = '}'
-            self.string_list: List[str] = ['"', "'"]
+        # Default customizing values for i.scan_one_line...
+        self.level_up_ch = '{'
+        self.level_down_ch = '}'
+        self.string_list: List[str] = ['"', "'"]
         self.tab_width = 0  # Must be set in run, using self.root.
 
         # Settings...
@@ -290,13 +285,7 @@ class Importer:
         self.lines = lines
 
         # Prepass 1: calculate line states.
-        if self.NEW:
-            self.line_states = self.scan_all_lines()
-        ###
-            # state = self.state_class()
-            # for line in lines:
-                # state = self.scan_line(line, state)
-                # self.line_states.append(state)
+        self.line_states = self.scan_all_lines()
 
         # Additional prepass, for pascal.
         self.gen_lines_prepass()
