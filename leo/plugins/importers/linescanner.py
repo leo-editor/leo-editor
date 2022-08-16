@@ -137,7 +137,7 @@ class Importer:
         name = self.name
         assert language and name
         assert self.language and self.name
-        self.state_class = NewScanState
+        self.state_class = NewScanState  # Convenient: subclasses don't have to import NewScanState.
         self.strict = strict  # True: leading whitespace is significant.
 
         # Set from ivars...

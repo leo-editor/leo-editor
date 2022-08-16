@@ -14,7 +14,6 @@ class Coffeescript_Importer(Python_Importer):
     def __init__(self, c: Cmdr) -> None:
         """Ctor for CoffeeScriptScanner class."""
         super().__init__(c, language='coffeescript')
-            ### state_class=Coffeescript_ScanState,
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
