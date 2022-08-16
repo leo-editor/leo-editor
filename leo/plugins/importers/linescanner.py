@@ -656,7 +656,7 @@ class Importer:
         # This creates substrings.
         # return s[i : i + len(pattern)] == pattern
 
-    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper (new, experimental)
+    #@+node:ekr.20220814202903.1: *3* i.scan_all_lines & helper
     def scan_all_lines(self) -> List["NewScanState"]:
         """
         Importer.scan_all_lines.

@@ -21,6 +21,8 @@ class Elisp_Importer(Importer):
             language='lisp',
             state_class=Elisp_ScanState,
         )
+        self.level_up_ch = '('
+        self.level_down_ch = ')'
 
     #@+others
     #@+node:ekr.20170205195239.1: *3* elisp_i.get_new_dict
