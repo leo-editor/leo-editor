@@ -17,7 +17,6 @@ import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.org as org
 import leo.plugins.importers.otl as otl
-import leo.plugins.importers.xml as xml
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
 class BaseTestImporter(LeoUnitTest):
@@ -4900,22 +4899,6 @@ class TestXML(BaseTestImporter):
             <_.ÌÑ>
         """
         self.run_test(s)
-    #@+node:ekr.20210904065459.132: *3* TestXml.test_is_ws_line
-    def test_is_ws_line(self):
-        c = self.c
-        x = xml.Xml_Importer(c)
-        table = (
-           (1, ' \n'),
-           (1, '\n'),
-           (1, ' '),
-           (1, '<!-- comment -->'),
-           (0, '  <!-- comment --> Help'),
-           (0, 'x <!-- comment -->'),
-           (0, 'Help'),
-        )
-        for expected, line in table:
-            got = x.is_ws_line(line)
-            self.assertEqual(expected, got, msg=repr(line))
     #@-others
 #@-others
 #@@language python

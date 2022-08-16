@@ -97,6 +97,16 @@ block_tuple = namedtuple('block_tuple', [
 ])
 #@-<< define block_tuple >>
 #@+others
+#@+node:ekr.20220814203303.1: ** class NewScanState
+class NewScanState:
+    """A class representing scan state."""
+
+    __slots__ = ['context', 'level']
+
+    def __init__ (self, context: str='', level: int=0) -> None:
+        self.context = context
+        self.level = level
+
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer:
     """
@@ -268,7 +278,7 @@ class Importer:
         """
         trace, trace_body, trace_states = False, True, False
         assert self.root == parent, (self.root, parent)
-        self.line_states: List[NewScanState] = []
+        self.line_states: List["NewScanState"] = []
         self.lines = lines
 
         # Prepass 1: calculate line states.
@@ -651,7 +661,7 @@ class Importer:
         Create all entries in self.scan_states.
         """
         context, level = '', 0
-        states: List[NewScanState] = []
+        states: List["NewScanState"] = []
         for line in self.lines:
             context, level = self.scan_one_line(context, level, line)
             states.append(NewScanState(context, level))
@@ -715,20 +725,7 @@ class Importer:
         """Return the characters of the lws of s."""
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
-    #@+node:ekr.20161109052011.1: *4* i.is_ws_line
-    def is_ws_line(self, s: str) -> bool:
-        """Return True if s is nothing but whitespace and single-line comments."""
-        return bool(self.ws_pattern.match(s))
     #@-others
-#@+node:ekr.20220814203303.1: ** class NewScanState
-class NewScanState:
-    """A class representing scan state."""
-
-    __slots__ = ['context', 'level']
-
-    def __init__ (self, context: str='', level: int=0) -> None:
-        self.context = context
-        self.level = level
 #@-others
 #@@language python
 #@@tabwidth -4

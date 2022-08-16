@@ -35,13 +35,6 @@ class Xml_Importer(Importer):
         """xml and html: Return a cleaned up headline s."""
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()
-    #@+node:ekr.20161121212858.1: *3* xml_i.is_ws_line
-    # Warning: base Importer class defines ws_pattern.
-    xml_ws_pattern = re.compile(r'\s*(<!--([^-]|-[^-])*-->\s*)*$')
-
-    def is_ws_line(self, s: str) -> bool:
-        """True if s is nothing but whitespace or single-line comments."""
-        return bool(self.xml_ws_pattern.match(s))
     #@+node:ekr.20220801080949.1: *3* xml_i.get_intro
     def get_intro(self, row: int, col: int) -> int:
         """
