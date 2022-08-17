@@ -6,7 +6,7 @@
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -53,19 +53,29 @@ def copyOutlineAsJSON(self, event=None):
             'status': v.statusBits,
             'children': [json_vnode(child) for child in v.children]
         }
-    #@+node:ekr.20220314071805.1: *4* function: outline_to_json
+    #@+node:ekr.20220314071805.1: *4* function: outline_to_json PDB
     def outline_to_json(c):
         """Return the JSON representation of c."""
+        ### g.pdb()  ###
         positions = list(c.p.self_and_subtree())
+        uas_dict: Dict[str, Any] = {}
+        for p in positions:
+            if p.u:
+                try:
+                    uas_dict [p.v.gnx] = json.dumps(p.u, skipkeys=True)
+                except TypeError:
+                    g.printObj(p.u, tag=f"Can not serialize {p.v.u!r}")
+                    pass
         d = {
             'leoHeader': {'fileFormat': 2},
             'globals': json_globals(c),
             'tnodes': {
                 p.v.gnx: p.v._bodyString for p in positions
             },
-            'uas': {
-                p.v.gnx: json.dumps(p.u, skipkeys=True) for p in positions if p.u
-            },
+            # 'uas': {
+                # p.v.gnx: json.dumps(p.u, skipkeys=True) for p in positions if p.u
+            # },
+            'uas': uas_dict,
             'vnodes': [
                 json_vnode(c.p.v)
             ],
