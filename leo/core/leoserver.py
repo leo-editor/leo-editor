@@ -107,14 +107,14 @@ class ServerExternalFilesController(ExternalFilesController):
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
-        self.infoMessage = None
+        self.infoMessage: str = None
         # False or "detected", "refreshed" or "ignored"
 
         g.app.idleTimeManager.add_callback(self.on_idle)
 
         self.waitingForAnswer = False
-        self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
-        self.lastCommander = None
+        self.lastPNode: Position = None  # last p node that was asked for if not set to "AllYes\AllNo"
+        self.lastCommander: Cmdr = None
     #@+node:felix.20210626222905.6: *3* sefc.clientResult
     def clientResult(self, p_result: Any) -> None:
         """Received result from connected client that was 'asked' yes/no/... """
@@ -503,8 +503,8 @@ class QuickSearchController:
         return it
 
     #@+node:felix.20220225003906.8: *3* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, poslist: List[Position]) -> None:
-        for p in poslist:
+    def addHeadlineMatches(self, position_list: List[Position]) -> None:
+        for p in position_list:
             it = {"type": "headline", "label": p.h}
             # it = QtWidgets.QListWidgetItem(p.h, self.lw)
             # f = it.font()
@@ -519,20 +519,21 @@ class QuickSearchController:
 
     #@+node:felix.20220225003906.10: *3* QSC.doNodeHistory
     def doNodeHistory(self) -> None:
-        ### nh = PosList(po[0] for po in self.c.nodeHistory.beadList)
-        nh = [po[0] for po in self.c.nodeHistory.beadList]
-        nh.reverse()
+        headlines: List[Position] = [po[0].copy() for po in self.c.nodeHistory.beadList]
+        headlines.reverse()
         self.clear()
-        self.addHeadlineMatches(nh)
+        self.addHeadlineMatches(headlines)
     #@+node:felix.20220225003906.11: *3* QSC.doSearchHistory
     def doSearchHistory(self) -> None:
         self.clear()
-        def sHistSelect(x: int) -> Callable:
+
+        def sHistSelect(x: str) -> Callable:
             def _f() -> None:
                 # self.widgetUI.lineEdit.setText(x)
                 self.c.scon.navText = x
                 self.doSearch(x)
             return _f
+
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
 
@@ -707,7 +708,7 @@ class QuickSearchController:
         flags: Any=re.IGNORECASE
     ) -> List[Position]:
         """
-        Return list (a PosList) of all nodes where zero or more characters at
+        Return list of all positions where zero or more characters at
         the beginning of the headline match regex
         """
         try:
@@ -801,11 +802,6 @@ class QuickSearchController:
     def doShowMarked(self) -> None:
         self.clear()
         c = self.c
-        ###
-            # pl = PosList()
-            # for p in c.all_positions():
-                # if p.isMarked():
-                    # pl.append(p.copy())
         self.addHeadlineMatches([
             z.copy() for z in c.all_positions() if z.isMarked()
         ])
@@ -862,10 +858,10 @@ class LeoServer:
         t1 = time.process_time()
         #
         # Init ivars first.
-        self.c = None  # Currently Selected Commander.
-        self.dummy_c = None  # Set below, after we set g.
-        self.action = None
-        self.bad_commands_list = []  # Set below.
+        self.c: Cmdr = None  # Currently Selected Commander.
+        self.dummy_c: Cmdr = None  # Set below, after we set g.
+        self.action: str = None
+        self.bad_commands_list: List[str] = []  # Set below.
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -2273,12 +2269,11 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
-        parent = p.parent()
+        parent: Optional[Position] = p.parent()
         if c.hoistStack:
             topHoistPos = c.hoistStack[-1].p
             if parent == topHoistPos:
-                parent = False
-
+                parent = None
         data = self._get_position_d(parent) if parent else None
         return self._make_minimal_response({"node": data})
     #@+node:felix.20210621233316.45: *5* server.get_position_data
@@ -4237,11 +4232,12 @@ class LeoServer:
 
             def d_to_childIndex_v(d: Dict[str, str]) -> Tuple[int, VNode]:
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
-                childIndex: int = d.get('childIndex')
-                if childIndex is None:  # pragma: no cover.
+                childIndex: int
+                childIndex_s: str = d.get('childIndex')
+                if childIndex_s is None:
                     raise ServerError(f"{tag}: no childIndex in {d}")
                 try:
-                    childIndex = int(childIndex)  # type: ignore
+                    childIndex = int(childIndex_s)
                 except Exception:  # pragma: no cover.
                     raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
                 gnx = d.get('gnx')
@@ -4394,7 +4390,7 @@ class LeoServer:
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:felix.20210621233316.85: *4* server._do_message
-    def _do_message(self, d: Dict[str, str]) -> Response:
+    def _do_message(self, d: Dict[str, Any]) -> Response:
         """
         Handle d, a python dict representing the incoming request.
         The d dict must have the three (3) following keys:
@@ -4420,7 +4416,7 @@ class LeoServer:
         action: Optional[str]
 
         # Require "id" and "action" keys
-        id_ = d.get("id")
+        id_: Optional[int] = d.get("id")
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         action = d.get("action")
@@ -4428,13 +4424,13 @@ class LeoServer:
             raise ServerError(f"{tag}: no action")
 
         # TODO : make/force always an object from the client connected.
-        param: Dict = d.get('param', {})  # Can be none or a string
+        param: Optional[str] = d.get('param', {})  # Can be none or a string
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
             pass
         else:
-            param = {}
+            param = ''  ### Was {}
 
         # Handle traces.
         if trace and verbose:  # pragma: no cover
