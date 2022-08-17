@@ -489,7 +489,7 @@ class QuickSearchController:
         return lineMatchHits
 
     #@+node:felix.20220225003906.7: *3* addGeneric
-    def addGeneric(self, text: Any, f: Any) -> Any:
+    def addGeneric(self, text: str, f: Any) -> Dict:
         """ Add generic callback """
         # it = QtWidgets.QListWidgetItem(text, self.lw)
         it = {"type": "generic", "label": text}
@@ -925,7 +925,13 @@ class LeoServer:
         package = {"async": "info", "message": s}
         g.leoServer._send_async_output(package)
     #@+node:felix.20210711194736.1: *4* LeoServer._runAskYesNoDialog
-    def _runAskYesNoDialog(self, c: Cmdr, title: Any, message: Any=None, yes_all: bool=False, no_all: bool=False) -> str:
+    def _runAskYesNoDialog(self,
+        c: Cmdr,
+        title: str,
+        message: str=None,
+        yes_all: bool=False,
+        no_all: bool=False,
+    ) -> str:
         """Create and run an askYesNo dialog."""
         # used in ask with title: 'Overwrite the version in Leo?'
         # used in revert with title: 'Revert'
@@ -2234,9 +2240,9 @@ class LeoServer:
         children = []  # default empty array
         if param.get("ap"):
             # Maybe empty param, for tree-root children(s).
-            # _get_p called with the strict=True parameter because
+            # Call _get_optional_p:
             # we don't want c.p. after switch to another document while refreshing.
-            p = self._get_p(param, True)
+            p = self._get_optional_p(param)
             if p and p.hasChildren():
                 children = [self._get_position_d(child) for child in p.children()]
         else:
@@ -4210,7 +4216,7 @@ class LeoServer:
         raise TerminateServer("client requested shut down")
     #@+node:felix.20210621233316.78: *3* server.server utils
     #@+node:felix.20210621233316.79: *4* server._ap_to_p
-    def _ap_to_p(self, ap: Any) -> Position:
+    def _ap_to_p(self, ap: Any) -> Optional[Position]:
         """
         Convert ap (archived position, a dict) to a valid Leo position.
 
@@ -4228,7 +4234,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: no stack in ap: {ap!r}")
             if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
                 raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
-            #
+
             def d_to_childIndex_v(d: Dict[str, str]) -> Tuple[int, VNode]:
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex: int = d.get('childIndex')
@@ -4244,18 +4250,17 @@ class LeoServer:
                 v = gnx_d.get(gnx)
                 if v is None:  # pragma: no cover.
                     raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-                ### Bug ????
-                return childIndex, v  # type:ignore
-            #
+                return childIndex, v
+
             # Compute p.childIndex and p.v.
             childIndex, v = d_to_childIndex_v(ap)
-            #
+
             # Create p.stack.
             stack = []
             for stack_d in outer_stack:
                 stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
                 stack.append((stack_v, stack_childIndex))
-            #
+
             # Make p and check p.
             p = Position(v, childIndex, stack)
             if not c.positionExists(p):  # pragma: no cover.
@@ -4264,10 +4269,9 @@ class LeoServer:
             if self.log_flag or traces:
                 print(
                     f"{tag}: Bad ap: {ap!r}\n"
-                    # f"{tag}: position: {p!r}\n"
                     f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
                     f"{tag}: stack: {stack!r}", flush=True)
-            return None  ### Was False, # Return false on any error so caller can react
+            return None  # Return None on any error so caller can react.
         return p
     #@+node:felix.20210621233316.80: *4* server._check_c
     def _check_c(self) -> Cmdr:
@@ -4553,11 +4557,27 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
         return focus
-    #@+node:felix.20210621233316.90: *4* server._get_p
-    def _get_p(self, param: Any, strict: bool=False) -> Optional[Position]:
+    #@+node:ekr.20220817091731.1: *4* server._get_optional_p
+    def _get_optional_p(self, param: Dict) -> Optional[Position]:
         """
-        Return _ap_to_p(param["ap"]) or c.p.,
-        or False if the strict flag is set
+        Return _ap_to_p(param["ap"]) or None.
+        """
+        tag = '_get_ap'
+        c = self.c
+        if not c:  # pragma: no cover
+            raise ServerError(f"{tag}: no c")
+        ap = param.get("ap")
+        if ap:
+            p = self._ap_to_p(ap)  # Conversion
+            if p:
+                if not c.positionExists(p):  # pragma: no cover
+                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+                return p  # Return the position
+        return None
+    #@+node:felix.20210621233316.90: *4* server._get_p
+    def _get_p(self, param: Dict) -> Position:
+        """
+        Return _ap_to_p(param["ap"]) or c.p.
         """
         tag = '_get_ap'
         c = self.c
@@ -4571,12 +4591,9 @@ class LeoServer:
                 if not c.positionExists(p):  # pragma: no cover
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
                 return p  # Return the position
-        if strict:
-            return None  ### EKR: was False
         # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
-
         return c.p
     #@+node:felix.20210621233316.92: *4* server._get_position_d
     def _get_position_d(self, p: Position, includeChildren: bool=False) -> Dict:
