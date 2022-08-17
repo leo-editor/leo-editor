@@ -82,6 +82,7 @@ from collections import OrderedDict
 import fnmatch
 import itertools
 import re
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
@@ -238,7 +239,7 @@ class OrderedDefaultDict(OrderedDict):
     Credit:  http://stackoverflow.com/questions/4126348/
     how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         if not args:
             self.default_factory = None
         else:
@@ -248,13 +249,13 @@ class OrderedDefaultDict(OrderedDict):
             args = args[1:]
         super().__init__(*args, **kwargs)
 
-    def __missing__(self, key):
+    def __missing__(self, key: Any) -> Any:
         if self.default_factory is None:
             raise KeyError(key)
         self[key] = default = self.default_factory()
         return default
 
-    def __reduce__(self):  # optional, for pickle support
+    def __reduce__(self) -> Any:  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
         return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
