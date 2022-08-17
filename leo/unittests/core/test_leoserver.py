@@ -74,6 +74,7 @@ class TestLeoServer(LeoUnitTest):
         assert isinstance(server, g_leoserver.LeoServer), self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        # Remove all uA's.
         methods = server._get_all_server_commands()
         # Ensure that some methods happen at the end.
         for z in ('toggle_mark', 'undo', 'redo'):
@@ -120,6 +121,13 @@ class TestLeoServer(LeoUnitTest):
         }
         # First open a test file & performa all tests.
         server.open_file({"filename": test_dot_leo})  # A real file.
+        # Remove all uA's that can't be serialized.
+        file_c = g.openWithFileName(test_dot_leo)
+        for p in file_c.all_positions():
+            try:
+                json.dumps(p.u, skipkeys=True)
+            except TypeError:
+                p.u = None
         try:
             id_ = 0
             for method_name in methods:

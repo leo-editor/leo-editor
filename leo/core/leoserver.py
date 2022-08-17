@@ -721,6 +721,7 @@ class QuickSearchController:
                 if p.v not in seen:
                     seen.add(p.v)
                     aList.append(p.copy())
+        # g.printObj([z.h for z in aList], tag='QSC.find_h')
         return aList
     #@+node:felix.20220313185430.1: *3* QSC.find_tag
     def find_tag(self, pat: str) -> List[Position]:
@@ -764,21 +765,13 @@ class QuickSearchController:
             elif op == '^':
                 resultset ^= nodes
 
-        ####
-            # for gnx in resultset:
-                # n = gnxDict.get(gnx)
-                # if n is not None:
-                    # p = c.vnode2position(n)
-                    # pc = p.copy()
-                    # res.append(pc)
-            # return res
-            
         aList: List[Position] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
                 p = c.vnode2position(n)
                 aList.append(p.copy())
+        # g.printObj([z.h for z in aList], tag='QSC.find_tag')
         return aList
     #@+node:felix.20220225003906.17: *3* QSC.find_b
     def find_b(self,
@@ -802,6 +795,7 @@ class QuickSearchController:
                 if p.v not in seen:
                     seen.add(p.v)
                     aList.append(p.copy())
+        # g.printObj([z.h for z in aList], tag='QSC.find_b')
         return aList
     #@+node:felix.20220225003906.18: *3* QSC.doShowMarked
     def doShowMarked(self) -> None:
@@ -2439,7 +2433,6 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
-
         if p == c.p:
             s = c.copyOutlineAsJSON()
         else:
