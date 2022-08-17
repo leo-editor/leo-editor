@@ -45,7 +45,7 @@ from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-Response = Any
+Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
