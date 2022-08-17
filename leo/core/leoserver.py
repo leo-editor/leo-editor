@@ -1022,7 +1022,7 @@ class LeoServer:
             script = ''
         return script
     #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
-    async def _asyncIdleLoop(self, seconds, func):
+    async def _asyncIdleLoop(self, seconds: int, func: Callable) -> None:
         while True:
             await asyncio.sleep(seconds)
             func(self)
@@ -4787,7 +4787,7 @@ class LeoServer:
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json, toAll=False):  # pragma: no cover (tested in server)
+    async def _async_output(self, json: str, toAll: bool=False) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
         tag = '_async_output'
@@ -5087,7 +5087,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action, excludedConn=None) -> Any:
+    async def notify_clients(action: str, excludedConn: Any=None) -> Any:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
@@ -5104,7 +5104,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                 await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
 
     #@+node:felix.20210803174312.2: *3* function: register_client
-    async def register_client(websocket):
+    async def register_client(websocket: Any) -> None:
         global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
@@ -5121,12 +5121,12 @@ def main() -> None:  # pragma: no cover (tested in client)
             if commander.isChanged() and commander.fileName():
                 commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
-    async def unregister_client(websocket):
+    async def unregister_client(websocket: Any) -> None:
         global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket, path):
+    async def ws_handler(websocket: Any, path: str) -> None:
         """
         The web socket handler: server.ws_server.
 
