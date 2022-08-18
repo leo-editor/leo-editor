@@ -45,6 +45,7 @@ from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
+Package = Dict[str, Any]
 Param = Dict[str, Any]
 Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
@@ -4654,7 +4655,7 @@ class LeoServer:
         except(TypeError, OverflowError):
             return False
     #@+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package: Any=None) -> str:
+    def _make_minimal_response(self, package: Package=None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4679,7 +4680,7 @@ class LeoServer:
 
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
     #@+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package: Any=None) -> str:
+    def _make_response(self, package: Package=None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -4774,7 +4775,7 @@ class LeoServer:
                 return p
         return None  ### Was False.
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
-    def _send_async_output(self, package: Any, toAll: bool=False) -> None:
+    def _send_async_output(self, package: Package, toAll: bool=False) -> None:
         """
         Send data asynchronously to the client
         """
