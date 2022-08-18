@@ -3734,7 +3734,7 @@ class Commands:
             c.frame.tree.endEditLabel()
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
     def getSelectedPositions(self):
-        """ Get list (PosList) of currently selected positions
+        """ Get list of currently selected positions.
 
         So far only makes sense on qt gui (which supports multiselection)
         """
