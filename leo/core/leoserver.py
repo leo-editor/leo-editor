@@ -1023,7 +1023,7 @@ class LeoServer:
             script = ''
         return script
     #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
-    async def _asyncIdleLoop(self, seconds: int, func: Callable) -> None:
+    async def _asyncIdleLoop(self, seconds: Union[int, float], func: Callable) -> None:
         while True:
             await asyncio.sleep(seconds)
             func(self)
@@ -4296,7 +4296,7 @@ class LeoServer:
                 self._dump_position(p)
                 raise ServerError(message)
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
-    def _do_leo_command_by_name(self, command_name: Any, param: Param) -> Response:
+    def _do_leo_command_by_name(self, command_name: str, param: Param) -> Response:
         """
         Generic call to a command in Leo's Commands class or any subcommander class.
 
@@ -4345,7 +4345,7 @@ class LeoServer:
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:ekr.20210722184932.1: *4* server._do_leo_function_by_name
-    def _do_leo_function_by_name(self, function_name: Any, param: Param) -> Response:
+    def _do_leo_function_by_name(self, function_name: str, param: Param) -> Response:
         """
         Generic call to a method in Leo's Commands class or any subcommander class.
 
@@ -4464,7 +4464,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no response: {action!r}")
         return result
     #@+node:felix.20210621233316.86: *4* server._do_server_command
-    def _do_server_command(self, action: Any, param: Param) -> Response:
+    def _do_server_command(self, action: str, param: Param) -> Response:
         tag = '_do_server_command'
         # Disallow hidden methods.
         if action.startswith('_'):  # pragma: no cover
@@ -4502,7 +4502,7 @@ class LeoServer:
         else:
             raise ServerError(f"{tag}: no loop ready for emit_signon")
     #@+node:felix.20210625230236.1: *4* server._get_commander_method
-    def _get_commander_method(self, command: Any) -> Callable:
+    def _get_commander_method(self, command: str) -> Callable:
         """ Return the given method (p_command) in the Commands class or subcommanders."""
         # First, try the commands class.
         c = self._check_c()
