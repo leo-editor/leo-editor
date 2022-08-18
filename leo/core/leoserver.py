@@ -47,6 +47,7 @@ from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
 Package = Dict[str, Any]
 Param = Dict[str, Any]
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
 # Version History
@@ -60,7 +61,7 @@ g = None  # The bridge's leoGlobals module.
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
-connectionsPool = set()  # type:ignore
+connectionsPool: Set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
@@ -560,6 +561,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.14: *3* QSC.doSearch
     def doSearch(self, pat: str) -> None:
         hitBase = False
+        flags: RegexFlag
         self.clear()
         self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
@@ -572,7 +574,7 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0  # type:ignore
+            flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -679,14 +681,15 @@ class QuickSearchController:
         self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
     #@+node:felix.20220225003906.15: *3* QSC.bgSearch
     def bgSearch(self, pat: str) -> Any:
+        
+        flags: RegexFlag
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
-            # bpat = pat[2:]
-            flags = 0  # type:ignore
+            flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
             hNodes = self.c.all_positions()
@@ -707,7 +710,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         nodes: List[Position],
-        flags: re.RegexFlag=re.IGNORECASE
+        flags: RegexFlag = re.IGNORECASE,
     ) -> List[Position]:
         """
         Return list of all positions where zero or more characters at
@@ -780,7 +783,7 @@ class QuickSearchController:
     def find_b(self,
         regex: str,
         nodes: List[Position],
-        flags: re.RegexFlag=re.IGNORECASE | re.MULTILINE,
+        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
         Return list of all nodes whose body matches regex
@@ -888,7 +891,7 @@ class LeoServer:
         #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
-        self.loop = None
+        self.loop: Any = None
         #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
@@ -4199,7 +4202,7 @@ class LeoServer:
         if connectionsTotal == 1:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
-            self.loop = asyncio.get_event_loop()  # type: ignore
+            self.loop = asyncio.get_event_loop()
         else:
             # already exist, so "spectator-clients" setup
             pass  # nothing for now
@@ -4986,7 +4989,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             # None of these grabs focus from the console window.
             dialog.raise_()
             dialog.setFocus()
-            app.processEvents()  # type:ignore
+            g.app.processEvents()
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
             val = dialog.exec() if isQt6 else dialog.exec_()
