@@ -116,7 +116,7 @@ class ServerExternalFilesController(ExternalFilesController):
         self.lastPNode: Position = None  # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastCommander: Cmdr = None
     #@+node:felix.20210626222905.6: *3* sefc.clientResult
-    def clientResult(self, p_result: Any) -> None:
+    def clientResult(self, p_result: Response) -> None:
         """Received result from connected client that was 'asked' yes/no/... """
         # Got the result to an asked question/warning from the client
         if not self.waitingForAnswer:
@@ -163,7 +163,7 @@ class ServerExternalFilesController(ExternalFilesController):
             self.idle_check_commander(self.lastCommander)
     #@+node:felix.20210714205425.1: *3* sefc.entries
     #@+node:felix.20210626222905.19: *4* sefc.check_overwrite
-    def check_overwrite(self, c: Cmdr, path: Any) -> bool:
+    def check_overwrite(self, c: Cmdr, path: str) -> bool:
         if self.has_changed(path):
             package = {"async": "info", "message": "Overwritten " + path}
             g.leoServer._send_async_output(package, True)
@@ -270,7 +270,7 @@ class ServerExternalFilesController(ExternalFilesController):
 
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
-    def ask(self, c: Cmdr, path: Any, p: Position=None) -> bool:
+    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -330,7 +330,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # let original function resolve
         return super().is_enabled(c)
     #@+node:felix.20210626222905.16: *4* sefc.warn
-    def warn(self, c: Cmdr, path: Any, p: Position) -> None:
+    def warn(self, c: Cmdr, path: str, p: Position) -> None:
         """
         Warn that an @asis or @nosent node has been changed externally.
 
@@ -420,7 +420,7 @@ class QuickSearchController:
                                      "Chapter", "Node"]
 
     #@+node:felix.20220225224130.1: *3* QSC.matchlines
-    def matchlines(self, b: Any, miter: Any) -> Any:
+    def matchlines(self, b: str, miter: Any) -> List:
         res = []
         for m in miter:
             st, en = g.getLine(b, m.start())
@@ -488,7 +488,7 @@ class QuickSearchController:
         return lineMatchHits
 
     #@+node:felix.20220225003906.7: *3* QSC.addGeneric
-    def addGeneric(self, text: str, f: Any) -> Dict:
+    def addGeneric(self, text: str, f: Callable) -> Dict:
         """ Add generic callback """
         # it = QtWidgets.QListWidgetItem(text, self.lw)
         it = {"type": "generic", "label": text}
@@ -496,7 +496,7 @@ class QuickSearchController:
         return it
 
     #@+node:felix.20220318222437.1: *3* QSC.addTag
-    def addTag(self, text: Any) -> Any:
+    def addTag(self, text: str) -> Dict:
         """ add Tag label """
         it = {"type": "tag", "label": text}
         self.its[id(it)] = (it, None)
@@ -537,7 +537,7 @@ class QuickSearchController:
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
 
-    def pushSearchHistory(self, pat: Any) -> None:
+    def pushSearchHistory(self, pat: str) -> None:
         if pat in self._search_patterns:
             return
         self._search_patterns = ([pat] + self._search_patterns)[:30]
@@ -556,7 +556,7 @@ class QuickSearchController:
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:felix.20220225003906.14: *3* QSC.doSearch
-    def doSearch(self, pat: Any) -> None:
+    def doSearch(self, pat: str) -> None:
         hitBase = False
         self.clear()
         self.pushSearchHistory(pat)
@@ -649,7 +649,7 @@ class QuickSearchController:
                 self.lw.insert(0, "External file directive not found " +
                                       "during search")
     #@+node:felix.20220313183922.1: *3* QSC.doTag
-    def doTag(self, pat: Any) -> None:
+    def doTag(self, pat: str) -> None:
         """
         Search for tags: outputs position list
         If empty pattern, list tags *strings* instead
@@ -676,7 +676,7 @@ class QuickSearchController:
         self.clear()  # needed for external client ui replacement: fills self.its
         self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
     #@+node:felix.20220225003906.15: *3* QSC.bgSearch
-    def bgSearch(self, pat: Any) -> Any:
+    def bgSearch(self, pat: str) -> Any:
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
@@ -778,7 +778,7 @@ class QuickSearchController:
     def find_b(self,
         regex: str,
         nodes: List[Position],
-        flags: Any=re.IGNORECASE | re.MULTILINE,
+        flags: re.RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
         Return list of all nodes whose body matches regex
