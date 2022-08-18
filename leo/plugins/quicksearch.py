@@ -75,13 +75,13 @@ This plugin defines the following commands that can be bound to keys:
 
 """
 #@-<< docstring >>
-# Ville M. Vainio <vivainio@gmail.com>.
+# Original by Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 from collections import OrderedDict
 import fnmatch
 import re
-from typing import Any, List
+from typing import Any, List, Union
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
@@ -92,6 +92,7 @@ from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
 #@+node:ville.20121223213319.3670: *3* dumpfocus (quicksearch.py)
@@ -495,10 +496,10 @@ class QuickSearchController:
         self.lw.clear()
 
     #@+node:ekr.20111015194452.15693: *3* doNodeHistory
-    def doNodeHistory(self):
+    def doNodeHistory(self) -> None:
 
-        ### nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
-        nh: List[Position] = [z[0].copy() for z in self.c.nodeHistory.beadList]
+        c = self.c
+        nh: List[Position] = [z[0].copy() for z in c.nodeHistory.beadList]
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -655,58 +656,38 @@ class QuickSearchController:
         return hm, []
         # self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:jlunz.20150826091415.1: *3* find_h
-    def find_h(self, regex, nodes, flags=re.IGNORECASE) -> List[Position]:
-        """ Return list of all nodes where zero or more characters at
-        the beginning of the headline match regex
+    def find_h(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE,
+    ) -> List[Position]:
         """
-        ### res = leoNodes.PosList()
+        Return the list of all positions whose headline matches the given pattern.
+        """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        ###
-            # aList: List[Position] = []
-            # for p in nodes:
-                # m = re.match(pat, p.h)
-                # if m:
-                    # pc = p.copy()
-                    # aList.append(pc)
-            # return aList
-        return [p.copy() for p in nodes if re.match(pat, p.h)]
+        return [p.copy() for p in positions if re.match(pat, p.h)]
     #@+node:jlunz.20150826091424.1: *3* find_b
-    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
-        """ Return list of all nodes whose body matches regex
-        one or more times.
-
+    def find_b(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+    ) -> List[Position]:
         """
-        ### res = leoNodes.PosList()
+        Return list of all positions whose body matches regex one or more times.
+        """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        return [p.copy() for p in nodes if re.finditer(pat, p.b)]
-        # for p in nodes:
-            # m = re.finditer(pat, p.b)
-            # t1, t2 = itertools.tee(m, 2)
-            # try:
-                # t1.__next__()
-            # except StopIteration:
-                # continue
-            # pc = p.copy()
-            # pc.matchiter = t2
-            # res.append(pc)
-        # return res
+        return [p.copy() for p in positions if re.finditer(pat, p.b)]
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 
         self.clear()
         c = self.c
-        ####
-            # pl = leoNodes.PosList()
-
-            # for p in c.all_positions():
-                # if p.isMarked():
-                    # pl.append(p.copy())
         self.addHeadlineMatches([
             p.copy() for p in c.all_positions()if p.isMarked()
         ])

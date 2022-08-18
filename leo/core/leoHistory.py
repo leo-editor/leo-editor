@@ -12,7 +12,7 @@ else:
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
     """A class encapsulating knowledge of visited nodes."""
-    
+
     def __init__(self, c):
         """Ctor for NodeHistory class."""
         self.c = c

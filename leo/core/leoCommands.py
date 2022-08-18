@@ -4,7 +4,6 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
-import itertools
 import json
 import os
 import re
@@ -14,12 +13,19 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, List, Optional, Set, Tuple
+from typing import Any, Dict, Callable, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
 from leo.core import leoNodes
 #@-<< imports >>
+
+if TYPE_CHECKING:
+    from leo.core.leoNodes import Position
+else:
+    Position = Any
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
 
 def cmd(name) -> Callable:
@@ -4149,40 +4155,30 @@ class Commands:
     # body of the node.
     #@-<< PosList doc >>
     #@+node:ville.20090311190405.70: *5* c.find_h
-    def find_h(self, regex, flags=re.IGNORECASE):
-        """ Return list (a PosList) of all nodes where zero or more characters at
-        the beginning of the headline match regex
+    def find_h(self,
+        regex: str,
+        flags: RegexFlag=re.IGNORECASE,
+    ) -> List[Position]:
+        """
+        Return the list of all positions whose headline matches the given pattern.
         """
         c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.match(pat, p.h)
-            if m:
-                pc = p.copy()
-                pc.mo = m
-                res.append(pc)
-        return res
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return []
+        return [p.copy() for p in c.all_positions(copy=False) if re.match(pat, p.h)]
     #@+node:ville.20090311200059.1: *5* c.find_b
-    def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE):
-        """ Return list (a PosList) of all nodes whose body matches regex
-        one or more times.
-
+    def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
+        """
+        Return the list of all positions whose body matches regex one or more times.
         """
         c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.finditer(pat, p.b)
-            t1, t2 = itertools.tee(m, 2)
-            try:
-                t1.__next__()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return []
+        return [p.copy() for p in c.all_positions(copy=False) if re.finditer(pat, p.b)]
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
     def registerReloadSettings(self, obj):
