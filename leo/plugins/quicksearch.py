@@ -409,12 +409,6 @@ class QuickSearchController:
             it.setFont(f)
             if self.addItem(it, (p, None)):
                 return lineMatchHits
-            ms = matchlines(p.b, p.matchiter)
-            for ml, pos in ms:
-                lineMatchHits += 1
-                it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
-                if self.addItem(it, (p, pos)):
-                    return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
@@ -438,13 +432,6 @@ class QuickSearchController:
                 it.setFont(f)
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
-                if hasattr(p, "matchiter"):  #p might be not have body matches
-                    ms = matchlines(p.b, p.matchiter)
-                    for ml, pos in ms:
-                        lineMatchHits += 1
-                        it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
-                        if self.addItem(it, (p, pos)):
-                            return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
