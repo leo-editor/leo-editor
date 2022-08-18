@@ -80,13 +80,12 @@ This plugin defines the following commands that can be bound to keys:
 #@+node:ville.20090314215508.7: ** << imports >>
 from collections import OrderedDict
 import fnmatch
-import itertools
 import re
-from typing import Any
+from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
-from leo.core import leoNodes
+from leo.core.leoNodes import Position
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #
@@ -498,7 +497,8 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15693: *3* doNodeHistory
     def doNodeHistory(self):
 
-        nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
+        ### nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
+        nh: List[Position] = [z[0].copy() for z in self.c.nodeHistory.beadList]
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -655,54 +655,61 @@ class QuickSearchController:
         return hm, []
         # self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:jlunz.20150826091415.1: *3* find_h
-    def find_h(self, regex, nodes, flags=re.IGNORECASE):
-        """ Return list (a PosList) of all nodes where zero or more characters at
+    def find_h(self, regex, nodes, flags=re.IGNORECASE) -> List[Position]:
+        """ Return list of all nodes where zero or more characters at
         the beginning of the headline match regex
         """
-        res = leoNodes.PosList()
+        ### res = leoNodes.PosList()
         try:
             pat = re.compile(regex, flags)
         except Exception:
-            return res
-        for p in nodes:
-            m = re.match(pat, p.h)
-            if m:
-                # #2012: Don't inject pc.mo.
-                pc = p.copy()
-                res.append(pc)
-        return res
+            return []
+        ###
+            # aList: List[Position] = []
+            # for p in nodes:
+                # m = re.match(pat, p.h)
+                # if m:
+                    # pc = p.copy()
+                    # aList.append(pc)
+            # return aList
+        return [p.copy() for p in nodes if re.match(pat, p.h)]
     #@+node:jlunz.20150826091424.1: *3* find_b
-    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE):
-        """ Return list (a PosList) of all nodes whose body matches regex
+    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
+        """ Return list of all nodes whose body matches regex
         one or more times.
 
         """
-        res = leoNodes.PosList()
+        ### res = leoNodes.PosList()
         try:
             pat = re.compile(regex, flags)
         except Exception:
-            return res
-        for p in nodes:
-            m = re.finditer(pat, p.b)
-            t1, t2 = itertools.tee(m, 2)
-            try:
-                t1.__next__()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
+            return []
+        return [p.copy() for p in nodes if re.finditer(pat, p.b)]
+        # for p in nodes:
+            # m = re.finditer(pat, p.b)
+            # t1, t2 = itertools.tee(m, 2)
+            # try:
+                # t1.__next__()
+            # except StopIteration:
+                # continue
+            # pc = p.copy()
+            # pc.matchiter = t2
+            # res.append(pc)
+        # return res
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 
         self.clear()
         c = self.c
-        pl = leoNodes.PosList()
-        for p in c.all_positions():
-            if p.isMarked():
-                pl.append(p.copy())
-        self.addHeadlineMatches(pl)
+        ####
+            # pl = leoNodes.PosList()
+
+            # for p in c.all_positions():
+                # if p.isMarked():
+                    # pl.append(p.copy())
+        self.addHeadlineMatches([
+            p.copy() for p in c.all_positions()if p.isMarked()
+        ])
     #@+node:ekr.20111015194452.15700: *3* Event handlers
     #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):
