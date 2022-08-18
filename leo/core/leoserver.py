@@ -582,9 +582,9 @@ class QuickSearchController:
         return res
 
     #@+node:felix.20220225003906.5: *4* QSC.addBodyMatches
-    def addBodyMatches(self, poslist: List[Position]) -> int:
+    def addBodyMatches(self, positions: List[Position]) -> int:
         lineMatchHits = 0
-        for p in poslist:
+        for p in positions:
             it = {"type": "headline", "label": p.h}
             if self.addItem(it, (p, None)):
                 return lineMatchHits

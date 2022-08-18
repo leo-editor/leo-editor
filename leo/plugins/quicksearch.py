@@ -78,10 +78,9 @@ This plugin defines the following commands that can be bound to keys:
 # Original by Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
-from collections import OrderedDict
 import fnmatch
 import re
-from typing import Any, List, Union
+from typing import Dict, List, Union
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
@@ -233,31 +232,6 @@ def show_unittest_failures(event):
             it.setToolTip(stack)
 
     c.k.simulateCommand('focus-to-nav')
-#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
-class OrderedDefaultDict(OrderedDict):
-    """
-    Credit:  http://stackoverflow.com/questions/4126348/
-    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
-    """
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        if not args:
-            self.default_factory = None
-        else:
-            if not (args[0] is None or callable(args[0])):
-                raise TypeError('first argument must be callable or None')
-            self.default_factory = args[0]
-            args = args[1:]
-        super().__init__(*args, **kwargs)
-
-    def __missing__(self, key: Any) -> Any:
-        if self.default_factory is None:
-            raise KeyError(key)
-        self[key] = default = self.default_factory()
-        return default
-
-    def __reduce__(self) -> Any:  # optional, for pickle support
-        args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
 class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
@@ -361,7 +335,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
     def selectAndDismiss(self):
         self.hide()
     #@-others
-#@+node:ville.20090314215508.12: ** class QuickSearchController
+#@+node:ville.20090314215508.12: ** class QuickSearchController (quicksearch.py)
 class QuickSearchController:
 
     #@+others
@@ -426,9 +400,9 @@ class QuickSearchController:
         self.its[id(it)] = val
         return len(self.its) > 300
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
-    def addBodyMatches(self, poslist):
+    def addBodyMatches(self, positions: List[Position]) -> int:
         lineMatchHits = 0
-        for p in poslist:
+        for p in positions:
             it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
@@ -443,7 +417,7 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list):
+    def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -608,13 +582,19 @@ class QuickSearchController:
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents = OrderedDefaultDict(list)
+                ### parents = OrderedDefaultDict(list)
+                parents: Dict[str, List[Position]] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        if node.level() == 0:
-                            parents["Root"].append(node)
-                        else:
-                            parents[node.parent().gnx].append(node)
+                        ###
+                            # if node.level() == 0:
+                                # parents["Root"].append(node)
+                            # else:
+                                # parents[node.parent().gnx].append(node)
+                        key = 'Root' if node.level() == 0 else node.parent().gnx
+                        aList: List[Position] = parents.get(key, [])
+                        aList.append(node)
+                        parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)

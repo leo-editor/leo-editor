@@ -4123,37 +4123,6 @@ class Commands:
                 break
         return ok, d
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
-    #@+<< PosList doc >>
-    #@+node:bob.20101215134608.5898: *5* << PosList doc >>
-    #@@language rest
-    #@+at
-    # List of positions
-    #
-    # Functions find_h() and find_b() both return an instance of PosList.
-    #
-    # Methods filter_h() and filter_b() refine a PosList.
-    #
-    # Method children() generates a new PosList by descending one level from
-    # all the nodes in a PosList.
-    #
-    # A chain of PosList method calls must begin with find_h() or find_b().
-    # The rest of the chain can be any combination of filter_h(),
-    # filter_b(), and children(). For example:
-    #
-    #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
-    #
-    # For each position, pos, in the PosList returned, find_h() and
-    # filter_h() set attribute pos.mo to the match object (see Python
-    # Regular Expression documentation) for the pattern match.
-    #
-    # Caution: The pattern given to find_h() or filter_h() must match zero
-    # or more characters at the beginning of the headline.
-    #
-    # For each position, pos, the postlist returned, find_b() and filter_b()
-    # set attribute pos.matchiter to an iterator that will return a match
-    # object for each of the non-overlapping matches of the pattern in the
-    # body of the node.
-    #@-<< PosList doc >>
     #@+node:ville.20090311190405.70: *5* c.find_h
     def find_h(self,
         regex: str,
