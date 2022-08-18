@@ -22,7 +22,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, List, Numeric, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 # Third-party.
 try:
     import tkinter as Tk
@@ -45,7 +45,7 @@ from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
-Param = Dict
+Param = Dict[str, Any]
 Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
 # Version History
@@ -879,7 +879,7 @@ class LeoServer:
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
-        self.leoServerConfig = None
+        self.leoServerConfig: Param = None
         #
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
@@ -1028,7 +1028,7 @@ class LeoServer:
             await asyncio.sleep(seconds)
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
-    def _idleTime(self, fn: Callable, delay: Numeric, tag: str) -> None:
+    def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self, c: Cmdr, in_headline: bool, insert: Any, p: Position) -> None:
@@ -1360,7 +1360,7 @@ class LeoServer:
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20220808210033.1: *4* server.export commands
     #@+node:felix.20220808211111.2: *5* server.export-headlines
-    def export_headlines(self, param: Any) -> Response:
+    def export_headlines(self, param: Param) -> Response:
         """
         Export Outline (export headlines)
         """
@@ -1380,7 +1380,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20220808211111.4: *5* server.flatten-outline
-    def flatten_outline(self, param: Any) -> Response:
+    def flatten_outline(self, param: Param) -> Response:
         """
         Flatten Selected Outline
         """
@@ -1399,7 +1399,7 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.5: *5* server.outline-to-cweb
-    def outline_to_cweb(self, param: Any) -> Response:
+    def outline_to_cweb(self, param: Param) -> Response:
         """
         Outline To CWEB
         """
@@ -1419,7 +1419,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20220808211111.6: *5* server.outline-to-noweb
 
-    def outline_to_noweb(self, param: Any) -> Response:
+    def outline_to_noweb(self, param: Param) -> Response:
         """
         Outline To Noweb
         """
@@ -1439,7 +1439,7 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.7: *5* server.remove-sentinels
-    def remove_sentinels(self, param: Any) -> Response:
+    def remove_sentinels(self, param: Param) -> Response:
         """
         Remove Sentinels
         """
@@ -1457,7 +1457,7 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808211111.8: *5* server.weave
-    def weave(self, param: Any) -> Response:
+    def weave(self, param: Param) -> Response:
         """
         Weave
         """
@@ -1476,7 +1476,7 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220808221351.1: *5* server.write-file-from-node
-    def write_file_from_node(self, param: Any) -> Response:
+    def write_file_from_node(self, param: Param) -> Response:
         """
         Write file from node
         """
@@ -1501,7 +1501,7 @@ class LeoServer:
                 print(e, flush=True)
         return self._make_response()
     #@+node:felix.20220810001309.1: *5* server.read-file-into-node
-    def read_file_into_node(self, param: Any) -> Response:
+    def read_file_into_node(self, param: Param) -> Response:
         """
         Read a file into a single node.
         """
@@ -1528,7 +1528,7 @@ class LeoServer:
 
     #@+node:felix.20220309010334.1: *4* server.nav commands
     #@+node:felix.20220714000930.1: *5* server.chapter_main
-    def chapter_main(self, param: Any) -> Response:
+    def chapter_main(self, param: Param) -> Response:
         tag = 'chapter_main'
         c = self._check_c()
         try:
@@ -1538,7 +1538,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception selecting main chapter: {e}")
         return self._make_response()
     #@+node:felix.20220714000942.1: *5* server.chapter_select
-    def chapter_select(self, param: Any) -> Response:
+    def chapter_select(self, param: Param) -> Response:
         tag = 'chapter_select'
         c = self._check_c()
         try:
@@ -1550,7 +1550,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20220305211743.1: *5* server.nav_headline_search
-    def nav_headline_search(self, param: Any) -> Response:
+    def nav_headline_search(self, param: Param) -> Response:
         """
         Performs nav 'headline only' search and fills results of go to panel
         Triggered by just typing in nav input box
@@ -1571,7 +1571,7 @@ class LeoServer:
 
 
     #@+node:felix.20220305211828.1: *5* server.nav_search
-    def nav_search(self, param: Any) -> Response:
+    def nav_search(self, param: Param) -> Response:
         """
         Performs nav search and fills results of go to panel
         Triggered by pressing 'Enter' in the nav input box
@@ -1591,7 +1591,7 @@ class LeoServer:
 
 
     #@+node:felix.20220305215239.1: *5* server.get_goto_panel
-    def get_goto_panel(self, param: Any) -> Response:
+    def get_goto_panel(self, param: Param) -> Response:
         """
         Gets the content of the goto panel
         """
@@ -1616,35 +1616,35 @@ class LeoServer:
 
 
     #@+node:felix.20220309010558.1: *5* server.find_quick_timeline
-    def find_quick_timeline(self, param: Any) -> Response:
+    def find_quick_timeline(self, param: Param) -> Response:
         # fill with timeline order gnx nodes
         c = self._check_c()
         c.scon.doTimeline()
         return self._make_response()
 
     #@+node:felix.20220309010607.1: *5* server.find_quick_changed
-    def find_quick_changed(self, param: Any) -> Response:
+    def find_quick_changed(self, param: Param) -> Response:
         # fill with list of all dirty nodes
         c = self._check_c()
         c.scon.doChanged()
         return self._make_response()
 
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
-    def find_quick_history(self, param: Any) -> Response:
+    def find_quick_history(self, param: Param) -> Response:
         # fill with list from history
         c = self._check_c()
         c.scon.doNodeHistory()
         return self._make_response()
 
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
-    def find_quick_marked(self, param: Any) -> Response:
+    def find_quick_marked(self, param: Param) -> Response:
         # fill with list of marked nodes
         c = self._check_c()
         c.scon.doShowMarked()
         return self._make_response()
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
-    def goto_nav_entry(self, param: Any) -> Response:
+    def goto_nav_entry(self, param: Param) -> Response:
         # activate entry in c.scon.its
         tag = 'goto_nav_entry'
         c = self._check_c()
@@ -1660,7 +1660,7 @@ class LeoServer:
 
     #@+node:felix.20210621233316.19: *4* server.search commands
     #@+node:felix.20210621233316.20: *5* server.get_search_settings
-    def get_search_settings(self, param: Any) -> Response:
+    def get_search_settings(self, param: Param) -> Response:
         """
         Gets search options
         """
@@ -1678,7 +1678,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
     #@+node:felix.20210621233316.21: *5* server.set_search_settings
-    def set_search_settings(self, param: Any) -> Response:
+    def set_search_settings(self, param: Param) -> Response:
         """
         Sets search options. Init widgets and ivars from param.searchSettings
         """
@@ -1762,7 +1762,7 @@ class LeoServer:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
     #@+node:felix.20210621233316.22: *5* server.find_all
-    def find_all(self, param: Any) -> Response:
+    def find_all(self, param: Param) -> Response:
         """Run Leo's find all command and return results."""
         tag = 'find_all'
         c = self._check_c()
@@ -1775,7 +1775,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.23: *5* server.find_next
-    def find_next(self, param: Any) -> Response:
+    def find_next(self, param: Param) -> Response:
         """Run Leo's find-next command and return results."""
         tag = 'find_next'
         c = self._check_c()
@@ -1813,7 +1813,7 @@ class LeoServer:
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.24: *5* server.find_previous
-    def find_previous(self, param: Any) -> Response:
+    def find_previous(self, param: Param) -> Response:
         """Run Leo's find-previous command and return results."""
         tag = 'find_previous'
         c = self._check_c()
@@ -1851,7 +1851,7 @@ class LeoServer:
                     "newpos": newpos, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.25: *5* server.replace
-    def replace(self, param: Any) -> Response:
+    def replace(self, param: Param) -> Response:
         """Run Leo's replace command and return results."""
         tag = 'replace'
         c = self._check_c()
@@ -1865,7 +1865,7 @@ class LeoServer:
         result = {"found": True, "focus": focus}
         return self._make_response(result)
     #@+node:felix.20210621233316.26: *5* server.replace_then_find
-    def replace_then_find(self, param: Any) -> Response:
+    def replace_then_find(self, param: Param) -> Response:
         """Run Leo's replace then find next command and return results."""
         tag = 'replace_then_find'
         c = self._check_c()
@@ -1878,7 +1878,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.27: *5* server.replace_all
-    def replace_all(self, param: Any) -> Response:
+    def replace_all(self, param: Param) -> Response:
         """Run Leo's replace all command and return results."""
         tag = 'replace_all'
         c = self._check_c()
@@ -1891,7 +1891,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.28: *5* server.clone_find_all
-    def clone_find_all(self, param: Any) -> Response:
+    def clone_find_all(self, param: Param) -> Response:
         """Run Leo's clone-find-all command and return results."""
         tag = 'clone_find_all'
         c = self._check_c()
@@ -1904,7 +1904,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.29: *5* server.clone_find_all_flattened
-    def clone_find_all_flattened(self, param: Any) -> Response:
+    def clone_find_all_flattened(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened command and return results."""
         tag = 'clone_find_all_flattened'
         c = self._check_c()
@@ -1917,7 +1917,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
     #@+node:felix.20210621233316.30: *5* server.find_var
-    def find_var(self, param: Any) -> Response:
+    def find_var(self, param: Param) -> Response:
         """Run Leo's find-var command and return results."""
         tag = 'find_var'
         c = self._check_c()
@@ -1929,7 +1929,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010004.1: *5* server.clone_find_all_flattened_marked
-    def clone_find_all_flattened_marked(self, param: Any) -> Response:
+    def clone_find_all_flattened_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened-marked command."""
         tag = 'clone_find_all_flattened_marked'
         c = self._check_c()
@@ -1941,7 +1941,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010005.1: *5* server.clone_find_all_marked
-    def clone_find_all_marked(self, param: Any) -> Response:
+    def clone_find_all_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-marked command """
         tag = 'clone_find_all_marked'
         c = self._check_c()
@@ -1953,7 +1953,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.31: *5* server.find_def
-    def find_def(self, param: Any) -> Response:
+    def find_def(self, param: Param) -> Response:
         """Run Leo's find-def command and return results."""
         tag = 'find_def'
         c = self._check_c()
@@ -1965,7 +1965,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.32: *5* server.goto_global_line
-    def goto_global_line(self, param: Any) -> Response:
+    def goto_global_line(self, param: Param) -> Response:
         """Run Leo's goto-global-line command and return results."""
         tag = 'goto_global_line'
         c = self._check_c()
@@ -1978,7 +1978,7 @@ class LeoServer:
         focus = self._get_focus()
         return self._make_response({"found": found, "focus": focus})
     #@+node:felix.20210621233316.33: *5* server.clone_find_tag
-    def clone_find_tag(self, param: Any) -> Response:
+    def clone_find_tag(self, param: Param) -> Response:
         """Run Leo's clone-find-tag command and return results."""
         tag = 'clone_find_tag'
         c = self._check_c()
@@ -1995,7 +1995,7 @@ class LeoServer:
             print('', flush=True)
         return self._make_response({"n": n})
     #@+node:felix.20210621233316.34: *5* server.tag_children
-    def tag_children(self, param: Any) -> Response:
+    def tag_children(self, param: Param) -> Response:
         """Run Leo's tag-children command"""
         # This is not a find command!
         tag = 'tag_children'
@@ -2008,7 +2008,7 @@ class LeoServer:
         fc.do_tag_children(c.p, tag_param)
         return self._make_response()
     #@+node:felix.20220313215348.1: *5* server.tag_node
-    def tag_node(self, param: Any) -> Response:
+    def tag_node(self, param: Param) -> Response:
         """Set tag on selected node"""
         # This is not a find command!
         tag = 'tag_node'
@@ -2029,7 +2029,7 @@ class LeoServer:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
     #@+node:felix.20220313215353.1: *5* server.remove_tag
-    def remove_tag(self, param: Any) -> Response:
+    def remove_tag(self, param: Param) -> Response:
         """Remove specific tag on selected node"""
         # This is not a find command!
         tag = 'remove_tag'
@@ -2052,7 +2052,7 @@ class LeoServer:
             raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
         return self._make_response()
     #@+node:felix.20220313220807.1: *5* server.remove_tags
-    def remove_tags(self, param: Any) -> Response:
+    def remove_tags(self, param: Param) -> Response:
         """Remove all tags on selected node"""
         # This is not a find command!
         tag = 'remove_tags'
@@ -2074,7 +2074,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server.getter commands
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
-    def get_all_open_commanders(self, param: Any) -> Response:
+    def get_all_open_commanders(self, param: Param) -> Response:
         """Return array describing each commander in g.app.commanders()."""
         files = [
             {
@@ -2085,7 +2085,7 @@ class LeoServer:
         ]
         return self._make_minimal_response({"files": files})
     #@+node:felix.20210621233316.37: *5* server.get_all_positions
-    def get_all_positions(self, param: Any) -> Response:
+    def get_all_positions(self, param: Param) -> Response:
         """
         Return a list of position data for all positions.
 
@@ -2097,7 +2097,7 @@ class LeoServer:
         ]
         return self._make_minimal_response({"position-data-list": result})
     #@+node:felix.20220617184559.1: *5* server.get_structure
-    def get_structure(self, param: Any) -> Response:
+    def get_structure(self, param: Param) -> Response:
         """
         Returns an array of ap's, the direct descendants of the hidden root node.
         Each having required 'children' array, to give the whole structure of ap's.
@@ -2112,7 +2112,7 @@ class LeoServer:
         return self._make_minimal_response({"structure": result})
 
     #@+node:felix.20210621233316.38: *5* server.get_all_gnx
-    def get_all_gnx(self, param: Any) -> Response:
+    def get_all_gnx(self, param: Param) -> Response:
         """Get gnx array from all unique nodes"""
         if self.log_flag:  # pragma: no cover
             print('\nget_all_gnx\n', flush=True)
@@ -2120,7 +2120,7 @@ class LeoServer:
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx})
     #@+node:felix.20210621233316.39: *5* server.get_body
-    def get_body(self, param: Any) -> Response:
+    def get_body(self, param: Param) -> Response:
         """
         Return the body content body specified via GNX.
         """
@@ -2133,7 +2133,7 @@ class LeoServer:
         # Support asking for unknown gnx when client switches rapidly
         return self._make_minimal_response({"body": body})
     #@+node:felix.20210621233316.40: *5* server.get_body_length
-    def get_body_length(self, param: Any) -> Response:
+    def get_body_length(self, param: Param) -> Response:
         """
         Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
         """
@@ -2145,7 +2145,7 @@ class LeoServer:
             return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
         return self._make_minimal_response({"len": 0})  # empty as default
     #@+node:felix.20210621233316.41: *5* server.get_body_states
-    def get_body_states(self, param: Any) -> Response:
+    def get_body_states(self, param: Param) -> Response:
         """
         Return body data for p, where p is c.p if param["ap"] is missing.
         The cursor positions are given as {"line": line, "col": col, "index": i}
@@ -2221,7 +2221,7 @@ class LeoServer:
             }
         return self._make_minimal_response(states)
     #@+node:felix.20220714001051.1: *5* server.get_chapters
-    def get_chapters(self, param: Any) -> Response:
+    def get_chapters(self, param: Param) -> Response:
         c = self._check_c()
         cc = c.chapterController
         chapters = []
@@ -2229,7 +2229,7 @@ class LeoServer:
             chapters = cc.setAllChapterNames()
         return self._make_minimal_response({"chapters": chapters})
     #@+node:felix.20210621233316.42: *5* server.get_children
-    def get_children(self, param: Any) -> Response:
+    def get_children(self, param: Param) -> Response:
         """
         Return the node data for children of p,
         where p is root if param.ap is missing
@@ -2256,14 +2256,14 @@ class LeoServer:
                 children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
         return self._make_minimal_response({"children": children})
     #@+node:felix.20210621233316.43: *5* server.get_focus
-    def get_focus(self, param: Any) -> Response:
+    def get_focus(self, param: Param) -> Response:
         """
         Return a representation of the focused widget,
         one of ("body", "tree", "headline", repr(the_widget)).
         """
         return self._make_minimal_response({"focus": self._get_focus()})
     #@+node:felix.20210621233316.44: *5* server.get_parent
-    def get_parent(self, param: Any) -> Response:
+    def get_parent(self, param: Param) -> Response:
         """
         Return the node data for the parent of position p,
         where p is c.p if param["ap"] is missing.
@@ -2278,7 +2278,7 @@ class LeoServer:
         data = self._get_position_d(parent) if parent else None
         return self._make_minimal_response({"node": data})
     #@+node:felix.20210621233316.45: *5* server.get_position_data
-    def get_position_data(self, param: Any) -> Response:
+    def get_position_data(self, param: Param) -> Response:
         """
         Return a dict of position data for all positions.
 
@@ -2291,7 +2291,7 @@ class LeoServer:
         }
         return self._make_minimal_response({"position-data-dict": result})
     #@+node:felix.20210621233316.46: *5* server.get_ua
-    def get_ua(self, param: Any) -> Response:
+    def get_ua(self, param: Param) -> Response:
         """Return p.v.u, making sure it can be serialized."""
         self._check_c()
         p = self._get_p(param)
@@ -2304,7 +2304,7 @@ class LeoServer:
         # _make_response adds all the cheap redraw data.
         return self._make_minimal_response(response)
     #@+node:felix.20210621233316.48: *5* server.get_ui_states
-    def get_ui_states(self, param: Any) -> Response:
+    def get_ui_states(self, param: Param) -> Response:
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
@@ -2352,7 +2352,7 @@ class LeoServer:
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_minimal_response({"states": states})
     #@+node:felix.20211210213603.1: *5* server.get_undos
-    def get_undos(self, param: Any) -> Response:
+    def get_undos(self, param: Param) -> Response:
         """Return list of undo operations"""
         c = self._check_c()
         undoer = c.undoer
@@ -2367,7 +2367,7 @@ class LeoServer:
         return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
-    def clone_node(self, param: Any) -> Response:
+    def clone_node(self, param: Param) -> Response:
         """
         Clone a node.
         Try to keep selection, then return the selected node that remains.
@@ -2386,7 +2386,7 @@ class LeoServer:
         return self._make_response()
 
     #@+node:felix.20210621233316.51: *5* server.contract_node
-    def contract_node(self, param: Any) -> Response:
+    def contract_node(self, param: Param) -> Response:
         """
         Contract (Collapse) the node at position p, where p is c.p if p is missing.
         """
@@ -2394,7 +2394,7 @@ class LeoServer:
         p.contract()
         return self._make_response()
     #@+node:felix.20210621233316.52: *5* server.copy_node
-    def copy_node(self, param: Any) -> Response:  # pragma: no cover (too dangerous, for now)
+    def copy_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Copy a node, don't select it.
         Also supports 'asJSON' parameter to get as JSON
@@ -2421,7 +2421,7 @@ class LeoServer:
         return self._make_response({"string": s})
 
     #@+node:felix.20220815193758.1: *5* server.copy_node_as_json
-    def copy_node_as_json(self, param: Any) -> Response:  # pragma: no cover (too dangerous, for now)
+    def copy_node_as_json(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Copy a node as JSON, don't select it.
         Also supports 'asJSON' parameter to get as JSON
@@ -2442,7 +2442,7 @@ class LeoServer:
         return self._make_response({"string": s})
 
     #@+node:felix.20220222172507.1: *5* server.cut_node
-    def cut_node(self, param: Any) -> Response:  # pragma: no cover (too dangerous, for now)
+    def cut_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Cut a node, don't select it.
         Try to keep selection, then return the selected node that remains.
@@ -2473,7 +2473,7 @@ class LeoServer:
         g.app.gui.replaceClipboardWith(s)
         return self._make_response({"string": s})
     #@+node:felix.20210621233316.53: *5* server.delete_node
-    def delete_node(self, param: Any) -> Response:  # pragma: no cover (too dangerous, for now)
+    def delete_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
         """
         Delete a node, don't select it.
         Try to keep selection, then return the selected node that remains.
@@ -2497,7 +2497,7 @@ class LeoServer:
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20210621233316.54: *5* server.expand_node
-    def expand_node(self, param: Any) -> Response:
+    def expand_node(self, param: Param) -> Response:
         """
         Expand the node at position p, where p is c.p if p is missing.
         """
@@ -2505,7 +2505,7 @@ class LeoServer:
         p.expand()
         return self._make_response()
     #@+node:felix.20210621233316.55: *5* server.insert_node
-    def insert_node(self, param: Any) -> Response:
+    def insert_node(self, param: Param) -> Response:
         """
         Insert a node at given node. If a position is given
         that is not the current position, re-select the original position.
@@ -2524,7 +2524,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
-    def insert_child_node(self, param: Any) -> Response:
+    def insert_child_node(self, param: Param) -> Response:
         """
         Insert a child node at given node. If a position is given
         that is not the current position, re-select the original position.
@@ -2543,7 +2543,7 @@ class LeoServer:
         # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.56: *5* server.insert_named_node
-    def insert_named_node(self, param: Any) -> Response:
+    def insert_named_node(self, param: Param) -> Response:
         """
         Insert a node at given node, set its headline. If a position is given
         that is not the current position, re-select the original position.
@@ -2574,7 +2574,7 @@ class LeoServer:
         c.setChanged()
         return self._make_response()
     #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
-    def insert_child_named_node(self, param: Any) -> Response:
+    def insert_child_named_node(self, param: Param) -> Response:
         """
         Insert a child node at given node, set its headline, select it and finally return it
         """
@@ -2595,7 +2595,7 @@ class LeoServer:
         c.selectPosition(newNode)
         return self._make_response()
     #@+node:felix.20220616010755.1: *5* server.scroll_top
-    def scroll_top(self, param: Any) -> Response:
+    def scroll_top(self, param: Param) -> Response:
         """
         Utility method for connected clients to simulate scroll to the top
         """
@@ -2605,7 +2605,7 @@ class LeoServer:
             c.treeSelectHelper(p)
         return self._make_response()
     #@+node:felix.20220616010756.1: *5* server.scroll_bottom
-    def scroll_bottom(self, param: Any) -> Response:
+    def scroll_bottom(self, param: Param) -> Response:
         """
         Utility method for connected clients to simulate scroll to bottom
         """
@@ -2615,7 +2615,7 @@ class LeoServer:
             c.treeSelectHelper(p)
         return self._make_response()
     #@+node:felix.20210621233316.57: *5* server.page_down
-    def page_down(self, param: Any) -> Response:
+    def page_down(self, param: Param) -> Response:
         """
         Selects a node "n" steps down in the tree to simulate page down.
         """
@@ -2625,7 +2625,7 @@ class LeoServer:
             c.selectVisNext()
         return self._make_response()
     #@+node:felix.20210621233316.58: *5* server.page_up
-    def page_up(self, param: Any) -> Response:
+    def page_up(self, param: Param) -> Response:
         """
         Selects a node "N" steps up in the tree to simulate page up.
         """
@@ -2635,7 +2635,7 @@ class LeoServer:
             c.selectVisBack()
         return self._make_response()
     #@+node:felix.20220222173659.1: *5* server.paste_node
-    def paste_node(self, param: Any) -> Response:
+    def paste_node(self, param: Param) -> Response:
         """
         Pastes a node,
         Try to keep selection, then return the selected node.
@@ -2664,7 +2664,7 @@ class LeoServer:
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20220222173707.1: *5* server.paste_as_clone_node
-    def paste_as_clone_node(self, param: Any) -> Response:
+    def paste_as_clone_node(self, param: Param) -> Response:
         """
         Pastes a node as a clone,
         Try to keep selection, then return the selected node.
@@ -2693,7 +2693,7 @@ class LeoServer:
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20220815220429.1: *5* server.paste_as_template
-    def paste_as_template(self, param: Any) -> Response:
+    def paste_as_template(self, param: Param) -> Response:
         """
         Paste as template clones only nodes that were already clones
         """
@@ -2721,7 +2721,7 @@ class LeoServer:
                     c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20210621233316.59: *5* server.redo
-    def redo(self, param: Any) -> Response:
+    def redo(self, param: Param) -> Response:
         """Undo last un-doable operation with optional redo repeat count"""
         c = self._check_c()
         u = c.undoer
@@ -2731,7 +2731,7 @@ class LeoServer:
                 u.redo()
         return self._make_response()
     #@+node:felix.20210621233316.60: *5* server.set_body
-    def set_body(self, param: Any) -> Response:
+    def set_body(self, param: Param) -> Response:
         """
         Undoably set body text of a v node.
         (Only if new string is different from actual existing body string)
@@ -2765,7 +2765,7 @@ class LeoServer:
                 v.b = body
         return self._make_response()
     #@+node:felix.20210621233316.61: *5* server.set_current_position
-    def set_current_position(self, param: Any) -> Response:
+    def set_current_position(self, param: Param) -> Response:
         """Select position p. Or try to get p with gnx if not found."""
         tag = "set_current_position"
         c = self._check_c()
@@ -2786,7 +2786,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20210621233316.62: *5* server.set_headline
-    def set_headline(self, param: Any) -> Response:
+    def set_headline(self, param: Param) -> Response:
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
         """
@@ -2804,7 +2804,7 @@ class LeoServer:
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
     #@+node:felix.20210621233316.63: *5* server.set_selection
-    def set_selection(self, param: Any) -> Response:
+    def set_selection(self, param: Param) -> Response:
         """
         Set the selection range for p.b, where p is c.p if package["ap"] is missing.
 
@@ -2854,7 +2854,7 @@ class LeoServer:
         v.selectionLength = abs(startSel - endSel)
         return self._make_response()
     #@+node:felix.20211114202046.1: *5* server.set_ua_member
-    def set_ua_member(self, param: Any) -> Response:
+    def set_ua_member(self, param: Param) -> Response:
         """
         Set a single member of a node's ua.
         """
@@ -2868,7 +2868,7 @@ class LeoServer:
             p.v.u[name] = value
         return self._make_response()
     #@+node:felix.20211114202058.1: *5* server.set_ua
-    def set_ua(self, param: Any) -> Response:
+    def set_ua(self, param: Param) -> Response:
         """
         Replace / set the whole user attribute dict of a node.
         """
@@ -2878,7 +2878,7 @@ class LeoServer:
         p.v.u = ua
         return self._make_response()
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
-    def toggle_mark(self, param: Any) -> Response:
+    def toggle_mark(self, param: Param) -> Response:
         """
         Toggle the mark at position p.
         Try to keep selection, then return the selected node that remains.
@@ -2896,7 +2896,7 @@ class LeoServer:
         # return selected node either ways
         return self._make_response()
     #@+node:felix.20210621233316.65: *5* server.mark_node
-    def mark_node(self, param: Any) -> Response:
+    def mark_node(self, param: Param) -> Response:
         """
         Mark a node.
         Try to keep selection, then return the selected node that remains.
@@ -2910,7 +2910,7 @@ class LeoServer:
             return self.toggle_mark(param)
 
     #@+node:felix.20210621233316.66: *5* server.unmark_node
-    def unmark_node(self, param: Any) -> Response:
+    def unmark_node(self, param: Param) -> Response:
         """
         Unmark a node.
         Try to keep selection, then return the selected node that remains.
@@ -2923,7 +2923,7 @@ class LeoServer:
         else:
             return self.toggle_mark(param)
     #@+node:felix.20210621233316.67: *5* server.undo
-    def undo(self, param: Any) -> Response:
+    def undo(self, param: Param) -> Response:
         """Undo last un-doable operation with optional undo repeat count"""
         c = self._check_c()
         u = c.undoer
@@ -2935,7 +2935,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.68: *4* server.server commands
     #@+node:felix.20210914230846.1: *5* server.get_version
-    def get_version(self, param: Any) -> Response:
+    def get_version(self, param: Param) -> Response:
         """
         Return this server program name and version as a string representation
         along with the three version members as numbers 'major', 'minor' and 'patch'.
@@ -2944,7 +2944,7 @@ class LeoServer:
         result = {"version": __version__, "major": v1, "minor": v2, "patch": v3}
         return self._make_minimal_response(result)
     #@+node:felix.20220326190000.1: *5* server.get_leoid
-    def get_leoid(self, param: Any) -> Response:
+    def get_leoid(self, param: Param) -> Response:
         """
         Returns g.app.leoID
         """
@@ -2952,7 +2952,7 @@ class LeoServer:
         result = {"leoID": g.app.leoID}
         return self._make_minimal_response(result)
     #@+node:felix.20220326190008.1: *5* server.set_leoid
-    def set_leoid(self, param: Any) -> Response:
+    def set_leoid(self, param: Param) -> Response:
         """
         Sets g.app.leoID
         """
@@ -2973,11 +2973,11 @@ class LeoServer:
                 g.app.nodeIndices.userId = leoID
         return self._make_response()
     #@+node:felix.20210818012827.1: *5* server.do_nothing
-    def do_nothing(self, param: Any) -> Response:
+    def do_nothing(self, param: Param) -> Response:
         """Simply return states from _make_response"""
         return self._make_response()
     #@+node:felix.20210621233316.69: *5* server.set_ask_result
-    def set_ask_result(self, param: Any) -> Response:
+    def set_ask_result(self, param: Param) -> Response:
         """Got the result to an asked question/warning from client"""
         tag = "set_ask_result"
         result = param.get("result")
@@ -2986,16 +2986,16 @@ class LeoServer:
         g.app.externalFilesController.clientResult(result)
         return self._make_response()
     #@+node:felix.20210621233316.70: *5* server.set_config
-    def set_config(self, param: Any) -> Response:
+    def set_config(self, param: Param) -> Response:
         """Got auto-reload's config from client"""
         self.leoServerConfig = param  # PARAM IS THE CONFIG-DICT
         return self._make_response()
     #@+node:felix.20210621233316.71: *5* server.error
-    def error(self, param: Any) -> None:
+    def error(self, param: Param) -> None:
         """For unit testing. Raise ServerError"""
         raise ServerError("error called")
     #@+node:felix.20210621233316.72: *5* server.get_all_leo_commands & helper
-    def get_all_leo_commands(self, param: Any) -> Response:
+    def get_all_leo_commands(self, param: Param) -> Response:
         """Return a list of all commands that make sense for connected clients."""
         tag = 'get_all_leo_commands'
         # #173: Use the present commander to get commands created by @button and @command.
@@ -4170,7 +4170,7 @@ class LeoServer:
         ]
         return good_list
     #@+node:felix.20210621233316.75: *5* server.get_all_server_commands & helpers
-    def get_all_server_commands(self, param: Any) -> Response:
+    def get_all_server_commands(self, param: Param) -> Response:
         """
         Public server method:
         Return the names of all callable public methods of the server.
@@ -4203,7 +4203,7 @@ class LeoServer:
             # already exist, so "spectator-clients" setup
             pass  # nothing for now
     #@+node:felix.20210621233316.77: *5* server.shut_down
-    def shut_down(self, param: Any) -> None:
+    def shut_down(self, param: Param) -> None:
         """Shut down the server."""
         tag = 'shut_down'
         n = len(g.app.commanders())
@@ -4212,7 +4212,7 @@ class LeoServer:
         raise TerminateServer("client requested shut down")
     #@+node:felix.20210621233316.78: *3* server.server utils
     #@+node:felix.20210621233316.79: *4* server._ap_to_p
-    def _ap_to_p(self, ap: Any) -> Optional[Position]:
+    def _ap_to_p(self, ap: Dict[str, Any]) -> Optional[Position]:
         """
         Convert ap (archived position, a dict) to a valid Leo position.
 
@@ -4296,7 +4296,7 @@ class LeoServer:
                 self._dump_position(p)
                 raise ServerError(message)
     #@+node:felix.20210621233316.84: *4* server._do_leo_command_by_name
-    def _do_leo_command_by_name(self, command_name: Any, param: Any) -> Response:
+    def _do_leo_command_by_name(self, command_name: Any, param: Param) -> Response:
         """
         Generic call to a command in Leo's Commands class or any subcommander class.
 
@@ -4345,7 +4345,7 @@ class LeoServer:
             return self._make_response({"return-value": value})
         return self._make_response()
     #@+node:ekr.20210722184932.1: *4* server._do_leo_function_by_name
-    def _do_leo_function_by_name(self, function_name: Any, param: Any) -> Response:
+    def _do_leo_function_by_name(self, function_name: Any, param: Param) -> Response:
         """
         Generic call to a method in Leo's Commands class or any subcommander class.
 
@@ -4464,7 +4464,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no response: {action!r}")
         return result
     #@+node:felix.20210621233316.86: *4* server._do_server_command
-    def _do_server_command(self, action: Any, param: Any) -> Response:
+    def _do_server_command(self, action: Any, param: Param) -> Response:
         tag = '_do_server_command'
         # Disallow hidden methods.
         if action.startswith('_'):  # pragma: no cover
