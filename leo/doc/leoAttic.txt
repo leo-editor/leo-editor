@@ -4032,6 +4032,134 @@ def scanOptions():
     else:
         scope = 'all'
     return scope
+#@+node:ekr.20220415164121.1: ** Abandoned methods
+#@+node:ekr.20110605121601.18292: *3* qtFrame.OnBodyDoubleClick (Events) (not used)
+# Not called
+
+def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
+    try:
+        c, p = self.c, self.c.p
+        if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
+            c.editCommands.extendToWord(event)  # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodydclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodydclick")
+    return "break"  # Restore this to handle proper double-click logic.
+#@+node:ekr.20071027150501: *3* LeoFrame.event handlers (not used)
+def OnBodyClick(self, event: Event=None) -> None:
+    pass
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    pass
+#@+node:ekr.20110605121601.18291: *3* qtFrame.OnBodyClick, OnBodyRClick (not used)
+# At present, these are not called,
+# but they could be called by LeoQTextBrowser.
+
+def OnBodyClick(self, event: Event=None) -> None:
+    g.trace()
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyclick1", c=c, p=p, event=event):
+            g.doHook("bodyclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyrclick1", c=c, p=p, event=event):
+            g.doHook("bodyrclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyrclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("iconrclick")
+#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
+def reloadSettingsHelper(c):
+    """
+    Reload settings in all commanders, or just c.
+
+    A helper function for reload-settings and reload-all-settings.
+    """
+    lm = g.app.loadManager
+    # Save any changes so they can be seen.
+    for c2 in g.app.commanders():
+        if c2.isChanged():
+            c2.save()
+    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+    lm.readGlobalSettingsFiles()
+    for c in g.app.commanders():
+        # Read the local file, using a null gui.
+        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+        # Init the config classes.
+        c.initSettings(previousSettings)
+        # Init the commander config ivars.
+        c.initConfigSettings()
+        # Reload settings in all configurable classes
+        c.reloadConfigurableSettings()
+#@+node:ekr.20041228042224: *3* gcm.setIvarsFromSettings (no longer used
+trace_set = set()
+
+def setIvarsFromSettings(self, c: Cmdr) -> None:
+    """
+    Init g.app.config ivars or c's ivars from settings.
+
+    - Called from c.initSettings with c = None to init g.app.config ivars.
+    - Called from c.initSettings to init corresponding commander ivars.
+    """
+    trace_tag = 'GCM'
+    # Ignore temporary commanders created by readSettingsFiles.
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        gs = d.get(key)
+        if gs:
+            assert isinstance(gs, g.GeneralSetting)
+            ivar = gs.ivar  # The actual name of the ivar.
+            kind = gs.kind
+            if c:
+                val = c.config.get(key, kind)
+            else:
+                val = self.get(key, kind)  # Don't use bunch.val!
+            if c:
+                print(f"{trace_tag} {c.shortFileName():20} {val!r:10} {ivar}")
+                setattr(c, ivar, val)
+            # Always set the global ivars.
+            if ivar not in self.trace_set:
+                self.trace_set.add(ivar)
+                print(f"{trace_tag} {'global':20} {val!r:10} {ivar}")
+            setattr(self, ivar, val)
+#@+node:ekr.20091002083910.6106: *3* c.find_b & find_h (PosList)
+#@+node:ville.20090311190405.70: *4* c.find_h
+def find_h(self,
+    regex: str,
+    flags: RegexFlag=re.IGNORECASE,
+) -> List[Position]:
+    """
+    Return the list of all positions whose headline matches the given pattern.
+    """
+    c = self
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+    return [p.copy() for p in c.all_positions(copy=False) if re.match(pat, p.h)]
+#@+node:ville.20090311200059.1: *4* c.find_b
+def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
+    """
+    Return the list of all positions whose body matches regex one or more times.
+    """
+    c = self
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+    return [p.copy() for p in c.all_positions(copy=False) if re.finditer(pat, p.b)]
 #@+node:ekr.20211014154406.1: ** Abandoned plugins
 #@+node:ekr.20211011021921.1: *3* From backlink plugin
 #@+node:ekr.20140920145803.17994: *4* class backlinkTkUI
@@ -8602,108 +8730,6 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20220415164121.1: ** Not used methods
-#@+node:ekr.20110605121601.18292: *3* qtFrame.OnBodyDoubleClick (Events) (not used)
-# Not called
-
-def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
-    try:
-        c, p = self.c, self.c.p
-        if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
-            c.editCommands.extendToWord(event)  # Handles unicode properly.
-            c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodydclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("bodydclick")
-    return "break"  # Restore this to handle proper double-click logic.
-#@+node:ekr.20071027150501: *3* LeoFrame.event handlers (not used)
-def OnBodyClick(self, event: Event=None) -> None:
-    pass
-
-def OnBodyRClick(self, event: Event=None) -> None:
-    pass
-#@+node:ekr.20110605121601.18291: *3* qtFrame.OnBodyClick, OnBodyRClick (not used)
-# At present, these are not called,
-# but they could be called by LeoQTextBrowser.
-
-def OnBodyClick(self, event: Event=None) -> None:
-    g.trace()
-    try:
-        c, p = self.c, self.c.p
-        if g.doHook("bodyclick1", c=c, p=p, event=event):
-            g.doHook("bodyclick2", c=c, p=p, event=event)
-            return
-        c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodyclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("bodyclick")
-
-def OnBodyRClick(self, event: Event=None) -> None:
-    try:
-        c, p = self.c, self.c.p
-        if g.doHook("bodyrclick1", c=c, p=p, event=event):
-            g.doHook("bodyrclick2", c=c, p=p, event=event)
-            return
-        c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodyrclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("iconrclick")
-#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
-def reloadSettingsHelper(c):
-    """
-    Reload settings in all commanders, or just c.
-
-    A helper function for reload-settings and reload-all-settings.
-    """
-    lm = g.app.loadManager
-    # Save any changes so they can be seen.
-    for c2 in g.app.commanders():
-        if c2.isChanged():
-            c2.save()
-    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
-    lm.readGlobalSettingsFiles()
-    for c in g.app.commanders():
-        # Read the local file, using a null gui.
-        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
-        # Init the config classes.
-        c.initSettings(previousSettings)
-        # Init the commander config ivars.
-        c.initConfigSettings()
-        # Reload settings in all configurable classes
-        c.reloadConfigurableSettings()
-#@+node:ekr.20041228042224: *3* gcm.setIvarsFromSettings (no longer used
-trace_set = set()
-
-def setIvarsFromSettings(self, c: Cmdr) -> None:
-    """
-    Init g.app.config ivars or c's ivars from settings.
-
-    - Called from c.initSettings with c = None to init g.app.config ivars.
-    - Called from c.initSettings to init corresponding commander ivars.
-    """
-    trace_tag = 'GCM'
-    # Ignore temporary commanders created by readSettingsFiles.
-    d = self.ivarsDict
-    keys = list(d.keys())
-    keys.sort()
-    for key in keys:
-        gs = d.get(key)
-        if gs:
-            assert isinstance(gs, g.GeneralSetting)
-            ivar = gs.ivar  # The actual name of the ivar.
-            kind = gs.kind
-            if c:
-                val = c.config.get(key, kind)
-            else:
-                val = self.get(key, kind)  # Don't use bunch.val!
-            if c:
-                print(f"{trace_tag} {c.shortFileName():20} {val!r:10} {ivar}")
-                setattr(c, ivar, val)
-            # Always set the global ivars.
-            if ivar not in self.trace_set:
-                self.trace_set.add(ivar)
-                print(f"{trace_tag} {'global':20} {val!r:10} {ivar}")
-            setattr(self, ivar, val)
 #@+node:ekr.20220728055642.1: ** Old importer code
 @nosearch
 @language plain

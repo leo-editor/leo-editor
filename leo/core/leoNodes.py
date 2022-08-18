@@ -7,9 +7,7 @@
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
 #Transcrypt does not support Python's copy module.
 import copy
-### import itertools
 import time
-### import re
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -17,7 +15,7 @@ from leo.core import signal_manager
 if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
-    Cmdr = None
+    Cmdr = Any
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -192,18 +190,9 @@ class NodeIndices:
 #@-<< about the position class >>
 # Positions should *never* be saved by the ZOBD.
 
-
 class Position:
 
-    __slots__ = [
-        '_childIndex', 'stack', 'v',
-        #
-        # EKR: The following fields are deprecated,
-        #      as are the PosList class, c.find_h and c.find_b.
-        #
-        'matchiter',  # for c.find_b and quicksearch.py.
-        'mo',  # for c.find_h
-    ]
+    __slots__ = ['_childIndex', 'stack', 'v']
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...

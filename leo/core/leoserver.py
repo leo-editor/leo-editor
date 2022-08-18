@@ -588,7 +588,6 @@ class QuickSearchController:
             it = {"type": "headline", "label": p.h}
             if self.addItem(it, (p, None)):
                 return lineMatchHits
-            ### PosList injects p.matchiter.
             ms = self.matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 lineMatchHits += 1
@@ -632,7 +631,6 @@ class QuickSearchController:
                 it = {"type": "headline", "label": p.h}
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
-                ### PosList injects p.matchiter.
                 if hasattr(p, "matchiter"):  #p might be not have body matches
                     ms = self.matchlines(p.b, p.matchiter)
                     for ml, pos in ms:

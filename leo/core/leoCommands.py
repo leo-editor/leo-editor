@@ -4122,32 +4122,6 @@ class Commands:
             if not ok:
                 break
         return ok, d
-    #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
-    #@+node:ville.20090311190405.70: *5* c.find_h
-    def find_h(self,
-        regex: str,
-        flags: RegexFlag=re.IGNORECASE,
-    ) -> List[Position]:
-        """
-        Return the list of all positions whose headline matches the given pattern.
-        """
-        c = self
-        try:
-            pat = re.compile(regex, flags)
-        except Exception:
-            return []
-        return [p.copy() for p in c.all_positions(copy=False) if re.match(pat, p.h)]
-    #@+node:ville.20090311200059.1: *5* c.find_b
-    def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
-        """
-        Return the list of all positions whose body matches regex one or more times.
-        """
-        c = self
-        try:
-            pat = re.compile(regex, flags)
-        except Exception:
-            return []
-        return [p.copy() for p in c.all_positions(copy=False) if re.finditer(pat, p.b)]
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
     def registerReloadSettings(self, obj):
