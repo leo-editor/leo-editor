@@ -22,7 +22,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, List, Numeric, Optional, Set, Tuple, Union
 # Third-party.
 try:
     import tkinter as Tk
@@ -45,6 +45,7 @@ from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
+Param = Dict
 Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
 # Version History
@@ -1027,7 +1028,7 @@ class LeoServer:
             await asyncio.sleep(seconds)
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
-    def _idleTime(self, fn: Any, delay: Any, tag: Any) -> None:
+    def _idleTime(self, fn: Callable, delay: Numeric, tag: str) -> None:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self, c: Cmdr, in_headline: bool, insert: Any, p: Position) -> None:
@@ -1064,7 +1065,7 @@ class LeoServer:
 
 
     #@+node:felix.20210621233316.9: *5* server.click_button
-    def click_button(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
+    def click_button(self, param: Param) -> Response:  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
         index = param.get("index")
@@ -1156,7 +1157,7 @@ class LeoServer:
 
         return self._make_response()
     #@+node:felix.20211016235830.1: *5* server.goto_script
-    def goto_script(self, param: Any) -> Response:  # pragma: no cover (no scripting controller)
+    def goto_script(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """Goto the script this button originates."""
         tag = 'goto_script'
         index = param.get("index")
@@ -1189,7 +1190,7 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.12: *4* server.file commands
     #@+node:felix.20210621233316.13: *5* server.open_file
-    def open_file(self, param: Any) -> Response:
+    def open_file(self, param: Param) -> Response:
         """
         Open a leo file with the given filename.
         Create a new document if no name.
@@ -1223,7 +1224,7 @@ class LeoServer:
 
         return self._make_response(result)
     #@+node:felix.20210621233316.14: *5* server.open_files
-    def open_files(self, param: Any) -> Response:
+    def open_files(self, param: Param) -> Response:
         """
         Opens an array of leo files.
         Returns an object with total opened files
@@ -1239,7 +1240,7 @@ class LeoServer:
         result = {"total": total, "filename": filename}
         return self._make_response(result)
     #@+node:felix.20210621233316.15: *5* server.set_opened_file
-    def set_opened_file(self, param: Any) -> Response:
+    def set_opened_file(self, param: Param) -> Response:
         """
         Choose the new active commander from array of opened files.
         Returns an object with total opened files
@@ -1257,7 +1258,7 @@ class LeoServer:
             return self._make_response(result)
         raise ServerError(f"{tag}: commander at index {index} does not exist")
     #@+node:felix.20210621233316.16: *5* server.close_file
-    def close_file(self, param: Any) -> Response:
+    def close_file(self, param: Param) -> Response:
         """
         Closes an outline opened with open_file.
         Use a 'forced' flag to force close.
@@ -1289,7 +1290,7 @@ class LeoServer:
             result = {"total": 0}
         return self._make_response(result)
     #@+node:felix.20210621233316.17: *5* server.save_file
-    def save_file(self, param: Any) -> Response:  # pragma: no cover (too dangerous).
+    def save_file(self, param: Param) -> Response:  # pragma: no cover (too dangerous).
         """Save the leo outline."""
         tag = 'save_file'
         c = self._check_c()
@@ -1305,7 +1306,7 @@ class LeoServer:
 
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20210621233316.18: *5* server.import_any_file
-    def import_any_file(self, param: Any) -> Response:
+    def import_any_file(self, param: Param) -> Response:
         """
         Import file(s) from array of file names
         """
