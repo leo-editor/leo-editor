@@ -912,7 +912,7 @@ class LeoServer:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
-    def _runAskOkDialog(self, c: Cmdr, title: Any, message: Any=None, text: str="Ok") -> None:
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -950,13 +950,13 @@ class LeoServer:
     def _runAskYesNoCancelDialog(
         self,
         c: Cmdr,
-        title: Any,
-        message: Any=None,
+        title: str,
+        message: str=None,
         yesMessage: str="Yes",
         noMessage: str="No",
-        yesToAllMessage: Any=None,
+        yesToAllMessage: str=None,
         defaultButton: str="Yes",
-        cancelMessage: Any=None,
+        cancelMessage: str=None,
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
@@ -1030,7 +1030,7 @@ class LeoServer:
     def _idleTime(self, fn: Any, delay: Any, tag: Any) -> None:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
-    def _show_find_success(self, c: Cmdr, in_headline: Any, insert: Any, p: Position) -> None:
+    def _show_find_success(self, c: Cmdr, in_headline: bool, insert: Any, p: Position) -> None:
         """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
@@ -1039,7 +1039,7 @@ class LeoServer:
     #@+node:felix.20210621233316.7: *4* server.button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:felix.20210621233316.8: *5* _check_button_command
-    def _check_button_command(self, tag: Any) -> Dict:  # pragma: no cover (no scripting controller)
+    def _check_button_command(self, tag: str) -> Dict:  # pragma: no cover (no scripting controller)
         """
         Check that a button command is possible.
         Raise ServerError if not. Otherwise, return sc.buttonsDict.
@@ -1051,7 +1051,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:felix.20220220203658.1: *5* _get_rclickTree
-    def _get_rclickTree(self, rclicks: Any) -> List[Dict]:
+    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict]:
         rclickList = []
 
         for rc in rclicks:
@@ -1064,7 +1064,7 @@ class LeoServer:
 
 
     #@+node:felix.20210621233316.9: *5* server.click_button
-    def click_button(self, param: Any) -> Response:  # pragma: no cover (no scripting controller)
+    def click_button(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
         index = param.get("index")
@@ -1100,7 +1100,7 @@ class LeoServer:
         # Tag along a possible return value with info sent back by _make_response
         return self._make_response()
     #@+node:felix.20210621233316.10: *5* server.get_buttons
-    def get_buttons(self, param: Any) -> Response:  # pragma: no cover (no scripting controller)
+    def get_buttons(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """
         Gets the currently opened file's @buttons list
         as an array of dict.
@@ -1134,7 +1134,7 @@ class LeoServer:
             "buttons": buttons
         })
     #@+node:felix.20210621233316.11: *5* server.remove_button
-    def remove_button(self, param: Any) -> Response:  # pragma: no cover (no scripting controller)
+    def remove_button(self, param: Dict) -> Response:  # pragma: no cover (no scripting controller)
         """Remove button by index 'key string'."""
         tag = 'remove_button'
         index = param.get("index")
