@@ -4424,13 +4424,12 @@ class LeoServer:
             raise ServerError(f"{tag}: no action")
 
         # TODO : make/force always an object from the client connected.
-        param: Optional[str] = d.get('param', {})  # Can be none or a string
+        param: Optional[Dict] = d.get('param', {})
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
-            pass
         else:
-            param = ''  ### Was {}
+            param = {}
 
         # Handle traces.
         if trace and verbose:  # pragma: no cover
