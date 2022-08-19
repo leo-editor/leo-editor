@@ -46,6 +46,9 @@ try:
 except Exception:
     Tk = None
 #
+# Abbreviations...
+StringIO = io.StringIO
+#@-<< imports >>
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
@@ -53,10 +56,6 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoNodes import VNode
 else:
     Cmdr = Pos = VNode = Any
-#
-# Abbreviations...
-StringIO = io.StringIO
-#@-<< imports >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.6'  # #1215.

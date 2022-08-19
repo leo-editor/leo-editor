@@ -28,7 +28,10 @@ if TYPE_CHECKING:
     from leo.core.leoNodes import Position
 else:
     Cmdr = Position = Any
-Event = Widget = Wrapper = Any
+# Make *sure* all these are Any.
+Event = Any
+Widget = Any
+Wrapper = Any
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
 def cmd(name: str) -> Any:
@@ -46,7 +49,7 @@ class IdleTimeManager:
 
     def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
-        self.callback_list = []
+        self.callback_list: List[Any] = []
         self.timer = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
@@ -160,7 +163,7 @@ class LeoApp:
         self.atAutoNames: Set[str] = set()  # The set of all @auto spellings.
         self.atFileNames: Set[str] = set()  # The set of all built-in @<file> spellings.
         self.globalKillBuffer: List[str] = []  # The global kill buffer.
-        self.globalRegisters: List[str] = {}  # The global register list.
+        self.globalRegisters: Dict[str, str] = {}  # The global register list.
         self.leoID: str = None  # The id part of gnx's.
         self.loadedThemes: List[Any] = []  # List of loaded theme.leo files.
         self.lossage: List[Any] = []  # List of last 100 keystrokes.
@@ -819,13 +822,13 @@ class LeoApp:
     #@+node:ekr.20140729162415.18086: *5* app.init_at_auto_names
     def init_at_auto_names(self) -> None:
         """Init the app.atAutoNames set."""
-        self.atAutoNames: Set[str] = set([
+        self.atAutoNames = set([
             "@auto-rst", "@auto",
         ])
     #@+node:ekr.20140729162415.18091: *5* app.init_at_file_names
     def init_at_file_names(self) -> None:
         """Init the app.atFileNames set."""
-        self.atFileNames: Set[str] = set([
+        self.atFileNames = set([
             "@asis",
             "@edit",
             "@file-asis", "@file-thin", "@file-nosent", "@file",
@@ -1016,7 +1019,7 @@ class LeoApp:
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog: bool=True, verbose: bool=True) -> str:
         """Get g.app.leoID from various sources."""
-        self.leoID: str = None
+        self.leoID = None
         assert self == g.app
         verbose = verbose and not g.unitTesting and not self.silentMode
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
@@ -1030,7 +1033,7 @@ class LeoApp:
                 self.setIDFile()
         return self.leoID
     #@+node:ekr.20191017061451.1: *5* app.cleanLeoID
-    def cleanLeoID(self, id_: Any, tag: Any) -> None:
+    def cleanLeoID(self, id_: Any, tag: Any) -> str:
         """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
         old_id = id_ if isinstance(id_, str) else repr(id_)
         try:
@@ -1049,7 +1052,7 @@ class LeoApp:
                     "and must be at least 3 characters in length."))
         return id_
     #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
-    def setIDFromSys(self, verbose: Any) -> None:
+    def setIDFromSys(self, verbose: bool) -> None:
         """
         Attempt to set g.app.leoID from sys.leoID.
 
@@ -3058,7 +3061,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self, fn: str) -> Optional[Cmdr]:
 
-        def munge(name: Any) -> None:
+        def munge(name: Any) -> str:
             return g.os_path_normpath(name or '').lower()
 
         for frame in g.app.windowList:
@@ -3271,8 +3274,8 @@ class RecentFilesManager:
     def __init__(self) -> None:
 
         self.edit_headline = 'Recent files. Do not change this headline!'
-        self.groupedMenus = []  # Set in rf.createRecentFilesMenuItems.
-        self.recentFiles = []  # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.groupedMenus: List[Any] = []  # Set in rf.createRecentFilesMenuItems.
+        self.recentFiles: List[Any] = []  # List of g.Bunches describing .leoRecentFiles.txt files.
         self.recentFilesMenuName = 'Recent Files'  # May be changed later.
         self.recentFileMessageWritten = False  # To suppress all but the first message.
         self.write_recent_files_as_needed = False  # Will be set later.
@@ -3283,7 +3286,7 @@ class RecentFilesManager:
         rf = self
         files = [theFile.strip() for theFile in files]
 
-        def munge(name: Any) -> None:
+        def munge(name: Any) -> str:
             return g.os_path_normpath(name or '').lower()
 
         for name in files:
