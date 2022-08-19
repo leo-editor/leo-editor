@@ -15,7 +15,7 @@ import sys
 import textwrap
 import time
 import traceback
-from typing import Any, Dict, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -23,9 +23,15 @@ from leo.core import leoExternalFiles
 from leo.core.leoQt import QCloseEvent
 StringIO = io.StringIO
 #@-<< imports >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Position = Any
+Event = Widget = Wrapper = Any
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
-def cmd(name):
+def cmd(name: str) -> Any:
     """Command decorator for the LeoApp class."""
     return g.new_cmd_decorator(name, ['g', 'app'])
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -38,19 +44,19 @@ class IdleTimeManager:
     the callback to be called at idle time forever.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
         self.callback_list = []
         self.timer = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
-    def add_callback(self, callback):
+    def add_callback(self, callback: Callable) -> None:
         """Add a callback to be called at every idle time."""
         self.callback_list.append(callback)
     #@+node:ekr.20161026124810.1: *3* itm.on_idle
     on_idle_count = 0
 
-    def on_idle(self, timer):
+    def on_idle(self, timer: Any) -> None:
         """IdleTimeManager: Run all idle-time callbacks."""
         if not g.app:
             return
@@ -72,7 +78,7 @@ class IdleTimeManager:
         # Handle idle-time hooks.
         g.app.pluginsController.on_idle()
     #@+node:ekr.20161028034808.1: *3* itm.start
-    def start(self):
+    def start(self) -> None:
         """Start the idle-time timer."""
         self.timer = g.IdleTime(
             self.on_idle,
@@ -89,7 +95,7 @@ class LeoApp:
     #@+others
     #@+node:ekr.20150509193643.1: *3* app.Birth & startup
     #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain language dicts)
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Ctor for LeoApp class. These ivars are Leo's global vars.
 
@@ -98,12 +104,12 @@ class LeoApp:
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False  # True: run in batch mode.
-        self.debug = []  # A list of switches to be enabled.
+        self.debug: List[str] = []  # A list of switches to be enabled.
         self.diff = False  # True: run Leo in diff mode.
         self.enablePlugins = True  # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False  # True: Use the failfast option in unit tests.
-        self.gui = None  # The gui class.
-        self.guiArgName = None  # The gui name given in --gui option.
+        self.gui: Any = None  # The gui class.
+        self.guiArgName: str = None  # The gui name given in --gui option.
         self.ipython_inited = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
@@ -112,23 +118,23 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding = None  # The name of a binding to trace, or None.
-        self.trace_setting = None  # The name of a setting to trace, or None.
+        self.trace_binding: Optional[bool] = None  # The name of a binding to trace, or None.
+        self.trace_setting: Optional[bool] = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.debug_dict = {}  # For general use.
+        self.debug_dict: Dict[str, Any] = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
-        self.idle_timers = []  # A list of IdleTime instances, so they persist.
-        self.log_listener = None  # The process created by the 'listen-for-log' command.
+        self.idle_timers: List[Any] = []  # A list of IdleTime instances, so they persist.
+        self.log_listener: Any = None  # The process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.structure_errors = 0  # Set by p.safeMoveToThreadNext.
-        self.statsDict = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsDict: Dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
         self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False  # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -139,62 +145,62 @@ class LeoApp:
         #@-<< LeoApp: error messages >>
         #@+<< LeoApp: global directories >>
         #@+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
-        self.extensionsDir = None  # The leo/extensions directory
-        self.globalConfigDir = None  # leo/config directory
-        self.globalOpenDir = None  # The directory last used to open a file.
-        self.homeDir = None  # The user's home directory.
-        self.homeLeoDir = None  # The user's home/.leo directory.
-        self.leoEditorDir = None  # The leo-editor directory.
-        self.loadDir = None  # The leo/core directory.
-        self.machineDir = None  # The machine-specific directory.
-        self.theme_directory = None  # The directory from which the theme file was loaded, if any.
+        self.extensionsDir: str = None  # The leo/extensions directory
+        self.globalConfigDir: str = None  # leo/config directory
+        self.globalOpenDir: str = None  # The directory last used to open a file.
+        self.homeDir: str = None  # The user's home directory.
+        self.homeLeoDir: str = None  # The user's home/.leo directory.
+        self.leoEditorDir: str = None  # The leo-editor directory.
+        self.loadDir: str = None  # The leo/core directory.
+        self.machineDir: str = None  # The machine-specific directory.
+        self.theme_directory: str = None  # The directory from which the theme file was loaded, if any.
         #@-<< LeoApp: global directories >>
         #@+<< LeoApp: global data >>
         #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
-        self.atAutoNames = set()  # The set of all @auto spellings.
-        self.atFileNames = set()  # The set of all built-in @<file> spellings.
-        self.globalKillBuffer = []  # The global kill buffer.
-        self.globalRegisters = {}  # The global register list.
-        self.leoID = None  # The id part of gnx's.
-        self.loadedThemes = []  # List of loaded theme.leo files.
-        self.lossage = []  # List of last 100 keystrokes.
-        self.paste_c = None  # The commander that pasted the last outline.
-        self.spellDict = None  # The singleton PyEnchant spell dict.
+        self.atAutoNames: Set[str] = set()  # The set of all @auto spellings.
+        self.atFileNames: Set[str] = set()  # The set of all built-in @<file> spellings.
+        self.globalKillBuffer: List[str] = []  # The global kill buffer.
+        self.globalRegisters: List[str] = {}  # The global register list.
+        self.leoID: str = None  # The id part of gnx's.
+        self.loadedThemes: List[Any] = []  # List of loaded theme.leo files.
+        self.lossage: List[Any] = []  # List of last 100 keystrokes.
+        self.paste_c: Optional[Cmdr] = None  # The commander that pasted the last outline.
+        self.spellDict: Any = None  # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
-        self.windowList = []  # Global list of all frames.
-        self.realMenuNameDict = {}  # Translations of menu names.
+        self.windowList: List[Any] = []  # Global list of all frames.
+        self.realMenuNameDict: Dict[str, str] = {}  # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Singleton applications objects...
-        self.backgroundProcessManager = None  # A BackgroundProcessManager.
-        self.commander_cacher = None  # A leoCacher.CommanderCacher.
-        self.commander_db = None  # Managed by g.app.commander_cacher.
-        self.config = None  # g.app.config.
-        self.db = None  # A global db, managed by g.app.global_cacher.
-        self.externalFilesController = None  # An ExternalFilesController.
-        self.global_cacher = None  # A leoCacher.GlobalCacher.
-        self.idleTimeManager = None  # An IdleTimeManager.
-        self.ipk = None  # A python kernel.
-        self.loadManager = None  # A LoadManager.
-        self.nodeIndices = None  # A NodeIndices.
-        self.pluginsController = None  # A PluginsManager.
-        self.sessionManager = None  # A SessionManager.
+        self.backgroundProcessManager: Any = None  # A BackgroundProcessManager.
+        self.commander_cacher: Any = None  # A leoCacher.CommanderCacher.
+        self.commander_db: Any = None  # Managed by g.app.commander_cacher.
+        self.config: Any = None  # g.app.config.
+        self.db: Any = None  # A global db, managed by g.app.global_cacher.
+        self.externalFilesController: Any = None  # An ExternalFilesController.
+        self.global_cacher: Any = None  # A leoCacher.GlobalCacher.
+        self.idleTimeManager: Any = None  # An IdleTimeManager.
+        self.ipk: Any = None  # A python kernel.
+        self.loadManager: Any = None  # A LoadManager.
+        self.nodeIndices: Any = None  # A NodeIndices.
+        self.pluginsController: Any = None  # A PluginsManager.
+        self.sessionManager: Any = None  # A SessionManager.
 
         # Global status vars for the Commands class...
-        self.commandName = None  # The name of the command being executed.
+        self.commandName: str = None  # The name of the command being executed.
         self.commandInterruptFlag = False  # True: command within a command.
         #@-<< LeoApp: global controller/manager objects >>
         #@+<< LeoApp: global reader/writer data >>
         #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
         # From leoAtFile.py.
-        self.atAutoWritersDict = {}
-        self.writersDispatchDict = {}
+        self.atAutoWritersDict: Dict[str, Any] = {}
+        self.writersDispatchDict: Dict[str, Any] = {}
 
         # From leoImport.py
         # Keys are @auto names, values are scanner classes.
-        self.atAutoDict = {}
-        self.classDispatchDict = {}
+        self.atAutoDict: Dict[str, Any] = {}
+        self.classDispatchDict: Dict[str, Any] = {}
 
         # True if an @auto writer should write sentinels,
         # even if the external file doesn't actually contain sentinels.
@@ -202,7 +208,7 @@ class LeoApp:
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
-        self.already_open_files = []  # A list of file names that *might* be open in another copy of Leo.
+        self.already_open_files: List[str] = []  # A list of file names that *might* be open in another copy of Leo.
         self.dragging = False  # True: dragging.
         self.inBridge = False  # True: running from leoBridge module.
         self.inScript = False  # True: executing a script.
@@ -216,15 +222,15 @@ class LeoApp:
         self.quit_after_load = False  # True: quit immediately after loading.  For unit a unit test.
         self.restarting = False  # True: restarting all of Leo. #1240.
         self.reverting = False  # True: executing the revert command.
-        self.syntax_error_files = []
+        self.syntax_error_files: List[str] = []
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
         #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
-        self.log = None  # The LeoFrame containing the present log.
+        self.log: Any = None  # The LeoFrame containing the present log.
         self.logInited = False  # False: all log message go to logWaiting list.
         self.logIsLocked = False  # True: no changes to log are allowed.
-        self.logWaiting = []  # List of tuples (s, color, newline) waiting to go to a log.
-        self.printWaiting = []  # Queue of messages to be sent to the printer.
+        self.logWaiting: List[Tuple] = []  # List of tuples (s, color, newline) waiting to go to a log.
+        self.printWaiting: List[str] = []  # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon1 = ''
         self.signon2 = ''
@@ -233,8 +239,8 @@ class LeoApp:
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
         from leo.core import leoFrame
         from leo.core import leoGui
-        self.nullGui = leoGui.NullGui()
-        self.nullLog = leoFrame.NullLog()
+        self.nullGui: Any = leoGui.NullGui()
+        self.nullLog: Any = leoFrame.NullLog()
         #@-<< LeoApp: global types >>
         #@+<< LeoApp: plugins and event handlers >>
         #@+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
@@ -244,9 +250,9 @@ class LeoApp:
         #@-<< LeoApp: plugins and event handlers >>
         #@+<< LeoApp: scripting ivars >>
         #@+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
-        self.scriptDict = {}  # For use by scripts. Cleared before running each script.
-        self.scriptResult = None  # For use by leoPymacs.
-        self.permanentScriptDict = {}  # For use by scripts. Never cleared automatically.
+        self.scriptDict: Dict[str, Any] = {}  # For use by scripts. Cleared before running each script.
+        self.scriptResult: Any = None  # For use by leoPymacs.
+        self.permanentScriptDict: Dict[str, Any] = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
         # Define all global data.
         self.init_at_auto_names()
@@ -257,8 +263,8 @@ class LeoApp:
         self.define_extension_dict()
         self.define_delegate_language_dict()
     #@+node:ekr.20141102043816.5: *5* app.define_delegate_language_dict
-    def define_delegate_language_dict(self):
-        self.delegate_language_dict = {
+    def define_delegate_language_dict(self) -> None:
+        self.delegate_language_dict: Dict[str, str] = {
             # Keys are new language names.
             # Values are existing languages in leo/modes.
             "less": "css",
@@ -270,10 +276,10 @@ class LeoApp:
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
     #@@nobeautify
 
-    def define_extension_dict(self):
+    def define_extension_dict(self) -> None:
 
         # Keys are extensions, values are languages
-        self.extension_dict = {
+        self.extension_dict: Dict[str, str] = {
             # "ada":    "ada",
             "ada":      "ada95", # modes/ada95.py exists.
             "ahk":      "autohotkey",
@@ -449,7 +455,7 @@ class LeoApp:
             'w'     : 'c',
         }
     #@+node:ekr.20031218072017.1417: *5* app.define_global_constants
-    def define_global_constants(self):
+    def define_global_constants(self) -> None:
         # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
         self.prolog_postfix_string = "?>"
@@ -457,9 +463,9 @@ class LeoApp:
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
 
-    def define_language_delims_dict(self):
+    def define_language_delims_dict(self) -> None:
 
-        self.language_delims_dict = {
+        self.language_delims_dict: Dict[str, str] = {
             # Internally, lower case is used for all language names.
             # Keys are languages, values are 1,2 or 3-tuples of delims.
             "actionscript"       : "// /* */", # jason 2003-07-03
@@ -648,12 +654,12 @@ class LeoApp:
     #@+node:ekr.20120522160137.9910: *5* app.define_language_extension_dict
     #@@nobeautify
 
-    def define_language_extension_dict(self):
+    def define_language_extension_dict(self) -> None:
 
         # Used only by g.app.externalFilesController.get_ext.
 
         # Keys are languages, values are extensions.
-        self.language_extension_dict = {
+        self.language_extension_dict: Dict[str, str] = {
             "actionscript"  : "as", # jason 2003-07-03
             "ada"           : "ada",
             "ada95"         : "ada",
@@ -811,15 +817,15 @@ class LeoApp:
             # squidconf:        .conf
             # rpmspec:          .rpm
     #@+node:ekr.20140729162415.18086: *5* app.init_at_auto_names
-    def init_at_auto_names(self):
+    def init_at_auto_names(self) -> None:
         """Init the app.atAutoNames set."""
-        self.atAutoNames = set([
+        self.atAutoNames: Set[str] = set([
             "@auto-rst", "@auto",
         ])
     #@+node:ekr.20140729162415.18091: *5* app.init_at_file_names
-    def init_at_file_names(self):
+    def init_at_file_names(self) -> None:
         """Init the app.atFileNames set."""
-        self.atFileNames = set([
+        self.atFileNames: Set[str] = set([
             "@asis",
             "@edit",
             "@file-asis", "@file-thin", "@file-nosent", "@file",
@@ -828,7 +834,7 @@ class LeoApp:
             "@thin",
         ])
     #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
-    def computeSignon(self):
+    def computeSignon(self) -> None:
         from leo.core import leoVersion
         app = self
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
@@ -866,7 +872,7 @@ class LeoApp:
         # Compute g.app.signon1.
         app.signon1 = f"Python {n1}.{n2}.{n3}{guiVersion}\n{sysVersion}"
 
-    def printSignon(self):
+    def printSignon(self) -> None:
         """Print the signon to the log."""
         app = self
         if app.silentMode:
@@ -880,7 +886,7 @@ class LeoApp:
         print(app.signon1)
     #@+node:ekr.20100831090251.5838: *4* app.createXGui
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
-    def createCursesGui(self, fileName='', verbose=False):
+    def createCursesGui(self, fileName: str='', verbose: bool=False) -> None:
         try:
             import curses
             assert curses
@@ -900,7 +906,7 @@ class LeoApp:
             print('can not create curses gui.')
             sys.exit()
     #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
-    def createBrowserGui(self, fileName='', verbose=False):
+    def createBrowserGui(self, fileName: str='', verbose: bool=False) -> None:
         app = self
         try:
             from flexx import flx
@@ -918,7 +924,7 @@ class LeoApp:
             sys.exit(1)
         g.app.gui = leoflexx.LeoBrowserGui(gui_name=app.guiArgName)
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
-    def createDefaultGui(self, fileName='', verbose=False):
+    def createDefaultGui(self, fileName: str='', verbose: bool=False) -> None:
         """A convenience routines for plugins to create the default gui class."""
         app = self
         argName = app.guiArgName
@@ -939,13 +945,13 @@ class LeoApp:
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
-    def createNullGuiWithScript(self, script=None):
+    def createNullGuiWithScript(self, script: Any=None) -> None:
         app = self
         app.batchMode = True
         app.gui = g.app.nullGui
         app.gui.setScript(script)
     #@+node:ekr.20090202191501.1: *5* app.createQtGui
-    def createQtGui(self, fileName='', verbose=False):
+    def createQtGui(self, fileName: str='', verbose: bool=False) -> None:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
@@ -981,11 +987,11 @@ class LeoApp:
         if app.gui and fileName and verbose:
             print(f"Qt Gui created in {fileName}")
     #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
-    def createTextGui(self, fileName='', verbose=False):
+    def createTextGui(self, fileName: str='', verbose: bool=False) -> None:
         app = self
         app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
     #@+node:ekr.20090126063121.3: *5* app.createWxGui
-    def createWxGui(self, fileName='', verbose=False):
+    def createWxGui(self, fileName: str='', verbose: bool=False) -> None:
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the wx gui class."""
         app = self
@@ -993,7 +999,7 @@ class LeoApp:
         if fileName and verbose:
             print(f"wxGui created in {fileName}")
     #@+node:ville.20090620122043.6275: *4* app.setGlobalDb
-    def setGlobalDb(self):
+    def setGlobalDb(self) -> None:
         """ Create global pickleshare db
 
         Usable by::
@@ -1008,12 +1014,12 @@ class LeoApp:
         g.app.commander_cacher = leoCache.CommanderCacher()
         g.app.commander_db = g.app.commander_cacher.db
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
-    def setLeoID(self, useDialog=True, verbose=True):
+    def setLeoID(self, useDialog: bool=True, verbose: bool=True) -> str:
         """Get g.app.leoID from various sources."""
-        self.leoID = None
+        self.leoID: str = None
         assert self == g.app
         verbose = verbose and not g.unitTesting and not self.silentMode
-        table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv,)
+        table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
         for func in table:
             func(verbose)
             if self.leoID:
@@ -1024,7 +1030,7 @@ class LeoApp:
                 self.setIDFile()
         return self.leoID
     #@+node:ekr.20191017061451.1: *5* app.cleanLeoID
-    def cleanLeoID(self, id_, tag):
+    def cleanLeoID(self, id_: Any, tag: Any) -> None:
         """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
         old_id = id_ if isinstance(id_, str) else repr(id_)
         try:
@@ -1043,7 +1049,7 @@ class LeoApp:
                     "and must be at least 3 characters in length."))
         return id_
     #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
-    def setIDFromSys(self, verbose):
+    def setIDFromSys(self, verbose: Any) -> None:
         """
         Attempt to set g.app.leoID from sys.leoID.
 
@@ -1059,7 +1065,7 @@ class LeoApp:
                 if verbose:
                     g.red("leoID=", self.leoID, spaces=False)
     #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
-    def setIDFromFile(self, verbose):
+    def setIDFromFile(self, verbose: Any) -> None:
         """Attempt to set g.app.leoID from leoID.txt."""
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
@@ -1083,7 +1089,7 @@ class LeoApp:
                 g.error('unexpected exception in app.setLeoID')
                 g.es_exception()
     #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv
-    def setIDFromEnv(self, verbose):
+    def setIDFromEnv(self, verbose: Any) -> None:
         """Set leoID from environment vars."""
         try:
             id_ = os.getenv('USER')
@@ -1098,7 +1104,7 @@ class LeoApp:
         except Exception:
             pass
     #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
-    def setIdFromDialog(self):
+    def setIdFromDialog(self) -> None:
         """Get leoID from a Tk dialog."""
         #
         # Don't put up a splash screen: it would obscure the coming dialog.
@@ -1126,7 +1132,7 @@ class LeoApp:
         self.leoID = id_
         g.blue('leoID=', repr(self.leoID), spaces=False)
     #@+node:ekr.20031218072017.1982: *5* app.setIDFile
-    def setIDFile(self):
+    def setIDFile(self) -> None:
         """Create leoID.txt."""
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
@@ -1142,22 +1148,22 @@ class LeoApp:
                     pass
                 g.error('can not create', tag, 'in', theDir)
     #@+node:ekr.20031218072017.1847: *4* app.setLog, lockLog, unlocklog
-    def setLog(self, log):
+    def setLog(self, log: Any) -> None:
         """set the frame to which log messages will go"""
         if not self.logIsLocked:
             self.log = log
 
-    def lockLog(self):
+    def lockLog(self) -> None:
         """Disable changes to the log"""
         # print("app.lockLog:")
         self.logIsLocked = True
 
-    def unlockLog(self):
+    def unlockLog(self) -> None:
         """Enable changes to the log"""
         # print("app.unlockLog:")
         self.logIsLocked = False
     #@+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
-    def writeWaitingLog(self, c):
+    def writeWaitingLog(self, c: Cmdr) -> None:
         """Write all waiting lines to the log."""
         #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
@@ -1196,11 +1202,11 @@ class LeoApp:
         g.app.setLog(None)
     #@+node:ekr.20180924093227.1: *3* app.c property
     @property
-    def c(self):
+    def c(self) -> Optional[Cmdr]:
         return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
-    def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
+    def closeLeoWindow(self, frame: Widget, new_c: Cmdr=None, finish_quit: bool=True) -> bool:
         """
         Attempt to close a Leo window.
 
@@ -1245,7 +1251,7 @@ class LeoApp:
             g.app.finishQuit()
         return True  # The window has been closed.
     #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
-    def destroyAllOpenWithFiles(self):
+    def destroyAllOpenWithFiles(self) -> None:
         """Remove temp files created with the Open With command."""
         if 'shutdown' in g.app.debug:
             g.pr('destroyAllOpenWithFiles')
@@ -1253,7 +1259,7 @@ class LeoApp:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
     #@+node:ekr.20031218072017.2615: *4* app.destroyWindow
-    def destroyWindow(self, frame):
+    def destroyWindow(self, frame: Widget) -> None:
         """Destroy all ivars in a Leo frame."""
         if 'shutdown' in g.app.debug:
             g.pr(f"destroyWindow:  {frame.c.shortFileName()}")
@@ -1265,7 +1271,7 @@ class LeoApp:
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
     #@+node:ekr.20031218072017.1732: *4* app.finishQuit
-    def finishQuit(self):
+    def finishQuit(self) -> None:
         # forceShutdown may already have fired the "end1" hook.
         assert self == g.app, repr(g.app)
         trace = 'shutdown' in g.app.debug
@@ -1291,7 +1297,7 @@ class LeoApp:
         if g.app.gui:
             g.app.gui.destroySelf()  # Calls qtApp.quit()
     #@+node:ekr.20031218072017.2616: *4* app.forceShutdown
-    def forceShutdown(self):
+    def forceShutdown(self) -> None:
         """
         Forces an immediate shutdown of Leo at any time.
 
@@ -1321,19 +1327,19 @@ class LeoApp:
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
     @cmd('quit-leo')
-    def onQuit(self, event=None):
+    def onQuit(self, event: Event=None) -> None:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
         # #2433 - use the same method as clicking on the close box.
         g.app.gui.close_event(QCloseEvent())  # type:ignore
     #@+node:ville.20090602181814.6219: *3* app.commanders
-    def commanders(self):
-        """ Return list of currently active controllers """
+    def commanders(self) -> List[Cmdr]:
+        """Return list of currently active commanders."""
         return [f.c for f in g.app.windowList]
     #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
     #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
-    def checkForOpenFile(self, c, fn):
+    def checkForOpenFile(self, c: Cmdr, fn: str) -> None:
         """Warn if fn is already open and add fn to already_open_files list."""
         d, tag = g.app.db, 'open-leo-files'
         if g.app.reverting:
@@ -1361,7 +1367,7 @@ class LeoApp:
         else:
             g.app.rememberOpenFile(fn)
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile(self, fn):
+    def forgetOpenFile(self, fn: str) -> None:
         """
         Remove fn from g.app.db, so that is no longer considered open.
         """
@@ -1378,9 +1384,8 @@ class LeoApp:
             d[tag] = aList
 
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
-    def rememberOpenFile(self, fn):
+    def rememberOpenFile(self, fn: str) -> None:
 
-        #
         # Do not call g.trace, etc. here.
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.unitTesting or g.app.batchMode or g.app.reverting:
@@ -1393,7 +1398,7 @@ class LeoApp:
             aList.append(os.path.normpath(fn))
             d[tag] = aList
     #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
-    def runAlreadyOpenDialog(self, c):
+    def runAlreadyOpenDialog(self, c: Cmdr) -> None:
         """Warn about possibly already-open files."""
         if g.app.already_open_files:
             aList = sorted(set(g.app.already_open_files))
@@ -1409,7 +1414,7 @@ class LeoApp:
                 text="Ok")
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, c, p, **kwargs):
+    def scanner_for_at_auto(self, c: Cmdr, p: Position) -> Optional[Callable]:
         """A factory returning a scanner function for p, an @auto node."""
         d = g.app.atAutoDict
         for key in d:
@@ -1419,13 +1424,13 @@ class LeoApp:
                 return func
         return None
     #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
-    def scanner_for_ext(self, c, ext, **kwargs):
+    def scanner_for_ext(self, c: Cmdr, ext: str) -> Optional[Callable]:
         """A factory returning a scanner function for the given file extension."""
         return g.app.classDispatchDict.get(ext)
     #@+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
-    def listenToLog(self, event=None):
+    def listenToLog(self, event: Event=None) -> None:
         """
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
@@ -1453,7 +1458,7 @@ class LeoApp:
             universal_newlines=True,
         )
     #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
-    def makeAllBindings(self):
+    def makeAllBindings(self) -> None:
         """
         LeoApp.makeAllBindings:
 
@@ -1463,12 +1468,14 @@ class LeoApp:
         for c in app.commanders():
             c.k.makeAllBindings()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
-    def newCommander(self, fileName,
-        gui=None,
-        parentFrame=None,
-        previousSettings=None,
-        relativeFileName=None,
-    ):
+    def newCommander(
+        self,
+        fileName: Any,
+        gui: Any=None,
+        parentFrame: Wrapper=None,
+        previousSettings: Any=None,
+        relativeFileName: Any=None,
+    ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
@@ -1482,7 +1489,7 @@ class LeoApp:
         )
         return c
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
-    def selectLeoWindow(self, c):
+    def selectLeoWindow(self, c: Cmdr) -> None:
         frame = c.frame
         frame.deiconify()
         frame.lift()
@@ -1503,21 +1510,21 @@ class LoadManager:
     """A class to manage loading .leo files, including configuration files."""
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
-    def __init__(self):
+    def __init__(self) -> None:
 
         # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
 
         # A g.SettingsDict: the join of settings in leoSettings.leo & myLeoSettings.leo
-        self.globalSettingsDict = None
+        self.globalSettingsDict: Dict = None
         # A g.SettingsDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
-        self.globalBindingsDict = None
+        self.globalBindingsDict: Dict = None
 
         # LoadManager ivars corresponding to user options...
 
-        self.files = []  # List of files to be loaded.
-        self.options = {}  # Keys are option names; values are user options.
-        self.old_argv = []  # A copy of sys.argv for debugging.
+        self.files: List[str] = []  # List of files to be loaded.
+        self.options: Dict[str, Any] = {}  # Keys are option names; values are user options.
+        self.old_argv: List[str] = []  # A copy of sys.argv for debugging.
 
         # True when more files remain on the command line to be loaded.
         # If the user is answering "No" to each file as Leo asks
@@ -1527,21 +1534,21 @@ class LoadManager:
         self.more_cmdline_files = False
 
         # Themes...
-        self.leo_settings_c = None
-        self.leo_settings_path = None
-        self.my_settings_c = None
-        self.my_settings_path = None
-        self.theme_c = None  # #1374.
-        self.theme_path = None
+        self.leo_settings_c: Cmdr = None
+        self.leo_settings_path: str = None
+        self.my_settings_c: Cmdr = None
+        self.my_settings_path: str = None
+        self.theme_c: Cmdr = None  # #1374.
+        self.theme_path: str = None
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
-    def completeFileName(self, fileName):
+    def completeFileName(self, fileName: Any) -> None:
         fileName = g.toUnicode(fileName)
         fileName = g.os_path_finalize(fileName)
         # 2011/10/12: don't add .leo to *any* file.
         return fileName
     #@+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
-    def computeLeoSettingsPath(self):
+    def computeLeoSettingsPath(self) -> None:
         """Return the full path to leoSettings.leo."""
         # lm = self
         join = g.os_path_finalize_join
@@ -1560,7 +1567,7 @@ class LoadManager:
             path = None
         return path
     #@+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath(self):
+    def computeMyLeoSettingsPath(self) -> None:
         """
         Return the full path to myLeoSettings.leo.
 
@@ -1594,7 +1601,7 @@ class LoadManager:
             path = None
         return path
     #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
-    def computeStandardDirectories(self):
+    def computeStandardDirectories(self) -> None:
         """
         Compute the locations of standard directories and
         set the corresponding ivars.
@@ -1611,7 +1618,7 @@ class LoadManager:
         g.app.leoEditorDir = join(g.app.loadDir, '..', '..')
         g.app.testDir = join(g.app.loadDir, '..', 'test')
     #@+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
-    def computeGlobalConfigDir(self):
+    def computeGlobalConfigDir(self) -> None:
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
@@ -1623,7 +1630,7 @@ class LoadManager:
             theDir = None
         return theDir
     #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
-    def computeHomeDir(self):
+    def computeHomeDir(self) -> None:
         """Returns the user's home directory."""
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE
         # environment vars, then gives up.
@@ -1639,7 +1646,7 @@ class LoadManager:
                 home = None
         return home
     #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
-    def computeHomeLeoDir(self):
+    def computeHomeLeoDir(self) -> None:
         # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
         if g.os_path_exists(homeLeoDir):
@@ -1647,13 +1654,13 @@ class LoadManager:
         ok = g.makeAllNonExistentDirectories(homeLeoDir)
         return homeLeoDir if ok else ''  # #1450
     #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
-    def computeLeoDir(self):
+    def computeLeoDir(self) -> None:
         # lm = self
         loadDir = g.app.loadDir
         # We don't want the result in sys.path
         return g.os_path_dirname(loadDir)
     #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
-    def computeLoadDir(self):
+    def computeLoadDir(self) -> None:
         """Returns the directory containing leo.py."""
         try:
             # Fix a hangnail: on Windows the drive letter returned by
@@ -1694,7 +1701,7 @@ class LoadManager:
             print("Exception getting load directory")
             raise
     #@+node:ekr.20120213164030.10697: *5* LM.computeMachineName
-    def computeMachineName(self):
+    def computeMachineName(self) -> None:
         """Return the name of the current machine, i.e, HOSTNAME."""
         # This is prepended to leoSettings.leo or myLeoSettings.leo
         # to give the machine-specific setting name.
@@ -1710,7 +1717,7 @@ class LoadManager:
             name = ''
         return name
     #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
-    def computeThemeDirectories(self):
+    def computeThemeDirectories(self) -> None:
         """
         Return a list of *existing* directories that might contain theme .leo files.
         """
@@ -1727,7 +1734,7 @@ class LoadManager:
         # Make sure home has normalized slashes.
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
-    def computeThemeFilePath(self):
+    def computeThemeFilePath(self) -> None:
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
 
@@ -1782,7 +1789,7 @@ class LoadManager:
             g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn, tag):
+    def resolve_theme_path(self, fn: Any, tag: Any) -> None:
         """Search theme directories for the given .leo file."""
         if not fn or fn.lower().strip() == 'none':
             return None
@@ -1795,7 +1802,7 @@ class LoadManager:
         print(f"theme .leo file not found: {fn}")
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
-    def computeWorkbookFileName(self):
+    def computeWorkbookFileName(self) -> None:
         """
         Return full path to the workbook.
 
@@ -1812,7 +1819,7 @@ class LoadManager:
         # #1415.
         return fn if os.path.exists(directory) else None
     #@+node:ekr.20120219154958.10485: *4* LM.reportDirectories
-    def reportDirectories(self):
+    def reportDirectories(self) -> None:
         """Report directories."""
         # The cwd changes later, so it would be misleading to report it here.
         for kind, theDir in (
@@ -1824,7 +1831,7 @@ class LoadManager:
             g.es(f"{kind:>10}:", os.path.normpath(theDir), color='blue')
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
-    def computeBindingLetter(self, c, path):
+    def computeBindingLetter(self, c: Cmdr, path: Any) -> None:
         lm = self
         if not path:
             return 'D'
@@ -1843,7 +1850,7 @@ class LoadManager:
             return '@'
         return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
-    def computeLocalSettings(self, c, settings_d, bindings_d, localFlag):
+    def computeLocalSettings(self, c: Cmdr, settings_d: Any, bindings_d: Any, localFlag: Any) -> None:
         """
         Merge the settings dicts from c's outline into *new copies of*
         settings_d and bindings_d.
@@ -1873,7 +1880,7 @@ class LoadManager:
         bindings_d = g.SettingsDict('lm.globalBindingsDict')
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c, localFlag):
+    def createSettingsDicts(self, c: Cmdr, localFlag: Any) -> None:
 
         from leo.core import leoConfig
         if c:
@@ -1883,7 +1890,7 @@ class LoadManager:
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn):
+    def getPreviousSettings(self, fn: Any) -> None:
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -1920,7 +1927,7 @@ class LoadManager:
             d1 = d2 = None
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
-    def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
+    def mergeShortcutsDicts(self, c: Cmdr, old_d: Any, new_d: Any, localFlag: Any) -> None:
         """
         Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
@@ -1979,7 +1986,7 @@ class LoadManager:
         result = lm.uninvert(inverted_old_d)
         return result
     #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
-    def checkForDuplicateShortcuts(self, c, d):
+    def checkForDuplicateShortcuts(self, c: Cmdr, d: Dict[str, str]) -> None:
         """
         Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of BindingInfo nodes.
@@ -2007,7 +2014,9 @@ class LoadManager:
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
     #@+node:ekr.20120214132927.10724: *5* LM.invert
-    def invert(self, d: Dict) -> g.SettingsDict:
+    def invert(
+        self,
+        d: Dict) -> g.SettingsDict:
         """
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
@@ -2023,7 +2032,9 @@ class LoadManager:
                 result.add_to_list(stroke, bi)
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
-    def uninvert(self, d: g.SettingsDict) -> g.SettingsDict:
+    def uninvert(
+        self,
+        d: g.SettingsDict) -> g.SettingsDict:
         """
         Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.
@@ -2036,7 +2047,7 @@ class LoadManager:
                 result.add_to_list(commandName, bi)
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
-    def openSettingsFile(self, fn):
+    def openSettingsFile(self, fn: Any) -> None:
         """
         Open a settings file with a null gui.  Return the commander.
 
@@ -2074,7 +2085,7 @@ class LoadManager:
         g.app.gui = oldGui
         return c if ok else None
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
-    def readGlobalSettingsFiles(self):
+    def readGlobalSettingsFiles(self) -> None:
         """
         Read leoSettings.leo and myLeoSettings.leo using a null gui.
 
@@ -2121,7 +2132,7 @@ class LoadManager:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
     #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
-    def traceSettingsDict(self, d, verbose=False):
+    def traceSettingsDict(self, d: Dict[str, str], verbose: bool=False) -> None:
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
@@ -2133,7 +2144,7 @@ class LoadManager:
             # print(d)
             print(f"{d.name} {len(d.d.keys())}")
     #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
-    def traceShortcutsDict(self, d, verbose=False):
+    def traceShortcutsDict(self, d: Dict[str, str], verbose: bool=False) -> None:
         if verbose:
             print(d)
             for key in sorted(list(d.keys())):
@@ -2145,7 +2156,7 @@ class LoadManager:
         else:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
-    def load(self, fileName=None, pymacs=None):
+    def load(self, fileName: Any=None, pymacs: Any=None) -> None:
         """This is Leo's main startup method."""
         lm = self
         #
@@ -2212,7 +2223,7 @@ class LoadManager:
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
     #@+node:ekr.20150225133846.7: *4* LM.doDiff
-    def doDiff(self):
+    def doDiff(self) -> None:
         """Support --diff option after loading Leo."""
         if len(self.old_argv[2:]) == 2:
             pass  # c.editFileCommands.compareAnyTwoFiles gives a message.
@@ -2226,7 +2237,7 @@ class LoadManager:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
-    def doPostPluginsInit(self):
+    def doPostPluginsInit(self) -> None:
         """Create a Leo window for each file in the lm.files list."""
         # Clear g.app.initing _before_ creating commanders.
         lm = self
@@ -2294,13 +2305,13 @@ class LoadManager:
             return False  # Force an immediate exit.
         return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
-    def make_screen_shot(self, fn):
+    def make_screen_shot(self, fn: Any) -> None:
         """Create a screenshot of the present Leo outline and save it to path."""
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
-    def openEmptyWorkBook(self):
+    def openEmptyWorkBook(self) -> None:
         """Open CheatSheet.leo as the workbook. Return the new commander."""
         fn = self.computeWorkbookFileName()
         if not fn:
@@ -2327,7 +2338,7 @@ class LoadManager:
         c.redraw(c.rootPosition())  # # 1380: Select the root.
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
-    def doPrePluginsInit(self, fileName, pymacs):
+    def doPrePluginsInit(self, fileName: Any, pymacs: Any) -> None:
         """ Scan options, set directories and read settings."""
         lm = self
         lm.computeStandardDirectories()
@@ -2359,7 +2370,7 @@ class LoadManager:
         # We can't print the signon until we know the gui.
         g.app.computeSignon()  # Set app.signon/signon1 for commanders.
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporterData & helpers
-    def createAllImporterData(self):
+    def createAllImporterData(self) -> None:
         """
         New in Leo 5.5:
 
@@ -2369,7 +2380,7 @@ class LoadManager:
         self.createWritersData()  # Was an AtFile method.
         self.createImporterData()  # Was a LeoImportCommands method.
     #@+node:ekr.20140724064952.18037: *6* LM.createImporterData & helper
-    def createImporterData(self):
+    def createImporterData(self) -> None:
         """Create the data structures describing importer plugins."""
         # Allow plugins to be defined in ~/.leo/plugins.
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
@@ -2391,7 +2402,7 @@ class LoadManager:
                     except Exception:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
-    def parse_importer_dict(self, sfn, m):
+    def parse_importer_dict(self, sfn: Any, m: Any) -> None:
         """
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
@@ -2421,7 +2432,7 @@ class LoadManager:
         ):
             g.warning(f"leo/plugins/importers/{sfn} has no importer_dict")
     #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper
-    def createWritersData(self):
+    def createWritersData(self) -> None:
         """Create the data structures describing writer plugins."""
         # Do *not* remove this trace.
         trace = False and 'createWritersData' not in g.app.debug_dict
@@ -2451,7 +2462,7 @@ class LoadManager:
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
-    def parse_writer_dict(self, sfn, m):
+    def parse_writer_dict(self, sfn: Any, m: Any) -> None:
         """
         Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
         using entries in m.writers_dict.
@@ -2485,7 +2496,7 @@ class LoadManager:
         elif sfn not in ('basewriter.py',):
             g.warning(f"leo/plugins/writers/{sfn} has no writer_dict")
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
-    def createGui(self, pymacs):
+    def createGui(self, pymacs: Any) -> None:
         lm = self
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
@@ -2507,7 +2518,7 @@ class LoadManager:
         else:
             lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
     #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
-    def createSpecialGui(self, gui, pymacs, script, windowFlag):
+    def createSpecialGui(self, gui: Any, pymacs: Any, script: Any, windowFlag: Any) -> None:
         # lm = self
         if pymacs:
             g.app.createNullGuiWithScript(script=None)
@@ -2521,7 +2532,7 @@ class LoadManager:
         else:
             g.app.createDefaultGui()
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
-    def getDefaultFile(self):
+    def getDefaultFile(self) -> None:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
         fn = g.os_path_finalize(fn)
@@ -2536,7 +2547,7 @@ class LoadManager:
         # It's too risky to open a default file if it is relative.
         return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
-    def initApp(self, verbose):
+    def initApp(self, verbose: Any) -> None:
 
         # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         self.createAllImporterData()
@@ -2567,7 +2578,7 @@ class LoadManager:
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName, pymacs):
+    def scanOptions(self, fileName: Any, pymacs: Any) -> None:
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
         obsolete_options = (
@@ -2621,7 +2632,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
     #@@nobeautify
 
-    def addOptionsToParser(self, parser, trace_m):
+    def addOptionsToParser(self, parser: Any, trace_m: Any) -> None:
         """Init the argsparse parser."""
         add = parser.add_argument
         add('PATHS', nargs='*', metavar='FILES',
@@ -2675,7 +2686,7 @@ class LoadManager:
         add('-v', '--version', dest='version', action='store_true',
             help='print version number and exit')
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
-    def computeFilesList(self, fileName):
+    def computeFilesList(self, fileName: Any) -> None:
         """Return the list of files on the command line."""
         lm = self
         files = []
@@ -2694,7 +2705,7 @@ class LoadManager:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self, args):
+    def doGuiOption(self, args: Any) -> None:
         gui = args.gui
         if gui:
             gui = gui.lower()
@@ -2713,13 +2724,13 @@ class LoadManager:
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self, args):
+    def doLoadTypeOption(self, args: Any) -> None:
 
         s = args.load_type
         s = s.lower() if s else 'edit'
         return '@' + s
     #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
-    def doScreenShotOption(self, args):
+    def doScreenShotOption(self, args: Any) -> None:
 
         # --screen-shot=fn
         s = args.screen_shot
@@ -2727,7 +2738,7 @@ class LoadManager:
             s = s.strip('"')
         return s
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
-    def doScriptOption(self, args, parser):
+    def doScriptOption(self, args: Any, parser: Any) -> None:
 
         # --script
         script = args.script
@@ -2742,7 +2753,7 @@ class LoadManager:
             script = None
         return script
     #@+node:ekr.20210927034148.8: *6* LM.doSimpleOptions
-    def doSimpleOptions(self, args, trace_m):
+    def doSimpleOptions(self, args: Any, trace_m: Any) -> None:
         """These args just set g.app ivars."""
         # --fail-fast
         g.app.failFast = args.fail_fast
@@ -2790,7 +2801,7 @@ class LoadManager:
         # --trace-setting=setting
         g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self, args):
+    def doWindowSpotOption(self, args: Any) -> None:
 
         # --window-spot
         spot = args.window_spot
@@ -2804,7 +2815,7 @@ class LoadManager:
 
         return spot
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args):
+    def doWindowSizeOption(self, args: Any) -> None:
 
         # --window-size
         windowSize = args.window_size
@@ -2817,7 +2828,7 @@ class LoadManager:
                 print('scanOptions: bad --window-size:', windowSize)
         return windowSize
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
-    def setStdStreams(self):
+    def setStdStreams(self) -> None:
         """
         Make sure that stdout and stderr exist.
         This is an issue when running Leo with pythonw.exe.
@@ -2828,16 +2839,16 @@ class LoadManager:
         class LeoStdOut:
             """A class to put stderr & stdout to Leo's log pane."""
 
-            def __init__(self, kind):
+            def __init__(self, kind: Any) -> None:
                 self.kind = kind
                 g.es_print = self.write
                 g.pr = self.write
 
-            def flush(self, *args, **keys):
+            def flush(self, *args: Any, **keys: Any) -> None:
                 pass
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
-            def write(self, *args, **keys):
+            def write(self, *args: Any, **keys: Any) -> None:
                 """Put all non-keyword args to the log pane, as in g.es."""
                 #
                 # Tracing will lead to unbounded recursion unless
@@ -2882,7 +2893,7 @@ class LoadManager:
         if not sys.stderr:
             sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython
-    def isValidPython(self):
+    def isValidPython(self) -> None:
         if sys.platform == 'cli':
             return True
         message = (
@@ -2907,7 +2918,7 @@ class LoadManager:
             traceback.print_exc()
             return 0
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn, gui, old_c):
+    def loadLocalFile(self, fn: Any, gui: Any, old_c: Any) -> None:
         """Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
@@ -2936,7 +2947,7 @@ class LoadManager:
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
     #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, gui, old_c):
+    def openEmptyLeoFile(self, gui: Any, old_c: Any) -> None:
         """Open an empty, untitled, new Leo file."""
         lm = self
         # Disable the log.
@@ -2975,7 +2986,7 @@ class LoadManager:
         lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
-    def openFileByName(self, fn, gui, old_c, previousSettings):
+    def openFileByName(self, fn: Any, gui: Any, old_c: Any, previousSettings: Any) -> None:
         """
         Create an outline (Commander) for either:
         - a Leo file (including .leo or zipped file),
@@ -3024,7 +3035,7 @@ class LoadManager:
         lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10405: *6* LM.createMenu
-    def createMenu(self, c, fn=None):
+    def createMenu(self, c: Cmdr, fn: Any=None) -> None:
         # lm = self
         # Create the menu as late as possible so it can use user commands.
         if not g.doHook("menu1", c=c, p=c.p, v=c.p):
@@ -3036,9 +3047,9 @@ class LoadManager:
             # Fix bug 844953: tell Unity which menu to use.
                 # c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
-    def findOpenFile(self, fn):
+    def findOpenFile(self, fn: Any) -> None:
 
-        def munge(name):
+        def munge(name: Any) -> None:
             return g.os_path_normpath(name or '').lower()
 
         for frame in g.app.windowList:
@@ -3054,7 +3065,7 @@ class LoadManager:
                 return c
         return None
     #@+node:ekr.20120223062418.10407: *6* LM.finishOpen
-    def finishOpen(self, c):
+    def finishOpen(self, c: Cmdr) -> None:
         # lm = self
         k = c.k
         assert k
@@ -3073,7 +3084,7 @@ class LoadManager:
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
-    def initWrapperLeoFile(self, c, fn):
+    def initWrapperLeoFile(self, c: Cmdr, fn: Any) -> None:
         """
         Create an empty file if the external fn is empty.
 
@@ -3123,7 +3134,7 @@ class LoadManager:
         frame.c.clearChanged()
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
-    def isLeoFile(self, fn):
+    def isLeoFile(self, fn: Any) -> None:
         """
         Return True if fn is any kind of Leo file,
         including a zipped file or .leo, .db, or .leojs file.
@@ -3132,11 +3143,11 @@ class LoadManager:
             return False
         return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
 
-    def isZippedFile(self, fn):
+    def isZippedFile(self, fn: Any) -> None:
         """Return True if fn is a zipped file."""
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
-    def openAnyLeoFile(self, fn):
+    def openAnyLeoFile(self, fn: Any) -> None:
         """Open a .leo, .leojs or .db file."""
         lm = self
         if fn.endswith('.db'):
@@ -3150,7 +3161,7 @@ class LoadManager:
             theFile = None
         return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
-    def openLeoFile(self, fn):
+    def openLeoFile(self, fn: Any) -> None:
         """Open the file for reading."""
         try:
             theFile = open(fn, 'rb')
@@ -3161,7 +3172,7 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
-    def openZipFile(self, fn):
+    def openZipFile(self, fn: Any) -> None:
         """
         Open a zipped file for reading.
         Return a StringIO file if successful.
@@ -3184,7 +3195,7 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
-    def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
+    def readOpenedLeoFile(self, c: Cmdr, fn: Any, readAtFileNodesFlag: Any, theFile: Any) -> None:
         """
         Call c.fileCommands.openLeoFile to open some kind of Leo file.
 
@@ -3206,7 +3217,7 @@ class LoadManager:
             g.app.closeLeoWindow(c.frame, finish_quit=False)
         return ok
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
-    def revertCommander(self, c):
+    def revertCommander(self, c: Cmdr) -> None:
         """Revert c to the previously saved contents."""
         lm = self
         fn = c.mFileName
@@ -3225,14 +3236,14 @@ class PreviousSettings:
     files and passed to the second pass.
     """
 
-    def __init__(self, settingsDict, shortcutsDict):
+    def __init__(self, settingsDict: Any, shortcutsDict: Any) -> None:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"<PreviousSettings\n"
             f"{self.settingsDict}\n"
@@ -3243,7 +3254,7 @@ class PreviousSettings:
 class RecentFilesManager:
     """A class to manipulate leoRecentFiles.txt."""
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.edit_headline = 'Recent files. Do not change this headline!'
         self.groupedMenus = []  # Set in rf.createRecentFilesMenuItems.
@@ -3254,11 +3265,11 @@ class RecentFilesManager:
 
     #@+others
     #@+node:ekr.20041201080436: *3* rf.appendToRecentFiles
-    def appendToRecentFiles(self, files):
+    def appendToRecentFiles(self, files: Any) -> None:
         rf = self
         files = [theFile.strip() for theFile in files]
 
-        def munge(name):
+        def munge(name: Any) -> None:
             return g.os_path_normpath(name or '').lower()
 
         for name in files:
@@ -3268,7 +3279,7 @@ class RecentFilesManager:
                     rf.recentFiles.remove(name2)
             rf.recentFiles.append(name)
     #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles
-    def cleanRecentFiles(self, c):
+    def cleanRecentFiles(self, c: Cmdr) -> None:
         """
         Remove items from the recent files list that no longer exist.
 
@@ -3281,7 +3292,7 @@ class RecentFilesManager:
                 self.updateRecentFiles(path)
             self.writeRecentFilesFile(c)
     #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
-    def demangleRecentFiles(self, c, data):
+    def demangleRecentFiles(self, c: Cmdr, data: Any) -> None:
         """Rewrite recent files based on c.config.getData('path-demangle')"""
         changes = []
         replace = None
@@ -3302,7 +3313,7 @@ class RecentFilesManager:
             self.updateRecentFiles(t)
         self.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
-    def clearRecentFiles(self, c):
+    def clearRecentFiles(self, c: Cmdr) -> None:
         """Clear the recent files list, then add the present file."""
         rf = self
         menu, u = c.frame.menu, c.undoer
@@ -3316,7 +3327,7 @@ class RecentFilesManager:
         # Write the file immediately.
         rf.writeRecentFilesFile(c)
     #@+node:ekr.20120225072226.10301: *3* rf.createRecentFilesMenuItems
-    def createRecentFilesMenuItems(self, c):
+    def createRecentFilesMenuItems(self, c: Cmdr) -> None:
         rf = self
         menu = c.frame.menu
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
@@ -3347,7 +3358,7 @@ class RecentFilesManager:
             if name.strip() == "":
                 continue  # happens with empty list/new file
 
-            def recentFilesCallback(event=None, c=c, name=name):
+            def recentFilesCallback(event: Event=None, c: Any=c, name: Any=name) -> None:
                 c.openRecentFile(fn=name)
 
             if groupedEntries:
@@ -3371,7 +3382,7 @@ class RecentFilesManager:
             rf.groupedMenus = [z for z in dirCount
                 if dirCount[z]['entry'] is not None]
     #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
-    def editRecentFiles(self, c):
+    def editRecentFiles(self, c: Cmdr) -> None:
         """
         Dump recentFiles into new node appended as lastTopLevel, selects it and
         request focus in body.
@@ -3389,13 +3400,13 @@ class RecentFilesManager:
         c.bodyWantsFocusNow()
         g.es('edit list and run write-rff to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
-    def getRecentFiles(self):
+    def getRecentFiles(self) -> None:
         # Fix #299: Leo loads a deleted file.
         self.recentFiles = [z for z in self.recentFiles
             if g.os_path_exists(z)]
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
-    def getRecentFilesTable(self):
+    def getRecentFilesTable(self) -> None:
         return (
             "*clear-recent-files",
             "*clean-recent-files",
@@ -3404,7 +3415,7 @@ class RecentFilesManager:
             ("-", None, None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
-    def readRecentFiles(self, localConfigFile):
+    def readRecentFiles(self, localConfigFile: Any) -> None:
         """Read all .leoRecentFiles.txt files."""
         # The order of files in this list affects the order of the recent files list.
         rf = self
@@ -3420,7 +3431,7 @@ class RecentFilesManager:
         if not seen and rf.write_recent_files_as_needed:
             rf.createRecentFiles()
     #@+node:ekr.20061010121944: *4* rf.createRecentFiles
-    def createRecentFiles(self):
+    def createRecentFiles(self) -> None:
         """
         Try to create .leoRecentFiles.txt, in the users home directory, or in
         Leo's config directory if that fails.
@@ -3436,7 +3447,7 @@ class RecentFilesManager:
                     g.error('can not create', fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
-    def readRecentFilesFile(self, path):
+    def readRecentFilesFile(self, path: Any) -> None:
 
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
         if not g.os_path_exists(fileName):
@@ -3458,7 +3469,7 @@ class RecentFilesManager:
             self.appendToRecentFiles(lines)
         return True
     #@+node:ekr.20120225072226.10285: *3* rf.sanitize
-    def sanitize(self, name):
+    def sanitize(self, name: Any) -> None:
         """Return a sanitized file name."""
         if name is None:
             return None
@@ -3467,16 +3478,16 @@ class RecentFilesManager:
             name = name.replace(ch, '')
         return name or None
     #@+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
-    def setRecentFiles(self, files):
+    def setRecentFiles(self, files: Any) -> None:
         """Update the recent files list."""
         rf = self
         rf.appendToRecentFiles(files)
     #@+node:ekr.20120225072226.10293: *3* rf.sortRecentFiles
-    def sortRecentFiles(self, c):
+    def sortRecentFiles(self, c: Cmdr) -> None:
         """Sort the recent files list."""
         rf = self
 
-        def key(path):
+        def key(path: Any) -> None:
             # Sort only the base name.  That's what will appear in the menu.
             s = g.os_path_basename(path)
             return s.lower() if sys.platform.lower().startswith('win') else s
@@ -3487,16 +3498,16 @@ class RecentFilesManager:
             rf.updateRecentFiles(z)
         rf.writeRecentFilesFile(c)
     #@+node:ekr.20031218072017.2083: *3* rf.updateRecentFiles
-    def updateRecentFiles(self, fileName):
+    def updateRecentFiles(self, fileName: Any) -> None:
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
         if g.unitTesting:
             return
 
-        def munge(name):
+        def munge(name: Any) -> None:
             return g.os_path_finalize(name or '').lower()
 
-        def munge2(name):
+        def munge2(name: Any) -> None:
             return g.os_path_finalize_join(g.app.loadDir, name or '')
 
         # Update the recent files list in all windows.
@@ -3517,7 +3528,7 @@ class RecentFilesManager:
             for frame in g.app.windowList:
                 rf.createRecentFilesMenuItems(frame.c)
     #@+node:vitalije.20170703115616.1: *3* rf.writeEditedRecentFiles
-    def writeEditedRecentFiles(self, c):
+    def writeEditedRecentFiles(self, c: Cmdr) -> None:
         """
         Write content of "edit_headline" node as recentFiles and recreates
         menues.
@@ -3534,7 +3545,7 @@ class RecentFilesManager:
         else:
             g.red('not found:', self.edit_headline)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
-    def writeRecentFilesFile(self, c):
+    def writeRecentFilesFile(self, c: Cmdr) -> None:
         """Write the appropriate .leoRecentFiles.txt file."""
         tag = '.leoRecentFiles.txt'
         rf = self
@@ -3571,7 +3582,7 @@ class RecentFilesManager:
                     g.red(f"creating: {fileName}")
                 rf.writeRecentFilesFileHelper(fileName)
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
-    def writeRecentFilesFileHelper(self, fileName):
+    def writeRecentFilesFileHelper(self, fileName: Any) -> None:
         # Don't update the file if it begins with read-only.
         #
         # Part 1: Return False if the first line is "readonly".
@@ -3604,14 +3615,14 @@ class RecentFilesManager:
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
-def ctrlClickAtCursor(event):
+def ctrlClickAtCursor(event: Event) -> None:
     """Simulate a control-click at the cursor."""
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
 #@+node:ekr.20180213045148.1: *3* demangle-recent-files
 @g.command('demangle-recent-files')
-def demangle_recent_files_command(event):
+def demangle_recent_files_command(event: Event) -> None:
     """
     Path demangling potentially alters the paths in the recent files list
     according to find/replace patterns in the @data path-demangle setting.
@@ -3631,28 +3642,28 @@ def demangle_recent_files_command(event):
             g.es_print('No patterns in @data path-demangle')
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
-def disable_idle_time_events(event):
+def disable_idle_time_events(event: Event) -> None:
     """Disable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = False
 
 @g.command('enable-idle-time-events')
-def enable_idle_time_events(event):
+def enable_idle_time_events(event: Event) -> None:
     """Enable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = True
 
 @g.command('toggle-idle-time-events')
-def toggle_idle_time_events(event):
+def toggle_idle_time_events(event: Event) -> None:
     """Toggle default idle-time event handling."""
     g.app.idle_time_hooks_enabled = not g.app.idle_time_hooks_enabled
 #@+node:ekr.20150514125218.4: *3* join-leo-irc
 @g.command('join-leo-irc')
-def join_leo_irc(event=None):
+def join_leo_irc(event: Event=None) -> None:
     """Open the web page to Leo's irc channel on freenode.net."""
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 #@+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
-def openUrl(event=None):
+def openUrl(event: Event=None) -> None:
     """
     Open the url in the headline or body text of the selected node.
 
@@ -3664,7 +3675,7 @@ def openUrl(event=None):
         g.openUrl(c.p)
 #@+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event=None):
+def openUrlUnderCursor(event: Event=None) -> None:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 #@-others
