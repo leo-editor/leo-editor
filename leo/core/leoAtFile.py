@@ -3,8 +3,8 @@
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
 """Classes to read and write @file nodes."""
-#@+<< imports  (leoAtFile.py) >>
-#@+node:ekr.20041005105605.2: ** << imports (leoAtFile.py) >>
+#@+<< leoAtFile imports >>
+#@+node:ekr.20041005105605.2: ** << leoAtFile imports >>
 import io
 import os
 import re
@@ -16,16 +16,16 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-#@-<< imports  (leoAtFile.py) >>
-#@+<< type checking (leoAtFile.py) >>
-#@+node:ekr.20220819064015.1: ** << type checking (leoAtFile.py) >>
+#@-<< leoAtFile imports >>
+#@+<< leoAtFile annotations >>
+#@+node:ekr.20220819064015.1: ** << leoAtFile annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Position = VNode = Any
 Event = Any
-#@-<< type checking (leoAtFile.py) >>
+#@-<< leoAtFile annotations >>
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:  # pragma: no cover
@@ -3527,5 +3527,4 @@ class FastAtRead:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-
 #@-leo
