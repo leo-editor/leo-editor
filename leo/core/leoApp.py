@@ -2636,7 +2636,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
     #@@nobeautify
 
-    def addOptionsToParser(self, parser: Any, trace_m: Any) -> None:
+    def addOptionsToParser(self, parser: Any, trace_m: bool) -> None:
         """Init the argsparse parser."""
         add = parser.add_argument
         add('PATHS', nargs='*', metavar='FILES',
@@ -2690,7 +2690,7 @@ class LoadManager:
         add('-v', '--version', dest='version', action='store_true',
             help='print version number and exit')
     #@+node:ekr.20210927034148.3: *6* LM.computeFilesList
-    def computeFilesList(self, fileName: Any) -> None:
+    def computeFilesList(self, fileName: str) -> List[str]:
         """Return the list of files on the command line."""
         lm = self
         files = []
@@ -2709,7 +2709,7 @@ class LoadManager:
                 result.append(z)
         return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20210927034148.4: *6* LM.doGuiOption
-    def doGuiOption(self, args: Any) -> None:
+    def doGuiOption(self, args: Any) -> str:
         gui = args.gui
         if gui:
             gui = gui.lower()
@@ -2728,13 +2728,13 @@ class LoadManager:
         g.app.guiArgName = gui
         return gui
     #@+node:ekr.20210927034148.5: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self, args: Any) -> None:
+    def doLoadTypeOption(self, args: Any) -> str:
 
         s = args.load_type
         s = s.lower() if s else 'edit'
         return '@' + s
     #@+node:ekr.20210927034148.6: *6* LM.doScreenShotOption
-    def doScreenShotOption(self, args: Any) -> None:
+    def doScreenShotOption(self, args: Any) -> str:
 
         # --screen-shot=fn
         s = args.screen_shot
@@ -2742,7 +2742,7 @@ class LoadManager:
             s = s.strip('"')
         return s
     #@+node:ekr.20210927034148.7: *6* LM.doScriptOption
-    def doScriptOption(self, args: Any, parser: Any) -> None:
+    def doScriptOption(self, args: Any, parser: Any) -> Optional[str]:
 
         # --script
         script = args.script
@@ -2805,7 +2805,7 @@ class LoadManager:
         # --trace-setting=setting
         g.app.trace_setting = args.trace_setting  # g.app.config does not exist yet.
     #@+node:ekr.20210927034148.9: *6* LM.doWindowSpotOption
-    def doWindowSpotOption(self, args: Any) -> None:
+    def doWindowSpotOption(self, args: Any) -> Optional[Tuple[int, int]]:
 
         # --window-spot
         spot = args.window_spot
@@ -2819,7 +2819,7 @@ class LoadManager:
 
         return spot
     #@+node:ekr.20210927034148.10: *6* LM.doWindowSizeOption
-    def doWindowSizeOption(self, args: Any) -> None:
+    def doWindowSizeOption(self, args: Any) -> Optional[Tuple[int, int]]:
 
         # --window-size
         windowSize = args.window_size
@@ -3152,7 +3152,7 @@ class LoadManager:
             return False
         return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
 
-    def isZippedFile(self, fn: Any) -> None:
+    def isZippedFile(self, fn: Any) -> bool:
         """Return True if fn is a zipped file."""
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
@@ -3372,7 +3372,7 @@ class RecentFilesManager:
             if name.strip() == "":
                 continue  # happens with empty list/new file
 
-            def recentFilesCallback(event: Event=None, c: Any=c, name: Any=name) -> None:
+            def recentFilesCallback(event: Event=None, c: Cmdr=c, name: str=name) -> None:
                 c.openRecentFile(fn=name)
 
             if groupedEntries:
@@ -3434,7 +3434,7 @@ class RecentFilesManager:
         # The order of files in this list affects the order of the recent files list.
         rf = self
         seen = []
-        localConfigPath = g.os_path_dirname(localConfigFile)
+        localConfigPath: str = g.os_path_dirname(localConfigFile)
         for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath):
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))
@@ -3461,7 +3461,7 @@ class RecentFilesManager:
                     g.error('can not create', fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
-    def readRecentFilesFile(self, path: Any) -> None:
+    def readRecentFilesFile(self, path: Any) -> bool:
 
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
         if not g.os_path_exists(fileName):
@@ -3501,7 +3501,7 @@ class RecentFilesManager:
         """Sort the recent files list."""
         rf = self
 
-        def key(path: Any) -> None:
+        def key(path: Any) -> str:
             # Sort only the base name.  That's what will appear in the menu.
             s = g.os_path_basename(path)
             return s.lower() if sys.platform.lower().startswith('win') else s
@@ -3518,10 +3518,10 @@ class RecentFilesManager:
         if g.unitTesting:
             return
 
-        def munge(name: Any) -> None:
+        def munge(name: Any) -> str:
             return g.os_path_finalize(name or '').lower()
 
-        def munge2(name: Any) -> None:
+        def munge2(name: Any) -> str:
             return g.os_path_finalize_join(g.app.loadDir, name or '')
 
         # Update the recent files list in all windows.
