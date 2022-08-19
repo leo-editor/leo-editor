@@ -1164,7 +1164,11 @@ class AtFile:
             # if there is no rst writer plugin.
             at.outputFile = io.StringIO()
             ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
-            return at.outputFile if ok else ''
+            if not ok:
+                return ''
+            s = at.outputFile.getvalue()
+            at.outputFile.close()
+            return s
         # leo 5.6: allow undefined section references in all @auto files.
         try:
             g.app.allow_undefined_refs = True
