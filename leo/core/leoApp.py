@@ -34,7 +34,7 @@ Widget = Any
 Wrapper = Any
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
-def cmd(name: str) -> Any:
+def cmd(name: str) -> Callable:
     """Command decorator for the LeoApp class."""
     return g.new_cmd_decorator(name, ['g', 'app'])
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -49,7 +49,7 @@ class IdleTimeManager:
 
     def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
-        self.callback_list: List[Any] = []
+        self.callback_list: List[Callable] = []
         self.timer = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
@@ -59,7 +59,7 @@ class IdleTimeManager:
     #@+node:ekr.20161026124810.1: *3* itm.on_idle
     on_idle_count = 0
 
-    def on_idle(self, timer: Any) -> None:
+    def on_idle(self, timer: Callable) -> None:
         """IdleTimeManager: Run all idle-time callbacks."""
         if not g.app:
             return
@@ -197,13 +197,13 @@ class LeoApp:
         #@+<< LeoApp: global reader/writer data >>
         #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
         # From leoAtFile.py.
-        self.atAutoWritersDict: Dict[str, Any] = {}
-        self.writersDispatchDict: Dict[str, Any] = {}
+        self.atAutoWritersDict: Dict[str, Callable] = {}
+        self.writersDispatchDict: Dict[str, Callable] = {}
 
         # From leoImport.py
-        # Keys are @auto names, values are scanner classes.
-        self.atAutoDict: Dict[str, Any] = {}
-        self.classDispatchDict: Dict[str, Any] = {}
+        # Keys are @auto names, values are scanner functions..
+        self.atAutoDict: Dict[str, Callable] = {}
+        self.classDispatchDict: Dict[str, Callable] = {}
 
         # True if an @auto writer should write sentinels,
         # even if the external file doesn't actually contain sentinels.
@@ -948,7 +948,7 @@ class LeoApp:
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
-    def createNullGuiWithScript(self, script: Any=None) -> None:
+    def createNullGuiWithScript(self, script: str=None) -> None:
         app = self
         app.batchMode = True
         app.gui = g.app.nullGui
@@ -1033,7 +1033,7 @@ class LeoApp:
                 self.setIDFile()
         return self.leoID
     #@+node:ekr.20191017061451.1: *5* app.cleanLeoID
-    def cleanLeoID(self, id_: Any, tag: Any) -> str:
+    def cleanLeoID(self, id_: str, tag: str) -> str:
         """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
         old_id = id_ if isinstance(id_, str) else repr(id_)
         try:
@@ -1068,7 +1068,7 @@ class LeoApp:
                 if verbose:
                     g.red("leoID=", self.leoID, spaces=False)
     #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
-    def setIDFromFile(self, verbose: Any) -> None:
+    def setIDFromFile(self, verbose: bool) -> None:
         """Attempt to set g.app.leoID from leoID.txt."""
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
@@ -1092,7 +1092,7 @@ class LeoApp:
                 g.error('unexpected exception in app.setLeoID')
                 g.es_exception()
     #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv
-    def setIDFromEnv(self, verbose: Any) -> None:
+    def setIDFromEnv(self, verbose: bool) -> None:
         """Set leoID from environment vars."""
         try:
             id_ = os.getenv('USER')
@@ -1473,11 +1473,11 @@ class LeoApp:
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(
         self,
-        fileName: Any,
-        gui: Any=None,
+        fileName: str,
+        gui: str=None,
         parentFrame: Wrapper=None,
-        previousSettings: Any=None,
-        relativeFileName: Any=None,
+        previousSettings: "PreviousSettings"=None,
+        relativeFileName: str=None,
     ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
@@ -1545,7 +1545,7 @@ class LoadManager:
         self.theme_path: str = None
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
-    def completeFileName(self, fileName: Any) -> str:
+    def completeFileName(self, fileName: str) -> str:
         fileName = g.toUnicode(fileName)
         fileName = g.os_path_finalize(fileName)
         # 2011/10/12: don't add .leo to *any* file.
@@ -1792,7 +1792,7 @@ class LoadManager:
             g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn: Any, tag: Any) -> Optional[str]:
+    def resolve_theme_path(self, fn: str, tag: str) -> Optional[str]:
         """Search theme directories for the given .leo file."""
         if not fn or fn.lower().strip() == 'none':
             return None
@@ -2169,7 +2169,7 @@ class LoadManager:
         else:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
-    def load(self, fileName: Any=None, pymacs: bool=None) -> None:
+    def load(self, fileName: str=None, pymacs: bool=None) -> None:
         """This is Leo's main startup method."""
         lm = self
         #
@@ -2415,7 +2415,7 @@ class LoadManager:
                     except Exception:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
-    def parse_importer_dict(self, sfn: Any, m: Any) -> None:
+    def parse_importer_dict(self, sfn: str, m: Any) -> None:
         """
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
@@ -2475,7 +2475,7 @@ class LoadManager:
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
-    def parse_writer_dict(self, sfn: Any, m: Any) -> None:
+    def parse_writer_dict(self, sfn: str, m: Any) -> None:
         """
         Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
         using entries in m.writers_dict.
@@ -2531,7 +2531,7 @@ class LoadManager:
         else:
             lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
     #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
-    def createSpecialGui(self, gui: Any, pymacs: bool, script: str, windowFlag: bool) -> None:
+    def createSpecialGui(self, gui: str, pymacs: bool, script: str, windowFlag: bool) -> None:
         # lm = self
         if pymacs:
             g.app.createNullGuiWithScript(script=None)
@@ -2766,7 +2766,7 @@ class LoadManager:
             script = None
         return script
     #@+node:ekr.20210927034148.8: *6* LM.doSimpleOptions
-    def doSimpleOptions(self, args: Any, trace_m: Any) -> None:
+    def doSimpleOptions(self, args: Any, trace_m: str) -> None:
         """These args just set g.app ivars."""
         # --fail-fast
         g.app.failFast = args.fail_fast
@@ -2852,7 +2852,7 @@ class LoadManager:
         class LeoStdOut:
             """A class to put stderr & stdout to Leo's log pane."""
 
-            def __init__(self, kind: Any) -> None:
+            def __init__(self, kind: str) -> None:
                 self.kind = kind
                 g.es_print = self.write
                 g.pr = self.write
@@ -2882,7 +2882,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color: Any = d.get('color')
+                color: str = d.get('color')  # type:ignore
                 if color == 'suppress':
                     return
                 if log and color is None:
@@ -3067,7 +3067,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self, fn: str) -> Optional[Cmdr]:
 
-        def munge(name: Any) -> str:
+        def munge(name: str) -> str:
             return g.os_path_normpath(name or '').lower()
 
         for frame in g.app.windowList:
@@ -3152,7 +3152,7 @@ class LoadManager:
         frame.c.clearChanged()
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
-    def isLeoFile(self, fn: Any) -> bool:
+    def isLeoFile(self, fn: str) -> bool:
         """
         Return True if fn is any kind of Leo file,
         including a zipped file or .leo, .db, or .leojs file.
@@ -3161,9 +3161,9 @@ class LoadManager:
             return False
         return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
 
-    def isZippedFile(self, fn: Any) -> bool:
+    def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
-        return fn and zipfile.is_zipfile(fn)
+        return bool(fn and zipfile.is_zipfile(fn))
     #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
     def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
@@ -3190,7 +3190,7 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
-    def openZipFile(self, fn: Any) -> Any:
+    def openZipFile(self, fn: str) -> Any:
         """
         Open a zipped file for reading.
         Return a StringIO file if successful.
@@ -3259,7 +3259,7 @@ class PreviousSettings:
     files and passed to the second pass.
     """
 
-    def __init__(self, settingsDict: Any, shortcutsDict: Any) -> None:
+    def __init__(self, settingsDict: g.SettingsDict, shortcutsDict: g.SettingsDict) -> None:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
