@@ -16,7 +16,6 @@ import fnmatch
 import inspect
 import json
 import os
-from collections import OrderedDict
 import re
 import sys
 import socket
@@ -47,6 +46,7 @@ from leo.core.leoExternalFiles import ExternalFilesController
 #@-<< imports >>
 Package = Dict[str, Any]
 Param = Dict[str, Any]
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 version_tuple = (1, 0, 3)
 # Version History
@@ -60,7 +60,7 @@ g = None  # The bridge's leoGlobals module.
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
-connectionsPool = set()  # type:ignore
+connectionsPool: Set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
@@ -368,32 +368,7 @@ class ServerExternalFilesController(ExternalFilesController):
         g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
     #@-others
-#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
-class OrderedDefaultDict(OrderedDict):
-    """
-    Credit:  http://stackoverflow.com/questions/4126348/
-    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
-    """
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        if not args:
-            self.default_factory = None
-        else:
-            if not (args[0] is None or callable(args[0])):
-                raise TypeError('first argument must be callable or None')
-            self.default_factory = args[0]
-            args = args[1:]
-        super().__init__(*args, **kwargs)
-
-    def __missing__(self, key: Any) -> Any:
-        if self.default_factory is None:
-            raise KeyError(key)
-        self[key] = default = self.default_factory()
-        return default
-
-    def __reduce__(self) -> Any:  # optional, for pickle support
-        args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.items()
-#@+node:felix.20220225003906.1: ** class QuickSearchController
+#@+node:felix.20220225003906.1: ** class QuickSearchController (leoserver.py)
 class QuickSearchController:
 
     #@+others
@@ -401,165 +376,25 @@ class QuickSearchController:
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.lw: List = []  # empty list
-
         # Keys are id(w),values are either tuples in tuples (w (p,Position)) or tuples (w, f)
-        # (function f is when built from addGeneric)
-        self.its: Dict = {}
-
-        # self.worker = threadutil.UnitWorker()
-        # self.widgetUI = ui
-        self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
-                               "@auto", "@auto-md", "@auto-org",
-                               "@auto-otl", "@auto-rst"]
-
+        self.its: Dict[int, Any] = {}
+        self.fileDirectives = [
+            "@asis", "@auto",
+            "@auto-md", "@auto-org", "@auto-otl", "@auto-rst",
+            "@clean", "@file", "@edit",
+        ]
         self._search_patterns: List[str] = []
-
         self.navText = ''
         self.showParents = True
         self.isTag = False  # added concept to combine tag pane functionality
         self.searchOptions = 0
-        self.searchOptionsStrings = ["All", "Subtree", "File",
-                                     "Chapter", "Node"]
-
-    #@+node:felix.20220225224130.1: *3* QSC.matchlines
-    def matchlines(self, b: str, miter: Any) -> List:
-        res = []
-        for m in miter:
-            st, en = g.getLine(b, m.start())
-            li = b[st:en].strip()
-            res.append((li, (m.start(), m.end())))
-        return res
-
-    #@+node:felix.20220225003906.4: *3* QSC.addItem
-    def addItem(self, it: Any, val: Any) -> bool:
-        self.its[id(it)] = (it, val)
-        # changed to 999 from 3000 to replace old threadutil behavior
-        return len(self.its) > 999  # Limit to 999 for now
-    #@+node:felix.20220225003906.5: *3* QSC.addBodyMatches
-    def addBodyMatches(self, poslist: List[Position]) -> int:
-        lineMatchHits = 0
-        for p in poslist:
-            it = {"type": "headline", "label": p.h}
-            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
-            # f = it.font()
-            # f.setBold(True)
-            # it.setFont(f)
-            if self.addItem(it, (p, None)):
-                return lineMatchHits
-            ms = self.matchlines(p.b, p.matchiter)
-            for ml, pos in ms:
-                lineMatchHits += 1
-                # it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
-                it = {"type": "body", "label": ml}
-                if self.addItem(it, (p, pos)):
-                    return lineMatchHits
-        return lineMatchHits
-    #@+node:felix.20220225003906.6: *3* QSC.addParentMatches
-    def addParentMatches(self, parent_list: Any) -> int:
-        lineMatchHits = 0
-        for parent_key, parent_value in parent_list.items():
-            if isinstance(parent_key, str):
-                v = self.c.fileCommands.gnxDict.get(parent_key)
-                h = v.h if v else parent_key
-                # it = QtWidgets.QListWidgetItem(h, self.lw)
-                it = {"type": "parent", "label": h}
-            else:
-                # it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
-                it = {"type": "parent", "label": parent_key.h}
-            # f = it.font()
-            # f.setItalic(True)
-            # it.setFont(f)
-            if self.addItem(it, (parent_key, None)):
-                return lineMatchHits
-            for p in parent_value:
-                # it = QtWidgets.QListWidgetItem("    " + p.h, self.lw)
-                it = {"type": "headline", "label": p.h}
-                # f = it.font()
-                # f.setBold(True)
-                # it.setFont(f)
-                if self.addItem(it, (p, None)):
-                    return lineMatchHits
-                if hasattr(p, "matchiter"):  #p might be not have body matches
-                    ms = self.matchlines(p.b, p.matchiter)
-                    for ml, pos in ms:
-                        lineMatchHits += 1
-                        # it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
-                        it = {"type": "body", "label": ml}
-                        if self.addItem(it, (p, pos)):
-                            return lineMatchHits
-        return lineMatchHits
-
-    #@+node:felix.20220225003906.7: *3* QSC.addGeneric
-    def addGeneric(self, text: str, f: Callable) -> Dict:
-        """ Add generic callback """
-        # it = QtWidgets.QListWidgetItem(text, self.lw)
-        it = {"type": "generic", "label": text}
-        self.its[id(it)] = (it, f)
-        return it
-
-    #@+node:felix.20220318222437.1: *3* QSC.addTag
-    def addTag(self, text: str) -> Dict:
-        """ add Tag label """
-        it = {"type": "tag", "label": text}
-        self.its[id(it)] = (it, None)
-        return it
-
-    #@+node:felix.20220225003906.8: *3* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: List[Position]) -> None:
-        for p in position_list:
-            it = {"type": "headline", "label": p.h}
-            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
-            # f = it.font()
-            # f.setBold(True)
-            # it.setFont(f)
-            if self.addItem(it, (p, None)):
-                return
-    #@+node:felix.20220225003906.9: *3* QSC.clear
-    def clear(self) -> None:
-        self.its = {}
-        self.lw.clear()
-
-    #@+node:felix.20220225003906.10: *3* QSC.doNodeHistory
-    def doNodeHistory(self) -> None:
-        headlines: List[Position] = [po[0].copy() for po in self.c.nodeHistory.beadList]
-        headlines.reverse()
-        self.clear()
-        self.addHeadlineMatches(headlines)
-    #@+node:felix.20220225003906.11: *3* QSC.doSearchHistory
-    def doSearchHistory(self) -> None:
-        self.clear()
-
-        def sHistSelect(x: str) -> Callable:
-            def _f() -> None:
-                # self.widgetUI.lineEdit.setText(x)
-                self.c.scon.navText = x
-                self.doSearch(x)
-            return _f
-
-        for pat in self._search_patterns:
-            self.addGeneric(pat, sHistSelect(pat))
-
-    def pushSearchHistory(self, pat: str) -> None:
-        if pat in self._search_patterns:
-            return
-        self._search_patterns = ([pat] + self._search_patterns)[:30]
-
-    #@+node:felix.20220225003906.12: *3* QSC.doTimeline
-    def doTimeline(self) -> None:
-        c = self.c
-        timeline = [p.copy() for p in c.all_unique_positions()]
-        timeline.sort(key=lambda x: x.gnx, reverse=True)
-        self.clear()
-        self.addHeadlineMatches(timeline)
-    #@+node:felix.20220225003906.13: *3* QSC.doChanged
-    def doChanged(self) -> None:
-        c = self.c
-        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
-        self.clear()
-        self.addHeadlineMatches(changed)
-    #@+node:felix.20220225003906.14: *3* QSC.doSearch
-    def doSearch(self, pat: str) -> None:
+        self.searchOptionsStrings = ["All", "Subtree", "File", "Chapter", "Node"]
+    #@+node:ekr.20220818080756.1: *3* QSC: entries
+    #@+node:felix.20220225003906.14: *4* QSC.qsc_search & helpers
+    def qsc_search(self, pat: str) -> None:
         hitBase = False
+        c = self.c
+        flags: RegexFlag
         self.clear()
         self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
@@ -572,17 +407,17 @@ class QuickSearchController:
         else:
             hpat = pat[2:]
             bpat = pat[2:]
-            flags = 0  # type:ignore
+            flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
         if combo == "All":
-            hNodes = self.c.all_positions()
-            bNodes = self.c.all_positions()
+            hNodes = c.all_positions()
+            bNodes = c.all_positions()
         elif combo == "Subtree":
-            hNodes = self.c.p.self_and_subtree()
-            bNodes = self.c.p.self_and_subtree()
+            hNodes = c.p.self_and_subtree()
+            bNodes = c.p.self_and_subtree()
         elif combo == "File":
             found = False
-            node = self.c.p
+            node = c.p
             while not found and not hitBase:
                 h = node.h
                 if h:
@@ -598,7 +433,7 @@ class QuickSearchController:
             bNodes = node.self_and_subtree()
         elif combo == "Chapter":
             found = False
-            node = self.c.p
+            node = c.p
             while not found and not hitBase:
                 h = node.h
                 if h:
@@ -614,44 +449,117 @@ class QuickSearchController:
                 # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
                 hitBase = False  #reset
-                hNodes = self.c.all_positions()
-                bNodes = self.c.all_positions()
+                hNodes = c.all_positions()
+                bNodes = c.all_positions()
             else:
                 hNodes = node.self_and_subtree()
                 bNodes = node.self_and_subtree()
 
         else:
-            hNodes = [self.c.p]
-            bNodes = [self.c.p]
+            hNodes = [c.p]
+            bNodes = [c.p]
 
         if not hitBase:
-            hm = self.find_h(hpat, hNodes, flags)
-            bm = self.find_b(bpat, bNodes, flags)
+            hm = self.find_h(hpat, hNodes, flags)  # Returns a list of positions.
+            bm = self.find_b(bpat, bNodes, flags)  # Returns a list of positions.
             bm_keys = [match.key() for match in bm]
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
             if self.showParents:
-                parents = OrderedDefaultDict(list)
+                # Was: parents = OrderedDefaultDict(list)
+                parents: dict[str, List[Position]] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        if node.level() == 0:
-                            parents["Root"].append(node)
-                        else:
-                            parents[node.parent().gnx].append(node)
+                        key = 'Root' if node.level() == 0 else node.parent().gnx
+                        aList: List[Position] = parents.get(key, [])
+                        aList.append(node)
+                        parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)
                 lineMatchHits = self.addBodyMatches(bm)
 
             hits = numOfHm + lineMatchHits
-            self.lw.insert(0, "{} hits".format(hits))
+            self.lw.insert(0, f"{hits} hits")
 
         else:
             if combo == "File":
-                self.lw.insert(0, "External file directive not found " +
-                                      "during search")
-    #@+node:felix.20220313183922.1: *3* QSC.doTag
-    def doTag(self, pat: str) -> None:
+                self.lw.insert(0, 'External file directive not found during search')
+    #@+node:ekr.20220818083736.1: *5* QSC.pushSearchHistory
+    def pushSearchHistory(self, pat: str) -> None:
+        if pat in self._search_patterns:
+            return
+        self._search_patterns = ([pat] + self._search_patterns)[:30]
+
+    #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
+    def addBodyMatches(self, positions: List[Position]) -> int:
+        lineMatchHits = 0
+        for p in positions:
+            it = {"type": "headline", "label": p.h}
+            if self.addItem(it, (p, None)):
+                return lineMatchHits
+        return lineMatchHits
+    #@+node:felix.20220225003906.11: *4* QSC.qsc_search_history & helper (not used)
+    def qsc_search_history(self) -> None:
+
+        self.clear()
+
+        def sHistSelect(x: str) -> Callable:
+            def _f() -> None:
+                # self.widgetUI.lineEdit.setText(x)
+                scon: QuickSearchController = self.c.patched_quickserch_controller
+                scon.navText = x
+                self.qsc_search(x)
+            return _f
+
+        for pat in self._search_patterns:
+            self.addGeneric(pat, sHistSelect(pat))
+    #@+node:felix.20220225003906.7: *5* QSC.addGeneric
+    def addGeneric(self, text: str, f: Callable) -> Dict:
+        """ Add generic callback """
+        it = {"type": "generic", "label": text}
+        self.its[id(it)] = (it, f)
+        return it
+
+    #@+node:felix.20220225003906.12: *4* QSC.qsc_sort_by_gnx
+    def qsc_sort_by_gnx(self) -> None:
+        """Return positions by gnx."""
+        c = self.c
+        timeline = [p.copy() for p in c.all_unique_positions()]
+        timeline.sort(key=lambda x: x.gnx, reverse=True)
+        self.clear()
+        self.addHeadlineMatches(timeline)
+    #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
+    def qsc_background_search(self, pat: str) -> Any:
+
+        flags: RegexFlag
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            flags = re.IGNORECASE
+        else:
+            hpat = pat[2:]
+            flags = 0
+        combo = self.searchOptionsStrings[self.searchOptions]
+        if combo == "All":
+            hNodes = self.c.all_positions()
+        elif combo == "Subtree":
+            hNodes = self.c.p.self_and_subtree()
+        else:
+            hNodes = [self.c.p]
+        hm = self.find_h(hpat, hNodes, flags)
+        # Update the real quicksearch controller.
+        self.clear()
+        self.addHeadlineMatches(hm)
+        return hm, []
+    #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
+    def qsc_find_changed(self) -> None:
+        c = self.c
+        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
+        self.clear()
+        self.addHeadlineMatches(changed)
+    #@+node:felix.20220313183922.1: *4* QSC.qsc_find_tags & helpers
+    def qsc_find_tags(self, pat: str) -> None:
         """
         Search for tags: outputs position list
         If empty pattern, list tags *strings* instead
@@ -677,59 +585,17 @@ class QuickSearchController:
         hm = self.find_tag(pat)
         self.clear()  # needed for external client ui replacement: fills self.its
         self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
-    #@+node:felix.20220225003906.15: *3* QSC.bgSearch
-    def bgSearch(self, pat: str) -> Any:
-        if not pat.startswith('r:'):
-            hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
-            # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
-            flags = re.IGNORECASE
-        else:
-            hpat = pat[2:]
-            # bpat = pat[2:]
-            flags = 0  # type:ignore
-        combo = self.searchOptionsStrings[self.searchOptions]
-        if combo == "All":
-            hNodes = self.c.all_positions()
-        elif combo == "Subtree":
-            hNodes = self.c.p.self_and_subtree()
-        else:
-            hNodes = [self.c.p]
-        hm = self.find_h(hpat, hNodes, flags)
+    #@+node:felix.20220318222437.1: *5* QSC.addTag
+    def addTag(self, text: str) -> Dict:
+        """ add Tag label """
+        it = {"type": "tag", "label": text}
+        self.its[id(it)] = (it, None)
+        return it
 
-        self.clear()  # needed for external client ui replacement: fills self.its
-        self.addHeadlineMatches(hm)  # added for external client ui replacement: fills self.its
-
-        # bm = self.c.find_b(bpat, flags)
-        # self.addBodyMatches(bm)
-        return hm, []
-        # self.lw.insertItem(0, "%d hits"%self.lw.count())
-    #@+node:felix.20220225003906.16: *3* QSC.find_h
-    def find_h(self,
-        regex: str,
-        nodes: List[Position],
-        flags: re.RegexFlag=re.IGNORECASE
-    ) -> List[Position]:
-        """
-        Return list of all positions where zero or more characters at
-        the beginning of the headline match regex
-        """
-        try:
-            pat = re.compile(regex, flags)
-        except Exception:
-            return []
-        aList: List[Position] = []
-        seen: Set[VNode] = set()
-        for p in nodes:
-            for m in re.finditer(pat, p.h):
-                if p.v not in seen:
-                    seen.add(p.v)
-                    aList.append(p.copy())
-        # g.printObj([z.h for z in aList], tag='QSC.find_h')
-        return aList
-    #@+node:felix.20220313185430.1: *3* QSC.find_tag
+    #@+node:felix.20220313185430.1: *5* QSC.find_tag
     def find_tag(self, pat: str) -> List[Position]:
         """
-        Return list (a PosList) of all nodes that have matching tags
+        Return list of all positions that have matching tags
         """
         #  USE update_list(self) from @file ../plugins/nodetags.py
         c = self.c
@@ -774,13 +640,60 @@ class QuickSearchController:
             if n is not None:
                 p = c.vnode2position(n)
                 aList.append(p.copy())
-        # g.printObj([z.h for z in aList], tag='QSC.find_tag')
         return aList
-    #@+node:felix.20220225003906.17: *3* QSC.find_b
+    #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
+    def qsc_get_history(self) -> None:
+        headlines: List[Position] = [po[0].copy() for po in self.c.nodeHistory.beadList]
+        headlines.reverse()
+        self.clear()
+        self.addHeadlineMatches(headlines)
+    #@+node:felix.20220225003906.18: *4* QSC.qsc_show_marked
+    def qsc_show_marked(self) -> None:
+        self.clear()
+        c = self.c
+        self.addHeadlineMatches([
+            z.copy() for z in c.all_positions() if z.isMarked()
+        ])
+    #@+node:ekr.20220818083228.1: *3* QSC: helpers
+    #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
+    def addHeadlineMatches(self, position_list: List[Position]) -> None:
+        for p in position_list:
+            it = {"type": "headline", "label": p.h}
+            if self.addItem(it, (p, None)):
+                return
+    #@+node:felix.20220225003906.4: *4* QSC.addItem
+    def addItem(self, it: Any, val: Any) -> bool:
+        self.its[id(it)] = (it, val)
+        # changed to 999 from 3000 to replace old threadutil behavior
+        return len(self.its) > 999  # Limit to 999 for now
+    #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
+    def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
+        lineMatchHits = 0
+        for parent_key, parent_value in parent_list.items():
+            if isinstance(parent_key, str):
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                it = {"type": "parent", "label": h}
+            else:
+                it = {"type": "parent", "label": parent_key.h}
+            if self.addItem(it, (parent_key, None)):
+                return lineMatchHits
+            for p in parent_value:
+                it = {"type": "headline", "label": p.h}
+                if self.addItem(it, (p, None)):
+                    return lineMatchHits
+        return lineMatchHits
+
+    #@+node:felix.20220225003906.9: *4* QSC.clear
+    def clear(self) -> None:
+        self.its = {}
+        self.lw.clear()
+
+    #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
         nodes: List[Position],
-        flags: re.RegexFlag=re.IGNORECASE | re.MULTILINE,
+        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
         Return list of all nodes whose body matches regex
@@ -798,17 +711,39 @@ class QuickSearchController:
                 if p.v not in seen:
                     seen.add(p.v)
                     aList.append(p.copy())
-        # g.printObj([z.h for z in aList], tag='QSC.find_b')
         return aList
-    #@+node:felix.20220225003906.18: *3* QSC.doShowMarked
-    def doShowMarked(self) -> None:
-        self.clear()
-        c = self.c
-        self.addHeadlineMatches([
-            z.copy() for z in c.all_positions() if z.isMarked()
-        ])
-    #@+node:felix.20220225003906.19: *3* QSC.Event handlers
-    #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (quicksearch.py)
+    #@+node:felix.20220225003906.16: *4* QSC.find_h
+    def find_h(self,
+        regex: str,
+        nodes: List[Position],
+        flags: RegexFlag = re.IGNORECASE,
+    ) -> List[Position]:
+        """
+        Return list of all positions where zero or more characters at
+        the beginning of the headline match regex
+        """
+        try:
+            pat = re.compile(regex, flags)
+        except Exception:
+            return []
+        aList: List[Position] = []
+        seen: Set[VNode] = set()
+        for p in nodes:
+            for m in re.finditer(pat, p.h):
+                if p.v not in seen:
+                    seen.add(p.v)
+                    aList.append(p.copy())
+        return aList
+    #@+node:felix.20220225224130.1: *4* QSC.matchlines
+    def matchlines(self, b: str, miter: Any) -> List:
+        res = []
+        for m in miter:
+            st, en = g.getLine(b, m.start())
+            li = b[st:en].strip()
+            res.append((li, (m.start(), m.end())))
+        return res
+
+    #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
     def onSelectItem(self, it: Any, it_prev: Any=None) -> None:
         c = self.c
         tgt = self.its.get(it)
@@ -888,7 +823,7 @@ class LeoServer:
         #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
-        self.loop = None
+        self.loop: Any = None
         #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
@@ -1207,7 +1142,7 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'scon', cc)  # Patch up quick-search controller to the commander
+            setattr(c, 'patched_quickserch_controller', cc)  # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1560,12 +1495,13 @@ class LeoServer:
         c = self._check_c()
         # Tag search override!
         try:
-            inp = c.scon.navText
-            if c.scon.isTag:
-                c.scon.doTag(inp)
+            scon: QuickSearchController = c.patched_quickserch_controller
+            inp = scon.navText
+            if scon.isTag:
+                scon.qsc_find_tags(inp)
             else:
                 exp = inp.replace(" ", "*")
-                c.scon.bgSearch(exp)
+                scon.qsc_background_search(exp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav headline search: {e}")
         return self._make_response()
@@ -1579,13 +1515,14 @@ class LeoServer:
         """
         tag = 'nav_search'
         c = self._check_c()
+        scon: QuickSearchController = c.patched_quickserch_controller
         # Tag search override!
         try:
-            inp = c.scon.navText
-            if c.scon.isTag:
-                c.scon.doTag(inp)
+            inp = scon.navText
+            if scon.isTag:
+                scon.qsc_find_tags(inp)
             else:
-                c.scon.doSearch(inp)
+                scon.qsc_search(inp)
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
         return self._make_response()
@@ -1599,18 +1536,19 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
+            scon: QuickSearchController = c.patched_quickserch_controller
             result: Dict[str, Any] = {}
             navlist = [
                 {
                     "key": k,
-                    "h": c.scon.its[k][0]["label"],
-                    "t": c.scon.its[k][0]["type"]
-                } for k in c.scon.its.keys()
+                    "h": scon.its[k][0]["label"],
+                    "t": scon.its[k][0]["type"]
+                } for k in scon.its.keys()
             ]
             result["navList"] = navlist
-            result["messages"] = c.scon.lw
-            result["navText"] = c.scon.navText
-            result["navOptions"] = {"isTag": c.scon.isTag, "showParents": c.scon.showParents}
+            result["messages"] = scon.lw
+            result["navText"] = scon.navText
+            result["navOptions"] = {"isTag": scon.isTag, "showParents": scon.showParents}
         except Exception as e:
             raise ServerError(f"{tag}: exception doing nav search: {e}")
         return self._make_response(result)
@@ -1618,41 +1556,43 @@ class LeoServer:
 
     #@+node:felix.20220309010558.1: *5* server.find_quick_timeline
     def find_quick_timeline(self, param: Param) -> Response:
-        # fill with timeline order gnx nodes
+        """Fill with nodes ordered by gnx."""
         c = self._check_c()
-        c.scon.doTimeline()
+        scon: QuickSearchController = c.patched_quickserch_controller
+        scon.qsc_sort_by_gnx()
         return self._make_response()
 
     #@+node:felix.20220309010607.1: *5* server.find_quick_changed
     def find_quick_changed(self, param: Param) -> Response:
         # fill with list of all dirty nodes
         c = self._check_c()
-        c.scon.doChanged()
+        scon: QuickSearchController = c.patched_quickserch_controller
+        scon.qsc_find_changed()
         return self._make_response()
-
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
     def find_quick_history(self, param: Param) -> Response:
         # fill with list from history
         c = self._check_c()
-        c.scon.doNodeHistory()
+        scon: QuickSearchController = c.patched_quickserch_controller
+        scon.qsc_get_history()
         return self._make_response()
-
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
     def find_quick_marked(self, param: Param) -> Response:
         # fill with list of marked nodes
         c = self._check_c()
-        c.scon.doShowMarked()
+        scon: QuickSearchController = c.patched_quickserch_controller
+        scon.qsc_show_marked()
         return self._make_response()
 
     #@+node:felix.20220309205509.1: *5* server.goto_nav_entry
     def goto_nav_entry(self, param: Param) -> Response:
-        # activate entry in c.scon.its
+        # activate entry in scon.its
         tag = 'goto_nav_entry'
         c = self._check_c()
-        # c.scon.doTimeline()
+        scon: QuickSearchController = c.patched_quickserch_controller
         try:
             it = param.get('key')
-            c.scon.onSelectItem(it)
+            scon.onSelectItem(it)
             focus = self._get_focus()
             result = {"focus": focus}
         except Exception as e:
@@ -1667,14 +1607,15 @@ class LeoServer:
         """
         tag = 'get_search_settings'
         c = self._check_c()
+        scon: QuickSearchController = c.patched_quickserch_controller
         try:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
             result = {"searchSettings": settings.__dict__}
-            result["searchSettings"]["nav_text"] = c.scon.navText
-            result["searchSettings"]["show_parents"] = c.scon.showParents
-            result["searchSettings"]["is_tag"] = c.scon.isTag
-            result["searchSettings"]["search_options"] = c.scon.searchOptions
+            result["searchSettings"]["nav_text"] = scon.navText
+            result["searchSettings"]["show_parents"] = scon.showParents
+            result["searchSettings"]["is_tag"] = scon.isTag
+            result["searchSettings"]["search_options"] = scon.searchOptions
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
@@ -1685,6 +1626,7 @@ class LeoServer:
         """
         tag = 'set_search_settings'
         c = self._check_c()
+        scon: QuickSearchController = c.patched_quickserch_controller
         find = c.findCommands
         ftm = c.findCommands.ftm
         searchSettings = param.get('searchSettings')
@@ -1693,10 +1635,10 @@ class LeoServer:
         # Try to set the search settings
         try:
             # nav settings
-            c.scon.navText = searchSettings.get('nav_text')
-            c.scon.showParents = searchSettings.get('show_parents')
-            c.scon.isTag = searchSettings.get('is_tag')
-            c.scon.searchOptions = searchSettings.get('search_options')
+            scon.navText = searchSettings.get('nav_text')
+            scon.showParents = searchSettings.get('show_parents')
+            scon.isTag = searchSettings.get('is_tag')
+            scon.searchOptions = searchSettings.get('search_options')
 
             # Find/change text boxes.
             table = (
@@ -4199,7 +4141,7 @@ class LeoServer:
         if connectionsTotal == 1:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
-            self.loop = asyncio.get_event_loop()  # type: ignore
+            self.loop = asyncio.get_event_loop()
         else:
             # already exist, so "spectator-clients" setup
             pass  # nothing for now
@@ -4986,7 +4928,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             # None of these grabs focus from the console window.
             dialog.raise_()
             dialog.setFocus()
-            app.processEvents()  # type:ignore
+            g.app.processEvents()
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
             val = dialog.exec() if isQt6 else dialog.exec_()
@@ -5194,7 +5136,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                 await websocket.send(answer)
 
                 # If not a 'getter' send refresh signal to other clients
-                if controller.action[0:5] != "!get_" and controller.action != "!do_nothing":  # type: ignore
+                if controller.action[0:5] != "!get_" and controller.action != "!do_nothing":
                     await notify_clients(controller.action, websocket)
 
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover

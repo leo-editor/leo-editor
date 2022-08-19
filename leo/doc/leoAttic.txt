@@ -30,6 +30,775 @@ An explanation/discussion
     explains
     provides background and context
 #@+node:ekr.20211014154538.1: ** Abandoned classes
+#@+node:bob.20101215134608.5898: *3* << PosList doc >>
+@
+List of positions
+
+Functions find_h() and find_b() both return an instance of PosList.
+
+Methods filter_h() and filter_b() refine a PosList.
+
+Method children() generates a new PosList by descending one level from
+all the nodes in a PosList.
+
+A chain of PosList method calls must begin with find_h() or find_b().
+The rest of the chain can be any combination of filter_h(),
+filter_b(), and children(). For example:
+
+    pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
+
+For each position, pos, in the PosList returned, find_h() and
+filter_h() set attribute pos.mo to the match object (see Python
+Regular Expression documentation) for the pattern match.
+
+Caution: The pattern given to find_h() or filter_h() must match zero
+or more characters at the beginning of the headline.
+
+For each position, pos, the postlist returned, find_b() and filter_b()
+set attribute pos.matchiter to an iterator that will return a match
+object for each of the non-overlapping matches of the pattern in the
+body of the node.
+#@+node:ekr.20160518074224.1: *3* class g.LinterTable
+class LinterTable():
+    """A class to encapsulate lists of leo modules under test."""
+
+    def __init__(self) -> None:
+        """Ctor for LinterTable class."""
+        # Define self. relative to leo.core.leoGlobals
+        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
+    @others
+#@+node:ekr.20160518074545.2: *4* commands
+def commands(self) -> List:
+    """Return list of all command modules in leo/commands."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
+    return self.get_files(pattern)
+#@+node:ekr.20160518074545.3: *4* core
+def core(self) -> List:
+    """Return list of all of Leo's core files."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
+    aList = self.get_files(pattern)
+    for fn in ['runLeo.py',]:
+        aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
+    return sorted(aList)
+#@+node:ekr.20160518074545.4: *4* external
+def external(self) -> List:
+    """Return list of files in leo/external"""
+    pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
+    aList = self.get_files(pattern)
+    remove = [
+        'leoSAGlobals.py',
+        'leoftsindex.py',
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
+    return sorted([z for z in aList if z not in remove])
+#@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
+def get_files(self, pattern: str) -> List:
+    """Return the list of absolute file names matching the pattern."""
+    aList = sorted([
+        fn for fn in g.glob_glob(pattern)
+            if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+    return aList
+#@+node:ekr.20160518074545.9: *4* get_files_for_scope
+def get_files_for_scope(self, scope: str, fn: str) -> List:
+    """Return a list of absolute filenames for external linters."""
+    d = {
+        'all': [self.core, self.commands, self.external, self.plugins, self.tests],
+        'commands': [self.commands],
+        'core': [self.core, self.commands, self.external, self.gui_plugins],
+        'external': [self.external],
+        'file': [fn],
+        'gui': [self.gui_plugins],
+        'modes': [self.modes],
+        'plugins': [self.plugins],
+        'tests': [self.tests],
+    }
+    suppress_list = ['freewin.py']  # No longer hangs Leo, but generates a pylint fatal error.
+    functions = d.get(scope)
+    paths = []
+    if functions:
+        for func in functions:
+            files = [func] if isinstance(func, str) else func()  # Bug fix: 2016/10/15
+            for fn in files:
+                fn = g.os_path_abspath(fn)
+                if scope != 'file' and g.shortFileName(fn) in suppress_list:
+                    print(f"\npylint-leo: skip {fn}")
+                    continue
+                if g.os_path_exists(fn):
+                    if g.os_path_isfile(fn):
+                        paths.append(fn)
+                else:
+                    print(f"does not exist: {fn}")
+        paths = sorted(set(paths))
+        return paths
+    print('LinterTable.get_table: bad scope', scope)
+    return []
+#@+node:ekr.20160518074545.5: *4* gui_plugins
+def gui_plugins(self) -> List:
+    """Return list of all of Leo's gui-related files."""
+    pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
+    aList = self.get_files(pattern)
+    # These are not included, because they don't start with 'qt_':
+    add = ['free_layout.py', 'nested_splitter.py',]
+    remove = [
+        'qt_main.py',  # auto-generated file.
+    ]
+    for fn in add:
+        aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
+    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+    return sorted(set([z for z in aList if z not in remove]))
+#@+node:ekr.20160518074545.6: *4* modes
+def modes(self) -> List:
+    """Return list of all files in leo/modes"""
+    pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
+    return self.get_files(pattern)
+#@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
+def plugins(self) -> List:
+    """Return a list of all important plugins."""
+    aList = []
+    for theDir in ('', 'importers', 'writers'):
+        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
+        aList.extend(self.get_files(pattern))
+        # Don't use get_files here.
+        # for fn in g.glob_glob(pattern):
+            # sfn = g.shortFileName(fn)
+            # if sfn != '__init__.py':
+                # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
+                # aList.append(sfn)
+    remove = [
+        # 2016/05/20: *do* include gui-related plugins.
+        # This allows the -a option not to doubly-include gui-related plugins.
+            # 'free_layout.py', # Gui-related.
+            # 'nested_splitter.py', # Gui-related.
+        'gtkDialogs.py',  # Many errors, not important.
+        'leofts.py',  # Not (yet) in leoPlugins.leo.
+        'qtGui.py',  # Dummy file
+        'qt_main.py',  # Created automatically.
+        'rst3.py',  # Obsolete
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
+    aList = sorted([z for z in aList if z not in remove])
+    return sorted(set(aList))
+#@+node:ekr.20211115103929.1: *4* tests (LinterTable)
+def tests(self) -> List:
+    """Return list of files in leo/unittests"""
+    aList = []
+    for theDir in ('', 'commands', 'core', 'plugins'):
+        pattern = g.os_path_finalize_join(self.loadDir, 'unittests', theDir, '*.py')
+        aList.extend(self.get_files(pattern))
+    remove = [
+        'py3_test_grammar.py',
+    ]
+    remove = [g.os_path_finalize_join(self.loadDir, 'unittests', fn) for fn in remove]
+    return sorted([z for z in aList if z not in remove])
+#@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
+class PosList(list):
+    << docstring for PosList >>
+    @others
+#@+node:ekr.20090130114732.2: *4* << docstring for PosList >>
+"""A subclass of list for creating and selecting lists of positions.
+
+    This is deprecated, use leoNodes.PosList instead!
+
+    # Creates a PosList containing all positions in c.
+    aList = g.PosList(c)
+
+    # Creates a PosList from aList2.
+    aList = g.PosList(c,aList2)
+
+    # Creates a PosList containing all positions p in aList
+    # such that p.h matches the pattern.
+    # The pattern is a regular expression if regex is True.
+    # if removeClones is True, all positions p2 are removed
+    # if a position p is already in the list and p2.v == p.v.
+    aList2 = aList.select(pattern,regex=False,removeClones=True)
+
+    # Prints all positions in aList, sorted if sort is True.
+    # Prints p.h, or repr(p) if verbose is True.
+    aList.dump(sort=False,verbose=False)
+"""
+#@+node:ekr.20140531104908.17611: *4* PosList.ctor
+def __init__(self, c: Cmdr, aList: List[Cmdr]=None) -> None:
+    self.c = c
+    super().__init__()
+    if aList is None:
+        for p in c.all_positions():
+            self.append(p.copy())
+    else:
+        for p in aList:
+            self.append(p.copy())
+#@+node:ekr.20140531104908.17612: *4* PosList.dump
+def dump(self, sort: bool=False, verbose: bool=False) -> str:
+    if verbose:
+        return g.listToString(self, sort=sort)
+    return g.listToString([p.h for p in self], sort=sort)
+#@+node:ekr.20140531104908.17613: *4* PosList.select
+def select(self, pat: str, regex: bool=False, removeClones: bool=True) -> "PosList":
+    """
+    Return a new PosList containing all positions
+    in self that match the given pattern.
+    """
+    c = self.c
+
+    aList = []
+    if regex:
+        for p in self:
+            if re.match(pat, p.h):
+                aList.append(p.copy())
+    else:
+        for p in self:
+            if p.h.find(pat) != -1:
+                aList.append(p.copy())
+    if removeClones:
+        aList = self.removeClones(aList)
+    return PosList(c, aList)
+#@+node:ekr.20140531104908.17614: *4* PosList.removeClones
+def removeClones(self, aList: List[Pos]) -> List[Pos]:
+    seen = {}
+    aList2: List[Pos] = []
+    for p in aList:
+        if p.v not in seen:
+            seen[p.v] = p.v
+            aList2.append(p)
+    return aList2
+#@+node:jlunz.20151027094647.1: *3* class OrderedDefaultDict (OrderedDict) (quicksearch.py)
+class OrderedDefaultDict(OrderedDict):
+    """
+    Credit:  http://stackoverflow.com/questions/4126348/
+    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
+    """
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if not args:
+            self.default_factory = None
+        else:
+            if not (args[0] is None or callable(args[0])):
+                raise TypeError('first argument must be callable or None')
+            self.default_factory = args[0]
+            args = args[1:]
+        super().__init__(*args, **kwargs)
+
+    def __missing__(self, key: Any) -> Any:
+        if self.default_factory is None:
+            raise KeyError(key)
+        self[key] = default = self.default_factory()
+        return default
+
+    def __reduce__(self) -> Any:  # optional, for pickle support
+        args = (self.default_factory,) if self.default_factory else ()
+        return self.__class__, args, None, None, self.items()
+#@+node:ville.20090311190405.68: *3* class PosList (leoNodes.py)
+class PosList(list):  # pragma: no cover
+
+    __slots__: List[str] = []
+
+    @others
+
+Poslist = PosList  # compatibility.
+#@+node:bob.20101215134608.5897: *4* PosList.children
+def children(self) -> "PosList":
+    """ Return a PosList instance containing pointers to
+    all the immediate children of nodes in PosList self.
+    """
+    res = PosList()
+    for p in self:
+        for child_p in p.children():
+            res.append(child_p.copy())
+    return res
+#@+node:ville.20090311190405.69: *4* PosList.filter_h
+def filter_h(self, regex: str, flags: Any=re.IGNORECASE) -> "PosList":
+    """
+    Find all the nodes in PosList self where zero or more characters at
+    the beginning of the headline match regex.
+    """
+    pat = re.compile(regex, flags)
+    res = PosList()
+    for p in self:
+        mo = re.match(pat, p.h)
+        if mo:
+            # #2012: Don't inject pc.mo.
+            pc = p.copy()
+            res.append(pc)
+    return res
+#@+node:ville.20090311195550.1: *4* PosList.filter_b
+def filter_b(self, regex: str, flags: Any=re.IGNORECASE) -> "PosList":
+    """ Find all the nodes in PosList self where body matches regex
+    one or more times.
+
+    """
+    pat = re.compile(regex, flags)
+    res = PosList()
+    for p in self:
+        m = re.finditer(pat, p.b)
+        t1, t2 = itertools.tee(m, 2)
+        try:
+            t1.__next__()
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        except StopIteration:
+            pass
+    return res
+#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
+class SyntaxSanitizer:
+
+    << SyntaxSanitizer docstring >>
+
+    def __init__(self, c, keep_comments):
+        self.c = c
+        self.keep_comments = keep_comments
+
+    @others
+#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
+r"""
+This class converts section references, @others and Leo directives to
+comments. This allows ast.parse to handle the result.
+
+Within section references, these comments must *usually* be executable:
+    
+BEFORE:
+    if condition:
+        <\< do something >\>
+AFTER:
+    if condition:
+        pass # do something
+        
+Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
+    
+BEFORE:
+    tips = [
+        <\< define tips >\>
+        ]
+
+AFTER:
+    tips = [
+        pass # define tips
+    ]
+    
+This fails because tips = [pass] is a SyntaxError.
+
+The beautify* and black* commands clearly report such failures.
+"""
+#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
+def comment_leo_lines(self, p=None, s0=None):
+    """
+    Replace lines containing Leonine syntax with **special comment lines** of the form:
+        
+        {lws}#{lws}{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    This convention allows uncomment_special_lines to restore these lines.
+    """
+    # Choose a marker that appears nowhere in s.
+    if p:
+        s0 = p.b
+    n = 5
+    while('#'+ ('!'*n)) in s0:
+        n += 1
+    comment = '#' + ('!' * n)
+    # Create a dict of directives.
+    d = {z: True for z in g.globalDirectiveList}
+    # Convert all Leonine lines to special comments.
+    i, lines, result = 0, g.splitLines(s0), []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        s_lstrip = s.lstrip()
+        # Comment out any containing a section reference.
+        j = s.find('<<')
+        k = s.find('>>') if j > -1 else -1
+        if -1 < j < k:
+            result.append(comment+s)
+            # Generate a properly-indented pass line.
+            j2 = g.skip_ws(s, 0)
+            result.append(f'{" "*j2}pass\n')
+        elif s_lstrip.startswith('@'):
+            # Comment out all other Leonine constructs.
+            if self.starts_doc_part(s):
+                # Comment the entire doc part, until @c or @code.
+                result.append(comment+s)
+                i += 1
+                while i < len(lines):
+                    s = lines[i]
+                    result.append(comment+s)
+                    i += 1
+                    if self.ends_doc_part(s):
+                        break
+            else:
+                j = g.skip_ws(s, 0)
+                assert s[j] == '@'
+                j += 1
+                k = g.skip_id(s, j, chars='-')
+                if k > j:
+                    word = s[j : k]
+                    if word == 'others':
+                        # Remember the original @others line.
+                        result.append(comment+s)
+                        # Generate a properly-indented pass line.
+                        result.append(f'{" "*(j-1)}pass\n')
+                    else:
+                        # Comment only Leo directives, not decorators.
+                        result.append(comment+s if word in d else s)
+                else:
+                    result.append(s)
+        elif s_lstrip.startswith('#') and self.keep_comments:
+            # A leading comment.
+            # Bug fix: Preserve lws in comments, too.
+            j2 = g.skip_ws(s, 0)
+            result.append(" "*j2+comment+s)
+        else:
+            # A plain line.
+            result.append(s)
+        if i == progress:
+            i += 1
+    return comment, ''.join(result)
+#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
+def starts_doc_part(self, s):
+    """Return True if s word matches @ or @doc."""
+    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
+
+def ends_doc_part(self, s):
+    """Return True if s word matches @c or @code."""
+    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
+#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
+def uncomment_leo_lines(self, comment, p, s0):
+    """Reverse the effect of comment_leo_lines."""
+    lines = g.splitLines(s0)
+    i, result = 0, []
+    while i < len(lines):
+        progress = i
+        s = lines[i]
+        i += 1
+        if comment in s:
+            # One or more special lines.
+            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
+        else:
+            # A regular line.
+            result.append(s)
+        assert progress < i
+    return ''.join(result).rstrip() + '\n'
+#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
+def uncomment_special_lines(self, comment, i, lines, p, result, s):
+    """
+    This method restores original lines from the special comment lines
+    created by comment_leo_lines. These lines have the form:
+        
+        {lws}#{marker}{line}
+        
+    where: 
+    - lws is the leading whitespace of the original line
+    - marker appears nowhere in p.b
+    - line is the original line, unchanged.
+    
+    s is a line containing the comment delim.
+    i points at the *next* line.
+    Handle one or more lines, appending stripped lines to result.
+    """
+    #
+    # Delete the lws before the comment.
+    # This works because the tail contains the original whitespace.
+    assert comment in s
+    s = s.lstrip().replace(comment, '')
+    #
+    # Here, s is the original line.
+    if comment in s:
+        g.trace(f"can not happen: {s!r}")
+        return i
+    if self.starts_doc_part(s):
+        result.append(s)
+        while i < len(lines):
+            s = lines[i].lstrip().replace(comment, '')
+            i += 1
+            result.append(s)
+            if self.ends_doc_part(s):
+                break
+        return i
+    j = s.find('<<')
+    k = s.find('>>') if j > -1 else -1
+    if -1 < j < k or '@others' in s:
+        #
+        # A section reference line or an @others line.
+        # Such lines are followed by a pass line.
+        #
+        # The beautifier may insert blank lines before the pass line.
+        kind = 'section ref' if -1 < j < k else '@others'
+        # Restore the original line, including leading whitespace.
+        result.append(s)
+        # Skip blank lines.
+        while i < len(lines) and not lines[i].strip():
+            i += 1
+        # Skip the pass line.
+        if i < len(lines) and lines[i].lstrip().startswith('pass'):
+            i += 1
+        else:
+            g.trace(f"*** no pass after {kind}: {p.h}")
+    else:
+        # A directive line or a comment line.
+        result.append(s)
+    return i
+#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
+class TokenSync:
+    """A class to sync and remember tokens."""
+    # To do: handle comments, line breaks...
+    @others
+#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
+def __init__(self, s, tokens):
+    """Ctor for TokenSync class."""
+    assert isinstance(tokens, list)  # Not a generator.
+    self.s = s
+    self.first_leading_line = None
+    self.lines = [z.rstrip() for z in g.splitLines(s)]
+    # Order is important from here on...
+    self.nl_token = self.make_nl_token()
+    self.line_tokens = self.make_line_tokens(tokens)
+    self.blank_lines = self.make_blank_lines()
+    self.string_tokens = self.make_string_tokens()
+    self.ignored_lines = self.make_ignored_lines()
+#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
+def make_blank_lines(self):
+    """Return of list of line numbers of blank lines."""
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        # if any([self.token_kind(z) == 'nl' for z in aList]):
+        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
+            result.append(i)
+    return result
+#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
+def make_ignored_lines(self):
+    """
+    Return a copy of line_tokens containing ignored lines,
+    that is, full-line comments or blank lines.
+    These are the lines returned by leading_lines().
+    """
+    result = []
+    for i, aList in enumerate(self.line_tokens):
+        for z in aList:
+            if self.is_line_comment(z):
+                result.append(z)
+                break
+        else:
+            if i in self.blank_lines:
+                result.append(self.nl_token)
+            else:
+                result.append(None)
+    assert len(result) == len(self.line_tokens)
+    for i, aList in enumerate(result):
+        if aList:
+            self.first_leading_line = i
+            break
+    else:
+        self.first_leading_line = len(result)
+    return result
+#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
+def make_line_tokens(self, tokens):
+    """
+    Return a list of lists of tokens for each list in self.lines.
+    The strings in self.lines may end in a backslash, so care is needed.
+    """
+    import token as tm
+    n, result = len(self.lines), []
+    for i in range(0, n+1):
+        result.append([])
+    for token in tokens:
+        t1, t2, t3, t4, t5 = token
+        kind = tm.tok_name[t1].lower()
+        srow, scol = t3
+        erow, ecol = t4
+        line = erow - 1 if kind == 'string' else srow - 1
+        result[line].append(token)
+    assert len(self.lines) + 1 == len(result), len(result)
+    return result
+#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
+def make_nl_token(self):
+    """Return a newline token with '\n' as both val and raw_val."""
+    import token as tm
+    t1 = tm.NEWLINE
+    t2 = '\n'
+    t3 = (0, 0)  # Not used.
+    t4 = (0, 0)  # Not used.
+    t5 = '\n'
+    return t1, t2, t3, t4, t5
+#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
+def make_string_tokens(self):
+    """Return a copy of line_tokens containing only string tokens."""
+    result = []
+    for aList in self.line_tokens:
+        result.append([z for z in aList if self.token_kind(z) == 'string'])
+    assert len(result) == len(self.line_tokens)
+    return result
+#@+node:ekr.20160225102931.8: *4* ts.check_strings
+def check_strings(self):
+    """Check that all strings have been consumed."""
+    for i, aList in enumerate(self.string_tokens):
+        if aList:
+            g.trace(f"warning: line {i}. unused strings: {aList}")
+#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
+def is_line_comment(self, token):
+    """Return True if the token represents a full-line comment."""
+    import token as tm
+    t1, t2, t3, t4, t5 = token
+    kind = tm.tok_name[t1].lower()
+    raw_val = t5
+    return kind == 'comment' and raw_val.lstrip().startswith('#')
+#@+node:ekr.20160225102931.12: *4* ts.last_node
+def last_node(self, node):
+    """Return the node of node's tree with the largest lineno field."""
+
+    class LineWalker(ast.NodeVisitor):
+
+        def __init__(self):
+            """Ctor for LineWalker class."""
+            self.node = None
+            self.lineno = -1
+
+        def visit(self, node):
+            """LineWalker.visit."""
+            if hasattr(node, 'lineno'):
+                if node.lineno > self.lineno:
+                    self.lineno = node.lineno
+                    self.node = node
+            if isinstance(node, list):
+                for z in node:
+                    self.visit(z)
+            else:
+                self.generic_visit(node)
+
+    w = LineWalker()
+    w.visit(node)
+    return w.node
+#@+node:ekr.20160225102931.13: *4* ts.leading_lines
+def leading_lines(self, node):
+    """Return a list of the preceding comment and blank lines"""
+    # This can be called on arbitrary nodes.
+    leading = []
+    if hasattr(node, 'lineno'):
+        i, n = self.first_leading_line, node.lineno
+        while i < n:
+            token = self.ignored_lines[i]
+            if token:
+                s = self.token_raw_val(token).rstrip() + '\n'
+                leading.append(s)
+            i += 1
+        self.first_leading_line = i
+    return leading
+#@+node:ekr.20160225102931.14: *4* ts.leading_string
+def leading_string(self, node):
+    """Return a string containing all lines preceding node."""
+    return ''.join(self.leading_lines(node))
+#@+node:ekr.20160225102931.15: *4* ts.line_at
+def line_at(self, node, continued_lines=True):
+    """Return the lines at the node, possibly including continuation lines."""
+    n = getattr(node, 'lineno', None)
+    if n is None:
+        return f'<no line> for %s' % node.__class__.__name__
+    if continued_lines:
+        aList, n = [], n - 1
+        while n < len(self.lines):
+            s = self.lines[n]
+            if s.endswith('\\'):
+                aList.append(s[:-1])
+                n += 1
+            else:
+                aList.append(s)
+                break
+        return ''.join(aList)
+    return self.lines[n - 1]
+#@+node:ekr.20160225102931.16: *4* ts.sync_string
+def sync_string(self, node):
+    """Return the spelling of the string at the given node."""
+    n = node.lineno
+    tokens = self.string_tokens[n - 1]
+    if tokens:
+        token = tokens.pop(0)
+        self.string_tokens[n - 1] = tokens
+        return self.token_val(token)
+    g.trace('===== underflow', n, node.s)
+    return node.s
+#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
+def tokens_for_statement(self, node):
+    assert isinstance(node, ast.AST), node
+    name = node.__class__.__name__
+    if hasattr(node, 'lineno'):
+        tokens = self.line_tokens[node.lineno - 1]
+        g.trace(' '.join([self.dump_token(z) for z in tokens]))
+    else:
+        g.trace('no lineno', name)
+#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
+def trailing_comment(self, node):
+    """
+    Return a string containing the trailing comment for the node, if any.
+    The string always ends with a newline.
+    """
+    if hasattr(node, 'lineno'):
+        return self.trailing_comment_at_lineno(node.lineno)
+    g.trace('no lineno', node.__class__.__name__, g.callers())
+    return '\n'
+#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
+def trailing_comment_at_lineno(self, lineno):
+    """Return any trailing comment at the given node.lineno."""
+    tokens = self.line_tokens[lineno - 1]
+    for token in tokens:
+        if self.token_kind(token) == 'comment':
+            raw_val = self.token_raw_val(token).rstrip()
+            if not raw_val.strip().startswith('#'):
+                val = self.token_val(token).rstrip()
+                s = f' %s\n' % val
+                return s
+    return '\n'
+#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
+def trailing_lines(self):
+    """return any remaining ignored lines."""
+    trailing = []
+    i = self.first_leading_line
+    while i < len(self.ignored_lines):
+        token = self.ignored_lines[i]
+        if token:
+            s = self.token_raw_val(token).rstrip() + '\n'
+            trailing.append(s)
+        i += 1
+    self.first_leading_line = i
+    return trailing
+#@+node:ekr.20191122105543.1: *4* ts:dumps
+#@+node:ekr.20160225102931.9: *5* ts.dump_token
+def dump_token(self, token, verbose=False):
+    """Dump the token. It is either a string or a 5-tuple."""
+    import token as tm
+    if isinstance(token, str):
+        return token
+    t1, t2, t3, t4, t5 = token
+    kind = g.toUnicode(tm.tok_name[t1].lower())
+    # raw_val = g.toUnicode(t5)
+    val = g.toUnicode(t2)
+    if verbose:
+        return f'token: %10s %r' % (kind, val)
+    return val
+#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
+def token_kind(self, token):
+    """Return the token's type."""
+    t1, t2, t3, t4, t5 = token
+    import token as tm
+    return g.toUnicode(tm.tok_name[t1].lower())
+
+def token_raw_val(self, token):
+    """Return the value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t5)
+
+def token_val(self, token):
+    """Return the raw value of the token."""
+    t1, t2, t3, t4, t5 = token
+    return g.toUnicode(t2)
+#@+node:ekr.20160225102931.11: *5* ts.join
+def join(self, aList, sep=','):
+    """return the items of the list joined by sep string."""
+    tokens = []
+    for i, token in enumerate(aList or []):
+        tokens.append(token)
+        if i < len(aList) - 1:
+            tokens.append(sep)
+    return tokens
 #@+node:ekr.20210902013852.1: *3* Converter classes for @test
 # Classes to convert @test nodes to proper unit tests.
 #@+node:ekr.20201202083003.1: *4* class ConvertAtTests
@@ -315,6 +1084,76 @@ def convert_node(self, c, p, target):
     result.append(f"{indent}self.runTest(before, after, i, j, func)\n")
     # Set the body text!
     test_node.b = ''.join(result)
+#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
+def scan_for_values(self):  # pragma: no cover
+    """
+    **Important**: This method is not used. It shows how to "parse"
+    the RHS of an % operator using tokens instead of a parse tree. 
+    
+    This is a recursive descent parser. It is comprable in complexity
+    to fs.scan_format_string.
+    
+    Return a list of possibly parenthesized values for the format string.
+    
+    This method never actually consumes tokens.
+    
+    If all goes well, we'll skip all tokens in the tokens list.
+    """
+
+    # pylint: disable=no-member # This is example code.
+    # Skip the '%'
+    new_token = self.new_token
+    assert self.look_ahead(0) == ('op', '%')
+    token_i, tokens = self.skip_ahead(0, 'op', '%')
+    # Skip '(' if it's next
+    include_paren = self.look_ahead(token_i) == ('op', '(')
+    if include_paren:
+        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+        tokens.extend(skipped_tokens)
+    # Find all tokens up to the first ')' or 'for'
+    values, value_list = [], []
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        token = self.tokens[token_i]
+        token_i += 1
+        tokens.append(token)
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('newline', 'nl'):
+            if include_paren or val.endswith('\\\n'):
+                # Continue scanning, ignoring the newline.
+                continue
+            # The newline ends the scan.
+            values.append(value_list)  # Retain the tokens!
+            if not include_paren:  # Bug fix.
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('op', ')'):
+            values.append(value_list)
+            if not include_paren:
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('name', 'for'):
+            self.add_trailing_ws = True
+            tokens.pop()  # Rescan the 'for'
+            values.append(value_list)
+            break
+        if (kind, val) == ('op', ','):
+            values.append(value_list)
+            value_list = []
+        elif kind == 'op' and val in '([{':
+            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
+            value_list.extend(values_list2)
+            tokens.extend(self.tokens[token_i:token_i2])
+            token_i = token_i2
+        elif kind == 'name':
+            # Ensure separation of names.
+            value_list.append(new_token(kind, val))
+            value_list.append(new_token('ws', ' '))
+        else:
+            value_list.append(new_token(kind, val))
+    return values, tokens
 #@+node:ekr.20200729081252.1: *3* FullTraverser classes
 #@+node:ekr.20141012064706.18399: *4* class AstFormatter
 class AstFormatter:
@@ -2782,670 +3621,6 @@ def do_YieldFrom(self, node):
     self.keyword('yield from')
     self.visit(node.value)
     self.end_div('statement')
-#@+node:ekr.20160225102931.1: *3* class TokenSync (deprecated)
-class TokenSync:
-    """A class to sync and remember tokens."""
-    # To do: handle comments, line breaks...
-    @others
-#@+node:ekr.20160225102931.2: *4*  ts.ctor & helpers
-def __init__(self, s, tokens):
-    """Ctor for TokenSync class."""
-    assert isinstance(tokens, list)  # Not a generator.
-    self.s = s
-    self.first_leading_line = None
-    self.lines = [z.rstrip() for z in g.splitLines(s)]
-    # Order is important from here on...
-    self.nl_token = self.make_nl_token()
-    self.line_tokens = self.make_line_tokens(tokens)
-    self.blank_lines = self.make_blank_lines()
-    self.string_tokens = self.make_string_tokens()
-    self.ignored_lines = self.make_ignored_lines()
-#@+node:ekr.20160225102931.3: *5* ts.make_blank_lines
-def make_blank_lines(self):
-    """Return of list of line numbers of blank lines."""
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        # if any([self.token_kind(z) == 'nl' for z in aList]):
-        if len(aList) == 1 and self.token_kind(aList[0]) == 'nl':
-            result.append(i)
-    return result
-#@+node:ekr.20160225102931.4: *5* ts.make_ignored_lines
-def make_ignored_lines(self):
-    """
-    Return a copy of line_tokens containing ignored lines,
-    that is, full-line comments or blank lines.
-    These are the lines returned by leading_lines().
-    """
-    result = []
-    for i, aList in enumerate(self.line_tokens):
-        for z in aList:
-            if self.is_line_comment(z):
-                result.append(z)
-                break
-        else:
-            if i in self.blank_lines:
-                result.append(self.nl_token)
-            else:
-                result.append(None)
-    assert len(result) == len(self.line_tokens)
-    for i, aList in enumerate(result):
-        if aList:
-            self.first_leading_line = i
-            break
-    else:
-        self.first_leading_line = len(result)
-    return result
-#@+node:ekr.20160225102931.5: *5* ts.make_line_tokens (trace tokens)
-def make_line_tokens(self, tokens):
-    """
-    Return a list of lists of tokens for each list in self.lines.
-    The strings in self.lines may end in a backslash, so care is needed.
-    """
-    import token as tm
-    n, result = len(self.lines), []
-    for i in range(0, n+1):
-        result.append([])
-    for token in tokens:
-        t1, t2, t3, t4, t5 = token
-        kind = tm.tok_name[t1].lower()
-        srow, scol = t3
-        erow, ecol = t4
-        line = erow - 1 if kind == 'string' else srow - 1
-        result[line].append(token)
-    assert len(self.lines) + 1 == len(result), len(result)
-    return result
-#@+node:ekr.20160225102931.6: *5* ts.make_nl_token
-def make_nl_token(self):
-    """Return a newline token with '\n' as both val and raw_val."""
-    import token as tm
-    t1 = tm.NEWLINE
-    t2 = '\n'
-    t3 = (0, 0)  # Not used.
-    t4 = (0, 0)  # Not used.
-    t5 = '\n'
-    return t1, t2, t3, t4, t5
-#@+node:ekr.20160225102931.7: *5* ts.make_string_tokens
-def make_string_tokens(self):
-    """Return a copy of line_tokens containing only string tokens."""
-    result = []
-    for aList in self.line_tokens:
-        result.append([z for z in aList if self.token_kind(z) == 'string'])
-    assert len(result) == len(self.line_tokens)
-    return result
-#@+node:ekr.20160225102931.8: *4* ts.check_strings
-def check_strings(self):
-    """Check that all strings have been consumed."""
-    for i, aList in enumerate(self.string_tokens):
-        if aList:
-            g.trace(f"warning: line {i}. unused strings: {aList}")
-#@+node:ekr.20160225102931.10: *4* ts.is_line_comment
-def is_line_comment(self, token):
-    """Return True if the token represents a full-line comment."""
-    import token as tm
-    t1, t2, t3, t4, t5 = token
-    kind = tm.tok_name[t1].lower()
-    raw_val = t5
-    return kind == 'comment' and raw_val.lstrip().startswith('#')
-#@+node:ekr.20160225102931.12: *4* ts.last_node
-def last_node(self, node):
-    """Return the node of node's tree with the largest lineno field."""
-
-    class LineWalker(ast.NodeVisitor):
-
-        def __init__(self):
-            """Ctor for LineWalker class."""
-            self.node = None
-            self.lineno = -1
-
-        def visit(self, node):
-            """LineWalker.visit."""
-            if hasattr(node, 'lineno'):
-                if node.lineno > self.lineno:
-                    self.lineno = node.lineno
-                    self.node = node
-            if isinstance(node, list):
-                for z in node:
-                    self.visit(z)
-            else:
-                self.generic_visit(node)
-
-    w = LineWalker()
-    w.visit(node)
-    return w.node
-#@+node:ekr.20160225102931.13: *4* ts.leading_lines
-def leading_lines(self, node):
-    """Return a list of the preceding comment and blank lines"""
-    # This can be called on arbitrary nodes.
-    leading = []
-    if hasattr(node, 'lineno'):
-        i, n = self.first_leading_line, node.lineno
-        while i < n:
-            token = self.ignored_lines[i]
-            if token:
-                s = self.token_raw_val(token).rstrip() + '\n'
-                leading.append(s)
-            i += 1
-        self.first_leading_line = i
-    return leading
-#@+node:ekr.20160225102931.14: *4* ts.leading_string
-def leading_string(self, node):
-    """Return a string containing all lines preceding node."""
-    return ''.join(self.leading_lines(node))
-#@+node:ekr.20160225102931.15: *4* ts.line_at
-def line_at(self, node, continued_lines=True):
-    """Return the lines at the node, possibly including continuation lines."""
-    n = getattr(node, 'lineno', None)
-    if n is None:
-        return f'<no line> for %s' % node.__class__.__name__
-    if continued_lines:
-        aList, n = [], n - 1
-        while n < len(self.lines):
-            s = self.lines[n]
-            if s.endswith('\\'):
-                aList.append(s[:-1])
-                n += 1
-            else:
-                aList.append(s)
-                break
-        return ''.join(aList)
-    return self.lines[n - 1]
-#@+node:ekr.20160225102931.16: *4* ts.sync_string
-def sync_string(self, node):
-    """Return the spelling of the string at the given node."""
-    n = node.lineno
-    tokens = self.string_tokens[n - 1]
-    if tokens:
-        token = tokens.pop(0)
-        self.string_tokens[n - 1] = tokens
-        return self.token_val(token)
-    g.trace('===== underflow', n, node.s)
-    return node.s
-#@+node:ekr.20160225102931.18: *4* ts.tokens_for_statement
-def tokens_for_statement(self, node):
-    assert isinstance(node, ast.AST), node
-    name = node.__class__.__name__
-    if hasattr(node, 'lineno'):
-        tokens = self.line_tokens[node.lineno - 1]
-        g.trace(' '.join([self.dump_token(z) for z in tokens]))
-    else:
-        g.trace('no lineno', name)
-#@+node:ekr.20160225102931.19: *4* ts.trailing_comment
-def trailing_comment(self, node):
-    """
-    Return a string containing the trailing comment for the node, if any.
-    The string always ends with a newline.
-    """
-    if hasattr(node, 'lineno'):
-        return self.trailing_comment_at_lineno(node.lineno)
-    g.trace('no lineno', node.__class__.__name__, g.callers())
-    return '\n'
-#@+node:ekr.20160225102931.20: *4* ts.trailing_comment_at_lineno
-def trailing_comment_at_lineno(self, lineno):
-    """Return any trailing comment at the given node.lineno."""
-    tokens = self.line_tokens[lineno - 1]
-    for token in tokens:
-        if self.token_kind(token) == 'comment':
-            raw_val = self.token_raw_val(token).rstrip()
-            if not raw_val.strip().startswith('#'):
-                val = self.token_val(token).rstrip()
-                s = f' %s\n' % val
-                return s
-    return '\n'
-#@+node:ekr.20160225102931.21: *4* ts.trailing_lines
-def trailing_lines(self):
-    """return any remaining ignored lines."""
-    trailing = []
-    i = self.first_leading_line
-    while i < len(self.ignored_lines):
-        token = self.ignored_lines[i]
-        if token:
-            s = self.token_raw_val(token).rstrip() + '\n'
-            trailing.append(s)
-        i += 1
-    self.first_leading_line = i
-    return trailing
-#@+node:ekr.20191122105543.1: *4* ts:dumps
-#@+node:ekr.20160225102931.9: *5* ts.dump_token
-def dump_token(self, token, verbose=False):
-    """Dump the token. It is either a string or a 5-tuple."""
-    import token as tm
-    if isinstance(token, str):
-        return token
-    t1, t2, t3, t4, t5 = token
-    kind = g.toUnicode(tm.tok_name[t1].lower())
-    # raw_val = g.toUnicode(t5)
-    val = g.toUnicode(t2)
-    if verbose:
-        return f'token: %10s %r' % (kind, val)
-    return val
-#@+node:ekr.20160225102931.17: *5* ts.token_kind/raw_val/val
-def token_kind(self, token):
-    """Return the token's type."""
-    t1, t2, t3, t4, t5 = token
-    import token as tm
-    return g.toUnicode(tm.tok_name[t1].lower())
-
-def token_raw_val(self, token):
-    """Return the value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t5)
-
-def token_val(self, token):
-    """Return the raw value of the token."""
-    t1, t2, t3, t4, t5 = token
-    return g.toUnicode(t2)
-#@+node:ekr.20160225102931.11: *5* ts.join
-def join(self, aList, sep=','):
-    """return the items of the list joined by sep string."""
-    tokens = []
-    for i, token in enumerate(aList or []):
-        tokens.append(token)
-        if i < len(aList) - 1:
-            tokens.append(sep)
-    return tokens
-#@+node:ekr.20190910081550.1: *3* class SyntaxSanitizer
-class SyntaxSanitizer:
-
-    << SyntaxSanitizer docstring >>
-
-    def __init__(self, c, keep_comments):
-        self.c = c
-        self.keep_comments = keep_comments
-
-    @others
-#@+node:ekr.20190910093739.1: *4* << SyntaxSanitizer docstring >>
-r"""
-This class converts section references, @others and Leo directives to
-comments. This allows ast.parse to handle the result.
-
-Within section references, these comments must *usually* be executable:
-    
-BEFORE:
-    if condition:
-        <\< do something >\>
-AFTER:
-    if condition:
-        pass # do something
-        
-Alas, sanitation can result in a syntax error. For example, leoTips.py contains:
-    
-BEFORE:
-    tips = [
-        <\< define tips >\>
-        ]
-
-AFTER:
-    tips = [
-        pass # define tips
-    ]
-    
-This fails because tips = [pass] is a SyntaxError.
-
-The beautify* and black* commands clearly report such failures.
-"""
-#@+node:ekr.20190910022637.2: *4* sanitize.comment_leo_lines
-def comment_leo_lines(self, p=None, s0=None):
-    """
-    Replace lines containing Leonine syntax with **special comment lines** of the form:
-        
-        {lws}#{lws}{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    This convention allows uncomment_special_lines to restore these lines.
-    """
-    # Choose a marker that appears nowhere in s.
-    if p:
-        s0 = p.b
-    n = 5
-    while('#'+ ('!'*n)) in s0:
-        n += 1
-    comment = '#' + ('!' * n)
-    # Create a dict of directives.
-    d = {z: True for z in g.globalDirectiveList}
-    # Convert all Leonine lines to special comments.
-    i, lines, result = 0, g.splitLines(s0), []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        s_lstrip = s.lstrip()
-        # Comment out any containing a section reference.
-        j = s.find('<<')
-        k = s.find('>>') if j > -1 else -1
-        if -1 < j < k:
-            result.append(comment+s)
-            # Generate a properly-indented pass line.
-            j2 = g.skip_ws(s, 0)
-            result.append(f'{" "*j2}pass\n')
-        elif s_lstrip.startswith('@'):
-            # Comment out all other Leonine constructs.
-            if self.starts_doc_part(s):
-                # Comment the entire doc part, until @c or @code.
-                result.append(comment+s)
-                i += 1
-                while i < len(lines):
-                    s = lines[i]
-                    result.append(comment+s)
-                    i += 1
-                    if self.ends_doc_part(s):
-                        break
-            else:
-                j = g.skip_ws(s, 0)
-                assert s[j] == '@'
-                j += 1
-                k = g.skip_id(s, j, chars='-')
-                if k > j:
-                    word = s[j : k]
-                    if word == 'others':
-                        # Remember the original @others line.
-                        result.append(comment+s)
-                        # Generate a properly-indented pass line.
-                        result.append(f'{" "*(j-1)}pass\n')
-                    else:
-                        # Comment only Leo directives, not decorators.
-                        result.append(comment+s if word in d else s)
-                else:
-                    result.append(s)
-        elif s_lstrip.startswith('#') and self.keep_comments:
-            # A leading comment.
-            # Bug fix: Preserve lws in comments, too.
-            j2 = g.skip_ws(s, 0)
-            result.append(" "*j2+comment+s)
-        else:
-            # A plain line.
-            result.append(s)
-        if i == progress:
-            i += 1
-    return comment, ''.join(result)
-#@+node:ekr.20190910022637.3: *4* sanitize.starts_doc_part & ends_doc_part
-def starts_doc_part(self, s):
-    """Return True if s word matches @ or @doc."""
-    return s.startswith(('@\n', '@doc\n', '@ ', '@doc '))
-
-def ends_doc_part(self, s):
-    """Return True if s word matches @c or @code."""
-    return s.startswith(('@c\n', '@code\n', '@c ', '@code '))
-#@+node:ekr.20190910022637.4: *4* sanitize.uncomment_leo_lines
-def uncomment_leo_lines(self, comment, p, s0):
-    """Reverse the effect of comment_leo_lines."""
-    lines = g.splitLines(s0)
-    i, result = 0, []
-    while i < len(lines):
-        progress = i
-        s = lines[i]
-        i += 1
-        if comment in s:
-            # One or more special lines.
-            i = self.uncomment_special_lines(comment, i, lines, p, result, s)
-        else:
-            # A regular line.
-            result.append(s)
-        assert progress < i
-    return ''.join(result).rstrip() + '\n'
-#@+node:ekr.20190910022637.5: *4* sanitize.uncomment_special_line & helpers
-def uncomment_special_lines(self, comment, i, lines, p, result, s):
-    """
-    This method restores original lines from the special comment lines
-    created by comment_leo_lines. These lines have the form:
-        
-        {lws}#{marker}{line}
-        
-    where: 
-    - lws is the leading whitespace of the original line
-    - marker appears nowhere in p.b
-    - line is the original line, unchanged.
-    
-    s is a line containing the comment delim.
-    i points at the *next* line.
-    Handle one or more lines, appending stripped lines to result.
-    """
-    #
-    # Delete the lws before the comment.
-    # This works because the tail contains the original whitespace.
-    assert comment in s
-    s = s.lstrip().replace(comment, '')
-    #
-    # Here, s is the original line.
-    if comment in s:
-        g.trace(f"can not happen: {s!r}")
-        return i
-    if self.starts_doc_part(s):
-        result.append(s)
-        while i < len(lines):
-            s = lines[i].lstrip().replace(comment, '')
-            i += 1
-            result.append(s)
-            if self.ends_doc_part(s):
-                break
-        return i
-    j = s.find('<<')
-    k = s.find('>>') if j > -1 else -1
-    if -1 < j < k or '@others' in s:
-        #
-        # A section reference line or an @others line.
-        # Such lines are followed by a pass line.
-        #
-        # The beautifier may insert blank lines before the pass line.
-        kind = 'section ref' if -1 < j < k else '@others'
-        # Restore the original line, including leading whitespace.
-        result.append(s)
-        # Skip blank lines.
-        while i < len(lines) and not lines[i].strip():
-            i += 1
-        # Skip the pass line.
-        if i < len(lines) and lines[i].lstrip().startswith('pass'):
-            i += 1
-        else:
-            g.trace(f"*** no pass after {kind}: {p.h}")
-    else:
-        # A directive line or a comment line.
-        result.append(s)
-    return i
-#@+node:ekr.20200726125841.1: *3* fs.scan_for_values (token based, not used)
-def scan_for_values(self):  # pragma: no cover
-    """
-    **Important**: This method is not used. It shows how to "parse"
-    the RHS of an % operator using tokens instead of a parse tree. 
-    
-    This is a recursive descent parser. It is comprable in complexity
-    to fs.scan_format_string.
-    
-    Return a list of possibly parenthesized values for the format string.
-    
-    This method never actually consumes tokens.
-    
-    If all goes well, we'll skip all tokens in the tokens list.
-    """
-
-    # pylint: disable=no-member # This is example code.
-    # Skip the '%'
-    new_token = self.new_token
-    assert self.look_ahead(0) == ('op', '%')
-    token_i, tokens = self.skip_ahead(0, 'op', '%')
-    # Skip '(' if it's next
-    include_paren = self.look_ahead(token_i) == ('op', '(')
-    if include_paren:
-        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
-        tokens.extend(skipped_tokens)
-    # Find all tokens up to the first ')' or 'for'
-    values, value_list = [], []
-    while token_i < len(self.tokens):
-        # Don't use look_ahead here: handle each token exactly once.
-        token = self.tokens[token_i]
-        token_i += 1
-        tokens.append(token)
-        kind, val = token.kind, token.value
-        if kind == 'ws':
-            continue
-        if kind in ('newline', 'nl'):
-            if include_paren or val.endswith('\\\n'):
-                # Continue scanning, ignoring the newline.
-                continue
-            # The newline ends the scan.
-            values.append(value_list)  # Retain the tokens!
-            if not include_paren:  # Bug fix.
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('op', ')'):
-            values.append(value_list)
-            if not include_paren:
-                tokens.pop()  # Rescan the ')'
-            break
-        if (kind, val) == ('name', 'for'):
-            self.add_trailing_ws = True
-            tokens.pop()  # Rescan the 'for'
-            values.append(value_list)
-            break
-        if (kind, val) == ('op', ','):
-            values.append(value_list)
-            value_list = []
-        elif kind == 'op' and val in '([{':
-            values_list2, token_i2 = self.scan_to_matching(token_i - 1, val)
-            value_list.extend(values_list2)
-            tokens.extend(self.tokens[token_i:token_i2])
-            token_i = token_i2
-        elif kind == 'name':
-            # Ensure separation of names.
-            value_list.append(new_token(kind, val))
-            value_list.append(new_token('ws', ' '))
-        else:
-            value_list.append(new_token(kind, val))
-    return values, tokens
-#@+node:ekr.20160518074224.1: *3* class g.LinterTable
-class LinterTable():
-    """A class to encapsulate lists of leo modules under test."""
-
-    def __init__(self) -> None:
-        """Ctor for LinterTable class."""
-        # Define self. relative to leo.core.leoGlobals
-        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    @others
-#@+node:ekr.20160518074545.2: *4* commands
-def commands(self) -> List:
-    """Return list of all command modules in leo/commands."""
-    pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
-    return self.get_files(pattern)
-#@+node:ekr.20160518074545.3: *4* core
-def core(self) -> List:
-    """Return list of all of Leo's core files."""
-    pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
-    aList = self.get_files(pattern)
-    for fn in ['runLeo.py',]:
-        aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
-    return sorted(aList)
-#@+node:ekr.20160518074545.4: *4* external
-def external(self) -> List:
-    """Return list of files in leo/external"""
-    pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
-    aList = self.get_files(pattern)
-    remove = [
-        'leoSAGlobals.py',
-        'leoftsindex.py',
-    ]
-    remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
-    return sorted([z for z in aList if z not in remove])
-#@+node:ekr.20160520093506.1: *4* get_files (LinterTable)
-def get_files(self, pattern: str) -> List:
-    """Return the list of absolute file names matching the pattern."""
-    aList = sorted([
-        fn for fn in g.glob_glob(pattern)
-            if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
-    return aList
-#@+node:ekr.20160518074545.9: *4* get_files_for_scope
-def get_files_for_scope(self, scope: str, fn: str) -> List:
-    """Return a list of absolute filenames for external linters."""
-    d = {
-        'all': [self.core, self.commands, self.external, self.plugins, self.tests],
-        'commands': [self.commands],
-        'core': [self.core, self.commands, self.external, self.gui_plugins],
-        'external': [self.external],
-        'file': [fn],
-        'gui': [self.gui_plugins],
-        'modes': [self.modes],
-        'plugins': [self.plugins],
-        'tests': [self.tests],
-    }
-    suppress_list = ['freewin.py']  # No longer hangs Leo, but generates a pylint fatal error.
-    functions = d.get(scope)
-    paths = []
-    if functions:
-        for func in functions:
-            files = [func] if isinstance(func, str) else func()  # Bug fix: 2016/10/15
-            for fn in files:
-                fn = g.os_path_abspath(fn)
-                if scope != 'file' and g.shortFileName(fn) in suppress_list:
-                    print(f"\npylint-leo: skip {fn}")
-                    continue
-                if g.os_path_exists(fn):
-                    if g.os_path_isfile(fn):
-                        paths.append(fn)
-                else:
-                    print(f"does not exist: {fn}")
-        paths = sorted(set(paths))
-        return paths
-    print('LinterTable.get_table: bad scope', scope)
-    return []
-#@+node:ekr.20160518074545.5: *4* gui_plugins
-def gui_plugins(self) -> List:
-    """Return list of all of Leo's gui-related files."""
-    pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
-    aList = self.get_files(pattern)
-    # These are not included, because they don't start with 'qt_':
-    add = ['free_layout.py', 'nested_splitter.py',]
-    remove = [
-        'qt_main.py',  # auto-generated file.
-    ]
-    for fn in add:
-        aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
-    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
-    return sorted(set([z for z in aList if z not in remove]))
-#@+node:ekr.20160518074545.6: *4* modes
-def modes(self) -> List:
-    """Return list of all files in leo/modes"""
-    pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
-    return self.get_files(pattern)
-#@+node:ekr.20160518074545.8: *4* plugins (LinterTable)
-def plugins(self) -> List:
-    """Return a list of all important plugins."""
-    aList = []
-    for theDir in ('', 'importers', 'writers'):
-        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
-        aList.extend(self.get_files(pattern))
-        # Don't use get_files here.
-        # for fn in g.glob_glob(pattern):
-            # sfn = g.shortFileName(fn)
-            # if sfn != '__init__.py':
-                # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
-                # aList.append(sfn)
-    remove = [
-        # 2016/05/20: *do* include gui-related plugins.
-        # This allows the -a option not to doubly-include gui-related plugins.
-            # 'free_layout.py', # Gui-related.
-            # 'nested_splitter.py', # Gui-related.
-        'gtkDialogs.py',  # Many errors, not important.
-        'leofts.py',  # Not (yet) in leoPlugins.leo.
-        'qtGui.py',  # Dummy file
-        'qt_main.py',  # Created automatically.
-        'rst3.py',  # Obsolete
-    ]
-    remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
-    aList = sorted([z for z in aList if z not in remove])
-    return sorted(set(aList))
-#@+node:ekr.20211115103929.1: *4* tests (LinterTable)
-def tests(self) -> List:
-    """Return list of files in leo/unittests"""
-    aList = []
-    for theDir in ('', 'commands', 'core', 'plugins'):
-        pattern = g.os_path_finalize_join(self.loadDir, 'unittests', theDir, '*.py')
-        aList.extend(self.get_files(pattern))
-    remove = [
-        'py3_test_grammar.py',
-    ]
-    remove = [g.os_path_finalize_join(self.loadDir, 'unittests', fn) for fn in remove]
-    return sorted([z for z in aList if z not in remove])
 #@+node:ekr.20211014154452.1: ** Abandoned files
 #@+node:ekr.20160517182239.1: *3* ../../flake8-leo.py
 """
@@ -3857,6 +4032,134 @@ def scanOptions():
     else:
         scope = 'all'
     return scope
+#@+node:ekr.20220415164121.1: ** Abandoned methods
+#@+node:ekr.20110605121601.18292: *3* qtFrame.OnBodyDoubleClick (Events) (not used)
+# Not called
+
+def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
+    try:
+        c, p = self.c, self.c.p
+        if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
+            c.editCommands.extendToWord(event)  # Handles unicode properly.
+            c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodydclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodydclick")
+    return "break"  # Restore this to handle proper double-click logic.
+#@+node:ekr.20071027150501: *3* LeoFrame.event handlers (not used)
+def OnBodyClick(self, event: Event=None) -> None:
+    pass
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    pass
+#@+node:ekr.20110605121601.18291: *3* qtFrame.OnBodyClick, OnBodyRClick (not used)
+# At present, these are not called,
+# but they could be called by LeoQTextBrowser.
+
+def OnBodyClick(self, event: Event=None) -> None:
+    g.trace()
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyclick1", c=c, p=p, event=event):
+            g.doHook("bodyclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("bodyclick")
+
+def OnBodyRClick(self, event: Event=None) -> None:
+    try:
+        c, p = self.c, self.c.p
+        if g.doHook("bodyrclick1", c=c, p=p, event=event):
+            g.doHook("bodyrclick2", c=c, p=p, event=event)
+            return
+        c.k.showStateAndMode(w=c.frame.body.wrapper)
+        g.doHook("bodyrclick2", c=c, p=p, event=event)
+    except Exception:
+        g.es_event_exception("iconrclick")
+#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
+def reloadSettingsHelper(c):
+    """
+    Reload settings in all commanders, or just c.
+
+    A helper function for reload-settings and reload-all-settings.
+    """
+    lm = g.app.loadManager
+    # Save any changes so they can be seen.
+    for c2 in g.app.commanders():
+        if c2.isChanged():
+            c2.save()
+    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+    lm.readGlobalSettingsFiles()
+    for c in g.app.commanders():
+        # Read the local file, using a null gui.
+        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+        # Init the config classes.
+        c.initSettings(previousSettings)
+        # Init the commander config ivars.
+        c.initConfigSettings()
+        # Reload settings in all configurable classes
+        c.reloadConfigurableSettings()
+#@+node:ekr.20041228042224: *3* gcm.setIvarsFromSettings (no longer used
+trace_set = set()
+
+def setIvarsFromSettings(self, c: Cmdr) -> None:
+    """
+    Init g.app.config ivars or c's ivars from settings.
+
+    - Called from c.initSettings with c = None to init g.app.config ivars.
+    - Called from c.initSettings to init corresponding commander ivars.
+    """
+    trace_tag = 'GCM'
+    # Ignore temporary commanders created by readSettingsFiles.
+    d = self.ivarsDict
+    keys = list(d.keys())
+    keys.sort()
+    for key in keys:
+        gs = d.get(key)
+        if gs:
+            assert isinstance(gs, g.GeneralSetting)
+            ivar = gs.ivar  # The actual name of the ivar.
+            kind = gs.kind
+            if c:
+                val = c.config.get(key, kind)
+            else:
+                val = self.get(key, kind)  # Don't use bunch.val!
+            if c:
+                print(f"{trace_tag} {c.shortFileName():20} {val!r:10} {ivar}")
+                setattr(c, ivar, val)
+            # Always set the global ivars.
+            if ivar not in self.trace_set:
+                self.trace_set.add(ivar)
+                print(f"{trace_tag} {'global':20} {val!r:10} {ivar}")
+            setattr(self, ivar, val)
+#@+node:ekr.20091002083910.6106: *3* c.find_b & find_h (PosList)
+#@+node:ville.20090311190405.70: *4* c.find_h
+def find_h(self,
+    regex: str,
+    flags: RegexFlag=re.IGNORECASE,
+) -> List[Position]:
+    """
+    Return the list of all positions whose headline matches the given pattern.
+    """
+    c = self
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+    return [p.copy() for p in c.all_positions(copy=False) if re.match(pat, p.h)]
+#@+node:ville.20090311200059.1: *4* c.find_b
+def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE) -> List[Position]:
+    """
+    Return the list of all positions whose body matches regex one or more times.
+    """
+    c = self
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+    return [p.copy() for p in c.all_positions(copy=False) if re.finditer(pat, p.b)]
 #@+node:ekr.20211014154406.1: ** Abandoned plugins
 #@+node:ekr.20211011021921.1: *3* From backlink plugin
 #@+node:ekr.20140920145803.17994: *4* class backlinkTkUI
@@ -8427,194 +8730,6 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20220411060107.1: ** From leoGlobals.py
-#@+node:ekr.20220411054642.1: *3* COPY: g.execute_shell_commands
-def execute_shell_commands(commands: Any, trace: bool=False) -> None:
-    """
-    Execute each shell command in a separate process.
-    Wait for each command to complete, except those starting with '&'
-    """
-    if isinstance(commands, str):
-        commands = [commands]
-    for command in commands:
-        wait = not command.startswith('&')
-        if trace:
-            g.trace(command)
-        if command.startswith('&'):
-            command = command[1:].strip()
-        proc = subprocess.Popen(command, shell=True)
-        if wait:
-            proc.communicate()
-        else:
-            if trace:
-                print('Start:', proc)
-            # #1489: call proc.poll at idle time.
-
-            def proc_poller(timer: Any, proc: Any=proc) -> None:
-                val = proc.poll()
-                if val is not None:
-                    # This trace can be disruptive.
-                    if trace:
-                        print('  End:', proc, val)
-                    timer.stop()
-
-            g.IdleTime(proc_poller, delay=0).start()
-#@+node:ekr.20140401054342.16844: *3* g.run_pylint
-def run_pylint(
-    fn: str,  # Path to file under test.
-    rc: str,  # Path to settings file.
-    dots: bool=True,  # Show level dots in Sherlock traces.
-    patterns: List[str]=None,  # List of Sherlock trace patterns.
-    sherlock: bool=False,  # Enable Sherlock tracing.
-    show_return: bool=True,  # Show returns in Sherlock traces.
-    stats_patterns: bool=None,  # Patterns for Sherlock statistics.
-    verbose: bool=True,  # Show filenames in Sherlock traces.
-) -> None:
-    """
-    Run pylint with the given args, with Sherlock tracing if requested.
-
-    **Do not assume g.app exists.**
-
-    run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
-    """
-    try:
-        from pylint import lint  #type:ignore
-    except ImportError:
-        g.trace('can not import pylint')
-        return
-    if not g.os_path_exists(fn):
-        g.trace('does not exist:', fn)
-        return
-    if not g.os_path_exists(rc):
-        g.trace('does not exist', rc)
-        return
-    args = [f"--rcfile={rc}"]
-    # Prints error number.
-        # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
-    args.append(fn)
-    if sherlock:
-        sherlock = g.SherlockTracer(
-                dots=dots,
-                show_return=show_return,
-                verbose=True,  # verbose: show filenames.
-                patterns=patterns or [],
-            )
-        try:
-            sherlock.run()
-            lint.Run(args)
-        finally:
-            sherlock.stop()
-            sherlock.print_stats(patterns=stats_patterns or [])
-    else:
-        # print('run_pylint: %s' % g.shortFileName(fn))
-        try:
-            lint.Run(args)  # does sys.exit
-        finally:
-            # Printing does not work well here.
-            # When not waiting, printing from severl process can be interspersed.
-            pass
-#@+node:ekr.20220415164121.1: ** Not used methods
-#@+node:ekr.20110605121601.18292: *3* qtFrame.OnBodyDoubleClick (Events) (not used)
-# Not called
-
-def OnBodyDoubleClick(self, event: Event=None) -> str:  ### To be deleted.
-    try:
-        c, p = self.c, self.c.p
-        if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
-            c.editCommands.extendToWord(event)  # Handles unicode properly.
-            c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodydclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("bodydclick")
-    return "break"  # Restore this to handle proper double-click logic.
-#@+node:ekr.20071027150501: *3* LeoFrame.event handlers (not used)
-def OnBodyClick(self, event: Event=None) -> None:
-    pass
-
-def OnBodyRClick(self, event: Event=None) -> None:
-    pass
-#@+node:ekr.20110605121601.18291: *3* qtFrame.OnBodyClick, OnBodyRClick (not used)
-# At present, these are not called,
-# but they could be called by LeoQTextBrowser.
-
-def OnBodyClick(self, event: Event=None) -> None:
-    g.trace()
-    try:
-        c, p = self.c, self.c.p
-        if g.doHook("bodyclick1", c=c, p=p, event=event):
-            g.doHook("bodyclick2", c=c, p=p, event=event)
-            return
-        c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodyclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("bodyclick")
-
-def OnBodyRClick(self, event: Event=None) -> None:
-    try:
-        c, p = self.c, self.c.p
-        if g.doHook("bodyrclick1", c=c, p=p, event=event):
-            g.doHook("bodyrclick2", c=c, p=p, event=event)
-            return
-        c.k.showStateAndMode(w=c.frame.body.wrapper)
-        g.doHook("bodyrclick2", c=c, p=p, event=event)
-    except Exception:
-        g.es_event_exception("iconrclick")
-#@+node:ekr.20170221034501.1: *3* function: reloadSettingsHelper
-def reloadSettingsHelper(c):
-    """
-    Reload settings in all commanders, or just c.
-
-    A helper function for reload-settings and reload-all-settings.
-    """
-    lm = g.app.loadManager
-    # Save any changes so they can be seen.
-    for c2 in g.app.commanders():
-        if c2.isChanged():
-            c2.save()
-    # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
-    lm.readGlobalSettingsFiles()
-    for c in g.app.commanders():
-        # Read the local file, using a null gui.
-        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
-        # Init the config classes.
-        c.initSettings(previousSettings)
-        # Init the commander config ivars.
-        c.initConfigSettings()
-        # Reload settings in all configurable classes
-        c.reloadConfigurableSettings()
-#@+node:ekr.20041228042224: *3* gcm.setIvarsFromSettings (no longer used
-trace_set = set()
-
-def setIvarsFromSettings(self, c: Cmdr) -> None:
-    """
-    Init g.app.config ivars or c's ivars from settings.
-
-    - Called from c.initSettings with c = None to init g.app.config ivars.
-    - Called from c.initSettings to init corresponding commander ivars.
-    """
-    trace_tag = 'GCM'
-    # Ignore temporary commanders created by readSettingsFiles.
-    d = self.ivarsDict
-    keys = list(d.keys())
-    keys.sort()
-    for key in keys:
-        gs = d.get(key)
-        if gs:
-            assert isinstance(gs, g.GeneralSetting)
-            ivar = gs.ivar  # The actual name of the ivar.
-            kind = gs.kind
-            if c:
-                val = c.config.get(key, kind)
-            else:
-                val = self.get(key, kind)  # Don't use bunch.val!
-            if c:
-                print(f"{trace_tag} {c.shortFileName():20} {val!r:10} {ivar}")
-                setattr(c, ivar, val)
-            # Always set the global ivars.
-            if ivar not in self.trace_set:
-                self.trace_set.add(ivar)
-                print(f"{trace_tag} {'global':20} {val!r:10} {ivar}")
-            setattr(self, ivar, val)
 #@+node:ekr.20220728055642.1: ** Old importer code
 @nosearch
 @language plain
