@@ -1542,13 +1542,13 @@ class LoadManager:
         self.theme_path: str = None
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
-    def completeFileName(self, fileName: Any) -> None:
+    def completeFileName(self, fileName: Any) -> str:
         fileName = g.toUnicode(fileName)
         fileName = g.os_path_finalize(fileName)
         # 2011/10/12: don't add .leo to *any* file.
         return fileName
     #@+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
-    def computeLeoSettingsPath(self) -> None:
+    def computeLeoSettingsPath(self) -> Optional[str]:
         """Return the full path to leoSettings.leo."""
         # lm = self
         join = g.os_path_finalize_join
@@ -1567,7 +1567,7 @@ class LoadManager:
             path = None
         return path
     #@+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath(self) -> None:
+    def computeMyLeoSettingsPath(self) -> Optional[str]:
         """
         Return the full path to myLeoSettings.leo.
 
@@ -1618,7 +1618,7 @@ class LoadManager:
         g.app.leoEditorDir = join(g.app.loadDir, '..', '..')
         g.app.testDir = join(g.app.loadDir, '..', 'test')
     #@+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
-    def computeGlobalConfigDir(self) -> None:
+    def computeGlobalConfigDir(self) -> Optional[str]:
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
@@ -1630,7 +1630,7 @@ class LoadManager:
             theDir = None
         return theDir
     #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
-    def computeHomeDir(self) -> None:
+    def computeHomeDir(self) -> Optional[str]:
         """Returns the user's home directory."""
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE
         # environment vars, then gives up.
@@ -1646,7 +1646,7 @@ class LoadManager:
                 home = None
         return home
     #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
-    def computeHomeLeoDir(self) -> None:
+    def computeHomeLeoDir(self) -> str:
         # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
         if g.os_path_exists(homeLeoDir):
@@ -1654,13 +1654,13 @@ class LoadManager:
         ok = g.makeAllNonExistentDirectories(homeLeoDir)
         return homeLeoDir if ok else ''  # #1450
     #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
-    def computeLeoDir(self) -> None:
+    def computeLeoDir(self) -> str:
         # lm = self
         loadDir = g.app.loadDir
         # We don't want the result in sys.path
         return g.os_path_dirname(loadDir)
     #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
-    def computeLoadDir(self) -> None:
+    def computeLoadDir(self) -> str:
         """Returns the directory containing leo.py."""
         try:
             # Fix a hangnail: on Windows the drive letter returned by
@@ -1701,7 +1701,7 @@ class LoadManager:
             print("Exception getting load directory")
             raise
     #@+node:ekr.20120213164030.10697: *5* LM.computeMachineName
-    def computeMachineName(self) -> None:
+    def computeMachineName(self) -> str:
         """Return the name of the current machine, i.e, HOSTNAME."""
         # This is prepended to leoSettings.leo or myLeoSettings.leo
         # to give the machine-specific setting name.
@@ -1717,7 +1717,7 @@ class LoadManager:
             name = ''
         return name
     #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
-    def computeThemeDirectories(self) -> None:
+    def computeThemeDirectories(self) -> List[str]:
         """
         Return a list of *existing* directories that might contain theme .leo files.
         """
@@ -1734,7 +1734,7 @@ class LoadManager:
         # Make sure home has normalized slashes.
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
-    def computeThemeFilePath(self) -> None:
+    def computeThemeFilePath(self) -> str:
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
 
@@ -1789,7 +1789,7 @@ class LoadManager:
             g.trace("myLeoSettings.leo", path)
         return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn: Any, tag: Any) -> None:
+    def resolve_theme_path(self, fn: Any, tag: Any) -> Optional[str]:
         """Search theme directories for the given .leo file."""
         if not fn or fn.lower().strip() == 'none':
             return None
@@ -1802,7 +1802,7 @@ class LoadManager:
         print(f"theme .leo file not found: {fn}")
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
-    def computeWorkbookFileName(self) -> None:
+    def computeWorkbookFileName(self) -> Optional[str]:
         """
         Return full path to the workbook.
 
@@ -1831,7 +1831,7 @@ class LoadManager:
             g.es(f"{kind:>10}:", os.path.normpath(theDir), color='blue')
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
-    def computeBindingLetter(self, c: Cmdr, path: Any) -> None:
+    def computeBindingLetter(self, c: Cmdr, path: str) -> str:
         lm = self
         if not path:
             return 'D'
@@ -1850,7 +1850,11 @@ class LoadManager:
             return '@'
         return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
-    def computeLocalSettings(self, c: Cmdr, settings_d: Any, bindings_d: Any, localFlag: Any) -> None:
+    def computeLocalSettings(self,
+        c: Cmdr,
+        settings_d: Dict,
+        bindings_d: Dict, localFlag: bool,
+    ) -> Tuple[g.SettingsDict, g.SettingsDict]:
         """
         Merge the settings dicts from c's outline into *new copies of*
         settings_d and bindings_d.
@@ -1880,7 +1884,7 @@ class LoadManager:
         bindings_d = g.SettingsDict('lm.globalBindingsDict')
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c: Cmdr, localFlag: Any) -> None:
+    def createSettingsDicts(self, c: Cmdr, localFlag: bool) -> Optional[Tuple[g.SettingsDict, g.SettingsDict]]:
 
         from leo.core import leoConfig
         if c:
@@ -1890,7 +1894,7 @@ class LoadManager:
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: Any) -> None:
+    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -1927,7 +1931,7 @@ class LoadManager:
             d1 = d2 = None
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
-    def mergeShortcutsDicts(self, c: Cmdr, old_d: Any, new_d: Any, localFlag: Any) -> None:
+    def mergeShortcutsDicts(self, c: Cmdr, old_d: Dict, new_d: Dict, localFlag: bool) -> Dict:
         """
         Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
@@ -2047,7 +2051,7 @@ class LoadManager:
                 result.add_to_list(commandName, bi)
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
-    def openSettingsFile(self, fn: Any) -> None:
+    def openSettingsFile(self, fn: str) -> Optional[Cmdr]:
         """
         Open a settings file with a null gui.  Return the commander.
 
@@ -2237,7 +2241,7 @@ class LoadManager:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
     #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
-    def doPostPluginsInit(self) -> None:
+    def doPostPluginsInit(self) -> bool:
         """Create a Leo window for each file in the lm.files list."""
         # Clear g.app.initing _before_ creating commanders.
         lm = self
@@ -2305,13 +2309,13 @@ class LoadManager:
             return False  # Force an immediate exit.
         return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
-    def make_screen_shot(self, fn: Any) -> None:
+    def make_screen_shot(self, fn: str) -> None:
         """Create a screenshot of the present Leo outline and save it to path."""
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
     #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
-    def openEmptyWorkBook(self) -> None:
+    def openEmptyWorkBook(self) -> Cmdr:
         """Open CheatSheet.leo as the workbook. Return the new commander."""
         fn = self.computeWorkbookFileName()
         if not fn:
@@ -2338,7 +2342,7 @@ class LoadManager:
         c.redraw(c.rootPosition())  # # 1380: Select the root.
         return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
-    def doPrePluginsInit(self, fileName: Any, pymacs: Any) -> None:
+    def doPrePluginsInit(self, fileName: str, pymacs: bool) -> None:
         """ Scan options, set directories and read settings."""
         lm = self
         lm.computeStandardDirectories()
@@ -2496,7 +2500,7 @@ class LoadManager:
         elif sfn not in ('basewriter.py',):
             g.warning(f"leo/plugins/writers/{sfn} has no writer_dict")
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
-    def createGui(self, pymacs: Any) -> None:
+    def createGui(self, pymacs: str) -> None:
         lm = self
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
@@ -2518,7 +2522,7 @@ class LoadManager:
         else:
             lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
     #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
-    def createSpecialGui(self, gui: Any, pymacs: Any, script: Any, windowFlag: Any) -> None:
+    def createSpecialGui(self, gui: Any, pymacs: str, script: str, windowFlag: bool) -> None:
         # lm = self
         if pymacs:
             g.app.createNullGuiWithScript(script=None)
@@ -2532,7 +2536,7 @@ class LoadManager:
         else:
             g.app.createDefaultGui()
     #@+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
-    def getDefaultFile(self) -> None:
+    def getDefaultFile(self) -> Optional[str]:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
         fn = g.os_path_finalize(fn)
@@ -2547,7 +2551,7 @@ class LoadManager:
         # It's too risky to open a default file if it is relative.
         return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
-    def initApp(self, verbose: Any) -> None:
+    def initApp(self, verbose: bool) -> None:
 
         # Can be done early. Uses only g.app.loadDir & g.app.homeDir.
         self.createAllImporterData()
@@ -2578,7 +2582,7 @@ class LoadManager:
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName: Any, pymacs: Any) -> None:
+    def scanOptions(self, fileName: str, pymacs: str) -> Dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
         obsolete_options = (
@@ -2893,7 +2897,7 @@ class LoadManager:
         if not sys.stderr:
             sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython
-    def isValidPython(self) -> None:
+    def isValidPython(self) -> bool:
         if sys.platform == 'cli':
             return True
         message = (
@@ -2916,9 +2920,9 @@ class LoadManager:
         except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
-            return 0
+            return False
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn: Any, gui: Any, old_c: Any) -> None:
+    def loadLocalFile(self, fn: str, gui: str, old_c: Optional[Cmdr]) -> Optional[Cmdr]:
         """Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
@@ -2947,7 +2951,7 @@ class LoadManager:
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
     #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, gui: Any, old_c: Any) -> None:
+    def openEmptyLeoFile(self, gui: str, old_c: Optional[Cmdr]) -> Cmdr:
         """Open an empty, untitled, new Leo file."""
         lm = self
         # Disable the log.
@@ -2986,7 +2990,12 @@ class LoadManager:
         lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
-    def openFileByName(self, fn: Any, gui: Any, old_c: Any, previousSettings: Any) -> None:
+    def openFileByName(self,
+        fn: str,
+        gui: str,
+        old_c: Optional[Cmdr],
+        previousSettings: g.SettingsDict,
+    ) -> Optional[Cmdr]:
         """
         Create an outline (Commander) for either:
         - a Leo file (including .leo or zipped file),
@@ -3035,7 +3044,7 @@ class LoadManager:
         lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10405: *6* LM.createMenu
-    def createMenu(self, c: Cmdr, fn: Any=None) -> None:
+    def createMenu(self, c: Cmdr, fn: str=None) -> None:
         # lm = self
         # Create the menu as late as possible so it can use user commands.
         if not g.doHook("menu1", c=c, p=c.p, v=c.p):
@@ -3047,7 +3056,7 @@ class LoadManager:
             # Fix bug 844953: tell Unity which menu to use.
                 # c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
-    def findOpenFile(self, fn: Any) -> None:
+    def findOpenFile(self, fn: str) -> Optional[Cmdr]:
 
         def munge(name: Any) -> None:
             return g.os_path_normpath(name or '').lower()
@@ -3084,7 +3093,7 @@ class LoadManager:
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
     #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
-    def initWrapperLeoFile(self, c: Cmdr, fn: Any) -> None:
+    def initWrapperLeoFile(self, c: Cmdr, fn: str) -> Optional[Cmdr]:
         """
         Create an empty file if the external fn is empty.
 
@@ -3134,7 +3143,7 @@ class LoadManager:
         frame.c.clearChanged()
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
-    def isLeoFile(self, fn: Any) -> None:
+    def isLeoFile(self, fn: Any) -> bool:
         """
         Return True if fn is any kind of Leo file,
         including a zipped file or .leo, .db, or .leojs file.
@@ -3147,7 +3156,7 @@ class LoadManager:
         """Return True if fn is a zipped file."""
         return fn and zipfile.is_zipfile(fn)
     #@+node:ekr.20120224161905.10030: *6* LM.openAnyLeoFile
-    def openAnyLeoFile(self, fn: Any) -> None:
+    def openAnyLeoFile(self, fn: str) -> Any:
         """Open a .leo, .leojs or .db file."""
         lm = self
         if fn.endswith('.db'):
@@ -3161,7 +3170,7 @@ class LoadManager:
             theFile = None
         return theFile
     #@+node:ekr.20120223062418.10416: *6* LM.openLeoFile
-    def openLeoFile(self, fn: Any) -> None:
+    def openLeoFile(self, fn: str) -> Any:
         """Open the file for reading."""
         try:
             theFile = open(fn, 'rb')
@@ -3172,7 +3181,7 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
-    def openZipFile(self, fn: Any) -> None:
+    def openZipFile(self, fn: Any) -> Any:
         """
         Open a zipped file for reading.
         Return a StringIO file if successful.
@@ -3195,7 +3204,12 @@ class LoadManager:
                 g.error("can not open:", fn)
             return None
     #@+node:ekr.20120223062418.10412: *6* LM.readOpenedLeoFile
-    def readOpenedLeoFile(self, c: Cmdr, fn: Any, readAtFileNodesFlag: Any, theFile: Any) -> None:
+    def readOpenedLeoFile(self,
+        c: Cmdr,
+        fn: str,
+        readAtFileNodesFlag: bool,
+        theFile: Any,
+    ) -> bool:
         """
         Call c.fileCommands.openLeoFile to open some kind of Leo file.
 
@@ -3265,7 +3279,7 @@ class RecentFilesManager:
 
     #@+others
     #@+node:ekr.20041201080436: *3* rf.appendToRecentFiles
-    def appendToRecentFiles(self, files: Any) -> None:
+    def appendToRecentFiles(self, files: List[str]) -> None:
         rf = self
         files = [theFile.strip() for theFile in files]
 
@@ -3292,7 +3306,7 @@ class RecentFilesManager:
                 self.updateRecentFiles(path)
             self.writeRecentFilesFile(c)
     #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
-    def demangleRecentFiles(self, c: Cmdr, data: Any) -> None:
+    def demangleRecentFiles(self, c: Cmdr, data: List[str]) -> None:
         """Rewrite recent files based on c.config.getData('path-demangle')"""
         changes = []
         replace = None
@@ -3400,13 +3414,13 @@ class RecentFilesManager:
         c.bodyWantsFocusNow()
         g.es('edit list and run write-rff to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
-    def getRecentFiles(self) -> None:
+    def getRecentFiles(self) -> List[str]:
         # Fix #299: Leo loads a deleted file.
         self.recentFiles = [z for z in self.recentFiles
             if g.os_path_exists(z)]
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
-    def getRecentFilesTable(self) -> None:
+    def getRecentFilesTable(self) -> Tuple[Any]:
         return (
             "*clear-recent-files",
             "*clean-recent-files",
@@ -3415,7 +3429,7 @@ class RecentFilesManager:
             ("-", None, None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
-    def readRecentFiles(self, localConfigFile: Any) -> None:
+    def readRecentFiles(self, localConfigFile: bool) -> None:
         """Read all .leoRecentFiles.txt files."""
         # The order of files in this list affects the order of the recent files list.
         rf = self
@@ -3469,7 +3483,7 @@ class RecentFilesManager:
             self.appendToRecentFiles(lines)
         return True
     #@+node:ekr.20120225072226.10285: *3* rf.sanitize
-    def sanitize(self, name: Any) -> None:
+    def sanitize(self, name: str) -> Optional[str]:
         """Return a sanitized file name."""
         if name is None:
             return None
@@ -3478,7 +3492,7 @@ class RecentFilesManager:
             name = name.replace(ch, '')
         return name or None
     #@+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
-    def setRecentFiles(self, files: Any) -> None:
+    def setRecentFiles(self, files: List[str]) -> None:
         """Update the recent files list."""
         rf = self
         rf.appendToRecentFiles(files)
@@ -3498,7 +3512,7 @@ class RecentFilesManager:
             rf.updateRecentFiles(z)
         rf.writeRecentFilesFile(c)
     #@+node:ekr.20031218072017.2083: *3* rf.updateRecentFiles
-    def updateRecentFiles(self, fileName: Any) -> None:
+    def updateRecentFiles(self, fileName: str) -> None:
         """Create the RecentFiles menu.  May be called with Null fileName."""
         rf = self
         if g.unitTesting:
@@ -3582,7 +3596,7 @@ class RecentFilesManager:
                     g.red(f"creating: {fileName}")
                 rf.writeRecentFilesFileHelper(fileName)
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
-    def writeRecentFilesFileHelper(self, fileName: Any) -> None:
+    def writeRecentFilesFileHelper(self, fileName: str) -> bool:
         # Don't update the file if it begins with read-only.
         #
         # Part 1: Return False if the first line is "readonly".
@@ -3675,7 +3689,7 @@ def openUrl(event: Event=None) -> None:
         g.openUrl(c.p)
 #@+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: Event=None) -> None:
+def openUrlUnderCursor(event: Event=None) -> Any:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 #@-others
