@@ -3,8 +3,8 @@
 #@+node:ekr.20031218072017.3018: * @file leoFileCommands.py
 #@@first
 """Classes relating to reading and writing .leo files."""
-#@+<< imports >>
-#@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
+#@+<< leoFileCommands imports >>
+#@+node:ekr.20050405141130: ** << leoFileCommands imports >>
 import binascii
 from collections import defaultdict
 from contextlib import contextmanager
@@ -18,24 +18,33 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Dict, Set
+from typing import Any, Dict, List, Set, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
 import xml.sax.saxutils
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-#@-<< imports >>
+#@-<< leoFileCommands imports >>
+#@+<< leoFileCommands annotations >>
+#@+node:ekr.20220819121640.1: ** << leoFileCommands annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+else:
+    Cmdr = Position = VNode = Any
+Event = Any
+#@-<< leoFileCommands annotations >>
 PRIVAREA = '---begin-private-area---'
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
-def cmd(name):
+def cmd(name: Any) -> None:
     """Command decorator for the FileCommands class."""
     return g.new_cmd_decorator(name, ['c', 'fileCommands',])
 #@+node:ekr.20210316035506.1: **  commands (leoFileCommands.py)
 #@+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
-def dump_clone_parents(event):
+def dump_clone_parents(event: Event) -> None:
     """Print the parent vnodes of all cloned vnodes."""
     c = event.get('c')
     if not c:
@@ -49,7 +58,7 @@ def dump_clone_parents(event):
             g.printObj(v.parents)
 #@+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
-def dump_gnx_dict(event):
+def dump_gnx_dict(event: Event) -> None:
     """Dump c.fileCommands.gnxDict."""
     c = event.get('c')
     if not c:
@@ -59,18 +68,18 @@ def dump_gnx_dict(event):
 #@+node:felix.20220618222639.1: ** class SetEncoder
 class SetJSONEncoder(json.JSONEncoder):
     # Used to encode JSON in leojs files
-    def default(self, obj):
+    def default(self, obj: Any) -> None:
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
 
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
         super().__init__(message)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Bad Leo File:" + self.message
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead:
@@ -83,13 +92,13 @@ class FastRead:
         # 'tnodeList',  # Removed in Leo 4.7.
     )
 
-    def __init__(self, c, gnx2vnode):
+    def __init__(self, c: Cmdr, gnx2vnode: Any) -> None:
         self.c = c
         self.gnx2vnode = gnx2vnode
 
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile
-    def readFile(self, theFile, path):
+    def readFile(self, theFile: Any, path: Any) -> None:
         """Read the file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_element = self.readWithElementTree(path, s)
@@ -106,7 +115,7 @@ class FastRead:
         return v
 
     #@+node:felix.20220618164929.1: *3* fast.readJsonFile
-    def readJsonFile(self, theFile, path):
+    def readJsonFile(self, theFile: Any, path: Any) -> None:
         """Read the leojs JSON file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_dict = self.readWithJsonTree(path, s)
@@ -123,7 +132,7 @@ class FastRead:
         return v
 
     #@+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
-    def readFileFromClipboard(self, s):
+    def readFileFromClipboard(self, s: str) -> None:
         """
         Recreate a file from a string s, and return its hidden vnode.
 
@@ -143,7 +152,7 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path, s):
+    def readWithElementTree(self, path: Any, s: str) -> None:
 
         contents = g.toUnicode(s)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -168,7 +177,7 @@ class FastRead:
         self.handleBits()
         return hidden_v, g_element
     #@+node:ekr.20180624125321.1: *4* fast.handleBits (reads c.db)
-    def handleBits(self):
+    def handleBits(self) -> None:
         """Restore the expanded and marked bits from c.db."""
         c, fc = self.c, self.c.fileCommands
         expanded = c.db.get('expanded')
@@ -178,7 +187,7 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa & helper
-    def resolveUa(self, attr, val, kind=None):  # Kind is for unit testing.
+    def resolveUa(self, attr: Any, val: Any, kind: Any=None) -> None:  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
             val = g.toEncodedString(val)
@@ -213,7 +222,7 @@ class FastRead:
                 g.trace(f"can not unpickle {attr}={val}")
                 return val
     #@+node:ekr.20180606044154.1: *5* fast.bytesToUnicode
-    def bytesToUnicode(self, ob):
+    def bytesToUnicode(self, ob: Any) -> None:
         """
         Recursively convert bytes objects in strings / lists / dicts to str
         objects, thanks to TNT
@@ -247,7 +256,7 @@ class FastRead:
             ro = ob
         return ro
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
-    def scanGlobals(self, g_element):
+    def scanGlobals(self, g_element: Any) -> None:
         """Get global data from the cache, with reasonable defaults."""
         c = self.c
         d = self.getGlobalData()
@@ -282,7 +291,7 @@ class FastRead:
         else:
             mf.show()
     #@+node:ekr.20180708060437.1: *5* fast.getGlobalData
-    def getGlobalData(self):
+    def getGlobalData(self) -> None:
         """Return a dict containing all global data."""
         c = self.c
         try:
@@ -307,7 +316,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements):
+    def scanTnodes(self, t_elements: Any) -> None:
 
         gnx2body: Dict[str, str] = {}
         gnx2ua: Dict[str, dict] = defaultdict(dict)
@@ -321,12 +330,12 @@ class FastRead:
                     gnx2ua[gnx][key] = self.resolveUa(key, val)
         return gnx2body, gnx2ua
     #@+node:ekr.20180602062323.9: *4* fast.scanVnodes & helper
-    def scanVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
+    def scanVnodes(self, gnx2body: Any, gnx2vnode: Any, gnx2ua: Any, v_elements: Any) -> None:
 
         c, fc = self.c, self.c.fileCommands
         #@+<< define v_element_visitor >>
         #@+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
-        def v_element_visitor(parent_e, parent_v):
+        def v_element_visitor(parent_e: Any, parent_v: Any) -> None:
             """Visit the given element, creating or updating the parent vnode."""
             for e in parent_e:
                 assert e.tag in ('v', 'vh'), e.tag
@@ -400,7 +409,7 @@ class FastRead:
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
-    def readFileFromJsonClipboard(self, s):
+    def readFileFromJsonClipboard(self, s: str) -> None:
         """
         Recreate a file from a JSON string s, and return its hidden vnode.
         """
@@ -415,7 +424,7 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
-    def readWithJsonTree(self, path, s):
+    def readWithJsonTree(self, path: Any, s: str) -> None:
         try:
             d = json.loads(s)
         except Exception:
@@ -440,11 +449,11 @@ class FastRead:
         return hidden_v, g_element
 
     #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
-    def scanJsonGlobals(self, json_d):
+    def scanJsonGlobals(self, json_d: Any) -> None:
         """Set the geometries from the globals dict."""
         c = self.c
 
-        def toInt(x, default):
+        def toInt(x: int, default: Any) -> None:
             try:
                 return int(x)
             except Exception:
@@ -500,7 +509,7 @@ class FastRead:
             mf.show()
 
     #@+node:felix.20220618174623.1: *4* fast.scanJsonTnodes
-    def scanJsonTnodes(self, t_elements):
+    def scanJsonTnodes(self, t_elements: Any) -> None:
 
         gnx2body: Dict[str, str] = {}
 
@@ -510,11 +519,11 @@ class FastRead:
         return gnx2body
 
     #@+node:felix.20220618174639.1: *4* scanJsonVnodes & helper
-    def scanJsonVnodes(self, gnx2body, gnx2vnode, gnx2ua, v_elements):
+    def scanJsonVnodes(self, gnx2body: Any, gnx2vnode: Any, gnx2ua: Any, v_elements: Any) -> None:
 
         c, fc = self.c, self.c.fileCommands
 
-        def v_element_visitor(parent_e, parent_v):
+        def v_element_visitor(parent_e: Any, parent_v: Any) -> None:
             """Visit the given element, creating or updating the parent vnode."""
             for i, v_dict in enumerate(parent_e):
                 # Get the gnx.
@@ -583,7 +592,7 @@ class FileCommands:
     #@+others
     #@+node:ekr.20090218115025.4: *3* fc.Birth
     #@+node:ekr.20031218072017.3019: *4* fc.ctor
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for FileCommands class."""
         self.c = c
         self.frame = c.frame
@@ -597,7 +606,7 @@ class FileCommands:
         )
         self.initIvars()
     #@+node:ekr.20090218115025.5: *4* fc.initIvars
-    def initIvars(self):
+    def initIvars(self) -> None:
         """Init ivars of the FileCommands class."""
         # General...
         c = self.c
@@ -628,7 +637,7 @@ class FileCommands:
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event=None):
+    def writeAtFileNodes(self, event: Event=None) -> None:
         """Write all @file nodes in the selected outline."""
         c = self.c
         c.endEditing()
@@ -637,7 +646,7 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.3050: *4* fc.write-outline-only
     @cmd('write-outline-only')
-    def writeOutlineOnly(self, event=None):
+    def writeOutlineOnly(self, event: Event=None) -> None:
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
@@ -645,7 +654,7 @@ class FileCommands:
 
     #@+node:ekr.20031218072017.1666: *4* fc.writeDirtyAtFileNodes
     @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event=None):
+    def writeDirtyAtFileNodes(self, event: Event=None) -> None:
         """Write all changed @file Nodes."""
         c = self.c
         c.endEditing()
@@ -654,14 +663,14 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.2013: *4* fc.writeMissingAtFileNodes
     @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event=None):
+    def writeMissingAtFileNodes(self, event: Event=None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
         c.atFileCommands.writeMissing(c.p)
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
     #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
-    def createBackupFile(self, fileName):
+    def createBackupFile(self, fileName: str) -> None:
         """
             Create a closed backup file and copy the file to it,
             but only if the original file exists.
@@ -687,7 +696,7 @@ class FileCommands:
             ok, backupName = True, None
         return ok, backupName
     #@+node:ekr.20050404190914.2: *4* fc.deleteBackupFile
-    def deleteBackupFile(self, fileName):
+    def deleteBackupFile(self, fileName: str) -> None:
         try:
             os.remove(fileName)
         except Exception:
@@ -696,7 +705,7 @@ class FileCommands:
             g.error("exception deleting backup file:", fileName)
             g.es_exception(full=False)
     #@+node:ekr.20100119145629.6108: *4* fc.handleWriteLeoFileException
-    def handleWriteLeoFileException(self, fileName, backupName, f):
+    def handleWriteLeoFileException(self, fileName: str, backupName: Any, f: Any) -> None:
         """Report an exception. f is an open file, or None."""
         # c = self.c
         g.es("exception writing:", fileName)
@@ -719,7 +728,7 @@ class FileCommands:
         else:
             g.error('backup file does not exist!', repr(backupName))
     #@+node:ekr.20040324080359.1: *4* fc.isReadOnly
-    def isReadOnly(self, fileName):
+    def isReadOnly(self, fileName: str) -> None:
         # self.read_only is not valid for Save As and Save To commands.
         if g.os_path_exists(fileName):
             try:
@@ -730,7 +739,7 @@ class FileCommands:
                 pass  # os.access() may not exist on all platforms.
         return False
     #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting
-    def openOutlineForWriting(self, fileName):
+    def openOutlineForWriting(self, fileName: str) -> None:
         """Open a .leo file for writing. Return the open file, or None."""
         try:
             f = open(fileName, 'wb')  # Always use binary mode.
@@ -740,7 +749,7 @@ class FileCommands:
             f = None
         return f
     #@+node:ekr.20031218072017.3045: *4* fc.setDefaultDirectoryForNewFiles
-    def setDefaultDirectoryForNewFiles(self, fileName):
+    def setDefaultDirectoryForNewFiles(self, fileName: str) -> None:
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
         c = self.c
         if not c.openDirectory:
@@ -748,7 +757,7 @@ class FileCommands:
             if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
                 c.openDirectory = c.frame.openDirectory = theDir
     #@+node:ekr.20031218072017.1554: *4* fc.warnOnReadOnlyFiles
-    def warnOnReadOnlyFiles(self, fileName):
+    def warnOnReadOnlyFiles(self, fileName: str) -> None:
         # os.access may not exist on all platforms.
         try:
             self.read_only = not os.access(fileName, os.W_OK)
@@ -761,7 +770,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3020: *3* fc: Reading
     #@+node:ekr.20031218072017.1559: *4* fc: Paste
     #@+node:ekr.20080410115129.1: *5* fc.checkPaste
-    def checkPaste(self, parent, p):
+    def checkPaste(self, parent: Any, p: Position) -> None:
         """Return True if p may be pasted as a child of parent."""
         if not parent:
             return True
@@ -773,7 +782,7 @@ class FileCommands:
                     return False
         return True
     #@+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
-    def getLeoOutlineFromClipboard(self, s):
+    def getLeoOutlineFromClipboard(self, s: str) -> None:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
         current = c.p
@@ -815,7 +824,7 @@ class FileCommands:
 
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
     #@+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones
-    def getLeoOutlineFromClipboardRetainingClones(self, s):
+    def getLeoOutlineFromClipboardRetainingClones(self, s: str) -> None:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
         current = c.p
@@ -860,7 +869,7 @@ class FileCommands:
         self.initReadIvars()
         return p
     #@+node:ekr.20180424123010.1: *5* fc.linkChildrenToParents
-    def linkChildrenToParents(self, p):
+    def linkChildrenToParents(self, p: Position) -> None:
         """
         Populate the parent links in all children of p.
         """
@@ -869,7 +878,7 @@ class FileCommands:
                 child.v.parents.append(p.v)
             self.linkChildrenToParents(child)
     #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
-    def reassignAllIndices(self, p):
+    def reassignAllIndices(self, p: Position) -> None:
         """Reassign all indices in p's subtree."""
         ni = g.app.nodeIndices
         for p2 in p.self_and_subtree(copy=False):
@@ -879,13 +888,14 @@ class FileCommands:
                 g.trace('**reassigning**', index, v)
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
-    def getLeoFile(self,
-        theFile,
-        fileName,
-        readAtFileNodesFlag=True,
-        silent=False,
-        checkOpenFiles=True,
-    ):
+    def getLeoFile(
+        self,
+        theFile: Any,
+        fileName: str,
+        readAtFileNodesFlag: bool=True,
+        silent: bool=False,
+        checkOpenFiles: bool=True,
+    ) -> None:
         """
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
@@ -938,7 +948,7 @@ class FileCommands:
         g.es(f"read outline in {t2 - t1:2.2f} seconds")
         return v, c.frame.ratio
     #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
-    def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
+    def openLeoFile(self, theFile: Any, fileName: str, readAtFileNodesFlag: bool=True, silent: bool=False) -> None:
         """
         Open a Leo file.
 
@@ -961,7 +971,7 @@ class FileCommands:
             frame.resizePanesToRatio(ratio, frame.secondary_ratio)
         return ok
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
-    def readExternalFiles(self):
+    def readExternalFiles(self) -> None:
         """
         Read all external files in the outline.
 
@@ -978,7 +988,7 @@ class FileCommands:
         fc.setPositionsFromVnodes()
         return recoveryNode
     #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
-    def handleNodeConflicts(self):
+    def handleNodeConflicts(self) -> None:
         """Create a 'Recovered Nodes' node for each entry in c.nodeConflictList."""
         c = self.c
         if not c.nodeConflictList:
@@ -1030,7 +1040,7 @@ class FileCommands:
                 n2.setBodyString(b2)
         return root
     #@+node:ekr.20031218072017.3030: *5* fc.readOutlineOnly
-    def readOutlineOnly(self, theFile, fileName):
+    def readOutlineOnly(self, theFile: Any, fileName: str) -> None:
         c = self.c
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
@@ -1043,7 +1053,7 @@ class FileCommands:
         c.frame.resizePanesToRatio(ratio, secondary_ratio)
         return ok
     #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb & helpers
-    def retrieveVnodesFromDb(self, conn):
+    def retrieveVnodesFromDb(self, conn: Any) -> None:
         """
         Recreates tree from the data contained in table vnodes.
 
@@ -1101,7 +1111,7 @@ class FileCommands:
         c.setCurrentPosition(p)
         return rootChildren[0]
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn):
+    def initNewDb(self, conn: Any) -> None:
         """ Initializes tables and returns None"""
         c, fc = self.c, self
         v = leoNodes.VNode(context=c)
@@ -1113,7 +1123,7 @@ class FileCommands:
         fc.exportToSqlite(c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn):
+    def getWindowGeometryFromDb(self, conn: Any) -> None:
         geom = (600, 400, 50, 50, 0.5, 0.5, '')
         keys = ('width', 'height', 'left', 'top',
                   'ratio', 'secondary_ratio',
@@ -1132,7 +1142,7 @@ class FileCommands:
             pass
         return geom
     #@+node:vitalije.20170831154734.1: *5* fc.setReferenceFile
-    def setReferenceFile(self, fileName):
+    def setReferenceFile(self, fileName: str) -> None:
         c = self.c
         for v in c.hiddenRootNode.children:
             if v.h == PRIVAREA:
@@ -1145,22 +1155,22 @@ class FileCommands:
             c.redraw()
         g.es('set reference file:', g.shortFileName(fileName))
     #@+node:vitalije.20170831144643.1: *5* fc.updateFromRefFile
-    def updateFromRefFile(self):
+    def updateFromRefFile(self) -> None:
         """Updates public part of outline from the specified file."""
         c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
-        def get_ref_filename():
+        def get_ref_filename() -> None:
             for v in priv_vnodes():
                 return g.splitLines(v.b)[0].strip()
         #@+node:vitalije.20170831144827.4: *6* function: pub_vnodes
-        def pub_vnodes():
+        def pub_vnodes() -> None:
             for v in c.hiddenRootNode.children:
                 if v.h == PRIVAREA:
                     break
                 yield v
         #@+node:vitalije.20170831144827.5: *6* function: priv_vnodes
-        def priv_vnodes():
+        def priv_vnodes() -> None:
             pub = True
             for v in c.hiddenRootNode.children:
                 if v.h == PRIVAREA:
@@ -1169,19 +1179,19 @@ class FileCommands:
                     continue
                 yield v
         #@+node:vitalije.20170831144827.6: *6* function: pub_gnxes
-        def sub_gnxes(children):
+        def sub_gnxes(children: Any) -> None:
             for v in children:
                 yield v.gnx
                 for gnx in sub_gnxes(v.children):
                     yield gnx
 
-        def pub_gnxes():
+        def pub_gnxes() -> None:
             return sub_gnxes(pub_vnodes())
 
-        def priv_gnxes():
+        def priv_gnxes() -> None:
             return sub_gnxes(priv_vnodes())
         #@+node:vitalije.20170831144827.7: *6* function: restore_priv
-        def restore_priv(prdata, topgnxes):
+        def restore_priv(prdata: Any, topgnxes: Any) -> None:
             vnodes = []
             for row in prdata:
                 (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
@@ -1204,7 +1214,7 @@ class FileCommands:
                 if gnx in pubgnxes:
                     v.parents.append(c.hiddenRootNode)
         #@+node:vitalije.20170831144827.8: *6* function: priv_data
-        def priv_data(gnxes):
+        def priv_data(gnxes: Any) -> None:
             dbrow = lambda v: (
                         v.gnx,
                         v.h,
@@ -1218,7 +1228,7 @@ class FileCommands:
             return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
         #@+node:vitalije.20170831144827.9: *6* function: nosqlite_commander
         @contextmanager
-        def nosqlite_commander(fname):
+        def nosqlite_commander(fname: Any) -> None:
             oldname = c.mFileName
             conn = getattr(c, 'sqlite_connection', None)
             c.sqlite_connection = None
@@ -1243,11 +1253,11 @@ class FileCommands:
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
-    def archivedPositionToPosition(self, s):
+    def archivedPositionToPosition(self, s: str) -> None:
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
     #@+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
-    def getDescendentAttributes(self, s, tag=""):
+    def getDescendentAttributes(self, s: str, tag: str="") -> None:
         """s is a list of gnx's, separated by commas from a <v> or <t> element.
         Parses s into a list.
 
@@ -1260,7 +1270,7 @@ class FileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes(self, s, v=None):
+    def getDescendentUnknownAttributes(self, s: str, v: VNode=None) -> None:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
@@ -1274,12 +1284,12 @@ class FileCommands:
             g.trace('Can not unpickle', type(s), v and v.h, s[:40])
             return None
     #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
-    def getPosFromClipboard(self, s):
+    def getPosFromClipboard(self, s: str) -> None:
         """A utility called from init_tree_abbrev."""
         v = self.getVnodeFromClipboard(s)
         return leoNodes.Position(v)
 
-    def getVnodeFromClipboard(self, s):
+    def getVnodeFromClipboard(self, s: str) -> None:
         """Called only from getPosFromClipboard."""
         c = self.c
         self.initReadIvars()
@@ -1295,7 +1305,7 @@ class FileCommands:
             self.gnxDict = oldGnxDict
         return v
     #@+node:ekr.20060919142200.1: *5* fc.initReadIvars
-    def initReadIvars(self):
+    def initReadIvars(self) -> None:
         self.descendentTnodeUaDictList = []
         self.descendentVnodeUaDictList = []
         self.descendentExpandedList = []
@@ -1305,19 +1315,19 @@ class FileCommands:
         self.c.nodeConflictList = []  # 2010/01/05
         self.c.nodeConflictFileName = None  # 2010/01/05
     #@+node:ekr.20100124110832.6212: *5* fc.propagateDirtyNodes
-    def propagateDirtyNodes(self):
+    def propagateDirtyNodes(self) -> None:
         c = self.c
         aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
-    def resolveArchivedPosition(self, archivedPosition, root_v):
+    def resolveArchivedPosition(self, archivedPosition: Any, root_v: Any) -> None:
         """
         Return a VNode corresponding to the archived position relative to root
         node root_v.
         """
 
-        def oops(message):
+        def oops(message: str) -> None:
             """Give an error only if no file errors have been seen."""
             return None
 
@@ -1341,7 +1351,7 @@ class FileCommands:
                 return oops(f'bad index="{n}", len(children)="{len(children)}"')
         return last_v
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
-    def restoreDescendentAttributes(self):
+    def restoreDescendentAttributes(self) -> None:
         """Called from fc.readExternalFiles."""
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
@@ -1375,7 +1385,7 @@ class FileCommands:
                 if expanded.get(p.v):
                     p.expand()
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes
-    def setPositionsFromVnodes(self):
+    def setPositionsFromVnodes(self) -> None:
 
         c, root = self.c, self.c.rootPosition()
         if c.sqlite_connection:
@@ -1394,7 +1404,7 @@ class FileCommands:
     #@+node:ekr.20031218072017.3032: *3* fc: Writing
     #@+node:ekr.20070413045221.2: *4* fc: Writing save*
     #@+node:ekr.20031218072017.1720: *5* fc.save
-    def save(self, fileName, silent=False):
+    def save(self, fileName: str, silent: bool=False) -> None:
         """fc.save: A helper for c.save."""
         c = self.c
         p = c.p
@@ -1421,14 +1431,14 @@ class FileCommands:
         g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:vitalije.20170831135146.1: *5* fc.save_ref & helpers
-    def save_ref(self):
+    def save_ref(self) -> None:
         """Saves reference outline file"""
         c = self.c
         p = c.p
         fc = self
         #@+others
         #@+node:vitalije.20170831135535.1: *6* function: put_v_elements
-        def put_v_elements():
+        def put_v_elements() -> None:
             """
             Puts all <v> elements in the order in which they appear in the outline.
 
@@ -1450,7 +1460,7 @@ class FileCommands:
             fc.put("</vnodes>\n")
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* function: getPublicLeoFile
-        def getPublicLeoFile():
+        def getPublicLeoFile() -> None:
             fc.outputFile = io.StringIO()
             fc.putProlog()
             fc.putHeader()
@@ -1463,12 +1473,12 @@ class FileCommands:
             return fname, fc.outputFile.getvalue()
 
         #@+node:vitalije.20211218225014.1: *6* function: put_t_elements
-        def put_t_elements():
+        def put_t_elements() -> None:
             """
             Write all <t> elements except those for vnodes appearing in @file, @edit or @auto nodes.
             """
 
-            def should_suppress(p):
+            def should_suppress(p: Position) -> None:
                 return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
                     for z in p.self_and_parents())
 
@@ -1509,7 +1519,7 @@ class FileCommands:
         g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
-    def saveAs(self, fileName):
+    def saveAs(self, fileName: str) -> None:
         """fc.saveAs: A helper for c.saveAs."""
         c = self.c
         p = c.p
@@ -1531,7 +1541,7 @@ class FileCommands:
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
-    def saveTo(self, fileName, silent=False):
+    def saveTo(self, fileName: str, silent: bool=False) -> None:
         """fc.saveTo: A helper for c.saveTo."""
         c = self.c
         p = c.p
@@ -1554,7 +1564,7 @@ class FileCommands:
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20210316034237.1: *4* fc: Writing top-level
     #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite & helpers
-    def exportToSqlite(self, fileName):
+    def exportToSqlite(self, fileName: str) -> None:
         """Dump all vnodes to sqlite database. Returns True on success."""
         c, fc = self.c, self
         if c.sqlite_connection is None:
@@ -1592,7 +1602,7 @@ class FileCommands:
             g.internalError(e)
         return ok
     #@+node:vitalije.20170705075107.1: *6* fc.decodePosition
-    def decodePosition(self, s):
+    def decodePosition(self, s: str) -> None:
         """Creates position from its string representation encoded by fc.encodePosition."""
         fc = self
         if not s:
@@ -1605,7 +1615,7 @@ class FileCommands:
         p = leoNodes.Position(v, ci, stack[:-1])
         return p
     #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
-    def encodePosition(self, p):
+    def encodePosition(self, p: Position) -> None:
         """New schema for encoding current position hopefully simpler one."""
         jn = '<->'
         mk = '%s,%s'
@@ -1613,7 +1623,7 @@ class FileCommands:
         res.append(mk % (p.gnx, p._childIndex))
         return jn.join(res)
     #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
-    def prepareDbTables(self, conn):
+    def prepareDbTables(self, conn: Any) -> None:
         conn.execute('''drop table if exists vnodes;''')
         conn.execute(
             '''
@@ -1630,7 +1640,7 @@ class FileCommands:
         conn.execute(
             '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn, rows):
+    def exportVnodesToSqlite(self, conn: Any, rows: Any) -> None:
         conn.executemany(
             '''insert into vnodes
             (gnx, head, body, children, parents,
@@ -1639,7 +1649,7 @@ class FileCommands:
             rows,
         )
     #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
-    def exportGeomToSqlite(self, conn):
+    def exportGeomToSqlite(self, conn: Any) -> None:
         c = self.c
         data = zip(
             (
@@ -1655,14 +1665,14 @@ class FileCommands:
         )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
     #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
-    def exportDbVersion(self, conn):
+    def exportDbVersion(self, conn: Any) -> None:
         conn.execute(
             "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
-    def exportHashesToSqlite(self, conn):
+    def exportHashesToSqlite(self, conn: Any) -> None:
         c = self.c
 
-        def md5(x):
+        def md5(x: int) -> None:
             try:
                 s = open(x, 'rb').read()
             except Exception:
@@ -1686,7 +1696,7 @@ class FileCommands:
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x: (x[1], md5(x[0])), files))
     #@+node:ekr.20031218072017.1573: *5* fc.outline_to_clipboard_string
-    def outline_to_clipboard_string(self, p=None):
+    def outline_to_clipboard_string(self, p: Position=None) -> None:
         """
         Return a string suitable for pasting to the clipboard.
         """
@@ -1717,7 +1727,7 @@ class FileCommands:
             self.usingClipboard = False
         return s
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string
-    def outline_to_xml_string(self):
+    def outline_to_xml_string(self) -> None:
         """Write the outline in .leo (XML) format to a string."""
         self.outputFile = io.StringIO()
         self.putProlog()
@@ -1732,7 +1742,7 @@ class FileCommands:
         self.outputFile = None
         return s
     #@+node:ekr.20031218072017.3046: *5* fc.write_Leo_file
-    def write_Leo_file(self, fileName):
+    def write_Leo_file(self, fileName: str) -> None:
         """
         Write all external files and the .leo file itself."""
         c, fc = self.c, self
@@ -1745,7 +1755,7 @@ class FileCommands:
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20210316050301.1: *5* fc.write_leojs & helpers
-    def write_leojs(self, fileName):
+    def write_leojs(self, fileName: str) -> None:
         """Write the outline in .leojs (JSON) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
@@ -1773,7 +1783,7 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_file
-    def leojs_file(self, p=None):
+    def leojs_file(self, p: Position=None) -> None:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
@@ -1821,7 +1831,7 @@ class FileCommands:
         self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
-    def leojs_globals(self):
+    def leojs_globals(self) -> None:
         """Put json representation of Leo's cached globals."""
         c = self.c
         width, height, left, top = c.frame.get_window_info()
@@ -1845,7 +1855,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p, gnxSet, isIgnore=False):
+    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool=False) -> None:
         """Return a jsonized vnode."""
         c = self.c
         fc = self
@@ -1907,7 +1917,7 @@ class FileCommands:
         return result
 
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
-    def write_xml_file(self, fileName):
+    def write_xml_file(self, fileName: str) -> None:
         """Write the outline in .leo (XML) format."""
         c = self.c
         ok, backupName = self.createBackupFile(fileName)
@@ -1931,7 +1941,7 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20100119145629.6114: *5* fc.writeAllAtFileNodes
-    def writeAllAtFileNodes(self):
+    def writeAllAtFileNodes(self) -> None:
         """Write all @<file> nodes and set orphan bits."""
         c = self.c
         try:
@@ -1949,7 +1959,7 @@ class FileCommands:
             g.es('can save each changed file.', color='red')
             return False
     #@+node:ekr.20210316041806.1: *5* fc.writeOutline (write switch)
-    def writeOutline(self, fileName):
+    def writeOutline(self, fileName: str) -> None:
 
         c = self.c
         if c.checkOutline():
@@ -1963,7 +1973,7 @@ class FileCommands:
             return self.write_leojs(fileName)
         return self.write_xml_file(fileName)
     #@+node:ekr.20070412095520: *5* fc.writeZipFile
-    def writeZipFile(self, s):
+    def writeZipFile(self, s: str) -> None:
         """Write string s as a .zip file."""
         # The name of the file in the archive.
         contentsName = g.toEncodedString(
@@ -1980,7 +1990,7 @@ class FileCommands:
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle
-    def pickle(self, torv, val, tag):
+    def pickle(self, torv: Any, val: Any, tag: str) -> None:
         """Pickle val and return the hexlified result."""
         try:
             s = pickle.dumps(val, protocol=1)
@@ -1997,12 +2007,12 @@ class FileCommands:
             g.es_exception()
             return ''
     #@+node:ekr.20031218072017.1470: *5* fc.put
-    def put(self, s):
+    def put(self, s: str) -> None:
         """Put string s to self.outputFile. All output eventually comes here."""
         if s:
             self.outputFile.write(s)
     #@+node:ekr.20080805071954.2: *5* fc.putDescendentVnodeUas & helper
-    def putDescendentVnodeUas(self, p):
+    def putDescendentVnodeUas(self, p: Position) -> None:
         """
         Return the a uA field for descendent VNode attributes,
         suitable for reconstituting uA's for anonymous vnodes.
@@ -2032,7 +2042,7 @@ class FileCommands:
         return d and self.pickle(
             torv=p.v, val=d, tag='descendentVnodeUnknownAttributes') or ''
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList):
+    def createUaList(self, aList: List) -> None:
         """
         Given aList of pairs (p,torv), return a list of pairs (torv,d)
         where d contains all picklable items of torv.unknownAttributes.
@@ -2054,11 +2064,11 @@ class FileCommands:
                 g.warning("ignoring non-dictionary uA for", p)
         return result
     #@+node:ekr.20031218072017.3035: *5* fc.putFindSettings
-    def putFindSettings(self):
+    def putFindSettings(self) -> None:
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>\n")
     #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
-    def putGlobals(self):
+    def putGlobals(self) -> None:
         """Put a vestigial <globals> element, and write global data to the cache."""
         trace = 'cache' in g.app.debug
         c = self.c
@@ -2073,17 +2083,17 @@ class FileCommands:
             g.trace(f"\nset c.db for {c.shortFileName()}")
             print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
-    def putHeader(self):
+    def putHeader(self) -> None:
         self.put('<leo_header file_format="2"/>\n')
     #@+node:ekr.20031218072017.3042: *5* fc.putPostlog
-    def putPostlog(self):
+    def putPostlog(self) -> None:
         self.put("</leo_file>\n")
     #@+node:ekr.20031218072017.2066: *5* fc.putPrefs
-    def putPrefs(self):
+    def putPrefs(self) -> None:
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<preferences/>\n")
     #@+node:ekr.20031218072017.1246: *5* fc.putProlog
-    def putProlog(self):
+    def putProlog(self) -> None:
         """Put the prolog of the xml file."""
         tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
@@ -2093,7 +2103,7 @@ class FileCommands:
         # Put the namespace
         self.put(f'<leo_file xmlns:leo="{tag}" >\n')
     #@+node:ekr.20070413061552: *5* fc.putSavedMessage
-    def putSavedMessage(self, fileName):
+    def putSavedMessage(self, fileName: str) -> None:
         c = self.c
         # #531: Optionally report timestamp...
         if c.config.getBool('log-show-save-time', default=False):
@@ -2103,7 +2113,7 @@ class FileCommands:
             timestamp = ''
         g.es(f"{timestamp}saved: {g.shortFileName(fileName)}")
     #@+node:ekr.20031218072017.1248: *5* fc.putStyleSheetLine
-    def putStyleSheetLine(self):
+    def putStyleSheetLine(self) -> None:
         """
         Put the xml stylesheet line.
 
@@ -2121,19 +2131,19 @@ class FileCommands:
             self.put(f"<?xml-stylesheet {sheet} ?>\n")
 
     #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
-    def put_t_element(self, v):
+    def put_t_element(self, v: VNode) -> None:
         b, gnx = v.b, v.fileIndex
         ua = self.putUnknownAttributes(v)
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
-    def put_t_elements(self):
+    def put_t_elements(self) -> None:
         """Put all <t> elements as required for copy or save commands"""
         self.put("<tnodes>\n")
         self.putReferencedTElements()
         self.put("</tnodes>\n")
     #@+node:ekr.20031218072017.1576: *6* fc.putReferencedTElements
-    def putReferencedTElements(self):
+    def putReferencedTElements(self) -> None:
         """Put <t> elements for all referenced vnodes."""
         c = self.c
         if self.usingClipboard:  # write the current tree.
@@ -2161,7 +2171,7 @@ class FileCommands:
                 # This prevents the file from being written.
                 raise BadLeoFile(f"no VNode for {repr(index)}")
     #@+node:ekr.20050418161620.2: *5* fc.putUaHelper
-    def putUaHelper(self, torv, key, val):
+    def putUaHelper(self, torv: Any, key: Any, val: Any) -> None:
         """Put attribute whose name is key and value is val to the output stream."""
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
@@ -2174,7 +2184,7 @@ class FileCommands:
             return ''
         return self.pickle(torv=torv, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
-    def putUnknownAttributes(self, v):
+    def putUnknownAttributes(self, v: VNode) -> None:
         """Put pickleable values for all keys in v.unknownAttributes dictionary."""
         if not hasattr(v, 'unknownAttributes'):
             return ''
@@ -2187,7 +2197,7 @@ class FileCommands:
         g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
     #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
-    def put_v_element(self, p, isIgnore=False):
+    def put_v_element(self, p: Position, isIgnore: bool=False) -> None:
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
@@ -2235,7 +2245,7 @@ class FileCommands:
             else:
                 fc.put(f"{v_head}</v>\n")  # Call put only once.
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
-    def compute_attribute_bits(self, forceWrite, p):
+    def compute_attribute_bits(self, forceWrite: Any, p: Position) -> None:
         """Return the initial values of v's attributes."""
         attrs = []
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
@@ -2243,7 +2253,7 @@ class FileCommands:
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
-    def put_v_elements(self, p=None):
+    def put_v_elements(self, p: Position=None) -> None:
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
         c.clearAllVisited()
@@ -2262,7 +2272,7 @@ class FileCommands:
             self.setCachedBits()
         self.put("</vnodes>\n")
     #@+node:ekr.20190328160622.1: *6* fc.setCachedBits
-    def setCachedBits(self):
+    def setCachedBits(self) -> None:
         """
         Set the cached expanded and marked bits for *all* nodes.
         Also cache the current position.
@@ -2284,7 +2294,7 @@ class FileCommands:
             print('current_position:', current)
             print('')
     #@+node:ekr.20031218072017.1247: *5* fc.putXMLLine
-    def putXMLLine(self):
+    def putXMLLine(self) -> None:
         """Put the **properly encoded** <?xml> element."""
         # Use self.leo_file_encoding encoding.
         self.put(
