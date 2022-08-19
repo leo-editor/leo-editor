@@ -3292,7 +3292,7 @@ class RecentFilesManager:
         rf = self
         files = [theFile.strip() for theFile in files]
 
-        def munge(name: Any) -> str:
+        def munge(name: str) -> str:
             return g.os_path_normpath(name or '').lower()
 
         for name in files:
@@ -3470,7 +3470,7 @@ class RecentFilesManager:
                     g.error('can not create', fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
-    def readRecentFilesFile(self, path: Any) -> bool:
+    def readRecentFilesFile(self, path: str) -> bool:
 
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
         if not g.os_path_exists(fileName):
@@ -3510,7 +3510,7 @@ class RecentFilesManager:
         """Sort the recent files list."""
         rf = self
 
-        def key(path: Any) -> str:
+        def key(path: str) -> str:
             # Sort only the base name.  That's what will appear in the menu.
             s = g.os_path_basename(path)
             return s.lower() if sys.platform.lower().startswith('win') else s
@@ -3527,10 +3527,10 @@ class RecentFilesManager:
         if g.unitTesting:
             return
 
-        def munge(name: Any) -> str:
+        def munge(name: str) -> str:
             return g.os_path_finalize(name or '').lower()
 
-        def munge2(name: Any) -> str:
+        def munge2(name: str) -> str:
             return g.os_path_finalize_join(g.app.loadDir, name or '')
 
         # Update the recent files list in all windows.
