@@ -581,11 +581,12 @@ def extractSectionNames(self, event=None):
     if not lines:
         g.warning('No lines selected')
         return
-    u.beforeChangeGroup(current, undoType)
     found = False
     for s in lines:
         name = findSectionName(c, s)
         if name:
+            if not found:
+                u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
             p = createLastChildNode(c, current, name, None)
             u.afterInsertNode(p, undoType, undoData)
