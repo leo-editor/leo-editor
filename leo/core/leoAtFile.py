@@ -3,8 +3,8 @@
 #@+node:ekr.20150323150718.1: * @file leoAtFile.py
 #@@first
 """Classes to read and write @file nodes."""
-#@+<< imports >>
-#@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile.py)
+#@+<< imports  (leoAtFile.py) >>
+#@+node:ekr.20041005105605.2: ** << imports (leoAtFile.py) >>
 import io
 import os
 import re
@@ -12,16 +12,19 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Callable, List, TYPE_CHECKING
+from typing import Any, Callable, Dict, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-#@-<< imports >>
+#@-<< imports  (leoAtFile.py) >>
+#@+<< type checking (leoAtFile.py) >>
+#@+node:ekr.20220819064015.1: ** << type checking (leoAtFile.py) >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = Any
+    Cmdr = Position = VNode = Any
 Event = None
+#@-<< type checking (leoAtFile.py) >>
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:  # pragma: no cover
@@ -53,7 +56,7 @@ class AtFile:
     def __init__(self, c: Cmdr) -> None:
         """ctor for atFile class."""
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
-        self.c = c
+        self.c: Cmdr = c
         self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
         self.errors = 0  # Make sure at.error() works even when not inited.
@@ -99,13 +102,13 @@ class AtFile:
         at.language = None
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = None
-        at.root = None  # The root (a position) of tree being read or written.
+        at.root: Position = None  # The root (a position) of tree being read or written.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
-        at.tab_width = c.tab_width or -4
+        at.tab_width: int = c.tab_width or -4
         at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
-    def initReadIvars(self, root: Any, fileName: Any) -> None:
+    def initReadIvars(self, root: Position, fileName: str) -> None:
         at = self
         at.initCommonIvars()
         at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
@@ -115,14 +118,14 @@ class AtFile:
         at.done = False  # True when @-leo seen.
         at.fromString = False
         at.importRootSeen = False
-        at.indentStack = []
-        at.lastLines = []  # The lines after @-leo
+        ### at.indentStack: List = []
+        at.lastLines: List[str] = []  # The lines after @-leo
         at.leadingWs = ""
         at.lineNumber = 0  # New in Leo 4.4.8.
-        at.out = None
-        at.outStack = []
+        ### at.out = None
+        ### at.outStack = []
         at.read_i = 0
-        at.read_lines = []
+        at.read_lines: List[str] = []
         at.readVersion = ''  # "5" for new-style thin files.
         at.readVersion5 = False  # Synonym for at.readVersion >= '5'
         at.root = root
@@ -131,7 +134,7 @@ class AtFile:
         at.v = None
         at.vStack = []  # Stack of at.v values.
         at.thinChildIndexStack = []  # number of siblings at this level.
-        at.thinNodeStack = []  # Entries are vnodes.
+        ### at.thinNodeStack = []  # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Any) -> None:
@@ -637,7 +640,12 @@ class AtFile:
             p.clearDirty()
         return ic.errors == 0
     #@+node:ekr.20180622110112.1: *4* at.fast_read_into_root
-    def fast_read_into_root(self, c: Cmdr, contents: Any, gnx2vnode: Any, path: Any, root: Any) -> None:  # pragma: no cover
+    def fast_read_into_root(self,
+        c: Cmdr,
+        contents: str,
+        gnx2vnode: Dict[str, VNode],
+        path: str, root: Position,
+    ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
@@ -1604,7 +1612,12 @@ class AtFile:
             root.v._p_changed = True
             return ''
     #@+node:ekr.20050506084734: *6* at.stringToString
-    def stringToString(self, root: Any, s: str, forcePythonSentinels: bool=True, sentinels: bool=True) -> None:  # pragma: no cover
+    def stringToString(self,
+        root: Position,
+        s: str,
+        forcePythonSentinels: bool=True,
+        sentinels: bool=True,
+    ) -> str:  # pragma: no cover
         """
         Write an external file from a string.
 
@@ -3482,7 +3495,7 @@ class FastAtRead:
             v._bodyString = g.toUnicode(''.join(body))
         #@-<< post pass: set all body text>>
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, contents: Any, path: Any, root: Any) -> None:
+    def read_into_root(self, contents: Any, path: Any, root: Any) -> bool:
         """
         Parse the file's contents, creating a tree of vnodes
         anchored in root.v.
