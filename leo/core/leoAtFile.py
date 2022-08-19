@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Position = VNode = Any
-Event = None
+Event = Any
 #@-<< type checking (leoAtFile.py) >>
 #@+others
 #@+node:ekr.20150509194251.1: ** cmd (decorator)
@@ -240,8 +240,8 @@ class AtFile:
         is_at_shadow = self.root.isAtShadowFileNode()
         if fromString:  # pragma: no cover
             if is_at_shadow:  # pragma: no cover
-                return at.error(
-                    'can not call at.read from string for @shadow files')
+                at.error('can not call at.read from string for @shadow files')
+                return None, None
             at.initReadLine(fromString)
             return None, None
         #
@@ -647,7 +647,7 @@ class AtFile:
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
-    def createImportedNode(self, root: Position, headline: Any) -> None:  # pragma: no cover
+    def createImportedNode(self, root: Position, headline: Any) -> Position:  # pragma: no cover
         at = self
         if at.importRootSeen:
             p = root.insertAsLastChild()
@@ -666,7 +666,7 @@ class AtFile:
         at.read_lines = g.splitLines(s)
         at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
-    def parseLeoSentinel(self, s: str) -> None:
+    def parseLeoSentinel(self, s: str) -> Tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
         If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
@@ -833,7 +833,7 @@ class AtFile:
             g.trace(g.callers())
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
-    def scanFirstLines(self, firstLines: Any) -> None:  # pragma: no cover
+    def scanFirstLines(self, firstLines: Any) -> str:  # pragma: no cover
         """
         Append all lines before the @+leo line to firstLines.
 
@@ -2945,7 +2945,7 @@ class AtFile:
                     return False
             aSet = d.get(fn, set())
             if trace:
-                g.trace(f"Return {p.h not in aSet()}: p.h not in aSet(): {sfn}")
+                g.trace(f"Return {p.h} not in aSet(): {sfn}")
             return p.h not in aSet
         if trace:
             g.trace('Return True: never read:', sfn)
