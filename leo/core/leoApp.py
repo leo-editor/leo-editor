@@ -208,6 +208,10 @@ class LeoApp:
         # True if an @auto writer should write sentinels,
         # even if the external file doesn't actually contain sentinels.
         self.force_at_auto_sentinels = False
+
+        # leo 5.6: allow undefined section references in all @auto files.
+        # Leo 6.6.4: Make this a permanent g.app ivar.
+        self.allow_undefined_refs = False
         #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>

@@ -99,9 +99,9 @@ class AtFile:
         self.errors = 0
         self.inCode = True
         self.indent = 0  # The unit of indentation is spaces, not tabs.
-        self.language = None
+        self.language: str = None
         self.output_newline = g.getOutputNewline(c=c)
-        self.page_width = None
+        self.page_width: int = None
         self.root: Position = None  # The root (a position) of tree being read or written.
         self.startSentinelComment = ""
         self.startSentinelComment = ""
@@ -116,7 +116,7 @@ class AtFile:
         self.correctedLines = 0  # For perfect import.
         self.docOut: List[str] = []  # The doc part being accumulated.
         self.done = False  # True when @-leo seen.
-        self.fromString = False
+        self.fromString = ''
         self.importRootSeen = False
         self.lastLines: List[str] = []  # The lines after @-leo
         self.leadingWs = ""
@@ -231,7 +231,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: bool=False) -> Union[Tuple[str, str], Tuple[None, None]]:
+    def openFileForReading(self, fromString: str=None) -> Union[Tuple[str, str], Tuple[None, None]]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -286,7 +286,7 @@ class AtFile:
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
     #@+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: bool=None) -> bool:
+    def read(self, root: Position, fromString: str=None) -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = g.fullPath(c, root)  # #1341. #1889.
@@ -361,7 +361,7 @@ class AtFile:
 
         c = self.c
         p = root.copy()
-        scanned_nodes: Set[Position] = set()
+        scanned_nodes: Set[Tuple[str, str]] = set()
         files: List[Position] = []
         after = None if all else p.nodeAfterTree()
         while p and p != after:
@@ -722,7 +722,7 @@ class AtFile:
             at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> None:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> str:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -737,11 +737,11 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
-        s = at.openFileHelper(fileName)  # Catches all exceptions.
+        s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
-        if s is None:
+        if s_bytes is None:
             return None
-        e, s = g.stripBOM(s)
+        e, s = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
             s = g.toUnicode(s, encoding=e)
@@ -755,7 +755,7 @@ class AtFile:
         at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
-    def openFileHelper(self, fileName: str) -> str:
+    def openFileHelper(self, fileName: str) -> bytes:
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.
@@ -1007,7 +1007,7 @@ class AtFile:
         at.reportEndOfWrite(files, all, dirty)
         # #2338: Never call at.saveOutlineIfPossible().
     #@+node:ekr.20190108052043.1: *6* at.findFilesToWrite
-    def findFilesToWrite(self, force: Any) -> Tuple[List[str], Position]:  # pragma: no cover
+    def findFilesToWrite(self, force: bool) -> Tuple[List[Position], Position]:  # pragma: no cover
         """
         Return a list of files to write.
         We must do this in a prepass, so as to avoid errors later.
@@ -1028,7 +1028,7 @@ class AtFile:
             p = c.rootPosition()
             after = None
         seen = set()
-        files: List[str] = []
+        files: List[Position] = []
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 # Honor @ignore in *body* text, but *not* in @asis nodes.
@@ -1066,7 +1066,7 @@ class AtFile:
         g.es('Warning: changes to this file will be lost', color='red')
         g.es('unless you can save the file successfully.', color='red')
     #@+node:ekr.20190108112519.1: *6* at.reportEndOfWrite
-    def reportEndOfWrite(self, files: List[str], all: bool, dirty: bool) -> None:  # pragma: no cover
+    def reportEndOfWrite(self, files: List[Position], all: bool, dirty: bool) -> None:  # pragma: no cover
 
         at = self
         if g.unitTesting:
@@ -1162,21 +1162,19 @@ class AtFile:
         if root.isAtAutoRstNode():
             # An escape hatch: fall back to the theRst writer
             # if there is no rst writer plugin.
-            at.outputFile = outputFile = io.StringIO()
-            ok = c.rstCommands.writeAtAutoFile(root, fileName, outputFile)
-            return outputFile.close() if ok else None
+            at.outputFile = io.StringIO()
+            ok = c.rstCommands.writeAtAutoFile(root, fileName, at.outputFile)
+            return at.outputFile if ok else ''
         # leo 5.6: allow undefined section references in all @auto files.
-        ivar = 'allow_undefined_refs'
         try:
-            setattr(at, ivar, True)
+            g.app.allow_undefined_refs = True
             at.outputList = []
             at.putFile(root, sentinels=False)
             return '' if at.errors else ''.join(at.outputList)
         except Exception:
             return None
         finally:
-            if hasattr(at, ivar):
-                delattr(at, ivar)
+            g.app.allow_undefined_refs = False
     #@+node:ekr.20190111153522.1: *5* at.writeX...
     #@+node:ekr.20041005105605.154: *6* at.asisWrite & helper
     def asisWrite(self, root: Position) -> None:  # pragma: no cover
@@ -1577,7 +1575,7 @@ class AtFile:
             if root.hasChildren():
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
-                return False
+                return ''
             fileName = at.initWriteIvars(root)
             at.sentinels = False
             # #1450.
@@ -1918,7 +1916,7 @@ class AtFile:
             at.putSentinel("@-" + name)
             at.indent -= delta
             return
-        if hasattr(at, 'allow_undefined_refs'):  # pragma: no cover
+        if g.app.allow_undefined_refs:  # pragma: no cover
             p.v.setVisited()  # #2311
             # Allow apparent section reference: just write the line.
             at.putCodeLine(s, i)
@@ -2970,26 +2968,26 @@ class FastAtRead:
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
-    def __init__(self, c: Cmdr, gnx2vnode: Any) -> None:
+    def __init__(self, c: Cmdr, gnx2vnode: Dict[str, VNode]) -> None:
 
         self.c = c
         assert gnx2vnode is not None
-        self.gnx2vnode = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
-        self.path = None
-        self.root = None
+        self.gnx2vnode: Dict[str, VNode] = gnx2vnode  # The global fc.gnxDict. Keys are gnx's, values are vnodes.
+        self.path: str = None
+        self.root: Position = None
         # compiled patterns...
-        self.after_pat = None
-        self.all_pat = None
-        self.code_pat = None
-        self.comment_pat = None
-        self.delims_pat = None
-        self.doc_pat = None
-        self.first_pat = None
-        self.last_pat = None
-        self.node_start_pat = None
-        self.others_pat = None
-        self.ref_pat = None
-        self.section_delims_pat = None
+        self.after_pat: re.Pattern = None
+        self.all_pat: re.Pattern = None
+        self.code_pat: re.Pattern = None
+        self.comment_pat: re.Pattern = None
+        self.delims_pat: re.Pattern = None
+        self.doc_pat: re.Pattern = None
+        self.first_pat: re.Pattern = None
+        self.last_pat: re.Pattern = None
+        self.node_start_pat: re.Pattern = None
+        self.others_pat: re.Pattern = None
+        self.ref_pat: re.Pattern = None
+        self.section_delims_pat: re.Pattern = None
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
 
@@ -3055,14 +3053,14 @@ class FastAtRead:
         #
         # Simple vars...
         afterref = False  # True: the next line follows @afterref.
-        clone_v = None  # The root of the clone tree.
+        clone_v: VNode = None  # The root of the clone tree.
         comment_delim1, comment_delim2 = comment_delims  # The start/end *comment* delims.
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
-        level_stack = []  # Entries are (vnode, in_clone_tree)
+        level_stack: List[Tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
         root_gnx_adjusted = False  # True: suppress final checks.
         # #1065 so reads will not create spurious child nodes.
@@ -3072,7 +3070,7 @@ class FastAtRead:
         section_reference_seen = False
         sentinel = comment_delim1 + '@'  # Faster than a regex!
         # The stack is updated when at+others, at+<section>, or at+all is seen.
-        stack = []  # Entries are (gnx, indent, body)
+        stack: List[Tuple[str, int, str]]= []  # Entries are (gnx, indent, body)
         # The spelling of at-verbatim sentinel
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.
@@ -3083,7 +3081,7 @@ class FastAtRead:
         context = self.c
         parent_v = self.root.v
         root_v = parent_v  # Does not change.
-        level_stack.append((root_v, False),)
+        level_stack.append((root_v, None))
         #
         # Init the gnx dict last.
         #
@@ -3212,7 +3210,7 @@ class FastAtRead:
                     v._headString = head
                     # Update the level_stack.
                     level_stack = level_stack[: level - 1]
-                    level_stack.append((v, clone_v),)
+                    level_stack.append((v, clone_v))
                     # Always clear the children!
                     v.children = []
                     parent_v.children.append(v)
@@ -3234,7 +3232,7 @@ class FastAtRead:
                 #
                 # Update the stack.
                 level_stack = level_stack[: level - 1]
-                level_stack.append((v, clone_v),)
+                level_stack.append((v, clone_v))
                 #
                 # Update the links.
                 assert v != root_v
@@ -3498,7 +3496,7 @@ class FastAtRead:
             v._bodyString = g.toUnicode(''.join(body))
         #@-<< post pass: set all body text>>
     #@+node:ekr.20180603170614.1: *3* fast_at.read_into_root
-    def read_into_root(self, contents: str, path: Any, root: Position) -> bool:
+    def read_into_root(self, contents: str, path: str, root: Position) -> bool:
         """
         Parse the file's contents, creating a tree of vnodes
         anchored in root.v.
