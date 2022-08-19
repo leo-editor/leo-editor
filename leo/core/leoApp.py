@@ -1519,9 +1519,9 @@ class LoadManager:
         # The are the defaults for computing settings and shortcuts for all loaded files.
 
         # A g.SettingsDict: the join of settings in leoSettings.leo & myLeoSettings.leo
-        self.globalSettingsDict: Dict = None
+        self.globalSettingsDict: g.SettingsDict = None
         # A g.SettingsDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
-        self.globalBindingsDict: Dict = None
+        self.globalBindingsDict: g.SettingsDict = None
 
         # LoadManager ivars corresponding to user options...
 
@@ -1762,7 +1762,7 @@ class LoadManager:
             return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
-        path = lm.files and lm.files[0]
+        path = lm.files[0] if lm.files else ''
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
             theme_c = lm.openSettingsFile(path)
@@ -1855,8 +1855,9 @@ class LoadManager:
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self,
         c: Cmdr,
-        settings_d: Dict,
-        bindings_d: Dict, localFlag: bool,
+        settings_d: g.SettingsDict,
+        bindings_d: g.SettingsDict,
+        localFlag: bool,
     ) -> Tuple[g.SettingsDict, g.SettingsDict]:
         """
         Merge the settings dicts from c's outline into *new copies of*
@@ -1897,7 +1898,7 @@ class LoadManager:
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: str) -> g.SettingsDict:
+    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -1928,13 +1929,18 @@ class LoadManager:
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
         if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
-            d1 = lm.globalSettingsDict(settingsName).copy()
-            d2 = lm.globalBindingsDict(shortcutsName).copy()
+            d1 = lm.globalSettingsDict.copy()
+            d2 = lm.globalBindingsDict.copy()
         else:
             d1 = d2 = None
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
-    def mergeShortcutsDicts(self, c: Cmdr, old_d: Dict, new_d: Dict, localFlag: bool) -> Dict:
+    def mergeShortcutsDicts(self,
+        c: Cmdr,
+        old_d: g.SettingsDict,
+        new_d: g.SettingsDict,
+        localFlag: bool,
+    ) -> g.SettingsDict:
         """
         Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
@@ -2997,7 +3003,7 @@ class LoadManager:
         fn: str,
         gui: str,
         old_c: Optional[Cmdr],
-        previousSettings: g.SettingsDict,
+        previousSettings: "PreviousSettings",
     ) -> Optional[Cmdr]:
         """
         Create an outline (Commander) for either:
