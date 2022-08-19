@@ -1928,8 +1928,8 @@ class LoadManager:
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
         if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
-            d1 = lm.globalSettingsDict.copy(settingsName)
-            d2 = lm.globalBindingsDict.copy(shortcutsName)
+            d1 = lm.globalSettingsDict(settingsName).copy()
+            d2 = lm.globalBindingsDict(shortcutsName).copy()
         else:
             d1 = d2 = None
         return PreviousSettings(d1, d2)
@@ -3423,7 +3423,7 @@ class RecentFilesManager:
             if g.os_path_exists(z)]
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
-    def getRecentFilesTable(self) -> Tuple[Any]:
+    def getRecentFilesTable(self) -> Tuple:
         return (
             "*clear-recent-files",
             "*clean-recent-files",
@@ -3432,7 +3432,7 @@ class RecentFilesManager:
             ("-", None, None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
-    def readRecentFiles(self, localConfigFile: bool) -> None:
+    def readRecentFiles(self, localConfigFile: str) -> None:
         """Read all .leoRecentFiles.txt files."""
         # The order of files in this list affects the order of the recent files list.
         rf = self

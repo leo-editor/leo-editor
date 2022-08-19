@@ -57,13 +57,13 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
+Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer 
 has to be the second item in the headline after the string "@jupyter".  If
 a URL is not found in the headline, the first line of the body is tried.
 
 Previous Recent Changes
 ========================
-Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they
+Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they 
 correctly lock or unlock the rendering to the current subtree, including
 changing the checked/unchecked character of the toolbar menu "locked to tree" item.
 
