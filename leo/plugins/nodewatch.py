@@ -258,10 +258,9 @@ class LeoNodewatchWidget(QtWidgets.QWidget):  # type:ignore
         nodes = []
         for node in self.c.all_unique_nodes():
             if node.h.startswith('@nodewatch'):
-                poslist = self.c.vnode2allPositions(node)
                 parentheads = []
-                for n in poslist:
-                    for parent in n.parents():
+                for p in self.c.vnode2allPositions(node):
+                    for parent in p.parents():
                         parentheads.append(parent.h)
                 settings = '@settings' in parentheads
                 ignore = False

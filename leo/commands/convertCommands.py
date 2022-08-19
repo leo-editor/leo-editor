@@ -2614,35 +2614,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c = self.c
         TS_To_Python(c).go()
         c.bodyWantsFocus()
-    #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
-    @cmd('import-jupyter-notebook')
-    def importJupyterNotebook(self, event):  # pragma: no cover
-        """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
-        try:
-            import nbformat
-            assert nbformat
-        except ImportError:
-            g.es_print('import-jupyter-notebook requires nbformat package')
-            return
-        from leo.plugins.importers.ipynb import Import_IPYNB
-        # was @-others
-        c = self.c
-        x = Import_IPYNB(c)
-        fn = x.get_file_name()
-        if fn:
-            p = c.lastTopLevel()
-            root = p.insertAfter()
-            root.h = fn
-            x.import_file(fn, root)
-            c.redraw(root)
-        c.bodyWantsFocus()
-    #@+node:ekr.20160321072007.1: *3* ccc.export-jupyter-notebook
-    @cmd('export-jupyter-notebook')
-    def exportJupyterNotebook(self, event):  # pragma: no cover
-        """Convert the present outline to a .ipynb file."""
-        from leo.plugins.writers.ipynb import Export_IPYNB
-        c = self.c
-        Export_IPYNB(c).export_outline(c.p)
     #@-others
 #@-others
 #@-leo

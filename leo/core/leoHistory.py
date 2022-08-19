@@ -2,29 +2,34 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
-from leo.core import leoGlobals as g
-assert g
+from typing import Any, List, Tuple, TYPE_CHECKING
+if TYPE_CHECKING:
+    from leo.core.leoChapters import Chapter
+    from leo.core.leoNodes import Position
+else:
+    Chapter = Position = Any
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
     """A class encapsulating knowledge of visited nodes."""
-    #@+others
-    #@+node:ekr.20070615131604.1: *3* NodeHistory.ctor
+
     def __init__(self, c):
         """Ctor for NodeHistory class."""
         self.c = c
-        self.beadList = []  # a list of (position,chapter) tuples.
+        self.beadList: List[Tuple[Position, Chapter]] = []
         self.beadPointer = -1
         self.skipBeadUpdate = False
+
+    #@+others
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
     def dump(self):
         """Dump the beadList"""
         for i, data in enumerate(self.beadList):
             p, chapter = data
-            p = p.h if p else 'no p'
-            chapter = chapter.name if chapter else 'main'
+            p_s = p.h if p else 'no p'
+            chapter_s = chapter.name if chapter else 'main'
             mark = '**' if i == self.beadPointer else '  '
-            print(f"{mark} {i} {chapter} {p}")
+            print(f"{mark} {i} {chapter_s} {p_s}")
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
     def goNext(self):
         """Select the next node, if possible."""
@@ -71,7 +76,8 @@ class NodeHistory:
         if p.h.startswith('@chapter '):
             return
         # Fix bug #180: handle the change flag.
-        aList, found = [], -1
+        aList: List[Tuple[Position, Chapter]] = []
+        found = -1
         for i, data in enumerate(self.beadList):
             p2, junk_chapter = data
             if c.positionExists(p2):
@@ -86,8 +92,7 @@ class NodeHistory:
                 else:
                     aList.append(data)
         if change or found == -1:
-            data = p.copy(), cc.getSelectedChapter()
-            aList.append(data)
+            aList.append((p.copy(), cc.getSelectedChapter()))
             self.beadPointer = len(aList) - 1
         else:
             self.beadPointer = found

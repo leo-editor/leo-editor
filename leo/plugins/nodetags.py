@@ -95,7 +95,7 @@ whitespace (calling .strip()).
 """
 #@-<< docstring >>
 import re
-from typing import Dict, List
+from typing import Dict, Generator, List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core.leoQt import QtCore, QtWidgets
@@ -205,7 +205,7 @@ class TagController:
                     break
         return nodelist
     #@+node:vitalije.20170811150914.1: *4* tag_c.get_tagged_gnxes
-    def get_tagged_gnxes(self, tag):
+    def get_tagged_gnxes(self, tag: str) -> Generator:
         c = self.c
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)

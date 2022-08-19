@@ -6,24 +6,23 @@ This is very different from rst3's write code.
 
 This module must **not** be named rst, so as not to conflict with docutils.
 """
-# pylint: disable=unused-import
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # Required
+from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
 import leo.plugins.importers.leo_rst as rst_importer
+
 # Make *sure* that reader's underlines match the writer's.
 underlines = rst_importer.underlines
 #@+others
-#@+node:ekr.20140726091031.18092: ** class RstWriter
+#@+node:ekr.20140726091031.18092: ** class RstWriter(BaseWriter)
 class RstWriter(basewriter.BaseWriter):
     """
     The writer class for @auto-rst and other reStructuredText nodes.
     This is *very* different from rst3 command's write code.
     """
-    # def __init__(self,c):
-        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char
-    def underline_char(self, p, root_level):
+    def underline_char(self, p: Position, root_level: int) -> str:
         """Return the underlining character for position p."""
         # OLD underlines = '=+*^~"\'`-:><_'
         # OLD underlines = "!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
@@ -31,7 +30,7 @@ class RstWriter(basewriter.BaseWriter):
         i = p.level() - root_level
         return underlines[min(i, len(underlines) - 1)]
     #@+node:ekr.20140726091031.18089: *3* rstw.write
-    def write(self, root):
+    def write(self, root: Position) -> None:
         """Write an @auto tree containing imported rST code."""
         root_level = root.level()
         self.write_root(root)
@@ -53,12 +52,11 @@ class RstWriter(basewriter.BaseWriter):
             for s in lines:
                 self.put(s)
         root.setVisited()
-        return True
     #@+node:ekr.20171230165645.1: *3* rstw.write_root
-    def write_root(self, root):
+    def write_root(self, root: Position) -> None:
         """Write the root @auto-org node."""
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
-        for s in lines:
+        for s in lines:  # pragma: no cover (the root node usually contains no extra text).
             self.put(s)
     #@-others
 #@-others

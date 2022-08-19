@@ -657,14 +657,14 @@ class LeoImportCommands:
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is a factory that instantiates the importer class.
-            ok = func(c=c, parent=p, s=s)
+            func(c, p, s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            ok = self.scanUnknownFileType(s, p, ext)
+            self.scanUnknownFileType(s, p, ext)
         if g.unitTesting:
-            return p if ok else None
+            return p
         # #488894: unsettling dialog when saving Leo file
         # #889175: Remember the full fileName.
         c.atFileCommands.rememberReadPath(fileName, p)
@@ -2587,7 +2587,7 @@ def import_zim_command(event):
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
 def parse_body_command(event):
-    """The parse-body command."""
+    """Parse p.b as source code, creating a tree of descendant nodes."""
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)

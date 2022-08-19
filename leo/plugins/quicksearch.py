@@ -75,23 +75,23 @@ This plugin defines the following commands that can be bound to keys:
 
 """
 #@-<< docstring >>
-# Ville M. Vainio <vivainio@gmail.com>.
+# Original by Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
-from collections import OrderedDict
 import fnmatch
-import itertools
 import re
+from typing import Dict, List, Union
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
-from leo.core import leoNodes
+from leo.core.leoNodes import Position
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
 #@+node:ville.20121223213319.3670: *3* dumpfocus (quicksearch.py)
@@ -232,31 +232,6 @@ def show_unittest_failures(event):
             it.setToolTip(stack)
 
     c.k.simulateCommand('focus-to-nav')
-#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
-class OrderedDefaultDict(OrderedDict):
-    """
-    Credit:  http://stackoverflow.com/questions/4126348/
-    how-do-i-rewrite-this-function-to-implement-ordereddict/4127426#4127426
-    """
-    def __init__(self, *args, **kwargs):
-        if not args:
-            self.default_factory = None
-        else:
-            if not (args[0] is None or callable(args[0])):
-                raise TypeError('first argument must be callable or None')
-            self.default_factory = args[0]
-            args = args[1:]
-        super().__init__(*args, **kwargs)
-
-    def __missing__(self, key):
-        if self.default_factory is None:
-            raise KeyError(key)
-        self[key] = default = self.default_factory()
-        return default
-
-    def __reduce__(self):  # optional, for pickle support
-        args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.items()
 #@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
 class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
@@ -360,7 +335,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
     def selectAndDismiss(self):
         self.hide()
     #@-others
-#@+node:ville.20090314215508.12: ** class QuickSearchController
+#@+node:ville.20090314215508.12: ** class QuickSearchController (quicksearch.py)
 class QuickSearchController:
 
     #@+others
@@ -425,24 +400,18 @@ class QuickSearchController:
         self.its[id(it)] = val
         return len(self.its) > 300
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
-    def addBodyMatches(self, poslist):
+    def addBodyMatches(self, positions: List[Position]) -> int:
         lineMatchHits = 0
-        for p in poslist:
+        for p in positions:
             it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
             it.setFont(f)
             if self.addItem(it, (p, None)):
                 return lineMatchHits
-            ms = matchlines(p.b, p.matchiter)
-            for ml, pos in ms:
-                lineMatchHits += 1
-                it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
-                if self.addItem(it, (p, pos)):
-                    return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list):
+    def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -463,13 +432,6 @@ class QuickSearchController:
                 it.setFont(f)
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
-                if hasattr(p, "matchiter"):  #p might be not have body matches
-                    ms = matchlines(p.b, p.matchiter)
-                    for ml, pos in ms:
-                        lineMatchHits += 1
-                        it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
-                        if self.addItem(it, (p, pos)):
-                            return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
@@ -495,9 +457,10 @@ class QuickSearchController:
         self.lw.clear()
 
     #@+node:ekr.20111015194452.15693: *3* doNodeHistory
-    def doNodeHistory(self):
+    def doNodeHistory(self) -> None:
 
-        nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
+        c = self.c
+        nh: List[Position] = [z[0].copy() for z in c.nodeHistory.beadList]
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -606,13 +569,19 @@ class QuickSearchController:
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents = OrderedDefaultDict(list)
+                ### parents = OrderedDefaultDict(list)
+                parents: Dict[str, List[Position]] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        if node.level() == 0:
-                            parents["Root"].append(node)
-                        else:
-                            parents[node.parent().gnx].append(node)
+                        ###
+                            # if node.level() == 0:
+                                # parents["Root"].append(node)
+                            # else:
+                                # parents[node.parent().gnx].append(node)
+                        key = 'Root' if node.level() == 0 else node.parent().gnx
+                        aList: List[Position] = parents.get(key, [])
+                        aList.append(node)
+                        parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)
@@ -654,54 +623,41 @@ class QuickSearchController:
         return hm, []
         # self.lw.insertItem(0, "%d hits"%self.lw.count())
     #@+node:jlunz.20150826091415.1: *3* find_h
-    def find_h(self, regex, nodes, flags=re.IGNORECASE):
-        """ Return list (a PosList) of all nodes where zero or more characters at
-        the beginning of the headline match regex
+    def find_h(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE,
+    ) -> List[Position]:
         """
-        res = leoNodes.PosList()
+        Return the list of all positions whose headline matches the given pattern.
+        """
         try:
             pat = re.compile(regex, flags)
         except Exception:
-            return res
-        for p in nodes:
-            m = re.match(pat, p.h)
-            if m:
-                # #2012: Don't inject pc.mo.
-                pc = p.copy()
-                res.append(pc)
-        return res
+            return []
+        return [p.copy() for p in positions if re.match(pat, p.h)]
     #@+node:jlunz.20150826091424.1: *3* find_b
-    def find_b(self, regex, nodes, flags=re.IGNORECASE | re.MULTILINE):
-        """ Return list (a PosList) of all nodes whose body matches regex
-        one or more times.
-
+    def find_b(self,
+        regex: str,
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+    ) -> List[Position]:
         """
-        res = leoNodes.PosList()
+        Return list of all positions whose body matches regex one or more times.
+        """
         try:
             pat = re.compile(regex, flags)
         except Exception:
-            return res
-        for p in nodes:
-            m = re.finditer(pat, p.b)
-            t1, t2 = itertools.tee(m, 2)
-            try:
-                t1.__next__()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
+            return []
+        return [p.copy() for p in positions if re.finditer(pat, p.b)]
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 
         self.clear()
         c = self.c
-        pl = leoNodes.PosList()
-        for p in c.all_positions():
-            if p.isMarked():
-                pl.append(p.copy())
-        self.addHeadlineMatches(pl)
+        self.addHeadlineMatches([
+            p.copy() for p in c.all_positions()if p.isMarked()
+        ])
     #@+node:ekr.20111015194452.15700: *3* Event handlers
     #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
     def onSelectItem(self, it, it_prev=None):

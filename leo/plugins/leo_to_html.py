@@ -203,7 +203,7 @@ class pluginController:
     #@+node:bob.20080107154757.1: *3* __init__(pluginController, leo_to_html.py)
     def __init__(self, c):
         """
-        Initialze pluginController by registering minibuffer commands.
+        Initialize pluginController by registering minibuffer commands.
         """
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
@@ -234,39 +234,39 @@ class pluginController:
     # EXPORT ALL
 
     def export_html(self, event=None, bullet=None, show=False, node=False):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save outline as an HTML file according to current settings."""
         html = Leo_to_HTML(self.c)
         html.main(bullet=bullet, show=show, node=node)
 
     def export_html_bullet(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save outline as HTML file with bullets as unordered lists."""
         self.export_html(bullet='bullet')
 
     def export_html_number(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save outline as HTML file with bullets as ordered lists."""
         self.export_html(bullet='number')
 
     def export_html_head(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save outline as HTML file with bullets as headings."""
         self.export_html(bullet='head')
 
     # EXPORT NODE
 
 
     def export_html_node(self, event=None, bullet=None,):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save current node as an HTML file according to current settings."""
         self.export_html(bullet=bullet, node=True)
 
     def export_html_node_bullet(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save current node as an HTML file with bullets as unordered lists."""
         self.export_html_node(bullet='bullet')
 
     def export_html_node_number(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save current node as an HTML file with bullets as ordered lists."""
         self.export_html_node(bullet='number')
 
     def export_html_node_head(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Save current node as an HTML file with bullets as headings."""
         self.export_html_node(bullet='head')
 
 
@@ -274,38 +274,38 @@ class pluginController:
 
 
     def show_html(self, event=None, bullet=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the outline as HTML according to current settings."""
         self.export_html(bullet=bullet, show=True)
 
     def show_html_bullet(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the outline as HTML with bullets as unordered lists."""
         self.show_html(bullet='bullet')
 
     def show_html_number(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the outline as HTML with bullets as ordered lists."""
         self.show_html(bullet='number')
 
     def show_html_head(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the outline as HTML with bullets as headings."""
         self.show_html(bullet='head')
 
 
     ## SHOW NODE
 
     def show_html_node(self, event=None, bullet=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the current node as HTML according to current settings."""
         self.export_html(bullet=bullet, show=True, node=True)
 
     def show_html_node_bullet(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the current node as HTML with bullets as unordered lists."""
         self.show_html_node(bullet='bullet')
 
     def show_html_node_number(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the current node as HTML with bullets as ordered lists."""
         self.show_html_node(bullet='number')
 
     def show_html_node_head(self, event=None):
-        """Command handler for leo_to_html. See modules docstring for details."""
+        """Start browser and show the current node as HTML with bullets as headings."""
         self.show_html_node(bullet='head')
     #@-others
 #@+node:bob.20080107154746: ** class Leo_to_HTML
@@ -339,7 +339,7 @@ class Leo_to_HTML:
         Return the result as a string in self.xhtml.
 
         Only the code to represent the tree is generated, not the
-        wraper code to turn it into a file.
+        wrapper code to turn it into a file.
         """
 
         xhtml: List[str] = []
@@ -372,7 +372,7 @@ class Leo_to_HTML:
         self.xhtml = '\n'.join(xhtml)
     #@+node:bob.20080107160008: *4* doItemHeadlineTags
     def doItemHeadlineTags(self, p, level=1):
-        """" Recursivley proccess an outline node into an xhtml list."""
+        """" Recursively process an outline node into an xhtml list."""
         self.doHeadline(p, level)
         self.doBodyElement(p, level)
         if p.hasChildren() and self.showSubtree(p):
@@ -380,7 +380,7 @@ class Leo_to_HTML:
                 self.doItemHeadlineTags(item, level + 1)
     #@+node:bob.20080107165629: *4* doItemBulletList
     def doItemBulletList(self, p):
-        """" Recursivley proccess an outline node into an xhtml list."""
+        """" Recursively process an outline node into an xhtml list."""
 
         xhtml = self.xhtml
 
@@ -399,7 +399,7 @@ class Leo_to_HTML:
         xhtml.append(self.closeItemString)
     #@+node:bob.20080107154746.5: *4* doHeadline
     def doHeadline(self, p, level=None):
-        """Append wrapped headstring to output stream."""
+        """Append wrapped headline string to output stream."""
 
         headline = safe(p.h).replace(' ', '&nbsp;')
 
@@ -424,21 +424,21 @@ class Leo_to_HTML:
 
     #@+node:bob.20080107175336: *4* showSubtree
     def showSubtree(self, p):
-
-        """Return True if subtree should be shown.
+        """
+        Return True if subtree should be shown.
 
         subtree should be shown if it is not an @file node or if it
         is an @file node and flags say it should be shown.
 
         """
-
         s = p.h
         if not self.flagIgnoreFiles or s[: len('@file')] != '@file':
             return True
         return False
     #@+node:bob.20080107154746.9: *3* main
     def main(self, bullet=None, show=False, node=False):
-        """Generate the html and write the files.
+        """
+        Generate the html and write the files.
 
         If 'bullet' is not recognized then the value of bullet_type from
         the the properties file will be used.
@@ -447,7 +447,6 @@ class Leo_to_HTML:
         in a browser.
 
         """
-
         self.silent = show
         self.announce_start()
         self.loadConfig()
@@ -463,7 +462,6 @@ class Leo_to_HTML:
         self.announce_end()
     #@+node:bob.20080109063110.7: *3* announce
     def announce(self, msg, prefix=None, color=None, silent=None):
-
         """Print a message if flags allow."""
 
         if silent is None:
@@ -484,7 +482,6 @@ class Leo_to_HTML:
         self.announce(msg, prefix, color=color or self.errorColor, silent=False)
     #@+node:bob.20080107154746.11: *3* loadConfig
     def loadConfig(self):
-
         """Load configuration from a .ini file."""
 
         def config(s):
@@ -527,7 +524,6 @@ class Leo_to_HTML:
 
     #@+node:bob.20080109063110.8: *3* setup
     def setup(self):
-
         """Set various parameters."""
 
         self.openItemString = '<li>'
@@ -536,28 +532,22 @@ class Leo_to_HTML:
         self.openBodyString = '<div>'
         self.closeBodyString = '</div>'
 
-
         self.openHeadlineString = ''
         self.closeHeadlineString = ''
 
 
         if self.bullet_type == 'head':
-
             self.openHeadlineString = '<h%s>'
             self.closeHeadlineString = '</h%s>'
-
             self.openBodyString = '<blockquote>'
             self.closeBodyString = '</blockquote>'
-
 
         else:
 
             if self.bullet_type == 'number':
                 self.openLevelString = '<ol>'
                 self.closeLevelString = '</ol>'
-
             else:
-
                 self.openLevelString = '<ul>'
                 self.closeLevelString = '</ul>'
 
@@ -567,7 +557,7 @@ class Leo_to_HTML:
 
         myFileName = self.c.frame.shortFileName()  # Get current outline filename
         if not myFileName:
-            myFileName = 'untitiled'
+            myFileName = 'untitled'
 
         self.title = myFileName
 
@@ -581,7 +571,7 @@ class Leo_to_HTML:
         """
         Fit self.xhtml and self.title into an (x)html template.
 
-        Plaace the result in self.xhtml.
+        Place the result in self.xhtml.
 
         The template string in self.template should have too %s place
         holders.  The first for the title the second for the body.
@@ -636,7 +626,7 @@ class Leo_to_HTML:
     def write(self, name, data, basedir=None, path=None):
         """Write a single file.
 
-        The `name` can be a file name or a ralative path which will be
+        The `name` can be a file name or a relative path which will be
         added to basedir and path to create a full path for the file to be
         written.
 
