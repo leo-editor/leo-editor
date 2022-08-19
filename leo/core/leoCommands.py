@@ -4,7 +4,6 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
-import itertools
 import json
 import os
 import re
@@ -14,12 +13,19 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, List, Optional, Set, Tuple
+from typing import Any, Dict, Callable, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
 from leo.core import leoNodes
 #@-<< imports >>
+
+if TYPE_CHECKING:
+    from leo.core.leoNodes import Position
+else:
+    Position = Any
+RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
 
 def cmd(name) -> Callable:
@@ -3734,7 +3740,7 @@ class Commands:
             c.frame.tree.endEditLabel()
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
     def getSelectedPositions(self):
-        """ Get list (PosList) of currently selected positions
+        """ Get list of currently selected positions.
 
         So far only makes sense on qt gui (which supports multiselection)
         """
@@ -4116,73 +4122,6 @@ class Commands:
             if not ok:
                 break
         return ok, d
-    #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
-    #@+<< PosList doc >>
-    #@+node:bob.20101215134608.5898: *5* << PosList doc >>
-    #@@language rest
-    #@+at
-    # List of positions
-    #
-    # Functions find_h() and find_b() both return an instance of PosList.
-    #
-    # Methods filter_h() and filter_b() refine a PosList.
-    #
-    # Method children() generates a new PosList by descending one level from
-    # all the nodes in a PosList.
-    #
-    # A chain of PosList method calls must begin with find_h() or find_b().
-    # The rest of the chain can be any combination of filter_h(),
-    # filter_b(), and children(). For example:
-    #
-    #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
-    #
-    # For each position, pos, in the PosList returned, find_h() and
-    # filter_h() set attribute pos.mo to the match object (see Python
-    # Regular Expression documentation) for the pattern match.
-    #
-    # Caution: The pattern given to find_h() or filter_h() must match zero
-    # or more characters at the beginning of the headline.
-    #
-    # For each position, pos, the postlist returned, find_b() and filter_b()
-    # set attribute pos.matchiter to an iterator that will return a match
-    # object for each of the non-overlapping matches of the pattern in the
-    # body of the node.
-    #@-<< PosList doc >>
-    #@+node:ville.20090311190405.70: *5* c.find_h
-    def find_h(self, regex, flags=re.IGNORECASE):
-        """ Return list (a PosList) of all nodes where zero or more characters at
-        the beginning of the headline match regex
-        """
-        c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.match(pat, p.h)
-            if m:
-                pc = p.copy()
-                pc.mo = m
-                res.append(pc)
-        return res
-    #@+node:ville.20090311200059.1: *5* c.find_b
-    def find_b(self, regex, flags=re.IGNORECASE | re.MULTILINE):
-        """ Return list (a PosList) of all nodes whose body matches regex
-        one or more times.
-
-        """
-        c = self
-        pat = re.compile(regex, flags)
-        res = leoNodes.PosList()
-        for p in c.all_positions():
-            m = re.finditer(pat, p.b)
-            t1, t2 = itertools.tee(m, 2)
-            try:
-                t1.__next__()
-            except StopIteration:
-                continue
-            pc = p.copy()
-            pc.matchiter = t2
-            res.append(pc)
-        return res
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
     def registerReloadSettings(self, obj):

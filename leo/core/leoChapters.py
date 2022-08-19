@@ -3,7 +3,12 @@
 """Classes that manage chapters in Leo's core."""
 import re
 import string
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+else:
+    Cmdr = Any
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
 def cmd(name):
@@ -340,10 +345,10 @@ class Chapter:
     """A class representing the non-gui data of a single chapter."""
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__
-    def __init__(self, c, chapterController, name):
+    def __init__(self, c: Cmdr, chapterController, name: str) -> None:
         self.c = c
         self.cc = cc = chapterController
-        self.name = g.checkUnicode(name)
+        self.name: str = g.checkUnicode(name)
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         self.p = c.p

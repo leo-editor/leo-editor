@@ -7,9 +7,7 @@
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
 #Transcrypt does not support Python's copy module.
 import copy
-import itertools
 import time
-import re
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -17,7 +15,7 @@ from leo.core import signal_manager
 if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
-    Cmdr = None
+    Cmdr = Any
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -192,18 +190,9 @@ class NodeIndices:
 #@-<< about the position class >>
 # Positions should *never* be saved by the ZOBD.
 
-
 class Position:
 
-    __slots__ = [
-        '_childIndex', 'stack', 'v',
-        #
-        # EKR: The following fields are deprecated,
-        #      as are the PosList class, c.find_h and c.find_b.
-        #
-        'matchiter',  # for c.find_b and quicksearch.py.
-        'mo',  # for c.find_h
-    ]
+    __slots__ = ['_childIndex', 'stack', 'v']
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
@@ -1883,59 +1872,6 @@ class Position:
     #@-others
 
 position = Position  # compatibility.
-#@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
-class PosList(list):  # pragma: no cover
-
-    __slots__: List[str] = []
-
-    #@+others
-    #@+node:bob.20101215134608.5897: *3* PosList.children
-    def children(self) -> "PosList":
-        """ Return a PosList instance containing pointers to
-        all the immediate children of nodes in PosList self.
-        """
-        res = PosList()
-        for p in self:
-            for child_p in p.children():
-                res.append(child_p.copy())
-        return res
-    #@+node:ville.20090311190405.69: *3* PosList.filter_h
-    def filter_h(self, regex: str, flags: Any=re.IGNORECASE) -> "PosList":
-        """
-        Find all the nodes in PosList self where zero or more characters at
-        the beginning of the headline match regex.
-        """
-        pat = re.compile(regex, flags)
-        res = PosList()
-        for p in self:
-            mo = re.match(pat, p.h)
-            if mo:
-                # #2012: Don't inject pc.mo.
-                pc = p.copy()
-                res.append(pc)
-        return res
-    #@+node:ville.20090311195550.1: *3* PosList.filter_b
-    def filter_b(self, regex: str, flags: Any=re.IGNORECASE) -> "PosList":
-        """ Find all the nodes in PosList self where body matches regex
-        one or more times.
-
-        """
-        pat = re.compile(regex, flags)
-        res = PosList()
-        for p in self:
-            m = re.finditer(pat, p.b)
-            t1, t2 = itertools.tee(m, 2)
-            try:
-                t1.__next__()
-                pc = p.copy()
-                pc.matchiter = t2
-                res.append(pc)
-            except StopIteration:
-                pass
-        return res
-    #@-others
-
-Poslist = PosList  # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
