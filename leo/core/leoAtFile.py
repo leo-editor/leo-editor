@@ -92,47 +92,46 @@ class AtFile:
 
         The defaults set here may be changed later.
         """
-        at = self
-        c = at.c
-        at.at_auto_encoding = c.config.default_at_auto_file_encoding
-        at.encoding = c.config.default_derived_file_encoding
-        at.endSentinelComment = ""
-        at.errors = 0
-        at.inCode = True
-        at.indent = 0  # The unit of indentation is spaces, not tabs.
-        at.language = None
-        at.output_newline = g.getOutputNewline(c=c)
-        at.page_width = None
-        at.root: Position = None  # The root (a position) of tree being read or written.
-        at.startSentinelComment = ""
-        at.startSentinelComment = ""
-        at.tab_width: int = c.tab_width or -4
-        at.writing_to_shadow_directory = False
+        c = self.c
+        self.at_auto_encoding = c.config.default_at_auto_file_encoding
+        self.encoding = c.config.default_derived_file_encoding
+        self.endSentinelComment = ""
+        self.errors = 0
+        self.inCode = True
+        self.indent = 0  # The unit of indentation is spaces, not tabs.
+        self.language = None
+        self.output_newline = g.getOutputNewline(c=c)
+        self.page_width = None
+        self.root: Position = None  # The root (a position) of tree being read or written.
+        self.startSentinelComment = ""
+        self.startSentinelComment = ""
+        self.tab_width: int = c.tab_width or -4
+        self.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
-        at = self
-        at.initCommonIvars()
-        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        at.correctedLines = 0  # For perfect import.
-        at.docOut = []  # The doc part being accumulated.
-        at.done = False  # True when @-leo seen.
-        at.fromString = False
-        at.importRootSeen = False
-        at.lastLines: List[str] = []  # The lines after @-leo
-        at.leadingWs = ""
-        at.lineNumber = 0  # New in Leo 4.4.8.
-        at.read_i = 0
-        at.read_lines: List[str] = []
-        at.readVersion = ''  # "5" for new-style thin files.
-        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
-        at.root = root
-        at.rootSeen = False
-        at.targetFileName = fileName  # For at.writeError only.
-        at.v = None
-        at.vStack = []  # Stack of at.v values.
-        at.thinChildIndexStack = []  # number of siblings at this level.
-        at.updateWarningGiven = False
+
+        self.initCommonIvars()
+        self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
+        self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+        self.correctedLines = 0  # For perfect import.
+        self.docOut: List[str] = []  # The doc part being accumulated.
+        self.done = False  # True when @-leo seen.
+        self.fromString = False
+        self.importRootSeen = False
+        self.lastLines: List[str] = []  # The lines after @-leo
+        self.leadingWs = ""
+        self.lineNumber = 0  # New in Leo 4.4.8.
+        self.read_i = 0
+        self.read_lines: List[str] = []
+        self.readVersion = ''  # "5" for new-style thin files.
+        self.readVersion5 = False  # Synonym for self.readVersion >= '5'
+        self.root = root
+        self.rootSeen = False
+        self.targetFileName = fileName  # For self.writeError only.
+        self.v = None
+        ### self.vStack: List[VNode] = []
+        ### self.thinChildIndexStack: List[int] = []  # number of siblings at this level.
+        self.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
@@ -756,7 +755,7 @@ class AtFile:
         at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
-    def openFileHelper(self, fileName: str) -> None:
+    def openFileHelper(self, fileName: str) -> str:
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.
@@ -771,7 +770,7 @@ class AtFile:
             g.es_exception()
         return s
     #@+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
-    def getEncodingFromHeader(self, fileName: str, s: str) -> None:
+    def getEncodingFromHeader(self, fileName: str, s: str) -> str:
         """
         Return the encoding given in the @+leo sentinel, if the sentinel is
         present, or the previous value of at.encoding otherwise.
@@ -793,7 +792,7 @@ class AtFile:
         assert e
         return e
     #@+node:ekr.20041005105605.128: *5* at.readLine
-    def readLine(self) -> None:
+    def readLine(self) -> str:
         """
         Read one line from file using the present encoding.
         Returns at.read_lines[at.read_i++]
@@ -808,7 +807,7 @@ class AtFile:
         # Not an error.
         return ''  # pragma: no cover
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
-    def scanHeader(self, fileName: str, giveErrors: bool=True) -> None:
+    def scanHeader(self, fileName: str, giveErrors: bool=True) -> Tuple[Any, Any, Any]:
         """
         Scan the @+leo sentinel, using the old readLine interface.
 
@@ -1150,7 +1149,7 @@ class AtFile:
             raise IOError
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
     #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
-    def writeAtAutoContents(self, fileName: str, root: Position) -> None:  # pragma: no cover
+    def writeAtAutoContents(self, fileName: str, root: Position) -> str:  # pragma: no cover
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
@@ -1852,7 +1851,7 @@ class AtFile:
         """
         at = self
 
-        def is_space(i1: int, i2: int) -> None:
+        def is_space(i1: int, i2: int) -> bool:
             """A replacement for s[i1 : i2] that doesn't create any substring."""
             return i == j or all(s[z] in ' \t\n' for z in range(i1, i2))
 
@@ -2725,7 +2724,7 @@ class AtFile:
             g.es_exception()
 
     #@+node:ekr.20050104132018: *5* at.remove
-    def remove(self, fileName: str) -> None:  # pragma: no cover
+    def remove(self, fileName: str) -> bool:  # pragma: no cover
         if not fileName:
             g.trace('No file name', g.callers())
             return False
