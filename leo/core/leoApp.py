@@ -1897,7 +1897,7 @@ class LoadManager:
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
+    def getPreviousSettings(self, fn: str) -> g.SettingsDict:
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -2163,7 +2163,7 @@ class LoadManager:
         else:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
-    def load(self, fileName: Any=None, pymacs: Any=None) -> None:
+    def load(self, fileName: Any=None, pymacs: bool=None) -> None:
         """This is Leo's main startup method."""
         lm = self
         #
@@ -2503,7 +2503,7 @@ class LoadManager:
         elif sfn not in ('basewriter.py',):
             g.warning(f"leo/plugins/writers/{sfn} has no writer_dict")
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
-    def createGui(self, pymacs: str) -> None:
+    def createGui(self, pymacs: bool) -> None:
         lm = self
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
@@ -2525,7 +2525,7 @@ class LoadManager:
         else:
             lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
     #@+node:ekr.20120219154958.10479: *5* LM.createSpecialGui
-    def createSpecialGui(self, gui: Any, pymacs: str, script: str, windowFlag: bool) -> None:
+    def createSpecialGui(self, gui: Any, pymacs: bool, script: str, windowFlag: bool) -> None:
         # lm = self
         if pymacs:
             g.app.createNullGuiWithScript(script=None)
@@ -2585,7 +2585,7 @@ class LoadManager:
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName: str, pymacs: str) -> Dict[str, Any]:
+    def scanOptions(self, fileName: str, pymacs: bool) -> Dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
         obsolete_options = (
@@ -2639,7 +2639,7 @@ class LoadManager:
     #@+node:ekr.20210927034148.2: *6* LM.addOptionsToParser
     #@@nobeautify
 
-    def addOptionsToParser(self, parser: Any, trace_m: bool) -> None:
+    def addOptionsToParser(self, parser: Any, trace_m: str) -> None:
         """Init the argsparse parser."""
         add = parser.add_argument
         add('PATHS', nargs='*', metavar='FILES',
