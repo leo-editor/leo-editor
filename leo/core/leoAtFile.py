@@ -575,12 +575,13 @@ class AtFile:
         at = self
         # Use the standard helper. Better error reporting.
         # Important: uses 'rb' to open the file.
-        s = at.openFileHelper(fn)
+        s: str
+        s_bytes: bytes = at.openFileHelper(fn)
         # #1798.
-        if s is None:
+        if not s_bytes:
             s = ''
         else:
-            s = g.toUnicode(s, encoding=at.encoding)
+            s = g.toUnicode(s_bytes, encoding=at.encoding)
             s = s.replace('\r\n', '\n')  # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
@@ -737,25 +738,26 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
+        s: str
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
-        if s_bytes is None:
-            return None
-        e, s = g.stripBOM(s_bytes)
+        if not s_bytes:
+            return ''
+        e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
-            s = g.toUnicode(s, encoding=e)
+            s = g.toUnicode(s_bytes, encoding=e)
         else:
             # Get the encoding from the header, or the default encoding.
-            s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
+            s_temp = g.toUnicode(s_bytes, 'ascii', reportErrors=False)
             e = at.getEncodingFromHeader(fileName, s_temp)
-            s = g.toUnicode(s, encoding=e)
+            s = g.toUnicode(s_bytes, encoding=e)
         s = s.replace('\r\n', '\n')
         at.encoding = e
         at.initReadLine(s)
         return s
     #@+node:ekr.20130911110233.11285: *6* at.openFileHelper
-    def openFileHelper(self, fileName: str) -> bytes:
+    def openFileHelper(self, fileName: str) -> bytes:  # *not* str!
         """Open a file, reporting all exceptions."""
         at = self
         # #1798: return None as a flag on any error.

@@ -5430,7 +5430,7 @@ def isWordChar(ch: str) -> bool:
 def isWordChar1(ch: str) -> bool:
     return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s: bytes) -> Tuple[str, bytes]:
+def stripBOM(s_bytes: bytes) -> Tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -5447,12 +5447,12 @@ def stripBOM(s: bytes) -> Tuple[str, bytes]:
         (2, 'utf-16', codecs.BOM_UTF16_BE),
         (2, 'utf-16', codecs.BOM_UTF16_LE),
     )
-    if s:
+    if s_bytes:
         for n, e, bom in table:
             assert len(bom) == n
-            if bom == s[: len(bom)]:
-                return e, s[len(bom) :]
-    return None, s
+            if bom == s_bytes[: len(bom)]:
+                return e, s_bytes[len(bom) :]
+    return None, s_bytes
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s: str, encoding: str='utf-8', reportErrors: bool=False) -> bytes:
     """Convert unicode string to an encoded string."""
