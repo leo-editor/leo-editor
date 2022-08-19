@@ -148,7 +148,7 @@ cmd_instance_dict = {
 # At table in LeoQtLog.put tells it how to extract filenames and line_numbers from each pattern.
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
-mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
+mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')

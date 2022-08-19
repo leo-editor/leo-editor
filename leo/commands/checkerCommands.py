@@ -201,7 +201,7 @@ def mypy_command(event):
       `@edit ../../launchLeo.py`
 
     Unlike running mypy outside of Leo, Leo's mypy command creates
-    clickable links in Leo's log pane for each error.
+    clickable links in Leo's log pane for each error. See g.mypy_pat.
 
     Settings
     --------
@@ -261,6 +261,8 @@ def pylint_command(event):
 #@+node:ekr.20210302111917.1: ** class MypyCommand
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
+
+    # See g.mypy_pat for the regex that creates clickable links.
 
     def __init__(self, c):
         """ctor for MypyCommand class."""
