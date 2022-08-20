@@ -7,9 +7,9 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
-# pylint: disable=import-self,raise-missing-from,wrong-import-position
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>
+# pylint: disable=import-self,raise-missing-from,wrong-import-position
 import argparse
 import asyncio
 import fnmatch
@@ -54,6 +54,8 @@ RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 Socket = Any
 #@-<< leoserver annotations >>
+#@+<< leoserver version >>
+#@+node:ekr.20220820160619.1: ** << leoserver version >>
 version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
@@ -61,8 +63,10 @@ version_tuple = (1, 0, 3)
 # 1.0.3 Félix on July 2022: Fixed original node selection upon opening a file.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
+#@-<< leoserver version >>
+#@+<< leoserver globals >>
+#@+node:ekr.20220820160701.1: ** << leoserver globals >>
 g = None  # The bridge's leoGlobals module.
-
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
@@ -70,16 +74,17 @@ connectionsPool: Set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List = []  # list of traces names, to be used as flags to output traces
+traces: List[str] = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
 wsHost = "localhost"
 wsPort = 32125
-
+#@-<< leoserver globals >>
 #@+others
-#@+node:felix.20210712224107.1: ** setup JSON encoder
+#@+node:felix.20210712224107.1: ** class SetEncoder
 class SetEncoder(json.JSONEncoder):
+
     def default(self, obj: Any) -> Any:
         if isinstance(obj, set):
             return list(obj)
