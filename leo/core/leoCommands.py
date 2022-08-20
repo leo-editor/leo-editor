@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 
 else:
     Position = VNode = Any
+    AbbrevCommands = Any
 Event = Any
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
@@ -235,9 +236,9 @@ class Commands:
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars(self) -> None:
         # These ivars are set later by leoEditCommands.createEditCommanders
-        self.abbrevCommands: Any = None
-        self.editCommands: Any = None
-        self.db = {}  # May be set to a PickleShare instance later.
+        self.abbrevCommands = None
+        self.editCommands = None
+        self.db: Any = {}  # May be set to a PickleShare instance later.
         self.bufferCommands = None
         self.chapterCommands = None
         self.controlCommands = None
@@ -1287,7 +1288,7 @@ class Commands:
         c = self
         context = v.context  # v's commander.
         assert c == context
-        stack: List[Tuple[int, Tuple["leoNodes.VNode", int]]] = []
+        stack: List[Tuple[VNode, int]] = []
         while v.parents:
             parent = v.parents[0]
             if v in parent.children:
@@ -1901,8 +1902,8 @@ class Commands:
         if g.app.externalFilesController:
             g.app.externalFilesController.set_time(fn)
     #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
-    def updateSyntaxColorer(self, v: VNode) -> None:
-        self.frame.body.updateSyntaxColorer(v)
+    def updateSyntaxColorer(self, p: Position) -> None:
+        self.frame.body.updateSyntaxColorer(p)
     #@+node:ekr.20180503110307.1: *4* c.interactive*
     #@+node:ekr.20180504075937.1: *5* c.interactive
     def interactive(self, callback: Callable, event: Event, prompts: Any) -> None:
@@ -2356,7 +2357,7 @@ class Commands:
         if regex:
             if isinstance(regex, str):
                 try:
-                    regex = re.compile(regex)
+                    re.compile(regex)
                 except Exception:
                     g.trace(f"Bad regex: {regex!s}")
                     return None
@@ -2520,7 +2521,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: Event, function: Any=function) -> Callable:
+        def minibufferCallback(event: Event, function: Any=function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = getattr(self, 'theContextMenuController')
@@ -2647,7 +2648,7 @@ class Commands:
             return expr
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
-    def archivedPositionToPosition(self, s) -> Position:
+    def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
         c = self
         s = g.toUnicode(s)
@@ -3415,11 +3416,11 @@ class Commands:
             # g.trace(g.callers(6))
         return w
 
-    def get_requested_focus(self):
+    def get_requested_focus(self) -> Widget:
         c = self
         return c.requestedFocusWidget
 
-    def request_focus(self, w):
+    def request_focus(self, w: Widget) -> None:
         c = self
         if w and g.app.gui:
             if 'focus' in g.app.debug:
@@ -3429,7 +3430,7 @@ class Commands:
                 g.trace('(c)', name)
             c.requestedFocusWidget = w
 
-    def set_focus(self, w):
+    def set_focus(self, w: Widget) -> None:
         trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
@@ -3438,9 +3439,8 @@ class Commands:
                     ) if hasattr(w, 'objectName') else w.__class__.__name__
                 g.trace('(c)', name)
             g.app.gui.set_focus(c, w)
-        else:
-            if trace:
-                g.trace('(c) no w')
+        elif trace:
+            g.trace('(c) no w')
         c.requestedFocusWidget = None
     #@+node:ekr.20080514131122.10: *5* c.invalidateFocus (do nothing)
     def invalidateFocus(self) -> None:
@@ -3532,7 +3532,7 @@ class Commands:
             # one of two callbacks defined in createMenuEntries or
             # recentFilesCallback, defined in createRecentFilesMenuItems.
 
-            def add_commandCallback(c=c, command=command):
+            def add_commandCallback(c: Commands=c, command: Callable=command) -> Any:
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists:
