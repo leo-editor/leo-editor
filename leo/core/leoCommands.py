@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from leo.core.leoAtFile import AtFile
     from leo.core.leoFileCommands import FileCommands
     from leo.core.leoFind import LeoFind
+    from leo.core.leoImport import LeoImportCommands
     from leo.core.leoKeys import KeyHandlerClass
     from leo.commands.abbrevCommands import AbbrevCommands
     # self.bufferCommands: Any = None
@@ -37,13 +38,13 @@ if TYPE_CHECKING:
     # self.editFileCommands: Any = None
     # self.gotoCommands: Any = None
     # self.helpCommands: Any = None
-    # self.importCommands: Any = None
 else:
     Position = VNode = Any
     AbbrevCommands = Any
     AtFile = Any
     FileCommands = Any
     KeyHandlerClass = Any
+    LeoImportCommands = Any
     LeoFind = Any
 Event = Any
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
@@ -86,8 +87,8 @@ class Commands:
         t1 = time.process_time()
         c = self
         # Official ivars.
-        self._currentPosition: Optional["leoNodes.Position"] = None
-        self._topPosition: Optional["leoNodes.Position"] = None
+        self._currentPosition: Optional[Position] = None
+        self._topPosition: Optional[Position] = None
         self.frame = None
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
@@ -105,7 +106,7 @@ class Commands:
         self.findCommands: LeoFind = None
         self.gotoCommands: Any = None
         self.helpCommands: Any = None
-        self.importCommands: Any = None
+        self.importCommands: LeoImportCommands = None
         self.k: KeyHandlerClass = None
         self.keyHandler: KeyHandlerClass = None
         self.killBufferCommands: Any = None
@@ -1505,7 +1506,7 @@ class Commands:
         """
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
-        d: Dict[str, Set["leoNodes.VNode"]] = {}
+        d: Dict[str, Set[VNode]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1519,7 +1520,7 @@ class Commands:
             v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
-                aSet: Set["leoNodes.VNode"] = d.get(gnx, set())
+                aSet: Set[VNode] = d.get(gnx, set())
                 aSet.add(v)
                 d[gnx] = aSet
             else:
@@ -4186,7 +4187,7 @@ class Commands:
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
     def checkBatchOperationsList(self, aList: List) -> Tuple[bool, Dict]:
         ok = True
-        d: Dict["leoNodes.VNode", List[Any]] = {}
+        d: Dict[VNode, List[Any]] = {}
         for z in aList:
             try:
                 op, p, n = z
