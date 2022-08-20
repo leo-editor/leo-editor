@@ -531,7 +531,7 @@ class QuickSearchController:
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
-    def qsc_background_search(self, pat: str) -> Any:
+    def qsc_background_search(self, pat: str) -> Tuple[List[Position], List[Position]]:
 
         flags: RegexFlag
         if not pat.startswith('r:'):
@@ -736,15 +736,6 @@ class QuickSearchController:
                     seen.add(p.v)
                     aList.append(p.copy())
         return aList
-    #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Any) -> List:
-        res = []
-        for m in miter:
-            st, en = g.getLine(b, m.start())
-            li = b[st:en].strip()
-            res.append((li, (m.start(), m.end())))
-        return res
-
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
     def onSelectItem(self, it: Any, it_prev: Any=None) -> None:
         c = self.c
@@ -760,7 +751,7 @@ class QuickSearchController:
                 tgt()
             elif len(tgt[1]) == 2:
                 p, pos = tgt[1]
-                if hasattr(p, 'v'):  #p might be "Root"
+                if hasattr(p, 'v'):  # p might be "Root"
                     if not c.positionExists(p):
                         g.es("Node moved or deleted.\nMaybe re-do search.",
                             color='red')
@@ -780,8 +771,6 @@ class QuickSearchController:
                             g.app.gui.show_find_success(c, True, 0, p)
         except Exception:
             raise ServerError("QuickSearchController onSelectItem error")
-
-
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
