@@ -328,7 +328,6 @@ class FastRead:
             # Next, scan for uA's for this gnx.
             for key, val in e.attrib.items():
                 if key != 'tx':
-                    # gnx2ua[gnx][key] = self.resolveUa(key, val)
                     s: Optional[str] = self.resolveUa(key, val)
                     if s:
                         gnx2ua[gnx][key] = s
@@ -1181,9 +1180,10 @@ class FileCommands:
         c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
-        def get_ref_filename() -> str:  ### Huh?
+        def get_ref_filename() -> str:
             for v in priv_vnodes():
                 return g.splitLines(v.b)[0].strip()
+            raise TypeError  # EKR: to suppress mypy complaint.
         #@+node:vitalije.20170831144827.4: *6* function: pub_vnodes
         def pub_vnodes() -> Generator:
             for v in c.hiddenRootNode.children:
