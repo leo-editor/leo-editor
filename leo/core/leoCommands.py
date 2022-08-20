@@ -24,24 +24,27 @@ from leo.core import leoNodes
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoAtFile import AtFile
+    from leo.core.leoFileCommands import FileCommands
+    from leo.core.leoFind import LeoFind
+    from leo.core.leoKeys import KeyHandlerClass
     from leo.commands.abbrevCommands import AbbrevCommands
-
-    # self.atFileCommands: Any = None
     # self.bufferCommands: Any = None
     # self.chapterController: Any = None
     # self.convertCommands: Any = None
     # self.debugCommands: Any = None
     # self.editCommands: Any = None
     # self.editFileCommands: Any = None
-    # self.fileCommands: Any = None
-    # self.findCommands: Any = None
     # self.gotoCommands: Any = None
     # self.helpCommands: Any = None
     # self.importCommands: Any = None
-
 else:
     Position = VNode = Any
     AbbrevCommands = Any
+    AtFile = Any
+    FileCommands = Any
+    KeyHandlerClass = Any
+    LeoFind = Any
 Event = Any
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
@@ -91,20 +94,20 @@ class Commands:
         self.ipythonController = None  # Set only by the ipython plugin.
         # Declarations of objects created later.
         self.abbrevCommands: AbbrevCommands = None
-        self.atFileCommands: Any = None
+        self.atFileCommands: AtFile  = None
         self.bufferCommands: Any = None
         self.chapterController: Any = None
         self.convertCommands: Any = None
         self.debugCommands: Any = None
         self.editCommands: Any = None
         self.editFileCommands: Any = None
-        self.fileCommands: Any = None
-        self.findCommands: Any = None
+        self.fileCommands: FileCommands = None
+        self.findCommands: LeoFind = None
         self.gotoCommands: Any = None
         self.helpCommands: Any = None
         self.importCommands: Any = None
-        self.k: Any = None
-        self.keyHandler: Any = None
+        self.k: KeyHandlerClass = None
+        self.keyHandler: KeyHandlerClass = None
         self.killBufferCommands: Any = None
         self.nodeHistory: Any = None
         self.persistenceController: Any = None
