@@ -1281,7 +1281,7 @@ class Commands:
                 positions.append(p)
         return positions
     #@+node:ekr.20090107113956.1: *5* c.vnode2position
-    def vnode2position(self, v: VNode) -> List[Position]:
+    def vnode2position(self, v: VNode) -> Position:
         """Given a VNode v, construct a valid position p such that p.v = v.
         """
         c = self

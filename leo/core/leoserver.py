@@ -21,7 +21,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Set, Tuple, Union
 # Third-party.
 try:
     import tkinter as Tk
@@ -409,6 +409,8 @@ class QuickSearchController:
             bpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
+        bNodes: Iterable
+        hNodes: Iterable
         if combo == "All":
             hNodes = c.all_positions()
             bNodes = c.all_positions()
@@ -454,7 +456,6 @@ class QuickSearchController:
             else:
                 hNodes = node.self_and_subtree()
                 bNodes = node.self_and_subtree()
-
         else:
             hNodes = [c.p]
             bNodes = [c.p]
@@ -541,6 +542,7 @@ class QuickSearchController:
             hpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
+        hNodes: Iterable
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
@@ -692,7 +694,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        nodes: List[Position],
+        nodes: Iterable,
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
@@ -715,7 +717,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        nodes: List[Position],
+        nodes: Iterable,
         flags: RegexFlag=re.IGNORECASE,
     ) -> List[Position]:
         """
@@ -2493,11 +2495,13 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
+        oldPosition: Optional[Position] = c.p if p == c.p else None
 
-        if p == c.p:
-            oldPosition = False
-        else:
-            oldPosition = c.p
+        ###
+        # if p == c.p:
+            # oldPosition = None
+        # else:
+            # oldPosition = c.p
 
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
@@ -2506,8 +2510,7 @@ class LeoServer:
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', bunch)
+        c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
 
         c.selectPosition(newNode)
         if oldPosition:
