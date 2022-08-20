@@ -25,23 +25,25 @@ from leo.core import leoNodes
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoAtFile import AtFile
+    from leo.core.leoChapters import ChapterController
     from leo.core.leoFileCommands import FileCommands
     from leo.core.leoFind import LeoFind
     from leo.core.leoImport import LeoImportCommands
     from leo.core.leoKeys import KeyHandlerClass
     from leo.commands.abbrevCommands import AbbrevCommands
+    from leo.commands.leoCommands import EditCommandsClass
+    from leo.commands.editFileCommands import EditFileCommandsClass
     # self.bufferCommands: Any = None
-    # self.chapterController: Any = None
     # self.convertCommands: Any = None
     # self.debugCommands: Any = None
-    # self.editCommands: Any = None
-    # self.editFileCommands: Any = None
     # self.gotoCommands: Any = None
     # self.helpCommands: Any = None
 else:
     Position = VNode = Any
     AbbrevCommands = Any
     AtFile = Any
+    EditCommandsClass = Any
+    EditFileCommandsClass = Any
     FileCommands = Any
     KeyHandlerClass = Any
     LeoImportCommands = Any
@@ -97,11 +99,11 @@ class Commands:
         self.abbrevCommands: AbbrevCommands = None
         self.atFileCommands: AtFile  = None
         self.bufferCommands: Any = None
-        self.chapterController: Any = None
+        self.chapterController: ChapterController = None
         self.convertCommands: Any = None
         self.debugCommands: Any = None
-        self.editCommands: Any = None
-        self.editFileCommands: Any = None
+        self.editCommands: EditCommandsClass = None
+        self.editFileCommands: EditFileCommandsClass = None
         self.fileCommands: FileCommands = None
         self.findCommands: LeoFind = None
         self.gotoCommands: Any = None
