@@ -74,17 +74,32 @@ class Commands:
         self.gui = gui or g.app.gui
         self.ipythonController = None  # Set only by the ipython plugin.
         # Declarations of objects created later.
-        self.nodeHistory: Any
+        self.abbrevCommands: Any
         self.atFileCommands: Any
+        self.bufferCommands: Any
         self.chapterController: Any
+        self.convertCommands: Any
+        self.debugCommands: Any
+        self.editCommands: Any
+        self.editFileCommands: Any
         self.fileCommands: Any
         self.findCommands: Any
+        self.gotoCommands: Any
+        self.helpCommands: Any
         self.importCommands: Any
+        self.k: Any
+        self.keyHandler: Any
+        self.killBufferCommands: Any
+        self.nodeHistory: Any
         self.persistenceController: Any
+        self.printingController: Any
+        self.rectangleCommands: Any
         self.rstCommands: Any
         self.shadowController: Any
+        self.spellCommands: Any
         self.styleSheetManager: Any
         self.undoer: Any
+        self.vimCommands: Any
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -208,29 +223,29 @@ class Commands:
         self.abbrevCommands: Any = None
         self.editCommands: Any = None
         self.db = {}  # May be set to a PickleShare instance later.
-        self.bufferCommands: Any = None
-        self.chapterCommands: Any = None
-        self.controlCommands: Any = None
-        self.convertCommands: Any = None
-        self.debugCommands: Any = None
-        self.editFileCommands: Any = None
-        self.evalController: Any = None
-        self.gotoCommands: Any = None
-        self.helpCommands: Any = None
-        self.keyHandler: Any = None
-        self.k: Any = None
-        self.keyHandlerCommands: Any = None
-        self.killBufferCommands: Any = None
-        self.leoCommands: Any = None
-        self.macroCommands: Any = None
+        self.bufferCommands = None
+        self.chapterCommands = None
+        self.controlCommands = None
+        self.convertCommands = None
+        self.debugCommands = None
+        self.editFileCommands = None
+        self.evalController = None
+        self.gotoCommands = None
+        self.helpCommands = None
+        self.keyHandler = None
+        self.k = None
+        self.keyHandlerCommands = None
+        self.killBufferCommands = None
+        self.leoCommands = None
+        self.macroCommands = None
         self.miniBufferWidget: Widget = None
-        self.printingController: Any = None
-        self.queryReplaceCommands: Any = None
-        self.rectangleCommands: Any = None
-        self.searchCommands: Any = None
-        self.spellCommands: Any = None
-        self.leoTestManager: Any = None
-        self.vimCommands: Any = None
+        self.printingController = None
+        self.queryReplaceCommands = None
+        self.rectangleCommands = None
+        self.searchCommands = None
+        self.spellCommands = None
+        self.leoTestManager = None
+        self.vimCommands = None
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
