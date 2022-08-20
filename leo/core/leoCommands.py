@@ -13,7 +13,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Dict, Callable, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Callable, Generator, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
@@ -32,7 +32,7 @@ Widget = Any
 Wrapper = Any
 #@-<< leoCommands annotations >>
 
-def cmd(name) -> Callable:
+def cmd(name: str) -> Callable:
     """Command decorator for the Commands class."""
     return g.new_cmd_decorator(name, ['c',])
 
@@ -99,7 +99,7 @@ class Commands:
                 f"total: {t3-t1:5.2f}"
             )
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self, fileName: str) -> None:
+    def computeWindowTitle(self, fileName: str) -> str:
         """Set the window title and fileName."""
         if fileName:
             title = g.computeWindowTitle(fileName)
@@ -483,7 +483,7 @@ class Commands:
             count = c.idle_focus_count
             g.trace(f"{count} inactive focus: {w_class}")
     #@+node:ekr.20160427062131.1: *5* c.is_unusual_focus
-    def is_unusual_focus(self, w: Wrapper) -> None:
+    def is_unusual_focus(self, w: Wrapper) -> bool:
         """Return True if w is not in an expected place."""
         #
         # #270: Leo's keyboard events doesn't work after "Insert"
@@ -591,7 +591,7 @@ class Commands:
         """
         c, p, tag = self, self.p, 'execute-general-script'
 
-        def get_setting_for_language(setting: str) -> None:
+        def get_setting_for_language(setting: str) -> Optional[str]:
             """
             Return the setting from the given @data setting.
             The first colon ends each key.
@@ -633,7 +633,7 @@ class Commands:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
-        def it(p: Position) -> None:
+        def it(p: Position) -> Generator:
             for p1 in p.self_and_parents():
                 if p1.h.startswith('@test '):
                     yield p1
@@ -831,13 +831,13 @@ class Commands:
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
     #@+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
-    def all_nodes(self) -> None:
+    def all_nodes(self) -> Generator:
         """A generator returning all vnodes in the outline, in outline order."""
         c = self
         for p in c.all_positions():
             yield p.v
 
-    def all_unique_nodes(self) -> None:
+    def all_unique_nodes(self) -> Generator:
         """A generator returning each vnode of the outline."""
         c = self
         for p in c.all_unique_positions(copy=False):
@@ -848,7 +848,7 @@ class Commands:
     all_vnodes_iter = all_nodes
     all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self, copy: bool=True) -> None:
+    def all_positions(self, copy: bool=True) -> Generator:
         """A generator return all positions of the outline, in outline order."""
         c = self
         p = c.rootPosition()
@@ -861,7 +861,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: Any=None) -> None:
+    def all_positions_for_v(self, v: VNode, stack: Any=None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -880,13 +880,13 @@ class Commands:
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
-        def allinds(v: VNode, target_v: Any) -> None:
+        def allinds(v: VNode, target_v: Any) -> Generator:
             """Yield all indices i such that v.children[i] == target_v."""
             for i, x in enumerate(v.children):
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: Any) -> None:
+        def stack2pos(stack: Any) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
@@ -900,7 +900,7 @@ class Commands:
                     yield from c.all_positions_for_v(v2, stack)
                 stack.pop(0)
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool=True, predicate: Any=None) -> None:
+    def all_roots(self, copy: bool=True, predicate: Any=None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -911,7 +911,7 @@ class Commands:
 
             # pylint: disable=function-redefined
 
-            def predicate(p: Position) -> None:
+            def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
 
         p = c.rootPosition()
@@ -922,7 +922,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy: bool=True) -> None:
+    def all_unique_positions(self, copy: bool=True) -> Generator:
         """
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -942,7 +942,7 @@ class Commands:
 
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool=True, predicate: Any=None) -> None:
+    def all_unique_roots(self, copy: bool=True, predicate: Any=None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -953,7 +953,7 @@ class Commands:
 
             # pylint: disable=function-redefined
 
-            def predicate(p: Position) -> None:
+            def predicate(p: Position) -> bool:
                 return p.isAnyAtFileNode()
 
         seen = set()
@@ -966,7 +966,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20150316175921.5: *5* c.safe_all_positions
-    def safe_all_positions(self, copy: bool=True) -> None:
+    def safe_all_positions(self, copy: bool=True) -> Generator:
         """
         A generator returning all positions of the outline. This generator does
         *not* assume that vnodes are never their own ancestors.
@@ -978,7 +978,7 @@ class Commands:
             p.safeMoveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
-    def currentPosition(self) -> None:
+    def currentPosition(self) -> Position:
         """
         Return a copy of the presently selected position or a new null
         position. So c.p.copy() is never necessary.
@@ -1006,27 +1006,27 @@ class Commands:
                 print(f"{indent}{p.h}")
                 g.printObj(p.v.expandedPositions, indent=indent)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
-    def edit_widget(self, p: Position) -> None:
+    def edit_widget(self, p: Position) -> Widget:
         c = self
         return p and c.frame.tree.edit_widget(p)
     #@+node:ekr.20031218072017.2986: *5* c.fileName & relativeFileName & shortFileName
     # Compatibility with scripts
 
-    def fileName(self) -> None:
+    def fileName(self) -> str:
         s = self.mFileName or ""
         if g.isWindows:
             s = s.replace('\\', '/')
         return s
 
-    def relativeFileName(self) -> None:
+    def relativeFileName(self) -> str:
         return self.mRelativeFileName or self.mFileName
 
-    def shortFileName(self) -> None:
+    def shortFileName(self) -> str:
         return g.shortFileName(self.mFileName)
 
     shortFilename = shortFileName
     #@+node:ekr.20070615070925.1: *5* c.firstVisible
-    def firstVisible(self) -> None:
+    def firstVisible(self) -> Position:
         """Move to the first visible node of the present chapter or hoist."""
         c, p = self, self.p
         while 1:
@@ -1036,7 +1036,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self) -> None:
+    def getBodyLines(self) -> Tuple[List[str], List[str], List[str], Optional[Tuple], Optional[Tuple]]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1062,14 +1062,14 @@ class Commands:
         oldSel = i, j
         return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
-    def getTabWidth(self, p: Position) -> None:
+    def getTabWidth(self, p: Position) -> int:
         """Return the tab width in effect at p."""
         c = self
         val = g.scanAllAtTabWidthDirectives(c, p)
         return val
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
-    def currentPositionIsRootPosition(self) -> None:
+    def currentPositionIsRootPosition(self) -> bool:
         """Return True if the current position is the root position.
 
         This method is called during idle time, so not generating positions
@@ -1077,12 +1077,9 @@ class Commands:
         """
         c = self
         root = c.rootPosition()
-        return c._currentPosition and root and c._currentPosition == root
-        # return (
-            # c._currentPosition and c._rootPosition and
-            # c._currentPosition == c._rootPosition)
+        return bool(c._currentPosition and root and c._currentPosition == root)
     #@+node:ekr.20040803160656: *6* c.currentPositionHasNext
-    def currentPositionHasNext(self) -> None:
+    def currentPositionHasNext(self) -> bool:
         """Return True if the current position is the root position.
 
         This method is called during idle time, so not generating positions
@@ -1090,23 +1087,23 @@ class Commands:
         """
         c = self
         current = c._currentPosition
-        return current and current.hasNext()
+        return bool(current and current.hasNext())
     #@+node:ekr.20040803112450: *6* c.isCurrentPosition
-    def isCurrentPosition(self, p: Position) -> None:
+    def isCurrentPosition(self, p: Position) -> bool:
         c = self
         if p is None or c._currentPosition is None:
             return False
         return p == c._currentPosition
     #@+node:ekr.20040803112450.1: *6* c.isRootPosition
-    def isRootPosition(self, p: Position) -> None:
+    def isRootPosition(self, p: Position) -> bool:
         c = self
         root = c.rootPosition()
-        return p and root and p == root  # 2011/03/03
+        return bool(p and root and p == root)
     #@+node:ekr.20031218072017.2987: *5* c.isChanged
-    def isChanged(self) -> None:
+    def isChanged(self) -> bool:
         return self.changed
     #@+node:ekr.20210901104900.1: *5* c.lastPosition
-    def lastPosition(self) -> None:
+    def lastPosition(self) -> Position:
         c = self
         p = c.rootPosition()
         while p.hasNext():
@@ -1115,7 +1112,7 @@ class Commands:
             p.moveToThreadNext()
         return p
     #@+node:ekr.20140106215321.16676: *5* c.lastTopLevel
-    def lastTopLevel(self) -> None:
+    def lastTopLevel(self) -> Position:
         """Return the last top-level position in the outline."""
         c = self
         p = c.rootPosition()
@@ -1123,7 +1120,7 @@ class Commands:
             p.moveToNext()
         return p
     #@+node:ekr.20031218072017.4146: *5* c.lastVisible
-    def lastVisible(self) -> None:
+    def lastVisible(self) -> Position:
         """Move to the last visible node of the present chapter or hoist."""
         c, p = self, self.p
         while 1:
@@ -1133,7 +1130,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Any=None, trace: bool=False) -> None:
+    def positionExists(self, p: Position, root: Any=None, trace: bool=False) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -1163,7 +1160,7 @@ class Commands:
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
 
-    def rootPosition(self) -> None:
+    def rootPosition(self) -> Optional[Position]:
         """Return the root position.
 
         Root position is the first position in the document. Other
@@ -1181,7 +1178,7 @@ class Commands:
     rootVnode = rootPosition
     findRootPosition = rootPosition
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
-    def shouldBeExpanded(self, p: Position) -> None:
+    def shouldBeExpanded(self, p: Position) -> bool:
         """Return True if the node at position p should be expanded."""
         c, v = self, p.v
         if not p.hasChildren():
@@ -1198,7 +1195,7 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> None:
+    def visLimit(self) -> Union[Tuple[None, None], Tuple[Position, bool]]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
