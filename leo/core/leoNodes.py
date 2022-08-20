@@ -192,7 +192,12 @@ class NodeIndices:
 
 class Position:
 
-    __slots__ = ['_childIndex', 'stack', 'v']
+    __slots__ = [
+        # Used throughout Leo
+        '_childIndex', 'stack', 'v',
+        # Used in find_b and addBodyMatches. (in leoserver.py and quicksearch.py)
+        'matchiter',
+    ]
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...

@@ -496,8 +496,6 @@ class QuickSearchController:
     def addBodyMatches(self, positions: List[Position]) -> int:
         lineMatchHits = 0
 
-        print('in  addBodyMatches!', flush=True)
-
         for p in positions:
             it = {"type": "headline", "label": p.h}
             # it = QtWidgets.QListWidgetItem(p.h, self.lw)
@@ -701,7 +699,7 @@ class QuickSearchController:
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
 
-            if hasattr(p, "matchiter"):  #p might be not have body matches
+            if hasattr(p, "matchiter"):  # p might not have body matches
                     ms = self.matchlines(p.b, p.matchiter)
                     for ml, pos in ms:
                         lineMatchHits += 1
@@ -720,7 +718,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        nodes: List[Position],
+        positions: List[Position],
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
@@ -734,7 +732,7 @@ class QuickSearchController:
             return []
         aList: List[Position] = []
 
-        for p in nodes:
+        for p in positions:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
             try:
@@ -749,25 +747,17 @@ class QuickSearchController:
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        nodes: List[Position],
+        positions: List[Position],
         flags: RegexFlag=re.IGNORECASE,
     ) -> List[Position]:
         """
-        Return list of all positions where zero or more characters at
-        the beginning of the headline match regex
+        Return the list of all positions whose headline matches the given pattern.
         """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        aList: List[Position] = []
-        seen: Set[VNode] = set()
-        for p in nodes:
-            for m in re.finditer(pat, p.h):
-                if p.v not in seen:
-                    seen.add(p.v)
-                    aList.append(p.copy())
-        return aList
+        return [p.copy() for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
     def matchlines(self, b: str, miter: Any) -> List:
         res = []

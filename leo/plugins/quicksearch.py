@@ -79,6 +79,7 @@ This plugin defines the following commands that can be bound to keys:
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 import fnmatch
+import itertools
 import re
 from typing import Dict, List, Union
 from leo.core import leoGlobals as g
@@ -409,6 +410,13 @@ class QuickSearchController:
             it.setFont(f)
             if self.addItem(it, (p, None)):
                 return lineMatchHits
+
+            ms = matchlines(p.b, p.matchiter)
+            for ml, pos in ms:
+                lineMatchHits += 1
+                it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
+                if self.addItem(it, (p, pos)):
+                    return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
@@ -432,6 +440,13 @@ class QuickSearchController:
                 it.setFont(f)
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
+            if hasattr(p, "matchiter"):  #p might not have body matches
+                ms = matchlines(p.b, p.matchiter)
+                for ml, pos in ms:
+                    lineMatchHits += 1
+                    it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
+                    if self.addItem(it, (p, pos)):
+                        return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
@@ -649,7 +664,22 @@ class QuickSearchController:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        return [p.copy() for p in positions if re.finditer(pat, p.b)]
+
+        aList: List[Position] = []
+
+        for p in positions:
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                t1.__next__()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2  # Arbitrary attribute helper
+            aList.append(pc)
+
+        return aList
+
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
     def doShowMarked(self):
 
