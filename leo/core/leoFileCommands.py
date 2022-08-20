@@ -750,16 +750,6 @@ class FileCommands:
             except Exception:
                 pass  # os.access() may not exist on all platforms.
         return False
-    #@+node:ekr.20210315031535.1: *4* fc.openOutlineForWriting
-    def openOutlineForWriting(self, fileName: str) -> Any:
-        """Open a .leo file for writing. Return the open file, or None."""
-        try:
-            f = open(fileName, 'wb')  # Always use binary mode.
-        except Exception:
-            g.es(f"can not open {fileName}")
-            g.es_exception()
-            f = None
-        return f
     #@+node:ekr.20031218072017.3045: *4* fc.setDefaultDirectoryForNewFiles
     def setDefaultDirectoryForNewFiles(self, fileName: str) -> None:
         """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
@@ -1787,16 +1777,19 @@ class FileCommands:
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
             return False
-        f = self.openOutlineForWriting(fileName)
-        if not f:
+        try:
+            f = open(fileName, 'wb')  # Must write bytes.
+        except Exception:
+            g.es(f"can not open {fileName}")
+            g.es_exception()
             return False
         try:
             # Create the dict corresponding to the JSON.
             d = self.leojs_file()
             # Convert the dict to JSON.
             json_s = json.dumps(d, indent=2, cls=SetJSONEncoder)
-            s = bytes(json_s, self.leo_file_encoding, 'replace')
-            f.write(s)
+            # Write bytes.
+            f.write(bytes(json_s, self.leo_file_encoding, 'replace'))
             f.close()
             g.app.commander_cacher.save(c, fileName)
             c.setFileTimeStamp(fileName)
@@ -1948,14 +1941,16 @@ class FileCommands:
         ok, backupName = self.createBackupFile(fileName)
         if not ok:
             return False
-        f = self.openOutlineForWriting(fileName)
-        if not f:
+        try:
+            f = open(fileName, 'wb')  # Must write bytes.
+        except Exception:
+            g.es(f"can not open {fileName}")
             return False
         self.mFileName = fileName
         try:
             s = self.outline_to_xml_string()
-            s = bytes(s, self.leo_file_encoding, 'replace')
-            f.write(s)
+            # Write bytes.
+            f.write(bytes(s, self.leo_file_encoding, 'replace'))
             f.close()
             c.setFileTimeStamp(fileName)
             # Delete backup file.
