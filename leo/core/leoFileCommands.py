@@ -188,14 +188,14 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: Any, val: Any, kind: str=None) -> Optional[str]:  # Kind is for unit testing.
+    def resolveUa(self, attr: Any, val: Any, kind: str=None) -> str:  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
             val = g.toEncodedString(val)
         except Exception:
             g.es_print('unexpected exception converting hexlified string to string')
             g.es_exception()
-            return None
+            return ''
         # Leave string attributes starting with 'str_' alone.
         if attr.startswith('str_'):
             if isinstance(val, (str, bytes)):
