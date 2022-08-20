@@ -5912,7 +5912,7 @@ def es_trace(*args: Any, **keys: Any) -> None:
             pass
     g.es(*args, **keys)
 #@+node:ekr.20220820050145.1: *3* g.function_name
-def function_name():
+def function_name() -> str:
     """Return the name of function or method that called this function."""
     try:  # get the function name from the call stack.
         f1 = sys._getframe(1)  # The stack frame, one level up.
