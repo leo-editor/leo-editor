@@ -8,8 +8,8 @@ Leo's internet server.
 Written by Félix Malboeuf and Edward K. Ream.
 """
 # pylint: disable=import-self,raise-missing-from,wrong-import-position
-#@+<< imports >>
-#@+node:felix.20210621233316.2: ** << imports >> (leoserver.py)
+#@+<< leoserver imports >>
+#@+node:felix.20210621233316.2: ** << leoserver imports >>
 import argparse
 import asyncio
 import fnmatch
@@ -43,11 +43,17 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
-#@-<< imports >>
+#@-<< leoserver imports >>
+#@+<< leoserver annotations >>
+#@+node:ekr.20220820155747.1: ** << leoserver annotations >>
+Event = Any
+Loop = Any
 Package = Dict[str, Any]
 Param = Dict[str, Any]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
+Socket = Any
+#@-<< leoserver annotations >>
 version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
@@ -814,7 +820,7 @@ class LeoServer:
         #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
-        self.loop: Any = None
+        self.loop: Loop = None
         #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
@@ -958,7 +964,12 @@ class LeoServer:
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
-    def _show_find_success(self, c: Cmdr, in_headline: bool, insert: Any, p: Position) -> None:
+    def _show_find_success(self,
+        c: Cmdr,
+        in_headline: bool,
+        insert: Any,
+        p: Position,
+    ) -> None:
         """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
@@ -979,15 +990,13 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:felix.20220220203658.1: *5* _get_rclickTree
-    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict]:
-        rclickList = []
-
+    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict[str, Any]]:
+        rclickList: List[Dict[str, Any]] = []
         for rc in rclicks:
             children = []
             if rc.children:
                 children = self._get_rclickTree(rc.children)
             rclickList.append({"name": rc.position.h, "children": children})
-
         return rclickList
 
 
@@ -4127,7 +4136,7 @@ class LeoServer:
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
     #@+node:felix.20210621233316.76: *5* server.init_connection
-    def _init_connection(self, web_socket: Any) -> None:  # pragma: no cover (tested in client).
+    def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
         global connectionsTotal
         if connectionsTotal == 1:
@@ -4770,7 +4779,7 @@ def main() -> None:  # pragma: no cover (tested in client)
 
     #@+others
     #@+node:felix.20210807214524.1: *3* function: cancel_tasks
-    def cancel_tasks(to_cancel: Any, loop: Any) -> None:
+    def cancel_tasks(to_cancel: Any, loop: Loop) -> None:
         if not to_cancel:
             return
 
@@ -4814,13 +4823,13 @@ def main() -> None:  # pragma: no cover (tested in client)
     #@+node:ekr.20210825172913.1: *3* function: general_yes_no_dialog & helpers
     def general_yes_no_dialog(
         c: Cmdr,
-        title: Any,  # Not used.
-        message: Any=None,  # Must exist.
+        title: str,  # Not used.
+        message: str=None,  # Must exist.
         yesMessage: str="&Yes",  # Not used.
         noMessage: str="&No",  # Not used.
-        yesToAllMessage: Any=None,  # Not used.
+        yesToAllMessage: str=None,  # Not used.
         defaultButton: str="Yes",  # Not used
-        cancelMessage: Any=None,  # Not used.
+        cancelMessage: str=None,  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -4841,7 +4850,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
-            def create_yes_no_frame(message: Any, top: Any) -> None:
+            def create_yes_no_frame(message: str, top: Any) -> None:
                 """Create the dialog's frame."""
                 frame = Tk.Frame(top)
                 frame.pack(side="top", expand=1, fill="both")
@@ -4855,14 +4864,14 @@ def main() -> None:  # pragma: no cover (tested in client)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
             #@+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event: Any=None) -> None:
+            def noButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event: Any=None) -> None:
+            def yesButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -5022,7 +5031,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any=None) -> Any:
+    async def notify_clients(action: str, excludedConn: Any=None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
@@ -5036,10 +5045,11 @@ def main() -> None:  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
-
+                await asyncio.wait([
+                    asyncio.create_task(client.send(m)) for client in clientSetCopy
+                ])
     #@+node:felix.20210803174312.2: *3* function: register_client
-    async def register_client(websocket: Any) -> None:
+    async def register_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
@@ -5056,12 +5066,12 @@ def main() -> None:  # pragma: no cover (tested in client)
             if commander.isChanged() and commander.fileName():
                 commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
-    async def unregister_client(websocket: Any) -> None:
+    async def unregister_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket: Any, path: str) -> None:
+    async def ws_handler(websocket: Socket, path: str) -> None:
         """
         The web socket handler: server.ws_server.
 
