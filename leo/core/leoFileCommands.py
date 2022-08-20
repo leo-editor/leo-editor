@@ -1909,7 +1909,7 @@ class FileCommands:
         if p == c.p:
             status |= v.selectedBit
 
-        children: List[VNode] = []  # Start empty
+        children: List[Dict[str, Any]] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.
@@ -1923,7 +1923,7 @@ class FileCommands:
             p.moveToParent()  # Restore p in the caller.
 
         # At least will contain  the gnx
-        result: Dict[str, int] = {
+        result: Dict[str, Any] = {
             'gnx': v.fileIndex,
         }
 
