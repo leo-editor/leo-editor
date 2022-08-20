@@ -1997,6 +1997,67 @@ class LoadManager:
         inverted_old_d.update(inverted_new_d)  # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
         return result
+    #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
+    def checkForDuplicateShortcuts(self, c: Cmdr, d: Dict[str, str]) -> None:
+        """
+        Check for duplicates in an "inverted" dictionary d
+        whose keys are strokes and whose values are lists of BindingInfo nodes.
+
+        Duplicates happen only if panes conflict.
+        """
+        # Fix bug 951921: check for duplicate shortcuts only in the new file.
+        for ks in sorted(list(d.keys())):
+            duplicates, panes = [], ['all']
+            aList = d.get(ks)  # A list of bi objects.
+            aList2 = [z for z in aList if not z.pane.startswith('mode')]
+            if len(aList) > 1:
+                for bi in aList2:
+                    if bi.pane in panes:
+                        duplicates.append(bi)
+                    else:
+                        panes.append(bi.pane)
+            if duplicates:
+                bindings = list(set([z.stroke.s for z in duplicates]))
+                if len(bindings) == 1:
+                    kind = 'duplicate, (not conflicting)'
+                else:
+                    kind = 'conflicting'
+                g.es_print(f"{kind} key bindings in {c.shortFileName()}")
+                for bi in aList2:
+                    g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
+    #@+node:ekr.20120214132927.10724: *5* LM.invert
+    def invert(
+        self,
+        d: Dict) -> g.SettingsDict:
+        """
+        Invert a shortcut dict whose keys are command names,
+        returning a dict whose keys are strokes.
+        """
+        if d is None:
+            d = {}
+        result = g.SettingsDict(f"inverted {d.name()}")
+        for commandName in d.keys():
+            for bi in d.get(commandName, []):
+                stroke = bi.stroke  # This is canonicalized.
+                bi.commandName = commandName  # Add info.
+                assert stroke
+                result.add_to_list(stroke, bi)
+        return result
+    #@+node:ekr.20120214132927.10725: *5* LM.uninvert
+    def uninvert(
+        self,
+        d: g.SettingsDict) -> g.SettingsDict:
+        """
+        Uninvert an inverted shortcut dict whose keys are strokes,
+        returning a dict whose keys are command names.
+        """
+        result = g.SettingsDict(f"uninverted {d.name()}")
+        for stroke in d.keys():
+            for bi in d.get(stroke, []):
+                commandName = bi.commandName
+                assert commandName
+                result.add_to_list(commandName, bi)
+        return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn: str) -> Optional[Cmdr]:
         """
