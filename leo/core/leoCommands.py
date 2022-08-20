@@ -24,6 +24,21 @@ from leo.core import leoNodes
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
+    from leo.commands.abbrevCommands import AbbrevCommands
+    
+    # self.atFileCommands: Any = None
+    # self.bufferCommands: Any = None
+    # self.chapterController: Any = None
+    # self.convertCommands: Any = None
+    # self.debugCommands: Any = None
+    # self.editCommands: Any = None
+    # self.editFileCommands: Any = None
+    # self.fileCommands: Any = None
+    # self.findCommands: Any = None
+    # self.gotoCommands: Any = None
+    # self.helpCommands: Any = None
+    # self.importCommands: Any = None
+    
 else:
     Position = VNode = Any
 Event = Any
@@ -74,32 +89,32 @@ class Commands:
         self.gui = gui or g.app.gui
         self.ipythonController = None  # Set only by the ipython plugin.
         # Declarations of objects created later.
-        self.abbrevCommands: Any
-        self.atFileCommands: Any
-        self.bufferCommands: Any
-        self.chapterController: Any
-        self.convertCommands: Any
-        self.debugCommands: Any
-        self.editCommands: Any
-        self.editFileCommands: Any
-        self.fileCommands: Any
-        self.findCommands: Any
-        self.gotoCommands: Any
-        self.helpCommands: Any
-        self.importCommands: Any
-        self.k: Any
-        self.keyHandler: Any
-        self.killBufferCommands: Any
-        self.nodeHistory: Any
-        self.persistenceController: Any
-        self.printingController: Any
-        self.rectangleCommands: Any
-        self.rstCommands: Any
-        self.shadowController: Any
-        self.spellCommands: Any
-        self.styleSheetManager: Any
-        self.undoer: Any
-        self.vimCommands: Any
+        self.abbrevCommands: AbbrevCommands = None
+        self.atFileCommands: Any = None
+        self.bufferCommands: Any = None
+        self.chapterController: Any = None
+        self.convertCommands: Any = None
+        self.debugCommands: Any = None
+        self.editCommands: Any = None
+        self.editFileCommands: Any = None
+        self.fileCommands: Any = None
+        self.findCommands: Any = None
+        self.gotoCommands: Any = None
+        self.helpCommands: Any = None
+        self.importCommands: Any = None
+        self.k: Any = None
+        self.keyHandler: Any = None
+        self.killBufferCommands: Any = None
+        self.nodeHistory: Any = None
+        self.persistenceController: Any = None
+        self.printingController: Any = None
+        self.rectangleCommands: Any = None
+        self.rstCommands: Any = None
+        self.shadowController: Any = None
+        self.spellCommands: Any = None
+        self.styleSheetManager: Any = None
+        self.undoer: Any = None
+        self.vimCommands: Any = None
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -1564,9 +1579,8 @@ class Commands:
         """Check consistency of parent and child data structures."""
         c = self
 
-        def _assert(condition: Any) -> None:
-            g._assert(condition, show_callers=False)
-            return
+        def _assert(condition: Any) -> bool:
+            return g._assert(condition, show_callers=False)
 
         def dump(p: Position) -> None:
             if p and p.v:
@@ -3959,7 +3973,7 @@ class Commands:
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
     def cloneFindByPredicate(
         self,
-        generator: Generator,  # The generator used to traverse the tree.
+        generator: Any,  # The generator used to traverse the tree.
         predicate: Callable,  # A function of one argument p, returning True  # if p should be included in the results.
         failMsg: str=None,  # Failure message. Default is no message.
         flatten: bool=False,  # True: Put all matches at the top level.
