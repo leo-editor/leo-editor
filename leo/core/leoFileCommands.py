@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
 from typing import TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
@@ -133,7 +133,7 @@ class FastRead:
         return v
 
     #@+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
-    def readFileFromClipboard(self, s: str) -> Optional[VNode]:
+    def readFileFromClipboard(self, s: Union[bytes,str]) -> Optional[VNode]:
         """
         Recreate a file from a string s, and return its hidden vnode.
 
@@ -153,7 +153,7 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path: str, s: bytes) -> Tuple[VNode, Any]:
+    def readWithElementTree(self, path: str, s: Union[str,bytes]) -> Tuple[VNode, Any]:
 
         contents = g.toUnicode(s)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -187,7 +187,7 @@ class FastRead:
         marked = marked.split(',') if marked else []
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
-    #@+node:ekr.20180606041211.1: *4* fast.resolveUa & helper
+    #@+node:ekr.20180606041211.1: *4* fast.resolveUa
     def resolveUa(self, attr: Any, val: Any, kind: str=None) -> Optional[str]:  # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
@@ -209,53 +209,17 @@ class FastRead:
                 assert kind == 'raw', f"unit test failed: kind={kind}"
             else:
                 g.trace(f"can not unhexlify {attr}={val}")
-            return val
+            return ''
         try:
             # No change needed to support protocols.
-            val2 = pickle.loads(binString)
-            return val2
+            return pickle.loads(binString)
         except Exception:
             try:
                 val2 = pickle.loads(binString, encoding='bytes')
-                val2 = self.bytesToUnicode(val2)
-                return val2
+                return g.toUnicode(val2)
             except Exception:
                 g.trace(f"can not unpickle {attr}={val}")
-                return val
-    #@+node:ekr.20180606044154.1: *5* fast.bytesToUnicode
-    def bytesToUnicode(self, ob: Any) -> str:
-        """
-        Recursively convert bytes objects in strings / lists / dicts to str
-        objects, thanks to TNT
-        http://stackoverflow.com/questions/22840092
-        Needed for reading Python 2.7 pickles in Python 3.4.
-        """
-        # This is simpler than using isinstance.
-        # pylint: disable=unidiomatic-typecheck
-        t = type(ob)
-        if t in (list, tuple):
-            l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytesToUnicode(i)
-                    if type(i) in (list, tuple, dict) else i
-                        for i in l]
-            ro = tuple(l) if t is tuple else l
-        elif t is dict:
-            byte_keys = [i for i in ob if type(i) is bytes]
-            for bk in byte_keys:
-                v = ob[bk]
-                del ob[bk]
-                ob[str(bk, 'utf-8')] = v
-            for k in ob:
-                if type(ob[k]) is bytes:
-                    ob[k] = str(ob[k], 'utf-8')
-                elif type(ob[k]) in (list, tuple, dict):
-                    ob[k] = self.bytesToUnicode(ob[k])
-            ro = ob
-        elif t is bytes:  # TNB added this clause
-            ro = str(ob, 'utf-8')
-        else:
-            ro = ob
-        return ro
+                return ''
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
     def scanGlobals(self, g_element: Any) -> None:
         """Get global data from the cache, with reasonable defaults."""
@@ -417,7 +381,7 @@ class FastRead:
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
-    def readFileFromJsonClipboard(self, s: bytes) -> VNode:
+    def readFileFromJsonClipboard(self, s: str) -> VNode:
         """
         Recreate a file from a JSON string s, and return its hidden vnode.
         """
@@ -432,7 +396,7 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
-    def readWithJsonTree(self, path: str, s: bytes) -> Tuple[VNode, Any]:
+    def readWithJsonTree(self, path: str, s: str) -> Tuple[VNode, Any]:
         try:
             d = json.loads(s)
         except Exception:
@@ -802,8 +766,8 @@ class FileCommands:
             hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
         else:
             # This encoding must match the encoding used in outline_to_clipboard_string.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
         v = hidden_v.children[0]
         v.parents = []
         # Restore the hidden root's children
@@ -847,8 +811,8 @@ class FileCommands:
             hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
         else:
             # This encoding must match the encoding used in outline_to_clipboard_string.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s)
+            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
 
         v = hidden_v.children[0]
         v.parents.remove(hidden_v)
@@ -1285,14 +1249,14 @@ class FileCommands:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
-            s = g.toEncodedString(s)  # 2011/02/22
+            s_bytes = g.toEncodedString(s)  # 2011/02/22
             # Throws a TypeError if val is not a hex string.
-            bin = binascii.unhexlify(s)
+            bin = binascii.unhexlify(s_bytes)
             val = pickle.loads(bin)
             return val
         except Exception:
             g.es_exception()
-            g.trace('Can not unpickle', type(s), v and v.h, s[:40])
+            g.trace('Can not unpickle', s.__class__.__name__, v and v.h, s[:40])
             return None
     #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
     def getPosFromClipboard(self, s: str) -> Position:
@@ -1308,8 +1272,8 @@ class FileCommands:
         self.gnxDict = {}  # Fix #943
         try:
             # This encoding must match the encoding used in outline_to_clipboard_string.
-            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            v = FastRead(c, {}).readFileFromClipboard(s)
+            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            v = FastRead(c, {}).readFileFromClipboard(s_bytes)
             if not v:
                 g.es("the clipboard is not valid ", color="blue")
                 return None

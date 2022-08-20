@@ -5478,7 +5478,7 @@ def toUnicode(s: Any, encoding: str=None, reportErrors: bool=False) -> str:
         return s
     tag = 'g.toUnicode'
     if not isinstance(s, bytes):
-        if not isinstance(s, (NullObject, TracingNullObject)):
+        if reportErrors and not isinstance(s, (NullObject, TracingNullObject)):
             callers = g.callers()
             if callers not in unicode_warnings:
                 unicode_warnings[callers] = True
