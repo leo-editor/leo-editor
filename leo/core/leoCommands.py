@@ -42,6 +42,7 @@ else:
     Position = VNode = Any
     AbbrevCommands = Any
     AtFile = Any
+    ChapterController = Any
     EditCommandsClass = Any
     EditFileCommandsClass = Any
     FileCommands = Any
