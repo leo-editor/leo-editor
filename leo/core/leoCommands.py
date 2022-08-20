@@ -205,7 +205,7 @@ class Commands:
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.import_error_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
-        self.last_dir = None  # The last used directory.
+        self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
         self.openDirectory: Optional[str] = None  #
