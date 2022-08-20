@@ -3076,7 +3076,7 @@ class FastAtRead:
         section_reference_seen = False
         sentinel = comment_delim1 + '@'  # Faster than a regex!
         # The stack is updated when at+others, at+<section>, or at+all is seen.
-        stack: List[Tuple[str, int, str]]= []  # Entries are (gnx, indent, body)
+        stack: List[Tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         # The spelling of at-verbatim sentinel
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2 + '\n'
         verbatim = False  # True: the next line must be added without change.

@@ -716,7 +716,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         nodes: List[Position],
-        flags: RegexFlag = re.IGNORECASE,
+        flags: RegexFlag=re.IGNORECASE,
     ) -> List[Position]:
         """
         Return list of all positions where zero or more characters at

@@ -133,7 +133,7 @@ class FastRead:
         return v
 
     #@+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
-    def readFileFromClipboard(self, s: Union[bytes,str]) -> Optional[VNode]:
+    def readFileFromClipboard(self, s: Union[bytes, str]) -> Optional[VNode]:
         """
         Recreate a file from a string s, and return its hidden vnode.
 
@@ -153,7 +153,7 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path: str, s: Union[str,bytes]) -> Tuple[VNode, Any]:
+    def readWithElementTree(self, path: str, s: Union[str, bytes]) -> Tuple[VNode, Any]:
 
         contents = g.toUnicode(s)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -281,7 +281,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Any) -> Tuple[Dict[str,str], Dict[str, Any]]:
+    def scanTnodes(self, t_elements: Any) -> Tuple[Dict[str, str], Dict[str, Any]]:
 
         gnx2body: Dict[str, str] = {}
         gnx2ua: Dict[str, dict] = defaultdict(dict)

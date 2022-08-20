@@ -61,7 +61,7 @@ def copyOutlineAsJSON(self, event=None):
         for p in positions:
             if p.u:
                 try:
-                    uas_dict [p.v.gnx] = json.dumps(p.u, skipkeys=True)
+                    uas_dict[p.v.gnx] = json.dumps(p.u, skipkeys=True)
                 except TypeError:
                     g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
                     # g.printObj(p.u)
