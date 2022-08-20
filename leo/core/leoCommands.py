@@ -73,6 +73,18 @@ class Commands:
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
         self.ipythonController = None  # Set only by the ipython plugin.
+        # Declarations of objects created later.
+        self.nodeHistory: Any
+        self.atFileCommands: Any
+        self.chapterController: Any
+        self.fileCommands: Any
+        self.findCommands: Any
+        self.importCommands: Any
+        self.persistenceController: Any
+        self.rstCommands: Any
+        self.shadowController: Any
+        self.styleSheetManager: Any
+        self.undoer: Any
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -139,9 +151,9 @@ class Commands:
         """Init per-document ivars."""
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None  # The last node we expanded or contracted.
-        self.nodeConflictList = []  # List of nodes with conflicting read-time data.
+        self.nodeConflictList: List[Position] = []  # List of nodes with conflicting read-time data.
         self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
-        self.user_dict = {}  # Non-persistent dictionary for free use by scripts and plugins.
+        self.user_dict: Dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self) -> None:
         """Init ivars relating to gui events."""
@@ -155,26 +167,26 @@ class Commands:
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
-        self.requestedFocusWidget = None
+        self.requestedFocusWidget: Widget = None
         self.requestLaterRedraw = False
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName: str, relativeFileName: Any) -> None:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
-        self.ignored_at_file_nodes: List["leoNodes.Position"] = []  # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes: List["leoNodes.Position"] = []  # List of nodes for c.raise_error_dialogs.
+        self.ignored_at_file_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
+        self.import_error_nodes: List[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.last_dir = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
         self.openDirectory: Optional[str] = None  #
-        self.orphan_at_file_nodes: List["leoNodes.Position"] = []  # List of orphaned nodes for c.raise_error_dialogs.
+        self.orphan_at_file_nodes: List[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self) -> None:
         """Init Commander ivars corresponding to user options."""
         self.fixed = False
-        self.fixedWindowPosition = []
+        self.fixedWindowPosition: Any = []
         self.forceExecuteEntireBody = False
         self.focus_border_color = 'white'
         self.focus_border_width = 1  # pixels
@@ -193,31 +205,32 @@ class Commands:
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars(self) -> None:
         # These ivars are set later by leoEditCommands.createEditCommanders
-        self.abbrevCommands = None
-        self.editCommands = None
+        self.abbrevCommands: Any = None
+        self.editCommands: Any = None
         self.db = {}  # May be set to a PickleShare instance later.
-        self.bufferCommands = None
-        self.chapterCommands = None
-        self.controlCommands = None
-        self.convertCommands = None
-        self.debugCommands = None
-        self.editFileCommands = None
-        self.evalController = None
-        self.gotoCommands = None
-        self.helpCommands = None
-        self.keyHandler = self.k = None
-        self.keyHandlerCommands = None
-        self.killBufferCommands = None
-        self.leoCommands = None
-        self.macroCommands = None
-        self.miniBufferWidget = None
-        self.printingController = None
-        self.queryReplaceCommands = None
-        self.rectangleCommands = None
-        self.searchCommands = None
-        self.spellCommands = None
-        self.leoTestManager = None
-        self.vimCommands = None
+        self.bufferCommands: Any = None
+        self.chapterCommands: Any = None
+        self.controlCommands: Any = None
+        self.convertCommands: Any = None
+        self.debugCommands: Any = None
+        self.editFileCommands: Any = None
+        self.evalController: Any = None
+        self.gotoCommands: Any = None
+        self.helpCommands: Any = None
+        self.keyHandler: Any = None
+        self.k: Any = None
+        self.keyHandlerCommands: Any = None
+        self.killBufferCommands: Any = None
+        self.leoCommands: Any = None
+        self.macroCommands: Any = None
+        self.miniBufferWidget: Widget = None
+        self.printingController: Any = None
+        self.queryReplaceCommands: Any = None
+        self.rectangleCommands: Any = None
+        self.searchCommands: Any = None
+        self.spellCommands: Any = None
+        self.leoTestManager: Any = None
+        self.vimCommands: Any = None
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
