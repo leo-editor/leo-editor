@@ -14,6 +14,7 @@ import argparse
 import asyncio
 import fnmatch
 import inspect
+import itertools
 import json
 import os
 import re
@@ -494,11 +495,28 @@ class QuickSearchController:
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
     def addBodyMatches(self, positions: List[Position]) -> int:
         lineMatchHits = 0
+
+        print('in  addBodyMatches!', flush=True)
+
         for p in positions:
             it = {"type": "headline", "label": p.h}
+            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
+            # f = it.font()
+            # f.setBold(True)
+            # it.setFont(f)
             if self.addItem(it, (p, None)):
                 return lineMatchHits
+            ms = self.matchlines(p.b, p.matchiter)
+
+            for ml, pos in ms:
+                lineMatchHits += 1
+                # it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
+                it = {"type": "body", "label": ml}
+                if self.addItem(it, (p, pos)):
+                    return lineMatchHits
         return lineMatchHits
+
+
     #@+node:felix.20220225003906.11: *4* QSC.qsc_search_history & helper (not used)
     def qsc_search_history(self) -> None:
 
@@ -507,7 +525,7 @@ class QuickSearchController:
         def sHistSelect(x: str) -> Callable:
             def _f() -> None:
                 # self.widgetUI.lineEdit.setText(x)
-                scon: QuickSearchController = self.c.patched_quickserch_controller
+                scon: QuickSearchController = self.c.patched_quicksearch_controller
                 scon.navText = x
                 self.qsc_search(x)
             return _f
@@ -682,6 +700,16 @@ class QuickSearchController:
                 it = {"type": "headline", "label": p.h}
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
+
+            if hasattr(p, "matchiter"):  #p might be not have body matches
+                    ms = self.matchlines(p.b, p.matchiter)
+                    for ml, pos in ms:
+                        lineMatchHits += 1
+                        # it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
+                        it = {"type": "body", "label": ml}
+                        if self.addItem(it, (p, pos)):
+                            return lineMatchHits
+
         return lineMatchHits
 
     #@+node:felix.20220225003906.9: *4* QSC.clear
@@ -705,12 +733,18 @@ class QuickSearchController:
         except Exception:
             return []
         aList: List[Position] = []
-        seen: Set[VNode] = set()
+
         for p in nodes:
-            for m in re.finditer(pat, p.b):
-                if p.v not in seen:
-                    seen.add(p.v)
-                    aList.append(p.copy())
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                t1.__next__()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2  # Arbitrary attribute helper
+            aList.append(pc)
+
         return aList
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
@@ -1142,7 +1176,7 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'patched_quickserch_controller', cc)  # Patch up quick-search controller to the commander
+            setattr(c, 'patched_quicksearch_controller', cc)  # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1495,7 +1529,7 @@ class LeoServer:
         c = self._check_c()
         # Tag search override!
         try:
-            scon: QuickSearchController = c.patched_quickserch_controller
+            scon: QuickSearchController = c.patched_quicksearch_controller
             inp = scon.navText
             if scon.isTag:
                 scon.qsc_find_tags(inp)
@@ -1515,7 +1549,7 @@ class LeoServer:
         """
         tag = 'nav_search'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         # Tag search override!
         try:
             inp = scon.navText
@@ -1536,7 +1570,7 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
-            scon: QuickSearchController = c.patched_quickserch_controller
+            scon: QuickSearchController = c.patched_quicksearch_controller
             result: Dict[str, Any] = {}
             navlist = [
                 {
@@ -1558,7 +1592,7 @@ class LeoServer:
     def find_quick_timeline(self, param: Param) -> Response:
         """Fill with nodes ordered by gnx."""
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_sort_by_gnx()
         return self._make_response()
 
@@ -1566,21 +1600,21 @@ class LeoServer:
     def find_quick_changed(self, param: Param) -> Response:
         # fill with list of all dirty nodes
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_find_changed()
         return self._make_response()
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
     def find_quick_history(self, param: Param) -> Response:
         # fill with list from history
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_get_history()
         return self._make_response()
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
     def find_quick_marked(self, param: Param) -> Response:
         # fill with list of marked nodes
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_show_marked()
         return self._make_response()
 
@@ -1589,7 +1623,7 @@ class LeoServer:
         # activate entry in scon.its
         tag = 'goto_nav_entry'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         try:
             it = param.get('key')
             scon.onSelectItem(it)
@@ -1607,7 +1641,7 @@ class LeoServer:
         """
         tag = 'get_search_settings'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         try:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
@@ -1626,7 +1660,7 @@ class LeoServer:
         """
         tag = 'set_search_settings'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         find = c.findCommands
         ftm = c.findCommands.ftm
         searchSettings = param.get('searchSettings')
