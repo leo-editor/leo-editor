@@ -25,7 +25,7 @@ from leo.core import leoNodes
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
     from leo.commands.abbrevCommands import AbbrevCommands
-    
+
     # self.atFileCommands: Any = None
     # self.bufferCommands: Any = None
     # self.chapterController: Any = None
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     # self.gotoCommands: Any = None
     # self.helpCommands: Any = None
     # self.importCommands: Any = None
-    
+
 else:
     Position = VNode = Any
 Event = Any

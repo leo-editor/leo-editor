@@ -465,7 +465,7 @@ class LeoFind:
             return p.isMarked()
 
         root = c.cloneFindByPredicate(
-            generator= c.all_unique_positions,
+            generator=c.all_unique_positions,
             predicate=isMarked,
             failMsg='No marked nodes',
             flatten=flatten,
