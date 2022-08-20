@@ -2,8 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2608: * @file leoApp.py
 #@@first
-#@+<< imports >>
-#@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
+#@+<< leoApp imports >>
+#@+node:ekr.20120219194520.10463: ** << leoApp imports >>
 import argparse
 import importlib
 import io
@@ -22,12 +22,15 @@ from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
 from leo.core.leoQt import QCloseEvent
 StringIO = io.StringIO
-#@-<< imports >>
+#@-<< leoApp imports >>
+#@+<< leoApp annotations >>
+#@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = Any
+    Cmdr = Position = VNode = Any
+#@-<< leoApp annotations >>
 # Make *sure* all these are Any.
 Event = Any
 Widget = Any
@@ -3222,7 +3225,7 @@ class LoadManager:
         fn: str,
         readAtFileNodesFlag: bool,
         theFile: Any,
-    ) -> bool:
+    ) -> VNode:
         """
         Call c.fileCommands.openLeoFile to open some kind of Leo file.
 
@@ -3233,16 +3236,16 @@ class LoadManager:
         # New in Leo 4.10: The open1 event does not allow an override of the init logic.
         assert theFile
         # Read and close the file.
-        ok = c.fileCommands.openLeoFile(
+        v = c.fileCommands.openLeoFile(
             theFile, fn, readAtFileNodesFlag=readAtFileNodesFlag)
-        if ok:
+        if v:
             if not c.openDirectory:
                 theDir = g.os_path_finalize(g.os_path_dirname(fn))  # 1341
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
             # #970: Never close Leo here.
             g.app.closeLeoWindow(c.frame, finish_quit=False)
-        return ok
+        return v
     #@+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c: Cmdr) -> None:
         """Revert c to the previously saved contents."""

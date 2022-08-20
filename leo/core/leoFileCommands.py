@@ -69,7 +69,7 @@ def dump_gnx_dict(event: Event) -> None:
 #@+node:felix.20220618222639.1: ** class SetEncoder
 class SetJSONEncoder(json.JSONEncoder):
     # Used to encode JSON in leojs files
-    def default(self, obj: Any) -> None:
+    def default(self, obj: Any) -> Any:
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
@@ -153,7 +153,7 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
-    def readWithElementTree(self, path: str, s: str) -> Tuple[VNode, Any]:
+    def readWithElementTree(self, path: str, s: bytes) -> Tuple[VNode, Any]:
 
         contents = g.toUnicode(s)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -317,7 +317,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Any) -> Tuple[str, Any]:
+    def scanTnodes(self, t_elements: Any) -> Tuple[Dict[str,str], Dict[str, Any]]:
 
         gnx2body: Dict[str, str] = {}
         gnx2ua: Dict[str, dict] = defaultdict(dict)
@@ -332,7 +332,7 @@ class FastRead:
         return gnx2body, gnx2ua
     #@+node:ekr.20180602062323.9: *4* fast.scanVnodes & helper
     def scanVnodes(self,
-        gnx2body: str,
+        gnx2body: Dict[str, str],
         gnx2vnode: Dict[str, VNode],
         gnx2ua: Dict[str, Any],
         v_elements: Any,
@@ -415,7 +415,7 @@ class FastRead:
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
     #@+node:felix.20220621221215.1: *3* fast.readFileFromJsonClipboard
-    def readFileFromJsonClipboard(self, s: str) -> VNode:
+    def readFileFromJsonClipboard(self, s: bytes) -> VNode:
         """
         Recreate a file from a JSON string s, and return its hidden vnode.
         """
@@ -430,7 +430,7 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
-    def readWithJsonTree(self, path: str, s: str) -> Tuple[VNode, Any]:
+    def readWithJsonTree(self, path: str, s: bytes) -> Tuple[VNode, Any]:
         try:
             d = json.loads(s)
         except Exception:
@@ -626,25 +626,24 @@ class FileCommands:
         self.leo_file_encoding = c.config.new_leo_file_encoding
         # For reading...
         self.checking = False  # True: checking only: do *not* alter the outline.
-        self.descendentExpandedList = []
-        self.descendentMarksList = []
-        self.forbiddenTnodes = []
-        self.descendentTnodeUaDictList = []
-        self.descendentVnodeUaDictList = []
+        self.descendentExpandedList: List[str] = []  # List of gnx's.
+        self.descendentMarksList: List[str] = []  # List of gnx's.
+        self.descendentTnodeUaDictList: List[Any] = []
+        self.descendentVnodeUaDictList: List[Any] = []
         self.ratio = 0.5
-        self.currentVnode = None
+        self.currentVnode: VNode = None
         # For writing...
         self.read_only = False
-        self.rootPosition = None
-        self.outputFile = None
-        self.openDirectory = None
+        self.rootPosition: Position = None
+        self.outputFile: Any = None  # StringIO
+        self.openDirectory: str = None
         self.usingClipboard = False
-        self.currentPosition = None
+        self.currentPosition: Position = None
         # New in 3.12...
-        self.copiedTree = None
+        self.copiedTree: Position = None
         # fc.gnxDict is never re-inited.
-        self.gnxDict = {}  # Keys are gnx strings. Values are vnodes.
-        self.vnodesDict = {}  # keys are gnx strings; values are ignored
+        self.gnxDict: Dict[str, VNode] = {}  # Keys are gnx strings. Values are vnodes.
+        self.vnodesDict: Dict[str, Any] = {}  # keys are gnx strings; values are ignored
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
@@ -818,7 +817,8 @@ class FileCommands:
         # Restore the hidden root's children
         c.hiddenRootNode.children = old_children
         if not v:
-            return g.es("the clipboard is not valid ", color="blue")
+            g.es("the clipboard is not valid ", color="blue")
+            return None
         # Create the position.
         p = leoNodes.Position(v)
         # Do *not* adjust links when linking v.
@@ -863,7 +863,8 @@ class FileCommands:
         # Restore the hidden root's children
         c.hiddenRootNode.children = old_children
         if not v:
-            return g.es("the clipboard is not valid ", color="blue")
+            g.es("the clipboard is not valid ", color="blue")
+            return None
         # Create the position.
         p = leoNodes.Position(v)
         # Do *not* adjust links when linking v.
@@ -965,7 +966,7 @@ class FileCommands:
         fileName: str,
         readAtFileNodesFlag: bool=True,
         silent: bool=False,
-    ) -> bool:
+    ) -> VNode:
         """
         Open a Leo file.
 
@@ -979,14 +980,14 @@ class FileCommands:
             c.openDirectory = c.frame.openDirectory = theDir
         # Get the file.
         self.gnxDict = {}  # #1437
-        ok, ratio = self.getLeoFile(
+        v, ratio = self.getLeoFile(
             theFile, fileName,
             readAtFileNodesFlag=readAtFileNodesFlag,
             silent=silent,
         )
-        if ok:
+        if v:
             frame.resizePanesToRatio(ratio, frame.secondary_ratio)
-        return ok
+        return v
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Optional[Position]:
         """
@@ -1057,18 +1058,18 @@ class FileCommands:
                 n2.setBodyString(b2)
         return root
     #@+node:ekr.20031218072017.3030: *5* fc.readOutlineOnly
-    def readOutlineOnly(self, theFile: Any, fileName: str) -> bool:
+    def readOutlineOnly(self, theFile: Any, fileName: str) -> VNode:
         c = self.c
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
         if theDir:
             c.openDirectory = c.frame.openDirectory = theDir
-        ok, ratio = self.getLeoFile(theFile, fileName, readAtFileNodesFlag=False)
+        v, ratio = self.getLeoFile(theFile, fileName, readAtFileNodesFlag=False)
         c.redraw()
         c.frame.deiconify()
         junk, junk, secondary_ratio = self.frame.initialRatios()
         c.frame.resizePanesToRatio(ratio, secondary_ratio)
-        return ok
+        return v
     #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb & helpers
     def retrieveVnodesFromDb(self, conn: Any) -> VNode:
         """
@@ -1177,7 +1178,7 @@ class FileCommands:
         c, fc = self.c, self
         #@+others
         #@+node:vitalije.20170831144827.2: *6* function: get_ref_filename
-        def get_ref_filename() -> str:
+        def get_ref_filename() -> str:  ### Huh?
             for v in priv_vnodes():
                 return g.splitLines(v.b)[0].strip()
         #@+node:vitalije.20170831144827.4: *6* function: pub_vnodes
@@ -1245,7 +1246,7 @@ class FileCommands:
             return tuple(dbrow(fc.gnxDict[x]) for x in gnxes)
         #@+node:vitalije.20170831144827.9: *6* function: nosqlite_commander
         @contextmanager
-        def nosqlite_commander(fname: str) -> None:
+        def nosqlite_commander(fname: str) -> Generator:
             oldname = c.mFileName
             conn = getattr(c, 'sqlite_connection', None)
             c.sqlite_connection = None
@@ -1270,7 +1271,7 @@ class FileCommands:
     #@+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
-    def archivedPositionToPosition(self, s: str) -> None:
+    def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
     #@+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
@@ -1306,7 +1307,7 @@ class FileCommands:
         v = self.getVnodeFromClipboard(s)
         return leoNodes.Position(v)
 
-    def getVnodeFromClipboard(self, s: str) -> VNode:
+    def getVnodeFromClipboard(self, s: str) -> Optional[VNode]:
         """Called only from getPosFromClipboard."""
         c = self.c
         self.initReadIvars()
@@ -1317,7 +1318,8 @@ class FileCommands:
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
             v = FastRead(c, {}).readFileFromClipboard(s)
             if not v:
-                return g.es("the clipboard is not valid ", color="blue")
+                g.es("the clipboard is not valid ", color="blue")
+                return None
         finally:
             self.gnxDict = oldGnxDict
         return v
@@ -1338,7 +1340,7 @@ class FileCommands:
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
-    def resolveArchivedPosition(self, archivedPosition: Any, root_v: Any) -> VNode:
+    def resolveArchivedPosition(self, archivedPosition: Any, root_v: Any) -> Optional[VNode]:
         """
         Return a VNode corresponding to the archived position relative to root
         node root_v.
@@ -1352,20 +1354,24 @@ class FileCommands:
             aList = [int(z) for z in archivedPosition.split('.')]
             aList.reverse()
         except Exception:
-            return oops(f'"{archivedPosition}"')
+            oops(f'"{archivedPosition}"')
+            return None
         if not aList:
-            return oops('empty')
+            oops('empty')
+            return None
         last_v = root_v
         n = aList.pop()
         if n != 0:
-            return oops(f'root index="{n}"')
+            oops(f'root index="{n}"')
+            return None
         while aList:
             n = aList.pop()
             children = last_v.children
             if n < len(children):
                 last_v = children[n]
             else:
-                return oops(f'bad index="{n}", len(children)="{len(children)}"')
+                oops(f'bad index="{n}", len(children)="{len(children)}"')
+                return None
         return last_v
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self) -> None:
@@ -1495,7 +1501,7 @@ class FileCommands:
             Write all <t> elements except those for vnodes appearing in @file, @edit or @auto nodes.
             """
 
-            def should_suppress(p: Position) -> None:
+            def should_suppress(p: Position) -> bool:
                 return any(z.isAtFileNode() or z.isAtEditNode() or z.isAtAutoNode()
                     for z in p.self_and_parents())
 
@@ -1626,8 +1632,8 @@ class FileCommands:
             return fc.c.rootPosition()
         sep = '<->'
         comma = ','
-        stack = [x.split(comma) for x in s.split(sep)]
-        stack = [(fc.gnxDict[x], int(y)) for x, y in stack]
+        stack1 = [x.split(comma) for x in s.split(sep)]
+        stack = [(fc.gnxDict[x], int(y)) for x, y in stack1]
         v, ci = stack[-1]
         p = leoNodes.Position(v, ci, stack[:-1])
         return p
@@ -1689,13 +1695,13 @@ class FileCommands:
     def exportHashesToSqlite(self, conn: Any) -> None:
         c = self.c
 
-        def md5(x: int) -> None:
+        def md5(x: int) -> str:
             try:
                 s = open(x, 'rb').read()
             except Exception:
                 return ''
             s = s.replace(b'\r\n', b'\n')
-            return hashlib.md5(s).hexdigest()
+            return hashlib.md5(s).hexdigest()  # A string
 
         files = set()
 
@@ -1903,7 +1909,7 @@ class FileCommands:
         if p == c.p:
             status |= v.selectedBit
 
-        children = []  # Start empty
+        children: List[VNode] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.
@@ -1917,7 +1923,7 @@ class FileCommands:
             p.moveToParent()  # Restore p in the caller.
 
         # At least will contain  the gnx
-        result = {
+        result: Dict[str, int] = {
             'gnx': v.fileIndex,
         }
 
@@ -1932,7 +1938,6 @@ class FileCommands:
             result['status'] = status
 
         return result
-
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
     def write_xml_file(self, fileName: str) -> bool:
         """Write the outline in .leo (XML) format."""
@@ -2280,7 +2285,8 @@ class FileCommands:
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
-            self.expanded_gnxs, self.marked_gnxs = set(), set()  # These will be ignored.
+            self.expanded_gnxs: Set[str] = set()
+            self.marked_gnxs: Set[str] = set()
             self.put_v_element(self.currentPosition)  # Write only current tree.
         else:
             for p in c.rootPosition().self_and_siblings():

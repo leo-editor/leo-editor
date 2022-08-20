@@ -2586,7 +2586,7 @@ class Commands:
             return expr
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
-    def archivedPositionToPosition(self, s):
+    def archivedPositionToPosition(self, s) -> Position:
         """Convert an archived position (a string) to a position."""
         c = self
         s = g.toUnicode(s)
