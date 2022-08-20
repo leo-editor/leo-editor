@@ -5902,21 +5902,6 @@ def es_print(*args: Any, **keys: Any) -> None:
     g.pr(*args, **keys)
     if g.app and not g.unitTesting:
         g.es(*args, **keys)
-#@+node:ekr.20111107181638.9741: *3* g.print_exception
-def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
-    """Print exception info about the last exception."""
-    # val is the second argument to the raise statement.
-    typ, val, tb = sys.exc_info()
-    if full:
-        lines = traceback.format_exception(typ, val, tb)
-    else:
-        lines = traceback.format_exception_only(typ, val)
-    print(''.join(lines), flush=flush)
-    try:
-        fileName, n = g.getLastTracebackFileAndLineNumber()
-        return fileName, n
-    except Exception:
-        return "<no file>", 0
 #@+node:ekr.20050707065530: *3* g.es_trace
 def es_trace(*args: Any, **keys: Any) -> None:
     if args:
@@ -5926,6 +5911,20 @@ def es_trace(*args: Any, **keys: Any) -> None:
         except Exception:
             pass
     g.es(*args, **keys)
+#@+node:ekr.20220820050145.1: *3* g.function_name
+def function_name():
+    """Return the name of function or method that called this function."""
+    try:  # get the function name from the call stack.
+        f1 = sys._getframe(1)  # The stack frame, one level up.
+        code1 = f1.f_code  # The code object
+        name = code1.co_name  # The code name
+    except Exception:
+        name = g.shortFileName(__file__)
+    if name == '<module>':
+        name = g.shortFileName(__file__)
+    if name.endswith('.pyc'):
+        name = name[:-1]
+    return name
 #@+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber() -> Tuple[str, int]:
     typ, val, tb = sys.exc_info()
@@ -6035,6 +6034,21 @@ def prettyPrintType(obj: Any) -> str:
     if t.endswith("'>"):
         t = t[:-2]
     return t
+#@+node:ekr.20111107181638.9741: *3* g.print_exception
+def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
+    """Print exception info about the last exception."""
+    # val is the second argument to the raise statement.
+    typ, val, tb = sys.exc_info()
+    if full:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    print(''.join(lines), flush=flush)
+    try:
+        fileName, n = g.getLastTracebackFileAndLineNumber()
+        return fileName, n
+    except Exception:
+        return "<no file>", 0
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name: str, window: Any) -> None:
     bindings = window.bind()
