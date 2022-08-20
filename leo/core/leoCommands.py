@@ -38,6 +38,17 @@ if TYPE_CHECKING:
     # self.debugCommands: Any = None
     # self.gotoCommands: Any = None
     # self.helpCommands: Any = None
+    # self.killBufferCommands: Any = None
+    # self.nodeHistory: Any = None
+    # self.persistenceController: Any = None
+    # self.printingController: Any = None
+    # self.rectangleCommands: Any = None
+    # self.rstCommands: Any = None
+    # self.shadowController: Any = None
+    # self.spellCommands: Any = None
+    # self.styleSheetManager: Any = None
+    # self.undoer: Any = None
+    # self.vimCommands: Any = None
 else:
     Position = VNode = Any
     AbbrevCommands = Any
