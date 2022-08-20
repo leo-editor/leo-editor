@@ -409,8 +409,8 @@ class QuickSearchController:
             bpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
-        bNodes: Iterable
-        hNodes: Iterable
+        bNodes: Iterable[Position]
+        hNodes: Iterable[Position]
         if combo == "All":
             hNodes = c.all_positions()
             bNodes = c.all_positions()
@@ -542,7 +542,7 @@ class QuickSearchController:
             hpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
-        hNodes: Iterable
+        hNodes: Iterable[Position]
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
@@ -694,7 +694,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        nodes: Iterable,
+        nodes: Iterable[Position],
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
     ) -> List[Position]:
         """
@@ -717,7 +717,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        nodes: Iterable,
+        nodes: Iterable[Position],
         flags: RegexFlag=re.IGNORECASE,
     ) -> List[Position]:
         """

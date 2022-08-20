@@ -2652,11 +2652,12 @@ class Commands:
         """Convert an archived position (a string) to a position."""
         c = self
         s = g.toUnicode(s)
-        aList = s.split(',')
+        aList: List[int]
+        aList_s = s.split(',')
         try:
-            aList = [int(z) for z in aList]
+            aList = [int(z) for z in aList_s]
         except Exception:
-            aList = None
+            return None
         if not aList:
             return None
         p = c.rootPosition()
