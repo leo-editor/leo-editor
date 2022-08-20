@@ -328,7 +328,10 @@ class FastRead:
             # Next, scan for uA's for this gnx.
             for key, val in e.attrib.items():
                 if key != 'tx':
-                    gnx2ua[gnx][key] = self.resolveUa(key, val)
+                    # gnx2ua[gnx][key] = self.resolveUa(key, val)
+                    s: Optional[str] = self.resolveUa(key, val)
+                    if s:
+                        gnx2ua[gnx][key] = s
         return gnx2body, gnx2ua
     #@+node:ekr.20180602062323.9: *4* fast.scanVnodes & helper
     def scanVnodes(self,
