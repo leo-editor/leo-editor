@@ -1652,7 +1652,7 @@ class FileCommands:
     def exportHashesToSqlite(self, conn: Any) -> None:
         c = self.c
 
-        def md5(x: int) -> str:
+        def md5(x: str) -> str:
             try:
                 s = open(x, 'rb').read()
             except Exception:
