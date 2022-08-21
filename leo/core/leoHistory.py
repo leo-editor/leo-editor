@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 else:
-    Chapter = Position = Any
+    Chapter = Any
+    Cmdr = Any
+    Position = Any
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:
