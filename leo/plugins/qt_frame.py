@@ -3987,10 +3987,14 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
                 changed |= self.doFileUrl(p, url)
             elif scheme in ('http',):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
+        # Call this only once, at end.
+        u.afterChangeGroup(c.p, undoType, reportFlag=False)
         if changed:
             c.setChanged()
-            u.afterChangeGroup(c.p, undoType, reportFlag=False)
             c.redraw()
+        else:
+            g.es("Command did not find any affected Urls")
+
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p: Pos, url: str) -> bool:
         """Read the file given by the url and put it in the outline."""

@@ -309,8 +309,10 @@ class CPrettyPrinter:
                     p.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
-        if changed:
-            u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        # Call this only once, at end.
+        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        if not changed:
+            g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p, toList=False, giveWarnings=True):
