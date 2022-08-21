@@ -354,7 +354,7 @@ class QuickSearchController:
         self.frozen = False
         self._search_patterns = []
 
-        def searcher(inp):
+        def searcher(inp:str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]:
             #print("searcher", inp)
             if self.frozen:
                 return None
@@ -362,14 +362,14 @@ class QuickSearchController:
             res = self.bgSearch(exp)
             return res
 
-        def dumper():
+        def dumper() -> None:
             # always run on ui thread
             if self.frozen:
                 return
             out = self.worker.output
             self.throttler.add(out)
 
-        def throttledDump(lst):
+        def throttledDump(lst: List[Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]]) -> None:
             """ dumps the last output """
             # we do get called with empty list on occasion
             if not lst:
@@ -431,7 +431,7 @@ class QuickSearchController:
             f = it.font()
             f.setItalic(True)
             it.setFont(f)
-            if self.addItem(it, (parent_key[0], None)):
+            if self.addItem(it, (parent_key, None)):
                 return lineMatchHits
             for p in parent_value:
                 it = QtWidgets.QListWidgetItem("    " + p[0].h, self.lw)
@@ -610,7 +610,7 @@ class QuickSearchController:
                 self.lw.insertItem(0, "External file directive not found " +
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
-    def bgSearch(self, pat):
+    def bgSearch(self, pat:str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]:
 
         #self.clear()
 
@@ -664,8 +664,6 @@ class QuickSearchController:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-
-        # (variable) t2: Iterator[Match[str]]
 
         aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
 

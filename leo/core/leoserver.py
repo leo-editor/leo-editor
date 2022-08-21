@@ -22,7 +22,8 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Set, Tuple, Union, Iterator, Match
+
 # Third-party.
 try:
     import tkinter as Tk
@@ -477,16 +478,17 @@ class QuickSearchController:
             # bNodes = list(bNodes)
             hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
             bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
-            bm_keys = [match.key() for match in bm]
+            bm_keys = [match[0].key() for match in bm]
             numOfHm = len(hm)  #do this before trim to get accurate count
-            hm = [match for match in hm if match.key() not in bm_keys]
+            hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
-                parents: dict[str, List[Position]] = {}
+                parents: Dict[str, List[Tuple[Position, Optional[Iterator[Match[str]]]]]] = {}
+
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        key = 'Root' if node.level() == 0 else node.parent().gnx
-                        aList: List[Position] = parents.get(key, [])
+                        key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
+                        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = parents.get(key, [])
                         aList.append(node)
                         parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
@@ -507,24 +509,23 @@ class QuickSearchController:
         self._search_patterns = ([pat] + self._search_patterns)[:30]
 
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
-    def addBodyMatches(self, positions: List[Position]) -> int:
+    def addBodyMatches(self, positions:  List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
         lineMatchHits = 0
 
         for p in positions:
-            it = {"type": "headline", "label": p.h}
+            it = {"type": "headline", "label": p[0].h}
             # it = QtWidgets.QListWidgetItem(p.h, self.lw)
             # f = it.font()
             # f.setBold(True)
             # it.setFont(f)
-            if self.addItem(it, (p, None)):
+            if self.addItem(it, (p[0], None)):
                 return lineMatchHits
-            ms = self.matchlines(p.b, p.matchiter)
-
+            ms = self.matchlines(p[0].b, p[1])
             for ml, pos in ms:
                 lineMatchHits += 1
                 # it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
                 it = {"type": "body", "label": ml}
-                if self.addItem(it, (p, pos)):
+                if self.addItem(it, (p[0], pos)):
                     return lineMatchHits
         return lineMatchHits
 
@@ -555,12 +556,12 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline = [p.copy() for p in c.all_unique_positions()]
-        timeline.sort(key=lambda x: x.gnx, reverse=True)
+        timeline:List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions()]
+        timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
-    def qsc_background_search(self, pat: str) -> Tuple[List[Position], List[Position]]:
+    def qsc_background_search(self, pat: str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Position]]:
 
         flags: RegexFlag
         if not pat.startswith('r:'):
@@ -586,7 +587,7 @@ class QuickSearchController:
     #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
+        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions() if p.isDirty()]
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:felix.20220313183922.1: *4* QSC.qsc_find_tags & helpers
@@ -624,7 +625,7 @@ class QuickSearchController:
         return it
 
     #@+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> List[Position]:
+    def find_tag(self, pat: str) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
         Return list of all positions that have matching tags
         """
@@ -665,16 +666,16 @@ class QuickSearchController:
             elif op == '^':
                 resultset ^= nodes
 
-        aList: List[Position] = []
+        aList:  List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
                 p = c.vnode2position(n)
-                aList.append(p.copy())
+                aList.append((p.copy(), None))
         return aList
     #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: List[Position] = [po[0].copy() for po in self.c.nodeHistory.beadList]
+        headlines: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(po[0].copy(), None) for po in self.c.nodeHistory.beadList]
         headlines.reverse()
         self.clear()
         self.addHeadlineMatches(headlines)
@@ -683,14 +684,14 @@ class QuickSearchController:
         self.clear()
         c = self.c
         self.addHeadlineMatches([
-            z.copy() for z in c.all_positions() if z.isMarked()
+            (z.copy(), None) for z in c.all_positions() if z.isMarked()
         ])
     #@+node:ekr.20220818083228.1: *3* QSC: helpers
     #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: List[Position]) -> None:
+    def addHeadlineMatches(self, position_list: List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> None:
         for p in position_list:
-            it = {"type": "headline", "label": p.h}
-            if self.addItem(it, (p, None)):
+            it = {"type": "headline", "label": p[0].h}
+            if self.addItem(it, (p[0], None)):
                 return
     #@+node:felix.20220225003906.4: *4* QSC.addItem
     def addItem(self, it: Any, val: Any) -> bool:
@@ -698,7 +699,7 @@ class QuickSearchController:
         # changed to 999 from 3000 to replace old threadutil behavior
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
-    def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
+    def addParentMatches(self, parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -706,21 +707,21 @@ class QuickSearchController:
                 h = v.h if v else parent_key
                 it = {"type": "parent", "label": h}
             else:
-                it = {"type": "parent", "label": parent_key.h}
+                it = {"type": "parent", "label": parent_key[0].h}
             if self.addItem(it, (parent_key, None)):
                 return lineMatchHits
             for p in parent_value:
                 it = {"type": "headline", "label": p.h}
-                if self.addItem(it, (p, None)):
+                if self.addItem(it, (p[0], None)):
                     return lineMatchHits
 
-            if hasattr(p, "matchiter"):  # p might not have body matches
-                    ms = self.matchlines(p.b, p.matchiter)
+                if p[1] is not None:  #p might not have body matches
+                    ms = self.matchlines(p[0].b, p[1])
                     for ml, pos in ms:
                         lineMatchHits += 1
                         # it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
                         it = {"type": "body", "label": ml}
-                        if self.addItem(it, (p, pos)):
+                        if self.addItem(it, (p[0], pos)):
                             return lineMatchHits
 
         return lineMatchHits
@@ -735,17 +736,15 @@ class QuickSearchController:
         regex: str,
         positions: List[Position],
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
-    ) -> List[Position]:
+    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
-        Return list of all nodes whose body matches regex
-        one or more times.
-
+        Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
         """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        aList: List[Position] = []
+        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
 
         for p in positions:
             m = re.finditer(pat, p.b)
@@ -755,8 +754,7 @@ class QuickSearchController:
             except StopIteration:
                 continue
             pc = p.copy()
-            pc.matchiter = t2  # Arbitrary attribute helper
-            aList.append(pc)
+            aList.append((pc, t2))
 
         return aList
     #@+node:felix.20220225003906.16: *4* QSC.find_h
@@ -764,17 +762,17 @@ class QuickSearchController:
         regex: str,
         positions: List[Position],
         flags: RegexFlag = re.IGNORECASE,
-    ) -> List[Position]:
+    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
-        Return the list of all positions whose headline matches the given pattern.
+        Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        return [p.copy() for p in positions if re.match(pat, p.h)]
+        return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Any) -> List:
+    def matchlines(self, b: str, miter: Iterator[Match[str]]) -> List:
         res = []
         for m in miter:
             st, en = g.getLine(b, m.start())
