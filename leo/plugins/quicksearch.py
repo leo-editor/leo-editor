@@ -354,7 +354,10 @@ class QuickSearchController:
         self.frozen = False
         self._search_patterns = []
 
-        def searcher(inp:str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]:
+        def searcher(inp:str) -> Tuple[
+            List[Tuple[Position, Optional[Iterator[Match[str]]]]],
+            List[Tuple[Position, Optional[Iterator[Match[str]]]]]
+        ]:
             #print("searcher", inp)
             if self.frozen:
                 return None
@@ -369,7 +372,10 @@ class QuickSearchController:
             out = self.worker.output
             self.throttler.add(out)
 
-        def throttledDump(lst: List[Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]]) -> None:
+        def throttledDump(lst: List[Tuple[
+            List[Tuple[Position, Optional[Iterator[Match[str]]]]],
+            List[Tuple[Position, Optional[Iterator[Match[str]]]]]]
+        ]) -> None:
             """ dumps the last output """
             # we do get called with empty list on occasion
             if not lst:
@@ -475,7 +481,9 @@ class QuickSearchController:
     def doNodeHistory(self) -> None:
 
         c = self.c
-        nh: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(z[0].copy(), None) for z in c.nodeHistory.beadList]
+        nh: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (z[0].copy(), None) for z in c.nodeHistory.beadList
+        ]
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -500,7 +508,9 @@ class QuickSearchController:
     def doTimeline(self):
 
         c = self.c
-        timeline: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions()]
+        timeline: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions()
+        ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
@@ -508,7 +518,9 @@ class QuickSearchController:
     def doChanged(self):
 
         c = self.c
-        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions() if p.isDirty()]
+        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
+        ]
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:ekr.20111015194452.15692: *3* doSearch
@@ -610,8 +622,10 @@ class QuickSearchController:
                 self.lw.insertItem(0, "External file directive not found " +
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
-    def bgSearch(self, pat:str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Tuple[Position, Optional[Iterator[Match[str]]]]]]:
-
+    def bgSearch(self, pat:str) -> Tuple[
+        List[Tuple[Position, Optional[Iterator[Match[str]]]]],
+        List[Tuple[Position, Optional[Iterator[Match[str]]]]]
+    ]:
         #self.clear()
 
         if self.frozen:
