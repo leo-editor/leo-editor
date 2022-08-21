@@ -1241,7 +1241,9 @@ class FindTabManager:
                 setattr(find, setting_name, val)
                 w.toggle()
 
-            def radio_button_callback(n: int, ivar: str=ivar, setting_name: str=setting_name, w: str=w) -> None:
+            def radio_button_callback(
+                n: int, ivar: str=ivar, setting_name: str=setting_name, w: str=w
+            ) -> None:
                 val = w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
@@ -3266,7 +3268,13 @@ class LeoQtLog(leoFrame.LeoLog):
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put and helpers
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put & helper
-    def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False, nodeLink: str=None) -> None:
+    def put(self,
+        s: str,
+        color: str=None,
+        tabName: str='Log',
+        from_redirect: bool=False,
+        nodeLink: str=None,
+    ) -> None:
         """
         Put s to the Qt Log widget, converting to html.
         All output to the log stream eventually comes here.

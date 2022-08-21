@@ -274,7 +274,6 @@ class ServerExternalFilesController(ExternalFilesController):
                     if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all':
                         if c.positionExists(old_p) and c.p.isAncestorOf(old_p):
                             c.selectPosition(old_p)
-
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
@@ -691,7 +690,9 @@ class QuickSearchController:
         ])
     #@+node:ekr.20220818083228.1: *3* QSC: helpers
     #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> None:
+    def addHeadlineMatches(self,
+        position_list: List[Tuple[Position, Optional[Iterator[Match[str]]]]]
+    ) -> None:
         for p in position_list:
             it = {"type": "headline", "label": p[0].h}
             if self.addItem(it, (p[0], None)):
@@ -1183,7 +1184,8 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'patched_quicksearch_controller', cc)  # Patch up quick-search controller to the commander
+            # Patch up quick-search controller to the commander
+            setattr(c, 'patched_quicksearch_controller', cc)
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -4772,14 +4774,19 @@ class LeoServer:
         else:
             InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
-    async def _async_output(self, json: str, toAll: bool=False) -> None:  # pragma: no cover (tested in server)
+    async def _async_output(self,
+        json: str,
+        toAll: bool=False,
+    ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         global connectionsTotal
         tag = '_async_output'
         outputBytes = bytes(json, 'utf-8')
         if toAll:
             if connectionsPool:  # asyncio.wait doesn't accept an empty list
-                await asyncio.wait([asyncio.create_task(client.send(outputBytes)) for client in connectionsPool])
+                await asyncio.wait([
+                    asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
+                ])
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
         else:

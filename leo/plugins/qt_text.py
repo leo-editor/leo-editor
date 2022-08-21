@@ -995,7 +995,8 @@ if QtWidgets:
                     c.config.getBool('show-rmargin-guide'):
                 #@+<< paint margin guides >>
                 #@+node:tom.20220423204906.1: *4* << paint margin guides  >>
-                # based on https://stackoverflow.com/questions/30371613/draw-vertical-lines-on-qtextedit-in-pyqt
+                # based on https://stackoverflow.com/questions/30371613
+                # draw-vertical-lines-on-qtextedit-in-pyqt
                 # Honor @pagewidth directive if any
                 dict_list = g.get_directives_dict_list(c.p)
                 rcol = (g.scanAtPagewidthDirectives(dict_list)

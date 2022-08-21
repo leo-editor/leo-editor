@@ -808,7 +808,11 @@ class todoController:
                     if pr == '' or pr == 0 or pr == 100:
                         ans += rnd(tr) + ' ' + self.time_name
                     else:
-                        ans += '%s+%s=%s %s' % (rnd(pr / 100. * tr), rnd((1 - pr / 100.) * tr), rnd(tr), self.time_name)
+                        ans += '%s+%s=%s %s' % (
+                            rnd(pr / 100. * tr),
+                            rnd((1 - pr / 100.) * tr),
+                            rnd(tr), self.time_name
+                        )
                     if pr != '':
                         ans += ', '
                 if pr != '':
@@ -1027,8 +1031,9 @@ class todoController:
 
         # search is like XPath 'following' axis, all nodes after p in document order.
         # returning True should always propogate all the way back up to the top
-        # stages: 0 - user selected start node, 1 - searching siblings, parents siblings, 2 - searching children
-
+        # stages: 0 - user selected start node,
+        #         1 - search siblings, parents siblings,
+        #         2 - searching children
         if p is None:
             p = self.c.currentPosition()
 
@@ -1111,7 +1116,8 @@ class todoController:
         dat = {}
         for end in 'from', 'to':
             if QtConst:
-                x0, ok = QtWidgets.QInputDialog.getText(None, 'Reclassify priority', '%s priorities (1-9,19)' % end)
+                x0, ok = QtWidgets.QInputDialog.getText(
+                    None, 'Reclassify priority', '%s priorities (1-9,19)' % end)
                 if not ok:
                     x0 = None
                 else:
