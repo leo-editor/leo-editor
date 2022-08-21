@@ -7,8 +7,8 @@
 
 # For now, suppress all mypy checks
 # type: ignore
-#@+<< docstring >>
-#@+node:ekr.20200113081838.1: ** << docstring >> (leoAst.py)
+#@+<< leoAst docstring >>
+#@+node:ekr.20200113081838.1: ** << leoAst docstring >>
 """
 leoAst.py: This file does not depend on Leo in any way.
 
@@ -149,9 +149,9 @@ Leo's outline structure. These comments have the form::
 
     `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 """
-#@-<< docstring >>
-#@+<< imports >>
-#@+node:ekr.20200105054219.1: ** << imports >> (leoAst.py)
+#@-<< leoAst docstring >>
+#@+<< leoAst imports >>
+#@+node:ekr.20200105054219.1: ** << leoAst imports >>
 import argparse
 import ast
 import codecs
@@ -165,17 +165,21 @@ import textwrap
 import tokenize
 import traceback
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
-#@-<< imports >>
+#@-<< leoAst imports >>
+#@+<< leoAst annotations >>
+#@+node:ekr.20220821044037.1: ** << leoAst annotations >>
 Node = ast.AST
 ActionList = List[Tuple[Callable, Any]]
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
+#@-<< leoAst annotations >>
+#@+<< leoAst data >>
+#@+node:ekr.20220821044107.1: ** << leoAst data >>
 
 # Async tokens exist only in Python 3.5 and 3.6.
 # https://docs.python.org/3/library/token.html
 has_async_tokens = (3, 5) <= py_version <= (3, 6)
-
-# has_position_only_params = (v1, v2) >= (3, 8)
+#@-<< leoAst data >>
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -375,7 +379,7 @@ if 1:  # pragma: no cover
                 Orange(settings).beautify_file(filename)
             else:
                 print(f"file not found: {filename}")
-        print(f"Beautify done: {len(files)} files")
+        # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: List[str], settings: Optional[Dict[str, Any]]=None) -> None:
 
@@ -389,28 +393,6 @@ if 1:  # pragma: no cover
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
-    #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
-    def main() -> None:
-        """Run commands specified by sys.argv."""
-        args, settings_dict, arg_files, recursive = scan_ast_args()
-        # Finalize arguments.
-        cwd, files = os.getcwd(), []
-        for path in arg_files:
-            root_dir = os.path.join(cwd, path)
-            files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
-        if not files:
-            print('No files found')
-            return
-        # Execute the command.
-        print(f"Found {len(files)} file{g.plural(len(files))}.")
-        if args.f:
-            fstringify_command(files)
-        if args.fd:
-            fstringify_diff_command(files)
-        if args.o:
-            orange_command(files, settings_dict)
-        if args.od:
-            orange_diff_command(files, settings_dict)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
     def scan_ast_args() -> Tuple[Any, Dict[str, Any], List[str], bool]:
         description = textwrap.dedent("""\
@@ -6018,6 +6000,28 @@ class TokenOrderTraverser:
         assert self.last_node_index == node.node_index, (
             self.last_node_index, node.node_index)
     #@-others
+#@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
+def main() -> None:
+    """Run commands specified by sys.argv."""
+    args, settings_dict, arg_files, recursive = scan_ast_args()
+    # Finalize arguments.
+    cwd, files = os.getcwd(), []
+    for path in arg_files:
+        root_dir = os.path.join(cwd, path)
+        files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
+    if not files:
+        print('No files found')
+        return
+    # Execute the command.
+    # print(f"Found {len(files)} file{g.plural(len(files))}.")
+    if args.f:
+        fstringify_command(files)
+    if args.fd:
+        fstringify_diff_command(files)
+    if args.o:
+        orange_command(files, settings_dict)
+    if args.od:
+        orange_diff_command(files, settings_dict)
 #@-others
 g = LeoGlobals()
 if __name__ == '__main__':
