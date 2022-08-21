@@ -3772,15 +3772,15 @@ free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
 # Recommended plugins:
 
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
-leo_to_html.py
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
-screen_capture.py
-stickynotes.py
 todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+
+# screen_capture.py
+# stickynotes.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.
@@ -12015,10 +12015,10 @@ c.k.simulateCommand('show-fonts')
 # `Python &lt;file://www.python.org/&gt;`_ 
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
-<t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications
+<t tx="tbrown.20150807123339.1">Set to True to enable node appearance modifications
 See tree-declutter-patterns
 </t>
-<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># **Decluttering** replaces controls custom formatting of headlines, including:
+<t tx="tbrown.20150807123421.1"># **Decluttering** replaces controls custom formatting of headlines, including:
 
 # - Hiding or changing headline text,
 # - Adding icons to headlines,
