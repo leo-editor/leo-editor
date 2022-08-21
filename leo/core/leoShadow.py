@@ -41,7 +41,9 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = VNode = Any
+    Cmdr = Any
+    Position = Any
+    VNode = Any
 #@-<< leoShadow annotations >>
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
@@ -59,16 +61,12 @@ class ShadowController:
             'insert': self.op_insert,
             'replace': self.op_replace,
         }
-        # File encoding.
-        self.encoding = c.config.default_derived_file_encoding
-        # Configuration: set in reloadSettings.
+        self.encoding: str = c.config.default_derived_file_encoding
+        self.errors = 0
+        self.results: List[str] = []
         self.shadow_subdir: str = None
         self.shadow_prefix: str = None
         self.shadow_in_home_dir: bool = None
-        # Error handling...
-        self.errors = 0
-        self.last_error = ''  # The last error message, regardless of whether it was actually shown.
-        self.trace = False
         # Support for goto-line.
         self.reloadSettings()
 
@@ -90,12 +88,12 @@ class ShadowController:
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
     #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
-    def dirName(self, filename: Any) -> str:
+    def dirName(self, filename: str) -> str:
         """Return the directory for filename."""
         x = self
         return g.os_path_dirname(x.pathName(filename))
 
-    def pathName(self, filename: Any) -> str:
+    def pathName(self, filename: str) -> str:
         """Return the full path name of filename."""
         x = self
         theDir = x.baseDirName()
@@ -121,7 +119,7 @@ class ShadowController:
             g.makeAllNonExistentDirectories(path)
         return g.os_path_exists(path) and g.os_path_isdir(path)
     #@+node:ekr.20080713091247.1: *4* x.replaceFileWithString
-    def replaceFileWithString(self, encoding: Any, fileName: str, s: str) -> bool:
+    def replaceFileWithString(self, encoding: str, fileName: str, s: str) -> bool:
         """
         Replace the file with s if s is different from theFile's contents.
 
@@ -217,7 +215,7 @@ class ShadowController:
         old_private_lines: List[str],
         marker: "Marker",
         p: Position=None,
-    ) -> Any:
+    ) -> List[str]:
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
         """
@@ -316,18 +314,18 @@ class ShadowController:
         x.b = x.preprocess(new_public_lines)
         x.a = x.preprocess(old_public_lines)
     #@+node:ekr.20150207044400.16: *5* x.op_bad
-    def op_bad(self, tag: str, ai: Any, aj: Any, bi: Any, bj: Any) -> None:
+    def op_bad(self, tag: str, ai: int, aj: int, bi: int, bj: int) -> None:
         """Report an unexpected opcode."""
         x = self
         x.error(f"unknown SequenceMatcher opcode: {tag!r}")
     #@+node:ekr.20150207044400.12: *5* x.op_delete
-    def op_delete(self, tag: str, ai: Any, aj: Any, bi: Any, bj: Any) -> None:
+    def op_delete(self, tag: str, ai: int, aj: int, bi: int, bj: int) -> None:
         """Handle the 'delete' opcode."""
         x = self
         for i in range(ai, aj):
             x.put_sentinels(i)
     #@+node:ekr.20150207044400.13: *5* x.op_equal
-    def op_equal(self, tag: str, ai: Any, aj: Any, bi: Any, bj: Any) -> None:
+    def op_equal(self, tag: str, ai: int, aj: int, bi: int, bj: int) -> None:
         """Handle the 'equal' opcode."""
         x = self
         assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
@@ -336,7 +334,7 @@ class ShadowController:
             # works because x.lines[ai:aj] == x.lines[bi:bj]
             x.put_plain_line(x.a[i])
     #@+node:ekr.20150207044400.14: *5* x.op_insert
-    def op_insert(self, tag: str, ai: Any, aj: Any, bi: Any, bj: Any) -> None:
+    def op_insert(self, tag: str, ai: int, aj: int, bi: int, bj: int) -> None:
         """Handle the 'insert' opcode."""
         x = self
         for i in range(bi, bj):
@@ -344,7 +342,7 @@ class ShadowController:
         # Prefer to put sentinels after inserted nodes.
         # Requires a call to x.put_sentinels(0) before the main loop.
     #@+node:ekr.20150207044400.15: *5* x.op_replace
-    def op_replace(self, tag: str, ai: Any, aj: Any, bi: Any, bj: Any) -> None:
+    def op_replace(self, tag: str, ai: int, aj: int, bi: int, bj: int) -> None:
         """Handle the 'replace' opcode."""
         x = self
         if 1:
@@ -364,7 +362,7 @@ class ShadowController:
             for i in range(bi, bj):
                 x.put_plain_line(x.b[i])
     #@+node:ekr.20150208060128.7: *5* x.preprocess
-    def preprocess(self, lines: Any) -> List[str]:
+    def preprocess(self, lines: List[str]) -> List[str]:
         """
         Preprocess public lines, adding newlines as needed.
         This happens before the diff.
@@ -376,24 +374,18 @@ class ShadowController:
             result.append(line)
         return result
     #@+node:ekr.20150208223018.4: *5* x.put_plain_line
-    def put_plain_line(self, line: Any) -> None:
+    def put_plain_line(self, line: str) -> None:
         """Put a plain line to x.results, inserting verbatim lines if necessary."""
         x = self
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
-            if x.trace:
-                print(f"put {repr(x.verbatim_line)}")
         x.results.append(line)
-        if x.trace:
-            print(f"put {line!r}")
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self, i: int) -> None:
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
-            if x.trace:
-                g.trace(f"{i:3} {sentinels}")
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file: str, old_private_file: str) -> bool:
@@ -432,7 +424,7 @@ class ShadowController:
             x.replaceFileWithString(at.encoding, fn, s)
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
-    def updatePublicAndPrivateFiles(self, root: Any, fn: str, shadow_fn: Any) -> None:
+    def updatePublicAndPrivateFiles(self, root: Position, fn: str, shadow_fn: str) -> None:
         """handle crucial @shadow read logic.
 
         This will be called only if the public and private files both exist."""
@@ -456,7 +448,6 @@ class ShadowController:
         if not silent:
             g.error(s)
         # For unit testing.
-        x.last_error = s
         x.errors += 1
 
     def message(self, s: str) -> None:
@@ -478,7 +469,7 @@ class ShadowController:
             delims = start, '', ''
         return x.Marker(delims)
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
-    def findLeoLine(self, lines: Any) -> str:
+    def findLeoLine(self, lines: List[str]) -> str:
         """Return the @+leo line, or ''."""
         for line in lines:
             i = line.find('@+leo')
@@ -529,7 +520,13 @@ class ShadowController:
             i += 1
         return regular_lines, sentinel_lines
     #@+node:ekr.20080708094444.33: *4* x.show_error & helper
-    def show_error(self, lines1: Any, lines2: Any, message: str, lines1_message: Any, lines2_message: Any) -> None:
+    def show_error(self,
+        lines1: List[str],
+        lines2: List[str],
+        message: str,
+        lines1_message: str,
+        lines2_message: str,
+    ) -> None:
         x = self
         banner1 = '=' * 30
         banner2 = '-' * 30
@@ -538,34 +535,22 @@ class ShadowController:
         g.es_print(f"\n{banner1}\n{lines2_message}\n{banner1}")
         x.show_error_lines(lines2, 'shadow_errors.tmp2')
         g.es_print('\n@shadow did not pick up the external changes correctly')
-        # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')
     #@+node:ekr.20080822065427.4: *5* x.show_error_lines
-    def show_error_lines(self, lines: Any, fileName: str) -> None:
+    def show_error_lines(self, lines: List[str], fileName: str) -> None:
         for i, line in enumerate(lines):
             g.es_print(f"{i:3} {line!r}")
-        if False:  # Only for major debugging.
-            try:
-                f1 = open(fileName, "w")
-                for s in lines:
-                    f1.write(repr(s))
-                f1.close()
-            except IOError:
-                g.es_exception()
-                g.es_print('can not open', fileName)
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
     class Marker:
         """A class representing comment delims in @shadow files."""
         #@+others
         #@+node:ekr.20090529061522.6257: *4* ctor & repr
-        def __init__(self, delims: Any) -> None:
+        def __init__(self, delims: Tuple[str, str, str]) -> None:
             """Ctor for Marker class."""
             delim1, delim2, delim3 = delims
             self.delim1 = delim1  # Single-line comment delim.
             self.delim2 = delim2  # Block comment starting delim.
             self.delim3 = delim3  # Block comment ending delim.
             if not delim1 and not delim2:
-                # if g.unitTesting:
-                #    assert False,repr(delims)
                 self.delim1 = g.app.language_delims_dict.get('unknown_language')
 
         def __repr__(self) -> str:
