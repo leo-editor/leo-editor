@@ -220,9 +220,7 @@ def pasteAsTemplate(self, event=None):
     if not s or not c.canPasteOutline(s):
         return None  # This should never happen.
 
-    isJson = False
-    if s.lstrip().startswith("{"):
-        isJson = True
+    isJson = s.lstrip().startswith("{")
 
     #@+others
     #@+node:vitalije.20200529112224.1: *4* skip_root
@@ -348,6 +346,7 @@ def pasteAsTemplate(self, event=None):
 
     xvelements: Any
     xtelements: Any
+    uas: Any  # Possible bug?
 
     if not isJson:
         xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())

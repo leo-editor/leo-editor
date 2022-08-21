@@ -786,6 +786,7 @@ class Position:
     def get_UNL(self) -> str:
         """
         Return a UNL representing a clickable link.
+        See the section < define global error regexs > for the regexes.
 
         New in Leo 6.6: Use a single, simplified format for UNL's:
 
