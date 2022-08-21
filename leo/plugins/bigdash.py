@@ -356,18 +356,18 @@ class GlobalSearch:
         for ndxc, c2 in enumerate(g.app.commanders()):
             hits = c2.find_b(s)
             for ndxh, h in enumerate(hits):
-                b = h.b
-                mlines = self.matchlines(b, h.matchiter)
+                b = h[0].b
+                mlines = self.matchlines(b, h[1])  # [1] Contains matchiter
                 key = "c%dh%d" % (ndxc, ndxh)
-                self.anchors[key] = (c2, h.copy())
-                em('<p><a href="%s">%s</a></p>' % (key, h.h))
+                self.anchors[key] = (c2, h[0].copy())
+                em('<p><a href="%s">%s</a></p>' % (key, h[0].h))
                 for line, (st, en), (pre, post) in mlines:
                     em("<pre>")
                     em(pre)
                     em("%s<b>%s</b>%s" % (line[:st], line[st:en], line[en:]))
                     em(post)
                     em("</pre>")
-                em("""<p><small><i>%s</i></small></p>""" % h.get_UNL())
+                em("""<p><small><i>%s</i></small></p>""" % h[0].get_UNL())
         html = "".join(hitparas)
         tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link)

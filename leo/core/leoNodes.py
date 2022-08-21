@@ -192,12 +192,7 @@ class NodeIndices:
 
 class Position:
 
-    __slots__ = [
-        # Used throughout Leo
-        '_childIndex', 'stack', 'v',
-        # Used in find_b and addBodyMatches. (in leoserver.py and quicksearch.py)
-        'matchiter',
-    ]
+    __slots__ = ['_childIndex', 'stack', 'v']
 
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
@@ -215,7 +210,7 @@ class Position:
             p1.stack == p2.stack)
 
     def __ne__(self, p2: Any) -> bool:  # Use Any, not Position.
-        """Return True if two postions are not equivalent."""
+        """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__(self, v: "VNode", childIndex: int=0, stack: Optional[List]=None) -> None:
