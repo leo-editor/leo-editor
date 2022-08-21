@@ -52,7 +52,7 @@ if TYPE_CHECKING:
     from leo.commands.rectangleCommands import RectangleCommandsClass
     from leo.commands.rstCommands import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
-    # A special case...
+    # Other objects...
     from leo.plugins.qt_gui import StyleSheetManager
 else:
     Position = VNode = Any
@@ -84,11 +84,13 @@ else:
     RectangleCommandsClass = Any
     RstCommands = Any
     SpellCommandsClass = Any
-    # Special case.
+    # Special cases...
     StyleSheetManager = Any
 
-Event = Any
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+
+# These gui classes are hard to specify...
+Event = Any
 Widget = Any
 Wrapper = Any
 #@-<< leoCommands annotations >>
