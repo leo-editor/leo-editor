@@ -5,8 +5,8 @@
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
 # pylint: disable=deprecated-method
-#@+<< imports >>
-#@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
+#@+<< leoKeys imports >>
+#@+node:ekr.20061031131434.1: ** << leoKeys imports >>
 import inspect
 import os
 import re
@@ -23,10 +23,9 @@ try:
     import jedi
 except ImportError:
     jedi = None
-#@-<< imports >>
-#@+<< type aliases >>
-#@+node:ekr.20220414165644.1: ** << type aliases >>
-#
+#@-<< leoKeys imports >>
+#@+<< leoKeys annotations >>
+#@+node:ekr.20220414165644.1: ** << leoKeys annotations >>
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
@@ -37,7 +36,7 @@ else:
 Event = Any
 Stroke = Any
 Wrapper = Any
-#@-<< type aliases >>
+#@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
 #@@language rest
