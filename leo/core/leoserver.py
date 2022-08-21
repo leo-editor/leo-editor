@@ -509,7 +509,7 @@ class QuickSearchController:
         self._search_patterns = ([pat] + self._search_patterns)[:30]
 
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
-    def addBodyMatches(self, positions:  List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
+    def addBodyMatches(self, positions: List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
         lineMatchHits = 0
         for p in positions:
             it = {"type": "headline", "label": p[0].h}
@@ -550,7 +550,7 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline:List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+        timeline: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
             (p.copy(), None) for p in c.all_unique_positions()
         ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
@@ -667,7 +667,7 @@ class QuickSearchController:
             elif op == '^':
                 resultset ^= nodes
 
-        aList:  List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
+        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
@@ -703,7 +703,7 @@ class QuickSearchController:
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
     def addParentMatches(self,
-        parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]],
+        parent_list: Dict[str, List[Tuple[Position, Optional[Iterator[Match[str]]]]]],
     ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
@@ -764,7 +764,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag = re.IGNORECASE,
+        flags: RegexFlag=re.IGNORECASE,
     ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.

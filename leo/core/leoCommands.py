@@ -109,7 +109,7 @@ class Commands:
         self.ipythonController = None  # Set only by the ipython plugin.
         # Declarations of objects created later.
         self.abbrevCommands: AbbrevCommands = None
-        self.atFileCommands: AtFile  = None
+        self.atFileCommands: AtFile = None
         self.bufferCommands: Any = None
         self.chapterController: ChapterController = None
         self.convertCommands: Any = None
