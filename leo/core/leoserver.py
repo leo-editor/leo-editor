@@ -7,13 +7,14 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 """
+#@+<< leoserver imports >>
+#@+node:felix.20210621233316.2: ** << leoserver imports >>
 # pylint: disable=import-self,raise-missing-from,wrong-import-position
-#@+<< imports >>
-#@+node:felix.20210621233316.2: ** << imports >> (leoserver.py)
 import argparse
 import asyncio
 import fnmatch
 import inspect
+import itertools
 import json
 import os
 import re
@@ -21,7 +22,8 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Set, Tuple, Union, Iterator, Match
+
 # Third-party.
 try:
     import tkinter as Tk
@@ -43,11 +45,19 @@ from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoExternalFiles import ExternalFilesController
-#@-<< imports >>
+#@-<< leoserver imports >>
+#@+<< leoserver annotations >>
+#@+node:ekr.20220820155747.1: ** << leoserver annotations >>
+Event = Any
+Loop = Any
 Package = Dict[str, Any]
 Param = Dict[str, Any]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
+Socket = Any
+#@-<< leoserver annotations >>
+#@+<< leoserver version >>
+#@+node:ekr.20220820160619.1: ** << leoserver version >>
 version_tuple = (1, 0, 3)
 # Version History
 # 1.0.1 Initial commit
@@ -55,8 +65,10 @@ version_tuple = (1, 0, 3)
 # 1.0.3 Félix on July 2022: Fixed original node selection upon opening a file.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
+#@-<< leoserver version >>
+#@+<< leoserver globals >>
+#@+node:ekr.20220820160701.1: ** << leoserver globals >>
 g = None  # The bridge's leoGlobals module.
-
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
@@ -64,16 +76,17 @@ connectionsPool: Set[Any] = set()
 connectionsTotal = 0  # Current connected client total
 # Customizable server options
 argFile = ""
-traces: List = []  # list of traces names, to be used as flags to output traces
+traces: List[str] = []  # list of traces names, to be used as flags to output traces
 wsLimit = 1
 wsPersist = False
 wsSkipDirty = False
 wsHost = "localhost"
 wsPort = 32125
-
+#@-<< leoserver globals >>
 #@+others
-#@+node:felix.20210712224107.1: ** setup JSON encoder
+#@+node:felix.20210712224107.1: ** class SetEncoder
 class SetEncoder(json.JSONEncoder):
+
     def default(self, obj: Any) -> Any:
         if isinstance(obj, set):
             return list(obj)
@@ -409,6 +422,8 @@ class QuickSearchController:
             bpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
+        bNodes: Iterable[Position]
+        hNodes: Iterable[Position]
         if combo == "All":
             hNodes = c.all_positions()
             bNodes = c.all_positions()
@@ -454,24 +469,26 @@ class QuickSearchController:
             else:
                 hNodes = node.self_and_subtree()
                 bNodes = node.self_and_subtree()
-
         else:
             hNodes = [c.p]
             bNodes = [c.p]
 
         if not hitBase:
-            hm = self.find_h(hpat, hNodes, flags)  # Returns a list of positions.
-            bm = self.find_b(bpat, bNodes, flags)  # Returns a list of positions.
-            bm_keys = [match.key() for match in bm]
+            # hNodes = list(hNodes)
+            # bNodes = list(bNodes)
+            hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
+            bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
+            bm_keys = [match[0].key() for match in bm]
             numOfHm = len(hm)  #do this before trim to get accurate count
-            hm = [match for match in hm if match.key() not in bm_keys]
+            hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
-                parents: dict[str, List[Position]] = {}
+                parents: Dict[str, List[Tuple[Position, Optional[Iterator[Match[str]]]]]] = {}
+
                 for nodeList in [hm, bm]:
                     for node in nodeList:
-                        key = 'Root' if node.level() == 0 else node.parent().gnx
-                        aList: List[Position] = parents.get(key, [])
+                        key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
+                        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = parents.get(key, [])
                         aList.append(node)
                         parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
@@ -492,13 +509,21 @@ class QuickSearchController:
         self._search_patterns = ([pat] + self._search_patterns)[:30]
 
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
-    def addBodyMatches(self, positions: List[Position]) -> int:
+    def addBodyMatches(self, positions: List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
         lineMatchHits = 0
         for p in positions:
-            it = {"type": "headline", "label": p.h}
-            if self.addItem(it, (p, None)):
+            it = {"type": "headline", "label": p[0].h}
+            if self.addItem(it, (p[0], None)):
                 return lineMatchHits
+            ms = self.matchlines(p[0].b, p[1])
+            for ml, pos in ms:
+                lineMatchHits += 1
+                it = {"type": "body", "label": ml}
+                if self.addItem(it, (p[0], pos)):
+                    return lineMatchHits
         return lineMatchHits
+
+
     #@+node:felix.20220225003906.11: *4* QSC.qsc_search_history & helper (not used)
     def qsc_search_history(self) -> None:
 
@@ -507,7 +532,7 @@ class QuickSearchController:
         def sHistSelect(x: str) -> Callable:
             def _f() -> None:
                 # self.widgetUI.lineEdit.setText(x)
-                scon: QuickSearchController = self.c.patched_quickserch_controller
+                scon: QuickSearchController = self.c.patched_quicksearch_controller
                 scon.navText = x
                 self.qsc_search(x)
             return _f
@@ -525,12 +550,17 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline = [p.copy() for p in c.all_unique_positions()]
-        timeline.sort(key=lambda x: x.gnx, reverse=True)
+        timeline: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions()
+        ]
+        timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
-    def qsc_background_search(self, pat: str) -> Any:
+    def qsc_background_search(self, pat: str) -> Tuple[
+        List[Tuple[Position, Optional[Iterator[Match[str]]]]],
+        List[Position]
+    ]:
 
         flags: RegexFlag
         if not pat.startswith('r:'):
@@ -541,13 +571,14 @@ class QuickSearchController:
             hpat = pat[2:]
             flags = 0
         combo = self.searchOptionsStrings[self.searchOptions]
+        hNodes: Iterable[Position]
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
             hNodes = self.c.p.self_and_subtree()
         else:
             hNodes = [self.c.p]
-        hm = self.find_h(hpat, hNodes, flags)
+        hm = self.find_h(hpat, list(hNodes), flags)
         # Update the real quicksearch controller.
         self.clear()
         self.addHeadlineMatches(hm)
@@ -555,7 +586,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
+        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
+        ]
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:felix.20220313183922.1: *4* QSC.qsc_find_tags & helpers
@@ -593,7 +626,7 @@ class QuickSearchController:
         return it
 
     #@+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> List[Position]:
+    def find_tag(self, pat: str) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
         Return list of all positions that have matching tags
         """
@@ -634,16 +667,18 @@ class QuickSearchController:
             elif op == '^':
                 resultset ^= nodes
 
-        aList: List[Position] = []
+        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
                 p = c.vnode2position(n)
-                aList.append(p.copy())
+                aList.append((p.copy(), None))
         return aList
     #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: List[Position] = [po[0].copy() for po in self.c.nodeHistory.beadList]
+        headlines: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (po[0].copy(), None) for po in self.c.nodeHistory.beadList
+        ]
         headlines.reverse()
         self.clear()
         self.addHeadlineMatches(headlines)
@@ -652,14 +687,14 @@ class QuickSearchController:
         self.clear()
         c = self.c
         self.addHeadlineMatches([
-            z.copy() for z in c.all_positions() if z.isMarked()
+            (z.copy(), None) for z in c.all_positions() if z.isMarked()
         ])
     #@+node:ekr.20220818083228.1: *3* QSC: helpers
     #@+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: List[Position]) -> None:
+    def addHeadlineMatches(self, position_list: List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> None:
         for p in position_list:
-            it = {"type": "headline", "label": p.h}
-            if self.addItem(it, (p, None)):
+            it = {"type": "headline", "label": p[0].h}
+            if self.addItem(it, (p[0], None)):
                 return
     #@+node:felix.20220225003906.4: *4* QSC.addItem
     def addItem(self, it: Any, val: Any) -> bool:
@@ -667,7 +702,9 @@ class QuickSearchController:
         # changed to 999 from 3000 to replace old threadutil behavior
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
-    def addParentMatches(self, parent_list: Dict[str, List[Position]]) -> int:
+    def addParentMatches(self,
+        parent_list: Dict[str, List[Tuple[Position, Optional[Iterator[Match[str]]]]]],
+    ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -675,13 +712,21 @@ class QuickSearchController:
                 h = v.h if v else parent_key
                 it = {"type": "parent", "label": h}
             else:
-                it = {"type": "parent", "label": parent_key.h}
+                it = {"type": "parent", "label": parent_key[0].h}
             if self.addItem(it, (parent_key, None)):
                 return lineMatchHits
-            for p in parent_value:
+            for p, m in parent_value:
                 it = {"type": "headline", "label": p.h}
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
+                if m is not None:  #p might not have body matches
+                    ms = self.matchlines(p.b, m)
+                    for match_list, pos in ms:
+                        lineMatchHits += 1
+                        it = {"type": "body", "label": match_list}
+                        if self.addItem(it, (p, pos)):
+                            return lineMatchHits
+
         return lineMatchHits
 
     #@+node:felix.20220225003906.9: *4* QSC.clear
@@ -692,56 +737,51 @@ class QuickSearchController:
     #@+node:felix.20220225003906.17: *4* QSC.find_b
     def find_b(self,
         regex: str,
-        nodes: List[Position],
+        positions: List[Position],
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
-    ) -> List[Position]:
+    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
-        Return list of all nodes whose body matches regex
-        one or more times.
-
+        Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
         """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        aList: List[Position] = []
-        seen: Set[VNode] = set()
-        for p in nodes:
-            for m in re.finditer(pat, p.b):
-                if p.v not in seen:
-                    seen.add(p.v)
-                    aList.append(p.copy())
+        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
+
+        for p in positions:
+            m = re.finditer(pat, p.b)
+            t1, t2 = itertools.tee(m, 2)
+            try:
+                t1.__next__()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            aList.append((pc, t2))
+
         return aList
     #@+node:felix.20220225003906.16: *4* QSC.find_h
     def find_h(self,
         regex: str,
-        nodes: List[Position],
-        flags: RegexFlag = re.IGNORECASE,
-    ) -> List[Position]:
+        positions: List[Position],
+        flags: RegexFlag=re.IGNORECASE,
+    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
         """
-        Return list of all positions where zero or more characters at
-        the beginning of the headline match regex
+        Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
         try:
             pat = re.compile(regex, flags)
         except Exception:
             return []
-        aList: List[Position] = []
-        seen: Set[VNode] = set()
-        for p in nodes:
-            for m in re.finditer(pat, p.h):
-                if p.v not in seen:
-                    seen.add(p.v)
-                    aList.append(p.copy())
-        return aList
+        return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Any) -> List:
-        res = []
+    def matchlines(self, b: str, miter: Iterator[Match[str]]) -> List[Tuple[str, Tuple[int, int]]]:
+        aList = []
         for m in miter:
             st, en = g.getLine(b, m.start())
             li = b[st:en].strip()
-            res.append((li, (m.start(), m.end())))
-        return res
+            aList.append((li, (m.start(), m.end())))
+        return aList
 
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
     def onSelectItem(self, it: Any, it_prev: Any=None) -> None:
@@ -758,7 +798,7 @@ class QuickSearchController:
                 tgt()
             elif len(tgt[1]) == 2:
                 p, pos = tgt[1]
-                if hasattr(p, 'v'):  #p might be "Root"
+                if hasattr(p, 'v'):  # p might be "Root"
                     if not c.positionExists(p):
                         g.es("Node moved or deleted.\nMaybe re-do search.",
                             color='red')
@@ -778,8 +818,6 @@ class QuickSearchController:
                             g.app.gui.show_find_success(c, True, 0, p)
         except Exception:
             raise ServerError("QuickSearchController onSelectItem error")
-
-
     #@-others
 #@+node:felix.20210621233316.4: ** class LeoServer
 class LeoServer:
@@ -823,7 +861,7 @@ class LeoServer:
         #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
-        self.loop: Any = None
+        self.loop: Loop = None
         #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
@@ -967,7 +1005,12 @@ class LeoServer:
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
-    def _show_find_success(self, c: Cmdr, in_headline: bool, insert: Any, p: Position) -> None:
+    def _show_find_success(self,
+        c: Cmdr,
+        in_headline: bool,
+        insert: Any,
+        p: Position,
+    ) -> None:
         """Handle a successful find match."""
         if in_headline:
             g.app.gui.set_focus(c, self.headlineWidget)
@@ -988,15 +1031,13 @@ class LeoServer:
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:felix.20220220203658.1: *5* _get_rclickTree
-    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict]:
-        rclickList = []
-
+    def _get_rclickTree(self, rclicks: List[Any]) -> List[Dict[str, Any]]:
+        rclickList: List[Dict[str, Any]] = []
         for rc in rclicks:
             children = []
             if rc.children:
                 children = self._get_rclickTree(rc.children)
             rclickList.append({"name": rc.position.h, "children": children})
-
         return rclickList
 
 
@@ -1142,7 +1183,7 @@ class LeoServer:
             # Add ftm. This won't happen if opened outside leoserver
             c.findCommands.ftm = StringFindTabManager(c)
             cc = QuickSearchController(c)
-            setattr(c, 'patched_quickserch_controller', cc)  # Patch up quick-search controller to the commander
+            setattr(c, 'patched_quicksearch_controller', cc)  # Patch up quick-search controller to the commander
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -1495,7 +1536,7 @@ class LeoServer:
         c = self._check_c()
         # Tag search override!
         try:
-            scon: QuickSearchController = c.patched_quickserch_controller
+            scon: QuickSearchController = c.patched_quicksearch_controller
             inp = scon.navText
             if scon.isTag:
                 scon.qsc_find_tags(inp)
@@ -1515,7 +1556,7 @@ class LeoServer:
         """
         tag = 'nav_search'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         # Tag search override!
         try:
             inp = scon.navText
@@ -1536,7 +1577,7 @@ class LeoServer:
         tag = 'get_goto_panel'
         c = self._check_c()
         try:
-            scon: QuickSearchController = c.patched_quickserch_controller
+            scon: QuickSearchController = c.patched_quicksearch_controller
             result: Dict[str, Any] = {}
             navlist = [
                 {
@@ -1558,7 +1599,7 @@ class LeoServer:
     def find_quick_timeline(self, param: Param) -> Response:
         """Fill with nodes ordered by gnx."""
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_sort_by_gnx()
         return self._make_response()
 
@@ -1566,21 +1607,21 @@ class LeoServer:
     def find_quick_changed(self, param: Param) -> Response:
         # fill with list of all dirty nodes
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_find_changed()
         return self._make_response()
     #@+node:felix.20220309010647.1: *5* server.find_quick_history
     def find_quick_history(self, param: Param) -> Response:
         # fill with list from history
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_get_history()
         return self._make_response()
     #@+node:felix.20220309010704.1: *5* server.find_quick_marked
     def find_quick_marked(self, param: Param) -> Response:
         # fill with list of marked nodes
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         scon.qsc_show_marked()
         return self._make_response()
 
@@ -1589,7 +1630,7 @@ class LeoServer:
         # activate entry in scon.its
         tag = 'goto_nav_entry'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         try:
             it = param.get('key')
             scon.onSelectItem(it)
@@ -1607,7 +1648,7 @@ class LeoServer:
         """
         tag = 'get_search_settings'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         try:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
@@ -1626,7 +1667,7 @@ class LeoServer:
         """
         tag = 'set_search_settings'
         c = self._check_c()
-        scon: QuickSearchController = c.patched_quickserch_controller
+        scon: QuickSearchController = c.patched_quicksearch_controller
         find = c.findCommands
         ftm = c.findCommands.ftm
         searchSettings = param.get('searchSettings')
@@ -2493,11 +2534,13 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
+        oldPosition: Optional[Position] = c.p if p == c.p else None
 
-        if p == c.p:
-            oldPosition = False
-        else:
-            oldPosition = c.p
+        ###
+        # if p == c.p:
+            # oldPosition = None
+        # else:
+            # oldPosition = c.p
 
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
@@ -2506,8 +2549,7 @@ class LeoServer:
         newNode.h = newHeadline
         newNode.setDirty()
         c.setChanged()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', bunch)
+        c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
 
         c.selectPosition(newNode)
         if oldPosition:
@@ -4135,7 +4177,7 @@ class LeoServer:
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
     #@+node:felix.20210621233316.76: *5* server.init_connection
-    def _init_connection(self, web_socket: Any) -> None:  # pragma: no cover (tested in client).
+    def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
         global connectionsTotal
         if connectionsTotal == 1:
@@ -4778,7 +4820,7 @@ def main() -> None:  # pragma: no cover (tested in client)
 
     #@+others
     #@+node:felix.20210807214524.1: *3* function: cancel_tasks
-    def cancel_tasks(to_cancel: Any, loop: Any) -> None:
+    def cancel_tasks(to_cancel: Any, loop: Loop) -> None:
         if not to_cancel:
             return
 
@@ -4822,13 +4864,13 @@ def main() -> None:  # pragma: no cover (tested in client)
     #@+node:ekr.20210825172913.1: *3* function: general_yes_no_dialog & helpers
     def general_yes_no_dialog(
         c: Cmdr,
-        title: Any,  # Not used.
-        message: Any=None,  # Must exist.
+        title: str,  # Not used.
+        message: str=None,  # Must exist.
         yesMessage: str="&Yes",  # Not used.
         noMessage: str="&No",  # Not used.
-        yesToAllMessage: Any=None,  # Not used.
+        yesToAllMessage: str=None,  # Not used.
         defaultButton: str="Yes",  # Not used
-        cancelMessage: Any=None,  # Not used.
+        cancelMessage: str=None,  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -4849,7 +4891,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             root = top = val = None  # Non-locals
             #@+others  # define helper functions
             #@+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
-            def create_yes_no_frame(message: Any, top: Any) -> None:
+            def create_yes_no_frame(message: str, top: Any) -> None:
                 """Create the dialog's frame."""
                 frame = Tk.Frame(top)
                 frame.pack(side="top", expand=1, fill="both")
@@ -4863,14 +4905,14 @@ def main() -> None:  # pragma: no cover (tested in client)
                 b = Tk.Button(f, width=6, text="No", bd=2, underline=0, command=noButton)
                 b.pack(side="left", padx=5, pady=10)
             #@+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event: Any=None) -> None:
+            def noButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event: Any=None) -> None:
+            def yesButton(event: Event=None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -5030,7 +5072,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         if wsLimit < 1:
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any=None) -> Any:
+    async def notify_clients(action: str, excludedConn: Any=None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
@@ -5044,10 +5086,11 @@ def main() -> None:  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                await asyncio.wait([asyncio.create_task(client.send(m)) for client in clientSetCopy])
-
+                await asyncio.wait([
+                    asyncio.create_task(client.send(m)) for client in clientSetCopy
+                ])
     #@+node:felix.20210803174312.2: *3* function: register_client
-    async def register_client(websocket: Any) -> None:
+    async def register_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
@@ -5064,12 +5107,12 @@ def main() -> None:  # pragma: no cover (tested in client)
             if commander.isChanged() and commander.fileName():
                 commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
-    async def unregister_client(websocket: Any) -> None:
+    async def unregister_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket: Any, path: str) -> None:
+    async def ws_handler(websocket: Socket, path: str) -> None:
         """
         The web socket handler: server.ws_server.
 
