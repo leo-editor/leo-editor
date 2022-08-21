@@ -24,44 +24,69 @@ from leo.core import leoNodes
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
+    # 11 subcommanders...
     from leo.core.leoAtFile import AtFile
     from leo.core.leoChapters import ChapterController
     from leo.core.leoFileCommands import FileCommands
     from leo.core.leoFind import LeoFind
     from leo.core.leoImport import LeoImportCommands
     from leo.core.leoKeys import KeyHandlerClass
+    from leo.core.leoHistory import NodeHistory
     from leo.core.leoPersistence import PersistenceDataController
+    from leo.core.leoPrinting import PrintingController
     from leo.core.leoShadow import ShadowController
+    from leo.core.leoUndo import Undoer
+    from leo.core.leoVim import VimCommands
+    # 14 command handlers...
     from leo.commands.abbrevCommands import AbbrevCommands
-    from leo.commands.leoCommands import EditCommandsClass
+    from leo.commands.bufferCommands import BufferCommandsClass
+    from leo.commands.controlCommands import ControlCommandsClass
+    from leo.commands.convertCommands import ConvertCommandsClass
+    from leo.commands.debugCommands import DebugCommandsClass
+    from leo.commands.editCommands import EditCommandsClass
     from leo.commands.editFileCommands import EditFileCommandsClass
+    from leo.commands.gotoCommands import GoToCommands
+    from leo.commands.helpCommands import HelpCommandsClass
+    from leo.commands.keyCommands import KeyHandlerCommandsClass
+    from leo.commands.killBufferCommands import KillBufferCommandsClass
+    from leo.commands.rectangleCommands import RectangleCommandsClass
+    from leo.commands.rstCommands import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
-    # self.bufferCommands: Any = None
-    # self.convertCommands: Any = None
-    # self.debugCommands: Any = None
-    # self.gotoCommands: Any = None
-    # self.helpCommands: Any = None
-    # self.killBufferCommands: Any = None
-    # self.nodeHistory: Any = None
-    # self.persistenceController: Any = None
-    # self.printingController: Any = None
-    # self.rectangleCommands: Any = None
-    # self.rstCommands: Any = None
-    # self.spellCommands: Any = None
-    # self.styleSheetManager: Any = None
-    # self.undoer: Any = None
-    # self.vimCommands: Any = None
+    # A special case...
+    from leo.plugins.qt_gui import StyleSheetManager
 else:
     Position = VNode = Any
-    AbbrevCommands = Any
+    # Subcommanders...
     AtFile = Any
     ChapterController = Any
+    FileCommands = Any
+    LeoFind = Any
+    LeoImportCommands = Any
+    KeyHandlerClass = Any
+    NodeHistory = Any
+    PersistenceDataController = Any
+    PrintingController = Any
+    ShadowController = Any
+    Undoer = Any
+    VimCommands = Any
+    # Command handlers...
+    AbbrevCommands = Any
+    BufferCommandsClass = Any
+    ControlCommandsClass = Any
+    ConvertCommandsClass = Any
+    DebugCommandsClass = Any
     EditCommandsClass = Any
     EditFileCommandsClass = Any
-    FileCommands = Any
-    KeyHandlerClass = Any
-    LeoImportCommands = Any
-    LeoFind = Any
+    GoToCommands = Any
+    HelpCommandsClass = Any
+    KeyHandlerCommandsClass = Any
+    KillBufferCommandsClass = Any
+    RectangleCommandsClass = Any
+    RstCommands = Any
+    SpellCommandsClass = Any
+    # Special case.
+    StyleSheetManager = Any
+
 Event = Any
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
@@ -109,33 +134,38 @@ class Commands:
         self.parentFrame = parentFrame  # New in Leo 6.0.
         self.gui = gui or g.app.gui
         self.ipythonController = None  # Set only by the ipython plugin.
-        # Declarations of objects created later.
-        self.abbrevCommands: AbbrevCommands = None
+        # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
-        self.bufferCommands: Any = None
         self.chapterController: ChapterController = None
-        self.convertCommands: Any = None
-        self.debugCommands: Any = None
-        self.editCommands: EditCommandsClass = None
-        self.editFileCommands: EditFileCommandsClass = None
         self.fileCommands: FileCommands = None
         self.findCommands: LeoFind = None
-        self.gotoCommands: Any = None
-        self.helpCommands: Any = None
         self.importCommands: LeoImportCommands = None
-        self.k: KeyHandlerClass = None
         self.keyHandler: KeyHandlerClass = None
-        self.killBufferCommands: Any = None
-        self.nodeHistory: Any = None
+        self.nodeHistory: NodeHistory = None
         self.persistenceController: PersistenceDataController = None
         self.printingController: Any = None
-        self.rectangleCommands: Any = None
-        self.rstCommands: Any = None
         self.shadowController: ShadowController = None
+        self.undoer: Undoer = None
+        self.vimCommands: VimCommands = None
+        # Declare command handlers (created later).
+        self.abbrevCommands: AbbrevCommands = None
+        self.bufferCommands: BufferCommandsClass = None
+        self.controlCommands: ControlCommandsClass = None
+        self.convertCommands: ConvertCommandsClass = None
+        self.debugCommands: DebugCommandsClass = None
+        self.editCommands: EditCommandsClass = None
+        self.editFileCommands: EditFileCommandsClass = None
+        self.gotoCommands: GoToCommands = None
+        self.helpCommands: HelpCommandsClass = None
+        self.keyHandlerCommands: KeyHandlerCommandsClass = None
+        self.killBufferCommands: KillBufferCommandsClass = None
+        self.rectangleCommands: RectangleCommandsClass = None
+        self.rstCommands: RstCommands = None
         self.spellCommands: SpellCommandsClass = None
-        self.styleSheetManager: Any = None
-        self.undoer: Any = None
-        self.vimCommands: Any = None
+        # Declare alias for self.keyHandler.
+        self.k: KeyHandlerClass = None
+        # The stylesheet manager does not exist in all guis.
+        self.styleSheetManager: StyleSheetManager = None
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -323,7 +353,7 @@ class Commands:
         # Import commands.testCommands to define commands.
         import leo.commands.testCommands as testCommands
         assert testCommands  # For pylint.
-        # Define the subcommanders.
+        # Define 11 subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
         self.shadowController       = leoShadow.ShadowController(c)
@@ -334,9 +364,8 @@ class Commands:
         self.markupCommands         = leoMarkup.MarkupCommands(c)
         self.persistenceController  = leoPersistence.PersistenceDataController(c)
         self.printingController     = leoPrinting.PrintingController(c)
-        self.rstCommands            = leoRst.RstCommands(c)
-        self.vimCommands            = leoVim.VimCommands(c)
-        # User commands
+        self.undoer                 = leoUndo.Undoer(c)
+        # 15 command handlers...
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
         self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
@@ -349,8 +378,9 @@ class Commands:
         self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
+        self.rstCommands        = leoRst.RstCommands(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
-        self.undoer             = leoUndo.Undoer(c)
+        self.vimCommands        = leoVim.VimCommands(c)
         # Create the list of subcommanders.
         self.subCommanders = [
             self.abbrevCommands,
