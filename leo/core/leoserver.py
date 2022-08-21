@@ -473,8 +473,10 @@ class QuickSearchController:
             bNodes = [c.p]
 
         if not hitBase:
-            hm = self.find_h(hpat, hNodes, flags)  # Returns a list of positions.
-            bm = self.find_b(bpat, bNodes, flags)  # Returns a list of positions.
+            # hNodes = list(hNodes)
+            # bNodes = list(bNodes)
+            hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
+            bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
             bm_keys = [match.key() for match in bm]
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
@@ -576,7 +578,7 @@ class QuickSearchController:
             hNodes = self.c.p.self_and_subtree()
         else:
             hNodes = [self.c.p]
-        hm = self.find_h(hpat, hNodes, flags)
+        hm = self.find_h(hpat, list(hNodes), flags)
         # Update the real quicksearch controller.
         self.clear()
         self.addHeadlineMatches(hm)
@@ -761,7 +763,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         positions: List[Position],
-        flags: RegexFlag=re.IGNORECASE,
+        flags: RegexFlag = re.IGNORECASE,
     ) -> List[Position]:
         """
         Return the list of all positions whose headline matches the given pattern.
