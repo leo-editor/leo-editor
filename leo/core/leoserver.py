@@ -511,19 +511,13 @@ class QuickSearchController:
     #@+node:felix.20220225003906.5: *5* QSC.addBodyMatches
     def addBodyMatches(self, positions:  List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
         lineMatchHits = 0
-
         for p in positions:
             it = {"type": "headline", "label": p[0].h}
-            # it = QtWidgets.QListWidgetItem(p.h, self.lw)
-            # f = it.font()
-            # f.setBold(True)
-            # it.setFont(f)
             if self.addItem(it, (p[0], None)):
                 return lineMatchHits
             ms = self.matchlines(p[0].b, p[1])
             for ml, pos in ms:
                 lineMatchHits += 1
-                # it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
                 it = {"type": "body", "label": ml}
                 if self.addItem(it, (p[0], pos)):
                     return lineMatchHits
@@ -556,12 +550,17 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline:List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions()]
+        timeline:List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions()
+        ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:felix.20220225003906.15: *4* QSC.qsc_background_search
-    def qsc_background_search(self, pat: str) -> Tuple[List[Tuple[Position, Optional[Iterator[Match[str]]]]], List[Position]]:
+    def qsc_background_search(self, pat: str) -> Tuple[
+        List[Tuple[Position, Optional[Iterator[Match[str]]]]],
+        List[Position]
+    ]:
 
         flags: RegexFlag
         if not pat.startswith('r:'):
@@ -587,7 +586,9 @@ class QuickSearchController:
     #@+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(p.copy(), None) for p in c.all_unique_positions() if p.isDirty()]
+        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
+        ]
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:felix.20220313183922.1: *4* QSC.qsc_find_tags & helpers
@@ -675,7 +676,9 @@ class QuickSearchController:
         return aList
     #@+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [(po[0].copy(), None) for po in self.c.nodeHistory.beadList]
+        headlines: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+            (po[0].copy(), None) for po in self.c.nodeHistory.beadList
+        ]
         headlines.reverse()
         self.clear()
         self.addHeadlineMatches(headlines)
@@ -699,7 +702,9 @@ class QuickSearchController:
         # changed to 999 from 3000 to replace old threadutil behavior
         return len(self.its) > 999  # Limit to 999 for now
     #@+node:felix.20220225003906.6: *4* QSC.addParentMatches
-    def addParentMatches(self, parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]]) -> int:
+    def addParentMatches(self,
+        parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]],
+    ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -710,18 +715,16 @@ class QuickSearchController:
                 it = {"type": "parent", "label": parent_key[0].h}
             if self.addItem(it, (parent_key, None)):
                 return lineMatchHits
-            for p in parent_value:
+            for p, m in parent_value:
                 it = {"type": "headline", "label": p.h}
-                if self.addItem(it, (p[0], None)):
+                if self.addItem(it, (p, None)):
                     return lineMatchHits
-
-                if p[1] is not None:  #p might not have body matches
-                    ms = self.matchlines(p[0].b, p[1])
-                    for ml, pos in ms:
+                if m is not None:  #p might not have body matches
+                    ms = self.matchlines(p.b, m)
+                    for match_list, pos in ms:
                         lineMatchHits += 1
-                        # it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
-                        it = {"type": "body", "label": ml}
-                        if self.addItem(it, (p[0], pos)):
+                        it = {"type": "body", "label": match_list}
+                        if self.addItem(it, (p, pos)):
                             return lineMatchHits
 
         return lineMatchHits
@@ -772,13 +775,13 @@ class QuickSearchController:
             return []
         return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
     #@+node:felix.20220225224130.1: *4* QSC.matchlines
-    def matchlines(self, b: str, miter: Iterator[Match[str]]) -> List:
-        res = []
+    def matchlines(self, b: str, miter: Iterator[Match[str]]) -> List[Tuple[str, Tuple[int, int]]]:
+        aList = []
         for m in miter:
             st, en = g.getLine(b, m.start())
             li = b[st:en].strip()
-            res.append((li, (m.start(), m.end())))
-        return res
+            aList.append((li, (m.start(), m.end())))
+        return aList
 
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
     def onSelectItem(self, it: Any, it_prev: Any=None) -> None:
