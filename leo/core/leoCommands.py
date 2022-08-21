@@ -30,9 +30,12 @@ if TYPE_CHECKING:
     from leo.core.leoFind import LeoFind
     from leo.core.leoImport import LeoImportCommands
     from leo.core.leoKeys import KeyHandlerClass
+    from leo.core.leoPersistence import PersistenceDataController
+    from leo.core.leoShadow import ShadowController
     from leo.commands.abbrevCommands import AbbrevCommands
     from leo.commands.leoCommands import EditCommandsClass
     from leo.commands.editFileCommands import EditFileCommandsClass
+    from leo.commands.spellCommands import SpellCommandsClass
     # self.bufferCommands: Any = None
     # self.convertCommands: Any = None
     # self.debugCommands: Any = None
@@ -44,7 +47,6 @@ if TYPE_CHECKING:
     # self.printingController: Any = None
     # self.rectangleCommands: Any = None
     # self.rstCommands: Any = None
-    # self.shadowController: Any = None
     # self.spellCommands: Any = None
     # self.styleSheetManager: Any = None
     # self.undoer: Any = None
@@ -125,12 +127,12 @@ class Commands:
         self.keyHandler: KeyHandlerClass = None
         self.killBufferCommands: Any = None
         self.nodeHistory: Any = None
-        self.persistenceController: Any = None
+        self.persistenceController: PersistenceDataController = None
         self.printingController: Any = None
         self.rectangleCommands: Any = None
         self.rstCommands: Any = None
-        self.shadowController: Any = None
-        self.spellCommands: Any = None
+        self.shadowController: ShadowController = None
+        self.spellCommands: SpellCommandsClass = None
         self.styleSheetManager: Any = None
         self.undoer: Any = None
         self.vimCommands: Any = None
