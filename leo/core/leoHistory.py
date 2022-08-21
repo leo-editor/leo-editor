@@ -5,6 +5,7 @@
 from typing import Any, List, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from leo.core.leoChapters import Chapter
+    from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 else:
     Chapter = Position = Any
@@ -13,7 +14,7 @@ else:
 class NodeHistory:
     """A class encapsulating knowledge of visited nodes."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for NodeHistory class."""
         self.c = c
         self.beadList: List[Tuple[Position, Chapter]] = []
@@ -22,7 +23,7 @@ class NodeHistory:
 
     #@+others
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
-    def dump(self):
+    def dump(self) -> None:
         """Dump the beadList"""
         for i, data in enumerate(self.beadList):
             p, chapter = data
@@ -31,21 +32,21 @@ class NodeHistory:
             mark = '**' if i == self.beadPointer else '  '
             print(f"{mark} {i} {chapter_s} {p_s}")
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
-    def goNext(self):
+    def goNext(self) -> None:
         """Select the next node, if possible."""
         if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
     #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
-    def goPrev(self):
+    def goPrev(self) -> None:
         """Select the previously visited node, if possible."""
         if self.beadPointer > 0:
             self.beadPointer -= 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
     #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
-    def select(self, p, chapter):
+    def select(self, p: Position, chapter: Any) -> None:
         """
         Update the history list when selecting p.
         Called only from self.goToNext/PrevHistory
@@ -63,7 +64,7 @@ class NodeHistory:
         # Fix bug #180: Always call self.update here.
         self.update(p, change=False)
     #@+node:ville.20090724234020.14676: *3* NodeHistory.update
-    def update(self, p, change=True):
+    def update(self, p: Position, change: bool=True) -> None:
         """
         Update the beadList while p is being selected.
         Called *only* from c.frame.tree.selectHelper.
