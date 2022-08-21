@@ -141,7 +141,6 @@ class Commands:
         c.initEventIvars()
         c.initFileIvars(fileName, relativeFileName)
         c.initOptionsIvars()
-        c.initObjectIvars()
         # Instantiate c.config *before* initing objects.
         c.initSettings(previousSettings)
         # Initialize all subsidiary objects, including subcommanders.
@@ -251,35 +250,6 @@ class Commands:
         self.target_language = "python"
         self.untangle_batch_flag = False
         self.vim_mode = False
-    #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
-    def initObjectIvars(self) -> None:
-        # These ivars are set later by leoEditCommands.createEditCommanders
-        self.abbrevCommands = None
-        self.editCommands = None
-        self.db: Any = {}  # May be set to a PickleShare instance later.
-        self.bufferCommands = None
-        self.chapterCommands = None
-        self.controlCommands = None
-        self.convertCommands = None
-        self.debugCommands = None
-        self.editFileCommands = None
-        self.evalController = None
-        self.gotoCommands = None
-        self.helpCommands = None
-        self.keyHandler = None
-        self.k = None
-        self.keyHandlerCommands = None
-        self.killBufferCommands = None
-        self.leoCommands = None
-        self.macroCommands = None
-        self.miniBufferWidget: Widget = None
-        self.printingController = None
-        self.queryReplaceCommands = None
-        self.rectangleCommands = None
-        self.searchCommands = None
-        self.spellCommands = None
-        self.leoTestManager = None
-        self.vimCommands = None
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
