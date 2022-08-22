@@ -30,6 +30,9 @@ class TestLeoImport(BaseTestImporter):
         f = StringIO(s)
         x.scan(f, target)
         # self.dump_tree(target, tag='Actual results...')
+
+        # #2760: These results ignore way too much.
+
         self.check_outline(target, (
             (0, '',  # check_outline ignores the top-level headline.
                 ''
