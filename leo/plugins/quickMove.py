@@ -494,10 +494,15 @@ class quickMove:
             for c2 in g.app.commanders():
                 a = sub.addAction("Top of " +
                     g.os_path_basename(c2.fileName()))
+
                 def cb(c2=c2, cut=cut):
                     self.to_other(c2, cut=cut)
-                def wrap(checked, cb=cb, name=txt.strip('.') + ' top of ' + g.os_path_basename(c2.fileName())):
+
+                def wrap(checked, cb=cb,
+                    name=txt.strip('.') + ' top of ' + g.os_path_basename(c2.fileName())
+                ):
                     self.do_wrap(cb, name)
+
                 a.triggered.connect(wrap)
         # bookmark to other outline
         sub = pathmenu.addMenu("Bookmark to...")

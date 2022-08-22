@@ -262,7 +262,8 @@ if QtWidgets:
             self.search_re = r'(&|\||-|\^)'
             self.custom_searches = []
             g.registerHandler('select2', self.select2_hook)
-            g.registerHandler('create-node', self.command2_hook)  # fix tag jumplist positions after new node insertion
+            # fix tag jumplist positions after new node insertion
+            g.registerHandler('create-node', self.command2_hook)
             g.registerHandler('command2', self.command2_hook)
         #@+node:peckj.20140804114520.15202: *4* tag_w.initUI
         def initUI(self):

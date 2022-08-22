@@ -46,6 +46,9 @@ try:
 except Exception:
     Tk = None
 #
+# Abbreviations...
+StringIO = io.StringIO
+#@-<< imports >>
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
@@ -53,10 +56,6 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoNodes import VNode
 else:
     Cmdr = Pos = VNode = Any
-#
-# Abbreviations...
-StringIO = io.StringIO
-#@-<< imports >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.6'  # #1215.
@@ -148,7 +147,7 @@ cmd_instance_dict = {
 # At table in LeoQtLog.put tells it how to extract filenames and line_numbers from each pattern.
 # For all *present* patterns, m.group(1) is the filename and m.group(2) is the line number.
 
-mypy_pat = re.compile(r'^(.+?):([0-9]+): (error|note): (.*)\s*$')
+mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
 pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
 pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
@@ -5431,7 +5430,7 @@ def isWordChar(ch: str) -> bool:
 def isWordChar1(ch: str) -> bool:
     return bool(ch and (ch.isalpha() or ch == '_'))
 #@+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s: bytes) -> Tuple[str, bytes]:
+def stripBOM(s_bytes: bytes) -> Tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -5448,12 +5447,12 @@ def stripBOM(s: bytes) -> Tuple[str, bytes]:
         (2, 'utf-16', codecs.BOM_UTF16_BE),
         (2, 'utf-16', codecs.BOM_UTF16_LE),
     )
-    if s:
+    if s_bytes:
         for n, e, bom in table:
             assert len(bom) == n
-            if bom == s[: len(bom)]:
-                return e, s[len(bom) :]
-    return None, s
+            if bom == s_bytes[: len(bom)]:
+                return e, s_bytes[len(bom) :]
+    return None, s_bytes
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s: str, encoding: str='utf-8', reportErrors: bool=False) -> bytes:
     """Convert unicode string to an encoded string."""
@@ -5479,7 +5478,7 @@ def toUnicode(s: Any, encoding: str=None, reportErrors: bool=False) -> str:
         return s
     tag = 'g.toUnicode'
     if not isinstance(s, bytes):
-        if not isinstance(s, (NullObject, TracingNullObject)):
+        if reportErrors and not isinstance(s, (NullObject, TracingNullObject)):
             callers = g.callers()
             if callers not in unicode_warnings:
                 unicode_warnings[callers] = True
@@ -5903,21 +5902,6 @@ def es_print(*args: Any, **keys: Any) -> None:
     g.pr(*args, **keys)
     if g.app and not g.unitTesting:
         g.es(*args, **keys)
-#@+node:ekr.20111107181638.9741: *3* g.print_exception
-def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
-    """Print exception info about the last exception."""
-    # val is the second argument to the raise statement.
-    typ, val, tb = sys.exc_info()
-    if full:
-        lines = traceback.format_exception(typ, val, tb)
-    else:
-        lines = traceback.format_exception_only(typ, val)
-    print(''.join(lines), flush=flush)
-    try:
-        fileName, n = g.getLastTracebackFileAndLineNumber()
-        return fileName, n
-    except Exception:
-        return "<no file>", 0
 #@+node:ekr.20050707065530: *3* g.es_trace
 def es_trace(*args: Any, **keys: Any) -> None:
     if args:
@@ -5927,6 +5911,20 @@ def es_trace(*args: Any, **keys: Any) -> None:
         except Exception:
             pass
     g.es(*args, **keys)
+#@+node:ekr.20220820050145.1: *3* g.function_name
+def function_name() -> str:
+    """Return the name of function or method that called this function."""
+    try:  # get the function name from the call stack.
+        f1 = sys._getframe(1)  # The stack frame, one level up.
+        code1 = f1.f_code  # The code object
+        name = code1.co_name  # The code name
+    except Exception:
+        name = g.shortFileName(__file__)
+    if name == '<module>':
+        name = g.shortFileName(__file__)
+    if name.endswith('.pyc'):
+        name = name[:-1]
+    return name
 #@+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber() -> Tuple[str, int]:
     typ, val, tb = sys.exc_info()
@@ -6036,6 +6034,21 @@ def prettyPrintType(obj: Any) -> str:
     if t.endswith("'>"):
         t = t[:-2]
     return t
+#@+node:ekr.20111107181638.9741: *3* g.print_exception
+def print_exception(full: bool=True, c: Cmdr=None, flush: bool=False, color: str="red") -> Tuple[str, int]:
+    """Print exception info about the last exception."""
+    # val is the second argument to the raise statement.
+    typ, val, tb = sys.exc_info()
+    if full:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    print(''.join(lines), flush=flush)
+    try:
+        fileName, n = g.getLastTracebackFileAndLineNumber()
+        return fileName, n
+    except Exception:
+        return "<no file>", 0
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name: str, window: Any) -> None:
     bindings = window.bind()

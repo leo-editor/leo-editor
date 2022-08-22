@@ -1134,6 +1134,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         Create a script button for the script in node p.
         The button's text defaults to p.headString."""
+        # pylint: disable=line-too-long
         k = c.k
         if p and not buttonText:
             buttonText = p.h.strip()

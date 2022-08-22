@@ -209,8 +209,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         total += 1
                         c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
                 g.es_print(f"{n} node{g.plural(n)} {p.h}")
-        if total > 0:
-            c.undoer.afterChangeGroup(c.p, undoType)
+        # Call this only once, at end.
+        c.undoer.afterChangeGroup(c.p, undoType)
+        if total == 0:
+            g.es("Command did not find any whitespace to adjust")
         g.es_print(f"{total} total node{g.plural(total)}")
     #@+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
     def cleanAtCleanNode(self, p, undoType):

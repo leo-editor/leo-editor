@@ -425,7 +425,9 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]]) -> int:
+    def addParentMatches(self,
+        parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]]
+    ) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):

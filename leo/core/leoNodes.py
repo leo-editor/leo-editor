@@ -210,7 +210,7 @@ class Position:
             p1.stack == p2.stack)
 
     def __ne__(self, p2: Any) -> bool:  # Use Any, not Position.
-        """Return True if two postions are not equivalent."""
+        """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__(self, v: "VNode", childIndex: int=0, stack: Optional[List]=None) -> None:
@@ -781,6 +781,7 @@ class Position:
     def get_UNL(self) -> str:
         """
         Return a UNL representing a clickable link.
+        See the section < define global error regexs > for the regexes.
 
         New in Leo 6.6: Use a single, simplified format for UNL's:
 

@@ -341,7 +341,8 @@ class notetextedit(QTextEdit):
 
     #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
     def keyPressEvent__(self, event):
-        # needed because text edit is not going to recognize short cuts because will do something with control key
+        # needed because text edit is not going to recognize short cuts
+        # because will do something with control key
         # not needed if have global shortcuts
         if event.modifiers() & KeyboardModifier.ControlModifier:
             handled = False

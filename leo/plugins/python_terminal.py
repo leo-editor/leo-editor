@@ -21,8 +21,8 @@ By Jacob M. Peck
 
 Usage
 =====
-Enabling this plugin will add a new tab to the Log pane, labeled "Python Console".  This is a fully interactive
-python command shell, with access to `g`, `c`, and `p` included!
+Enabling this plugin will add a new tab to the Log pane, labeled "Python Console".
+This is a fully interactive python command shell, with access to `g`, `c`, and `p` included!
 
 Features:
 - Includes support for g, c, and p
