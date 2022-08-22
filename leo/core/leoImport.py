@@ -2393,7 +2393,7 @@ class ZimImportController:
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
-                rstNodes [str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)
