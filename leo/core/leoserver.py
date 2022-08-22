@@ -284,7 +284,8 @@ class ServerExternalFilesController(ExternalFilesController):
 
     #@+node:felix.20210626222905.7: *3* sefc.utilities
     #@+node:felix.20210626222905.8: *4* sefc.ask
-    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:
+    # The base class returns str.
+    def ask(self, c: Cmdr, path: str, p: Position=None) -> bool:  # type:ignore
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
