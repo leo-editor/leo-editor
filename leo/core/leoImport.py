@@ -1356,7 +1356,10 @@ class MindMapImporter:
             fn = fn[:-4]
         p.h = fn
         try:
-            self.scan(path, p)
+            f = open(path)
+            self.scan(f, p)
+            f.close()
+            c.redraw()
         except Exception:
             g.es_print('Invalid MindJet file:', fn)
         c.undoer.afterInsertNode(p, 'Import', undoData)
@@ -1392,17 +1395,15 @@ class MindMapImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20160503130256.1: *3* mindmap.scan & helpers
-    def scan(self, path: str, target: Position) -> None:
+    def scan(self, f: Any, target: Position) -> None:
         """Create an outline from a MindMap (.csv) file."""
-        c = self.c
-        f = open(path)
-        reader = csv.reader(f)  # Yields list of strings.
+        reader = csv.reader(f)  # Yields list of lists.
         max_chars_in_header = 80
         n1 = n = target.level()
         p = target.copy()
         for row in list(reader)[1:]:
-            ### This mypy complaint is mysterious and needs investigation.
-            new_level = self.csv_level(row) + n1  # type:ignore
+            # Row is a List of fields.
+            new_level = self.csv_level(row) + n1
             self.csv_string(row)
             if new_level > n:
                 p = p.insertAsLastChild().copy()
@@ -1428,11 +1429,11 @@ class MindMapImporter:
                     p.h = "@node_with_long_text"
             else:
                 p.h = "@node_with_long_text"
-        c.redraw()
-        f.close()
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
-    def csv_level(self, row: str) -> int:
-        """Return the level of the given row."""
+    def csv_level(self, row: List[Any]) -> int:
+        """
+        Return the level of the given row, a list of fields.
+        """
         count = 0
         while count <= len(row):
             if row[count]:
@@ -2391,7 +2392,7 @@ class ZimImportController:
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
-                rstNodes [str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)
