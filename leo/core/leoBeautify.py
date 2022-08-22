@@ -347,7 +347,7 @@ class CPrettyPrinter:
         for s in aList:
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
-    #@+node:ekr.20110918225821.6815: *4* add_statement_braces
+    #@+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
     def add_statement_braces(self, s: str, giveWarnings: bool=False) -> List[str]:
         p = self.p
 
@@ -400,7 +400,7 @@ class CPrettyPrinter:
                 i += 1
             assert progress < i
         return result
-    #@+node:ekr.20110919184022.6903: *5* skip_ws
+    #@+node:ekr.20110919184022.6903: *5* cpp.skip_ws
     def skip_ws(self, s: str, i: int) -> int:
         while i < len(s):
             token = s[i]
@@ -409,7 +409,7 @@ class CPrettyPrinter:
             else:
                 break
         return i
-    #@+node:ekr.20110918225821.6820: *5* skip_ws_and_comments
+    #@+node:ekr.20110918225821.6820: *5* cpp.skip_ws_and_comments
     def skip_ws_and_comments(self, s: str, i: int) -> int:
         while i < len(s):
             token = s[i]
@@ -420,7 +420,7 @@ class CPrettyPrinter:
             else:
                 break
         return i
-    #@+node:ekr.20110918225821.6817: *5* skip_parens
+    #@+node:ekr.20110918225821.6817: *5* cpp.skip_parens
     def skip_parens(self, s: str, i: int) -> int:
         """Skips from the opening ( to the matching ).
 
@@ -440,7 +440,7 @@ class CPrettyPrinter:
             else:
                 i += 1
         return i
-    #@+node:ekr.20110918225821.6818: *5* skip_statement
+    #@+node:ekr.20110918225821.6818: *5* cpp.skip_statement
     def skip_statement(self, s: str, i: int) -> int:
         """Skip to the next ';' or '}' token."""
         while i < len(s):
@@ -450,7 +450,7 @@ class CPrettyPrinter:
             else:
                 i += 1
         return i
-    #@+node:ekr.20110917204542.6967: *4* put_token & helpers
+    #@+node:ekr.20110917204542.6967: *4* cpp.put_token & helpers
     def put_token(self, s: str) -> None:
         """Append token s to self.result as is,
         *except* for adjusting leading whitespace and comments.
