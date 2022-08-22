@@ -2164,7 +2164,7 @@ class FileCommands:
         if key.startswith('str_'):
             if isinstance(val, (str, bytes)):
                 val = g.toUnicode(val)
-                attr = f' {key}="{xml.sax.saxutils.escape(val)}"'
+                attr = f' {key}={xml.sax.saxutils.quoteattr(val)}'
                 return attr
             g.trace(type(val), repr(val))
             g.warning("ignoring non-string attribute", key, "in", torv)
