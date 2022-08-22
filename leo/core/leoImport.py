@@ -56,7 +56,6 @@ class FreeMindImporter:
         """ctor for FreeMind Importer class."""
         self.c = c
         self.count = 0
-        ### self.d: Dict[str, str] = {}
 
     #@+others
     #@+node:ekr.20170222084048.1: *3* freemind.add_children
@@ -265,7 +264,6 @@ class LeoImportCommands:
             ic.appendHeadRef(p, file_name, head_ref, result)
         i, result = ic.copyPart(s, i, result)
         return i, result.strip() + nl
-    #### @ %defs a b c
     #@+node:ekr.20140630085837.16720: *5* ic.appendHeadRef
     def appendHeadRef(self, p: Position, file_name: str, head_ref: str, result: str) -> None:
         ic = self
@@ -2393,7 +2391,7 @@ class ZimImportController:
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
-                rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                rstNodes [str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)
