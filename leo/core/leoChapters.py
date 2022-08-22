@@ -3,15 +3,22 @@
 """Classes that manage chapters in Leo's core."""
 import re
 import string
-from typing import Any, TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
+#@+<< leoChapters annotations >>
+#@+node:ekr.20220821201049.1: ** << leoChapters annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position
 else:
     Cmdr = Any
+    Position = Any
+Event = Any
+Wrapper = Any
+#@-<< leoChapters annotations >>
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
-def cmd(name):
+def cmd(name: Any) -> Callable:
     """Command decorator for the ChapterController class."""
     return g.new_cmd_decorator(name, ['c', 'chapterController',])
 #@+node:ekr.20070317085437: ** class ChapterController
@@ -20,23 +27,23 @@ class ChapterController:
     #@+others
     #@+node:ekr.20070530075604: *3* Birth
     #@+node:ekr.20070317085437.2: *4*  cc.ctor
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for ChapterController class."""
         self.c = c
         # Note: chapter names never change, even if their @chapter node changes.
-        self.chaptersDict = {}  # Keys are chapter names, values are chapters.
+        self.chaptersDict: Dict[str, Any] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
-        self.re_chapter = None  # Set where used.
+        self.re_chapter: re.Pattern = None  # Set where used.
         self.selectedChapter = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
-        self.tt = None  # May be set in finishCreate.
+        self.tt: Any = None  # May be set in finishCreate.
         self.reloadSettings()
 
-    def reloadSettings(self):
+    def reloadSettings(self) -> None:
         c = self.c
         self.use_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20160402024827.1: *4* cc.createIcon
-    def createIcon(self):
+    def createIcon(self) -> None:
         """Create chapter-selection Qt ListBox in the icon area."""
         cc = self
         c = cc.c
@@ -47,7 +54,7 @@ class ChapterController:
     #@+node:ekr.20070325104904: *4* cc.finishCreate
     # This must be called late in the init process, after the first redraw.
 
-    def finishCreate(self):
+    def finishCreate(self) -> None:
         """Create the box in the icon area."""
         c, cc = self.c, self
         cc.createIcon()
@@ -59,7 +66,7 @@ class ChapterController:
         cc.selectChapterByName('main')
         c.redraw()
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
-    def makeCommand(self, chapterName, binding=None):
+    def makeCommand(self, chapterName: Any, binding: str=None) -> None:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
@@ -69,7 +76,7 @@ class ChapterController:
         if commandName in c.commandsDict:
             return
 
-        def select_chapter_callback(event, cc=cc, name=chapterName):
+        def select_chapter_callback(event: Event, cc: Any=cc, name: Any=chapterName) -> None:
             """
             Select specific chapter.
             """
@@ -99,7 +106,7 @@ class ChapterController:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event=None):
+    def selectChapter(self, event: Event=None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -107,7 +114,7 @@ class ChapterController:
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
 
-    def selectChapter1(self, event):
+    def selectChapter1(self, event: Event) -> None:
         cc, k = self, self.c.k
         k.clearState()
         k.resetLabel()
@@ -115,7 +122,7 @@ class ChapterController:
             cc.selectChapterByName(k.arg)
     #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event=None):
+    def backChapter(self, event: Event=None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -125,7 +132,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event=None):
+    def nextChapter(self, event: Event=None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -134,7 +141,7 @@ class ChapterController:
         new_name = names[i + 1 if i + 1 < len(names) else 0]
         cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
-    def selectChapterByName(self, name):
+    def selectChapterByName(self, name: Any) -> None:
         """Select a chapter without redrawing."""
         cc = self
         if self.selectChapterLockout:
@@ -153,7 +160,7 @@ class ChapterController:
         finally:
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
-    def selectChapterByNameHelper(self, chapter, collapse=True):
+    def selectChapterByNameHelper(self, chapter: Any, collapse: bool=True) -> None:
         """Select the chapter."""
         cc, c = self, self.c
         if not cc.selectedChapter and chapter.name == 'main':
@@ -182,10 +189,10 @@ class ChapterController:
         c.redraw()  # #2718.
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
-    def error(self, s):
+    def error(self, s: str) -> None:
         g.error(f"Error: {s}")
 
-    def note(self, s, killUnitTest=False):
+    def note(self, s: str, killUnitTest: bool=False) -> None:
         if g.unitTesting:
             if 0:  # To trace cause of failed unit test.
                 g.trace('=====', s, g.callers())
@@ -194,10 +201,10 @@ class ChapterController:
         else:
             g.note(f"Note: {s}")
 
-    def warning(self, s):
+    def warning(self, s: str) -> None:
         g.es_print(f"Warning: {s}")
     #@+node:ekr.20160402025448.1: *4* cc.findAnyChapterNode
-    def findAnyChapterNode(self):
+    def findAnyChapterNode(self) -> bool:
         """Return True if the outline contains any @chapter node."""
         cc = self
         for p in cc.c.all_unique_positions():
@@ -205,7 +212,7 @@ class ChapterController:
                 return True
         return False
     #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
-    def findChapterNameForPosition(self, p):
+    def findChapterNameForPosition(self, p: Position) -> str:
         """Return the name of a chapter containing p or None if p does not exist."""
         cc, c = self, self.c
         if not p or not c.positionExists(p):
@@ -217,7 +224,7 @@ class ChapterController:
                     return name
         return 'main'
     #@+node:ekr.20070325093617: *4* cc.findChapterNode
-    def findChapterNode(self, name):
+    def findChapterNode(self, name: Any) -> Optional[Position]:
         """
         Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
@@ -233,20 +240,20 @@ class ChapterController:
                 return p
         return None  # Not an error.
     #@+node:ekr.20070318124004: *4* cc.getChapter
-    def getChapter(self, name):
+    def getChapter(self, name: Any) -> Any:
         cc = self
         return cc.chaptersDict.get(name)
     #@+node:ekr.20070318122708: *4* cc.getSelectedChapter
-    def getSelectedChapter(self):
+    def getSelectedChapter(self) -> Any:
         cc = self
         return cc.selectedChapter
     #@+node:ekr.20070605124356: *4* cc.inChapter
-    def inChapter(self):
+    def inChapter(self) -> bool:
         cc = self
         theChapter = cc.getSelectedChapter()
-        return theChapter and theChapter.name != 'main'
+        return bool(theChapter and theChapter.name != 'main')
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
-    def parseHeadline(self, p):
+    def parseHeadline(self, p: Position) -> Tuple[str, str]:
         """Return the chapter name and key binding for p.h."""
         if not self.re_chapter:
             self.re_chapter = re.compile(
@@ -264,7 +271,7 @@ class ChapterController:
             chapterName = binding = None
         return chapterName, binding
     #@+node:ekr.20160414183716.1: *4* cc.sanitize
-    def sanitize(self, s):
+    def sanitize(self, s: str) -> str:
         """Convert s to a safe chapter name."""
         # Similar to g.sanitize_filename, but simpler.
         result = []
@@ -278,7 +285,7 @@ class ChapterController:
         s = s.replace('--', '-')
         return s[:128]
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition (calls c.redraw_later)
-    def selectChapterForPosition(self, p, chapter=None):
+    def selectChapterForPosition(self, p: Position, chapter: Any=None) -> None:
         """
         Select a chapter containing position p.
         New in Leo 4.11: prefer the given chapter if possible.
@@ -321,7 +328,7 @@ class ChapterController:
         # New in Leo 5.6: don't call c.redraw immediately.
         c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
-    def setAllChapterNames(self):
+    def setAllChapterNames(self) -> List[str]:
         """Called early and often to discover all chapter names."""
         c, cc = self.c, self
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
@@ -345,7 +352,7 @@ class Chapter:
     """A class representing the non-gui data of a single chapter."""
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__
-    def __init__(self, c: Cmdr, chapterController, name: str) -> None:
+    def __init__(self, c: Cmdr, chapterController: Any, name: str) -> None:
         self.c = c
         self.cc = cc = chapterController
         self.name: str = g.checkUnicode(name)
@@ -356,19 +363,19 @@ class Chapter:
         if cc.tt:
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__
-    def __str__(self):
+    def __str__(self) -> str:
         """Chapter.__str__"""
         return f"<chapter: {self.name}, p: {repr(self.p and self.p.h)}>"
 
     __repr__ = __str__
     #@+node:ekr.20110607182447.16464: *3* chapter.findRootNode
-    def findRootNode(self):
+    def findRootNode(self) -> Optional[Position]:
         """Return the @chapter node for this chapter."""
         if self.name == 'main':
             return None
         return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
-    def select(self, w=None):
+    def select(self, w: Wrapper=None) -> None:
         """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
@@ -382,7 +389,7 @@ class Chapter:
         finally:
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
-    def chapterSelectHelper(self, w=None):
+    def chapterSelectHelper(self, w: Wrapper=None) -> None:
 
         c, cc, u = self.c, self.cc, self.c.undoer
         cc.selectedChapter = self
@@ -421,7 +428,7 @@ class Chapter:
         c.setCurrentPosition(p)
         g.doHook('hoist-changed', c=c)
     #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
-    def findPositionInChapter(self, p1, strict=False):
+    def findPositionInChapter(self, p1: Position, strict: bool=False) -> Optional[Position]:
         """Return a valid position p such that p.v == v."""
         c, name = self.c, self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
@@ -445,7 +452,7 @@ class Chapter:
                 return p.copy()
         return None
     #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter
-    def findEditorInChapter(self, p):
+    def findEditorInChapter(self, p: Position) -> Wrapper:
         """return w, an editor displaying position p."""
         chapter, c = self, self.c
         w = c.frame.body.findEditorForChapter(chapter, p)
@@ -454,11 +461,11 @@ class Chapter:
             w.leo_p = p and p.copy()
         return w
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
-    def positionIsInChapter(self, p):
+    def positionIsInChapter(self, p: Position) -> bool:
         p2 = self.findPositionInChapter(p, strict=True)
-        return p2
+        return bool(p2)
     #@+node:ekr.20070320091806.1: *3* chapter.unselect
-    def unselect(self):
+    def unselect(self) -> None:
         """Remember chapter info when a chapter is about to be unselected."""
         c = self.c
         # Always try to return to the same position.
