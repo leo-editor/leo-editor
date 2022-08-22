@@ -56,7 +56,7 @@ class FreeMindImporter:
         """ctor for FreeMind Importer class."""
         self.c = c
         self.count = 0
-        self.d = {}
+        ### self.d: Dict[str, str] = {}
 
     #@+others
     #@+node:ekr.20170222084048.1: *3* freemind.add_children
@@ -225,15 +225,15 @@ class LeoImportCommands:
         self.c = c
         self.encoding = 'utf-8'
         self.errors = 0
-        self.fileName = None  # The original file name, say x.cpp
-        self.fileType = None  # ".py", ".c", etc.
-        self.methodName = None  # x, as in < < x methods > > =
-        self.output_newline = g.getOutputNewline(c=c)  # Value of @bool output_newline
+        self.fileName: str = None  # The original file name, say x.cpp
+        self.fileType: str = None  # ".py", ".c", etc.
+        self.methodName: str = None  # x, as in < < x methods > > =
+        self.output_newline: str = g.getOutputNewline(c=c)  # Value of @bool output_newline
         self.tab_width = c.tab_width
         self.treeType = "@file"  # None or "@file"
         self.verbose = True  # Leo 6.6
         self.webType = "@noweb"  # "cweb" or "noweb"
-        self.web_st = []  # noweb symbol table.
+        self.web_st: List[str] = []  # noweb symbol table.
         self.reload_settings()
 
     def reload_settings(self) -> None:
@@ -265,7 +265,7 @@ class LeoImportCommands:
             ic.appendHeadRef(p, file_name, head_ref, result)
         i, result = ic.copyPart(s, i, result)
         return i, result.strip() + nl
-    #@+at %defs a b c
+    #### @ %defs a b c
     #@+node:ekr.20140630085837.16720: *5* ic.appendHeadRef
     def appendHeadRef(self, p: Position, file_name: str, head_ref: str, result: str) -> None:
         ic = self
@@ -1394,11 +1394,11 @@ class MindMapImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20160503130256.1: *3* mindmap.scan & helpers
-    def scan(self, path: str, target: str) -> None:
+    def scan(self, path: str, target: Position) -> None:
         """Create an outline from a MindMap (.csv) file."""
         c = self.c
         f = open(path)
-        reader = csv.reader(f)
+        reader = csv.reader(f)  # Yields list of strings.
         max_chars_in_header = 80
         n1 = n = target.level()
         p = target.copy()
@@ -1432,7 +1432,7 @@ class MindMapImporter:
         c.redraw()
         f.close()
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
-    def csv_level(self, row: int) -> int:
+    def csv_level(self, row: str) -> int:
         """Return the level of the given row."""
         count = 0
         while count <= len(row):
@@ -1441,7 +1441,7 @@ class MindMapImporter:
             count = count + 1
         return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
-    def csv_string(self, row: List[int]) -> int:
+    def csv_string(self, row: List[str]) -> str:
         """Return the string for the given csv row."""
         count = 0
         while count <= len(row):
@@ -1909,9 +1909,9 @@ class TabImporter:
     def __init__(self, c: Cmdr, separate: bool=True) -> None:
         """Ctor for the TabImporter class."""
         self.c = c
-        self.root = None
+        self.root: Position = None
         self.separate = separate
-        self.stack = []
+        self.stack: List[Tuple[int, Position]] = []
 
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
@@ -2191,11 +2191,11 @@ class ToDoTask:
     """A class representing the components of a task line."""
 
     def __init__(self,
-        completed: Any,
-        priority: Any,
-        start_date: Any,
-        complete_date: Any,
-        task_s: Any,
+        completed: bool,
+        priority: str,
+        start_date: str,
+        complete_date: str,
+        task_s: str,
     ) -> None:
         self.completed = completed
         self.priority = priority and priority[1] or ''
@@ -2203,9 +2203,9 @@ class ToDoTask:
         self.complete_date = complete_date and complete_date.rstrip() or ''
         self.task_s = task_s.strip()
         # Parse tags into separate dictionaries.
-        self.projects = []
-        self.contexts = []
-        self.key_vals = []
+        self.projects: List[str] = []
+        self.contexts: List[str] = []
+        self.key_vals: List[str] = []
         self.parse_task()
 
     #@+others
@@ -2292,7 +2292,7 @@ class ZimImportController:
         self.rstType = c.config.getString('zim-rst-type') or 'rst'
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
-    def parseZimIndex(self) -> List[Tuple[int, str, str]]:
+    def parseZimIndex(self) -> List[Tuple[int, str, List[str]]]:
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
@@ -2313,12 +2313,13 @@ class ZimImportController:
             name = result[1].decode('utf-8')
             unquote = urllib.parse.unquote
             # mypy: error: "str" has no attribute "decode"; maybe "encode"?  [attr-defined]
-            path = [g.os_path_abspath(g.os_path_join(
-                pathToZim, unquote(result[2]).decode('utf-8')))]  # type:ignore
+            path = [
+                g.os_path_abspath(g.os_path_join(pathToZim, unquote(result[2]).decode('utf-8')))
+            ]  # type:ignore
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild
-    def rstToLastChild(self, p: Position, name: str, rst: Any) -> Position:
+    def rstToLastChild(self, p: Position, name: str, rst: List[str]) -> Position:
         """Import an rst file as a last child of pos node with the specified name"""
         c = self.c
         c.importCommands.importFilesCommand(
@@ -2387,13 +2388,11 @@ class ZimImportController:
         files = self.parseZimIndex()
         if files:
             # Do the import
-            rstNodes = {'0': zimNode,}
+            rstNodes: Dict[str, Position] = {'0': zimNode}
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
-                rstNodes[
-                    str(
-                    level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                rstNodes [str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)
@@ -2422,7 +2421,7 @@ class LegacyExternalFileImporter:
             """Hold node data."""
             self.h = h.strip()
             self.level = level
-            self.lines = []
+            self.lines: List[str] = []
     #@+node:ekr.20200424092652.1: *3* legacy.add
     def add(self, line: Any, stack: List[Any]) -> None:
         """Add a line to the present node."""
