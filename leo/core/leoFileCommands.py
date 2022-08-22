@@ -2179,7 +2179,7 @@ class FileCommands:
         if isinstance(attrDict, dict):
             val = ''.join(
                 [self.putUaHelper(v, key, val)
-                    for key, val in attrDict.items()])
+                    for key, val in sorted(attrDict.items())])
             return val
         g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
