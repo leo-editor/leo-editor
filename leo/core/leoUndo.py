@@ -749,7 +749,7 @@ class Undoer:
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     changeGroupWarning = False
 
-    def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool=True) -> None:
+    def beforeChangeGroup(self, p: Position, command: str, verboseUndoGroup: bool=False) -> None:
         """Prepare to undo a group of undoable operations."""
         c, u = self.c, self
         if p != c.p:  # Prepare to ignore p argument.

@@ -56,8 +56,10 @@ class To_Python:  # pragma: no cover
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
-        if changed:
-            u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        u.afterChangeGroup(c.p, undoType, reportFlag=False)
+        # Warn if no changes were made at all
+        if not changed:
+            g.es("Command did not find content to convert")
         t2 = time.time()
         g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
