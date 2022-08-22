@@ -357,7 +357,7 @@ class LeoImportCommands:
             result += nl + "@ " if self.webType == "cweb" else nl + "@" + nl
         return i, result
     #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
-    def convertVnodeToWeb(self, v: VNode) -> str:
+    def positionToWeb(self, p: Position) -> str:
         """
         This code converts a VNode to noweb text as follows:
 
@@ -368,12 +368,12 @@ class LeoImportCommands:
         Output code parts as is.
         """
         c = self.c
-        if not v or not c:
+        if not p or not c:
             return ""
         startInCode = c.config.getBool('at-root-bodies-start-in-doc-mode')
         nl = self.output_newline
         docstart = nl + "@ " if self.webType == "cweb" else nl + "@" + nl
-        s = v.b
+        s = p.b
         lb = "@<" if self.webType == "cweb" else "<<"
         i, result, docSeen = 0, "", False
         while i < len(s):
@@ -391,12 +391,12 @@ class LeoImportCommands:
                 if not docSeen:
                     docSeen = True
                     result += docstart
-                i, result = self.convertCodePartToWeb(s, i, v, result)
+                i, result = self.convertCodePartToWeb(s, i, p, result)
             elif self.treeType == "@file" or startInCode:
                 if not docSeen:
                     docSeen = True
                     result += docstart
-                i, result = self.convertCodePartToWeb(s, i, v, result)
+                i, result = self.convertCodePartToWeb(s, i, p, result)
             else:
                 i, result = self.convertDocPartToWeb(s, i, result)
                 docSeen = True
@@ -514,7 +514,7 @@ class LeoImportCommands:
                 self.treeType = "@root"
                 break
         for p in current.self_and_subtree(copy=False):
-            s = self.convertVnodeToWeb(p)
+            s = self.positionToWeb(p)
             if s:
                 theFile.write(s)
                 if s[-1] != '\n':
@@ -1403,7 +1403,8 @@ class MindMapImporter:
         n1 = n = target.level()
         p = target.copy()
         for row in list(reader)[1:]:
-            new_level = self.csv_level(row) + n1
+            ### This mypy complaint is mysterious and needs investigation.
+            new_level = self.csv_level(row) + n1  # type:ignore
             self.csv_string(row)
             if new_level > n:
                 p = p.insertAsLastChild().copy()
