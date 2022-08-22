@@ -373,7 +373,7 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-TAIL':
                 s = text[m.end() :].lstrip()
             elif cmd == 'REPLACE-REST':
-                s = (text[:m.start] + text[m.end() :]).strip()
+                s = (text[:m.start()] + text[m.end() :]).strip()
 
             # 's' is string when 'cmd' is recognised
             # and is None otherwise
