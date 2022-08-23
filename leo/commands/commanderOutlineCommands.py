@@ -1146,7 +1146,7 @@ def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
     """
     c = self
     # Fix #600.
-    return insertHeadlineHelper(c, event=event, as_child=as_child)
+    return insertHeadlineHelper(c, event=event, as_child=as_child, op_name=op_name)
 
 @g.commander_command('insert-as-first-child')
 def insertNodeAsFirstChild(self, event=None):
