@@ -2,8 +2,8 @@
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
 """Configuration classes for Leo."""
 # pylint: disable=unsubscriptable-object
-#@+<< imports: leoConfig.py >>
-#@+node:ekr.20041227063801: ** << imports: leoConfig.py >>
+#@+<< leoConfig imports >>
+#@+node:ekr.20041227063801: ** << leoConfig imports >>
 import os
 import sys
 import re
@@ -13,17 +13,16 @@ from typing import TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
-#@-<< imports: leoConfig.py >>
-#@+<< type aliases: leoConfig.py >>
-#@+node:ekr.20220417212402.1: ** << type aliases: leoConfig.py >>
+#@-<< leoConfig imports >>
+#@+<< leoConfig annotations >>
+#@+node:ekr.20220417212402.1: ** << leoConfig annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
-    from leo.core.leoNodes import Position as Pos
-    from PyQt6 import QtWidgets as QtWidgets6
-    Widget = QtWidgets6.QWidget
+    from leo.core.leoNodes import Position
 else:
-    Pos = Any
-    Widget = Any
-#@-<< type aliases: leoConfig.py >>
+    Position = Any
+
+Widget = Any
+#@-<< leoConfig annotations >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
 class ParserBaseClass:
@@ -147,7 +146,7 @@ class ParserBaseClass:
         g.blue(s)
     #@+node:ekr.20041120094940: *3* pbc.kind handlers
     #@+node:ekr.20041120094940.1: *4* pbc.doBool
-    def doBool(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doBool(self, p: Position, kind: str, name: str, val: Any) -> None:
         if val in ('True', 'true', '1'):
             self.set(p, kind, name, True)
         elif val in ('False', 'false', '0'):
@@ -155,7 +154,7 @@ class ParserBaseClass:
         else:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20070925144337: *4* pbc.doButtons
-    def doButtons(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doButtons(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Create buttons for each @button node in an @buttons tree."""
         c, tag = self.c, '@button'
         aList, seen = [], []
@@ -188,13 +187,13 @@ class ParserBaseClass:
             g.app.config.atCommonButtonsList.extend(aList)
             g.app.config.buttonsFileName = (c.shortFileName() if c else '<no settings file>')
     #@+node:ekr.20041120094940.2: *4* pbc.doColor
-    def doColor(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doColor(self, p: Position, kind: str, name: str, val: Any) -> None:
         # At present no checking is done.
         val = val.lstrip('"').rstrip('"')
         val = val.lstrip("'").rstrip("'")
         self.set(p, kind, name, val)
     #@+node:ekr.20080312071248.6: *4* pbc.doCommands
-    def doCommands(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doCommands(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Handle an @commands tree."""
         c = self.c
         aList = []
@@ -223,7 +222,7 @@ class ParserBaseClass:
             # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonCommandsList.extend(aList)
     #@+node:ekr.20071214140900: *4* pbc.doData
-    def doData(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doData(self, p: Position, kind: str, name: str, val: Any) -> None:
         # New in Leo 4.11: do not strip lines.
         # New in Leo 4.12.1: strip *nothing* here.
         # New in Leo 4.12.1: allow composition of nodes:
@@ -237,13 +236,13 @@ class ParserBaseClass:
                     data.append('\n')
         self.set(p, kind, name, data)
     #@+node:ekr.20131114051702.16545: *4* pbc.doOutlineData & helper
-    def doOutlineData(self, p: Pos, kind: str, name: str, val: Any) -> str:
+    def doOutlineData(self, p: Position, kind: str, name: str, val: Any) -> str:
         # New in Leo 4.11: do not strip lines.
         data = self.getOutlineDataHelper(p)
         self.set(p, kind, name, data)
         return 'skip'
     #@+node:ekr.20131114051702.16546: *5* pbc.getOutlineDataHelper
-    def getOutlineDataHelper(self, p: Pos) -> str:
+    def getOutlineDataHelper(self, p: Position) -> str:
         c = self.c
         if not p:
             return None
@@ -257,13 +256,13 @@ class ParserBaseClass:
             s = None
         return s
     #@+node:ekr.20041120094940.3: *4* pbc.doDirectory & doPath
-    def doDirectory(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doDirectory(self, p: Position, kind: str, name: str, val: Any) -> None:
         # At present no checking is done.
         self.set(p, kind, name, val)
 
     doPath = doDirectory
     #@+node:ekr.20070224075914: *4* pbc.doEnabledPlugins
-    def doEnabledPlugins(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doEnabledPlugins(self, p: Position, kind: str, name: str, val: Any) -> None:
         c = self.c
         s = p.b
         # This setting is handled differently from all other settings,
@@ -281,14 +280,14 @@ class ParserBaseClass:
         g.app.config.enabledPluginsString = s
         g.app.config.enabledPluginsFileName = c.shortFileName() if c else '<no settings file>'
     #@+node:ekr.20041120094940.6: *4* pbc.doFloat
-    def doFloat(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doFloat(self, p: Position, kind: str, name: str, val: Any) -> None:
         try:
             val = float(val)
             self.set(p, kind, name, val)
         except ValueError:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041120094940.4: *4* pbc.doFont
-    def doFont(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doFont(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Handle an @font node. Such nodes affect syntax coloring *only*."""
         d = self.parseFont(p)
         # Set individual settings.
@@ -299,7 +298,7 @@ class ParserBaseClass:
                 setKind = key
                 self.set(p, setKind, name, val)
     #@+node:ekr.20150426034813.1: *4* pbc.doIfEnv
-    def doIfEnv(self, p: Pos, kind: str, name: str, val: Any) -> str:
+    def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
         Support @ifenv in @settings trees.
 
@@ -316,7 +315,7 @@ class ParserBaseClass:
                 return None
         return 'skip'
     #@+node:dan.20080410121257.2: *4* pbc.doIfHostname
-    def doIfHostname(self, p: Pos, kind: str, name: str, val: Any) -> str:
+    def doIfHostname(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
         Support @ifhostname in @settings trees.
 
@@ -337,7 +336,7 @@ class ParserBaseClass:
             return 'skip'
         return None
     #@+node:ekr.20041120104215: *4* pbc.doIfPlatform
-    def doIfPlatform(self, p: Pos, kind: str, name: str, val: Any) -> str:
+    def doIfPlatform(self, p: Position, kind: str, name: str, val: Any) -> str:
         """Support @ifplatform in @settings trees."""
         platform = sys.platform.lower()
         for s in name.split(','):
@@ -345,17 +344,17 @@ class ParserBaseClass:
                 return None
         return "skip"
     #@+node:ekr.20041120104215.1: *4* pbc.doIgnore
-    def doIgnore(self, p: Pos, kind: str, name: str, val: Any) -> str:
+    def doIgnore(self, p: Position, kind: str, name: str, val: Any) -> str:
         return "skip"
     #@+node:ekr.20041120094940.5: *4* pbc.doInt
-    def doInt(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doInt(self, p: Position, kind: str, name: str, val: Any) -> None:
         try:
             val = int(val)
             self.set(p, kind, name, val)
         except ValueError:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041217132253: *4* pbc.doInts
-    def doInts(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doInts(self, p: Position, kind: str, name: str, val: Any) -> None:
         """
         We expect either:
         @ints [val1,val2,...]aName=val
@@ -386,7 +385,7 @@ class ParserBaseClass:
             # At present no checking is done.
             self.set(p, kind, name, val)
     #@+node:tbrown.20080514112857.124: *4* pbc.doMenuat
-    def doMenuat(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doMenuat(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Handle @menuat setting."""
         if g.app.config.menusList:
             # get the patch fragment
@@ -480,7 +479,7 @@ class ParserBaseClass:
                     return ans
         return None
     #@+node:ekr.20070925144337.2: *4* pbc.doMenus & helper
-    def doMenus(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doMenus(self, p: Position, kind: str, name: str, val: Any) -> None:
 
         c = self.c
         p = p.copy()
@@ -513,7 +512,7 @@ class ParserBaseClass:
             name = c.shortFileName() if c else '<no settings file>'
             g.app.config.menusFileName = name
     #@+node:ekr.20070926141716: *5* pbc.doItems
-    def doItems(self, p: Pos, aList: List) -> None:
+    def doItems(self, p: Position, aList: List) -> None:
 
         p = p.copy()
         after = p.nodeAfterTree()
@@ -547,7 +546,7 @@ class ParserBaseClass:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20060102103625.1: *4* pbc.doMode
-    def doMode(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doMode(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Parse an @mode node and create the enter-<name>-mode command."""
         c = self.c
         name1 = name
@@ -577,7 +576,7 @@ class ParserBaseClass:
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName, name1, d)
     #@+node:ekr.20070411101643.1: *4* pbc.doOpenWith
-    def doOpenWith(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doOpenWith(self, p: Position, kind: str, name: str, val: Any) -> None:
 
         d = self.parseOpenWith(p)
         d['name'] = name
@@ -586,7 +585,7 @@ class ParserBaseClass:
         self.openWithList.append(d)
         self.set(p, kind, name, self.openWithList)
     #@+node:bobjack.20080324141020.4: *4* pbc.doPopup & helper
-    def doPopup(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doPopup(self, p: Position, kind: str, name: str, val: Any) -> None:
         """
         Handle @popup menu items in @settings trees.
         """
@@ -599,7 +598,7 @@ class ParserBaseClass:
             g.app.config.context_menus = {}
         g.app.config.context_menus[popupName] = aList
     #@+node:bobjack.20080324141020.5: *5* pbc.doPopupItems
-    def doPopupItems(self, p: Pos, aList: List) -> None:
+    def doPopupItems(self, p: Position, aList: List) -> None:
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
@@ -627,7 +626,7 @@ class ParserBaseClass:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20041121125741: *4* pbc.doRatio
-    def doRatio(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doRatio(self, p: Position, kind: str, name: str, val: Any) -> None:
         try:
             val = float(val)
             if 0.0 <= val <= 1.0:
@@ -637,7 +636,7 @@ class ParserBaseClass:
         except ValueError:
             self.valueError(p, kind, name, val)
     #@+node:ekr.20041120105609: *4* pbc.doShortcuts
-    def doShortcuts(self, p: Pos, kind: str, junk_name: str, junk_val: Any, s: str=None) -> None:
+    def doShortcuts(self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str=None) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
         if s is None:
@@ -657,18 +656,18 @@ class ParserBaseClass:
                         if c.config.isLocalSettingsFile():
                             c.k.killedBindings.append(commandName)
     #@+node:ekr.20111020144401.9585: *5* pbc.doOneShortcut
-    def doOneShortcut(self, bi: Any, commandName: str, p: Pos) -> None:
+    def doOneShortcut(self, bi: Any, commandName: str, p: Position) -> None:
         """Handle a regular shortcut."""
         d = self.shortcutsDict
         aList: List[g.BindingInfo] = d.get(commandName, [])
         aList.append(bi)
         d[commandName] = aList
     #@+node:ekr.20041217132028: *4* pbc.doString
-    def doString(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doString(self, p: Position, kind: str, name: str, val: Any) -> None:
         # At present no checking is done.
         self.set(p, kind, name, val)
     #@+node:ekr.20041120094940.8: *4* pbc.doStrings
-    def doStrings(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def doStrings(self, p: Position, kind: str, name: str, val: Any) -> None:
         """
         We expect one of the following:
         @strings aName[val1,val2...]=val
@@ -695,7 +694,7 @@ class ParserBaseClass:
             "must be overridden in subclass")
     #@+node:ekr.20041213082558: *3* pbc.parsers
     #@+node:ekr.20041213082558.1: *4* pbc.parseFont & helper
-    def parseFont(self, p: Pos) -> Dict[str, Any]:
+    def parseFont(self, p: Position) -> Dict[str, Any]:
         d: Dict[str, Any] = {
             'comments': [],
             'family': None,
@@ -769,7 +768,7 @@ class ParserBaseClass:
                         val = s[j + 1 :].strip()
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* pbc.parseOpenWith & helper
-    def parseOpenWith(self, p: Pos) -> Dict[str, Any]:
+    def parseOpenWith(self, p: Position) -> Dict[str, Any]:
 
         d = {'command': None}  # d contains args, kind, etc tags.
         for line in g.splitLines(p.b):
@@ -861,7 +860,7 @@ class ParserBaseClass:
         bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         return name, bi
     #@+node:ekr.20041120094940.9: *3* pbc.set
-    def set(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def set(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Init the setting for name to val."""
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
@@ -910,11 +909,11 @@ class ParserBaseClass:
         # Return the raw dict, unmerged.
         return self.shortcutsDict, self.settingsDict
     #@+node:ekr.20041120094940.10: *3* pbc.valueError
-    def valueError(self, p: Pos, kind: str, name: str, val: Any) -> None:
+    def valueError(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Give an error: val is not valid for kind."""
         self.error(f"{val} is not a valid {kind} for {name}")
     #@+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
-    def visitNode(self, p: Pos) -> str:
+    def visitNode(self, p: Position) -> str:
         self.oops()
         return ''
     #@-others
@@ -1050,7 +1049,7 @@ class ActiveSettingsOutline:
             legend = legend + f"[T] theme file: {g.shortFileName(lm.theme_path)}\n"
         return textwrap.dedent(legend)
     #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
-    def create_inner_outline(self, c: Cmdr, kind: str, root: Pos) -> None:
+    def create_inner_outline(self, c: Cmdr, kind: str, root: Position) -> None:
         """
         Create the outline for the given hidden commander, as descendants of root.
         """
@@ -1064,7 +1063,7 @@ class ActiveSettingsOutline:
         self.create_unified_settings(kind, root, settings_root)
         self.clean(root)
     #@+node:ekr.20190905091614.9: *3* aso.create_unified_settings
-    def create_unified_settings(self, kind: str, root: Pos, settings_root: Pos) -> None:
+    def create_unified_settings(self, kind: str, root: Position, settings_root: Position) -> None:
         """Create the active settings tree under root."""
         c = self.commander
         lm = g.app.loadManager
@@ -1124,7 +1123,7 @@ class ActiveSettingsOutline:
             else:
                 self.add(p)
     #@+node:ekr.20190905091614.12: *3* aso.add
-    def add(self, p: Pos, h: str=None) -> None:
+    def add(self, p: Position, h: str=None) -> None:
         """
         Add a node for p.
 
@@ -1148,14 +1147,14 @@ class ActiveSettingsOutline:
         self.parents.append(child)
         self.level += 1
     #@+node:ekr.20190905091614.13: *3* aso.clean
-    def clean(self, root: Pos) -> None:
+    def clean(self, root: Position) -> None:
         """
         Remove all unnecessary nodes.
         Remove the "ORG:" prefix from remaining nodes.
         """
         self.clean_node(root)
 
-    def clean_node(self, p: Pos) -> None:
+    def clean_node(self, p: Position) -> None:
         """Remove p if it contains no children after cleaning its children."""
         tag = 'ORG:'
         # There are no clones, so deleting children in reverse preserves positions.
@@ -1205,8 +1204,8 @@ class GlobalConfigManager:
         # where rclicks is a namedtuple('RClick', 'position,children')
         self.atCommonButtonsList: List[Tuple[Cmdr, str, Any]] = []
         self.atCommonCommandsList: List[Tuple[Cmdr, str]] = []  # List of info for common @commands nodes.
-        self.atLocalButtonsList: List[Pos] = []  # List of positions of @button nodes.
-        self.atLocalCommandsList: List[Pos] = []  # List of positions of @command nodes.
+        self.atLocalButtonsList: List[Position] = []  # List of positions of @button nodes.
+        self.atLocalCommandsList: List[Position] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.default_derived_file_encoding = 'utf-8'
@@ -1551,7 +1550,7 @@ class LocalConfigManager:
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
 
-    def findSettingsPosition(self, setting: str) -> Pos:
+    def findSettingsPosition(self, setting: str) -> Position:
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
         # c = self.c
@@ -1566,7 +1565,7 @@ class LocalConfigManager:
                 return p.copy()
         return None
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
-    def settingsRoot(self) -> Pos:
+    def settingsRoot(self) -> Position:
         """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
@@ -1663,7 +1662,7 @@ class LocalConfigManager:
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting, default=None) -> bool:
+    def getBool(self, setting: str, default: Any=None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1677,7 +1676,11 @@ class LocalConfigManager:
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
-    def getData(self, setting, strip_comments=True, strip_data=True) -> List[str]:
+    def getData(self,
+        setting: str,
+        strip_comments: bool=True,
+        strip_data: bool=True,
+    ) -> List[str]:
         """Return a list of non-comment strings in the body text of @data setting."""
         # 904: Add local abbreviations to global settings.
         append = setting == 'global-abbreviations'
@@ -1724,7 +1727,7 @@ class LocalConfigManager:
             return theDir
         return None
     #@+node:ekr.20120215072959.12530: *5* c.config.getFloat
-    def getFloat(self, setting) -> float:
+    def getFloat(self, setting: str) -> float:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
@@ -1757,7 +1760,7 @@ class LocalConfigManager:
             weight = "normal"
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20120215072959.12532: *5* c.config.getInt
-    def getInt(self, setting) -> int:
+    def getInt(self, setting: str) -> int:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
@@ -1928,7 +1931,7 @@ class LocalConfigManager:
         else:
             g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
-    def set(self, p: Pos, kind: str, name: str, val: Any, warn: bool=True) -> None:
+    def set(self, p: Position, kind: str, name: str, val: Any, warn: bool=True) -> None:
         """
         Init the setting for name to val.
 
@@ -1998,7 +2001,7 @@ class SettingsTreeParser(ParserBaseClass):
     #@+others
     #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
-    def visitNode(self, p: Pos) -> str:
+    def visitNode(self, p: Position) -> str:
         """Init any settings found in node p."""
         p = p.copy()
         munge = g.app.config.munge

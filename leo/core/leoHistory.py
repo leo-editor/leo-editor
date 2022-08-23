@@ -3,6 +3,8 @@
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
 from typing import Any, List, Tuple, TYPE_CHECKING
+#@+<< leoHistory annotations >>
+#@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
 if TYPE_CHECKING:
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
@@ -11,6 +13,7 @@ else:
     Chapter = Any
     Cmdr = Any
     Position = Any
+#@-<< leoHistory annotations >>
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory:

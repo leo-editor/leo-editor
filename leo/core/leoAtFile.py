@@ -852,7 +852,7 @@ class AtFile:
             s = at.readLine()
         return s
     #@+node:ekr.20050103163224: *5* at.scanHeaderForThin (import code)
-    def scanHeaderForThin(self, fileName: str) -> None:  # pragma: no cover
+    def scanHeaderForThin(self, fileName: str) -> bool:  # pragma: no cover
         """
         Return true if the derived file is a thin file.
 
