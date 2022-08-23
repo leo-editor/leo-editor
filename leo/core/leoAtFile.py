@@ -723,7 +723,7 @@ class AtFile:
             at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> str:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> Optional[str]:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -742,7 +742,7 @@ class AtFile:
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if not s_bytes:
-            return ''
+            return None  # Not ''.
         e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
