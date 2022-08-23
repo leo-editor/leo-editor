@@ -462,13 +462,22 @@ class CompareLeoOutlines:
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
-        self.root = self.create_root(aList)
+        c, u = self.c, self.c.undoer
+        undoType = 'Diff Leo files'
+        u.beforeChangeGroup(c.p, undoType)
+
+        self.root = self.create_root(aList)  # creates it's own undo bead
+
         self.visible = visible
         while len(aList) > 1:
             path1 = aList[0]
             aList = aList[1:]
             for path2 in aList:
-                self.diff_two_files(path1, path2)
+                undoData = u.beforeChangeTree(self.root)
+                self.diff_two_files(path1, path2)  # adds to self.root
+                u.afterChangeTree(self.root, undoType, undoData)
+
+        u.afterChangeGroup(c.p, undoType=undoType)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
@@ -556,10 +565,16 @@ class CompareLeoOutlines:
     #@+node:ekr.20180211170333.8: *4* loc.create_root
     def create_root(self, aList):
         """Create the top-level organizer node describing all the diffs."""
-        c = self.c
+        c, u = self.c, self.c.undoer
+        undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
+
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
+
+        u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self):
