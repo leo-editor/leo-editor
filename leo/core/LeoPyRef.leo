@@ -69,10 +69,7 @@
 <v t="ekr.20201013034742.12"><vh>{{name}}.clean_nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20201013034742.13"><vh>class {{cap_name}}_ScanState</vh>
-<v t="ekr.20201013034742.14"><vh>{{name}}_state.level</vh></v>
-<v t="ekr.20201013034742.15"><vh>{{name}}_state.update</vh></v>
-</v>
+<v t="ekr.20201013034742.13"><vh>class {{cap_name}}_ScanState</vh></v>
 </v>
 </v>
 <v t="ekr.20190406154306.1"><vh>@@button open-pyzo</vh></v>
@@ -207,7 +204,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20170302123956.1" descendentVnodeUnknownAttributes="7d71005805000000302e352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file ../doc/leoAttic.txt</vh></v>
+<v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -710,6 +707,7 @@
 <v t="ekr.20210829124658.1"><vh>@file ../unittests/core/test_leoFind.py</vh></v>
 <v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
 <v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
+<v t="ekr.20220822082042.1"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
@@ -1538,7 +1536,6 @@ importer_dict = {
         Importer.__init__(self,
             c,
             language = '{{language}}',
-            state_class = {{cap_name}}_ScanState,
         )
         
     @others
@@ -1605,28 +1602,6 @@ if 0: # A more complex example, for the C language.
     __str__ = __repr__
 
     @others
-</t>
-<t tx="ekr.20201013034742.14">def level(self):
-    """{{cap_name}}_ScanState.level."""
-    return {{state_ivar}}
-
-</t>
-<t tx="ekr.20201013034742.15">def update(self, data):
-    """
-    {{cap_name}}_ScanState.update
-
-    Update the state using the 6-tuple returned by v2_scan_line.
-    Return i = data[1]
-    """
-    context, i, delta_c, delta_p, delta_s, bs_nl = data
-    # All ScanState classes must have a context ivar.
-    self.context = context
-    self.curlies += delta_c  
-    # Update {{cap_name}}_ScanState ivars
-    # self.bs_nl = bs_nl
-    # self.parens += delta_p
-    # self.squares += delta_s
-    return i
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
 <t tx="ekr.20201013034742.16">"""Converts the word at the cursor to pep8 style throughout a given tree."""
@@ -2228,8 +2203,8 @@ convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
 efc.GitDiffController(c).diff_two_revs(
     # rev1='f85969ae8cb',  # Before.
     # rev2='dd0fadf7b15',  # After.
-    rev1='devel',               # Old
-    rev2='ekr-new-importers',   # New
+    rev1='test',               # Old
+    rev2='ekr-mypy',   # New
 )
 </t>
 <t tx="ekr.20180816105258.1">g.cls()
@@ -2742,7 +2717,6 @@ while True:
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
-
 </t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
