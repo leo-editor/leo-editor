@@ -1047,13 +1047,11 @@
 <v t="ekr.20161006072143.1"><vh>@item import-free-mind-files</vh></v>
 <v t="ekr.20161006093610.1"><vh>@item import-mind-jet-files</vh></v>
 <v t="ekr.20161006102148.1"><vh>@item import-MORE-files</vh></v>
-<v t="ekr.20161007090350.1"><vh>@item import-jupyter-notebook</vh></v>
 <v t="ekr.20161006072041.1"><vh>@item import-tabbed-files</vh></v>
 <v t="ekr.20161006093513.1"><vh>@item import-zim-folder</vh></v>
 </v>
 <v t="ekr.20131213135427.21863"><vh>@menu &amp;Export Files</vh>
 <v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
-<v t="ekr.20161007090445.1"><vh>@item export-jupyter-notebook</vh></v>
 <v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
 <v t="ekr.20131213135427.21866"><vh>@item outline-to-cweb</vh></v>
 <v t="ekr.20131213135427.21867"><vh>@item outline-to-noweb</vh></v>
@@ -9936,8 +9934,6 @@ code {
 <t tx="ekr.20161006093513.1">Import &amp;Zim Folder...</t>
 <t tx="ekr.20161006093610.1">Import &amp;MindJet Files...</t>
 <t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
-<t tx="ekr.20161007090350.1">Import &amp;Jupyter Notebook...</t>
-<t tx="ekr.20161007090445.1">Export &amp;Jupyter Notebook</t>
 <t tx="ekr.20161011130632.1">/*
     The main .css stylesheet for the mod_http.py plugin.
     From Chris George:
