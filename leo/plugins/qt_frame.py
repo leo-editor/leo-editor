@@ -2165,12 +2165,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
-        self.body = None
+        self.body: Wrapper = None
         self.f1 = self.f2 = None
         self.findPanel = None  # Inited when first opened.
         self.iconBarComponentName = 'iconBar'
         self.iconFrame = None
-        self.log = None
+        self.log: Wrapper = None
         self.canvas = None
         self.outerFrame = None
         self.statusFrame = None
@@ -2178,7 +2178,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.statusText = None
         self.statusLabel = None
         self.top = None  # This will be a class Window object.
-        self.tree = None
+        self.tree: Wrapper = None
         # Used by event handlers...
         self.controlKeyIsDown = False  # For control-drags
         self.isActive = True
@@ -2224,9 +2224,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def createSplitterComponents(self) -> None:
 
         c = self.c
-        self.tree: Wrapper = qt_tree.LeoQtTree(c, self)
-        self.log: Wrapper = LeoQtLog(self, None)
-        self.body: Wrapper = LeoQtBody(self, None)
+        self.tree = qt_tree.LeoQtTree(c, self)
+        self.log = LeoQtLog(self, None)
+        self.body = LeoQtBody(self, None)
         self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
         self.resizePanesToRatio(ratio, secondary_ratio)
     #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
@@ -3478,7 +3478,7 @@ class LeoQtLog(leoFrame.LeoLog):
         i = self.findTabIndex(tabName)
         if i is None:
             g.trace('Can not happen', tabName)
-            self.tabName = None
+            self.tabName: str = None
             return
         # #1161.
         if tabName == 'Log':

@@ -631,25 +631,34 @@ def diff_leo_files(event):
 @g.command('diff-marked-nodes')
 def diffMarkedNodes(event):
     """
-    When two or more nodes are marked, this command does the following:
+    When two or more nodes are marked, this command creates a
+    "diff marked node" as the last top-level node. The body of
+    this node contains "diff n" nodes, one for each pair of compared
+    nodes.
 
-    - Creates a "diff marked node" as the last top-level node. The body of
-      this node contains "diff n" nodes, one for each pair of compared
-      nodes.
+    Each diff n contains the diffs between the two diffed nodes, that is,
+    difflib.Differ().compare(p1.b, p2.b).
 
-    - Each diff n contains the diffs between the two diffed nodes, that is,
-      difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
-      *clones* of the two compared nodes.
+    The children of the diff n are clones of the two compared nodes.
     """
     c = event and event.get('c')
     if not c:
         return
+    u = c.undoer
+    undoType = 'Diff marked nodes'  # Same undoType is reused for all inner undos
+
     aList = [z for z in c.all_unique_positions() if z.isMarked()]
     n = 0
     if len(aList) >= 2:
+        u.beforeChangeGroup(c.p, undoType)  # going to perform many operations
+
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
         root = c.lastTopLevel().insertAfter()
         root.h = 'diff marked nodes'
         root.b = '\n'.join([z.h for z in aList]) + '\n'
+        u.afterInsertNode(root, undoType, undoData)
+
         while len(aList) > 1:
             n += 1
             p1, p2 = aList[0], aList[1]
@@ -657,16 +666,25 @@ def diffMarkedNodes(event):
             lines = difflib.Differ().compare(
                 g.splitLines(p1.b.rstrip() + '\n'),
                 g.splitLines(p2.b.rstrip() + '\n'))
+
+            undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
             p = root.insertAsLastChild()
             # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
             p.h = f"diff {n}"
             p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
+            u.afterInsertNode(p, undoType, undoData)
+
+            undoData = u.beforeChangeTree(p)
             for p3 in (p1, p2):
                 clone = p3.clone()
                 clone.moveToLastChildOf(p)
+            u.afterChangeTree(p, undoType, undoData)
+
         root.expand()
         # c.unmarkAll()
         c.selectPosition(root)
+        # Add the changes to the outer undo group.
+        u.afterChangeGroup(c.p, undoType=undoType)
         c.redraw()
     else:
         g.es_print('Please mark at least 2 nodes')
