@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
+#@@first
 """Classes that manage chapters in Leo's core."""
+#@+<< leoChapters imports >>
+#@+node:ekr.20220824080606.1: ** << leoChapters imports >>
 import re
 import string
 from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
+#@-<< leoChapters imports >>
 #@+<< leoChapters annotations >>
 #@+node:ekr.20220821201049.1: ** << leoChapters annotations >>
 if TYPE_CHECKING:

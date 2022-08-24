@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.1: * @file ../plugins/editpane/webkitview.py
-#@+<< webkitview.py imports >>
-#@+node:tbrown.20171028115457.1: ** << webkitview.py imports >>
+#@@first
+#@+<< webkitview imports >>
+#@+node:tbrown.20171028115457.1: ** << webkitview imports >>
 import os
 from leo.core import leoGlobals as g
 assert g
@@ -10,7 +12,7 @@ if not QtWebKitWidgets or 'engine' in g.os_path_basename(
     QtWebKitWidgets.__file__).lower():
     # not loading webkit view, webengine masquerading as webkit
     raise ImportError
-#@-<< webkitview.py imports >>
+#@-<< webkitview imports >>
 #@+others
 #@+node:tbrown.20171028115457.2: ** _path_from_pos
 def _path_from_pos(c, p):

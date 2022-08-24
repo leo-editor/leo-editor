@@ -3,8 +3,8 @@
 #@+node:ekr.20031218072017.3320: * @file leoNodes.py
 #@@first
 """Leo's fundamental data classes."""
-#@+<< imports >>
-#@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
+#@+<< leoNodes imports >>
+#@+node:ekr.20060904165452.1: ** << leoNodes imports >>
 #Transcrypt does not support Python's copy module.
 import copy
 import time
@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = Any
-#@-<< imports >>
+#@-<< leoNodes imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
 class NodeIndices:

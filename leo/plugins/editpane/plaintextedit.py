@@ -1,13 +1,15 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.2: * @file ../plugins/editpane/plaintextedit.py
-#@+<< plaintextedit.py imports >>
-#@+node:tbrown.20171028115504.1: ** << plaintextedit.py imports >>
+#@@first
+#@+<< plaintextedit imports >>
+#@+node:tbrown.20171028115504.1: ** << plaintextedit imports >>
 import re
 from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import GlobalColor, Weight
-#@-<< plaintextedit.py imports >>
+#@-<< plaintextedit imports >>
 #@+others
 #@+node:tbrown.20171028115504.2: ** DBG
 def DBG(text):

@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
+#@@first
 """Gui-independent menu handling for Leo."""
-#@+<< imports leoMenu.py >>
-#@+node:ekr.20220414095908.1: ** << imports leoMenu.py >>
+#@+<< leoMenu imports >>
+#@+node:ekr.20220414095908.1: ** << leoMenu imports >>
 from typing import Any, Callable, Dict, List, Tuple
 from leo.core import leoGlobals as g
-#@-<< imports leoMenu.py >>
+#@-<< leoMenu imports >>
+#@+<< leoMenu annotations >>
+#@+node:ekr.20220824085300.1: ** << leoMenu annotations >>
 Event = Any
 Widget = Any
+#@-<< leoMenu annotations >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu:

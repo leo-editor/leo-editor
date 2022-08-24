@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115541.1: * @file signal_manager.py
+#@@first
 """
 signal_manager.py - SignalManager - light weight signal management
 

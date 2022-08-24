@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20060123151617: * @file leoFind.py
+#@@first
 """Leo's gui-independent find classes."""
 #@+<< leoFind imports >>
 #@+node:ekr.20220415005856.1: ** << leoFind imports >>

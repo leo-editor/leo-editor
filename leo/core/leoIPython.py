@@ -22,8 +22,8 @@ This object, a LeoNameSpace instance, simplifies dealing with multiple open
 Leo commanders.
 """
 #@-<< leoIpython docstring >>
-#@+<< imports >>
-#@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
+#@+<< leoIPython imports >>
+#@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
 import sys
 from leo.core import leoGlobals as g
 
@@ -45,7 +45,7 @@ except ImportError:
     import_fail('IPKernelApp')
 
 g.app.ipython_inited = IPKernelApp is not None
-#@-<< imports >>
+#@-<< leoIPython imports >>
 #@+others
 #@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
 @g.command("ipython-new")

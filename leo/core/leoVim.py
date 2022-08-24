@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
 #@@first
+#@+<< leoVim docstring >>
+#@+node:ekr.20220824081749.1: ** << leoVim docstring >>
 """
 Leo's vim mode.
 
@@ -15,6 +17,7 @@ Vim *mode* is independent of vim *emulation* because
 k.masterKeyHandler dispatches keys to vim mode before
 doing the normal key handling that vim emulation uses.
 """
+#@-<< leoVim docstring >>
 import os
 import string
 from leo.core import leoGlobals as g

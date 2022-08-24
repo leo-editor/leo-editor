@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
+#@@first
 """Leo's base compare class."""
 import difflib
 import filecmp

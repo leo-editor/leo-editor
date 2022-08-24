@@ -3,8 +3,8 @@
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
 #@@first
 """Leo's spell-checking commands."""
-#@+<< imports >>
-#@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
+#@+<< spellCommands imports >>
+#@+node:ekr.20150514050530.1: ** << spellCommands imports >>
 import re
 try:
     # pylint: disable=import-error
@@ -15,7 +15,7 @@ except Exception:  # May throw WinError(!)
     enchant = None
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
-#@-<< imports >>
+#@-<< spellCommands imports >>
 
 def cmd(name):
     """Command decorator for the SpellCommandsClass class."""

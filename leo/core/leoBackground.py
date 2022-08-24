@@ -3,8 +3,8 @@
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
 """Handling background processes"""
-#@+<< leoBackground.py imports >>
-#@+node:ekr.20220410202718.1: ** << leoBackground.py imports >>
+#@+<< leoBackground imports >>
+#@+node:ekr.20220410202718.1: ** << leoBackground imports >>
 import re
 import subprocess
 import _thread as thread
@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoNodes import Position as Pos
 else:
     Cmdr = Pos = Any
-#@-<< leoBackground.py imports >>
+#@-<< leoBackground imports >>
 
 Event = Any
 Pattern = Union[Any, str]

@@ -7,8 +7,8 @@
 # Indicated code are copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-#@+<< imports >>
-#@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
+#@+<< leoColorizer imports >>
+#@+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 import re
 import string
 import time
@@ -32,7 +32,7 @@ try:  # #1973
 except Exception:
     Qsci = QtGui = QtWidgets = None
     UnderlineStyle = Weight = None
-#@-<< imports >>
+#@-<< leoColorizer imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
 def make_colorizer(c, widget):

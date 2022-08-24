@@ -2,8 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20061024060248.1: * @file leoPymacs.py
 #@@first
-#@+<< docstring>>
-#@+node:ekr.20061024060248.2: ** << docstring >> (leoPymacs.py)
+#@+<< leoPymacs docstring>>
+#@+node:ekr.20061024060248.2: ** << leoPymacs docstring >>
 """A module to allow the Pymacs bridge to access Leo data.
 
 All code in this module must be called *from* Emacs:
@@ -24,13 +24,14 @@ Notes:
   Note that full path names are required in each case.
 
 """
-#@-<< docstring>>
+#@-<< leoPymacs docstring>>
+
 # As in leo.py we must be very careful about imports.
 # pylint: disable = global-variable-not-assigned
+
 g = None  # set by init: do *not* import it here!
 inited = False
 pymacsFile = __file__
-# print('leoPymacs:pymacsFile',pymacsFile)
 #@+others
 #@+node:ekr.20061024131236: ** dump (pymacs)
 def dump(anObject):
