@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
+#@@first
 """Classes relating to Leo's plugin architecture."""
 import sys
 from typing import List

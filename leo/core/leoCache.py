@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20100208065621.5894: * @file leoCache.py
+#@@first
 """A module encapsulating Leo's file caching"""
-#@+<< imports >>
-#@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
+#@+<< leoCache imports >>
+#@+node:ekr.20100208223942.10436: ** << leoCache imports >>
 import fnmatch
 import os
 import pickle
@@ -11,7 +13,7 @@ import stat
 from typing import Any, Dict, Sequence
 import zlib
 from leo.core import leoGlobals as g
-#@-<< imports >>
+#@-<< leoCache imports >>
 # pylint: disable=raise-missing-from
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
