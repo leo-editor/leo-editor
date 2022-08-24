@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20210709045755.1: * @file ../scripts/wax_off.py
+#@@first
 #@+<< docstring >>
 #@+node:ekr.20210710050822.1: ** << docstring >>
 """
