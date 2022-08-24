@@ -230,7 +230,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d710668037d7107735806000000302e32302e3171087d710968037d710a735806000000302e32312e31710b7d710c68037d710d735806000000302e32312e32710e7d710f5808000000616e6e6f7461746571107d7111735806000000302e32322e3171127d71135808000000616e6e6f7461746571147d7115735806000000302e32332e3071167d71175808000000616e6e6f7461746571187d711973752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31312e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31322e3071057d710668037d7107735806000000302e31342e3171087d710968037d710a735806000000302e31352e31710b7d710c68037d710d735806000000302e31352e32710e7d710f5808000000616e6e6f7461746571107d7111735806000000302e31362e3171127d71135808000000616e6e6f7461746571147d7115735806000000302e31372e3071167d71175808000000616e6e6f7461746571187d711973752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -299,6 +299,7 @@
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
+<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
 <v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
@@ -308,7 +309,6 @@
 </v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
 <v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
@@ -316,18 +316,7 @@
 <v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
 <v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
-<v t="ekr.20220823195753.1"><vh>@clean ../external/stringlist.py</vh>
-<v t="ekr.20220823195808.1"><vh>class SList</vh>
-<v t="ekr.20220823195808.2"><vh>get_list</vh></v>
-<v t="ekr.20220823195808.3"><vh>get_spstr</vh></v>
-<v t="ekr.20220823195808.4"><vh>get_nlstr</vh></v>
-<v t="ekr.20220823195808.5"><vh>Property accessors</vh></v>
-<v t="ekr.20220823195808.6"><vh>grep</vh></v>
-<v t="ekr.20220823195808.7"><vh>fields</vh></v>
-<v t="ekr.20220823195808.8"><vh>sort</vh></v>
-</v>
-<v t="ekr.20220823195808.9"><vh>shcmd</vh></v>
-</v>
+<v t="ekr.20220823195753.1"><vh>@file ../external/stringlist.py</vh></v>
 <v t="ekr.20170428085201.1"><vh>npyscreen</vh>
 <v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
 <v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
@@ -2953,6 +2942,117 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180225010743.1">@nosearch</t>
 <t tx="ekr.20190607124533.1"></t>
+<t tx="ekr.20220823195205.1">"""
+Stand alone GUI free index builder for Leo's full text search system::
+
+  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
+
+If the file name starts with @ it's a assumed to be a simple
+text file listing files to be indexed.
+
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
+to index, and is indexed.
+
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
+containing a list of .leo files to index, with the list in
+the node indicated by the UNL after the #, e.g.::
+
+   path/to/myfile.leo#Lists--&gt;List of outlines
+
+In the latter case, if the node identified by the UNL has children,
+the list of files to scan is built from the first line of the body
+of each child node of the identified node (works well with bookmarks.py).
+If the node identified by the UNL does not have children, the
+node's body is assumed to be a simple text listing of paths to .leo files).
+
+.. note::
+
+    It may be necessary to quote the "file" on the command line,
+    as the '#' may be interpreted as a comment delimiter::
+
+        python leoftsindex.py "workbook.leo#Links"
+
+
+"""
+
+import sys
+# add folder containing 'leo' folder to path
+# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
+import leo.core.leoBridge as leoBridge
+import leo.plugins.leofts as leofts
+
+controller = leoBridge.controller(
+    gui='nullGui',
+    loadPlugins=False,  # True: attempt to load plugins.
+    readSettings=False,  # True: read standard settings files.
+    silent=False,  # True: don't print signon messages.
+    verbose=False
+)
+g = controller.globals()
+
+# list of "files" to process
+files = sys.argv[1:]
+
+# set up leofts
+leofts.set_leo(g)
+g._gnxcache = leofts.GnxCache()
+fts = leofts.get_fts()
+
+fn2c = {}  # cache to avoid loading same outline twice
+done = set()  # outlines scanned, to avoid repetition repetition
+
+todo = list(files)
+
+while todo:
+
+    item = todo.pop(0)
+
+    print("INDEX: %s" % item)
+
+    if '#' in item:
+        fn, node = item.split('#', 1)
+    else:
+        fn, node = item, None
+
+    if node:
+        c = fn2c.setdefault(fn, controller.openLeoFile(fn))
+        found, dummy, p = g.recursiveUNLSearch(node.split('--&gt;'), c)
+        if not found:
+            print("Could not find '%s'" % item)
+            break
+        if not p:
+            p = c.p
+        if p.hasChildren():
+            # use file named in first node of each child
+            files = [chl.b.strip().split('\n', 1)[0].strip() for chl in p.children()]
+        else:
+            # use all files listed in body
+            files = [i.strip() for i in p.b.strip().split('\n')]
+
+    elif fn.startswith('@'):
+        todo.extend(open(fn[1:]).read().strip().split('\n'))
+        files = []
+
+    else:
+        files = [fn]
+
+    for fn in files:
+
+        # file names may still have '#' if taken from a node list
+        real_name = fn.split('#', 1)[0]
+        if real_name in done:
+            continue
+        done.add(real_name)
+
+        if len(files) != 1:
+            print(" FILE: %s" % real_name)
+
+        c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
+        fts.drop_document(real_name)
+        fts.index_nodes(c)
+@language python
+@tabwidth -4
+</t>
 <t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
@@ -3092,257 +3192,6 @@ February 20 to 25, 2016
 
 
 
-</t>
-<t tx="ekr.20220823195205.1">"""
-Stand alone GUI free index builder for Leo's full text search system::
-
-  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
-
-If the file name starts with @ it's a assumed to be a simple
-text file listing files to be indexed.
-
-If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
-to index, and is indexed.
-
-If &lt;file&gt; does contain '#' it's assumed to be a .leo file
-containing a list of .leo files to index, with the list in
-the node indicated by the UNL after the #, e.g.::
-
-   path/to/myfile.leo#Lists--&gt;List of outlines
-
-In the latter case, if the node identified by the UNL has children,
-the list of files to scan is built from the first line of the body
-of each child node of the identified node (works well with bookmarks.py).
-If the node identified by the UNL does not have children, the
-node's body is assumed to be a simple text listing of paths to .leo files).
-
-.. note::
-
-    It may be necessary to quote the "file" on the command line,
-    as the '#' may be interpreted as a comment delimiter::
-
-        python leoftsindex.py "workbook.leo#Links"
-
-
-"""
-
-import sys
-# add folder containing 'leo' folder to path
-# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
-import leo.core.leoBridge as leoBridge
-import leo.plugins.leofts as leofts
-
-controller = leoBridge.controller(
-    gui='nullGui',
-    loadPlugins=False,  # True: attempt to load plugins.
-    readSettings=False,  # True: read standard settings files.
-    silent=False,  # True: don't print signon messages.
-    verbose=False
-)
-g = controller.globals()
-
-# list of "files" to process
-files = sys.argv[1:]
-
-# set up leofts
-leofts.set_leo(g)
-g._gnxcache = leofts.GnxCache()
-fts = leofts.get_fts()
-
-fn2c = {}  # cache to avoid loading same outline twice
-done = set()  # outlines scanned, to avoid repetition repetition
-
-todo = list(files)
-
-while todo:
-
-    item = todo.pop(0)
-
-    print("INDEX: %s" % item)
-
-    if '#' in item:
-        fn, node = item.split('#', 1)
-    else:
-        fn, node = item, None
-
-    if node:
-        c = fn2c.setdefault(fn, controller.openLeoFile(fn))
-        found, dummy, p = g.recursiveUNLSearch(node.split('--&gt;'), c)
-        if not found:
-            print("Could not find '%s'" % item)
-            break
-        if not p:
-            p = c.p
-        if p.hasChildren():
-            # use file named in first node of each child
-            files = [chl.b.strip().split('\n', 1)[0].strip() for chl in p.children()]
-        else:
-            # use all files listed in body
-            files = [i.strip() for i in p.b.strip().split('\n')]
-
-    elif fn.startswith('@'):
-        todo.extend(open(fn[1:]).read().strip().split('\n'))
-        files = []
-
-    else:
-        files = [fn]
-
-    for fn in files:
-
-        # file names may still have '#' if taken from a node list
-        real_name = fn.split('#', 1)[0]
-        if real_name in done:
-            continue
-        done.add(real_name)
-
-        if len(files) != 1:
-            print(" FILE: %s" % real_name)
-
-        c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
-        fts.drop_document(real_name)
-        fts.index_nodes(c)
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20220823195753.1"># Used by valuespace plugin.
-import re
-import subprocess
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20220823195808.1">class SList(list):
-    """List derivative with a special access attributes.
-
-    These are normal string lists, but with the special attributes:
-
-        .l: value as list (the list itself).
-        .n: value as a string, joined on newlines.
-        .s: value as a string, joined on spaces.
-
-    """
-    @others
-</t>
-<t tx="ekr.20220823195808.2">def get_list(self):
-    return self
-</t>
-<t tx="ekr.20220823195808.3">def get_spstr(self):
-    self.__spstr = ' '.join(self)
-    return self.__spstr
-</t>
-<t tx="ekr.20220823195808.4">def get_nlstr(self):
-    self.__nlstr = '\n'.join(self)
-    return self.__nlstr
-</t>
-<t tx="ekr.20220823195808.5">l = property(get_list)
-s = property(get_spstr)
-n = property(get_nlstr)
-</t>
-<t tx="ekr.20220823195808.6">def grep(self, pattern, prune=False, field=None):
-    """ Return all strings matching 'pattern' (a regex or callable)
-
-    This is case-insensitive. If prune is true, return all items
-    NOT matching the pattern.
-
-    If field is specified, the match must occur in the specified
-    whitespace-separated field.
-
-    Examples::
-
-        a.grep( lambda x: x.startswith('C') )
-        a.grep('Cha.*log', prune=1)
-        a.grep('chm', field=-1)
-    """
-
-    def match_target(s):
-        if field is None:
-            return s
-        parts = s.split()
-        try:
-            tgt = parts[field]
-            return tgt
-        except IndexError:
-            return ""
-
-    if isinstance(pattern, str):  # str was basestring
-        pred = lambda x: re.search(pattern, x, re.IGNORECASE)
-    else:
-        pred = pattern
-    if not prune:
-        return SList([el for el in self if pred(match_target(el))])
-    else:
-        return SList([el for el in self if not pred(match_target(el))])
-</t>
-<t tx="ekr.20220823195808.7">def fields(self, *fields):
-    """ Collect whitespace-separated fields from string list
-
-    Allows quick awk-like usage of string lists.
-
-    Example data (in var a, created by 'a = !ls -l')::
-        -rwxrwxrwx  1 ville None      18 Dec 14  2006 ChangeLog
-        drwxrwxrwx+ 6 ville None       0 Oct 24 18:05 IPython
-
-    a.fields(0) is ['-rwxrwxrwx', 'drwxrwxrwx+']
-    a.fields(1,0) is ['1 -rwxrwxrwx', '6 drwxrwxrwx+']
-    (note the joining by space).
-    a.fields(-1) is ['ChangeLog', 'IPython']
-
-    IndexErrors are ignored.
-
-    Without args, fields() just split()'s the strings.
-    """
-    if len(fields) == 0:
-        return [el.split() for el in self]
-
-    res = SList()
-    for el in [f.split() for f in self]:
-        lineparts = []
-
-        for fd in fields:
-            try:
-                lineparts.append(el[fd])
-            except IndexError:
-                pass
-        if lineparts:
-            res.append(" ".join(lineparts))
-
-    return res
-</t>
-<t tx="ekr.20220823195808.8">def sort(self, field=None, nums=False):
-    """ sort by specified fields (see fields())
-
-    Example::
-        a.sort(1, nums = True)
-
-    Sorts a by second field, in numerical order (so that 21 &gt; 3)
-
-    """
-
-    #decorate, sort, undecorate
-    if field is not None:
-        dsu = [[SList([line]).fields(field), line] for line in self]
-    else:
-        dsu = [[line, line] for line in self]
-    if nums:
-        for i in range(len(dsu)):
-            numstr = "".join([ch for ch in dsu[i][0] if ch.isdigit()])
-            try:
-                n = int(numstr)
-            except ValueError:
-                n = 0;
-            dsu[i][0] = n
-
-
-    dsu.sort()
-    return SList([t[1] for t in dsu])
-</t>
-<t tx="ekr.20220823195808.9">def shcmd(cmd):
-    """ Execute shell command, capture output to string list """
-
-    out = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]
-
-    sl = SList(out.split('\n'))  # type:ignore
-    return sl
 </t>
 <t tx="ekr.20170428085201.1">@nosearch
 @nobeautify</t>
