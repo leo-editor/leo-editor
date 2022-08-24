@@ -1,3 +1,4 @@
+# pylint: disable=import-error
 import os
 from whoosh.index import create_in, open_dir
 from whoosh.fields import ID, TEXT, Schema
@@ -92,7 +93,7 @@ class LeoFts:
     def create(self):
 
         schema = self.schema()
-        self.ix = ix = create_in(self.idx_dir, schema)
+        self.ix = create_in(self.idx_dir, schema)
 
 
     def index_nodes(self, c):
