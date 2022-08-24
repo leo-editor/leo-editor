@@ -92,7 +92,7 @@ class LeoFts:
     def create(self):
 
         schema = self.schema()
-        self.ix = ix = create_in(self.idx_dir, schema)
+        self.ix = create_in(self.idx_dir, schema)
 
 
     def index_nodes(self, c):
@@ -161,3 +161,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
