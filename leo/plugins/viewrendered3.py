@@ -909,38 +909,6 @@ else:
     except Exception as e:
         g.trace(e)
 
-# QWebView = None
-# # Not imported above because we might have PyQt without QWebEngineWidgets
-# from leo.core.leoQt import has_WebEngineWidgets  # pylint: disable=wrong-import-position
-# if has_WebEngineWidgets:
-    # from leo.core.leoQt import QtWebEngineWidgets
-    # from leo.core.leoQt import WebEngineAttribute
-    # QWebView = QtWebEngineWidgets.QWebEngineView
-# else:
-    # try:
-        # from leo.core.leoQt import QtWebKitWidgets
-        # QWebView = QtWebKitWidgets.QWebView
-    # except ImportError:
-        # if not g.unitTesting:
-            # g.trace("Can't import QtWebKitWidgets")
-    # except AttributeError:
-        # if not g.unitTesting:
-            # g.trace('No QWebView')
-    # except Exception as e:
-        # g.trace(e)
-
-# if not QWebView:
-    # try:
-        # QWebView = QtWidgets.QTextBrowser
-        # if not g.unitTesting:
-            # print("VR3: *** limited RsT rendering in effect")
-            # print('VR3" *** For full rendering capability,')
-            # print('VR3:     install QWebEngine using python3 -m pip install PyQt6-WebEngine')
-            # print('VR3:     for PyQt6 or python3 -m pip install PyQtWebEngine for PyQt5')
-    # except Exception as e:
-        # g.trace(e)
-        # # The top-level init function gives the error.
-
 if QtSvg:
     if hasattr(QtSvg, 'QSvgWidget'):
         QSvgWidget = QtSvg.QSvgWidget

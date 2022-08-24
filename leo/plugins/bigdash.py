@@ -76,8 +76,6 @@ def global_search_f(event):
 def init():
     """Return True if the plugin has loaded successfully."""
     # Fix #1114: Don't require QtWebKitWidgets here.
-        # if not QtWebKitWidgets:
-            # return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
