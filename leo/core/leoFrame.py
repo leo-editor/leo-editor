@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3655: * @file leoFrame.py
+#@@first
 """
-The base classes for all Leo Windows, their body, log and tree panes, key bindings and menus.
+The base classes for all Leo Windows, their body, log and tree panes,
+key bindings and menus.
 
 These classes should be overridden to create frames for a particular gui.
 """
-#@+<< imports >>
-#@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
+#@+<< leoFrame imports >>
+#@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
 from typing import Any, Callable, Dict, List, Tuple
@@ -16,9 +19,9 @@ from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMix
 from leo.core import leoMenu
 from leo.core import leoNodes
 
-#@-<< imports >>
-#@+<< type aliases leoFrame >>
-#@+node:ekr.20220415013957.1: ** << type aliases leoFrame >>
+#@-<< leoFrame imports >>
+#@+<< leoFrame annotations >>
+#@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
@@ -29,9 +32,9 @@ Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
 Widget = Any
 Wrapper = Any
-#@-<< type aliases leoFrame >>
-#@+<< About handling events >>
-#@+node:ekr.20031218072017.2410: ** << About handling events >>
+#@-<< leoFrame annotations >>
+#@+<< leoFrame: about handling events >>
+#@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
 #@+at Leo must handle events or commands that change the text in the outline
 # or body panes. We must ensure that headline and body text corresponds
 # to the VNode corresponding to presently selected outline, and vice
@@ -57,9 +60,9 @@ Wrapper = Any
 # - body.bodyChanged & tree.headChanged:
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
-#@-<< About handling events >>
-#@+<< command decorators >>
-#@+node:ekr.20150509054428.1: ** << command decorators >> (leoFrame.py)
+#@-<< leoFrame: about handling events >>
+#@+<< leoFrame command decorators >>
+#@+node:ekr.20150509054428.1: ** << leoFrame command decorators >>
 def log_cmd(name: str) -> Callable:  # Not used.
     """Command decorator for the LeoLog class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
@@ -71,7 +74,7 @@ def body_cmd(name: str) -> Callable:
 def frame_cmd(name: str) -> Callable:
     """Command decorator for the LeoFrame class."""
     return g.new_cmd_decorator(name, ['c', 'frame',])
-#@-<< command decorators >>
+#@-<< leoFrame command decorators >>
 #@+others
 #@+node:ekr.20140907201613.18660: ** API classes
 # These classes are for documentation and unit testing.
