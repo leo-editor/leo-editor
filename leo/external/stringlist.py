@@ -1,15 +1,6 @@
-#@+leo-ver=4-thin
-#@+node:ville.20090720135131.1484:@thin stringlist.py
-
-#@<< imports >>
-#@+node:ville.20090720135131.1640:<< imports >>
+# Used by valuespace plugin.
 import re
 import subprocess
-#@nonl
-#@-node:ville.20090720135131.1640:<< imports >>
-#@nl
-#@+others
-#@+node:ville.20090720135131.1493:class SList
 class SList(list):
     """List derivative with a special access attributes.
 
@@ -20,32 +11,17 @@ class SList(list):
         .s: value as a string, joined on spaces.
 
     """
-
-    #@    @+others
-    #@+node:ville.20090720135131.1494:get_list
     def get_list(self):
         return self
-
-    #@-node:ville.20090720135131.1494:get_list
-    #@+node:ville.20090720135131.1495:get_spstr
     def get_spstr(self):
         self.__spstr = ' '.join(self)
         return self.__spstr
-
-    #@-node:ville.20090720135131.1495:get_spstr
-    #@+node:ville.20090720135131.1496:get_nlstr
     def get_nlstr(self):
         self.__nlstr = '\n'.join(self)
         return self.__nlstr
-
-    #@-node:ville.20090720135131.1496:get_nlstr
-    #@+node:ville.20090720135131.1501:property accessors
     l = property(get_list)
     s = property(get_spstr)
     n = property(get_nlstr)
-    #@nonl
-    #@-node:ville.20090720135131.1501:property accessors
-    #@+node:ville.20090720135131.1498:grep
     def grep(self, pattern, prune=False, field=None):
         """ Return all strings matching 'pattern' (a regex or callable)
 
@@ -80,8 +56,6 @@ class SList(list):
             return SList([el for el in self if pred(match_target(el))])
         else:
             return SList([el for el in self if not pred(match_target(el))])
-    #@-node:ville.20090720135131.1498:grep
-    #@+node:ville.20090720135131.1499:fields
     def fields(self, *fields):
         """ Collect whitespace-separated fields from string list
 
@@ -116,8 +90,6 @@ class SList(list):
                 res.append(" ".join(lineparts))
 
         return res
-    #@-node:ville.20090720135131.1499:fields
-    #@+node:ville.20090720135131.1500:sort
     def sort(self, field=None, nums=False):
         """ sort by specified fields (see fields())
 
@@ -145,11 +117,6 @@ class SList(list):
 
         dsu.sort()
         return SList([t[1] for t in dsu])
-
-    #@-node:ville.20090720135131.1500:sort
-    #@-others
-#@-node:ville.20090720135131.1493:class SList
-#@+node:ville.20090720134348.1860:shcmd
 def shcmd(cmd):
     """ Execute shell command, capture output to string list """
 
@@ -157,7 +124,3 @@ def shcmd(cmd):
 
     sl = SList(out.split('\n'))  # type:ignore
     return sl
-#@-node:ville.20090720134348.1860:shcmd
-#@-others
-#@-node:ville.20090720135131.1484:@thin stringlist.py
-#@-leo

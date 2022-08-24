@@ -3227,18 +3227,9 @@ while todo:
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20220823195753.1">#@+leo-ver=4-thin
-#@+node:ville.20090720135131.1484:@thin stringlist.py
-
-#@&lt;&lt; imports &gt;&gt;
-#@+node:ville.20090720135131.1640:&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20220823195753.1"># Used by valuespace plugin.
 import re
 import subprocess
-#@nonl
-#@-node:ville.20090720135131.1640:&lt;&lt; imports &gt;&gt;
-#@nl
-#@+others
-#@+node:ville.20090720135131.1493:class SList
 @others
 @language python
 @tabwidth -4
@@ -3253,37 +3244,22 @@ import subprocess
         .s: value as a string, joined on spaces.
 
     """
-
-    #@    @+others
-    #@+node:ville.20090720135131.1494:get_list
     @others
 </t>
 <t tx="ekr.20220823195808.2">def get_list(self):
     return self
-
-    #@-node:ville.20090720135131.1494:get_list
-    #@+node:ville.20090720135131.1495:get_spstr
 </t>
 <t tx="ekr.20220823195808.3">def get_spstr(self):
     self.__spstr = ' '.join(self)
     return self.__spstr
-
-    #@-node:ville.20090720135131.1495:get_spstr
-    #@+node:ville.20090720135131.1496:get_nlstr
 </t>
 <t tx="ekr.20220823195808.4">def get_nlstr(self):
     self.__nlstr = '\n'.join(self)
     return self.__nlstr
-
-    #@-node:ville.20090720135131.1496:get_nlstr
-    #@+node:ville.20090720135131.1501:property accessors
 </t>
 <t tx="ekr.20220823195808.5">l = property(get_list)
 s = property(get_spstr)
 n = property(get_nlstr)
-    #@nonl
-    #@-node:ville.20090720135131.1501:property accessors
-    #@+node:ville.20090720135131.1498:grep
 </t>
 <t tx="ekr.20220823195808.6">def grep(self, pattern, prune=False, field=None):
     """ Return all strings matching 'pattern' (a regex or callable)
@@ -3319,8 +3295,6 @@ n = property(get_nlstr)
         return SList([el for el in self if pred(match_target(el))])
     else:
         return SList([el for el in self if not pred(match_target(el))])
-    #@-node:ville.20090720135131.1498:grep
-    #@+node:ville.20090720135131.1499:fields
 </t>
 <t tx="ekr.20220823195808.7">def fields(self, *fields):
     """ Collect whitespace-separated fields from string list
@@ -3356,8 +3330,6 @@ n = property(get_nlstr)
             res.append(" ".join(lineparts))
 
     return res
-    #@-node:ville.20090720135131.1499:fields
-    #@+node:ville.20090720135131.1500:sort
 </t>
 <t tx="ekr.20220823195808.8">def sort(self, field=None, nums=False):
     """ sort by specified fields (see fields())
@@ -3386,11 +3358,6 @@ n = property(get_nlstr)
 
     dsu.sort()
     return SList([t[1] for t in dsu])
-
-    #@-node:ville.20090720135131.1500:sort
-    #@-others
-#@-node:ville.20090720135131.1493:class SList
-#@+node:ville.20090720134348.1860:shcmd
 </t>
 <t tx="ekr.20220823195808.9">def shcmd(cmd):
     """ Execute shell command, capture output to string list """
@@ -3399,10 +3366,6 @@ n = property(get_nlstr)
 
     sl = SList(out.split('\n'))  # type:ignore
     return sl
-#@-node:ville.20090720134348.1860:shcmd
-#@-others
-#@-node:ville.20090720135131.1484:@thin stringlist.py
-#@-leo
 </t>
 <t tx="ekr.20170428085201.1">@nosearch
 @nobeautify</t>

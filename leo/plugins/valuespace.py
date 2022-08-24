@@ -124,8 +124,8 @@ different namespaces, while keeping namespaces generally separate.
 #@-<< docstring >>
 # By Ville M. Vainio and Terry N. Brown.
 
-#@+<< imports >>
-#@+node:ville.20110403115003.10351: ** << imports >>
+#@+<< valuespace imports >>
+#@+node:ville.20110403115003.10351: ** << valuespace imports >>
 import pprint
 import os
 import re
@@ -140,7 +140,7 @@ except ImportError:
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.external.stringlist import SList  # Uses leoPlugins.TryNext.
-#@-<< imports >>
+#@-<< valuespace imports >>
 # Keys are c.hash(), values are ValueSpaceControllers.
 controllers: Dict[str, Any] = {}
 
