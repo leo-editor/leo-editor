@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20130813134319.11942: * @file ../plugins/richtext.py
-#@+<< docstring >>
-#@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
+#@+<< richtext docstring >>
+#@+node:tbrown.20130813134319.14333: ** << richtext docstring >>
 """
 richtext.py - Rich text editing
 ===============================
@@ -56,9 +56,9 @@ To make a button to toggle the editor on and off, use::
       c.k.simulateCommand('cke-text-switch')
 
 """
-#@-<< docstring >>
-#@+<< imports >>
-#@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
+#@-<< richtext docstring >>
+#@+<< richtext imports >>
+#@+node:tbrown.20130813134319.14335: ** << richtext imports >>
 import time
 from urllib.parse import unquote
 from leo.core import leoGlobals as g
@@ -66,10 +66,10 @@ from leo.core.leoQt import QtCore, QtWidgets, QtWebKit, QtWebKitWidgets
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#
-# Alias.
+#@-<< richtext imports >>
+
+### Use this???
 real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
-#@-<< imports >>
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
@@ -85,15 +85,16 @@ def init():
     elif name != 'nullGui':
         print('richtext.py plugin not loading because gui is not Qt')
     return ok
-#@+node:tbrown.20130813134319.5691: ** class CKEEditor
+#@+node:tbrown.20130813134319.5691: ** class CKEEditor (QWidget)
 class CKEEditor(QtWidgets.QWidget):  # type:ignore
     #@+others
-    #@+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
-    def __init__(self, *args, **kwargs):
+    #@+node:tbrown.20130813134319.7225: *3* ckee.__init__ & reloadSettings
+    def __init__(self, c):  ### *args, **kwargs):
 
-        self.c = kwargs['c']
-        del kwargs['c']
-        super().__init__(*args, **kwargs)
+        ### self.c = kwargs['c']
+        ### del kwargs['c']
+        super().__init__()  ### *args, **kwargs)
+        self.c = c
         # were we opened by an @ rich node? Calling code will set
         self.at_rich = False
         # are we being closed by leaving an @ rich node? Calling code will set
@@ -134,7 +135,7 @@ class CKEEditor(QtWidgets.QWidget):  # type:ignore
         self.config = self.c.config.getData("richtext_cke_config")
         if self.config:
             self.config = '\n'.join(self.config).strip()
-    #@+node:tbrown.20130813134319.7226: *3* select_node
+    #@+node:tbrown.20130813134319.7226: *3* ckee.select_node
     def select_node(self, tag, kwargs):
         c = kwargs['c']
         if c != self.c:
@@ -175,14 +176,14 @@ class CKEEditor(QtWidgets.QWidget):  # type:ignore
                 path = nodepath
 
         self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
-    #@+node:tbrown.20130813134319.7228: *3* unselect_node
+    #@+node:tbrown.20130813134319.7228: *3* ckee.unselect_node
     def unselect_node(self, tag, kwargs):
 
         c = kwargs['c']
         if c != self.c:
             return None
         # read initial content and request and wait for final content
-        frame = self.webview.page().mainFrame()
+        frame = self.webview.page().mainFrame()  ### Can crash.
         ele = frame.findFirstElement("#initial")
         text = str(ele.toPlainText()).strip()
         if text == '[empty]':
@@ -220,7 +221,7 @@ class CKEEditor(QtWidgets.QWidget):  # type:ignore
             else:
                 pass  # discard edits
         return None
-    #@+node:tbrown.20130813134319.7229: *3* close
+    #@+node:tbrown.20130813134319.7229: *3* ckee.close
     def close(self):
         if self.c and not self.at_rich_close:
             # save changes?
