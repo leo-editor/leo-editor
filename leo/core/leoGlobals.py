@@ -7,8 +7,8 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
-#@+<< imports >>
-#@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
+#@+<< leoGlobals imports >>
+#@+node:ekr.20050208101229: ** << leoGlobals imports >>
 import binascii
 import codecs
 import copy
@@ -39,6 +39,9 @@ from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Seq
 import unittest
 import urllib
 import urllib.parse as urlparse
+
+# Leo never imports any other Leo module.
+
 # Third-party tools.
 import webbrowser
 try:
@@ -48,14 +51,16 @@ except Exception:
 #
 # Abbreviations...
 StringIO = io.StringIO
-#@-<< imports >>
-# Leo never imports any other Leo module.
+#@-<< leoGlobals imports >>
+#@+<< leoGlobals annotations >>
+#@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position as Pos
     from leo.core.leoNodes import VNode
 else:
     Cmdr = Pos = VNode = Any
+#@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.6'  # #1215.
