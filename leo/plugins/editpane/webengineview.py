@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.2: * @file ../plugins/editpane/webengineview.py
-#@+<< webengineview.py imports >>
-#@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
+#@@first
+#@+<< webengineview imports >>
+#@+node:tbrown.20171028115459.1: ** << webengineview imports >>
 # EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
 # TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
 #      it's ok if it fails to load
@@ -9,7 +11,7 @@
 from PyQt5 import QtWebEngineWidgets
 from leo.core import leoGlobals as g
 assert g
-#@-<< webengineview.py imports >>
+#@-<< webengineview imports >>
 #@+others
 #@+node:tbrown.20171028115459.2: ** class LEP_WebEngineView
 class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):

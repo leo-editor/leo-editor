@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.4: * @file ../plugins/editpane/markdownview.py
-#@+<< markdownview.py imports >>
-#@+node:tbrown.20171028115507.1: ** << markdownview.py imports >>
+#@@first
+#@+<< markdownview imports >>
+#@+node:tbrown.20171028115507.1: ** << markdownview imports >>
 import markdown
 from leo.core import leoGlobals as g
 assert g
@@ -15,7 +17,7 @@ except ImportError:
     from leo.plugins.editpane.webengineview import LEP_WebEngineView as HtmlView
 
 from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
-#@-<< markdownview.py imports >>
+#@-<< markdownview imports >>
 #@+others
 #@+node:tbrown.20171028115507.2: ** to_html
 def to_html(text):

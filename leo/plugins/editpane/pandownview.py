@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.3: * @file ../plugins/editpane/pandownview.py
-#@+<< pandownview.py imports >>
-#@+node:tbrown.20171028115505.1: ** << pandownview.py imports >>
+#@@first
+#@+<< pandownview imports >>
+#@+node:tbrown.20171028115505.1: ** << pandownview imports >>
 """Markdown view using Pandoc.
 
 There could also be a more generic Pandoc view that handles more input
@@ -23,7 +25,7 @@ except ImportError:
 
 from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 
-#@-<< pandownview.py imports >>
+#@-<< pandownview imports >>
 #@+others
 #@+node:tbrown.20171028115505.2: ** to_html
 def to_html(text, from_='markdown'):
