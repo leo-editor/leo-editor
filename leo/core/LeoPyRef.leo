@@ -18,6 +18,7 @@
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
+<v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
 <v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
 <v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
@@ -167,7 +168,6 @@
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
 <v t="ekr.20210429045101.1"><vh>script: check gnxDict</vh></v>
-<v t="ekr.20210309083845.1"><vh>script: check-files</vh></v>
 <v t="ekr.20210118013157.1"><vh>script: convert-LeoFind</vh>
 <v t="ekr.20210118024739.1"><vh>convert</vh></v>
 <v t="ekr.20210118013807.1"><vh>main</vh></v>
@@ -308,13 +308,26 @@
 </v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
+<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
 <v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
+<v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
+<v t="ekr.20220823195753.1"><vh>@clean ../external/stringlist.py</vh>
+<v t="ekr.20220823195808.1"><vh>class SList</vh>
+<v t="ekr.20220823195808.2"><vh>get_list</vh></v>
+<v t="ekr.20220823195808.3"><vh>get_spstr</vh></v>
+<v t="ekr.20220823195808.4"><vh>get_nlstr</vh></v>
+<v t="ekr.20220823195808.5"><vh>Property accessors</vh></v>
+<v t="ekr.20220823195808.6"><vh>grep</vh></v>
+<v t="ekr.20220823195808.7"><vh>fields</vh></v>
+<v t="ekr.20220823195808.8"><vh>sort</vh></v>
+</v>
+<v t="ekr.20220823195808.9"><vh>shcmd</vh></v>
+</v>
 <v t="ekr.20170428085201.1"><vh>npyscreen</vh>
 <v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
 <v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
@@ -557,6 +570,30 @@
 <v t="edream.110203113231.925"><vh>@file ../plugins/script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
+<v t="ekr.20220823200700.1"><vh>@clean ../plugins/leofts.py</vh>
+<v t="ekr.20220823205609.1"><vh>set_leo</vh></v>
+<v t="ekr.20220823205609.2"><vh>init</vh></v>
+<v t="ekr.20220823205609.3"><vh>get_fts</vh></v>
+<v t="ekr.20220823205609.4"><vh>all_positions_global</vh></v>
+<v t="ekr.20220823205609.5"><vh>class GnxCache</vh>
+<v t="ekr.20220823205610.1"><vh>__init__</vh></v>
+<v t="ekr.20220823205610.2"><vh>update_new_cs</vh></v>
+<v t="ekr.20220823205610.3"><vh>get</vh></v>
+<v t="ekr.20220823205610.4"><vh>get_p</vh></v>
+<v t="ekr.20220823205610.5"><vh>clear</vh></v>
+</v>
+<v t="ekr.20220823205610.6"><vh>class LeoFts</vh>
+<v t="ekr.20220823205610.7"><vh>__init__</vh></v>
+<v t="ekr.20220823205610.8"><vh>schema</vh></v>
+<v t="ekr.20220823205610.9"><vh>create</vh></v>
+<v t="ekr.20220823205610.10"><vh>index_nodes</vh></v>
+<v t="ekr.20220823205610.11"><vh>drop_document</vh></v>
+<v t="ekr.20220823205610.12"><vh>statistics</vh></v>
+<v t="ekr.20220823205610.13"><vh>search</vh></v>
+<v t="ekr.20220823205610.14"><vh>close</vh></v>
+</v>
+<v t="ekr.20220823205610.15"><vh>main</vh></v>
+</v>
 <v t="ekr.20120309073748.9872"><vh>@file ../plugins/bigdash.py</vh></v>
 <v t="peckj.20140804114520.9427"><vh>@file ../plugins/nodetags.py</vh></v>
 <v t="peckj.20131130132659.5964"><vh>@file ../plugins/nodewatch.py</vh></v>
@@ -832,6 +869,49 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
+<t tx="ekr.20220823130338.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
+# #2743 is a duplicate of #1789. 
+g.cls()
+import glob
+import os
+join, norm, sep = os.path.join, os.path.normpath, os.sep
+
+# Compute the directories.
+leo_dir = norm(join(g.app.loadDir, '..'))
+core_dir = join(leo_dir, 'core')
+commands_dir = join(leo_dir, 'commands')
+external_dir = join(leo_dir, 'external')
+plugins_dir = join(leo_dir, 'plugins')
+
+def make_list(pattern):
+    return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
+
+# Find paths on disk.
+core_files = make_list(f"{core_dir}{sep}*.py")
+commands_files = make_list(f"{commands_dir}{sep}*.py")
+external_files = make_list(f"{external_dir}{sep}*.py")
+plugin_files = make_list(f"{plugins_dir}{sep}*.py")
+
+# Compute paths from @&lt;file&gt; nodes.
+at_file_paths = sorted([
+    norm(g.fullPath(c, z))
+        for z in c.all_unique_positions()
+            if z.isAnyAtFileNode()
+])
+
+excluded_files = (
+    r'plugins\qt_main.py',  # Generated automatically.
+    r'plugins\baseNativeTree.py',  # No longer used.
+)
+
+def is_excluded(path):
+    return any(z in path for z in excluded_files)
+
+# Ensure that @&lt;file&gt; nodes exist for every file on disk.
+for z in core_files + external_files + plugin_files:
+    if z not in at_file_paths and not is_excluded(z):
+        print('Missing:', z)
+print('done')</t>
 <t tx="ekr.20201018062305.1">"""
 Overwrite LeoPyRef.leo from the given list of nodes.
 
@@ -2075,49 +2155,6 @@ for key in sorted(d.keys()):
         else:
             print('no position for', v)
 print('done')</t>
-<t tx="ekr.20210309083845.1">"""
-Issue https://github.com/leo-editor/leo-editor/issues/1789
-"""
-g.cls()
-import glob
-
-def munge(s):
-    return s.replace('\\','/').lower()
-    
-ignore = [
-    # Core...
-    'format-code.py',       # Script.
-    # External...
-    'leoftsindex.py',       # User contributed.
-    'sax2db.py',            # User contributed.
-    'stringlist.py',        # User contributed.
-    # Plugins...
-    'baseNativeTree.py',    # No longer used. To be deleted?
-    'leofts.py',            # User contributed.
-    'qt_main.py',           # Created by Qt designer. Not used.
-    'rst3.py',              # To be deleted?
-]
-ignore = [munge(z) for z in ignore]
-# Find all paths for @&lt;file&gt; nodes.
-seen = {}
-for p in c.all_positions():
-    if p.isAnyAtFileNode():
-        path = munge(g.fullPath(c, p))
-        seen [path] = path
-# Check all .py files.  
-for module in ('core', 'external', 'plugins'):
-    print(f"checking {module}...")
-    pat = g.os_path_finalize_join(g.app.loadDir, '..', module, '*.py')
-    paths = glob.glob(pat)
-    paths = [z for z in paths if not z.endswith('__init__.py')]
-    paths = [munge(z) for z in paths]
-    # g.printObj(paths, tag=f"\n{len(paths)} files in {module}")
-    for path in paths:
-        if path not in seen and g.shortFileName(path) not in ignore:
-            print(f"Missing: {path}")
-    print('')
-print('done')
-</t>
 <t tx="ekr.20210118013157.1">"""
 Convert defs in LeoFind to pep8 names.
 - Don't change defs containing underscores.
@@ -3079,6 +3116,294 @@ February 20 to 25, 2016
 
 
 </t>
+<t tx="ekr.20220823195205.1">"""
+Stand alone GUI free index builder for Leo's full text search system::
+
+  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
+
+If the file name starts with @ it's a assumed to be a simple
+text file listing files to be indexed.
+
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
+to index, and is indexed.
+
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
+containing a list of .leo files to index, with the list in
+the node indicated by the UNL after the #, e.g.::
+
+   path/to/myfile.leo#Lists--&gt;List of outlines
+
+In the latter case, if the node identified by the UNL has children,
+the list of files to scan is built from the first line of the body
+of each child node of the identified node (works well with bookmarks.py).
+If the node identified by the UNL does not have children, the
+node's body is assumed to be a simple text listing of paths to .leo files).
+
+.. note::
+
+    It may be necessary to quote the "file" on the command line,
+    as the '#' may be interpreted as a comment delimiter::
+
+        python leoftsindex.py "workbook.leo#Links"
+
+
+"""
+
+import sys
+# add folder containing 'leo' folder to path
+# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
+import leo.core.leoBridge as leoBridge
+import leo.plugins.leofts as leofts
+
+controller = leoBridge.controller(
+    gui='nullGui',
+    loadPlugins=False,  # True: attempt to load plugins.
+    readSettings=False,  # True: read standard settings files.
+    silent=False,  # True: don't print signon messages.
+    verbose=False
+)
+g = controller.globals()
+
+# list of "files" to process
+files = sys.argv[1:]
+
+# set up leofts
+leofts.set_leo(g)
+g._gnxcache = leofts.GnxCache()
+fts = leofts.get_fts()
+
+fn2c = {}  # cache to avoid loading same outline twice
+done = set()  # outlines scanned, to avoid repetition repetition
+
+todo = list(files)
+
+while todo:
+
+    item = todo.pop(0)
+
+    print("INDEX: %s" % item)
+
+    if '#' in item:
+        fn, node = item.split('#', 1)
+    else:
+        fn, node = item, None
+
+    if node:
+        c = fn2c.setdefault(fn, controller.openLeoFile(fn))
+        found, dummy, p = g.recursiveUNLSearch(node.split('--&gt;'), c)
+        if not found:
+            print("Could not find '%s'" % item)
+            break
+        if not p:
+            p = c.p
+        if p.hasChildren():
+            # use file named in first node of each child
+            files = [chl.b.strip().split('\n', 1)[0].strip() for chl in p.children()]
+        else:
+            # use all files listed in body
+            files = [i.strip() for i in p.b.strip().split('\n')]
+
+    elif fn.startswith('@'):
+        todo.extend(open(fn[1:]).read().strip().split('\n'))
+        files = []
+
+    else:
+        files = [fn]
+
+    for fn in files:
+
+        # file names may still have '#' if taken from a node list
+        real_name = fn.split('#', 1)[0]
+        if real_name in done:
+            continue
+        done.add(real_name)
+
+        if len(files) != 1:
+            print(" FILE: %s" % real_name)
+
+        c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
+        fts.drop_document(real_name)
+        fts.index_nodes(c)
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20220823195753.1">#@+leo-ver=4-thin
+#@+node:ville.20090720135131.1484:@thin stringlist.py
+
+#@&lt;&lt; imports &gt;&gt;
+#@+node:ville.20090720135131.1640:&lt;&lt; imports &gt;&gt;
+import re
+import subprocess
+#@nonl
+#@-node:ville.20090720135131.1640:&lt;&lt; imports &gt;&gt;
+#@nl
+#@+others
+#@+node:ville.20090720135131.1493:class SList
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20220823195808.1">class SList(list):
+    """List derivative with a special access attributes.
+
+    These are normal string lists, but with the special attributes:
+
+        .l: value as list (the list itself).
+        .n: value as a string, joined on newlines.
+        .s: value as a string, joined on spaces.
+
+    """
+
+    #@    @+others
+    #@+node:ville.20090720135131.1494:get_list
+    @others
+</t>
+<t tx="ekr.20220823195808.2">def get_list(self):
+    return self
+
+    #@-node:ville.20090720135131.1494:get_list
+    #@+node:ville.20090720135131.1495:get_spstr
+</t>
+<t tx="ekr.20220823195808.3">def get_spstr(self):
+    self.__spstr = ' '.join(self)
+    return self.__spstr
+
+    #@-node:ville.20090720135131.1495:get_spstr
+    #@+node:ville.20090720135131.1496:get_nlstr
+</t>
+<t tx="ekr.20220823195808.4">def get_nlstr(self):
+    self.__nlstr = '\n'.join(self)
+    return self.__nlstr
+
+    #@-node:ville.20090720135131.1496:get_nlstr
+    #@+node:ville.20090720135131.1501:property accessors
+</t>
+<t tx="ekr.20220823195808.5">l = property(get_list)
+s = property(get_spstr)
+n = property(get_nlstr)
+    #@nonl
+    #@-node:ville.20090720135131.1501:property accessors
+    #@+node:ville.20090720135131.1498:grep
+</t>
+<t tx="ekr.20220823195808.6">def grep(self, pattern, prune=False, field=None):
+    """ Return all strings matching 'pattern' (a regex or callable)
+
+    This is case-insensitive. If prune is true, return all items
+    NOT matching the pattern.
+
+    If field is specified, the match must occur in the specified
+    whitespace-separated field.
+
+    Examples::
+
+        a.grep( lambda x: x.startswith('C') )
+        a.grep('Cha.*log', prune=1)
+        a.grep('chm', field=-1)
+    """
+
+    def match_target(s):
+        if field is None:
+            return s
+        parts = s.split()
+        try:
+            tgt = parts[field]
+            return tgt
+        except IndexError:
+            return ""
+
+    if isinstance(pattern, str):  # str was basestring
+        pred = lambda x: re.search(pattern, x, re.IGNORECASE)
+    else:
+        pred = pattern
+    if not prune:
+        return SList([el for el in self if pred(match_target(el))])
+    else:
+        return SList([el for el in self if not pred(match_target(el))])
+    #@-node:ville.20090720135131.1498:grep
+    #@+node:ville.20090720135131.1499:fields
+</t>
+<t tx="ekr.20220823195808.7">def fields(self, *fields):
+    """ Collect whitespace-separated fields from string list
+
+    Allows quick awk-like usage of string lists.
+
+    Example data (in var a, created by 'a = !ls -l')::
+        -rwxrwxrwx  1 ville None      18 Dec 14  2006 ChangeLog
+        drwxrwxrwx+ 6 ville None       0 Oct 24 18:05 IPython
+
+    a.fields(0) is ['-rwxrwxrwx', 'drwxrwxrwx+']
+    a.fields(1,0) is ['1 -rwxrwxrwx', '6 drwxrwxrwx+']
+    (note the joining by space).
+    a.fields(-1) is ['ChangeLog', 'IPython']
+
+    IndexErrors are ignored.
+
+    Without args, fields() just split()'s the strings.
+    """
+    if len(fields) == 0:
+        return [el.split() for el in self]
+
+    res = SList()
+    for el in [f.split() for f in self]:
+        lineparts = []
+
+        for fd in fields:
+            try:
+                lineparts.append(el[fd])
+            except IndexError:
+                pass
+        if lineparts:
+            res.append(" ".join(lineparts))
+
+    return res
+    #@-node:ville.20090720135131.1499:fields
+    #@+node:ville.20090720135131.1500:sort
+</t>
+<t tx="ekr.20220823195808.8">def sort(self, field=None, nums=False):
+    """ sort by specified fields (see fields())
+
+    Example::
+        a.sort(1, nums = True)
+
+    Sorts a by second field, in numerical order (so that 21 &gt; 3)
+
+    """
+
+    #decorate, sort, undecorate
+    if field is not None:
+        dsu = [[SList([line]).fields(field), line] for line in self]
+    else:
+        dsu = [[line, line] for line in self]
+    if nums:
+        for i in range(len(dsu)):
+            numstr = "".join([ch for ch in dsu[i][0] if ch.isdigit()])
+            try:
+                n = int(numstr)
+            except ValueError:
+                n = 0;
+            dsu[i][0] = n
+
+
+    dsu.sort()
+    return SList([t[1] for t in dsu])
+
+    #@-node:ville.20090720135131.1500:sort
+    #@-others
+#@-node:ville.20090720135131.1493:class SList
+#@+node:ville.20090720134348.1860:shcmd
+</t>
+<t tx="ekr.20220823195808.9">def shcmd(cmd):
+    """ Execute shell command, capture output to string list """
+
+    out = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]
+
+    sl = SList(out.split('\n'))  # type:ignore
+    return sl
+#@-node:ville.20090720134348.1860:shcmd
+#@-others
+#@-node:ville.20090720135131.1484:@thin stringlist.py
+#@-leo
+</t>
 <t tx="ekr.20170428085201.1">@nosearch
 @nobeautify</t>
 <t tx="ekr.20170428084208.443">#!/usr/bin/python
@@ -3391,6 +3716,196 @@ These plugins create new kinds of nodes, some of which affect the file system.</
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20041001210557"></t>
 <t tx="ekr.20120309073937.9878"></t>
+<t tx="ekr.20220823200700.1">import os
+from whoosh.index import create_in, open_dir
+from whoosh.fields import ID, TEXT, Schema
+from whoosh.qparser import MultifieldParser
+from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
+
+g = None
+
+@others
+if __name__ == '__main__':
+    main()
+
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20220823205609.1">def set_leo(gg):
+    global g
+    g = gg
+    g._fts = None
+
+</t>
+<t tx="ekr.20220823205609.2">def init():
+
+    print("bigdash init")
+    import leo.core.leoGlobals as g
+
+    set_leo(g)
+    ok = g.app.gui.guiName() == "qt"
+    g._fts = None
+    g._gnxcache = GnxCache()
+
+    return ok
+
+</t>
+<t tx="ekr.20220823205609.3">def get_fts():
+    if g._fts is None:
+        g._fts = LeoFts(g.app.homeLeoDir + "/fts_index")
+    return g._fts
+
+</t>
+<t tx="ekr.20220823205609.4">def all_positions_global():
+    for c in g.app.commanders():
+        for p in c.all_unique_positions():
+            yield(c, p)
+
+</t>
+<t tx="ekr.20220823205609.5">class GnxCache:
+    """ map gnx =&gt; vnode """
+    @others
+</t>
+<t tx="ekr.20220823205610.1">def __init__(self):
+    self.clear()
+</t>
+<t tx="ekr.20220823205610.2">def update_new_cs(self):
+    for c in g.app.commanders():
+        if c.hash() not in self.cs:
+            for p in c.all_unique_positions():
+                k = p.gnx
+                self.ps[k] = c, p.v
+            self.cs.add(c.hash())
+
+</t>
+<t tx="ekr.20220823205610.3">def get(self, gnx):
+    if not self.ps:
+        self.update_new_cs()
+    res = self.ps.get(gnx, None)
+    return res
+</t>
+<t tx="ekr.20220823205610.4">def get_p(self, gnx):
+    r = self.get(gnx)
+    if r:
+        c, v = r
+        for p in c.all_unique_positions():
+            if p.v is v:
+                return c, p.copy()
+
+    print("Not in gnx cache, slow!")
+
+    for c, p in all_positions_global():
+
+        if p.gnx == gnx:
+            return c, p.copy()
+    return None
+
+</t>
+<t tx="ekr.20220823205610.5">def clear(self):
+    self.ps = {}
+    self.cs = set()
+
+</t>
+<t tx="ekr.20220823205610.6">class LeoFts:
+    @others
+</t>
+<t tx="ekr.20220823205610.7">def __init__(self, idx_dir):
+    self.idx_dir = idx_dir
+    if not os.path.exists(idx_dir):
+        os.mkdir(idx_dir)
+        self.create()
+    else:
+        self.ix = open_dir(idx_dir)
+
+</t>
+<t tx="ekr.20220823205610.8">def schema(self):
+    my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
+    schema = Schema(
+        h=TEXT(stored=True, analyzer=my_analyzer),
+        gnx=ID(stored=True), b=TEXT(analyzer=my_analyzer),
+        parent=ID(stored=True),
+        doc=ID(stored=True),
+    )
+    return schema
+
+</t>
+<t tx="ekr.20220823205610.9">def create(self):
+
+    schema = self.schema()
+    self.ix = create_in(self.idx_dir, schema)
+
+
+</t>
+<t tx="ekr.20220823205610.10">def index_nodes(self, c):
+    writer = self.ix.writer()
+    doc = c.mFileName
+    for p in c.all_unique_positions():
+        #print "pushing",p
+        if p.hasParent():
+            par = p.parent().get_UNL()
+        else:
+            par = c.mFileName
+
+        writer.add_document(h=p.h, b=p.b, gnx=p.gnx, parent=par, doc=doc)
+
+    writer.commit()
+    g._gnxcache.clear()
+
+</t>
+<t tx="ekr.20220823205610.11">def drop_document(self, docfile):
+    writer = self.ix.writer()
+    print("Drop index", docfile)
+    writer.delete_by_term("doc", docfile)
+    writer.commit()
+
+</t>
+<t tx="ekr.20220823205610.12">def statistics(self):
+    r = {}
+    with self.ix.searcher() as s:
+        r['documents'] = list(s.lexicon("doc"))  # pylint:disable=no-member
+    print("stats", r)
+    return r
+
+
+</t>
+<t tx="ekr.20220823205610.13">def search(self, searchstring, limit=30):
+
+    res = []
+    g._gnxcache.update_new_cs()
+    with self.ix.searcher() as searcher:
+        #print (list(searcher.lexicon("b")))
+        query = MultifieldParser(["h", "b"], schema=self.schema()).parse(searchstring)
+        results = searcher.search(query, limit=limit)
+        print(results)
+        for r in results:
+            rr = r.fields()
+
+            gnx = rr["gnx"]
+            tup = g._gnxcache.get(gnx)
+            if tup:
+                rr['f'] = True
+                cont = tup[1].b
+
+                hl = r.highlights("b", text=cont)
+                rr["highlight"] = hl
+
+            else:
+                rr['f'] = False
+            res.append(rr)
+
+    return res
+
+</t>
+<t tx="ekr.20220823205610.14">def close(self):
+    self.ix.close()
+
+</t>
+<t tx="ekr.20220823205610.15">def main():
+    fts = LeoFts("c:/t/ltest")
+    fts.create()
+
+
+</t>
 <t tx="ekr.20050111122605"></t>
 <t tx="ekr.20101004082701.5674"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
