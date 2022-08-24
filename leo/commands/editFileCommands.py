@@ -3,8 +3,8 @@
 #@+node:ekr.20150514041209.1: * @file ../commands/editFileCommands.py
 #@@first
 """Leo's file-editing commands."""
-#@+<< imports >>
-#@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
+#@+<< editFileCommands imports >>
+#@+node:ekr.20170806094317.4: ** << editFileCommands imports >>
 import difflib
 import io
 import os
@@ -13,7 +13,7 @@ from typing import Any, List
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< editFileCommands imports >>
 
 def cmd(name):
     """Command decorator for the EditFileCommandsClass class."""

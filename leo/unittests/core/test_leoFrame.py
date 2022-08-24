@@ -4,7 +4,6 @@
 #@@first
 """Tests of leoFrame.py"""
 
-import textwrap
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
