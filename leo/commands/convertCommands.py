@@ -1272,7 +1272,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace(f"warning: no @data {kind} node")
                 return aList
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: Any) -> Dict[str, List[str]]:
+            def scan_d(self, kind: str) -> Dict[str, List[str]]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
@@ -1560,7 +1560,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             except Exception:
                 g.es_exception()
         #@+node:ekr.20211013101327.1: *5* py2ts.convert_node
-        def convert_node(self, p: Position, parent: Any) -> None:
+        def convert_node(self, p: Position, parent: Position) -> None:
             # Create a copy of p as the last child of parent.
             target = parent.insertAsLastChild()
             target.h = p.h  # The caller will rename this node.
@@ -1570,7 +1570,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             for child in p.children():
                 self.convert_node(child, target)
         #@+node:ekr.20211013102209.1: *5* py2ts.convert_body, handlers &helpers
-        def convert_body(self, p: Position, target: Any) -> None:
+        def convert_body(self, p: Position, target: Position) -> None:
             """
             Convert p.b into target.b.
 
@@ -2495,7 +2495,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 aList[prevSemi:k] = result
                 return prevSemi + len(result)
             #@+node:ekr.20150514063305.186: *7* massageFunctionArgs
-            def massageFunctionArgs(self, args: Any) -> List[str]:
+            def massageFunctionArgs(self, args: List[str]) -> List[str]:
                 assert args[0] == '('
                 assert args[-1] == ')'
                 result: List[str] = ['(']
@@ -2526,7 +2526,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return result
             #@+node:ekr.20150514063305.187: *7* massageFunctionHead (sets .class_name)
             def massageFunctionHead(self, head: List[str]) -> List[str]:
-                result: List[Any] = []
+                result: List[str] = []
                 prevWord = []
                 self.class_name = ''
                 i = 0
