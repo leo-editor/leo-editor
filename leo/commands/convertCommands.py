@@ -3,12 +3,22 @@
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
 #@@first
 """Leo's file-conversion commands."""
-
+#@+<< convertCommands imports >>
+#@+node:ekr.20220824202922.1: ** << convertCommands imports >>
 import re
-from typing import Any, Dict, List
+import time
+from typing import Any, Dict, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
+#@-<< convertCommands imports >>
+#@+<< convertCommands annotations >>
+#@+node:ekr.20220824202941.1: ** << convertCommands annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+else:
+    Cmdr = Any
+#@-<< convertCommands annotations >>
 
 def cmd(name):
     """Command decorator for the ConvertCommandsClass class."""
@@ -18,17 +28,17 @@ def cmd(name):
 #@+node:ekr.20150514063305.123: ** << class To_Python >>
 class To_Python:  # pragma: no cover
     """The base class for x-to-python commands."""
-    #@+others
-    #@+node:ekr.20150514063305.125: *3* To_Python.ctor
+
     def __init__(self, c):
         """Ctor for To_Python class."""
         self.c = c
         self.p = self.c.p.copy()
         aList = g.get_directives_dict_list(self.p)
         self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
+
+    #@+others
     #@+node:ekr.20150514063305.126: *3* To_Python.go
-    def go(self):
-        import time
+    def go(self) -> None:
         t1 = time.time()
         c = self.c
         u, undoType = c.undoer, 'typescript-to-python'
@@ -63,7 +73,7 @@ class To_Python:  # pragma: no cover
         t2 = time.time()
         g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
-    def convertCodeList(self, aList):
+    def convertCodeList(self, aList: List[str]) -> None:
         """The main search/replace method."""
         g.trace('must be defined in subclasses.')
     #@+node:ekr.20150514063305.128: *3* To_Python.Utils
@@ -747,7 +757,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     class C_To_Python(To_Python):  # pragma: no cover
         #@+others
         #@+node:ekr.20150514063305.161: *5* ctor & helpers (C_To_Python)
-        def __init__(self, c):
+        def __init__(self, c: Cmdr) -> None:
             """Ctor for C_To_Python class."""
             super().__init__(c)
             #
@@ -755,7 +765,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # The class name for the present function.  Used to modify ivars.
             self.class_name = ''
             # List of ivars to be converted to self.ivar
-            self.ivars = []
+            self.ivars: List[str] = []
             self.get_user_types()
         #@+node:ekr.20150514063305.162: *6* get_user_types (C_To_Python)
         def get_user_types(self):
@@ -788,7 +798,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return {}
             return d
         #@+node:ekr.20150514063305.164: *5* convertCodeList (C_To_Python) & helpers
-        def convertCodeList(self, aList):
+        def convertCodeList(self, aList: List[str]) -> None:
             r, sr = self.replace, self.safe_replace
             # First...
             r(aList, "\r", '')
@@ -848,8 +858,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.replaceComments(aList)  # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
             r(aList, "\t ", "\t")  # happens when deleting declarations.
+            ### g.printObj(aList, tag='C_To_Python.convertCodeList')
         #@+node:ekr.20150514063305.165: *6* handle_all_keywords
-        def handle_all_keywords(self, aList):
+        def handle_all_keywords(self, aList: List[str]) -> None:
             """
             converts if ( x ) to if x:
             converts while ( x ) to while x:
@@ -905,7 +916,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return j
             return i
         #@+node:ekr.20150514063305.167: *6* mungeAllFunctions
-        def mungeAllFunctions(self, aList):
+        def mungeAllFunctions(self, aList: List[str]) -> None:
             """Scan for a '{' at the top level that is preceeded by ')' """
             prevSemi = 0  # Previous semicolon: header contains all previous text
             i = 0
@@ -2209,6 +2220,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.class_name = ''
             #@+node:ekr.20150514063305.178: *5* convertCodeList (TS_To_Python) & helpers
             def convertCodeList(self, aList):
+                g.pdb()
                 r, sr = self.replace, self.safe_replace
                 # First...
                 r(aList, '\r', '')
