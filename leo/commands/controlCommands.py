@@ -3,13 +3,13 @@
 #@+node:ekr.20150514040100.1: * @file ../commands/controlCommands.py
 #@@first
 """Leo's control commands."""
-#@+<< imports >>
-#@+node:ekr.20150514050127.1: ** << imports >> (controlCommands.py)
+#@+<< controlCommands imports >>
+#@+node:ekr.20150514050127.1: ** << controlCommands imports >>
 import shlex
 import subprocess
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< controlCommands imports >>
 
 def cmd(name):
     """Command decorator for the ControlCommandsClass class."""

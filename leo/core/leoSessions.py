@@ -1,21 +1,19 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120420054855.14241: * @file leoSessions.py
+#@@first
 """Support for sessions in Leo."""
-#@+<< imports >>
-#@+node:ekr.20120420054855.14344: ** <<imports>> (leoSessions.py)
+#@+<< leoSessions imports >>
+#@+node:ekr.20120420054855.14344: ** << leoSessions imports >>
 import json
 from typing import List
 from leo.core import leoGlobals as g
-#@-<< imports >>
-#@+<< exception classes>>
-#@+node:ekr.20120420054855.14357: ** <<exception classes>>
-# class LeoNodeNotFoundException(Exception):
-    # pass
-
-
+#@-<< leoSessions imports >>
+#@+<< leoSessions exception classes>>
+#@+node:ekr.20120420054855.14357: ** << leoSessions exception classes >>
 class LeoSessionException(Exception):
     pass
-#@-<< exception classes>>
+#@-<< leoSessions exception classes>>
 #@+others
 #@+node:ekr.20120420054855.14349: ** class SessionManager
 # These were top-level nodes of leotools.py

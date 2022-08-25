@@ -3,8 +3,8 @@
 #@+node:ekr.20150514035236.1: * @file ../commands/abbrevCommands.py
 #@@first
 """Leo's abbreviations commands."""
-#@+<< imports >>
-#@+node:ekr.20150514045700.1: ** << imports >> (abbrevCommands.py)
+#@+<< abbrevCommands imports >>
+#@+node:ekr.20150514045700.1: ** << abbrevCommands imports >>
 import functools
 import re
 import string
@@ -12,7 +12,7 @@ from typing import Dict
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< abbrevCommands imports >>
 
 def cmd(name):
     """Command decorator for the abbrevCommands class."""

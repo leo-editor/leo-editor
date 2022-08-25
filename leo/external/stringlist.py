@@ -1,6 +1,12 @@
+# -*- coding: utf-8 -*-
+#@+leo-ver=5-thin
+#@+node:ekr.20220823195753.1: * @file ../external/stringlist.py
+#@@first
 # Used by valuespace plugin.
 import re
 import subprocess
+#@+others
+#@+node:ekr.20220823195808.1: ** class SList
 class SList(list):
     """List derivative with a special access attributes.
 
@@ -11,17 +17,23 @@ class SList(list):
         .s: value as a string, joined on spaces.
 
     """
+    #@+others
+    #@+node:ekr.20220823195808.2: *3* get_list
     def get_list(self):
         return self
+    #@+node:ekr.20220823195808.3: *3* get_spstr
     def get_spstr(self):
         self.__spstr = ' '.join(self)
         return self.__spstr
+    #@+node:ekr.20220823195808.4: *3* get_nlstr
     def get_nlstr(self):
         self.__nlstr = '\n'.join(self)
         return self.__nlstr
+    #@+node:ekr.20220823195808.5: *3* Property accessors
     l = property(get_list)
     s = property(get_spstr)
     n = property(get_nlstr)
+    #@+node:ekr.20220823195808.6: *3* grep
     def grep(self, pattern, prune=False, field=None):
         """ Return all strings matching 'pattern' (a regex or callable)
 
@@ -56,6 +68,7 @@ class SList(list):
             return SList([el for el in self if pred(match_target(el))])
         else:
             return SList([el for el in self if not pred(match_target(el))])
+    #@+node:ekr.20220823195808.7: *3* fields
     def fields(self, *fields):
         """ Collect whitespace-separated fields from string list
 
@@ -90,6 +103,7 @@ class SList(list):
                 res.append(" ".join(lineparts))
 
         return res
+    #@+node:ekr.20220823195808.8: *3* sort
     def sort(self, field=None, nums=False):
         """ sort by specified fields (see fields())
 
@@ -117,6 +131,8 @@ class SList(list):
 
         dsu.sort()
         return SList([t[1] for t in dsu])
+    #@-others
+#@+node:ekr.20220823195808.9: ** shcmd
 def shcmd(cmd):
     """ Execute shell command, capture output to string list """
 
@@ -124,3 +140,7 @@ def shcmd(cmd):
 
     sl = SList(out.split('\n'))  # type:ignore
     return sl
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

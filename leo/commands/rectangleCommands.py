@@ -3,11 +3,11 @@
 #@+node:ekr.20150514040146.1: * @file ../commands/rectangleCommands.py
 #@@first
 """Leo's rectangle commands."""
-#@+<< imports >>
-#@+node:ekr.20150514050446.1: ** << imports >> (rectangleCommands.py)
+#@+<< rectangleCommands imports >>
+#@+node:ekr.20150514050446.1: ** << rectangleCommands imports >>
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< rectangleCommands imports >>
 
 def cmd(name):
     """Command decorator for the RectangleCommandsClass class."""

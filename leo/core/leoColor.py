@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.2794: * @file leoColor.py
-#@+<< docstring >>
-#@+node:bob.20080115083029: ** << docstring >>
+#@@first
+#@+<< leoColor docstring >>
+#@+node:bob.20080115083029: ** << leoColor docstring >>
 """A color database for Leo.
 
 leo_color_database is a dictionary of color names mapped onto the
@@ -30,11 +32,7 @@ Use these functions as follows::
 If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
-#@-<< docstring >>
-from leo.core import leoGlobals as g
-assert g
-# import re
-# import string
+#@-<< leoColor docstring >>
 #@+<< define leo_color_database >>
 #@+node:bob.20080115070511.2: ** << define leo_color_database >>
 #@@language rest
@@ -734,7 +732,7 @@ leo_color_database = {
     "yellowgreen": "#9ACD32"
 }
 #@-<< define leo_color_database >>
-#
+
 # Check that all keys are normalized.
 # This is essential for Leo's jEdit-based colorizers.
 for key in leo_color_database:

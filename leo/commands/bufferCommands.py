@@ -3,11 +3,11 @@
 #@+node:ekr.20150514035559.1: * @file ../commands/bufferCommands.py
 #@@first
 """Leo's buffer commands."""
-#@+<< imports >>
-#@+node:ekr.20150514045750.1: ** << imports >> (bufferCommands.py)
+#@+<< bufferCommands imports >>
+#@+node:ekr.20150514045750.1: ** << bufferCommands imports >>
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< bufferCommands imports >>
 
 def cmd(name):
     """Command decorator for the BufferCommands class."""

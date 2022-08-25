@@ -3,8 +3,8 @@
 #@+node:ekr.20161021090740.1: * @file ../commands/checkerCommands.py
 #@@first
 """Commands that invoke external checkers"""
-#@+<< imports >>
-#@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
+#@+<< checkerCommands imports >>
+#@+node:ekr.20161021092038.1: ** << checkerCommands imports >>
 import os
 import shlex
 import sys
@@ -38,7 +38,7 @@ except Exception:
 #
 # Leo imports.
 from leo.core import leoGlobals as g
-#@-<< imports >>
+#@-<< checkerCommands imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
 #@+node:ekr.20190608084751.1: *3* find-long-lines

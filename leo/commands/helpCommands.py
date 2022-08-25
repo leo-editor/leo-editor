@@ -3,15 +3,15 @@
 #@+node:ekr.20150514040138.1: * @file ../commands/helpCommands.py
 #@@first
 """Leo's help commands."""
-#@+<< imports >>
-#@+node:ekr.20150514050337.1: ** << imports >> (helpCommands.py)
+#@+<< helpCommands imports >>
+#@+node:ekr.20150514050337.1: ** << helpCommands imports >>
 import io
 import re
 import sys
 import textwrap
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
+#@-<< helpCommands imports >>
 
 def cmd(name):
     """Command decorator for the helpCommands class."""

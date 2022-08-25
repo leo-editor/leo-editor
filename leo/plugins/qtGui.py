@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.18002: * @file ../plugins/qtGui.py
+#@@first
 """qt gui plugin."""
 #@@language python
 #@@tabwidth -4

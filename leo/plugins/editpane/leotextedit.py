@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.5: * @file ../plugins/editpane/leotextedit.py
-#@+<<leotextedit.py imports >>
-#@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
+#@@first
+#@+<<leotextedit imports >>
+#@+node:tbrown.20171028115508.1: ** <<leotextedit imports >>
 from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
 
 
-#@-<<leotextedit.py imports >>
+#@-<<leotextedit imports >>
 #@+others
 #@+node:tbrown.20171028115508.2: ** DBG
 def DBG(text):

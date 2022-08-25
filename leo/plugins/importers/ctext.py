@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:tbrown.20140801105909.47549: * @file ../plugins/importers/ctext.py
-#@@language python
-#@@tabwidth -4
+#@@first
 import re
 from typing import Dict, List
 from leo.core import leoGlobals as g  # Required

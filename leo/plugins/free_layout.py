@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20120419093256.10048: * @file ../plugins/free_layout.py
-#@+<< docstring >>
-#@+node:ekr.20110319161401.14467: ** << docstring >> (free_layout.py)
+#@@first
+#@+<< free_layout docstring >>
+#@+node:ekr.20110319161401.14467: ** << free_layout docstring >>
 """
 Free layout
 ===========
@@ -23,7 +25,7 @@ free-layout-zoom
     Zoom or unzoom the current pane
 
 """
-#@-<< docstring >>
+#@-<< free_layout docstring >>
 # Written by Terry Brown.
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
