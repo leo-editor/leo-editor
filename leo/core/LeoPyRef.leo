@@ -389,9 +389,6 @@
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
 </v>
-<v t="ekr.20210710031237.1"><vh>In leo/scripts</vh>
-<v t="ekr.20210709045755.1"><vh>@file ../scripts/wax_off.py</vh></v>
-</v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
@@ -3316,7 +3313,6 @@ from .eveventhandler import Event
 
 </t>
 <t tx="ekr.20180225010850.1"></t>
-<t tx="ekr.20210710031237.1"></t>
 <t tx="ekr.20201012111545.1">@language python
 @tabwidth -4
 @pagewidth 80
