@@ -374,13 +374,13 @@ class To_Python:  # pragma: no cover
             i += 1
         return i
     #@+node:ekr.20150514063305.155: *5* skip_past_word
-    def skip_past_word(self, s: Any, i: int) -> int:  ###
-        assert s[i].isalpha() or s[i] == '~'
+    def skip_past_word(self, lines: List[str], i: int) -> int:
+        assert lines[i].isalpha() or lines[i] == '~'
         # Kludge: this helps recognize dtors.
-        if s[i] == '~':
+        if lines[i] == '~':
             i += 1
-        while i < len(s):
-            ch = s[i]
+        while i < len(lines):
+            ch = lines[i]
             if ch.isalnum() or ch == '_':
                 i += 1
             else:
@@ -411,8 +411,8 @@ class To_Python:  # pragma: no cover
             assert False
         return j
     #@+node:ekr.20150514063305.158: *5* skip_to_matching_bracket
-    def skip_to_matching_bracket(self, s: Any, i: int) -> int:  ###
-        ch = s[i]
+    def skip_to_matching_bracket(self, lines: List[str], i: int) -> int:
+        ch = lines[i]
         if ch == '(':
             delim = ')'
         elif ch == '{':
@@ -422,14 +422,14 @@ class To_Python:  # pragma: no cover
         else:
             assert False
         i += 1
-        while i < len(s):
-            ch = s[i]
-            if self.is_string_or_comment(s, i):
-                i = self.skip_string_or_comment(s, i)
+        while i < len(lines):
+            ch = lines[i]
+            if self.is_string_or_comment(lines, i):
+                i = self.skip_string_or_comment(lines, i)
             elif ch == delim:
                 return i
             elif ch == '(' or ch == '[' or ch == '{':
-                i = self.skip_to_matching_bracket(s, i)
+                i = self.skip_to_matching_bracket(lines, i)
                 i += 1  # skip the closing bracket.
             else: i += 1
         return i
