@@ -637,7 +637,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         arg_pat = re.compile(r'(\s*[\*\w]+\s*)([:,=])?')
         comment_pat = re.compile(r'(\s*#.*?\n)')
 
-        def do_args(self, args: Any) -> str:
+        def do_args(self, args: str) -> str:
             """Add type annotations for all arguments."""
             multiline = '\n' in args.strip()
             comma = ',\n' if multiline else ', '
