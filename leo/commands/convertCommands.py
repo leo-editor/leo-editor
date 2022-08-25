@@ -82,13 +82,14 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.128: *3* To_Python.Utils
     #@+node:ekr.20150514063305.129: *4* match...
     #@+node:ekr.20150514063305.130: *5* match
-    def match(self, s: str, i: int, pat: str) -> bool:
+    def match(self, s: List[str], i: int, pat: str) -> bool:
         """
         Return True if s[i:] matches the pat string.
 
         We can't use g.match because s is usually a list.
         """
         assert pat
+        assert isinstance(s, list), g.callers() ###
         j = 0
         while i + j < len(s) and j < len(pat):
             if s[i + j] == pat[j]:
@@ -99,13 +100,14 @@ class To_Python:  # pragma: no cover
                 return False
         return False
     #@+node:ekr.20150514063305.131: *5* match_word
-    def match_word(self, s: str, i: int, pat: str) -> bool:
+    def match_word(self, s: List[str], i: int, pat: str) -> bool:
         """
         Return True if s[i:] word matches the pat string.
 
         We can't use g.match_word because s is usually a list
         and g.match_word uses s.find.
         """
+        assert isinstance(s, list), g.callers() ###
         if self.match(s, i, pat):
             j = i + len(pat)
             if j >= len(s):
@@ -130,16 +132,18 @@ class To_Python:  # pragma: no cover
                 i += 1
     #@+node:ekr.20150514063305.133: *4* is...
     #@+node:ekr.20150514063305.134: *5* is_section_def/ref
-    def is_section_def(self, p: Position) -> bool:
-        return self.is_section_ref(p.h)
+    def is_section_def(self, s: str) -> bool:
+        ### return self.is_section_ref(p.h)
+        return self.is_section_def(s)
 
     def is_section_ref(self, s: str) -> bool:
         n1 = s.find("<<", 0)
         n2 = s.find(">>", 0)
         return -1 < n1 < n2 and bool(s[n1 + 2 : n2].strip())
     #@+node:ekr.20150514063305.135: *5* is_string_or_comment
-    def is_string_or_comment(self, s: str, i: int) -> bool:
+    def is_string_or_comment(self, s: List[str], i: int) -> bool:
         # Does range checking.
+        assert isinstance(s, list), g.callers() ###
         m = self.match
         return m(s, i, "'") or m(s, i, '"') or m(s, i, "//") or m(s, i, "/*")
     #@+node:ekr.20150514063305.136: *5* is_ws and is_ws_or_nl
@@ -155,7 +159,8 @@ class To_Python:  # pragma: no cover
             i -= 1
         return i
 
-    def prevNonWsOrNlChar(self, s: str, i: int) -> int:
+    def prevNonWsOrNlChar(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
         i -= 1
         while i >= 0 and self.is_ws_or_nl(s[i]):
             i -= 1
@@ -231,7 +236,7 @@ class To_Python:  # pragma: no cover
             else:
                 i += 1
     #@+node:ekr.20150514063305.144: *5* removeTrailingWs
-    def removeTrailingWs(self, aList: List[List]) -> None:
+    def removeTrailingWs(self, aList: List[str]) -> None:
         i = 0
         while i < len(aList):
             if self.is_ws(aList[i]):
@@ -360,7 +365,8 @@ class To_Python:  # pragma: no cover
                     i += 1
     #@+node:ekr.20150514063305.151: *4* skip
     #@+node:ekr.20150514063305.152: *5* skip_c_block_comment
-    def skip_c_block_comment(self, s: str, i: int) -> int:
+    def skip_c_block_comment(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
         assert self.match(s, i, "/*")
         i += 2
         while i < len(s):
@@ -369,12 +375,14 @@ class To_Python:  # pragma: no cover
             i += 1
         return i
     #@+node:ekr.20150514063305.153: *5* skip_line
-    def skip_line(self, s: str, i: int) -> int:
+    def skip_line(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
         while i < len(s) and s[i] != '\n':
             i += 1
         return i
     #@+node:ekr.20150514063305.154: *5* skip_past_line
-    def skip_past_line(self, s: str, i: int) -> int:
+    def skip_past_line(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
         while i < len(s) and s[i] != '\n':
             i += 1
         if i < len(s) and s[i] == '\n':
@@ -394,7 +402,9 @@ class To_Python:  # pragma: no cover
                 break
         return i
     #@+node:ekr.20150514063305.156: *5* skip_string
-    def skip_string(self, s: str, i: int) -> int:
+    def skip_string(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
+        ### Huh???
         delim = s[i]  # handle either single or double-quoted strings
         assert delim == '"' or delim == "'"
         i += 1
@@ -407,7 +417,8 @@ class To_Python:  # pragma: no cover
                 i += 1
         return i
     #@+node:ekr.20150514063305.157: *5* skip_string_or_comment
-    def skip_string_or_comment(self, s: str, i: int) -> int:
+    def skip_string_or_comment(self, s: List[str], i: int) -> int:
+        assert isinstance(s, list), g.callers() ###
         if self.match(s, i, "'") or self.match(s, i, '"'):
             j = self.skip_string(s, i)
         elif self.match(s, i, "//"):
@@ -442,6 +453,7 @@ class To_Python:  # pragma: no cover
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
     def skip_ws(self, aList: List[str], i: int) -> int:
+        assert isinstance(aList, list), g.callers() ###
         while i < len(aList):
             c = aList[i]
             if c == ' ' or c == '\t':
@@ -1243,7 +1255,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.files: List[str] = []  # May also be set in the config file.
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.')
-                self.output_fn = None
+                self.output_fn: str = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
                 self.trace_matches = c.config.getBool(
                     'stub-trace-matches', default=False)
