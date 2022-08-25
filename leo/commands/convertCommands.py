@@ -435,7 +435,6 @@ class To_Python:  # pragma: no cover
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
     def skip_ws(self, aList: List[str], i: int) -> int:
-        assert isinstance(aList, list), g.callers() ###
         while i < len(aList):
             c = aList[i]
             if c == ' ' or c == '\t':
@@ -863,7 +862,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.replaceComments(aList)  # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
             r(aList, "\t ", "\t")  # happens when deleting declarations.
-            ### g.printObj(aList, tag='C_To_Python.convertCodeList')
         #@+node:ekr.20150514063305.165: *6* handle_all_keywords
         def handle_all_keywords(self, aList: List[str]) -> None:
             """
