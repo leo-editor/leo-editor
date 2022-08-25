@@ -2539,13 +2539,7 @@ class LeoServer:
         """
         c = self._check_c()
         p = self._get_p(param)
-        oldPosition: Optional[Position] = c.p if p == c.p else None
-
-        ###
-        # if p == c.p:
-            # oldPosition = None
-        # else:
-            # oldPosition = c.p
+        oldPosition: Optional[Position] = None if p == c.p else c.p
 
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
