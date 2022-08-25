@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.85
+About Viewrendered3 V3.86
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,12 +57,14 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
+
+Previous Recent Changes
+========================
 Improved detection of the notebook URL in *@jupyter* nodes.  The URL no longer
 has to be the second item in the headline after the string "@jupyter".  If
 a URL is not found in the headline, the first line of the body is tried.
 
-Previous Recent Changes
-========================
 Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so that they
 correctly lock or unlock the rendering to the current subtree, including
 changing the checked/unchecked character of the toolbar menu "locked to tree" item.
@@ -373,6 +375,12 @@ rarely a reason to invoke any of them, except three:
 
     3. ``vr3-help-plot-2d`` opens a help page in the system browser
     for the *Plot 2D* capability.
+
+    4. ``vr3-lock-unlock-tree`` locks/unlocks the rendering to the current
+    subtree if the *Entire Tree* option is set.
+
+    5. ``vr3-freeze``/``vr3-unfreeze`` prevents/allows updating the rendering
+    panel.
 
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
@@ -1452,6 +1460,21 @@ def viewrendered(event):
     c.bodyWantsFocusNow()
 
     return vr3
+#@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
+@g.command('vr3-freeze')
+def freeze_rendering_pane(event):
+    """Freeze the rendering pane so it does not update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+    vr3.set_freeze()
+#@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
+@g.command('vr3-unfreeze')
+def unfreeze_rendering_pane(event):
+    """Allow the rendering pane to update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.set_unfreeze()
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
@@ -2129,7 +2152,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.c.k.simulateCommand('vr3-update')
         #@+node:TomP.20200329223820.9: *5* function: vr3.set_freeze
         def set_freeze(checked):
+            action = self.action_freeze
             self.freeze = checked
+            action.setChecked(checked)
         #@+node:TomP.20200329223820.10: *5* function: vr3.set_group_action
         def set_group_action(label, kind):
             """Coordinates the menu's checked state.
@@ -2183,6 +2208,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _action = QAction('Freeze', self, checkable=True)
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
+        self.action_freeze = _action
 
         set_action("Code Only", 'code_only')
         _options_button.setMenu(menu)
@@ -4492,6 +4518,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         g.unregisterHandler('select2', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
+    #@+node:tom.20220824142257.1: *5* vr3.freeze/unfreeze
+    def set_freeze(self):
+        """Freeze the vr3 pane to prevent updates ."""
+        action = self.action_freeze
+        action.setChecked(True)
+        self.freeze = True
+
+    def set_unfreeze(self):
+        """Freeze the vr3 pane to prevent updates ."""
+        action = self.action_freeze
+        action.setChecked(False)
+        self.freeze = False
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
     def lock(self):
         """Lock the vr3 pane to the current node ."""
