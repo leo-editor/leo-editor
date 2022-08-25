@@ -82,17 +82,12 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.128: *3* To_Python.Utils
     #@+node:ekr.20150514063305.129: *4* match...
     #@+node:ekr.20150514063305.130: *5* match
-    def match(self, s: List[str], i: int, pat: str) -> bool:
-        """
-        Return True if s[i:] matches the pat string.
-
-        We can't use g.match because s is usually a list.
-        """
+    def match(self, lines: List[str], i: int, pat: str) -> bool:
+        """Return True if lines[i:] matches the pat string."""
         assert pat
-        assert isinstance(s, list), g.callers() ###
         j = 0
-        while i + j < len(s) and j < len(pat):
-            if s[i + j] == pat[j]:
+        while i + j < len(lines) and j < len(pat):
+            if lines[i + j] == pat[j]:
                 j += 1
                 if j == len(pat):
                     return True
@@ -100,22 +95,18 @@ class To_Python:  # pragma: no cover
                 return False
         return False
     #@+node:ekr.20150514063305.131: *5* match_word
-    def match_word(self, s: List[str], i: int, pat: str) -> bool:
+    def match_word(self, lines: List[str], i: int, pat: str) -> bool:
         """
-        Return True if s[i:] word matches the pat string.
-
-        We can't use g.match_word because s is usually a list
-        and g.match_word uses s.find.
+        Return True if lines[i:] word matches the pat string.
         """
-        assert isinstance(s, list), g.callers() ###
-        if self.match(s, i, pat):
+        if self.match(lines, i, pat):
             j = i + len(pat)
-            if j >= len(s):
+            if j >= len(lines):
                 return True
             if not pat[-1].isalnum():
                 # Bug fix 10/16/2012: The pattern terminates the word.
                 return True
-            ch = s[j]
+            ch = lines[j]
             return not ch.isalnum() and ch != '_'
         return False
     #@+node:ekr.20150514063305.132: *4* insert_not
@@ -133,7 +124,6 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.133: *4* is...
     #@+node:ekr.20150514063305.134: *5* is_section_def/ref
     def is_section_def(self, s: str) -> bool:
-        ### return self.is_section_ref(p.h)
         return self.is_section_def(s)
 
     def is_section_ref(self, s: str) -> bool:
@@ -141,11 +131,10 @@ class To_Python:  # pragma: no cover
         n2 = s.find(">>", 0)
         return -1 < n1 < n2 and bool(s[n1 + 2 : n2].strip())
     #@+node:ekr.20150514063305.135: *5* is_string_or_comment
-    def is_string_or_comment(self, s: List[str], i: int) -> bool:
+    def is_string_or_comment(self, lines: List[str], i: int) -> bool:
         # Does range checking.
-        assert isinstance(s, list), g.callers() ###
         m = self.match
-        return m(s, i, "'") or m(s, i, '"') or m(s, i, "//") or m(s, i, "/*")
+        return m(lines, i, "'") or m(lines, i, '"') or m(lines, i, "//") or m(lines, i, "/*")
     #@+node:ekr.20150514063305.136: *5* is_ws and is_ws_or_nl
     def is_ws(self, ch: str) -> bool:
         return ch in ' \t'
@@ -159,10 +148,9 @@ class To_Python:  # pragma: no cover
             i -= 1
         return i
 
-    def prevNonWsOrNlChar(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
+    def prevNonWsOrNlChar(self, lines: List[str], i: int) -> int:
         i -= 1
-        while i >= 0 and self.is_ws_or_nl(s[i]):
+        while i >= 0 and self.is_ws_or_nl(lines[i]):
             i -= 1
         return i
     #@+node:ekr.20150514063305.138: *4* remove...
@@ -365,27 +353,24 @@ class To_Python:  # pragma: no cover
                     i += 1
     #@+node:ekr.20150514063305.151: *4* skip
     #@+node:ekr.20150514063305.152: *5* skip_c_block_comment
-    def skip_c_block_comment(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
-        assert self.match(s, i, "/*")
+    def skip_c_block_comment(self, lines: List[str], i: int) -> int:
+        assert self.match(lines, i, "/*")
         i += 2
-        while i < len(s):
-            if self.match(s, i, "*/"):
+        while i < len(lines):
+            if self.match(lines, i, "*/"):
                 return i + 2
             i += 1
         return i
     #@+node:ekr.20150514063305.153: *5* skip_line
-    def skip_line(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
-        while i < len(s) and s[i] != '\n':
+    def skip_line(self, lines: List[str], i: int) -> int:
+        while i < len(lines) and lines[i] != '\n':
             i += 1
         return i
     #@+node:ekr.20150514063305.154: *5* skip_past_line
-    def skip_past_line(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
-        while i < len(s) and s[i] != '\n':
+    def skip_past_line(self, lines: List[str], i: int) -> int:
+        while i < len(lines) and lines[i] != '\n':
             i += 1
-        if i < len(s) and s[i] == '\n':
+        if i < len(lines) and lines[i] == '\n':
             i += 1
         return i
     #@+node:ekr.20150514063305.155: *5* skip_past_word
@@ -402,29 +387,26 @@ class To_Python:  # pragma: no cover
                 break
         return i
     #@+node:ekr.20150514063305.156: *5* skip_string
-    def skip_string(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
-        ### Huh???
-        delim = s[i]  # handle either single or double-quoted strings
+    def skip_string(self, lines: List[str], i: int) -> int:
+        delim = lines[i]  # handle either single or double-quoted strings
         assert delim == '"' or delim == "'"
         i += 1
-        while i < len(s):
-            if s[i] == delim:
+        while i < len(lines):
+            if lines[i] == delim:
                 return i + 1
-            if s[i] == '\\':
+            if lines[i] == '\\':
                 i += 2
             else:
                 i += 1
         return i
     #@+node:ekr.20150514063305.157: *5* skip_string_or_comment
-    def skip_string_or_comment(self, s: List[str], i: int) -> int:
-        assert isinstance(s, list), g.callers() ###
-        if self.match(s, i, "'") or self.match(s, i, '"'):
-            j = self.skip_string(s, i)
-        elif self.match(s, i, "//"):
-            j = self.skip_past_line(s, i)
-        elif self.match(s, i, "/*"):
-            j = self.skip_c_block_comment(s, i)
+    def skip_string_or_comment(self, lines: List[str], i: int) -> int:
+        if self.match(lines, i, "'") or self.match(lines, i, '"'):
+            j = self.skip_string(lines, i)
+        elif self.match(lines, i, "//"):
+            j = self.skip_past_line(lines, i)
+        elif self.match(lines, i, "/*"):
+            j = self.skip_c_block_comment(lines, i)
         else:
             assert False
         return j
