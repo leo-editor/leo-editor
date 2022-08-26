@@ -8,7 +8,7 @@
 import xml.etree.ElementTree as ElementTree
 import json
 from collections import defaultdict
-from typing import Any, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -1776,7 +1776,7 @@ def sortChildren(self: Self, event: Event=None, key: Any=None, reverse: bool=Fal
 def sortSiblings(
     self: Self,
     event: Event=None,  # cmp keyword is no longer supported.
-    key: Any=None,
+    key: Callable=None,
     p: Position=None,
     sortChildren: bool=False,
     reverse: bool=False,
@@ -1798,7 +1798,8 @@ def sortSiblings(
             return self.h.lower()
 
         key = lowerKey
-    newChildren.sort(key=key, reverse=reverse)
+
+    newChildren.sort(key=key, reverse=reverse)  # type:ignore
     if oldChildren == newChildren:
         return
     # 2010/01/20. Fix bug 510148.

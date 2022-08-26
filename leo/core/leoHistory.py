@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
-from typing import Any, List, Tuple, TYPE_CHECKING
+from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 #@+<< leoHistory annotations >>
 #@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
 if TYPE_CHECKING:
@@ -37,19 +37,23 @@ class NodeHistory:
             mark = '**' if i == self.beadPointer else '  '
             print(f"{mark} {i} {chapter_s} {p_s}")
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
-    def goNext(self) -> None:
+    def goNext(self) -> Optional[Position]:
         """Select the next node, if possible."""
         if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
+            return p
+        return None
     #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
-    def goPrev(self) -> None:
+    def goPrev(self) -> Optional[Position]:
         """Select the previously visited node, if possible."""
         if self.beadPointer > 0:
             self.beadPointer -= 1
             p, chapter = self.beadList[self.beadPointer]
             self.select(p, chapter)
+            return p
+        return None
     #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select(self, p: Position, chapter: Any) -> None:
         """
