@@ -24,7 +24,6 @@ else:
     Event = Any
     Position = Any
     VNode = Any
-
 Self = Cmdr  # For @g.commander_command
 #@-<< commanderOutlineCommands annotations >>
 

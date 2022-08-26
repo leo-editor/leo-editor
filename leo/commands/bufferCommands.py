@@ -13,13 +13,13 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@+node:ekr.20220826072120.1: ** << bufferCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
-
-Event = Any
 #@-<< bufferCommands annotations >>
 
 def cmd(name: str) -> Callable:

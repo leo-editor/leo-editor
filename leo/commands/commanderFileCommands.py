@@ -16,13 +16,13 @@ from leo.core import leoImport
 #@+node:ekr.20220826120908.1: ** << commanderFileCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
-
-Event = Any
 Self = Cmdr  # For @g.commander_command.
 #@-<< commanderFileCommands annotations >>
 #@+others

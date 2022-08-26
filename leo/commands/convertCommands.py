@@ -16,11 +16,12 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@+node:ekr.20220824202941.1: ** << convertCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
-Event = Any
 #@-<< convertCommands annotations >>
 
 def cmd(name: Any) -> Callable:
