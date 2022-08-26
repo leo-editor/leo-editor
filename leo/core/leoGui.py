@@ -352,11 +352,11 @@ class LeoKeyEvent:
             d[ivar] = getattr(self, ivar)
         return f"LeoKeyEvent:\n{g.objToString(d)}"
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
-    def get(self, attr: str) -> None:
+    def get(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
-    def __getitem__(self, attr: str) -> None:
+    def __getitem__(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
     #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type
