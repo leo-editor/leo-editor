@@ -25,8 +25,7 @@ else:
     Position = Any
     VNode = Any
 
-# Event = Any
-Self = Any  # For @g.commander_command
+Self = Cmdr  # For @g.commander_command
 #@-<< commanderOutlineCommands annotations >>
 
 #@+others
@@ -708,7 +707,7 @@ def expandPrevLevel(self: Self, event: Event=None) -> None:
     self.expandToLevel(max(1, c.expansionLevel - 1))
 #@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
 @g.commander_command('check-outline')
-def fullCheckOutline(self: Self, event: Event=None) -> bool:
+def fullCheckOutline(self: Self, event: Event=None) -> int:
     """
     Performs a full check of the consistency of a .leo file.
 
@@ -1795,7 +1794,7 @@ def sortSiblings(
     newChildren = parent_v.children[:]
     if key is None:
 
-        def lowerKey(self: Self) -> None:
+        def lowerKey(self: Self) -> str:
             return self.h.lower()
 
         key = lowerKey
