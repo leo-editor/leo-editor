@@ -1102,7 +1102,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self) -> Tuple[List[str], List[str], List[str], Optional[Tuple], Optional[Tuple]]:
+    def getBodyLines(self) -> Tuple[str, List[str], str, Optional[Tuple], Optional[Tuple]]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 

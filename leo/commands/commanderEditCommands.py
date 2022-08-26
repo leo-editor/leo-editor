@@ -20,7 +20,7 @@ else:
     VNode = Any
 
 Event = Any
-Self = Any  # For arguments to @g.commander_command.
+Self = Cmdr  # For arguments to @g.commander_command.
 #@-<< commanderEditCommands annotations >>
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments

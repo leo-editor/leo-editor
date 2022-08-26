@@ -246,8 +246,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         self.computeData()
         self.getBufferNameFinisher = finisher
         prefix = k.getLabel()
-        k.get1Arg(
-            event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
+        k.get1Arg(event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
 
     def getBufferName1(self, event: Event) -> None:
         k = self.c.k

@@ -22,7 +22,7 @@ else:
     VNode = Any
 
 Event = Any
-Self = Any  # For @g.commander_command
+Self = Cmdr  # For @g.commander_command
 #@-<< commanderHelpCommands annotations >>
 #@+others
 #@+node:ekr.20031218072017.2939: ** c_help.about (version number & date)
@@ -65,7 +65,8 @@ def editOneSetting(self: Self, event: Event=None) -> None:
 def editShortcut(self: Self, event: Event=None) -> None:
     k = self.k
     if k.isEditShortcutSensible():
-        self.k.setState('input-shortcut', 'input-shortcut')
+        # k.setState('input-shortcut', 'input-shortcut')
+        k.setState('input-shortcut', 1, None)  # Experimental.
         g.es('Press desired key combination')
     else:
         g.es('No possible shortcut in selected body line/headline')

@@ -23,7 +23,7 @@ else:
     VNode = Any
 
 Event = Any
-Self = Any  # For @g.commander_command.
+Self = Cmdr  # For @g.commander_command.
 #@-<< commanderFileCommands annotations >>
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings
