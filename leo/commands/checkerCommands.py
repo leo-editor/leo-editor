@@ -9,6 +9,7 @@ import os
 import shlex
 import sys
 import time
+from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 #
 # Third-party imports.
 # pylint: disable=import-error
@@ -39,25 +40,37 @@ except Exception:
 # Leo imports.
 from leo.core import leoGlobals as g
 #@-<< checkerCommands imports >>
+#@+<< checkerCommands annotations >>
+#@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+else:
+    Cmdr = Any
+    Position = Any
+    VNode = Any
+
+Event = Any
+#@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
-def find_long_lines(event):
+def find_long_lines(event: Event) -> None:
     """Report long lines in the log, with clickable links."""
     c = event and event.get('c')
     if not c:
         return
     #@+others # helper functions
     #@+node:ekr.20190609135639.1: *4* function: get_root
-    def get_root(p):
+    def get_root(p: Position) -> Optional[Position]:
         """Return True if p is any @<file> node."""
         for parent in p.self_and_parents():
             if parent.anyAtFileNodeName():
                 return parent
         return None
     #@+node:ekr.20190608084751.2: *4* function: in_no_pylint
-    def in_nopylint(p):
+    def in_nopylint(p: Position) -> bool:
         """Return p if p is controlled by @nopylint."""
         for parent in p.self_and_parents():
             if '@nopylint' in parent.h:
@@ -97,14 +110,14 @@ def find_long_lines(event):
         f"{len(files)} file{g.plural(len(files))}")
 #@+node:ekr.20190615180048.1: *3* find-missing-docstrings
 @g.command('find-missing-docstrings')
-def find_missing_docstrings(event):
+def find_missing_docstrings(event: Event) -> None:
     """Report missing docstrings in the log, with clickable links."""
     c = event and event.get('c')
     if not c:
         return
     #@+others # Define functions
     #@+node:ekr.20190615181104.1: *4* function: has_docstring
-    def has_docstring(lines, n):
+    def has_docstring(lines: List[str], n: int) -> bool:
         """
         Returns True if function/method/class whose definition
         starts on n-th line in lines has a docstring
@@ -118,7 +131,7 @@ def find_missing_docstrings(event):
                 return True
         return False
     #@+node:ekr.20190615181104.2: *4* function: is_a_definition
-    def is_a_definition(line):
+    def is_a_definition(line: Any) -> bool:
         """Return True if line is a definition line."""
         # By Виталије Милошевић.
         # It may be useful to skip __init__ methods because their docstring
@@ -128,7 +141,7 @@ def find_missing_docstrings(event):
             not line.partition(' ')[2].startswith('__init__')
         )
     #@+node:ekr.20190615182754.1: *4* function: is_root
-    def is_root(p):
+    def is_root(p: Position) -> bool:
         """
         A predicate returning True if p is an @<file> node that is not under @nopylint.
         """
@@ -161,7 +174,7 @@ def find_missing_docstrings(event):
         f"in {time.process_time() - t1:5.2f} sec.")
 #@+node:ekr.20160517133001.1: *3* flake8-files command
 @g.command('flake8-files')
-def flake8_command(event):
+def flake8_command(event: Event) -> None:
     """
     Run flake8 on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -184,12 +197,12 @@ def flake8_command(event):
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
-def kill_pylint(event):
+def kill_pylint(event: Event) -> None:
     """Kill any running pylint processes and clear the queue."""
     g.app.backgroundProcessManager.kill('pylint')
 #@+node:ekr.20210302111730.1: *3* mypy command
 @g.command('mypy')
-def mypy_command(event):
+def mypy_command(event: Event) -> None:
     """
     Run mypy on all @<file> nodes of the selected tree, or the first
     @<file> node in an ancestor. Running mypy on a single file usually
@@ -223,7 +236,7 @@ def mypy_command(event):
         g.es_print('can not import mypy')
 #@+node:ekr.20160516072613.1: *3* pyflakes command
 @g.command('pyflakes')
-def pyflakes_command(event):
+def pyflakes_command(event: Event) -> None:
     """
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -240,10 +253,10 @@ def pyflakes_command(event):
     if ok:
         g.es('OK: pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
-last_pylint_path = None
+last_pylint_path: str = None
 
 @g.command('pylint')
-def pylint_command(event):
+def pylint_command(event: Event) -> None:
     """
     Run pylint on all nodes of the selected tree,
     or the first @<file> node in an ancestor,
@@ -264,15 +277,15 @@ class MypyCommand:
 
     # See g.mypy_pat for the regex that creates clickable links.
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """ctor for MypyCommand class."""
         self.c = c
         self.link_limit = None  # Set in check_file.
-        self.unknown_path_names = []
+        self.unknown_path_names: List[str] = []
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
-    def check_all(self, roots):
+    def check_all(self, roots: Any) -> None:
         """Run mypy on all files in paths."""
         c = self.c
         if not mypy:
@@ -285,7 +298,7 @@ class MypyCommand:
 
 
     #@+node:ekr.20210727212625.1: *3* mypy.check_file
-    def check_file(self, fn, root):
+    def check_file(self, fn: str, root: Position) -> None:
         """Run mypy on one file."""
         c = self.c
         if not mypy:
@@ -301,7 +314,7 @@ class MypyCommand:
         )
 
     #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
-    def run(self, p):
+    def run(self, p: Position) -> None:
         """Run mypy on all Python @<file> nodes in c.p's tree."""
         c = self.c
         if not mypy:
@@ -320,10 +333,10 @@ class MypyCommand:
 class PyflakesCommand:
     """A class to run pyflakes on all Python @<file> nodes in c.p's tree."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen = []  # List of checked paths.
+        self.seen: List[str] = []  # List of checked paths.
 
     #@+others
     #@+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
@@ -331,11 +344,11 @@ class PyflakesCommand:
 
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n=0, roots=None):
+        def __init__(self, fn_n: int=0, roots: List[Position]=None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
-        def write(self, s):
+        def write(self, s: str) -> None:
             fn_n, roots = self.fn_n, self.roots
             if not s.strip():
                 return
@@ -353,7 +366,7 @@ class PyflakesCommand:
             else:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, roots):
+    def check_all(self, roots: List[Position]) -> int:
         """Run pyflakes on all files in paths."""
         total_errors = 0
         for i, root in enumerate(roots):
@@ -374,7 +387,7 @@ class PyflakesCommand:
                 total_errors += errors
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
-    def check_script(self, p, script):
+    def check_script(self, p: Position, script: str) -> bool:
         """Call pyflakes to check the given script."""
         try:
             from pyflakes import api, reporter
@@ -392,13 +405,13 @@ class PyflakesCommand:
         errors = api.check(script, '', r)
         return errors == 0
     #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
-    def finalize(self, p):
+    def finalize(self, p: Position) -> str:
         """Finalize p's path."""
         c = self.c
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.fullPath(c, p))  # #1914.
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p):
+    def run(self, p: Position) -> bool:
         """Run Pyflakes on all Python @<file> nodes in p's tree."""
         ok = True
         if not pyflakes:
@@ -424,21 +437,21 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.data = None  # Data for the *running* process.
-        self.rc_fn = None  # Name of the rc file.
+        self.data: Any = None  # Data for the *running* process.
+        self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path=None):
+    def run(self, last_path: str=None) -> Optional[Tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not lint:
             g.es_print('pylint is not installed')
-            return False
+            return None
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
-            return False
+            return None
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
@@ -446,14 +459,14 @@ class PylintCommand:
 
         # Ignore @nopylint trees.
 
-        def predicate(p):
+        def predicate(p: Position) -> bool:
             for parent in p.self_and_parents():
                 if g.match_word(parent.h, 0, '@nopylint'):
                     return False
             return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
 
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
-        data = [(self.get_fn(p), p.copy()) for p in roots]
+        data: List[Tuple[str, Position]] = [(self.get_fn(p), p.copy()) for p in roots]
         data = [z for z in data if z[0] is not None]
         if not data and last_path:
             # Default to the last path.
@@ -468,9 +481,9 @@ class PylintCommand:
         for fn, p in data:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
-        return data[-1] if data else False
+        return data[-1] if data else None
     #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
-    def get_rc_file(self):
+    def get_rc_file(self) -> Optional[str]:
         """Return the path to the pylint configuration file."""
         base = 'pylint-leo-rc.txt'
         table = (
@@ -487,7 +500,7 @@ class PylintCommand:
         g.es_print(f"no pylint configuration file found in\n{table_s}")
         return None
     #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
-    def get_fn(self, p):
+    def get_fn(self, p: Position) -> Optional[str]:
         """
         Finalize p's file name.
         Return if p is not an @file node for a python file.
@@ -499,7 +512,7 @@ class PylintCommand:
             return None
         return g.fullPath(c, p)  # #1914
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
-    def run_pylint(self, fn, p):
+    def run_pylint(self, fn: str, p: Position) -> None:
         """Run pylint on fn with the given pylint configuration file."""
         c, rc_fn = self.c, self.rc_fn
         #
