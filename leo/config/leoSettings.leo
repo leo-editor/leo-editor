@@ -11624,28 +11624,68 @@ v, VNode</t>
 # Note: add-mypy-annotations can automatically annotate kwargs initialized to 
 #       bool, float, int or string constants.
 
-# Define default annotations for arguments and return types.
+# Define default annotations for arguments and return types...
 
-DEFAULT, str
+DEFAULT, Any
 DEFAULT_RETURN, None
 
-# Naming conventions used in Leo.
+# Naming conventions used in Leo...
 
+aBool, bool
+aList, List
+args, Any
 c, Cmdr
 callback, Callable
 ch, str
+changed, bool
 char, str
 d, Dict[str, str]
+ev, Event
 event, Event
+fileName, str
+fn, str
+frac, float
+frame, Widget
 gnx, str
+handler, Callable
 i, int
+i1, int
+i2, int
+index, int
+idx, int
 j, int
+j1, int
+j2, int
 k, int
+k1, int
+k2, int
+kwargs, Any
+menu, Wrapper
+message, str
 n, int
-p, Pos
+n1, int
+n2, int
+name, str
+obj, Any
+p, Position
+p1, Position
+p2, Position
+parentFrame, Wrapper
+path, str
+ratio, float
+ratio2, float
+root, Position
 s, str
+s1, str
+s2, str
+script, str
+tag, str
 v, VNode
 w, Wrapper
+widget, Widget
+wrapper, Wrapper
+x, int
+y, int
 </t>
 <t tx="ekr.20220224094744.1">True: Attempt to use a dark-vs-light theme according to whether the Leo
       theme is marked dark or not.
