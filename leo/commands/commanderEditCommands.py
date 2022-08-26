@@ -3,13 +3,28 @@
 #@+node:ekr.20171123135539.1: * @file ../commands/commanderEditCommands.py
 #@@first
 """Edit commands that used to be defined in leoCommands.py"""
+#@+<< commanderEditCommands imports >>
+#@+node:ekr.20220826084013.1: ** << commanderEditCommands imports >>
 import re
-from typing import List
+from typing import Any, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
+#@-<< commanderEditCommands imports >>
+#@+<< commanderEditCommands annotations >>
+#@+node:ekr.20220826083914.1: ** << commanderEditCommands annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+else:
+    Cmdr = Any
+    Position = Any
+    VNode = Any
+
+Event = Any
+#@-<< commanderEditCommands annotations >>
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
 @g.commander_command('add-comments')
-def addComments(self, event=None):
+def addComments(self, event: Event=None) -> None:
     #@+<< addComments docstring >>
     #@+node:ekr.20171123135625.35: *3* << addComments docstring >>
     #@@pagewidth 50
@@ -86,7 +101,7 @@ def addComments(self, event=None):
     u.afterChangeBody(p, 'Add Comments', bunch)
 #@+node:ekr.20171123135625.3: ** c_ec.colorPanel
 @g.commander_command('set-colors')
-def colorPanel(self, event=None):
+def colorPanel(self, event: Event=None) -> None:
     """Open the color dialog."""
     c = self
     frame = c.frame
@@ -95,7 +110,7 @@ def colorPanel(self, event=None):
     frame.colorPanel.bringToFront()
 #@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
 @g.commander_command('convert-all-blanks')
-def convertAllBlanks(self, event=None):
+def convertAllBlanks(self, event: Event=None) -> None:
     """Convert all blanks to tabs in the selected outline."""
     c, u = self, self.undoer
     undoType = 'Convert All Blanks'
@@ -138,7 +153,7 @@ def convertAllBlanks(self, event=None):
         c.redraw_after_icons_changed()
 #@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
 @g.commander_command('convert-all-tabs')
-def convertAllTabs(self, event=None):
+def convertAllTabs(self, event: Event=None) -> None:
     """Convert all tabs to blanks in the selected outline."""
     c = self
     u = c.undoer
@@ -181,7 +196,7 @@ def convertAllTabs(self, event=None):
         c.redraw_after_icons_changed()
 #@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
-def convertBlanks(self, event=None):
+def convertBlanks(self, event: Event=None) -> None:
     """
     Convert *all* blanks to tabs in the selected node.
     Return True if the the p.b was changed.
@@ -224,7 +239,7 @@ def convertBlanks(self, event=None):
     return True
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
-def convertTabs(self, event=None):
+def convertTabs(self, event: Event=None) -> None:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
@@ -269,7 +284,7 @@ def convertTabs(self, event=None):
     return True
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
-def dedentBody(self, event=None):
+def dedentBody(self, event: Event=None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
@@ -313,7 +328,7 @@ def dedentBody(self, event=None):
     u.afterChangeBody(p, 'Unindent Region', bunch)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
-def deleteComments(self, event=None):
+def deleteComments(self, event: Event=None) -> None:
     #@+<< deleteComments docstring >>
     #@+node:ekr.20171123135625.37: *3* << deleteComments docstring >>
     #@@pagewidth 50
@@ -396,7 +411,7 @@ def deleteComments(self, event=None):
     u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
-def editHeadline(self, event=None):
+def editHeadline(self, event: Event=None) -> None:
     """
     Begin editing the headline of the selected node.
 
@@ -415,7 +430,7 @@ def editHeadline(self, event=None):
     return e, wrapper  # Neither of these is used by any caller.
 #@+node:ekr.20171123135625.23: ** c_ec.extract & helpers
 @g.commander_command('extract')
-def extract(self, event=None):
+def extract(self, event: Event=None) -> None:
     #@+<< docstring for extract command >>
     #@+node:ekr.20201113130021.1: *3* << docstring for extract command >>
     r"""
@@ -499,7 +514,7 @@ def extract(self, event=None):
 g.command_alias('extractSection', extract)
 g.command_alias('extractPythonMethod', extract)
 #@+node:ekr.20171123135625.20: *3* def createLastChildNode
-def createLastChildNode(c, parent, headline, body):
+def createLastChildNode(c: Cmdr, parent: Any, headline: Any, body: Any) -> None:
     """A helper function for the three extract commands."""
     # #1955: don't strip trailing lines.
     if not body:
@@ -526,7 +541,7 @@ extractDef_patterns = (
     re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
 )
 
-def extractDef(c, s):
+def extractDef(c: Cmdr, s: str) -> None:
     """
     Return the defined function/method/class name if s
     looks like definition. Tries several different languages.
@@ -546,14 +561,14 @@ def extractDef(c, s):
             return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* def extractDef_find
-def extractDef_find(c, lines):
+def extractDef_find(c: Cmdr, lines: Any) -> None:
     for line in lines:
         def_h = extractDef(c, line.strip())
         if def_h:
             return def_h
     return None
 #@+node:ekr.20171123135625.25: *3* def extractRef
-def extractRef(c, s):
+def extractRef(c: Cmdr, s: str) -> None:
     """Return s if it starts with a section name."""
     i = s.find('<<')
     j = s.find('>>')
@@ -566,7 +581,7 @@ def extractRef(c, s):
     return ''
 #@+node:ekr.20171123135625.27: ** c_ec.extractSectionNames & helper
 @g.commander_command('extract-names')
-def extractSectionNames(self, event=None):
+def extractSectionNames(self, event: Event=None) -> None:
     """
     Create child nodes for every section reference in the selected text.
     - The headline of each new child node is the section reference.
@@ -604,7 +619,7 @@ def extractSectionNames(self, event=None):
         w.setSelectionRange(i, j)
         w.setFocus()
 #@+node:ekr.20171123135625.28: *3* def findSectionName
-def findSectionName(self, s):
+def findSectionName(self, s: str) -> None:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)
@@ -620,7 +635,7 @@ def findSectionName(self, s):
 #@+node:ekr.20171123135625.15: ** c_ec.findMatchingBracket
 @g.commander_command('match-brackets')
 @g.commander_command('select-to-matching-bracket')
-def findMatchingBracket(self, event=None):
+def findMatchingBracket(self, event: Event=None) -> None:
     """Select the text between matching brackets."""
     c, p = self, self.p
     if g.app.batchMode:
@@ -633,7 +648,7 @@ def findMatchingBracket(self, event=None):
         g.MatchBrackets(c, p, language).run()
 #@+node:ekr.20171123135625.9: ** c_ec.fontPanel
 @g.commander_command('set-font')
-def fontPanel(self, event=None):
+def fontPanel(self, event: Event=None) -> None:
     """Open the font dialog."""
     c = self
     frame = c.frame
@@ -642,19 +657,19 @@ def fontPanel(self, event=None):
     frame.fontPanel.bringToFront()
 #@+node:ekr.20110402084740.14490: ** c_ec.goToNext/PrevHistory
 @g.commander_command('goto-next-history-node')
-def goToNextHistory(self, event=None):
+def goToNextHistory(self, event: Event=None) -> None:
     """Go to the next node in the history list."""
     c = self
     c.nodeHistory.goNext()
 
 @g.commander_command('goto-prev-history-node')
-def goToPrevHistory(self, event=None):
+def goToPrevHistory(self, event: Event=None) -> None:
     """Go to the previous node in the history list."""
     c = self
     c.nodeHistory.goPrev()
 #@+node:ekr.20171123135625.30: ** c_ec.alwaysIndentBody (always-indent-region)
 @g.commander_command('always-indent-region')
-def alwaysIndentBody(self, event=None):
+def alwaysIndentBody(self, event: Event=None) -> None:
     """
     The always-indent-region command indents each line of the selected body
     text. The @tabwidth directive in effect determines amount of
@@ -715,7 +730,7 @@ def alwaysIndentBody(self, event=None):
     u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
-def indentBody(self, event=None):
+def indentBody(self, event: Event=None) -> None:
     """
     The indent-region command indents each line of the selected body text.
     Unlike the always-indent-region command, this command inserts a tab
@@ -739,7 +754,7 @@ def indentBody(self, event=None):
     c.alwaysIndentBody(event)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
-def insertBodyTime(self, event=None):
+def insertBodyTime(self, event: Event=None) -> None:
     """Insert a time/date stamp at the cursor."""
     c, p, u = self, self.p, self.undoer
     w = c.frame.body.wrapper
@@ -756,7 +771,7 @@ def insertBodyTime(self, event=None):
     u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
-def justify_toggle_auto(self, event=None):
+def justify_toggle_auto(self, event: Event=None) -> None:
     c = self
     if c.editCommands.autojustify == 0:
         c.editCommands.autojustify = abs(c.config.getInt("autojustify") or 0)
@@ -769,7 +784,7 @@ def justify_toggle_auto(self, event=None):
         g.es("Autojustify off")
 #@+node:ekr.20190210095609.1: ** c_ec.line_to_headline
 @g.commander_command('line-to-headline')
-def line_to_headline(self, event=None):
+def line_to_headline(self, event: Event=None) -> None:
     """
     Create child node from the selected line.
 
@@ -809,13 +824,13 @@ def line_to_headline(self, event=None):
     c.bodyWantsFocus()
 #@+node:ekr.20171123135625.11: ** c_ec.preferences
 @g.commander_command('settings')
-def preferences(self, event=None):
+def preferences(self, event: Event=None) -> None:
     """Handle the preferences command."""
     c = self
     c.openLeoSettings()
 #@+node:ekr.20171123135625.40: ** c_ec.reformatBody
 @g.commander_command('reformat-body')
-def reformatBody(self, event=None):
+def reformatBody(self, event: Event=None) -> None:
     """Reformat all paragraphs in the body."""
     c, p = self, self.p
     undoType = 'reformat-body'
@@ -833,7 +848,7 @@ def reformatBody(self, event=None):
     c.undoer.afterChangeGroup(p, undoType)
 #@+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers
 @g.commander_command('reformat-paragraph')
-def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
+def reformatParagraph(self, event: Event=None, undoType: str='Reformat Paragraph') -> None:
     """
     Reformat a text paragraph
 
@@ -861,15 +876,15 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
     result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
     rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
 #@+node:ekr.20171123135625.43: *3* function: ends_paragraph & single_line_paragraph
-def ends_paragraph(s):
+def ends_paragraph(s: str) -> None:
     """Return True if s is a blank line."""
     return not s.strip()
 
-def single_line_paragraph(s):
+def single_line_paragraph(s: str) -> None:
     """Return True if s is a single-line paragraph."""
     return s.startswith('@') or s.strip() in ('"""', "'''")
 #@+node:ekr.20171123135625.42: *3* function: find_bound_paragraph
-def find_bound_paragraph(c):
+def find_bound_paragraph(c: Cmdr) -> None:
     """
     Return the lines of a paragraph to be reformatted.
     This is a convenience method for the reformat-paragraph command.
@@ -918,7 +933,7 @@ def find_bound_paragraph(c):
         return head, result, tail  # string, list, string
     return None, None, None
 #@+node:ekr.20171123135625.45: *3* function: rp_get_args
-def rp_get_args(c):
+def rp_get_args(c: Cmdr) -> None:
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
     w = body.wrapper
@@ -933,7 +948,7 @@ def rp_get_args(c):
     oldYview = w.getYScrollPosition()
     return oldSel, oldYview, original, pageWidth, tabWidth
 #@+node:ekr.20171123135625.46: *3* function: rp_get_leading_ws
-def rp_get_leading_ws(c, lines, tabWidth):
+def rp_get_leading_ws(c: Cmdr, lines: Any, tabWidth: Any) -> None:
     """Compute and return indents and leading_ws."""
     # c = self
     indents = [0, 0]
@@ -948,7 +963,7 @@ def rp_get_leading_ws(c, lines, tabWidth):
         leading_ws[1] = leading_ws[0]
     return indents, leading_ws
 #@+node:ekr.20171123135625.47: *3* function: rp_reformat
-def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
+def rp_reformat(c: Cmdr, head: Any, oldSel: Any, oldYview: Any, original: Any, result: Any, tail: Any, undoType: Any) -> None:
     """Reformat the body and update the selection."""
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
@@ -985,7 +1000,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     u.afterChangeBody(p, undoType, bunch)
     w.setXScrollPosition(0)  # Never scroll horizontally.
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
-def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
+def rp_wrap_all_lines(c: Cmdr, indents: Any, leading_ws: Any, lines: Any, pageWidth: Any) -> None:
     """Compute the result of wrapping all lines."""
     trailingNL = lines and lines[-1].endswith('\n')
     lines = [z[:-1] if z.endswith('\n') else z for z in lines]
@@ -1025,7 +1040,7 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
         result = result + '\n'
     return result
 #@+node:ekr.20171123135625.44: *3* function: startsParagraph
-def startsParagraph(s):
+def startsParagraph(s: str) -> None:
     """Return True if line s starts a paragraph."""
     if not s.strip():
         val = False
@@ -1047,7 +1062,7 @@ def startsParagraph(s):
     return val
 #@+node:ekr.20201124191844.1: ** c_ec.reformatSelection
 @g.commander_command('reformat-selection')
-def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
+def reformatSelection(self, event: Event=None, undoType: str='Reformat Paragraph') -> None:
     """
     Reformat the selected text, as in reformat-paragraph, but without
     expanding the selection past the selected lines.
@@ -1082,25 +1097,25 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     w.setXScrollPosition(0)  # Never scroll horizontally.
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
-def hideInvisibles(self, event=None):
+def hideInvisibles(self, event: Event=None) -> None:
     """Hide invisible (whitespace) characters."""
     c = self
     showInvisiblesHelper(c, False)
 
 @g.commander_command('show-invisibles')
-def showInvisibles(self, event=None):
+def showInvisibles(self, event: Event=None) -> None:
     """Show invisible (whitespace) characters."""
     c = self
     showInvisiblesHelper(c, True)
 
 @g.commander_command('toggle-invisibles')
-def toggleShowInvisibles(self, event=None):
+def toggleShowInvisibles(self, event: Event=None) -> None:
     """Toggle showing of invisible (whitespace) characters."""
     c = self
     colorizer = c.frame.body.getColorizer()
     showInvisiblesHelper(c, not colorizer.showInvisibles)
 
-def showInvisiblesHelper(c, val):
+def showInvisiblesHelper(c: Cmdr, val: Any) -> None:
     frame = c.frame
     colorizer = frame.body.getColorizer()
     colorizer.showInvisibles = val
@@ -1119,7 +1134,7 @@ def showInvisiblesHelper(c, val):
     c.frame.body.recolor(c.p)
 #@+node:ekr.20171123135625.55: ** c_ec.toggleAngleBrackets
 @g.commander_command('toggle-angle-brackets')
-def toggleAngleBrackets(self, event=None):
+def toggleAngleBrackets(self, event: Event=None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
     c, p = self, self.p
     if g.app.batchMode:
@@ -1144,7 +1159,7 @@ def toggleAngleBrackets(self, event=None):
     c.redrawAndEdit(p, selectAll=True)
 #@+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
 @g.commander_command('unformat-paragraph')
-def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
+def unformatParagraph(self, event: Event=None, undoType: str='Unformat Paragraph') -> None:
     """
     Unformat a text paragraph. Removes all extra whitespace in a paragraph.
 
@@ -1166,7 +1181,7 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
         result = ' '.join([z.strip() for z in lines]) + '\n'
         unreformat(c, head, oldSel, oldYview, original, result, tail, undoType)
 #@+node:ekr.20171123135625.50: *3* function: unreformat
-def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
+def unreformat(c: Cmdr, head: Any, oldSel: Any, oldYview: Any, original: Any, result: Any, tail: Any, undoType: Any) -> None:
     """unformat the body and update the selection."""
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
@@ -1195,7 +1210,7 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.setXScrollPosition(0)
 #@+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
 @g.commander_command('insert-jupyter-toc')
-def insertJupyterTOC(self, event=None):
+def insertJupyterTOC(self, event: Event=None) -> None:
     """
     Insert a Jupyter table of contents at the cursor,
     replacing any selected text.
@@ -1203,14 +1218,14 @@ def insertJupyterTOC(self, event=None):
     insert_toc(c=self, kind='jupyter')
 
 @g.commander_command('insert-markdown-toc')
-def insertMarkdownTOC(self, event=None):
+def insertMarkdownTOC(self, event: Event=None) -> None:
     """
     Insert a Markdown table of contents at the cursor,
     replacing any selected text.
     """
     insert_toc(c=self, kind='markdown')
 #@+node:ekr.20180410074238.1: *3* insert_toc
-def insert_toc(c, kind):
+def insert_toc(c: Cmdr, kind: Any) -> None:
     """Insert a table of contents at the cursor."""
     p, u = c.p, c.undoer
     w = c.frame.body.wrapper
@@ -1226,14 +1241,14 @@ def insert_toc(c, kind):
     p.v.b = w.getAllText()
     u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20180410054926.1: *3* make_toc
-def make_toc(c, kind, root):
+def make_toc(c: Cmdr, kind: Any, root: Position) -> None:
     """Return the toc for root.b as a list of lines."""
 
-    def cell_type(p):
+    def cell_type(p: Position) -> None:
         language = g.getLanguageAtPosition(c, p)
         return 'markdown' if language in ('jupyter', 'markdown') else 'python'
 
-    def clean_headline(s):
+    def clean_headline(s: str) -> None:
         # Surprisingly tricky. This could remove too much, but better to be safe.
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
