@@ -5,12 +5,15 @@
 """Gui-independent menu handling for Leo."""
 #@+<< leoMenu imports >>
 #@+node:ekr.20220414095908.1: ** << leoMenu imports >>
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoMenu imports >>
 #@+<< leoMenu annotations >>
 #@+node:ekr.20220824085300.1: ** << leoMenu annotations >>
-Event = Any
+if TYPE_CHECKING:
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Event = Any
 Widget = Any
 #@-<< leoMenu annotations >>
 #@+others

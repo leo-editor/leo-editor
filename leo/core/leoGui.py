@@ -10,24 +10,27 @@ Leo's core calls this class to allocate all gui objects.
 
 Plugins may define their own gui classes by setting g.app.gui.
 """
-#@+<< imports leoGui.py >>
-#@+node:ekr.20220414080546.1: ** << imports leoGui.py >>
+#@+<< leoGui imports >>
+#@+node:ekr.20220414080546.1: ** << leoGui imports >>
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
+#@-<< leoGui imports >>
+#@+<< leoGui annotations >>
+#@+node:ekr.20220827062419.1: ** << leoGui annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
     # from leo.core.leoQt import QtWidgets
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
-    # for NullGui and StringTextWrapper.
-Event = Any
 Widget = Any
 Wrapper = Any
-#@-<< imports leoGui.py >>
+#@-<< leoGui annotations >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui:

@@ -22,13 +22,13 @@ from leo.core import leoAst
 #@+node:ekr.20220822114959.1: ** << leoBeautify annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
-
-Event = Any
 #@-<< leoBeautify annotations >>
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)
