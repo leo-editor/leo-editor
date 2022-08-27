@@ -37,7 +37,7 @@ if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
 
 skip_pat = re.compile(r'=.*in g.app.debug')
 
-def find_next_trace(ins: Any, p: Position) -> Tuple[int, int, Position]:
+def find_next_trace(ins: int, p: Position) -> Tuple[int, int, Position]:
     while p:
         ins = max(0, ins - 1)  # Back up over newline.
         s = p.b[ins:]
@@ -76,7 +76,7 @@ def find_trace_block(i: int, j: int, s: str) -> int:
 #@+node:ekr.20190926103141.1: *3* function: lineScrollHelper
 # by Brian Theado.
 
-def lineScrollHelper(c: Cmdr, prefix1: Any, prefix2: Any, suffix: Any) -> None:
+def lineScrollHelper(c: Cmdr, prefix1: str, prefix2: str, suffix: str) -> None:
     w = c.frame.body.wrapper
     ins = w.getInsertPoint()
     c.inCommand = False
@@ -401,7 +401,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
 
-        def callback(arg: Any, w: Any=w) -> None:
+        def callback(arg: Any, w: Wrapper=w) -> None:
             i = w.getSelectionRange()[0]
             p = c.p
             w.deleteTextSelection()
@@ -545,7 +545,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert tabs to 4 spaces in the selected text."""
         self.tabifyHelper(event, which='untabify')
 
-    def tabifyHelper(self, event: Event, which: Any) -> None:
+    def tabifyHelper(self, event: Event, which: str) -> None:
         w = self.editWidget(event)
         if not w or not w.hasSelection():
             return
@@ -580,7 +580,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert all characters of the word at the cursor to UPPER CASE."""
         self.capitalizeHelper(event, 'up', 'upcase-word')
     #@+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
-    def capitalizeHelper(self, event: Event, which: Any, undoType: Any) -> None:
+    def capitalizeHelper(self, event: Event, which: str, undoType: str) -> None:
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
@@ -631,7 +631,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         # Thanks to
         # https://thispointer.com/python-capitalize-the-first-letter-of-each-word-in-a-string/
-        def convert_to_uppercase(m: Any) -> str:
+        def convert_to_uppercase(m: re.Match) -> str:
             """Convert the second group to uppercase and join both group 1 & group 2"""
             return m.group(1) + m.group(2).upper()
 
@@ -680,7 +680,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Activate Leo's Window menu."""
         self.activateMenu('Window')
 
-    def activateMenu(self, menuName: Any) -> None:  # pragma: no cover
+    def activateMenu(self, menuName: str) -> None:  # pragma: no cover
         c = self.c
         c.frame.menu.activateMenu(menuName)
     #@+node:ekr.20150514063305.199: *4* ec.focusTo...
@@ -888,11 +888,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
         self.fillPrefix = s[i:j]
     #@+node:ekr.20150514063305.219: *4* ec._addPrefix
-    def _addPrefix(self, ntxt: Any) -> str:
-        ntxt = ntxt.split('.')
-        ntxt = map(lambda a: self.fillPrefix + a, ntxt)
-        ntxt = '.'.join(ntxt)
-        return ntxt
+    def _addPrefix(self, ntxt: str) -> str:
+        ntxt1 = ntxt.split('.')
+        ntxt_list = map(lambda a: self.fillPrefix + a, ntxt1)
+        return '.'.join(ntxt_list)
     #@+node:ekr.20150514063305.220: *3* ec: find quick support
     #@+node:ekr.20150514063305.221: *4* ec.backward/findCharacter & helper
     @cmd('backward-find-character')
@@ -915,7 +914,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Search for a character, extending the selection."""
         self.findCharacterHelper(event, backward=False, extend=True)
     #@+node:ekr.20150514063305.222: *5* ec.findCharacterHelper
-    def findCharacterHelper(self, event: Event, backward: Any, extend: Any) -> None:
+    def findCharacterHelper(self, event: Event, backward: bool, extend: bool) -> None:
         """Put the cursor at the next occurrence of a character on a line."""
         k = self.c.k
         self.w = self.editWidget(event)
@@ -965,7 +964,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Put the cursor at the next word (on a line) that starts with a character."""
         self.findWordHelper(event, oneLine=True)
     #@+node:ekr.20150514063305.224: *5* ec.findWordHelper
-    def findWordHelper(self, event: Event, oneLine: Any) -> None:
+    def findWordHelper(self, event: Event, oneLine: bool) -> None:
         k = self.c.k
         self.w = self.editWidget(event)
         if self.w:
@@ -1132,7 +1131,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, l: Any, setDirty: bool=True) -> None:
+    def setIconList(self, p: Position, l: List[Any], setDirty: bool=True) -> None:
         """Set list of icons for position p to l"""
         current = self.getIconList(p)
         if not l and not current:
@@ -1146,7 +1145,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.app.gui.guiName() == 'qt':
             self.c.frame.tree.updateAllIcons(p)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, subl: Any, uaLoc: Any, setDirty: Any) -> None:
+    def _setIconListHelper(self, p: Position, subl: List[Any], uaLoc: Any, setDirty: bool) -> None:
         """icon setting code common between v and t nodes
 
         p - position
@@ -1179,7 +1178,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  # t not used.
+    def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  ### t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
         aList = self.getIconList(p)
@@ -1251,7 +1250,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
-    def insertIconFromFile(self, path: str, p: Position=None, pos: Any=None, **kargs: Any) -> None:
+    def insertIconFromFile(self, path: str, p: Position=None, pos: int=None, **kargs: Any) -> None:
         c = self.c
         if not p:
             p = c.p
@@ -1413,7 +1412,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Remove a tab from start of all lines, or all selected lines."""
         self.addRemoveHelper(event, ch='\t', add=False, undoType='remove-tab-from-lines')
     #@+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
-    def addRemoveHelper(self, event: Event, ch: str, add: Any, undoType: str) -> None:
+    def addRemoveHelper(self, event: Event, ch: str, add: bool, undoType: str) -> None:
         c = self.c
         w = self.editWidget(event)
         if not w:
@@ -1608,7 +1607,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete the word in front of the cursor, treating whitespace and symbols smartly."""
         self.deleteWordHelper(event, forward=False, smart=True)
 
-    def deleteWordHelper(self, event: Event, forward: Any, smart: bool=False) -> None:
+    def deleteWordHelper(self, event: Event, forward: bool, smart: bool=False) -> None:
         # c = self.c
         w = self.editWidget(event)
         if not w:
@@ -1881,7 +1880,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         oldText = p.b if name.startswith('body') else ''
         oldYview = w.getYScrollPosition()
         brackets = self.openBracketsList + self.closeBracketsList
-        inBrackets = ch and g.checkUnicode(ch) in brackets
+        inBrackets = bool(ch and g.checkUnicode(ch) in brackets)
         #@-<< set local vars >>
         if not ch:
             return
@@ -1924,10 +1923,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self,
-        action: Any,
+        action: str,
         ch: str,
         event: Event,
-        inBrackets: Any,
+        inBrackets: bool,
         oldSel: Any,
         stroke: Any,
         w: Wrapper,
@@ -1971,7 +1970,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if inBrackets and self.flashMatchingBrackets:
             self.flashMatchingBracketsHelper(c, ch, i, p, w)
     #@+node:ekr.20180806045802.1: *5* ec.doSmartQuote
-    def doSmartQuote(self, action: Any, ch: str, oldSel: Any, w: Wrapper) -> None:
+    def doSmartQuote(self, action: str, ch: str, oldSel: Any, w: Wrapper) -> None:
         """Convert a straight quote to a curly quote, depending on context."""
         i, j = oldSel
         if i > j:
@@ -2029,7 +2028,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.openBracketsList = '([{'
             self.closeBracketsList = ')]}'
     #@+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
-    def insertNewlineHelper(self, w: Wrapper, oldSel: Any, undoType: Any) -> None:
+    def insertNewlineHelper(self, w: Wrapper, oldSel: Any, undoType: str) -> None:
 
         c, p = self.c, self.c.p
         i, j = oldSel
@@ -2144,7 +2143,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             self.doPlainTab(s, i, tab_width, w)
     #@+node:ekr.20150514063305.270: *6* ec.doPlainTab
-    def doPlainTab(self, s: str, i: int, tab_width: Any, w: Wrapper) -> None:
+    def doPlainTab(self, s: str, i: int, tab_width: int, w: Wrapper) -> None:
         """
         A helper for selfInsertCommand, called from updateTab.
 
@@ -2204,7 +2203,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         self.linesHelper(event, k.arg, 'keep')
     #@+node:ekr.20150514063305.283: *4* ec.linesHelper
-    def linesHelper(self, event: Event, pattern: Any, which: Any) -> None:
+    def linesHelper(self, event: Event, pattern: str, which: str) -> None:
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
@@ -2275,7 +2274,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.285: *3* ec: move cursor
     #@+node:ekr.20150514063305.286: *4* ec. helpers
     #@+node:ekr.20150514063305.287: *5* ec.extendHelper
-    def extendHelper(self, w: Wrapper, extend: Any, spot: Any, upOrDown: bool=False) -> None:
+    def extendHelper(self, w: Wrapper, extend: bool, spot: int, upOrDown: bool=False) -> None:
         """
         Handle the details of extending the selection.
         This method is called for all cursor moves.
@@ -2331,7 +2330,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.seeInsertPoint()
         c.frame.updateStatusLine()
     #@+node:ekr.20150514063305.288: *5* ec.moveToHelper
-    def moveToHelper(self, event: Event, spot: Any, extend: Any) -> None:
+    def moveToHelper(self, event: Event, spot: int, extend: bool) -> None:
         """
         Common helper method for commands the move the cursor
         in a way that can be described by a Tk Text expression.
@@ -2350,7 +2349,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 spot = j
         self.extendHelper(w, extend, spot, upOrDown=False)
     #@+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
-    def moveWithinLineHelper(self, event: Event, spot: Any, extend: Any) -> None:
+    def moveWithinLineHelper(self, event: Event, spot: str, extend: bool) -> None:
         w = self.editWidget(event)
         if not w:
             return
@@ -2426,7 +2425,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         def is_special(ch: str) -> bool:
             return not is_alphanumeric(c) and not is_whitespace(ch)
 
-        def seek_until_changed(i: int, match_function: Any, step: Any) -> int:
+        def seek_until_changed(i: int, match_function: Callable, step: int) -> int:
             while 0 <= i < n and match_function(s[i]):
                 i += step
             return i
@@ -2499,7 +2498,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i += 1  # 2015/04/30
         self.moveToHelper(event, i, extend)
     #@+node:ekr.20150514063305.289: *5* ec.setMoveCol
-    def setMoveCol(self, w: Wrapper, spot: Any) -> None:
+    def setMoveCol(self, w: Wrapper, spot: int) -> None:
         """Set the column to which an up or down arrow will attempt to move."""
         p = self.c.p
         i, row, col = w.toPythonIndexRowCol(spot)
@@ -2599,7 +2598,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor up."""
         self.moveUpOrDownHelper(event, 'up', extend=True)
     #@+node:ekr.20150514063305.293: *5* ec.moveUpOrDownHelper
-    def moveUpOrDownHelper(self, event: Event, direction: Any, extend: Any) -> None:
+    def moveUpOrDownHelper(self, event: Event, direction: str, extend: bool) -> None:
 
         w = self.editWidget(event)
         if not w:
@@ -2644,7 +2643,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the text selection by moving the cursor to the end of the body text."""
         self.moveToBufferHelper(event, 'end', extend=True)
     #@+node:ekr.20150514063305.295: *5* ec.moveToBufferHelper
-    def moveToBufferHelper(self, event: Event, spot: Any, extend: Any) -> None:
+    def moveToBufferHelper(self, event: Event, spot: str, extend: bool) -> None:
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
@@ -2680,7 +2679,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor forward one character."""
         self.moveToCharacterHelper(event, 'right', extend=True)
     #@+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
-    def moveToCharacterHelper(self, event: Event, spot: Any, extend: Any) -> None:
+    def moveToCharacterHelper(self, event: Event, spot: str, extend: bool) -> None:
         w = self.editWidget(event)
         if not w:
             return
@@ -3503,7 +3502,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert all characters in the selected text to UPPER CASE."""
         self.caseHelper(event, 'up', 'upcase-region')
 
-    def caseHelper(self, event: Event, way: Any, undoType: Any) -> None:
+    def caseHelper(self, event: Event, way: str, undoType: str) -> None:
         w = self.editWidget(event)
         if not w or not w.hasSelection():
             return  # pragma: no cover (defensive)
@@ -3557,7 +3556,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Scroll the presently selected pane up one page."""
         self.scrollHelper(event, 'up', 'page')
     #@+node:ekr.20150514063305.336: *5* ec.scrollHelper
-    def scrollHelper(self, event: Event, direction: Any, distance: Any) -> None:
+    def scrollHelper(self, event: Event, direction: str, distance: str) -> None:
         """
         Scroll the present pane up or down one page
         kind is in ('up/down-half-page/line/page)
@@ -3811,7 +3810,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.342: *4* ec.sortFields
     @cmd('sort-fields')
-    def sortFields(self, event: Event, which: Any=None) -> None:
+    def sortFields(self, event: Event, which: str=None) -> None:
         """
         Divide the selected text into lines and sort by comparing the contents
         of one field in each line. Fields are defined as separated by
