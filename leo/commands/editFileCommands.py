@@ -46,11 +46,11 @@ class ConvertAtRoot:
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     section_pat = re.compile(r'\s*<\<.+>\>')
-    units: List[Any] = []  # List of positions containing @unit.
+    units: List[Position] = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
-    def check_clone_move(self, p: Position, parent: Position) -> None:
+    def check_clone_move(self, p: Position, parent: Position) -> bool:
         """
         Return False if p or any of p's descendants is a clone of parent
         or any of parents ancestors.
@@ -111,7 +111,7 @@ class ConvertAtRoot:
             if '@unit' in p.b:
                 self.units.append(p.copy())
     #@+node:ekr.20210307082125.1: *3* atRoot.find_section
-    def find_section(self, root: Position, section_name: Any) -> Optional[Position]:
+    def find_section(self, root: Position, section_name: str) -> Optional[Position]:
         """Find the section definition node in root's subtree for the given section."""
 
         def munge(s: str) -> str:
@@ -119,10 +119,7 @@ class ConvertAtRoot:
 
         for p in root.subtree():
             if munge(p.h).startswith(munge(section_name)):
-                # print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
                 return p
-
-        # print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
         return None
     #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
     section_pat = re.compile(r'\s*<\<(.*)>\>')
@@ -227,7 +224,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.es("Command did not find any whitespace to adjust")
         g.es_print(f"{total} total node{g.plural(total)}")
     #@+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
-    def cleanAtCleanNode(self, p: Position, undoType: str) -> None:
+    def cleanAtCleanNode(self, p: Position, undoType: str) -> bool:
         """Adjust whitespace in p, part of an @clean tree."""
         s = p.b.strip()
         if not s or p.h.strip().startswith('<<'):
@@ -308,7 +305,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
-    def computeChangeDicts(self, d1: Any, d2: Any) -> Tuple[Dict, Dict, Dict]:
+    def computeChangeDicts(self, d1: Dict, d2: Dict) -> Tuple[Dict, Dict, Dict]:
         """
         Compute inserted, deleted, changed dictionaries.
 
@@ -708,8 +705,8 @@ class GitDiffController:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.file_node = None
-        self.root = None
+        self.file_node: Position = None
+        self.root: Position = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
@@ -855,7 +852,7 @@ class GitDiffController:
         if not ok:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
     #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
-    def diff_revs(self, rev1: Any, rev2: Any) -> bool:
+    def diff_revs(self, rev1: str, rev2: str) -> bool:
         """Diff all files given by rev1 and rev2."""
         files = self.get_files(rev1, rev2)
         if files:
@@ -867,9 +864,9 @@ class GitDiffController:
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
-        c1: Any,
-        c2: Any,
-        d: Dict[str, str],
+        c1: Cmdr,
+        c2: Cmdr,
+        d: Dict[str, Tuple[VNode, VNode]],
         kind: str,
         rev1: str,
         rev2: str,
@@ -960,7 +957,7 @@ class GitDiffController:
                     return p
         return None
     #@+node:ekr.20170806094321.3: *4* gdc.find_git_working_directory
-    def find_git_working_directory(self, directory: Any) -> Optional[str]:
+    def find_git_working_directory(self, directory: str) -> Optional[str]:
         """Return the git working directory, starting at directory."""
         while directory:
             if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
@@ -1011,7 +1008,7 @@ class GitDiffController:
         directory = g.os_path_finalize_join(base_directory, '..', '..')
         return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
-    def get_file_from_branch(self, branch: Any, fn: str) -> str:
+    def get_file_from_branch(self, branch: str, fn: str) -> str:
         """Get the file from the head of the given branch."""
         # #2143
         directory = self.get_directory()
@@ -1022,7 +1019,7 @@ class GitDiffController:
         s = ''.join(lines)
         return g.toUnicode(s).replace('\r', '')
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
-    def get_file_from_rev(self, rev: Any, fn: str) -> str:
+    def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
         # #2143
         directory = self.get_directory()
@@ -1047,7 +1044,7 @@ class GitDiffController:
             g.es_exception()
             return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
-    def get_files(self, rev1: Any, rev2: Any) -> List[str]:
+    def get_files(self, rev1: str, rev2: str) -> List[str]:
         """Return a list of changed files."""
         # #2143
         directory = self.get_directory()
