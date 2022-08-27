@@ -2443,7 +2443,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             fcol = None if offset is None else max(0, col + offset - fcol_offset)
             return col, fcol
         #@+node:chris.20180320072817.2: *5* qstatus.file_line (not used)
-        def file_line(self) -> Optional[Position]:
+        def file_line(self) -> Optional[int]:
             """
             Return the line of the first line of c.p in its external file.
             Return None if c.p is not part of an external file.
