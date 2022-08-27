@@ -18,7 +18,7 @@ from leo.core.leoQt import QtCore
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import Position
 else:
     Cmdr = Any
     Event = Any
@@ -85,7 +85,7 @@ class BackgroundProcessManager:
             kind: str,
             fn: str,
             link_pattern: Optional[Pattern]=None,
-            link_root: Optional[Pos]=None,
+            link_root: Optional[Position]=None,
         ) -> None:
             """Ctor for the ProcessData class."""
             self.c = c
@@ -256,7 +256,7 @@ class BackgroundProcessManager:
     def start_process(self, c: Cmdr, command: str, kind: str,
         fn: str=None,
         link_pattern: Pattern=None,  # None, string, or re.pattern.
-        link_root: Pos=None,
+        link_root: Position=None,
     ) -> None:
         """
         Start or queue a process described by command and fn.
