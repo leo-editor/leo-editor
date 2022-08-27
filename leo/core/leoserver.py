@@ -4518,7 +4518,6 @@ class LeoServer:
             'printingController',
             'queryReplaceCommands',
             'rectangleCommands',
-            'searchCommands',
             'spellCommands',
             'vimCommands',  # Not likely to be useful.
         )

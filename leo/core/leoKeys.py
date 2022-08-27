@@ -1868,7 +1868,6 @@ class KeyHandlerClass:
             'open-rectangle',
             'string-rectangle',
             'yank-rectangle',
-            # SearchCommandsClass
             'change',
             'change-then-find',
             'find-next',
