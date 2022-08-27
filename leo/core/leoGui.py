@@ -18,11 +18,11 @@ from leo.core import leoGlobals as g
 from leo.core import leoFrame
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import Position
     # from leo.core.leoQt import QtWidgets
-
 else:
-    Cmdr = Pos = Any
+    Cmdr = Any
+    Position = Any
     # for NullGui and StringTextWrapper.
 Event = Any
 Widget = Any
@@ -50,7 +50,7 @@ class LeoGui:
         self.mGuiName = guiName
         self.mainLoop = None
         self.plainTextWidget: Widget = None  # For SpellTabHandler class only.
-        self.root: Pos = None
+        self.root: Position = None
         self.script: Optional[str] = None
         self.splashScreen: Widget = None
         self.utils = None
@@ -257,7 +257,7 @@ class LeoGui:
         self,
         c: Cmdr,
         args: str=None,
-        p: Pos=None,
+        p: Position=None,
         script: str=None,
         buttonText: str=None,
         balloonText: str='Script Button',

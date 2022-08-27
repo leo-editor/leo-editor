@@ -24,10 +24,12 @@ from leo.core import leoNodes
 #@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import Position
     from leo.core.leoNodes import VNode
 else:
-    Cmdr = Pos = VNode = Any
+    Cmdr = Any
+    Position = Any
+    VNode = Any
 Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
 Widget = Any
@@ -117,34 +119,34 @@ class TreeAPI:
         pass
     # Must be defined in subclasses.
 
-    def drawIcon(self, p: Pos) -> None:
+    def drawIcon(self, p: Position) -> None:
         pass
 
     def editLabel(self, v: VNode, selectAll: bool=False, selection: Any=None) -> None:
         pass
 
-    def edit_widget(self, p: Pos) -> None:
+    def edit_widget(self, p: Position) -> None:
         return None
 
-    def redraw(self, p: Pos=None) -> None:
+    def redraw(self, p: Position=None) -> None:
         pass
     redraw_now = redraw
 
-    def scrollTo(self, p: Pos) -> None:
+    def scrollTo(self, p: Position) -> None:
         pass
     # May be defined in subclasses.
 
     def initAfterLoad(self) -> None:
         pass
 
-    def onHeadChanged(self, p: Pos, undoType: str='Typing', s: str=None, e: str=None) -> None:
+    def onHeadChanged(self, p: Position, undoType: str='Typing', s: str=None, e: str=None) -> None:
         pass
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p: Pos) -> None:
+    def redraw_after_contract(self, p: Position) -> None:
         pass
 
-    def redraw_after_expand(self, p: Pos) -> None:
+    def redraw_after_expand(self, p: Position) -> None:
         pass
 
     def redraw_after_head_changed(self) -> None:
@@ -153,12 +155,12 @@ class TreeAPI:
     def redraw_after_icons_changed(self) -> None:
         pass
 
-    def redraw_after_select(self, p: Pos=None) -> None:
+    def redraw_after_select(self, p: Position=None) -> None:
         pass
     # Must be defined in the LeoTree class...
     # def OnIconDoubleClick (self,p):
 
-    def OnIconCtrlClick(self, p: Pos) -> None:
+    def OnIconCtrlClick(self, p: Position) -> None:
         pass
 
     def endEditLabel(self) -> None:
@@ -173,7 +175,7 @@ class TreeAPI:
     def onHeadlineKey(self, event: Event) -> None:
         pass
 
-    def select(self, p: Pos) -> None:
+    def select(self, p: Position) -> None:
         pass
 
     def updateHead(self, event: Event, w: Wrapper) -> None:
@@ -300,7 +302,7 @@ class IconBarAPI:
         pass
 
     def setCommandForButton(self,
-        button: Any, command: str, command_p: Pos, controller: Cmdr, gnx: str, script: str,
+        button: Any, command: str, command_p: Position, controller: Cmdr, gnx: str, script: str,
     ) -> None:
         pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
@@ -333,10 +335,10 @@ class LeoBody:
     def getColorizer(self) -> None:
         return self.colorizer
 
-    def updateSyntaxColorer(self, p: Pos) -> None:
+    def updateSyntaxColorer(self, p: Position) -> None:
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-    def recolor(self, p: Pos) -> None:
+    def recolor(self, p: Position) -> None:
         self.c.recolor()
 
     recolor_now = recolor
@@ -351,7 +353,7 @@ class LeoBody:
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
 
-    def createTextWidget(self, parentFrame: Widget, p: Pos, name: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
         self.oops()
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
@@ -404,7 +406,7 @@ class LeoBody:
         self.updateEditors()
         c.bodyWantsFocus()
     #@+node:ekr.20060528132829: *5* LeoBody.assignPositionToEditor
-    def assignPositionToEditor(self, p: Pos) -> None:
+    def assignPositionToEditor(self, p: Position) -> None:
         """Called *only* from tree.select to select the present body editor."""
         c = self.c
         w = c.frame.body.widget
@@ -448,7 +450,7 @@ class LeoBody:
         self.numberOfEditors -= 1
         self.selectEditor(w)
     #@+node:ekr.20070425180705: *5* LeoBody.findEditorForChapter
-    def findEditorForChapter(self, chapter: str, p: Pos) -> None:
+    def findEditorForChapter(self, chapter: str, p: Position) -> None:
         """Return an editor to be assigned to chapter."""
         c = self.c
         d = self.editorWrappers
@@ -584,7 +586,7 @@ class LeoBody:
                 self.unselectLabel(w2)
                 return
     #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
-    def recolorWidget(self, p: Pos, w: Wrapper) -> None:
+    def recolorWidget(self, p: Position, w: Wrapper) -> None:
         # Support QScintillaColorizer.colorize.
         c = self.c
         colorizer = c.frame.body.colorizer
@@ -610,7 +612,7 @@ class LeoBody:
     #@+node:ekr.20070424092855: *5* LeoBody.updateInjectedIvars
     # Called from addEditor and assignPositionToEditor.
 
-    def updateInjectedIvars(self, w: Wrapper, p: Pos) -> None:
+    def updateInjectedIvars(self, w: Wrapper, p: Position) -> None:
         """Inject updated ivars in w, a gui widget."""
         if not w:
             return
@@ -861,7 +863,7 @@ class LeoFrame:
             return not ok  # Veto if the save did not succeed.
         return True  # Veto.
     #@+node:ekr.20031218072017.1375: *4* LeoFrame.frame.scanForTabWidth
-    def scanForTabWidth(self, p: Pos) -> None:
+    def scanForTabWidth(self, p: Position) -> None:
         """Return the tab width in effect at p."""
         c = self.c
         tab_width = c.getTabWidth(p)
@@ -1081,7 +1083,7 @@ class LeoFrame:
     #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
     #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @frame_cmd('end-edit-headline')
-    def endEditLabelCommand(self, event: Event=None, p: Pos=None) -> None:
+    def endEditLabelCommand(self, event: Event=None, p: Position=None) -> None:
         """End editing of a headline and move focus to the body pane."""
         frame = self
         c = frame.c
@@ -1325,7 +1327,7 @@ class LeoLog:
                     return m, filename_i, line_number_i
             return None, None, None
         #@+node:ekr.20220412084258.1: *5* function: find_at_file_node
-        def find_at_file_node(filename: str) -> Pos:
+        def find_at_file_node(filename: str) -> Position:
             """Find a position corresponding to filename s"""
             target = os.path.normpath(filename)
             parts = target.split(os.sep)
@@ -1427,10 +1429,10 @@ class LeoTree:
 
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p: Pos) -> None:
+    def redraw_after_contract(self, p: Position) -> None:
         self.c.redraw()
 
-    def redraw_after_expand(self, p: Pos) -> None:
+    def redraw_after_expand(self, p: Position) -> None:
         self.c.redraw()
 
     def redraw_after_head_changed(self) -> None:
@@ -1439,12 +1441,12 @@ class LeoTree:
     def redraw_after_icons_changed(self) -> None:
         self.c.redraw()
 
-    def redraw_after_select(self, p: Pos=None) -> None:
+    def redraw_after_select(self, p: Position=None) -> None:
         self.c.redraw()
     #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
-    def onHeadChanged(self, p: Pos, undoType: str='Typing') -> None:
+    def onHeadChanged(self, p: Position, undoType: str='Typing') -> None:
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -1498,7 +1500,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict: Dict[VNode, Tuple[Pos, Any]] = {}
+        self.edit_text_dict: Dict[VNode, Tuple[Position, Any]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -1530,10 +1532,10 @@ class LeoTree:
         if ch:
             self.updateHead(event, w)
     #@+node:ekr.20120314064059.9739: *4* LeoTree.OnIconCtrlClick (@url)
-    def OnIconCtrlClick(self, p: Pos) -> None:
+    def OnIconCtrlClick(self, p: Position) -> None:
         g.openUrl(p)
     #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
-    def OnIconDoubleClick(self, p: Pos) -> None:
+    def OnIconDoubleClick(self, p: Position) -> None:
         pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event: Event, w: Wrapper) -> None:
@@ -1576,27 +1578,27 @@ class LeoTree:
     #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
     # Drawing & scrolling.
 
-    def drawIcon(self, p: Pos) -> None:
+    def drawIcon(self, p: Position) -> None:
         self.oops()
 
-    def redraw(self, p: Pos=None) -> None:
+    def redraw(self, p: Position=None) -> None:
         self.oops()
     redraw_now = redraw
 
-    def scrollTo(self, p: Pos) -> None:
+    def scrollTo(self, p: Position) -> None:
         self.oops()
 
     # Headlines.
 
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: Any=None) -> Wrapper:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Wrapper:
         self.oops()
 
-    def edit_widget(self, p: Pos) -> Wrapper:
+    def edit_widget(self, p: Position) -> Wrapper:
         self.oops()
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
-    def select(self, p: Pos) -> None:
+    def select(self, p: Position) -> None:
         """
         Select a node.
         Never redraws outline, but may change coloring of individual headlines.
@@ -1632,7 +1634,7 @@ class LeoTree:
             else:
                 c.requestLaterRedraw = True
     #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
-    def selectHelper(self, p: Pos) -> None:
+    def selectHelper(self, p: Position) -> None:
         """
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
@@ -1665,7 +1667,7 @@ class LeoTree:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper
-    def unselect_helper(self, old_p: str, p: Pos) -> None:
+    def unselect_helper(self, old_p: str, p: Position) -> None:
         """Unselect the old node, calling the unselect hooks."""
         c = self.c
         call_event_handlers = p != old_p
@@ -1685,7 +1687,7 @@ class LeoTree:
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
-    def select_new_node(self, old_p: str, p: Pos) -> None:
+    def select_new_node(self, old_p: str, p: Position) -> None:
         """Select the new node, part 1."""
         c = self.c
         call_event_handlers = p != old_p
@@ -1700,7 +1702,7 @@ class LeoTree:
         self.set_body_text_after_select(p, old_p)
         c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p: Pos, old_p: str) -> None:
+    def set_body_text_after_select(self, p: Position, old_p: str) -> None:
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
@@ -1717,7 +1719,7 @@ class LeoTree:
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
-    def change_current_position(self, old_p: str, p: Pos) -> None:
+    def change_current_position(self, old_p: str, p: Position) -> None:
         """Select the new node, part 2."""
         c = self.c
         # c.setCurrentPosition(p)
@@ -1734,11 +1736,11 @@ class LeoTree:
             # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
-    def scroll_cursor(self, p: Pos) -> None:
+    def scroll_cursor(self, p: Position) -> None:
         """Scroll the cursor."""
         p.restoreCursorAndScroll()  # Was in setBodyTextAfterSelect
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
-    def set_status_line(self, p: Pos) -> None:
+    def set_status_line(self, p: Position) -> None:
         """Update the status line."""
         c = self.c
         c.frame.body.assignPositionToEditor(p)  # New in Leo 4.4.1.
@@ -1797,14 +1799,14 @@ class NullBody(LeoBody):
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
 
-    def createControl(self, parentFrame: Widget, p: Pos) -> Wrapper:
+    def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
         pass
     # Editors...
 
     def addEditor(self, event: Event=None) -> None:
         pass
 
-    def assignPositionToEditor(self, p: Pos) -> None:
+    def assignPositionToEditor(self, p: Position) -> None:
         pass
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
@@ -1848,7 +1850,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 
     recolorCount = 0
 
-    def colorize(self, p: Pos) -> None:
+    def colorize(self, p: Position) -> None:
         self.recolorCount += 1  # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
@@ -1918,7 +1920,7 @@ class NullFrame(LeoFrame):
     def expandPane(self, event: Event=None) -> None:
         pass
 
-    def forceWrap(self, p: Pos) -> None:
+    def forceWrap(self, p: Position) -> None:
         pass
 
     def fullyExpandBodyPane(self, event: Event=None) -> None:
@@ -2067,8 +2069,8 @@ class NullIconBarClass:
     def setCommandForButton(self,
         button: Any,
         command: str,
-        command_p: Pos,
-        controller: Cmdr,\
+        command_p: Position,
+        controller: Cmdr,
         gnx: str,
         script: str,
     ) -> None:
@@ -2217,7 +2219,7 @@ class NullTree(LeoTree):
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
-    def edit_widget(self, p: Pos) -> Wrapper:
+    def edit_widget(self, p: Position) -> Wrapper:
         d = self.editWidgetsDict
         if not p or not p.v:
             return None
@@ -2229,7 +2231,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Pos, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Wrapper]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Wrapper]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
@@ -2245,18 +2247,18 @@ class NullTree(LeoTree):
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
     #@+node:ekr.20070228163350.1: *3* NullTree.Drawing & scrolling
-    def drawIcon(self, p: Pos) -> None:
+    def drawIcon(self, p: Position) -> None:
         pass
 
-    def redraw(self, p: Pos=None) -> None:
+    def redraw(self, p: Position=None) -> None:
         self.redrawCount += 1
 
     redraw_now = redraw
 
-    def redraw_after_contract(self, p: Pos) -> None:
+    def redraw_after_contract(self, p: Position) -> None:
         self.redraw()
 
-    def redraw_after_expand(self, p: Pos) -> None:
+    def redraw_after_expand(self, p: Position) -> None:
         self.redraw()
 
     def redraw_after_head_changed(self) -> None:
@@ -2265,19 +2267,19 @@ class NullTree(LeoTree):
     def redraw_after_icons_changed(self) -> None:
         self.redraw()
 
-    def redraw_after_select(self, p: Pos=None) -> None:
+    def redraw_after_select(self, p: Position=None) -> None:
         self.redraw()
 
-    def scrollTo(self, p: Pos) -> None:
+    def scrollTo(self, p: Position) -> None:
         pass
 
-    def updateAllIcons(self, p: Pos) -> None:
+    def updateAllIcons(self, p: Position) -> None:
         pass
 
-    def updateIcon(self, p: Pos) -> None:
+    def updateIcon(self, p: Position) -> None:
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
-    def setHeadline(self, p: Pos, s: str) -> None:
+    def setHeadline(self, p: Position, s: str) -> None:
         """Set the actual text of the headline widget.
 
         This is called from the undo/redo logic to change the text before redrawing."""

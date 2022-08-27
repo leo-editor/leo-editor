@@ -34,11 +34,11 @@ assert qt_commands
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position as Pos
+    from leo.core.leoNodes import Position
 else:
     Cmdr = Any
     Event = Any
-    Pos = Any
+    Position = Any
 Widget = Any
 Wrapper = Any
 
@@ -1124,7 +1124,7 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         args: Any=None,
-        p: Pos=None,  # A node containing the script.
+        p: Position=None,  # A node containing the script.
         script: str=None,  # The script itself.
         buttonText: str=None,
         balloonText: str='Script Button',
@@ -1160,7 +1160,7 @@ class LeoQtGui(leoGui.LeoGui):
             b: Widget=b,
             c: Cmdr=c,
             buttonText: str=buttonText,
-            p: Pos=p and p.copy(),
+            p: Position=p and p.copy(),
             script: str=script
         ) -> None:
             if c.disableCommandsMessage:

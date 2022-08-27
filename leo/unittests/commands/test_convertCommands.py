@@ -104,7 +104,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             'j': 'int',
             'k': 'int',
             'n': 'int',
-            'p': 'Pos',
+            'p': 'Position',
             's': 'str',
             'v': 'VNode',
         }
