@@ -401,7 +401,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
 
-        def callback(arg: Any, w: Wrapper=w) -> None:
+        def callback(arg: str, w: Wrapper=w) -> None:
             i = w.getSelectionRange()[0]
             p = c.p
             w.deleteTextSelection()
@@ -1145,7 +1145,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.app.gui.guiName() == 'qt':
             self.c.frame.tree.updateAllIcons(p)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, subl: List[Any], uaLoc: Any, setDirty: bool) -> None:
+    def _setIconListHelper(self,
+        p: Position,
+        subl: List[Any],
+        uaLoc: VNode,
+        setDirty: bool,
+    ) -> None:
         """icon setting code common between v and t nodes
 
         p - position
