@@ -27,14 +27,18 @@ StringIO = io.StringIO
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = VNode = Any
-#@-<< leoApp annotations >>
+    Cmdr = Any
+    Event = Any
+    Position = Any
+    VNode = Any
+
 # Make *sure* all these are Any.
-Event = Any
 Widget = Any
 Wrapper = Any
+#@-<< leoApp annotations >>
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
 def cmd(name: str) -> Callable:
