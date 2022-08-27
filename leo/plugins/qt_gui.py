@@ -33,11 +33,12 @@ assert qt_commands
 #@+node:ekr.20220415183421.1: ** << type aliases qt_gui.py >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position as Pos
 else:
     Cmdr = Any
+    Event = Any
     Pos = Any
-Event = Any
 Widget = Any
 Wrapper = Any
 

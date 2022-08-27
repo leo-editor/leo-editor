@@ -20,14 +20,14 @@ from leo.plugins import qt_text
 #@+node:ekr.20220417193741.1: ** << type aliases: qt_tree.py >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
-    from leo.core.leoNodes import VNode
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
 Editor = Any
-Event = Any
 Icon = Any
 Item = Any
 Selection = Tuple[int, int, int]

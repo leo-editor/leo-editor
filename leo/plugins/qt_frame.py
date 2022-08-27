@@ -3,8 +3,8 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 #@@first
 """Leo's qt frame classes."""
-#@+<< imports qt_frame.py >>
-#@+node:ekr.20110605121601.18003: **  << imports qt_frame.py >>
+#@+<< qt_frame imports >>
+#@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
 from collections import defaultdict
 import os
 import platform
@@ -32,20 +32,21 @@ from leo.plugins import qt_text
 from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.nested_splitter import NestedSplitter
-#@-<< imports qt_frame.py >>
-#@+<< type aliases qt_frame.py >>
-#@+node:ekr.20220415080427.1: ** << type aliases qt_frame.py >>
+#@-<< qt_frame imports >>
+#@+<< qt_frame annotations >>
+#@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position as Pos
 else:
     Cmdr = Any
+    Event = Any
     Pos = Any
-    QComboBox = Any
-Event = Any
+QComboBox = Any
 Widget = Any
 Wrapper = Any
-#@-<< type aliases qt_frame.py >>
+#@-<< qt_frame annotations >>
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'

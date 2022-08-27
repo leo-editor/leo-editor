@@ -12,16 +12,21 @@ from time import sleep
 from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
+#@-<< leoBackground imports >>
+#@+<< leoBackground annotations >>
+#@+node:ekr.20220827054935.1: ** << leoBackground annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position as Pos
 else:
-    Cmdr = Pos = Any
-#@-<< leoBackground imports >>
+    Cmdr = Any
+    Event = Any
+    Position = Any
+    VNode = Any
 
-Event = Any
 Pattern = Union[Any, str]
-
+#@-<< leoBackground annotations >>
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status
 @g.command('bpm-status')

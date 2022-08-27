@@ -20,12 +20,13 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 #@+node:ekr.20220416085945.1: ** << type aliases qt_text.py >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
-    # from leo.core.leoNodes import Position as Pos
+    from leo.core.leoGui import LeoKeyEvent as Event
 else:
     Cmdr = Any
+    Event = Any
 
-Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
+MousePressEvent = Any
 Widget = Any
 Wrapper = Any
 #@-<< type aliases qt_text.py >>
@@ -1105,7 +1106,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         # The y offset of the first line of the gutter.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
     #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
-    def mousePressEvent(self, event: Event) -> None:
+    def mousePressEvent(self, event: MousePressEvent) -> None:
 
         c = self.c
 

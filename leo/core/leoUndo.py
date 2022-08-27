@@ -54,10 +54,13 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220821074054.1: ** << leoUndo annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = VNode = Any
-Event = Any
+    Cmdr = Any
+    Event = Any
+    Position = Any
+    VNode = Any
 Wrapper = Any
 #@-<< leoUndo annotations >>
 # pylint: disable=unpacking-non-sequence
