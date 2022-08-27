@@ -31,10 +31,13 @@ from leo.core import leoNodes
 #@+node:ekr.20220819121640.1: ** << leoFileCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
-    Cmdr = Position = VNode = Any
-Event = Any
+    Cmdr = Any
+    Event = Any
+    Position = Any
+    VNode = Any
 #@-<< leoFileCommands annotations >>
 PRIVAREA = '---begin-private-area---'
 #@+others

@@ -29,11 +29,12 @@ except ImportError:
 # Leo never imports any other Leo module.
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
+    # from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
 else:
     Cmdr = Any
     Position = Any
-Event = Any
+Event = Any  # Several kinds of events?
 Stroke = Any
 Wrapper = Any
 #@-<< leoKeys annotations >>

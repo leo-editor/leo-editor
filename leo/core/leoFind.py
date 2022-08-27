@@ -17,10 +17,13 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220415005920.1: ** << leoFind annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr  # pragma: no cover
+    from leo.core.leoGui import LeoKeyEvent as Event  # pragma: no cover
     from leo.core.leoNodes import Position, VNode  # pragma: no cover
 else:
-    Cmdr = Position = VNode = Any
-Event = Any
+    Cmdr = Any
+    Event = Any
+    Position = Any
+    VNode = Any
 Settings = Any
 Stroke = Any
 Wrapper = Any

@@ -39,13 +39,13 @@ StringIO = io.StringIO
 #@+node:ekr.20220821210220.1: ** << leoImport annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
-
-Event = Any
 #@-<< leoImport annotations >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter

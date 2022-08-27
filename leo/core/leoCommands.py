@@ -23,6 +23,7 @@ from leo.core import leoNodes
 #@+<< leoCommands annotations >>
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     # 11 subcommanders...
     from leo.core.leoAtFile import AtFile
@@ -55,7 +56,9 @@ if TYPE_CHECKING:
     # Other objects...
     from leo.plugins.qt_gui import StyleSheetManager
 else:
-    Position = VNode = Any
+    Event = Any
+    Position = Any
+    VNode = Any
     # Subcommanders...
     AtFile = Any
     ChapterController = Any
@@ -90,7 +93,6 @@ else:
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 
 # These gui classes are hard to specify...
-Event = Any
 Widget = Any
 Wrapper = Any
 #@-<< leoCommands annotations >>

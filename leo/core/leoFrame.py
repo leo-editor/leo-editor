@@ -24,13 +24,13 @@ from leo.core import leoNodes
 #@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
-    from leo.core.leoNodes import VNode
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
     VNode = Any
-Event = Any
 Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
 Widget = Any
 Wrapper = Any
