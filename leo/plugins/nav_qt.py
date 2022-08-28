@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090518182905.5419: * @file ../plugins/nav_qt.py
-#@+<< docstring >>
-#@+node:ville.20090518182905.5420: ** << docstring >>
+#@+<< nav_qt docstring >>
+#@+node:ville.20090518182905.5420: ** << nav_qt docstring >>
 """Adds "Back" and "Forward" buttons (Qt only).
 
 Creates "back" and "forward" buttons on button bar. These navigate
@@ -15,20 +15,30 @@ Note it may be practical to put this plugin before mod_scripting.py in
 the left side of toolbar.
 
 """
-#@-<< docstring >>
-#@+<< imports >>
-#@+node:ville.20090518182905.5422: ** << imports >> (nav_qt.py)
-from typing import Any, Dict
+#@-<< nav_qt docstring >>
+#@+<< nav_qt imports >>
+#@+node:ville.20090518182905.5422: ** << nav_qt imports >>
+from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QAction, StandardPixmap
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
+#@-<< nav_qt imports >>
+#@+<< nav_qt annotations >>
+#@+node:ekr.20220828130258.1: ** << nav_qt annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Cmdr = Any
+    Event = Any
+Action = Any
+#@-<< nav_qt annotations >>
 controllers: Dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 #@+others
 #@+node:ville.20090518182905.5423: ** init
-def init():
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
@@ -37,7 +47,7 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:ville.20090518182905.5424: ** onCreate
-def onCreate(tag, keys):
+def onCreate(tag: str, keys: Any) -> None:
 
     global controllers
 
@@ -51,7 +61,7 @@ def onCreate(tag, keys):
     if not nc:
         controllers[h] = NavController(c)
 #@+node:vitalije.20170712192502.1: ** onClose
-def onClose(tag, keys):
+def onClose(tag: str, keys: Any) -> None:
     global controllers
     c = keys.get('c')
     h = c.hash()
@@ -61,22 +71,20 @@ def onClose(tag, keys):
         del controllers[h]
 #@+node:ville.20090518182905.5425: ** class NavController
 class NavController:
-
-    #@+others
-    #@+node:ville.20090518182905.5426: *3* __init__
-    def __init__(self, c):
-
+    
+    def __init__(self, c: Cmdr) -> None:
         self.c = c
         c._prev_next = self
-        self._buttons = self.makeButtons()
+        self._buttons: Optional[Tuple[Action, Action]] = self.makeButtons()
 
+    #@+others
     #@+node:ville.20090518182905.5427: *3* makeButtons (NavController)
-    def makeButtons(self):
+    def makeButtons(self) -> Tuple[Action, Action]:
 
         c = self.c
         w = c.frame.iconBar.w
         if not w:
-            return []  # EKR: can be an empty list when unit testing.
+            return None  # EKR: can be an empty list when unit testing.
         icon_l = w.style().standardIcon(StandardPixmap.SP_ArrowLeft)
         icon_r = w.style().standardIcon(StandardPixmap.SP_ArrowRight)
         # Create the actions.
@@ -90,10 +98,10 @@ class NavController:
         self.c.frame.iconBar.add(qaction=act_r)
         return act_l, act_r
 
-    def removeButtons(self):
+    def removeButtons(self) -> None:
         for b in self._buttons:
             self.c.frame.iconBar.deleteButton(b)
-        self._buttons = []
+        self._buttons = None
     #@-others
 #@-others
 #@@language python
