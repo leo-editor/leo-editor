@@ -355,6 +355,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Settings...
         cf = c.config
         self.autocompleteBrackets = cf.getBool('autocomplete-brackets')
+        self.autojustify: int
         if cf.getBool('auto-justify-on-at-start'):
             self.autojustify = abs(cf.getInt('auto-justify') or 0)
         else:
@@ -801,7 +802,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('center-line')
     def centerLine(self, event: Event) -> None:
         """Centers line within current fill column"""
-        c, k, w = self.c, self.c.k, self.editWidget(event)
+        c, w = self.c, self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
         if self.fillColumn > 0:
@@ -847,7 +848,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('center-region')
     def centerRegion(self, event: Event) -> None:
         """Centers the selected text within the fill column"""
-        c, k, w = self.c, self.c.k, self.editWidget(event)
+        c, w = self.c, self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
         s = w.getAllText()
@@ -1024,11 +1025,11 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     def gotoCharacter1(self, event: Event) -> None:
         c, k = self.c, self.c.k
-        n = k.arg
+        n_str = k.arg
         w = self.w
         ok = False
-        if n.isdigit():
-            n = int(n)
+        if n_str.isdigit():
+            n = int(n_str)
             if n >= 0:
                 w.setInsertPoint(n)
                 w.seeInsertPoint()
@@ -1078,9 +1079,9 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     def gotoLine1(self, event: Event) -> None:
         c, k = self.c, self.c.k
-        n, w = k.arg, self.w
-        if n.isdigit():
-            n = int(n)
+        n_str, w = k.arg, self.w
+        if n_str.isdigit():
+            n = int(n_str)
             s = w.getAllText()
             i = g.convertRowColToPythonIndex(s, n - 1, 0)
             w.setInsertPoint(i)
