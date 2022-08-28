@@ -81,11 +81,14 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    # from QtGui import QIcon
 else:
     Cmdr = Any
     Event = Any
+    # QIcon = Any
     Position = Any
     VNode = Any
+Icon = Any # QtGui.QIcon
 Menu = Any
 Wrapper = Any
 #@-<< todo annotations >>
@@ -361,8 +364,8 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: Dict[str, Any] = {}  # menu icon cache
-        self.recentIcons: List[Any] = []
+        self.menuicons: Dict[str, Icon] = {}  # menu icon cache
+        self.recentIcons: List[Icon] = []
         #X self.smiley = None
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
@@ -511,7 +514,7 @@ class todoController:
             a.enabled = False
         todoQtUI.populateMenu(taskmenu, self)
     #@+node:tbrown.20090630144958.5320: *3* menuicon
-    def menuicon(self, pri: int, progress: bool=False) -> Any:
+    def menuicon(self, pri: int, progress: bool=False) -> Icon:
         """return icon from cache, placing it there if needed"""
 
         if progress:
