@@ -27,10 +27,10 @@ free-layout-zoom
 """
 #@-<< free_layout docstring >>
 # Written by Terry Brown.
-#@+<< imports >>
-#@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
+#@+<< free_layout imports >>
+#@+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 import json
-from typing import Any, List
+from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #
 # Qt imports. May fail from the bridge.
@@ -42,12 +42,22 @@ except Exception:
     QtWidgets = None  # type:ignore
     MouseButton = None  # type:ignore
     NestedSplitter = None  # type:ignore
-#
+
 # Do not call g.assertUi('qt') here. It's too early in the load process.
-#@-<< imports >>
+#@-<< free_layout imports >>
+#@+<< free_layout annotations >>
+#@+node:ekr.20220828125201.1: ** << free_layout annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Cmdr = Any
+    Event = Any
+Wrapper = Any
+#@-<< free_layout annotations >>
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
-def init():
+def init() -> bool:
     """Return True if the free_layout plugin can be loaded."""
     return bool(NestedSplitter and g.app.gui.guiName() == "qt")
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
@@ -99,14 +109,14 @@ class FreeLayoutController:
 
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for FreeLayoutController class."""
         self.c = c
         g.registerHandler('after-create-leo-frame', self.init)
         # Plugins must be loaded first to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
     #@+node:tbrown.20110203111907.5522: *3*  flc.init
-    def init(self, tag, keys):
+    def init(self, tag: str, keys: Any) -> None:
         """Attach to an outline and
 
         - add tags to widgets to indicate that they're essential
@@ -154,7 +164,7 @@ class FreeLayoutController:
         splitter.register_provider(self)
         splitter.splitterClicked_connect(self.splitter_clicked)
     #@+node:tbrown.20120119080604.22982: *3* flc.embed
-    def embed(self):
+    def embed(self) -> None:
         """called from ns_do_context - embed layout in outline's
         @settings, an alternative to the Load/Save named layout system
         """
@@ -178,7 +188,7 @@ class FreeLayoutController:
             g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w=None):
+    def get_main_splitter(self, w: Wrapper=None) -> Optional[Wrapper]:
         """
         Return the splitter the main splitter, or None. The main splitter is a
         NestedSplitter that contains the body pane.
@@ -195,7 +205,7 @@ class FreeLayoutController:
                 w = w.parent()
         return None
     #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
-    def get_secondary_splitter(self):
+    def get_secondary_splitter(self) -> Optional[Wrapper]:
         """
         Return the secondary splitter, if it exists. The secondary splitter
         contains the outline pane.
@@ -212,7 +222,7 @@ class FreeLayoutController:
                 w = w.parent()
         return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
-    def get_top_splitter(self):
+    def get_top_splitter(self) -> Optional[Wrapper]:
         """Return the top splitter of c.frame.top."""
         # Careful: we could be unit testing.
         f = self.c.frame
@@ -221,7 +231,7 @@ class FreeLayoutController:
             return child and child.top()
         return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
-    def loadLayouts(self, tag, keys, reloading=False):
+    def loadLayouts(self, tag: str, keys: Any, reloading: bool=False) -> None:
         """loadLayouts - Load the outline's layout
 
         :Parameters:
@@ -266,7 +276,7 @@ class FreeLayoutController:
 
                 # pylint: disable=cell-var-from-loop
 
-                def func(event):
+                def func(event: Event) -> None:
                     layout = d.get(name)
                     if layout:
                         c.free_layout.get_top_splitter().load_layout(c, layout)
@@ -282,7 +292,7 @@ class FreeLayoutController:
             if splitter:
                 splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
-    def ns_context(self):
+    def ns_context(self) -> List[Tuple[str, str]]:
         ans: List[Any] = [
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
@@ -297,7 +307,7 @@ class FreeLayoutController:
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
-    def ns_do_context(self, id_, splitter, index):
+    def ns_do_context(self, id_: Any, splitter: Any, index: int) -> bool:
 
         c = self.c
         if id_.startswith('_fl_embed_layout'):
@@ -358,7 +368,7 @@ class FreeLayoutController:
             return True
         return False
     #@+node:tbrown.20110628083641.11724: *3* flc.ns_provide
-    def ns_provide(self, id_):
+    def ns_provide(self, id_: str) -> Optional[Wrapper]:
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
             top = self.get_top_splitter()
@@ -381,8 +391,8 @@ class FreeLayoutController:
             return w
         return None
     #@+node:tbrown.20110627201141.11745: *3* flc.ns_provides
-    def ns_provides(self):
-        ans = []
+    def ns_provides(self) -> List[Tuple[str, str]]:
+        ans: List[Tuple[str, str]] = []
         # list of things in tab widget
         logTabWidget = self.get_top_splitter(
             ).find_child(QtWidgets.QWidget, "logTabWidget")
@@ -399,7 +409,13 @@ class FreeLayoutController:
         ans.append(('Tab pane', '_leo_pane:logFrame'))
         return ans
     #@+node:tbnorth.20160510122413.1: *3* flc.splitter_clicked
-    def splitter_clicked(self, splitter, handle, event, release, double):
+    def splitter_clicked(self,
+        splitter: Wrapper,
+        handle: Wrapper,
+        event: Event,
+        release: str,
+        double: bool,
+    ) -> None:
         """
         splitter_clicked - middle click release will zoom adjacent
         body / tree panes
@@ -430,7 +446,7 @@ class FreeLayoutController:
 #@+node:ekr.20160416065221.1: ** commands: free_layout.py
 #@+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
-def free_layout_context_menu(event):
+def free_layout_context_menu(event: Event) -> None:
     """
     Open free layout's context menu, using the first divider of the top
     splitter for context.
@@ -441,7 +457,7 @@ def free_layout_context_menu(event):
     handle.splitter_menu(handle.rect().topLeft())
 #@+node:tbrown.20130403081644.25265: *3* @g.command free-layout-restore
 @g.command('free-layout-restore')
-def free_layout_restore(event):
+def free_layout_restore(event: Event) -> None:
     """
     Restore layout outline had when it was loaded.
     """
@@ -449,7 +465,7 @@ def free_layout_restore(event):
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 #@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
-def free_layout_load(event):
+def free_layout_load(event: Event) -> None:
     """Load layout from menu."""
     c = event.get('c')
     if not c:
@@ -471,12 +487,12 @@ def free_layout_load(event):
         c.free_layout.get_top_splitter().load_layout(c, layout)
 #@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
-def free_layout_zoom(event):
+def free_layout_zoom(event: Event) -> None:
     """(un)zoom the current pane."""
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
-def register_provider(c, provider_instance):
+def register_provider(c: Cmdr, provider_instance: Any) -> None:
     """Register the provider instance with the top splitter."""
     # Careful: c.free_layout may not exist during unit testing.
     if c and hasattr(c, 'free_layout'):
