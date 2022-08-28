@@ -43,7 +43,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.lastYankP: Position = None
         # The index of the next item to be returned in
         # g.app.globalKillBuffer by iterateKillBuffer.
-        self.reset: int= None
+        self.reset: int = None
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
