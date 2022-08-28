@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
-#@+<< docstring >>
-#@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
+#@+<< quicksearch docstring >>
+#@+node:ville.20090314215508.5: ** << quicksearch docstring >>
 """
 Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
@@ -74,34 +74,51 @@ This plugin defines the following commands that can be bound to keys:
   List all marked nodes.
 
 """
-#@-<< docstring >>
+#@-<< quicksearch docstring >>
 # Original by Ville M. Vainio <vivainio@gmail.com>.
-#@+<< imports >>
-#@+node:ville.20090314215508.7: ** << imports >>
+#@+<< quicksearch imports >>
+#@+node:ville.20090314215508.7: ** << quicksearch imports >>
 import fnmatch
 import itertools
 import re
-from typing import Dict, List, Tuple, Union, Iterator, Match, Optional
+from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union, Optional
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
-from leo.core.leoNodes import Position
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
+#@-<< quicksearch imports >>
+#@+<< quicksearch annotations >>
+#@+node:ekr.20220828094201.1: ** << quicksearch annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+
+Match = re.Match
+Match_Iter = Optional[Iterator[Match[str]]]
+Match_List = List[Tuple[Position, Match_Iter]]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+Widget = Any
+Wrapper = Any
+#@-<< quicksearch annotations >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
 #@+node:ville.20121223213319.3670: *3* dumpfocus (quicksearch.py)
-def dumpfocus():
+def dumpfocus() -> None:
     f = QtWidgets.QApplication.instance().focusWidget()
     g.es("Focus: " + f)
     print("Focus: " + f)
 #@+node:ville.20090314215508.8: *3* init (quicksearch.py)
-def init():
+def init() -> None:
     """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:
@@ -110,21 +127,21 @@ def init():
     return ok
 
 #@+node:tbrown.20111011152601.48462: *3* install_qt_quicksearch_tab (Creates commands)
-def install_qt_quicksearch_tab(c):
+def install_qt_quicksearch_tab(c: Cmdr) -> None:
 
     wdg = LeoQuickSearchWidget(c, mode="nav")
     c.frame.log.createTab("Nav", widget=wdg)
 
-    def focus_quicksearch_entry(event):
+    def focus_quicksearch_entry(event: Event) -> None:
         c.frame.log.selectTab('Nav')
         wdg.ui.lineEdit.selectAll()
         wdg.ui.lineEdit.setFocus()
 
-    def focus_to_nav(event):
+    def focus_to_nav(event: Event) -> None:
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
 
-    def find_selected(event):
+    def find_selected(event: Event) -> None:
         text = c.frame.body.wrapper.getSelectedText()
         if text.strip():
             wdg.ui.lineEdit.setText(text)
@@ -133,15 +150,15 @@ def install_qt_quicksearch_tab(c):
         else:
             focus_quicksearch_entry(event)
 
-    def nodehistory(event):
+    def nodehistory(event: Event) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
 
-    def show_dirty(event):
+    def show_dirty(event: Event) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doChanged()
 
-    def timeline(event):
+    def timeline(event: Event) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
@@ -154,12 +171,12 @@ def install_qt_quicksearch_tab(c):
     c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
-    def showmarks(event):
+    def showmarks(event: Event) -> None:
         """ List marked nodes in nav tab """
         wdg.scon.doShowMarked()
 
     @g.command('go-anywhere')
-    def find_popout_f(event):
+    def find_popout_f(event: Event) -> None:
         c = event['c']
         w = LeoQuickSearchWidget(c, mode="popout", parent=c.frame.top)
         topgeo = c.frame.top.geometry()
@@ -172,7 +189,7 @@ def install_qt_quicksearch_tab(c):
     c.frame.nav = wdg
 
     # make activating this tab activate the input box
-    def activate_input(idx, c=c):
+    def activate_input(idx: int, c: Any=c) -> None:
         wdg = c.frame.nav
         tab_widget = wdg.parent().parent()
         if (tab_widget and
@@ -187,7 +204,7 @@ def install_qt_quicksearch_tab(c):
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 #@+node:ekr.20111014074810.15659: *3* matchLines
-def matchlines(b: str, miter: Iterator[Match[str]]):
+def matchlines(b: str, miter: Iterator[Match[str]]) -> List:
 
     res = []
     for m in miter:
@@ -195,9 +212,8 @@ def matchlines(b: str, miter: Iterator[Match[str]]):
         li = b[st:en].strip()
         res.append((li, (m.start(), m.end())))
     return res
-
 #@+node:ville.20090314215508.9: *3* onCreate (quicksearch.py)
-def onCreate(tag, keys):
+def onCreate(tag: str, keys: Any) -> None:
 
     c = keys.get('c')
     if not c:
@@ -206,27 +222,25 @@ def onCreate(tag, keys):
     install_qt_quicksearch_tab(c)
 
 #@+node:tbrown.20111011152601.48461: *3* show_unittest_failures
-def show_unittest_failures(event):
+def show_unittest_failures(event: Event) -> None:
     c = event.get('c')
     fails = c.db.get('unittest/cur/fail')
-    # print(fails)
     nav = c.frame.nav
-    #print nav
 
     nav.scon.clear()
     if fails:
         for gnx, stack in fails:
-            pos = None
+            pos: Position = None
             # sucks
             for p in c.all_positions():
                 if p.gnx == gnx:
                     pos = p.copy()
                     break
 
-            def mkcb(pos, stack):
-                def focus():
+            def mkcb(p: Position, stack: Any) -> Any:
+                def focus() -> None:
                     g.es(stack)
-                    c.selectPosition(pos)
+                    c.selectPosition(p)
                 return focus
 
             it = nav.scon.addGeneric(pos.h, mkcb(pos, stack))
@@ -238,14 +252,14 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
-    def __init__(self, c, w, lineedit):
+    def __init__(self, c: Cmdr, w: Wrapper, lineedit: Any) -> None:
 
         super().__init__()
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit
     #@+node:ekr.20111015194452.15719: *3* quick_ev.eventFilter
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj: Any, event: Event) -> bool:
 
         eventType = event.type()
         ev = QtCore.QEvent
@@ -277,7 +291,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c, mode="nav", parent=None):
+    def __init__(self, c: Cmdr, mode: str="nav", parent: Position=None) -> None:
 
         super().__init__(parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
@@ -298,7 +312,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
         self.ui.lineEdit.installEventFilter(self.ev_filter)
         self.c = c
     #@+node:ekr.20111015194452.15696: *3* quick_w.returnPressed
-    def returnPressed(self):
+    def returnPressed(self) -> None:
         w = self.ui.listWidget
         self.scon.freeze()
         t = self.ui.lineEdit.text()
@@ -316,7 +330,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
             w.setFocus()
             w.blockSignals(False)  # ok, respond if user moves
     #@+node:ville.20121118193144.3622: *3* quick_w.liveUpdate
-    def liveUpdate(self):
+    def liveUpdate(self) -> None:
 
         t = self.ui.lineEdit.text()
         if not t.strip():
@@ -333,7 +347,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
             return
         self.scon.worker.set_input(t)
     #@+node:ekr.20190210152123.1: *3* quick_w.selectAndDismiss
-    def selectAndDismiss(self):
+    def selectAndDismiss(self) -> None:
         self.hide()
     #@-others
 #@+node:ville.20090314215508.12: ** class QuickSearchController (quicksearch.py)
@@ -341,10 +355,11 @@ class QuickSearchController:
 
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
-    def __init__(self, c, listWidget, ui):
+    def __init__(self, c: Cmdr, listWidget: Widget, ui: Any) -> None:
         self.c = c
-        self.lw = w = listWidget  # A QListWidget.
-        self.its = {}  # Keys are id(w),values are tuples (p,pos)
+        self.lw: Widget = listWidget  # A QListWidget.
+        w = listWidget
+        self.its: Dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
         self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
@@ -352,13 +367,9 @@ class QuickSearchController:
                                "@auto-otl", "@auto-rst"]
 
         self.frozen = False
-        self._search_patterns = []
+        self._search_patterns: List[str] = []
 
-        def searcher(inp:str) -> Tuple[
-            List[Tuple[Position, Optional[Iterator[Match[str]]]]],
-            List[Tuple[Position, Optional[Iterator[Match[str]]]]]
-        ]:
-            #print("searcher", inp)
+        def searcher(inp:str) -> Tuple[Match_List, Match_List]:
             if self.frozen:
                 return None
             exp = inp.replace(" ", "*")
@@ -372,10 +383,7 @@ class QuickSearchController:
             out = self.worker.output
             self.throttler.add(out)
 
-        def throttledDump(lst: List[Tuple[
-            List[Tuple[Position, Optional[Iterator[Match[str]]]]],
-            List[Tuple[Position, Optional[Iterator[Match[str]]]]]]
-        ]) -> None:
+        def throttledDump(lst: List[Tuple[Match_List, Match_List]]) -> None:
             """ dumps the last output """
             # we do get called with empty list on occasion
             if not lst:
@@ -387,8 +395,7 @@ class QuickSearchController:
             self.addHeadlineMatches(hm)
             self.addBodyMatches(bm)
 
-        self.throttler = threadutil.NowOrLater(throttledDump)
-
+        self.throttler: Any = threadutil.NowOrLater(throttledDump)
         self.worker.set_worker(searcher)
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
@@ -397,17 +404,16 @@ class QuickSearchController:
         w.itemActivated.connect(self.onActivated)
         w.itemPressed.connect(self.onSelectItem)
         w.currentItemChanged.connect(self.onSelectItem)
-
     #@+node:ville.20121120225024.3636: *3* freeze
-    def freeze(self, val=True):
+    def freeze(self, val: bool=True) -> None:
         self.frozen = val
 
     #@+node:vitalije.20170705203722.1: *3* addItem
-    def addItem(self, it, val):
+    def addItem(self, it: Any, val: Any) -> bool:
         self.its[id(it)] = val
         return len(self.its) > 300
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
-    def addBodyMatches(self, positions:  List[Tuple[Position, Optional[Iterator[Match[str]]]]]) -> int:
+    def addBodyMatches(self, positions: Match_List) -> int:
         lineMatchHits = 0
         for p in positions:
             it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
@@ -425,9 +431,7 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self,
-        parent_list: Dict[str,  List[Tuple[Position, Optional[Iterator[Match[str]]]]]]
-    ) -> int:
+    def addParentMatches(self, parent_list: Dict[str,  Match_List]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -458,13 +462,13 @@ class QuickSearchController:
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
-    def addGeneric(self, text, f):
+    def addGeneric(self, text: Any, f: Any) -> None:
         """ Add generic callback """
         it = QtWidgets.QListWidgetItem(text, self.lw)
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
-    def addHeadlineMatches(self, poslist: List[Tuple[Position, Optional[Iterator[Match[str]]]]]):
+    def addHeadlineMatches(self, poslist: Match_List) -> None:
 
         for p in poslist:
             it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
@@ -474,7 +478,7 @@ class QuickSearchController:
             if self.addItem(it, (p[0], None)):
                 return
     #@+node:ekr.20111015194452.15691: *3* clear
-    def clear(self):
+    def clear(self) -> None:
 
         self.its = {}
         self.lw.clear()
@@ -483,50 +487,48 @@ class QuickSearchController:
     def doNodeHistory(self) -> None:
 
         c = self.c
-        nh: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
-            (z[0].copy(), None) for z in c.nodeHistory.beadList
-        ]
+        nh: Match_List = [(z[0].copy(), None) for z in c.nodeHistory.beadList]
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
     #@+node:vitalije.20170703141041.1: *3* doSearchHistory
-    def doSearchHistory(self):
+    def doSearchHistory(self) -> None:
         self.clear()
-        def sHistSelect(x):
-            def _f():
-                self.widgetUI.lineEdit.setText(x)
-                self.doSearch(x)
+
+        def sHistSelect(pat: str) -> Callable:
+            def _f() -> None:
+                self.widgetUI.lineEdit.setText(pat)
+                self.doSearch(pat)
             return _f
+
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
 
-
-    def pushSearchHistory(self, pat):
+    def pushSearchHistory(self, pat: Any) -> None:
         if pat in self._search_patterns:
             return
         self._search_patterns = ([pat] + self._search_patterns)[:30]
-
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
-    def doTimeline(self):
+    def doTimeline(self) -> None:
 
         c = self.c
-        timeline: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+        timeline: Match_List = [
             (p.copy(), None) for p in c.all_unique_positions()
         ]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
     #@+node:tbrown.20131204085704.57542: *3* doChanged
-    def doChanged(self):
+    def doChanged(self) -> None:
 
         c = self.c
-        changed: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = [
+        changed: Match_List = [
             (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
         ]
         self.clear()
         self.addHeadlineMatches(changed)
     #@+node:ekr.20111015194452.15692: *3* doSearch
-    def doSearch(self, pat):
+    def doSearch(self, pat: str) -> None:
 
         hitBase = False
         self.clear()
@@ -541,6 +543,8 @@ class QuickSearchController:
             bpat = pat[2:]
             flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
+        bNodes: Iterable[Position]
+        hNodes: Iterable[Position]
         if combo == "All":
             hNodes = self.c.all_positions()
             bNodes = self.c.all_positions()
@@ -598,8 +602,7 @@ class QuickSearchController:
             numOfHm = len(hm)  #do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                ### parents = OrderedDefaultDict(list)
-                parents: Dict[str, List[Tuple[Position, Optional[Iterator[Match[str]]]]]] = {}
+                parents: Dict[str, Match_List] = {}
                 for nodeList in [hm, bm]:
                     for node in nodeList:
                         ###
@@ -608,7 +611,7 @@ class QuickSearchController:
                             # else:
                                 # parents[node.parent().gnx].append(node)
                         key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
-                        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = parents.get(key, [])
+                        aList: Match_List = parents.get(key, [])
                         aList.append(node)
                         parents[key] = aList
                 lineMatchHits = self.addParentMatches(parents)
@@ -624,10 +627,7 @@ class QuickSearchController:
                 self.lw.insertItem(0, "External file directive not found " +
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
-    def bgSearch(self, pat:str) -> Tuple[
-        List[Tuple[Position, Optional[Iterator[Match[str]]]]],
-        List[Tuple[Position, Optional[Iterator[Match[str]]]]]
-    ]:
+    def bgSearch(self, pat:str) -> Tuple[Match_List, Match_List]:
         #self.clear()
 
         if self.frozen:
@@ -641,6 +641,7 @@ class QuickSearchController:
             # bpat = pat[2:]
             flags = 0  # type:ignore
         combo = self.widgetUI.comboBox.currentText()
+        hNodes: Iterable
         if combo == "All":
             hNodes = self.c.all_positions()
         elif combo == "Subtree":
@@ -656,9 +657,9 @@ class QuickSearchController:
     #@+node:jlunz.20150826091415.1: *3* find_h
     def find_h(self,
         regex: str,
-        positions: List[Position],
+        positions: Iterable[Position],
         flags: RegexFlag=re.IGNORECASE,
-    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
+    ) -> Match_List:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
@@ -670,9 +671,9 @@ class QuickSearchController:
     #@+node:jlunz.20150826091424.1: *3* find_b
     def find_b(self,
         regex: str,
-        positions: List[Position],
+        positions: Iterable[Position],
         flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
-    ) -> List[Tuple[Position, Optional[Iterator[Match[str]]]]]:
+    ) -> Match_List:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
         """
@@ -681,8 +682,7 @@ class QuickSearchController:
         except Exception:
             return []
 
-        aList: List[Tuple[Position, Optional[Iterator[Match[str]]]]] = []
-
+        aList: Match_List = []
         for p in positions:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
@@ -692,11 +692,10 @@ class QuickSearchController:
                 continue
             pc = p.copy()
             aList.append((pc, t2))
-
         return aList
 
     #@+node:ekr.20111015194452.15687: *3* doShowMarked
-    def doShowMarked(self):
+    def doShowMarked(self) -> None:
 
         self.clear()
         c = self.c
@@ -705,10 +704,12 @@ class QuickSearchController:
         ])
     #@+node:ekr.20111015194452.15700: *3* Event handlers
     #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
-    def onSelectItem(self, it, it_prev=None):
+    def onSelectItem(self, it: Iterable, it_prev: Iterable=None) -> None:
 
         c = self.c
-        tgt = self.its.get(it and id(it))
+        if not it:
+            return
+        tgt: Callable = self.its.get(id(it))
         if not tgt:
             return
         # if Ctrl key is down, delete item and
@@ -750,10 +751,9 @@ class QuickSearchController:
                     w.seeInsertPoint()
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
-    def onActivated(self, event):
+    def onActivated(self, event: Event) -> None:
 
         c = self.c
-
         c.bodyWantsFocusNow()
     #@-others
 #@-others
