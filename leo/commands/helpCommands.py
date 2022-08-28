@@ -9,11 +9,21 @@ import io
 import re
 import sys
 import textwrap
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< helpCommands imports >>
+#@+<< helpCommands annotations >>
+#@+node:ekr.20220828064812.1: ** << helpCommands annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Cmdr = Any
+    Event = Any
+#@-<< helpCommands annotations >>
 
-def cmd(name):
+def cmd(name: str) -> Callable:
     """Command decorator for the helpCommands class."""
     return g.new_cmd_decorator(name, ['c', 'helpCommands',])
 
@@ -24,7 +34,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
-    def help_command(self, event=None):
+    def help_command(self, event: Event=None) -> None:
         """Prints an introduction to Leo's help system."""
         #@+<< define rst_s >>
         #@+node:ekr.20150514063305.374: *4* << define rst_s >> (F1)
@@ -63,7 +73,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(rst_s)
     #@+node:ekr.20150514063305.375: *3* helpForAbbreviations
     @cmd('help-for-abbreviations')
-    def helpForAbbreviations(self, event=None):
+    def helpForAbbreviations(self, event: Event=None) -> None:
         """Prints a discussion of abbreviations."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.376: *4* << define s >> (helpForAbbreviations)
@@ -126,7 +136,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.377: *3* helpForAutocompletion
     @cmd('help-for-autocompletion')
-    def helpForAutocompletion(self, event=None):
+    def helpForAutocompletion(self, event: Event=None) -> None:
         """Prints a discussion of autocompletion."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.378: *4* << define s >> (helpForAutocompletion)
@@ -242,7 +252,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.379: *3* helpForBindings
     @cmd('help-for-bindings')
-    def helpForBindings(self, event=None):
+    def helpForBindings(self, event: Event=None) -> None:
         """Prints a discussion of keyboard bindings."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.380: *4* << define s >> (helpForBindings)
@@ -327,7 +337,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.381: *3* helpForCommand & helpers
     @cmd('help-for-command')
-    def helpForCommand(self, event):
+    def helpForCommand(self, event: Event) -> None:
         """Prompts for a command name and prints the help message for that command."""
         c, k = self.c, self.c.k
         s = '''\
@@ -339,7 +349,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         c.minibufferWantsFocusNow()
         k.fullCommand(event, help=True, helpHandler=self.helpForCommandFinisher)
     #@+node:ekr.20150514063305.382: *4* getBindingsForCommand
-    def getBindingsForCommand(self, commandName):
+    def getBindingsForCommand(self, commandName: str) -> str:
         k = self.c.k
         data = []
         n1, n2 = 4, 20
@@ -359,7 +369,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         data.sort(key=lambda x: x[1])
         return ','.join([f"{z1} {z2}" for z1, z2, z3 in data]).strip()
     #@+node:ekr.20150514063305.383: *4* helpForCommandFinisher
-    def helpForCommandFinisher(self, commandName):
+    def helpForCommandFinisher(self, commandName: str) -> None:
         c, s = self.c, None
         if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
@@ -421,7 +431,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 #@-<< set s to about help-for-command >>
             c.putHelpFor(s)
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
-    def replaceBindingPatterns(self, s):
+    def replaceBindingPatterns(self, s: str) -> str:
         """
         For each instance of the pattern !<command-name>! in s,
         replace the pattern by the key binding for command-name.
@@ -444,7 +454,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         return s
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles
     @cmd('help-for-creating-external-files')
-    def helpForCreatingExternalFiles(self, event=None):
+    def helpForCreatingExternalFiles(self, event: Event=None) -> None:
         """Prints a discussion of creating external files."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.387: *4* << define s >> (helpForCreatingExternalFiles)
@@ -580,7 +590,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.388: *3* helpForDebuggingCommands
     @cmd('help-for-debugging-commands')
-    def helpForDebuggingCommands(self, event=None):
+    def helpForDebuggingCommands(self, event: Event=None) -> None:
         """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.389: *4* << define s >> (helpForDebuggingCommands)
@@ -611,7 +621,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.390: *3* helpForDragAndDrop
     @cmd('help-for-drag-and-drop')
-    def helpForDragAndDrop(self, event=None):
+    def helpForDragAndDrop(self, event: Event=None) -> None:
         """Prints a discussion of of Leo's debugging commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.391: *4* << define s >> (helpForDragAndDrop
@@ -650,7 +660,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.392: *3* helpForDynamicAbbreviations
     @cmd('help-for-dynamic-abbreviations')
-    def helpForDynamicAbbreviations(self, event=None):
+    def helpForDynamicAbbreviations(self, event: Event=None) -> None:
         """Prints a discussion of abbreviations."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.393: *4* << define s >> (helpForDynamicAbbreviations)
@@ -696,7 +706,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.394: *3* helpForFindCommands
     @cmd('help-for-find-commands')
-    def helpForFindCommands(self, event=None):
+    def helpForFindCommands(self, event: Event=None) -> None:
         """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.395: *4* << define s >> (help-for-find-commands)
@@ -755,7 +765,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150628161341.1: *3* helpForKeystroke
     @cmd('help-for-keystroke')
-    def helpForKeystroke(self, event):
+    def helpForKeystroke(self, event: Event) -> None:
         """Prompts for any key and prints the bindings for that key."""
         c, k = self.c, self.c.k
         state_name = 'help-for-keystroke'
@@ -777,7 +787,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             c.bodyWantsFocus()
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
-    def helpForMinibuffer(self, event=None):
+    def helpForMinibuffer(self, event: Event=None) -> None:
         """Print a messages telling you how to get started with Leo."""
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
@@ -814,7 +824,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         c.putHelpFor(s)
     #@+node:ekr.20150514063305.398: *3* helpForRegularExpressions
     @cmd('help-for-regular-expressions')
-    def helpForRegularExpressions(self, event=None):
+    def helpForRegularExpressions(self, event: Event=None) -> None:
         """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.399: *4* << define s >> (helpForRegularExpressions)
@@ -885,7 +895,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.400: *3* helpForScripting
     @cmd('help-for-scripting')
-    def helpForScripting(self, event=None):
+    def helpForScripting(self, event: Event=None) -> None:
         """Prints a discussion of Leo scripting."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.401: *4* << define s >> (helpForScripting)
@@ -1101,7 +1111,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20170823084423.1: *3* helpForSettings
     @cmd('help-for-settings')
-    def helpForSettings(self, event=None):
+    def helpForSettings(self, event: Event=None) -> None:
         """Prints a discussion of of Leo's find commands."""
         #@+<< define s >>
         #@+node:ekr.20170823084456.1: *4* << define s >> (helpForSettings)
@@ -1130,7 +1140,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
-    def showSettings(self, event=None):
+    def showSettings(self, event: Event=None) -> None:
         """
         Prints the value of every setting, except key bindings and commands and
         open-with tables. The following shows where the active setting came
@@ -1146,7 +1156,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.config.printSettings()
     #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)
     @cmd('show-settings-outline')
-    def showSettingsOutline(self, event=None):
+    def showSettingsOutline(self, event: Event=None) -> None:
         """
         Create and open an outline, summarizing all presently active settings.
 
@@ -1158,14 +1168,14 @@ class HelpCommandsClass(BaseEditCommandsClass):
         self.c.config.createActivesSettingsOutline()
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
-    def pythonHelp(self, event=None):
+    def pythonHelp(self, event: Event=None) -> None:
         """Prompt for a arg for Python's help function, and put it to the VR pane."""
         c, k = self.c, self.c.k
         c.minibufferWantsFocus()
         k.setLabelBlue('Python help: ')
         k.get1Arg(event, handler=self.pythonHelp1)
 
-    def pythonHelp1(self, event):
+    def pythonHelp1(self, event: Event) -> str:
         c, k = self.c, self.c.k
         k.clearState()
         k.resetLabel()
