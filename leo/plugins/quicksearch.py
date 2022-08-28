@@ -709,7 +709,7 @@ class QuickSearchController:
         c = self.c
         if not it:
             return
-            
+
         # tgt = self.its.get(it and id(it))
 
         tgt: Callable = self.its.get(id(it))
