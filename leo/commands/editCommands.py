@@ -889,6 +889,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.fillPrefix = s[i:j]
     #@+node:ekr.20150514063305.219: *4* ec._addPrefix
     def _addPrefix(self, ntxt: str) -> str:
+        # ntxt = ntxt.split('.')
+        # ntxt = map(lambda a: self.fillPrefix + a, ntxt)
+        # ntxt = '.'.join(ntxt)
+        # return ntxt
         ntxt1 = ntxt.split('.')
         ntxt_list = map(lambda a: self.fillPrefix + a, ntxt1)
         return '.'.join(ntxt_list)
@@ -2425,10 +2429,10 @@ class EditCommandsClass(BaseEditCommandsClass):
             return simple_whitespace_re.match(ch) is not None
 
         def is_line_break(ch: str) -> bool:
-            return is_whitespace(c) and not is_simple_whitespace(ch)
+            return is_whitespace(ch) and not is_simple_whitespace(ch)
 
         def is_special(ch: str) -> bool:
-            return not is_alphanumeric(c) and not is_whitespace(ch)
+            return not is_alphanumeric(ch) and not is_whitespace(ch)
 
         def seek_until_changed(i: int, match_function: Callable, step: int) -> int:
             while 0 <= i < n and match_function(s[i]):
