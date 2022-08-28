@@ -266,7 +266,10 @@ class GoToCommands:
         p1 = p.copy()
         # First look for ancestor @file node.
         for p in p.self_and_parents(copy=False):
-            if not p.isAtEditNode() and not p.isAtAllNode():
+            # fileName = not p2.isAtAllNode() and p2.anyAtFileNodeName()
+            # if fileName:
+                # return p2.copy(), fileName
+            if not p.isAtAllNode():
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     return p.copy(), fileName
