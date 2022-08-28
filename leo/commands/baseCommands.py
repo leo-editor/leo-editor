@@ -90,10 +90,10 @@ class BaseEditCommandsClass:
             "must be overridden in subclass")
     #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
-    def _chckSel(self, event, warning='no selection'):
+    def _chckSel(self, event, warning='no selection') -> bool:
         """Return True if there is a selection in the edit widget."""
         w = self.editWidget(event)
-        val = w and w.hasSelection()
+        val = bool(w and w.hasSelection())
         if warning and not val:  # pragma: no cover
             g.es(warning, color='red')
         return val
