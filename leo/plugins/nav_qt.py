@@ -84,7 +84,7 @@ class NavController:
         c = self.c
         w = c.frame.iconBar.w
         if not w:
-            return None  # EKR: can be an empty list when unit testing.
+            return None  # For unit testing.
         icon_l = w.style().standardIcon(StandardPixmap.SP_ArrowLeft)
         icon_r = w.style().standardIcon(StandardPixmap.SP_ArrowRight)
         # Create the actions.
