@@ -2647,7 +2647,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def add_rclick_menu(
             self,
             action_container: Any,
-            rclicks: str,
+            rclicks: List[Any],
             controller: Cmdr,
             top_level: bool=True,
             button: str=None,
