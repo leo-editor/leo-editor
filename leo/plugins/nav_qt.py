@@ -71,7 +71,7 @@ def onClose(tag: str, keys: Any) -> None:
         del controllers[h]
 #@+node:ville.20090518182905.5425: ** class NavController
 class NavController:
-    
+
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         c._prev_next = self
