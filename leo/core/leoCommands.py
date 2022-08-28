@@ -2858,7 +2858,7 @@ class Commands:
                 p.moveToThreadNext()
         c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event=None, d: Dict[str, str]=None) -> None:
+    def openWith(self, event: Event=None, d: Dict[str, Any]=None) -> None:
         """
         This is *not* a command.
 
