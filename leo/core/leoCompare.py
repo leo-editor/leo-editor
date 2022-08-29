@@ -674,7 +674,7 @@ def diffMarkedNodes(event):
         root = c.lastTopLevel().insertAfter()
         root.h = 'diff marked nodes'
         root.b = '\n'.join([z.h for z in aList]) + '\n'
-        u.afterInsertNode(root, undoType, undoData)
+        u.afterInsertNode(root, 'Create diff root node', undoData)
 
         while len(aList) > 1:
             n += 1
