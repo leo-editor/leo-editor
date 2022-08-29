@@ -4096,7 +4096,7 @@ class Commands:
         undoType = 'Create Node Hierarchy'
         undoType2 = 'Insert Node In Hierarchy'
         u_node = parent or self.rootPosition()
-        undoData = u.beforeChangeGroup(u_node, undoType)
+        u.beforeChangeGroup(u_node, undoType)
         changed_node = False
         for idx, head in enumerate(heads):
             if parent is None and idx == 0:  # if parent = None, create top level node for first head
@@ -4125,7 +4125,7 @@ class Commands:
                     u.afterInsertNode(n, undoType2, u_d)
                     parent = n
             changed_node = False
-        u.afterChangeGroup(parent, undoType, undoData)
+        u.afterChangeGroup(parent, undoType)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
     def deletePositionsInList(self, aList: List) -> List[Any]:

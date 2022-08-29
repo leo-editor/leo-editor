@@ -813,7 +813,8 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        c = self.c
+        c, u = self.c, self.c.undoer
+
         if not self.get_directory():
             return
         # Get list of changed files.
@@ -823,13 +824,24 @@ class GitDiffController:
         if n > 5:
             message += ". This may take awhile..."
         g.es_print(message)
+
+        undoType = 'Git Diff'
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+        u.beforeChangeGroup(c.p, undoType)
         # Create the root node.
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = f"git diff revs: {rev1} {rev2}"
         self.root.b = '@ignore\n@nosearch\n'
+        u.afterInsertNode(self.root, 'Create diff root node', undoData)
+
         # Create diffs of all files.
         for fn in files:
+            undoData = u.beforeChangeTree(self.root)
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+            u.afterChangeTree(self.root, undoType, undoData)
+
+        u.afterChangeGroup(c.p, undoType=undoType)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, rev1: str='HEAD', rev2: str='') -> None:
@@ -856,9 +868,19 @@ class GitDiffController:
         """Diff all files given by rev1 and rev2."""
         files = self.get_files(rev1, rev2)
         if files:
-            self.root = self.create_root(rev1, rev2)
+            c, u = self.c, self.c.undoer
+            undoType = 'Git Diff'
+            c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+            u.beforeChangeGroup(c.p, undoType)
+
+            self.root = self.create_root(rev1, rev2)  # creates it's own undo bead
+
             for fn in files:
+                undoData = u.beforeChangeTree(self.root)
                 self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+                u.afterChangeTree(self.root, undoType, undoData)
+
+            u.afterChangeGroup(c.p, undoType=undoType)
             self.finish()
         return bool(files)
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
@@ -933,7 +955,11 @@ class GitDiffController:
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1: str, rev2: str) -> Position:
         """Create the top-level organizer node describing the git diff."""
-        c = self.c
+        c, u = self.c, self.c.undoer
+        undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
+
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
         p.h = f"git diff {r1} {r2}"
@@ -944,6 +970,8 @@ class GitDiffController:
                 f"{r2}={self.get_revno(r2)}")
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
+
+        u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20170806094320.7: *4* gdc.find_file
     def find_file(self, fn: str) -> Optional[Position]:
