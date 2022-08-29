@@ -8,6 +8,7 @@
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Match  # Deprecated, but we'll deal with this later.
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -21,10 +22,6 @@ else:
     Cmdr = Any
     Position = Any
 Event = Any
-try:
-    Match = re.Match
-except AttributeError:
-    Match = Any  # Python 3.6
 #@-<< convertCommands annotations >>
 
 def cmd(name: Any) -> Callable:
