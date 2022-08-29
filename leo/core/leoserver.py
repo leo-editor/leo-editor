@@ -53,7 +53,6 @@ from leo.core.leoExternalFiles import ExternalFilesController
 #@+node:ekr.20220820155747.1: ** << leoserver annotations >>
 Event = Any  # More than one kind of Event!
 Loop = Any
-Match_Iter = Optional[Iterator[re.Match[str]]]
 Package = Dict[str, Any]
 Param = Dict[str, Any]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
