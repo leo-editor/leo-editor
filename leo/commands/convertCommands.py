@@ -8,6 +8,7 @@
 import re
 import time
 from typing import Any, Callable, Dict, List, Tuple, TYPE_CHECKING
+from typing import Match  # Deprecated, but we'll deal with this later.
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -16,16 +17,11 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@+node:ekr.20220824202941.1: ** << convertCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoNodes import Position
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = Any
-    Event = Any
     Position = Any
-try:
-    Match = re.Match
-except AttributeError:
-    Match = Any  # Python 3.6
+Event = Any
 #@-<< convertCommands annotations >>
 
 def cmd(name: Any) -> Callable:

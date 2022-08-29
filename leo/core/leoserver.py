@@ -25,6 +25,7 @@ import socket
 import textwrap
 import time
 from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
+from typing import Match  # Deprecated, but we'll deal with this later.
 
 # Third-party.
 try:
@@ -59,14 +60,8 @@ RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 Socket = Any
 
-# typing.Match is deprecated, so we may as well not use it.
-# EKR always runs mypy with python 3.10+, so falling back to Any makes no real difference.
-try:
-    Match = re.Match
-    Match_Iter = Iterator[Match[str]]
-except AttributeError:
-    Match = Any  # Python < 3.9
-    Match_Iter = Any
+# typing.Match is deprecated, but it's tricky to do without it at present.
+Match_Iter = Iterator[Match[str]]
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
