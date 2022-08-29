@@ -22,6 +22,10 @@ else:
     Cmdr = Any
     Event = Any
     Position = Any
+try:
+    Match = re.Match
+except AttributeError:
+    Match = Any  # Python 3.6
 #@-<< convertCommands annotations >>
 
 def cmd(name: Any) -> Callable:
@@ -626,7 +630,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             '__str__': 'str',
         }
 
-        def do_def(self, m: re.Match) -> str:
+        def do_def(self, m: Match) -> str:
             lws, name, args, tail = m.group(1), m.group(2), m.group(3), m.group(4)
             args = self.do_args(args)
             return_val_s = self.return_dict.get(name, self.default_return_annotation)
@@ -1611,7 +1615,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014023141.1: *7* py2ts.do_class
         class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
 
-        def do_class(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_class(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1623,7 +1627,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013165615.1: *7* py2ts.do_comment
         comment_pat = re.compile(r'^([ \t]*)#(.*)\n')
 
-        def do_comment(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_comment(self, i: int, lines: List[str], m: Match, p: Position) -> int:
             """Handle a stand-alone comment line."""
             lws, comment = m.group(1), m.group(2).strip()
             if comment:
@@ -1635,7 +1639,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\):(.*)\n')
         this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
-        def do_def(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_def(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
@@ -1662,7 +1666,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013165952.1: *7* py2ts.do_docstring
         docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
 
-        def do_docstring(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_docstring(self, i: int, lines: List[str], m: Match, p: Position) -> int:
             """
             Convert a python docstring.
 
@@ -1701,7 +1705,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014030113.1: *7* py2ts.do_except
         except_pat = re.compile(r'^([ \t]*)except(.*):(.*)\n')
 
-        def do_except(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_except(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1718,7 +1722,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         for2_pat = re.compile(for2_s)
         for_pat = re.compile(fr"{for1_s}|{for2_s}")  # Used by main loop.
 
-        def do_for(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_for(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.for1_pat.match(line)
@@ -1753,7 +1757,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         import1_pat = re.compile(import_s)
         import2_pat = re.compile(import_from_s)
 
-        def do_import(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_import(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.import1_pat.match(line)
@@ -1774,7 +1778,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         elif2_pat = re.compile(elif2_s)
         elif_pat = re.compile(fr"{elif1_s}|{elif2_s}")  # Used by main loop.
 
-        def do_elif(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_elif(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.elif1_pat.match(line)
@@ -1806,7 +1810,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022445.1: *7* py2ts.do_else
         else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
 
-        def do_else(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_else(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1817,7 +1821,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022453.1: *7* py2ts.do_finally
         finally_pat = re.compile(r'^([ \t]*)finally:(.*)\n')
 
-        def do_finally(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_finally(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1833,7 +1837,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         if2_pat = re.compile(if2_s)
         if_pat = re.compile(fr"{if1_s}|{if2_s}")  # Used by main loop.
 
-        def do_if(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_if(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.if1_pat.match(line)
@@ -1864,7 +1868,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211018125503.1: *7* py2ts.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
 
-        def do_section_ref(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_section_ref(self, i: int, lines: List[str], m: Match, p: Position) -> int:
             # Handle trailing code.
             lws, section_name, tail = m.group(1), m.group(2), m.group(3).strip()
             if tail.startswith('#'):
@@ -1873,7 +1877,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022506.1: *7* py2ts.do_try
         try_pat = re.compile(r'^([ \t]*)try:(.*)\n')
 
-        def do_try(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_try(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, tail = m.group(1), m.group(2).strip()
@@ -1889,7 +1893,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         while2_pat = re.compile(while2_s)
         while_pat = re.compile(fr"{while1_s}|{while2_s}")  # Used by main loop.
 
-        def do_while(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_while(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             line = lines[i]
             m1 = self.while1_pat.match(line)
@@ -1921,7 +1925,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211014022554.1: *7* py2ts.do_with
         with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
 
-        def do_with(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_with(self, i: int, lines: List[str], m: Match, p: Position) -> int:
 
             j = self.find_indented_block(i, lines, m, p)
             lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
@@ -1933,7 +1937,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013172540.1: *7* py2ts.do_trailing_comment
         trailing_comment_pat = re.compile(r'^([ \t]*)(.*)#(.*)\n')
 
-        def do_trailing_comment(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def do_trailing_comment(self, i: int, lines: List[str], m: Match, p: Position) -> int:
             """
             Handle a trailing comment line.
 
@@ -2017,7 +2021,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20211013123001.1: *7* py2ts.find_indented_block
         lws_pat = re.compile(r'^([ \t]*)')
 
-        def find_indented_block(self, i: int, lines: List[str], m: re.Match, p: Position) -> int:
+        def find_indented_block(self, i: int, lines: List[str], m: Match, p: Position) -> int:
             """Return j, the index of the line *after* the indented block."""
             # Scan for the first non-empty line with the same or less indentation.
             lws = m.group(1)
