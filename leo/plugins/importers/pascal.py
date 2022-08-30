@@ -28,6 +28,7 @@ class Pascal_Importer(Importer):
     # Everything before the first function/procedure will be in the first node.
 
     function_pat = re.compile(r'^\s*(function|procedure)\s+([\w_.]+)\s*\((.*)\)')
+    implementation_pat = re.compile(r'^\s*implementation\b')
 
     # These patterns aren't completely accurate.
     begin_pat = re.compile(r'(^\s*begin\b)|(.*\bbegin\b)')
@@ -37,11 +38,17 @@ class Pascal_Importer(Importer):
         """Set scan_state.level for all scan states."""
         ### from leo.core import leoGlobals as g  ###
         lines, line_states = self.lines, self.line_states
-        in_proc, proc_level, nesting_level = False, 0, 0
+        implementation_seen, in_proc, proc_level, nesting_level = False, False, 0, 0
         for i, line in enumerate(lines):
             state = line_states[i]
             # g.trace(f"{i:3}", in_proc, proc_level, nesting_level, repr(line))  ###
             if line.isspace() or state.context:
+                state.level = proc_level
+                continue
+            m = self.implementation_pat.match(line)
+            if m:
+                implementation_seen = True
+            if not implementation_seen:
                 state.level = proc_level
                 continue
             m = self.function_pat.match(line)

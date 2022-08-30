@@ -2876,11 +2876,6 @@ class TestPascal(BaseTestImporter):
                     '\n'
                     'type\n'
                     'TForm1 = class(TForm)\n'
-                    '@others\n'
-                    '@language pascal\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'procedure FormCreate',
                     'procedure FormCreate(Sender: TObject);\n'
                     'private\n'
                     '{ Private declarations }\n'
@@ -2898,8 +2893,10 @@ class TestPascal(BaseTestImporter):
                     '@others\n'
                     'end. // interface\n'
                     '\n'
+                    '@language pascal\n'
+                    '@tabwidth -4\n'
             ),
-            (2, 'procedure TForm1.FormCreate',
+            (1, 'procedure TForm1.FormCreate',
                     'procedure TForm1.FormCreate(Sender: TObject);\n'
                     'var\n'
                     'x,y: double;\n'
