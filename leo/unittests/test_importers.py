@@ -2989,7 +2989,7 @@ class TestPascal(BaseTestImporter):
     end;
         """
         p = self.run_test(s, check_flag=False)  ###
-        self.dump_tree(p, tag='Actual results...')
+        # self.dump_tree(p, tag='Actual results...')
         # self.dump_headlines(p)
         if 0: self.check_outline(p, (
             (0, '',  # check_outline ignores the first headline.
