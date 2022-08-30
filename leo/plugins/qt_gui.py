@@ -952,8 +952,10 @@ class LeoQtGui(leoGui.LeoGui):
         try:
             font = QtGui.QFont(family, i_size, weight_val, italic)
             if sys.platform.startswith('linux'):
-                font.setHintingPreference(font.PreferFullHinting)
-            # g.es(font,font.hintingPreference())
+                try:
+                    font.setHintingPreference(font.PreferFullHinting)
+                except AttributeError:
+                    pass
             return font
         except Exception:
             g.es("exception setting font", g.callers(4))
@@ -962,7 +964,7 @@ class LeoQtGui(leoGui.LeoGui):
                 f"  size: {i_size}\n"
                 f" slant: {slant}\n"
                 f"weight: {weight}")
-            # g.es_exception() # This just confuses people.
+            # g.es_exception() # Confusing for most users.
             return None
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
     def getFullVersion(self, c: Cmdr=None) -> str:
