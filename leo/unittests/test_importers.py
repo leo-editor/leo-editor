@@ -2910,7 +2910,7 @@ class TestPascal(BaseTestImporter):
          ))
     #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
-        
+
         # From GSTATOBJ.PAS
         #@+<< define s >>
         #@+node:ekr.20220830112013.1: *4* << define s >>
@@ -3011,7 +3011,7 @@ class TestPascal(BaseTestImporter):
                     '\n'
             ),
             (1, 'procedure statObj.multiplyGraph',
-            
+
                     'procedure statObj.multiplyGraph(var source: pGraphObj);\n'
                     'var i, max: integer;\n'
                     'begin\n'
@@ -3023,7 +3023,7 @@ class TestPascal(BaseTestImporter):
                     '\n'
             ),
             (1, 'function statObj.divideGraph',
-            
+
                     'function statObj.divideGraph(var numerator: pGraphObj): boolean;\n'
                     'var zerodata: boolean;\n'
                     'i, j, max: integer;\n'
