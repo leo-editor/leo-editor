@@ -28,31 +28,38 @@ class Pascal_Importer(Importer):
     unit_start_pat1 = re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n')
     unit_start_pat2 = re.compile(r'^interface\b')
 
-    begin_pat = re.compile(r'(^\s*begin\b)|(\bbegin\s*$)')
-    end_pat = re.compile(r'(^\s*end\s*;)|(\bend\s*;\s*$)')
+    begin_pat = re.compile(r'(^\s*begin\b)|(.*\bbegin\s*$)')
+    end_pat = re.compile(r'(^\s*end\s*;)|(.*\bend\s*;\s*$)')
 
     def gen_lines_prepass(self) -> None:
         """Set scan_state.level for all scan states."""
+        from leo.core import leoGlobals as g  ###
+        trace = False  ###
         lines, line_states = self.lines, self.line_states
         begin_level, nesting_level = 0, 0
         for i, line in enumerate(lines):
             state = line_states[i]
+            if trace: g.trace(f"{i:3}", nesting_level, begin_level, repr(line))
             if line.isspace() or state.context:
                 state.level = nesting_level
                 continue
             m = self.unit_start_pat1.match(line) or self.unit_start_pat2.match(line)
             if m:
+                if trace: g.trace('START UNIT')
                 #  Start of a unit.
                 nesting_level += 1
                 state.level = nesting_level
                 continue
             ### elif g.match_word(line.lstrip(), 0, 'begin'):
             if self.begin_pat.match(line):
+                if trace: g.trace('BEGIN')
                 begin_level += 1
                 state.level = nesting_level  # The 'end' is part of the block.
                 continue
             ### elif g.match_word(line.lstrip(), 0, 'end'):
             if self.end_pat.match(line):
+                if trace: g.trace('END')
+                ### Must be wrong.
                 if begin_level > 0:
                     begin_level -= 1
                 else:

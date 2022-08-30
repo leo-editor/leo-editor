@@ -2915,6 +2915,86 @@ class TestPascal(BaseTestImporter):
                     '\n'
             ),
          ))
+    #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
+    def test_indentation(self):
+        
+        # From GSTATOBJ.PAS
+        s = """
+    unit gstatobj;
+
+    {$F+,R-,S+}
+    {$I numdirect.inc}
+
+    interface
+        uses gf2obj1;
+
+    implementation
+
+    procedure statObj.scale(factor: float);
+    var i: integer;
+    begin
+           for i := 1 to num do
+              with data^[i] do y := factor * y;
+    end;
+
+    procedure statObj.multiplyGraph(var source: pGraphObj);
+    var i, max: integer;
+    begin
+        max := source^.getNum;
+        if max < num then num := max;
+        for i := 1 to max do
+            data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
+    end;
+
+    function statObj.divideGraph(var numerator: pGraphObj): boolean;
+    var zerodata: boolean;
+        i, j, max: integer;
+        yy: float;
+        pg: pStatObj;
+    begin
+        if numerator = nil then begin
+            divideGraph := false;
+            exit;
+         end;
+        zerodata:= false;
+        new(pg,init);
+        if pg = nil then begin
+           divideGraph := false;
+           exit;
+         end;
+        max := numerator^.getNum;
+        if max < num then num := max;
+        pg^.importData(@self);
+        j := 0;
+        for i := 1 to max do begin
+            yy := pg^.sendYData(i);
+            if yy <> 0 then begin
+               inc(j);
+               getYData(j, numerator^.sendYData(i)/yy);
+               getXData(j, pg^.sendXData(i));
+             end else zeroData := true;
+         end;
+        setNum(j);
+        dispose(pg, byebye);
+        divideGraph := not zeroData;
+    end;
+
+    procedure statObj.addGraph(var source: pgraphObj);
+    var i, max: integer;
+    begin
+        max := source^.getNum;
+        if max < num then num := max;
+        for i := 1 to max do
+            data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
+    end;
+        """
+        p = self.run_test(s, check_flag=False)  ###
+        self.dump_tree(p, tag='Actual results...')
+        # self.dump_headlines(p)
+        if 0: self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+            ),
+        ))
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):
