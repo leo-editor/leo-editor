@@ -18,30 +18,24 @@ class Pascal_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161126171035.4: *3* pascal_i.compute_headline
-    pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
+    pascal_clean_pattern = re.compile(r'^(constructor|destructor|function|procedure)\s+([\w_.]+)')
 
     def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
         m = self.pascal_clean_pattern.match(s)
         return '%s %s' % (m.group(1), m.group(2)) if m else s.strip()
     #@+node:ekr.20220804120455.1: *3* pascal_i.gen_lines_prepass
-    # Everything before the first function/procedure will be in the first node.
-
-    function_pat = re.compile(r'^\s*(function|procedure)\s+([\w_.]+)\s*\((.*)\)')
-    implementation_pat = re.compile(r'^\s*implementation\b')
-
-    # These patterns aren't completely accurate.
     begin_pat = re.compile(r'(^\s*begin\b)|(.*\bbegin\b)')
     end_pat = re.compile(r'(^\s*end\b)|(.*\bend\b)')
+    function_pat = re.compile(r'^\s*(constructor|destructor|function|procedure)\s+([\w_.]+)')
+    implementation_pat = re.compile(r'^\s*implementation\b')
 
     def gen_lines_prepass(self) -> None:
         """Set scan_state.level for all scan states."""
-        ### from leo.core import leoGlobals as g  ###
         lines, line_states = self.lines, self.line_states
         implementation_seen, in_proc, proc_level, nesting_level = False, False, 0, 0
         for i, line in enumerate(lines):
             state = line_states[i]
-            # g.trace(f"{i:3}", in_proc, proc_level, nesting_level, repr(line))  ###
             if line.isspace() or state.context:
                 state.level = proc_level
                 continue
@@ -53,27 +47,21 @@ class Pascal_Importer(Importer):
                 continue
             m = self.function_pat.match(line)
             if m:
-                #  Start of a function or procedure.
-                ### g.trace('START', m.group(1), m.group(2))
                 in_proc, nesting_level = True, 0
                 proc_level += 1
             elif self.begin_pat.match(line):
-                ### g.trace('BEGIN')
                 if in_proc:
                     nesting_level += 1
                 else:
                     nesting_level = 0
                     proc_level += 1
             elif self.end_pat.match(line):
-                ### g.trace('END')
                 if in_proc:
                     nesting_level -= 1
                     if nesting_level == 0:
-                        ### g.trace('END proc')
                         proc_level -= 1
                         in_proc = False
-                else:
-                    # g.trace('----- Unexpected end -----')
+                else:  # Should not happen.
                     nesting_level = 0
             state.level = proc_level
     #@-others
