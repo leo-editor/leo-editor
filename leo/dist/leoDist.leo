@@ -1451,9 +1451,10 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-*Never* merge devel into 6.6.3!
+*Never* merge devel into 6.6.4!
 
-It's OK to merge the 6.6.3 into devel after the release.
+- It's OK to merge bug fix branches into both devel and 6.6.4
+- It's OK to merge the 6.6.4 into devel after the release.
 
 @language rest
 </t>
@@ -1522,7 +1523,7 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.6.3
+git merge 6.6.4
 update version in leoVersion.py.
 git tag -a v6.6.4-devel -m "Added v6.6.4-devel tag"
 git push --follow-tags
@@ -1983,7 +1984,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.3 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.4 branch:
 
 - git merge master
 - Fix any conflicts and push.
