@@ -161,6 +161,12 @@
 <v t="ekr.20220811130331.1"><vh>@data:@auto-json c:\test\at-auto-json-test.py</vh>
 <v t="ekr.20220811162331.1"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20220829104501.1"><vh>@data:@auto c:\test\GSTATOBJ.PAS</vh>
+<v t="ekr.20220830153132.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20220830152850.1"><vh>@data:@auto c:\test\extract.pas</vh>
+<v t="ekr.20220830152850.2"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
@@ -270,7 +276,6 @@
 <v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
 <v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
 <v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
-<v t="ekr.20150514040236.1"><vh>@file ../commands/searchCommands.py</vh></v>
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
 <v t="ekr.20210907103011.1"><vh>@file ../commands/testCommands.py</vh></v>
 </v>
@@ -615,7 +620,7 @@
 <v t="tbrown.20130420091241.44181"><vh>@file ../plugins/screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file ../plugins/todo.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file ../plugins/todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
@@ -1777,7 +1782,9 @@ c.k.simulateCommand('pylint')
 g.cls()
 import re
 from typing import Any, List, Optional
-Cmdr = Pos = VNode = Any
+Cmdr = Any
+Position = Any
+VNode = Any
     
 @others  # g.findUNL should be a cloned child.
 
@@ -2026,6 +2033,94 @@ unl: spam--&gt;ham
 gnx: ekr.20220811130530.1
 unl: eggs
 </t>
+<t tx="ekr.20220829104501.1">gnx: ekr.20220829102658.1
+</t>
+<t tx="ekr.20220830153132.1">gnx: ekr.20220830152857.1
+unl: procedure statObj.scale
+gnx: ekr.20220830152857.2
+unl: procedure statObj.multiplyGraph
+gnx: ekr.20220830152857.3
+unl: function statObj.divideGraph
+gnx: ekr.20220830152857.4
+unl: procedure statObj.addGraph
+gnx: ekr.20220830152857.5
+unl: procedure statObj.subtract
+gnx: ekr.20220830152857.6
+unl: procedure statObj.addConstant
+gnx: ekr.20220830152857.7
+unl: procedure statObj.square
+gnx: ekr.20220830152857.8
+unl: { ------------------------------------------------------------------------
+gnx: ekr.20220830152857.9
+unl: procedure statObj.convolve
+gnx: ekr.20220830152857.10
+unl: (*{ ------------------------------------------------------------------------
+gnx: ekr.20220830152857.11
+unl: procedure statObj.convolve
+gnx: ekr.20220830152857.12
+unl: procedure statObj.shiftRight
+gnx: ekr.20220830152857.13
+unl: procedure statObj.shiftLeft
+gnx: ekr.20220830152857.14
+unl: { ----------------------------------------------------------------------
+gnx: ekr.20220830152857.15
+unl: procedure statObj.sortOnX
+gnx: ekr.20220830152857.16
+unl: procedure statObj.sortOnY
+gnx: ekr.20220830152857.17
+unl: constructor statObj.init;
+gnx: ekr.20220830152857.18
+unl: destructor statObj.byebye;
+gnx: ekr.20220830152857.19
+unl: procedure statObj.clear
+gnx: ekr.20220830152857.20
+unl: { -----------------------------------------------------------------------
+gnx: ekr.20220830152857.21
+unl: function statObj.getXStep
+gnx: ekr.20220830152857.22
+unl: procedure statObj.pad
+gnx: ekr.20220830152857.23
+unl: procedure statObj.copyData
+gnx: ekr.20220830152857.24
+unl: { Return true if ASCII, false if file contains bytes }
+gnx: ekr.20220830152857.25
+unl: function testDataType
+gnx: ekr.20220830152857.26
+unl: function statObj.sendXData
+gnx: ekr.20220830152857.27
+unl: function statObj.sendYData
+gnx: ekr.20220830152857.28
+unl: procedure statObj.getXData
+gnx: ekr.20220830152857.29
+unl: procedure statObj.getYData
+gnx: ekr.20220830152857.30
+unl: { -----------------------------------------------------------------------
+gnx: ekr.20220830152857.31
+unl: procedure statObj.importData
+gnx: ekr.20220830152857.32
+unl: { -----------------------------------------------------------------------
+gnx: ekr.20220830152857.33
+unl: procedure statObj.exportData
+gnx: ekr.20220830152857.34
+unl: procedure statObj.getYMax
+gnx: ekr.20220830152857.35
+unl: procedure statObj.getYMin
+gnx: ekr.20220830152857.36
+unl: procedure statObj.getXMax
+gnx: ekr.20220830152857.37
+unl: procedure statObj.getXMin
+gnx: ekr.20220830152857.38
+unl: { ------------------------------------------------------------------------
+gnx: ekr.20220830152857.39
+unl: procedure statObj.Integrate
+gnx: ekr.20220830152857.40
+unl: { ------------------------------------------------------------------------
+gnx: ekr.20220830152857.41
+unl: procedure statObj.differentiate
+</t>
+<t tx="ekr.20220830152850.1">gnx: ekr.20220830152749.1
+</t>
+<t tx="ekr.20220830152850.2"></t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
