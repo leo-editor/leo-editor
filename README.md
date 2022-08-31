@@ -1,15 +1,16 @@
-Leo http://leoeditor.com 6.6.3 is now available on
+Leo http://leoeditor.com 6.6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
 Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.3**
+**The highlights of Leo 6.6.4**
 
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Improve how Leo handles url's.
-- Simplify the GlobalConfigManager class.
-- The usual assortment of tweaks and bug fixes.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.
 
 **Links**
 

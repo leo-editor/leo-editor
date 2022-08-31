@@ -225,7 +225,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6.3
+Version: 6.6.4
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -244,18 +244,19 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.3 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.4 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
 Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.3**
+**The highlights of Leo 6.6.4**
 
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Improve how Leo handles url's.
-- Simplify the GlobalConfigManager class.
-- The usual assortment of tweaks and bug fixes.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.
 
 **Links**
 
@@ -272,7 +273,8 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - [More links](http://leoeditor.com/leoLinks.html)
 
 @nowrap
-@language md</t>
+@language md
+</t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
 4.4.5       setup: 547   zip: 379  2007-12-11
