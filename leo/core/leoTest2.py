@@ -11,15 +11,30 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
+#@+<< leoTest2 imports >>
+#@+node:ekr.20220901083840.1: ** << leoTest2 imports >>
 import time
 import unittest
 import warnings
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
+#@-<< leoTest2 imports >>
+#@+<< leoTest2 annotations >>
+#@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+#@-<< leoTest2 annotations >>
 
 #@+others
 #@+node:ekr.20201130195111.1: ** function.create_app
-def create_app(gui_name='null'):
+def create_app(gui_name: str='null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
 
@@ -93,10 +108,10 @@ class LeoUnitTest(unittest.TestCase):
     #@+others
     #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
-    def setUp(self):
+    def setUp(self) -> None:
         """
         Create a commander using a **null** gui, regardless of g.app.gui.
         Create the nodes in the commander.
@@ -117,10 +132,10 @@ class LeoUnitTest(unittest.TestCase):
         # Select the 'root' node.
         c.selectPosition(self.root_p)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         self.c = None
     #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
-    def create_test_outline(self):
+    def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
         #
