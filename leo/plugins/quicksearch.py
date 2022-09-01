@@ -81,7 +81,7 @@ This plugin defines the following commands that can be bound to keys:
 import fnmatch
 import itertools
 import re
-from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union, Optional
+from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union
 from typing import TYPE_CHECKING
 from typing import Match  # Deprecated, but we'll deal with this later.
 from leo.core import leoGlobals as g
