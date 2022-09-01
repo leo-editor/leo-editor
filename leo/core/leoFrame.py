@@ -1227,7 +1227,7 @@ class LeoLog:
         if w:
             w.delete(0, 'end')
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
-    def createTab(self, tabName: str, createText=True, widget: Widget=None, wrap: str='none') -> Widget:
+    def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
         # Important: widget *is* used in subclasses. Do not change the signature above.
         if createText:
             w = self.createTextWidget(self.tabFrame)
