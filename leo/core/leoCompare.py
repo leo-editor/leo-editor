@@ -3,10 +3,25 @@
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
 #@@first
 """Leo's base compare class."""
+#@+<< leoCompare imports >>
+#@+node:ekr.20220901161941.1: ** << leoCompare imports >>
 import difflib
 import filecmp
 import os
+from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
+#@-<< leoCompare imports >>
+#@+<< leoCompare annotations >>
+#@+node:ekr.20220901162009.1: ** << leoCompare annotations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position, VNode
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+#@-<< leoCompare annotations >>
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare:
@@ -15,25 +30,25 @@ class BaseLeoCompare:
     #@+node:ekr.20031218072017.3634: *3* compare.__init__
     # All these ivars are known to the LeoComparePanel class.
 
-    def __init__(self,
-        # Keyword arguments are much convenient and more clear for scripts.
-        commands=None,
-        appendOutput=False,
-        ignoreBlankLines=True,
-        ignoreFirstLine1=False,
-        ignoreFirstLine2=False,
-        ignoreInteriorWhitespace=False,
-        ignoreLeadingWhitespace=True,
-        ignoreSentinelLines=False,
-        limitCount=0,  # Zero means don't stop.
-        limitToExtension=".py",  # For directory compares.
-        makeWhitespaceVisible=True,
-        printBothMatches=False,
-        printMatches=False,
-        printMismatches=True,
-        printTrailingMismatches=False,
-        outputFileName=None
-    ):
+    def __init__(
+        self,  # Keyword arguments are much convenient and more clear for scripts.
+        commands: Any=None,
+        appendOutput: bool=False,
+        ignoreBlankLines: bool=True,
+        ignoreFirstLine1: bool=False,
+        ignoreFirstLine2: bool=False,
+        ignoreInteriorWhitespace: bool=False,
+        ignoreLeadingWhitespace: bool=True,
+        ignoreSentinelLines: bool=False,
+        limitCount: int=0,  # Zero means don't stop.
+        limitToExtension: str=".py",  # For directory compares.
+        makeWhitespaceVisible: bool=True,
+        printBothMatches: bool=False,
+        printMatches: bool=False,
+        printMismatches: bool=True,
+        printTrailingMismatches: bool=False,
+        outputFileName: Any=None,
+    ) -> None:
         # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
         self.appendOutput = appendOutput
@@ -55,26 +70,29 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile = None
+        self.outputFile: Any = None
     #@+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
 
-    def compare_directories(self, path1, path2):
+    def compare_directories(self, path1: str, path2: str) -> None:
         # Ignore everything except the directory name.
         dir1 = g.os_path_dirname(path1)
         dir2 = g.os_path_dirname(path2)
         dir1 = g.os_path_normpath(dir1)
         dir2 = g.os_path_normpath(dir2)
         if dir1 == dir2:
-            return self.show("Please pick distinct directories.")
+            self.show("Please pick distinct directories.")
+            return
         try:
             list1 = os.listdir(dir1)
         except Exception:
-            return self.show("invalid directory:" + dir1)
+            self.show("invalid directory:" + dir1)
+            return
         try:
             list2 = os.listdir(dir2)
         except Exception:
-            return self.show("invalid directory:" + dir2)
+            self.show("invalid directory:" + dir2)
+            return
         if self.outputFileName:
             self.openOutputFile()
         ok = self.outputFileName is None or self.outputFile
@@ -135,13 +153,13 @@ class BaseLeoCompare:
             self.outputFile = None
         return None  # To keep pychecker happy.
     #@+node:ekr.20031218072017.3636: *3* compare_files (entry)
-    def compare_files(self, name1, name2):
+    def compare_files(self, name1: str, name2: str) -> None:
         if name1 == name2:
             self.show("File names are identical.\nPlease pick distinct files.")
             return
         self.compare_two_files(name1, name2)
     #@+node:ekr.20180211123531.1: *3* compare_list_of_files (entry for scripts)
-    def compare_list_of_files(self, aList1):
+    def compare_list_of_files(self, aList1: List[str]) -> None:
 
         aList = list(set(aList1))
         while len(aList) > 1:
@@ -150,7 +168,7 @@ class BaseLeoCompare:
                 g.trace('COMPARE', path1, path2)
                 self.compare_two_files(path1, path2)
     #@+node:ekr.20180211123741.1: *3* compare_two_files
-    def compare_two_files(self, name1, name2):
+    def compare_two_files(self, name1: str, name2: str) -> None:
         """A helper function."""
         f1 = f2 = None
         try:
@@ -178,7 +196,7 @@ class BaseLeoCompare:
             self.show("exception closing files")
             g.es_exception()
     #@+node:ekr.20031218072017.3637: *3* compare_lines
-    def compare_lines(self, s1, s2):
+    def compare_lines(self, s1: str, s2: str) -> bool:
         if self.ignoreLeadingWhitespace:
             s1 = s1.lstrip()
             s2 = s2.lstrip()
@@ -195,7 +213,7 @@ class BaseLeoCompare:
             s2 = ws2 + tail2
         return s1 == s2
     #@+node:ekr.20031218072017.3638: *3* compare_open_files
-    def compare_open_files(self, f1, f2, name1, name2):
+    def compare_open_files(self, f1: Any, f2: Any, name1: str, name2: str) -> None:
         # self.show("compare_open_files")
         lines1 = 0
         lines2 = 0
@@ -309,7 +327,7 @@ class BaseLeoCompare:
         self.show("mismatches:" + str(mismatches))
         #@-<< handle reporting after at least one eof is seen >>
     #@+node:ekr.20031218072017.3644: *3* compare.filecmp
-    def filecmp(self, f1, f2):
+    def filecmp(self, f1: Any, f2: Any) -> bool:
         val = filecmp.cmp(f1, f2)
         if val:
             self.show("equal")
@@ -318,7 +336,7 @@ class BaseLeoCompare:
         return val
     #@+node:ekr.20031218072017.3645: *3* compare.utils...
     #@+node:ekr.20031218072017.3646: *4* compare.doOpen
-    def doOpen(self, name):
+    def doOpen(self, name: str) -> Optional[Any]:
         try:
             f = open(name, 'r')
             return f
@@ -326,7 +344,7 @@ class BaseLeoCompare:
             self.show("can not open:" + '"' + name + '"')
             return None
     #@+node:ekr.20031218072017.3647: *4* compare.dump
-    def dump(self, tag, s):
+    def dump(self, tag: str, s: str) -> None:
         compare = self
         out = tag
         for ch in s[:-1]:  # don't print the newline
@@ -345,7 +363,7 @@ class BaseLeoCompare:
                 out += ch
         self.show(out)
     #@+node:ekr.20031218072017.3648: *4* compare.dumpToEndOfFile
-    def dumpToEndOfFile(self, tag, f, s, line, printTrailing):
+    def dumpToEndOfFile(self, tag: str, f: Any, s: str, line: int, printTrailing: bool) -> int:
         trailingLines = 0
         while 1:
             if not s:
@@ -367,7 +385,7 @@ class BaseLeoCompare:
     # sentinel line.
     #@@c
 
-    def isLeoHeader(self, s):
+    def isLeoHeader(self, s: str) -> Optional[str]:
         tag = "@+leo"
         j = s.find(tag)
         if j > 0:
@@ -376,48 +394,49 @@ class BaseLeoCompare:
                 return s[i:j]
         return None
 
-    def isSentinel(self, s, sentinelComment):
+    def isSentinel(self, s: str, sentinelComment: str) -> bool:
         i = g.skip_ws(s, 0)
         return g.match(s, i, sentinelComment)
     #@+node:ekr.20031218072017.1144: *4* compare.openOutputFile
-    def openOutputFile(self):
+    def openOutputFile(self) -> bool:  # Bug fix: return a bool.
         if self.outputFileName is None:
-            return
+            return False
         theDir, name = g.os_path_split(self.outputFileName)
         if not theDir:
             self.show("empty output directory")
-            return
+            return False
         if not name:
             self.show("empty output file name")
-            return
+            return False
         if not g.os_path_exists(theDir):
             self.show("output directory not found: " + theDir)
-        else:
-            try:
-                if self.appendOutput:
-                    self.show("appending to " + self.outputFileName)
-                    self.outputFile = open(self.outputFileName, "ab")
-                else:
-                    self.show("writing to " + self.outputFileName)
-                    self.outputFile = open(self.outputFileName, "wb")
-            except Exception:
-                self.outputFile = None
-                self.show("exception opening output file")
-                g.es_exception()
+            return False
+        try:
+            if self.appendOutput:
+                self.show("appending to " + self.outputFileName)
+                self.outputFile = open(self.outputFileName, "ab")  # type:ignore
+            else:
+                self.show("writing to " + self.outputFileName)
+                self.outputFile = open(self.outputFileName, "wb")  # type:ignore
+            return True
+        except Exception:
+            self.outputFile = None
+            self.show("exception opening output file")
+            g.es_exception()
+            return False
     #@+node:ekr.20031218072017.3650: *4* compare.show
-    def show(self, s):
+    def show(self, s: str) -> None:
         # g.pr(s)
         if self.outputFile:
             # self.outputFile is opened in 'wb' mode.
-            s = g.toEncodedString(s + '\n')
-            self.outputFile.write(s)
+            self.outputFile.write(g.toEncodedString(s + '\n'))
         elif self.c:
             g.es(s)
         else:
             g.pr(s)
             g.pr('')
     #@+node:ekr.20031218072017.3651: *4* compare.showIvars
-    def showIvars(self):
+    def showIvars(self) -> None:
         self.show("fileName1:" + str(self.fileName1))
         self.show("fileName2:" + str(self.fileName2))
         self.show("outputFileName:" + str(self.outputFileName))
@@ -450,16 +469,16 @@ class CompareLeoOutlines:
     Similar to GitDiffController, adapted for use by scripts.
     """
 
-    def __init__(self, c):
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
-        self.file_node = None
-        self.root = None
-        self.path1 = None
-        self.path2 = None
+        self.file_node: Position = None
+        self.root: Position = None
+        self.path1: str = None
+        self.path2: str = None
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList, visible=True):
+    def diff_list_of_files(self, aList: List[str], visible: bool=True) -> None:
         """The main entry point for scripts."""
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
@@ -482,7 +501,7 @@ class CompareLeoOutlines:
         u.afterChangeGroup(c.p, undoType=undoType)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
-    def diff_two_files(self, fn1, fn2):
+    def diff_two_files(self, fn1: str, fn2: str) -> None:
         """Create an outline describing the git diffs for fn."""
         self.path1, self.path2 = fn1, fn2
         s1 = self.get_file(fn1)
@@ -502,7 +521,7 @@ class CompareLeoOutlines:
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
-    def compute_dicts(self, c1, c2):
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[Dict, Dict, Dict]:
         """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
@@ -519,7 +538,7 @@ class CompareLeoOutlines:
                     changed[key] = (v1, v2)
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
-    def create_compare_node(self, c1, c2, d, kind):
+    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: Dict[str, Tuple[VNode, VNode]], kind: str) -> None:
         """Create nodes describing the changes."""
         if not d:
             return
@@ -558,14 +577,14 @@ class CompareLeoOutlines:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20180211170333.7: *4* loc.create_file_node
-    def create_file_node(self, diff_list, fn1, fn2):
+    def create_file_node(self, diff_list: List, fn1: str, fn2: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = f"{g.shortFileName(fn1).strip()}, {g.shortFileName(fn2).strip()}"
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root
-    def create_root(self, aList):
+    def create_root(self, aList: List[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
         c, u = self.c, self.c.undoer
         undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
@@ -579,7 +598,7 @@ class CompareLeoOutlines:
         u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20180211170333.10: *4* loc.finish
-    def finish(self):
+    def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
         if hasattr(g.app.gui, 'frameFactory'):
@@ -590,13 +609,13 @@ class CompareLeoOutlines:
         c.bodyWantsFocus()
         c.redraw()
     #@+node:ekr.20180211170333.11: *4* loc.get_file
-    def get_file(self, path):
+    def get_file(self, path: str) -> str:
         """Return the contents of the file whose path is given."""
         with open(path, 'rb') as f:
             s = f.read()
         return g.toUnicode(s).replace('\r', '')
     #@+node:ekr.20180211170333.13: *4* loc.make_diff_outlines
-    def make_diff_outlines(self, c1, c2):
+    def make_diff_outlines(self, c1: Cmdr, c2: Cmdr) -> None:
         """Create an outline-oriented diff from the outlines c1 and c2."""
         added, deleted, changed = self.compute_dicts(c1, c2)
         table = (
@@ -606,7 +625,7 @@ class CompareLeoOutlines:
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20180211170333.14: *4* loc.open_outline
-    def open_outline(self, fn):
+    def open_outline(self, fn: str) -> Cmdr:
         """
         Find the commander for fn, creating a new outline tab if necessary.
 
@@ -621,7 +640,7 @@ class CompareLeoOutlines:
 #@+node:ekr.20180214041049.1: ** Top-level commands and helpers
 #@+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
-def diff_and_open_leo_files(event):
+def diff_and_open_leo_files(event: Event) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -634,7 +653,7 @@ def diff_and_open_leo_files(event):
     )
 #@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
-def diff_leo_files(event):
+def diff_leo_files(event: Event) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -646,7 +665,7 @@ def diff_leo_files(event):
     )
 #@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
-def diffMarkedNodes(event):
+def diffMarkedNodes(event: Event) -> None:
     """
     When two or more nodes are marked, this command creates a
     "diff marked node" as the last top-level node. The body of
@@ -706,7 +725,7 @@ def diffMarkedNodes(event):
     else:
         g.es_print('Please mark at least 2 nodes')
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
-def diff_leo_files_helper(event, title, visible):
+def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
     """Prompt for a list of .leo files to open."""
     c = event and event.get('c')
     if not c:
