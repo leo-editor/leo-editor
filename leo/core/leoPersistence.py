@@ -121,7 +121,7 @@ class PersistenceDataController:
             # g.es_print(f"updated: @data:{root.h} ")
         return at_data  # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
-    def delete_at_data_children(self, at_data: Any, root: Position) -> None:
+    def delete_at_data_children(self, at_data: Position, root: Position) -> None:
         """Delete all children of the @data node"""
         if at_data.hasChildren():
             at_data.v._deleteAllChildren()
@@ -144,7 +144,7 @@ class PersistenceDataController:
         if at_uas:
             self.create_uas(at_uas, root)
     #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helpers
-    def restore_gnxs(self, at_gnxs: Any, root: Position) -> None:
+    def restore_gnxs(self, at_gnxs: Position, root: Position) -> None:
         """
         Recreate gnx's and clone links from an @gnxs node.
         @gnxs nodes contain pairs of lines:
@@ -202,7 +202,7 @@ class PersistenceDataController:
             p1.v.fileIndex = gnx
         g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
-    def create_uas(self, at_uas: Any, root: Position) -> None:
+    def create_uas(self, at_uas: Position, root: Position) -> None:
         """Recreate uA's from the @ua nodes in the @uas tree."""
         # Create an *inner* gnx dict.
         # Keys are gnx's, values are positions *within* root's tree.
@@ -357,7 +357,7 @@ class PersistenceDataController:
             return p
         return None
     #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
-    def find_exact_match(self, root: Position, unl_list: Any) -> Position:
+    def find_exact_match(self, root: Position, unl_list: List[str]) -> Position:
         """
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.
@@ -373,7 +373,7 @@ class PersistenceDataController:
                 return None
         return parent
     #@+node:ekr.20140711111623.17862: *5* pd.find_representative_node
-    def find_representative_node(self, root: Position, target: Any) -> Optional[Position]:
+    def find_representative_node(self, root: Position, target: Position) -> Optional[Position]:
         """
         root is a foreign node. target is a gnxs node within root's tree.
 
@@ -499,7 +499,7 @@ class PersistenceDataController:
             g.es_exception()
             return ''
     #@+node:ekr.20140713135856.17744: *5* pd.unpickle
-    def unpickle(self, s: str) -> Any:
+    def unpickle(self, s: str) -> Any:  # An actual uA.
         """Unhexlify and unpickle string s into p."""
         try:
             # Throws TypeError if s is not a hex string.
