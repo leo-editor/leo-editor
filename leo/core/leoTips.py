@@ -3,10 +3,25 @@
 #@+node:ekr.20180121041003.1: * @file leoTips.py
 #@@first
 """Save and show tips to the user."""
+#@+<< leoTips imports >>
+#@+node:ekr.20220901094023.1: ** << leoTips imports >>
 import random
 import textwrap
+from typing import Any, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
+#@-<< leoTips imports >>
 assert g
+#@+<< leoTips annotatsions >>
+#@+node:ekr.20220901094043.1: ** << leoTips annotatsions >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+#@-<< leoTips annotatsions >>
 
 # Define constant strings for use in f-strings.
 at_s = "@"
@@ -24,7 +39,7 @@ class TipManager:
     key = 'shown-tips'
     #@+others
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
-    def get_next_tip(self):
+    def get_next_tip(self) -> "UserTip":
         global tips
         db = g.app.db
         # Compute list of unseen tips.
@@ -48,20 +63,20 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n=0, tags=None, text='', title=''):
+    def __init__(self, n: int=0, tags: List[str]=None, text: str='', title: str='') -> None:
         self.n = n  # Not used.
-        self.tags = tags or []  # Not used.
+        self.tags: List[str] = tags or []  # Not used.
         self.title = title.strip()
         self.text = text.strip()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.title}\n\n{self.text}\n"
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
 #@@beautify
 
-def make_tips(c):
+def make_tips(c: Cmdr) -> None:
     """
     A script to make entries in the global tips array.
 
@@ -83,7 +98,7 @@ def make_tips(c):
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
 
-    def get_tips(data):
+    def get_tips(data: Any) -> List[UserTip]:
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
         :return: list of Tips
@@ -128,7 +143,7 @@ UserTip(
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
 #@@beautify
 
-def make_tip_nodes(c):
+def make_tip_nodes(c: Cmdr) -> None:
     """Create a list of all tips as the last top-level node."""
     global tips
     root = c.lastTopLevel().insertAfter()
@@ -147,7 +162,7 @@ def make_tip_nodes(c):
 #@-others
 
 # The global tips array.
-tips = [
+tips: List[UserTip] = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
 #@@wrap

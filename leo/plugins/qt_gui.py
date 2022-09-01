@@ -4,8 +4,8 @@
 #@@first
 """This file contains the gui wrapper for Qt: g.app.gui."""
 # pylint: disable=import-error
-#@+<< imports qt_gui.py >>
-#@+node:ekr.20140918102920.17891: ** << imports qt_gui.py >>
+#@+<< qt_gui imports  >>
+#@+node:ekr.20140918102920.17891: ** << qt_gui imports >>
 import datetime
 import functools
 import re
@@ -28,9 +28,10 @@ from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
 assert qt_commands
-#@-<< imports qt_gui.py >>
-#@+<< type aliases qt_gui.py >>
-#@+node:ekr.20220415183421.1: ** << type aliases qt_gui.py >>
+from leo.core.leoTips import UserTip
+#@-<< qt_gui imports  >>
+#@+<< qt_gui annotations >>
+#@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
@@ -42,7 +43,7 @@ else:
 Widget = Any
 Wrapper = Any
 
-#@-<< type aliases qt_gui.py >>
+#@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init() -> bool:
@@ -1322,7 +1323,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20220123052350.1: *4* << define DialogWithCheckBox >>
     class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore
 
-        def __init__(self, controller: Any, checked: bool, tip: str) -> None:
+        def __init__(self, controller: Any, checked: bool, tip: UserTip) -> None:
             super().__init__()
             c = g.app.log.c
             self.leo_checked = True
