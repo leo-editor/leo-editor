@@ -25,7 +25,6 @@ import socket
 import textwrap
 import time
 from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
-from typing import Match  # Deprecated, but we'll deal with this later.
 
 # Third-party.
 try:
@@ -53,14 +52,14 @@ from leo.core.leoExternalFiles import ExternalFilesController
 #@+node:ekr.20220820155747.1: ** << leoserver annotations >>
 Event = Any  # More than one kind of Event!
 Loop = Any
+Match = re.Match
+Match_Iter = Iterator[re.Match[str]]
 Package = Dict[str, Any]
 Param = Dict[str, Any]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 Socket = Any
 
-# typing.Match is deprecated, but it's tricky to do without it at present.
-Match_Iter = Iterator[Match[str]]
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>

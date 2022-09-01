@@ -83,7 +83,6 @@ import itertools
 import re
 from typing import Any, Dict, Callable, Iterable, Iterator, List, Tuple, Union
 from typing import TYPE_CHECKING
-from typing import Match  # Deprecated, but we'll deal with this later.
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core.leoQt import KeyboardModifier
@@ -104,7 +103,8 @@ else:
     Event = Any
     Position = Any
 
-Match_Iter = Iterator[Match[str]]
+Match = re.Match
+Match_Iter = Iterator[re.Match[str]]
 Match_List = List[Tuple[Position, Match_Iter]]
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 Widget = Any
