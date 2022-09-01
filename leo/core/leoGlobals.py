@@ -65,7 +65,7 @@ else:
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
-minimum_python_version = '3.6'  # #1215.
+minimum_python_version = '3.9'
 isPython3 = sys.version_info >= (3, 0, 0)
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
