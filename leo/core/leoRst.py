@@ -383,7 +383,7 @@ class RstCommands:
             self.n_intermediate += 1
         self.report(fn)
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, s: str, ext: Any) -> Optional[str]:
+    def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
         """Send s to docutils using the writer implied by ext and return the result."""
         if not docutils:
             g.error('writeToDocutils: docutils not present')
