@@ -98,7 +98,7 @@ class BaseLeoCompare:
             self.openOutputFile()
         ok = self.outputFileName is None or self.outputFile
         if not ok:
-            return None
+            return
         # Create files and files2, the lists of files to be compared.
         files1 = []
         files2 = []
@@ -152,7 +152,6 @@ class BaseLeoCompare:
         if self.outputFile:
             self.outputFile.close()
             self.outputFile = None
-        return None  # To keep pychecker happy.
     #@+node:ekr.20031218072017.3636: *3* compare_files (entry)
     def compare_files(self, name1: str, name2: str) -> None:
         if name1 == name2:
