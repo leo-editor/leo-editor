@@ -4,7 +4,6 @@
 #@@first
 """The new, tokenize based, @auto importer for Python."""
 import re
-import sys
 import tokenize
 import token
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
@@ -209,10 +208,6 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
     add_class_to_headlines = g.unitTesting or c.config.getBool('put-class-in-imported-headlines')
     lines: List[str] = s.splitlines(True)
     rawtokens: List
-
-    if sys.version_info < (3, 7, 0):  # pragma: no cover
-        g.es_print('The python importer requires python 3.7 or above')
-        return
 
     #@+others
     #@+node:vitalije.20211208092910.1: *3* function: getdefn & helper
