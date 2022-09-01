@@ -21,6 +21,7 @@ else:
     Cmdr = Any
     Event = Any
     Position = Any
+    VNode = Any
 #@-<< leoCompare annotations >>
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
