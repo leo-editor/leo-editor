@@ -31345,7 +31345,7 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 
 **Links**
 
-- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- 6.6.4 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.4+
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
