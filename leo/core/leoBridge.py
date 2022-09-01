@@ -47,21 +47,38 @@
 #   Host programs can use these commanders as described in Leo's scripting
 #   chapter.
 #@-<< about the leoBridge module >>
-import os
-import traceback
+#@+<< leoBridge imports >>
+#@+node:ekr.20220901084154.1: ** << leoBridge imports >>
 # This module must import *no* Leo modules at the outer level!
+import os
+import sys
+import traceback
+from typing import Any, Optional, TYPE_CHECKING
+#@-<< leoBridge imports >>
+#@+<< leoBridge annotatations >>
+#@+node:ekr.20220901084238.1: ** << leoBridge annotatations >>
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
+else:
+    Cmdr = Any
+    Event = Any
+    Position = Any
+#@-<< leoBridge annotatations >>
+
 gBridgeController = None  # The singleton bridge controller.
 #@+others
-#@+node:ekr.20070227092442: ** controller
+#@+node:ekr.20070227092442: ** function: controller
 def controller(
-    gui='nullGui',
-    loadPlugins=True,
-    readSettings=True,
-    silent=False,
-    tracePlugins=False,
-    useCaches=True,
-    verbose=False
-):
+    gui: str='nullGui',
+    loadPlugins: bool=True,
+    readSettings: bool=True,
+    silent: bool=False,
+    tracePlugins: bool=False,
+    useCaches: bool=True,
+    verbose: bool=False,
+) -> Any:
     """Create an singleton instance of a bridge controller."""
     global gBridgeController
     if not gBridgeController:
@@ -79,13 +96,19 @@ class BridgeController:
     """Creates a way for host programs to access Leo."""
     #@+others
     #@+node:ekr.20070227092442.3: *3* bridge.ctor
-    def __init__(self,
-        guiName, loadPlugins, readSettings, silent, tracePlugins, useCaches, verbose,
-        vs_code_flag=False,  # #2098.
-    ):
+    def __init__(
+        self,
+        guiName: str,
+        loadPlugins: bool,
+        readSettings: bool,
+        silent: bool,
+        tracePlugins: bool,
+        useCaches: bool,
+        verbose: bool,
+        vs_code_flag: bool=False,  # #2098.
+    ) -> None:
         """Ctor for the BridgeController class."""
-        self.g = None
-        self.gui = None
+        self.g: Any = None
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
@@ -97,11 +120,11 @@ class BridgeController:
         self.mainLoop = False  # True only if a non-null-gui mainloop is active.
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* bridge.globals
-    def globals(self):
+    def globals(self) -> Any:
         """Return a fully initialized leoGlobals module."""
         return self.isOpen() and self.g
     #@+node:ekr.20070227093530: *3* bridge.initLeo & helpers
-    def initLeo(self):
+    def initLeo(self) -> None:
         """
         Init the Leo app to which this class gives access.
         This code is based on leo.run().
@@ -179,7 +202,7 @@ class BridgeController:
         # Kill all event handling if plugins not loaded.
         if not self.loadPlugins:
 
-            def dummyDoHook(tag, *args, **keys):
+            def dummyDoHook(tag: str, *args: Any, **keys: Any) -> None:
                 pass
 
             g.doHook = dummyDoHook
@@ -188,9 +211,8 @@ class BridgeController:
         g.app.initing = False
         g.doHook("start2", c=None, p=None, v=None, fileName=None)
     #@+node:ekr.20070302061713: *4* bridge.adjustSysPath
-    def adjustSysPath(self):
+    def adjustSysPath(self) -> None:
         """Adjust sys.path to enable imports as usual with Leo."""
-        import sys
         g = self.g
         leoDirs = (
             'config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test')  # 2008/7/30
@@ -204,7 +226,7 @@ class BridgeController:
             if path not in sys.path:
                 sys.path.append(path)
     #@+node:ekr.20070227095743: *4* bridge.createGui
-    def createGui(self):
+    def createGui(self) -> None:
         g = self.g
         if self.guiName == 'nullGui':
             g.app.gui = g.app.nullGui
@@ -215,8 +237,7 @@ class BridgeController:
         else:
             assert False, f"leoBridge.py: unsupported gui: {self.guiName}"
     #@+node:ekr.20070227093629.4: *4* bridge.isValidPython
-    def isValidPython(self):
-        import sys
+    def isValidPython(self) -> bool:
         if sys.platform == 'cli':
             return True
         message = """\
@@ -232,11 +253,11 @@ class BridgeController:
             leoGlobals.g = g
         except ImportError:
             print("isValidPython: can not import leoGlobals")
-            return 0
+            return False
         except Exception:
             print("isValidPython: unexpected exception importing leoGlobals")
             traceback.print_exc()
-            return 0
+            return False
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
             ok = g.CheckVersion(version, '2.2.1')
@@ -248,9 +269,9 @@ class BridgeController:
         except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
-            return 0
+            return False
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
-    def reportDirectories(self):
+    def reportDirectories(self) -> None:
         if not self.silentMode:
             g = self.g
             for kind, theDir in (
@@ -259,12 +280,12 @@ class BridgeController:
             ):
                 g.blue('', kind, 'directory', '', ':', theDir)
     #@+node:ekr.20070227093918: *3* bridge.isOpen
-    def isOpen(self):
+    def isOpen(self) -> bool:
         """Return True if the bridge is open."""
         g = self.g
         return bool(g and g.app and g.app.gui)
     #@+node:ekr.20070227092442.5: *3* bridge.openLeoFile & helpers
-    def openLeoFile(self, fileName):
+    def openLeoFile(self, fileName: str) -> Optional[Cmdr]:
         """Open a .leo file, or create a new Leo frame if no fileName is given."""
         g = self.g
         g.app.silentMode = self.silentMode
@@ -293,7 +314,7 @@ class BridgeController:
             log.enabled = True
         return c
     #@+node:ekr.20070227093629.5: *4* bridge.completeFileName
-    def completeFileName(self, fileName):
+    def completeFileName(self, fileName: str) -> str:
         g = self.g
         if not (fileName and fileName.strip()):
             return ''
@@ -302,10 +323,9 @@ class BridgeController:
         if not ext:
             fileName = fileName + ".leo"
         return fileName
-    #@+node:vitalije.20190923081235.1: *4* reopen_cachers
-    def reopen_cachers(self):
+    #@+node:vitalije.20190923081235.1: *4* bridge.reopen_cachers
+    def reopen_cachers(self) -> None:
         from leo.core import leoCache
-
         g = self.g
         try:
             g.app.db.get('dummy')
