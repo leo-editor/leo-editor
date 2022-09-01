@@ -1466,7 +1466,7 @@ First: Change 6.6.x to 6.6.5.
 - Make sure copyright dates are correct.
 - Update the version numbers in index.html, index.html and conf.py:
   Search for 6.6.
-- Update the release notes.
+- Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
 - Remove top-level clones.
 - Spell check entire file, starting at the "Web pages" node.
