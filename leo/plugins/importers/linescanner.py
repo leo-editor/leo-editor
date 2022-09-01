@@ -535,7 +535,8 @@ class Importer:
             line = lines[i]
             state = line_states[i]
             if (
-                not line.isspace()
+                i + 1 < len(lines)  # 2022/08/29
+                and not line.isspace()
                 and not state.context
                 and state.level < prev_level
             ):

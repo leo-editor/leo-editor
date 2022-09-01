@@ -3396,6 +3396,7 @@
 <v t="ekr.20220427143957.1"><vh>Leo 6.6.1: Improve links, mypy</vh></v>
 <v t="ekr.20220524044513.1"><vh>Leo 6.6.2: Maintenance release 2</vh></v>
 <v t="ekr.20220719105058.1"><vh>Leo 6.6.3: Maintenance release 3</vh></v>
+<v t="ekr.20220831114826.1"><vh>Leo 6.6.4: Support for leoInteg, leoJS</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26599,6 +26600,37 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - Improve how Leo handles url's.
 - Simplify the GlobalConfigManager class.
 - The usual assortment of tweaks and bug fixes.
+
+**Links**
+
+- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20220831114826.1">Leo http://leoeditor.com 6.6.4 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.6.4**
+
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.
 
 **Links**
 

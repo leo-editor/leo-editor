@@ -2867,14 +2867,7 @@ class TestPascal(BaseTestImporter):
             (0, '',  # check_outline ignores the first headline.
                     'unit Unit1;\n'
                     '\n'
-                    '@others\n'
-                    'end. // interface\n'
-                    '\n'
-                    '@language pascal\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, 'interface',
-                'interface\n'
+                    'interface\n'
                     '\n'
                     'uses\n'
                     'Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,\n'
@@ -2883,9 +2876,6 @@ class TestPascal(BaseTestImporter):
                     '\n'
                     'type\n'
                     'TForm1 = class(TForm)\n'
-                    '@others\n'
-            ),
-            (2, 'procedure FormCreate',
                     'procedure FormCreate(Sender: TObject);\n'
                     'private\n'
                     '{ Private declarations }\n'
@@ -2894,16 +2884,19 @@ class TestPascal(BaseTestImporter):
                     'end;\n'
                     '\n'
                     'var\n'
-            ),
-            (2, 'Form1: TForm1;',
                     'Form1: TForm1;\n'
                     '\n'
                     'implementation\n'
                     '\n'
                     '{$R *.dfm}\n'
                     '\n'
+                    '@others\n'
+                    'end. // interface\n'
+                    '\n'
+                    '@language pascal\n'
+                    '@tabwidth -4\n'
             ),
-            (2, 'procedure TForm1.FormCreate',
+            (1, 'procedure TForm1.FormCreate',
                     'procedure TForm1.FormCreate(Sender: TObject);\n'
                     'var\n'
                     'x,y: double;\n'
@@ -2915,6 +2908,168 @@ class TestPascal(BaseTestImporter):
                     '\n'
             ),
          ))
+    #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
+    def test_indentation(self):
+
+        # From GSTATOBJ.PAS
+        #@+<< define s >>
+        #@+node:ekr.20220830112013.1: *4* << define s >>
+        s = """
+        unit gstatobj;
+
+        {$F+,R-,S+}
+        {$I numdirect.inc}
+
+        interface
+        uses gf2obj1;
+
+        implementation
+
+        procedure statObj.scale(factor: float);
+        var i: integer;
+        begin
+           for i := 1 to num do
+              with data^[i] do y := factor * y;
+        end;
+
+        procedure statObj.multiplyGraph(var source: pGraphObj);
+        var i, max: integer;
+        begin
+        max := source^.getNum;
+        if max < num then num := max;
+        for i := 1 to max do
+            data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;
+        end;
+
+        function statObj.divideGraph(var numerator: pGraphObj): boolean;
+        var zerodata: boolean;
+        i, j, max: integer;
+        yy: float;
+        pg: pStatObj;
+        begin
+        if numerator = nil then begin
+            divideGraph := false;
+            exit;
+         end;
+        zerodata:= false;
+        new(pg,init);
+        if pg = nil then begin
+           divideGraph := false;
+           exit;
+         end;
+        max := numerator^.getNum;
+        if max < num then num := max;
+        pg^.importData(@self);
+        j := 0;
+        for i := 1 to max do begin
+            yy := pg^.sendYData(i);
+            if yy <> 0 then begin
+               inc(j);
+               getYData(j, numerator^.sendYData(i)/yy);
+               getXData(j, pg^.sendXData(i));
+             end else zeroData := true;
+         end;
+        setNum(j);
+        dispose(pg, byebye);
+        divideGraph := not zeroData;
+        end;
+
+        procedure statObj.addGraph(var source: pgraphObj);
+        var i, max: integer;
+        begin
+        max := source^.getNum;
+        if max < num then num := max;
+        for i := 1 to max do
+            data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
+        end;
+        """
+        #@-<< define s >>
+        p = self.run_test(s)
+        self.check_outline(p, (
+            (0, '',  # check_outline ignores the first headline.
+                'unit gstatobj;\n'
+                '\n'
+                '{$F+,R-,S+}\n'
+                '{$I numdirect.inc}\n'
+                '\n'
+                'interface\n'
+                'uses gf2obj1;\n'
+                '\n'
+                'implementation\n'
+                '\n'
+                '@others\n'
+                '@language pascal\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'procedure statObj.scale',
+                    'procedure statObj.scale(factor: float);\n'
+                    'var i: integer;\n'
+                    'begin\n'
+                    '   for i := 1 to num do\n'
+                    '      with data^[i] do y := factor * y;\n'
+                    'end;\n'
+                    '\n'
+            ),
+            (1, 'procedure statObj.multiplyGraph',
+
+                    'procedure statObj.multiplyGraph(var source: pGraphObj);\n'
+                    'var i, max: integer;\n'
+                    'begin\n'
+                    'max := source^.getNum;\n'
+                    'if max < num then num := max;\n'
+                    'for i := 1 to max do\n'
+                    '    data^[i].y := data^[i].y * pstatObj(source)^.data^[i].y;\n'
+                    'end;\n'
+                    '\n'
+            ),
+            (1, 'function statObj.divideGraph',
+
+                    'function statObj.divideGraph(var numerator: pGraphObj): boolean;\n'
+                    'var zerodata: boolean;\n'
+                    'i, j, max: integer;\n'
+                    'yy: float;\n'
+                    'pg: pStatObj;\n'
+                    'begin\n'
+                    'if numerator = nil then begin\n'
+                    '    divideGraph := false;\n'
+                    '    exit;\n'
+                    ' end;\n'
+                    'zerodata:= false;\n'
+                    'new(pg,init);\n'
+                    'if pg = nil then begin\n'
+                    '   divideGraph := false;\n'
+                    '   exit;\n'
+                    ' end;\n'
+                    'max := numerator^.getNum;\n'
+                    'if max < num then num := max;\n'
+                    'pg^.importData(@self);\n'
+                    'j := 0;\n'
+                    'for i := 1 to max do begin\n'
+                    '    yy := pg^.sendYData(i);\n'
+                    '    if yy <> 0 then begin\n'
+                    '       inc(j);\n'
+                    '       getYData(j, numerator^.sendYData(i)/yy);\n'
+                    '       getXData(j, pg^.sendXData(i));\n'
+                    '     end else zeroData := true;\n'
+                    ' end;\n'
+                    'setNum(j);\n'
+                    'dispose(pg, byebye);\n'
+                    'divideGraph := not zeroData;\n'
+                    'end;\n'
+                    '\n'
+            ),
+            (1, 'procedure statObj.addGraph',
+                    'procedure statObj.addGraph(var source: pgraphObj);\n'
+                    'var i, max: integer;\n'
+                    'begin\n'
+                    'max := source^.getNum;\n'
+                    'if max < num then num := max;\n'
+                    'for i := 1 to max do\n'
+                    '    data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;\n'
+                    'end;\n'
+                    '\n'
+            ),
+        ))
     #@-others
 #@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):
