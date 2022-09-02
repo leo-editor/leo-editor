@@ -32,6 +32,7 @@ else:
     Stroke = Any
     VNode = Any
     Wrapper = Any
+MatchGroups = Tuple  # Best we can do so far.
 Settings = g.Bunch
 UndoData = g.Bunch
 #@-<< leoFind annotations >>
@@ -2500,7 +2501,7 @@ class LeoFind:
         self.match_obj = None
         return -1, -1
     #@+node:ekr.20210110073117.48: *4* find.make_regex_subs
-    def make_regex_subs(self, change_text: str, groups: Any) -> str:
+    def make_regex_subs(self, change_text: str, groups: MatchGroups) -> str:
         """
         Substitute group[i-1] for \\i strings in change_text.
 
