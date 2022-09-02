@@ -12,7 +12,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -31,7 +31,7 @@ else:
     Event = Any
     Position = Any
     VNode = Any
-Index = Any  # For now, really Union[int, str], but that creates type-checking problems.
+Index = Union[int, str]  # A zero-based index or a Tk index.
 Widget = Any
 Wrapper = Any
 #@-<< leoFrame annotations >>
