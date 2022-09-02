@@ -353,11 +353,11 @@ class LeoBody:
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
-        return None
+        return None  # pylint: disable=useless-return
 
     def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
         self.oops()
-        return None
+        return None  # pylint: disable=useless-return
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
@@ -1593,13 +1593,13 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:  ###
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:
         self.oops()
-        return None, None
+        return None, None  # pylint: disable=useless-return
 
     def edit_widget(self, p: Position) -> Wrapper:
         self.oops()
-        return None
+        return None  # pylint: disable=useless-return
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -1770,7 +1770,7 @@ class LeoTreeTab:
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
     def createControl(self) -> Wrapper:
         self.oops()
-        return None
+        return None  # pylint: disable=useless-return
 
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, select: bool=True) -> None:
         self.oops()
