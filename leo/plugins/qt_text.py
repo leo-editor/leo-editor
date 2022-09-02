@@ -3,8 +3,8 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 """Text classes for the Qt version of Leo"""
-#@+<< imports qt_text.py >>
-#@+node:ekr.20220416085845.1: ** << imports qt_text.py >>
+#@+<< qt_text imports >>
+#@+node:ekr.20220416085845.1: ** << qt_text imports >>
 import time
 assert time
 from typing import Any, Callable, Dict, List, Tuple
@@ -15,9 +15,9 @@ from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier, Modifier
 from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
-#@-<< imports qt_text.py >>
-#@+<< type aliases qt_text.py >>
-#@+node:ekr.20220416085945.1: ** << type aliases qt_text.py >>
+#@-<< qt_text imports >>
+#@+<< qt_text annotations >>
+#@+node:ekr.20220416085945.1: ** << qt_text annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
@@ -29,7 +29,7 @@ Index = Any  # For now, really Union[int, str], but that creates type-checking p
 MousePressEvent = Any
 Widget = Any
 Wrapper = Any
-#@-<< type aliases qt_text.py >>
+#@-<< qt_text annotations >>
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
 QColor = QtGui.QColor
