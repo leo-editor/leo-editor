@@ -18,12 +18,15 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.plugins.qt_frame import FindTabManager
+    from leo.core.leoKeys import KeyHandlerClass as KeyHandler
     from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    FindTabManager = Any
     Position = Any
     Stroke = Any
     VNode = Any
@@ -99,8 +102,8 @@ class LeoFind:
         """Ctor for LeoFind class."""
         self.c = c
         self.expert_mode = False  # Set in finishCreate.
-        self.ftm: Any = None  # Created by dw.createFindTab.
-        self.k: Any = c.k
+        self.ftm: FindTabManager = None  # Created by dw.createFindTab.
+        self.k: KeyHandler = c.k
         self.re_obj: Any = None
         #
         # The work "widget".

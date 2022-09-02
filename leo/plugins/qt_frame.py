@@ -1256,7 +1256,7 @@ class FindTabManager:
             w = self.radio_button_entire_outline
             w.toggle()
     #@+node:ekr.20210923060904.1: *3* ftm.init_widgets_from_dict (new)
-    def set_widgets_from_dict(self, d: Dict[str, str]) -> None:
+    def set_widgets_from_dict(self, d: g.Bunch) -> None:
         """Set all settings from d."""
         # Similar to ftm.init_widgets, which has already been called.
         c = self.c
