@@ -12,7 +12,7 @@
 import re
 import string
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Generator, Sequence, List, Optional, Tuple, TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -44,6 +44,10 @@ else:
     Event = Any
     Position = Any
     VNode = Any
+Color = Any
+Font = Any
+Mode = g.Bunch
+RuleSet = Any
 Widget = Any
 #@-<< leoColorizer annotations >>
 #@+others
@@ -64,7 +68,7 @@ class BaseColorizer:
         """ctor for BaseColorizer class."""
         # Copy args...
         self.c = c
-        self.widget = widget
+        self.widget: Widget = widget
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
         # Configuration dicts...
@@ -72,18 +76,18 @@ class BaseColorizer:
         self.configUnderlineDict: Dict[str, bool] = {}  # Keys are tags, values are bools.
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
-        self.highlighter = g.NullObject()  # May be overridden in subclass...
+        self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
-        self.prev = None  # Used by setTag.
+        self.prev: Tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
         # Statistics....
         self.count = 0
         self.full_recolor_count = 0  # For unit tests.
         self.recolorCount = 0
         # For traces...
-        self.matcher_name = ''
-        self.rulesetName = ''
-        self.delegate_name = ''
+        self.matcher_name: str = ''
+        self.rulesetName: str = ''
+        self.delegate_name: str = ''
     #@+node:ekr.20190324045134.1: *4* BaseColorizer.init
     def init(self) -> None:
         """May be over-ridden in subclasses."""
@@ -491,7 +495,7 @@ class BaseColorizer:
         c, getBool = self.c, self.c.config.getBool
         #
         # Init all settings ivars.
-        self.color_tags_list = []
+        self.color_tags_list: List[str] = []
         self.showInvisibles      = getBool("show-invisibles-by-default")
         self.underline_undefined = getBool("underline-undefined-section-names")
         self.use_hyperlinks      = getBool("use-hyperlinks")
@@ -575,7 +579,7 @@ class BaseColorizer:
     def init_style_ivars(self) -> None:
         """Init Style data common to JEdit and Pygments colorizers."""
         # init() properly sets these for each language.
-        self.actualColorDict = {}  # Used only by setTag.
+        self.actualColorDict: Dict[str, Color] = {}  # Used only by setTag.
         self.hyperCount = 0
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -598,19 +602,19 @@ class BaseColorizer:
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
-        self.defaultRulesList = []
-        self.importedRulesets = {}
+        self.defaultRulesList: List[RuleSet] = []
+        self.importedRulesets: Dict[str, RuleSet] = {}
         self.initLanguage = None
         self.prev = None  # The previous token.
-        self.fonts = {}  # Keys are config names.  Values are actual fonts.
-        self.keywords = {}  # Keys are keywords, values are 0..5.
-        self.modes = {}  # Keys are languages, values are modes.
-        self.mode = None  # The mode object for the present language.
-        self.modeBunch = None  # A bunch fully describing a mode.
-        self.modeStack = []
-        self.rulesDict = {}
+        self.fonts: Dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
+        self.keywords: Dict[str, int] = {}  # Keys are keywords, values are 0..5.
+        self.modes: Dict[str, Mode] = {}  # Keys are languages, values are modes.
+        self.mode: Mode = None  # The mode object for the present language.
+        self.modeBunch: g.Bunch = None  # A bunch fully describing a mode.
+        self.modeStack: List[Mode] = []
+        self.rulesDict: Dict[str, Any] = {}
         # self.defineAndExtendForthWords()
-        self.word_chars = {}  # Inited by init_keywords().
+        self.word_chars: Dict[str, str] = {}  # Inited by init_keywords().
         self.tags = [
             # 8 Leo-specific tags.
             "blank",  # show_invisibles_space_color
@@ -779,14 +783,15 @@ class JEditColorizer(BaseColorizer):
             )
         #
         # State data used only by this class...
-        self.after_doc_language = None
+        self.after_doc_language: str = None
         self.initialStateNumber = -1
-        self.old_v = None
+        self.old_v: VNode = None
         self.nextState = 1  # Dont use 0.
-        self.n2languageDict = {-1: c.target_language}
-        self.restartDict = {}  # Keys are state numbers, values are restart functions.
-        self.stateDict = {}  # Keys are state numbers, values state names.
-        self.stateNameDict = {}  # Keys are state names, values are state numbers.
+        self.n2languageDict: Dict[int, str] = {-1: c.target_language}
+        self.prev: Tuple[int, int, str] = None
+        self.restartDict: Dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
+        self.stateDict: Dict[int, str] = {}  # Keys are state numbers, values state names.
+        self.stateNameDict: Dict[str, int] = {}  # Keys are state names, values are state numbers.
         # #2276: Set by init_section_delims.
         self.section_delim1 = '<<'
         self.section_delim2 = '>>'
@@ -842,13 +847,12 @@ class JEditColorizer(BaseColorizer):
             self.section_delim1 = '<<'
             self.section_delim2 = '>>'
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
-    def addImportedRules(self, mode: str, rulesDict: Dict[str, Any], rulesetName: str) -> None:
+    def addImportedRules(self, mode: Mode, rulesDict: Dict[str, Any], rulesetName: str) -> None:
         """Append any imported rules at the end of the rulesets specified in mode.importDict"""
         if self.importedRulesets.get(rulesetName):
             return
         self.importedRulesets[rulesetName] = True
-        names = mode.importDict.get(
-            rulesetName, []) if hasattr(mode, 'importDict') else []
+        names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
         for name in names:
             savedBunch = self.modeBunch
             ok = self.init_mode(name)
@@ -940,7 +944,7 @@ class JEditColorizer(BaseColorizer):
             mode = None
         return self.init_mode_from_module(name, mode)
     #@+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
-    def init_mode_from_module(self, name: str, mode: str) -> bool:
+    def init_mode_from_module(self, name: str, mode: Mode) -> bool:
         """
         Name may be a language name or a delegate name.
         Mode is a python module or class containing all
@@ -1009,13 +1013,14 @@ class JEditColorizer(BaseColorizer):
             self.language = language  # 2017/01/31
         return True
     #@+node:ekr.20110605121601.18582: *5* jedit.nameToRulesetName
-    def nameToRulesetName(self, name: str) -> str:
+    def nameToRulesetName(self, name: str) -> Tuple[str, str]:
         """
         Compute language and rulesetName from name, which is either a language
         name or a delegate name.
         """
         if not name:
-            return ''
+            # return ''
+            return 'unknown-language', None  # 2022/09/02: Bug fix.
         # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
         i = name.find('::')
@@ -1129,7 +1134,7 @@ class JEditColorizer(BaseColorizer):
         for leadins_list, pattern in zip(leadins, patterns):
             for ch in leadins_list:
 
-                def wiki_rule(self, s: str, i: int, pattern: Any=pattern) -> None:
+                def wiki_rule(self: Any, s: str, i: int, pattern: Any=pattern) -> int:
                     """Bind pattern and leadin for jedit.match_wiki_pattern."""
                     return self.match_wiki_pattern(s, i, pattern)
 
@@ -3040,7 +3045,7 @@ if pygments:
 
     from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
-    def get_tokens_unprocessed(self, text: str, stack: Any=('root',)) -> None:
+    def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str]=('root',)) -> Generator:
         """
         Split ``text`` into (tokentype, text) pairs.
 
