@@ -211,7 +211,7 @@ class BaseColorizer:
                     return font
         return None
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
-    def configure_hard_tab_width(self, font: Any) -> None:
+    def configure_hard_tab_width(self, font: Font) -> None:
         """
         Set the width of a hard tab.
 
@@ -602,9 +602,7 @@ class BaseColorizer:
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
-        self.defaultRulesList: List[RuleSet] = []
         self.importedRulesets: Dict[str, RuleSet] = {}
-        self.initLanguage = None
         self.prev = None  # The previous token.
         self.fonts: Dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
         self.keywords: Dict[str, int] = {}  # Keys are keywords, values are 0..5.
