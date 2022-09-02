@@ -23,12 +23,12 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
-    # from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
-Wrapper = Any
+    Wrapper = Any
 Widget = Any
 #@-<< leoGui annotations >>
 #@+others
@@ -48,7 +48,7 @@ class LeoGui:
         self.globalFindTab: Widget = None
         self.idleTimeClass = None
         self.isNullGui = False
-        self.lastFrame: Wrapper = None
+        self.lastFrame: Any = None
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
@@ -298,7 +298,7 @@ class LeoGui:
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         pass
     #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
-    def widget_name(self, w: Wrapper) -> str:
+    def widget_name(self, w: Widget) -> str:
         # First try the widget's getName method.
         if not 'w':
             return '<no widget>'
@@ -319,7 +319,7 @@ class LeoKeyEvent:
         char: str,
         event: Event,
         binding: Any,
-        w: Wrapper,
+        w: Any,
         x: int=None,
         y: int=None,
         x_root: int=None,
@@ -377,7 +377,7 @@ class NullGui(LeoGui):
         self.clipboardContents = ''
         self.focusWidget: Widget = None
         self.script = None
-        self.lastFrame: Wrapper = None  # The outer frame, to set g.app.log in runMainLoop.
+        self.lastFrame: Any = None  # The outer frame, to set g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
@@ -500,13 +500,13 @@ class NullGui(LeoGui):
     def onDeactivateEvent(self, *args: str, **keys: str) -> None:
         pass
 
-    def set_top_geometry(self, w: Wrapper, h: str, x: str, y: str) -> None:
+    def set_top_geometry(self, w: Widget, h: str, x: str, y: str) -> None:
         pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
-    def isTextWidget(self, w: Wrapper) -> bool:
+    def isTextWidget(self, w: Any) -> bool:
         return True  # Must be True for unit tests.
 
-    def isTextWrapper(self, w: Wrapper) -> bool:
+    def isTextWrapper(self, w: Any) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
