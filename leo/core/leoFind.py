@@ -26,7 +26,7 @@ else:
     Position = Any
     Stroke = Any
     VNode = Any
-Settings = Any
+Settings = g.Bunch
 Wrapper = Any
 #@-<< leoFind annotations >>
 #@+<< Theory of operation of find/change >>
@@ -262,7 +262,8 @@ class LeoFind:
         """
         #@-<< docstring: find.batch_change >>
         try:
-            self._init_from_dict(settings or {})
+            # self._init_from_dict(settings or {})
+            self._init_from_dict(settings or g.Bunch())
             count = 0
             for find, change in replacements:
                 count += self._batch_change_helper(root, find, change)
