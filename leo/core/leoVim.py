@@ -31,13 +31,14 @@ from leo.core.leoGui import LeoKeyEvent
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Position = Any
+    Wrapper = Any
 Event = Any  # More than one kind of event.
 Stroke = Any
 Widget = Any
-Wrapper = Any
 #@-<< leoVim annotations >>
 
 def cmd(name: str) -> Callable:
@@ -429,7 +430,7 @@ class VimCommands:
     def init_state_ivars(self) -> None:
         """Init all ivars related to command state."""
         self.ch = None  # The incoming character.
-        self.command_i = None  # The offset into the text at the start of a command.
+        self.command_i: int = None  # The offset into the text at the start of a command.
         self.command_list: List[Any] = []  # The list of all characters seen in this command.
         self.command_n: int = None  # The repeat count in effect at the start of a command.
         self.command_w: Widget = None  # The widget in effect at the start of a command.
