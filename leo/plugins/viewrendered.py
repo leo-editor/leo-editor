@@ -286,12 +286,13 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
     VNode = Any
-Wrapper = Any
+    Wrapper = Any
 #@-<< vr annotations >>
 # pylint: disable=no-member
 trace = False  # This global trace is convenient.
@@ -683,12 +684,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Set the ivars.
         self.active = False
         self.badColors: List[str] = []
-        self.delete_callback = None
-        self.gnx = None
+        self.delete_callback: Callable = None
+        self.gnx: str = None
         self.graphics_class = QtWidgets.QGraphicsWidget  # type:ignore
-        self.pyplot_canvas = None
-        self.gs = None  # For @graphics-script: a QGraphicsScene
-        self.gv = None  # For @graphics-script: a QGraphicsView
+        self.pyplot_canvas: Any = None
+        self.gs: Any = None  # For @graphics-script: a QGraphicsScene
+        self.gv: Any = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
@@ -696,10 +697,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.scrollbar_pos_dict: Dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
         self.sizes: List[int] = []  # Saved splitter sizes.
         self.splitter = None
-        self.splitter_index = None  # The index of the rendering pane in the splitter.
-        self.title = None
-        self.vp = None  # The present video player.
-        self.w = None  # The present widget in the rendering pane.
+        self.splitter_index: int = None  # The index of the rendering pane in the splitter.
+        self.title: str = None
+        self.vp: Any = None  # The present video player.
+        self.w: Wrapper = None  # The present widget in the rendering pane.
         # User settings.
         self.reloadSettings()
         self.node_changed = True
