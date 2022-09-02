@@ -14,12 +14,9 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    # from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
     Event = Any
-    # Position = Any
-    # VNode = Any
 #@-<< rectangleCommands annotations >>
 
 def cmd(name: str) -> Callable:
