@@ -351,13 +351,13 @@ class LeoBody:
         """Say that a required method in a subclass is missing."""
         g.trace("(LeoBody) %s should be overridden in a subclass", g.callers())
 
-    def createEditorFrame(self, w: Wrapper) -> Wrapper:
+    def createEditorFrame(self, w: Wrapper) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
-        return None  # pylint: disable=useless-return
+        return None
 
-    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
-        return None  # pylint: disable=useless-return
+        return None
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
@@ -1597,9 +1597,9 @@ class LeoTree:
         self.oops()
         return None, None  # pylint: disable=useless-return
 
-    def edit_widget(self, p: Position) -> Wrapper:
+    def edit_widget(self, p: Position) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
-        return None  # pylint: disable=useless-return
+        return None
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -1768,9 +1768,9 @@ class LeoTreeTab:
         self.nb: Any = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
-    def createControl(self) -> Wrapper:
+    def createControl(self) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
-        return None  # pylint: disable=useless-return
+        return None
 
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, select: bool=True) -> None:
         self.oops()
