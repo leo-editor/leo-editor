@@ -367,7 +367,7 @@ class AtButtonCallback:
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
     def __repr__(self) -> str:
         """AtButtonCallback.__repr__."""
-        c = self.cs
+        c = self.c
         n = len(self.script or '')
         return f"AtButtonCallback {c.shortFileName()} gnx: {self.gns} len(script): {n}"
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)

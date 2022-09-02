@@ -792,10 +792,6 @@ class TestFastAtRead(LeoUnitTest):
     #@+node:ekr.20211031093209.1: *3* TestFast.test_at_section_delim
     def test_at_section_delim(self):
 
-        import sys
-        if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')  # pragma: no cover
-
         c, x = self.c, self.x
         h = '@file /test/at_section_delim.py'
         root = c.rootPosition()

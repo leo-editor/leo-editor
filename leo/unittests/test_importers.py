@@ -5,7 +5,6 @@
 """Tests of leo/plugins/importers"""
 import glob
 import importlib
-import sys
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
@@ -3402,11 +3401,6 @@ class TestPython(BaseTestImporter):
     ext = '.py'
     treeType = '@file'
 
-    def setUp(self):
-        super().setUp()
-        if sys.version_info < (3, 7, 0):
-            self.skipTest('The python importer requires python 3.7 or above')  # pragma: no cover
-
     def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
         """Run tests with both values of python.USE_PYTHON_TOKENS."""
         import leo.plugins.importers.python as python
@@ -3772,8 +3766,6 @@ class TestPython(BaseTestImporter):
     #@+node:vitalije.20211207200701.1: *3* TestPython: test_large_class_no_methods
     def test_large_class_no_methods(self):
 
-        if sys.version_info < (3, 9, 0):
-            self.skipTest('Requires Python 3.9')  # pragma: no cover
         s = (
                 'class A:\n'
                 '    a=1\n'
