@@ -31,12 +31,13 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     # from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Position = Any
+    Wrapper = Any
 Event = Any  # Several kinds of events?
 Stroke = Any
-Wrapper = Any
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -1095,7 +1096,7 @@ class FileNameChooser:
         self.c = c
         self.k = c.k
         assert c and c.k
-        self.log: Wrapper = c.frame.log or g.NullObject()
+        self.log: Any = c.frame.log or g.NullObject()
         self.callback: Callable = None
         self.filterExt: List[str] = None
         self.prompt: str = None
