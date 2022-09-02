@@ -81,6 +81,7 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     # from QtGui import QIcon
 else:
     Cmdr = Any
@@ -88,9 +89,9 @@ else:
     # QIcon = Any
     Position = Any
     VNode = Any
+    Wrapper = Any
 Icon = Any # QtGui.QIcon
 Menu = Any
-Wrapper = Any
 #@-<< todo annotations >>
 
 NO_TIME = datetime.date(3000, 1, 1)
