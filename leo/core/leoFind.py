@@ -15,17 +15,18 @@ from leo.core import leoGlobals as g
 #@-<< leoFind imports >>
 #@+<< leoFind annotations >>
 #@+node:ekr.20220415005920.1: ** << leoFind annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
-    from leo.core.leoCommands import Commands as Cmdr  # pragma: no cover
-    from leo.core.leoGui import LeoKeyEvent as Event  # pragma: no cover
-    from leo.core.leoNodes import Position, VNode  # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGlobals import KeyStroke as Stroke
+    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
     Event = Any
     Position = Any
+    Stroke = Any
     VNode = Any
 Settings = Any
-Stroke = Any
 Wrapper = Any
 #@-<< leoFind annotations >>
 #@+<< Theory of operation of find/change >>
@@ -121,7 +122,7 @@ class LeoFind:
         #
         # For isearch commands...
         self.stack: List[Tuple[Position, int, int, bool]] = []
-        self.inverseBindingDict: Dict[str, List[Tuple[str, str]]] = {}
+        self.inverseBindingDict: Dict[str, List[Tuple[str, Stroke]]] = {}
         self.isearch_ignore_case: bool = False
         self.isearch_forward_flag: bool = False
         self.isearch_regexp: bool = False
@@ -2881,7 +2882,7 @@ class LeoFind:
         if len(self.stack) <= 1:
             self.abort_search()
     #@+node:ekr.20131117164142.16952: *5* find.get_strokes
-    def get_strokes(self, commandName: str) -> List[str]:  # pragma: no cover (cmd)
+    def get_strokes(self, commandName: str) -> List[Stroke]:  # pragma: no cover (cmd)
         aList = self.inverseBindingDict.get(commandName, [])
         return [key for pane, key in aList]
     #@+node:ekr.20131117164142.16953: *5* find.push & pop
