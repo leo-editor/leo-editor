@@ -16,11 +16,12 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
-Wrapper = Any
+    Wrapper = Any
 #@-<< leoChapters annotations >>
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
