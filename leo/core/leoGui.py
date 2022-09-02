@@ -23,13 +23,13 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
-    # from leo.core.leoQt import QtWidgets
+    # from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
-Widget = Any
 Wrapper = Any
+Widget = Any
 #@-<< leoGui annotations >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui
