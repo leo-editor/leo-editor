@@ -21,14 +21,15 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    Wrapper = Any
+Widget = Any
 
 Index = Union[int, str]  # A zero-based index or a Tk index.
 MousePressEvent = Any
-Widget = Any
-Wrapper = Any
 #@-<< qt_text annotations >>
 
 FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
@@ -508,7 +509,7 @@ if QtWidgets:
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
-        def __init__(self, parent: Widget, c: Cmdr, wrapper: Wrapper) -> None:
+        def __init__(self, parent: Widget, c: Cmdr, wrapper: Any) -> None:  # wrapper is a LeoQtBody.
             """ctor for LeoQTextBrowser class."""
             for attr in ('leo_c', 'leo_wrapper',):
                 assert not hasattr(QtWidgets.QTextBrowser, attr), attr
