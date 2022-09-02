@@ -26,14 +26,15 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
     VNode = Any
+    Wrapper = Any
 Index = Union[int, str]  # A zero-based index or a Tk index.
 Widget = Any
-Wrapper = Any
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
@@ -352,9 +353,11 @@ class LeoBody:
 
     def createEditorFrame(self, w: Wrapper) -> Wrapper:
         self.oops()
+        return None
 
     def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
         self.oops()
+        return None
 
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         self.oops()
@@ -507,7 +510,7 @@ class LeoBody:
         finally:
             self.selectEditorLockout = False
     #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
-    def selectEditorHelper(self, wrapper: str) -> None:
+    def selectEditorHelper(self, wrapper: Wrapper) -> None:
         """Select the editor whose widget is given."""
         c = self.c
         if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
@@ -783,7 +786,7 @@ class LeoFrame:
     def initCompleteHint(self) -> None:
         pass
     #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
-    def setTabWidth(self, w: Wrapper) -> None:
+    def setTabWidth(self, w: int) -> None:
         """Set the tab width in effect for this frame."""
         # Subclasses may override this to affect drawing.
         self.tab_width = w
@@ -1590,11 +1593,13 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Wrapper:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:  ###
         self.oops()
+        return None, None
 
     def edit_widget(self, p: Position) -> Wrapper:
         self.oops()
+        return None
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -1765,6 +1770,7 @@ class LeoTreeTab:
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
     def createControl(self) -> Wrapper:
         self.oops()
+        return None
 
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, select: bool=True) -> None:
         self.oops()
@@ -1793,7 +1799,7 @@ class NullBody(LeoBody):
         self.selection = 0, 0
         self.s = ""  # The body text
         self.widget: Widget = None
-        self.wrapper: Wrapper = StringTextWrapper(c=self.c, name='body')
+        self.wrapper: Any = StringTextWrapper(c=self.c, name='body')
         self.editorWrappers['1'] = self.wrapper
         self.colorizer: Any = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
@@ -1862,19 +1868,19 @@ class NullFrame(LeoFrame):
         super().__init__(c, gui)
         assert self.c
         self.wrapper: Wrapper = None
-        self.iconBar: Wrapper = NullIconBarClass(self.c, self)
+        self.iconBar: Widget = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
         self.outerFrame: Wrapper = None
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass: Any = NullStatusLineClass
         self.title = title
-        self.top = None  # Always None.
+        self.top: Any = None  # Always None.
         # Create the component objects.
-        self.body: Wrapper = NullBody(frame=self, parentFrame=None)
-        self.log: Wrapper = NullLog(frame=self, parentFrame=None)
-        self.menu: Wrapper = leoMenu.NullMenu(frame=self)
-        self.tree: Wrapper = NullTree(frame=self)
+        self.body: Any = NullBody(frame=self, parentFrame=None)
+        self.log: Any = NullLog(frame=self, parentFrame=None)
+        self.menu: Any = leoMenu.NullMenu(frame=self)
+        self.tree: Any = NullTree(frame=self)
         # Default window position.
         self.w = 600
         self.h = 500
@@ -2100,14 +2106,13 @@ class NullLog(LeoLog):
     def finishCreate(self) -> None:
         pass
     #@+node:ekr.20041012083237.1: *4* NullLog.createControl
-    def createControl(self, parentFrame: Widget) -> Wrapper:
+    def createControl(self, parentFrame: Widget) -> "StringTextWrapper":
         return self.createTextWidget(parentFrame)
     #@+node:ekr.20070302095121: *4* NullLog.createTextWidget
-    def createTextWidget(self, parentFrame: Widget) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget) -> "StringTextWrapper":
         self.logNumber += 1
         c = self.c
-        log = StringTextWrapper(c=c, name=f"log-{self.logNumber}")
-        return log
+        return StringTextWrapper(c=c, name=f"log-{self.logNumber}")
     #@+node:ekr.20181119135041.1: *3* NullLog.hasSelection
     def hasSelection(self) -> None:
         return self.widget.hasSelection()
@@ -2168,7 +2173,7 @@ class NullStatusLineClass:
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget: Wrapper = StringTextWrapper(c, name='status-line')
+        self.textWidget: Any = StringTextWrapper(c, name='status-line')
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
@@ -2231,7 +2236,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Wrapper]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:

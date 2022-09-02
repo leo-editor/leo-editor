@@ -1754,7 +1754,7 @@ class LeoQtBody(leoFrame.LeoBody):
         pass
         # self.createChapterIvar(wrapper)
 
-    def selectLabel(self, wrapper: str) -> None:
+    def selectLabel(self, wrapper: Wrapper) -> None:
         # pylint: disable=arguments-differ
         c = self.c
         w = wrapper.widget

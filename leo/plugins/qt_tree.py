@@ -1278,7 +1278,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self,
         p: Position, selectAll: bool=False, selection: Selection=None,
-    ) -> Tuple[Editor, Wrapper]:
+    ) -> Tuple[Editor, Any]:
         """Start editing p's headline."""
         if self.busy:
             return None
@@ -1302,7 +1302,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
         item: Any, selectAll: bool=False, selection: Selection=None,
-    ) -> Tuple[Item, Wrapper]:
+    ) -> Tuple[Item, Any]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
