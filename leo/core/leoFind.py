@@ -33,6 +33,7 @@ else:
     VNode = Any
     Wrapper = Any
 Settings = g.Bunch
+UndoData = g.Bunch
 #@-<< leoFind annotations >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -105,7 +106,7 @@ class LeoFind:
         self.expert_mode = False  # Set in finishCreate.
         self.ftm: FindTabManager = None  # Created by dw.createFindTab.
         self.k: KeyHandler = c.k
-        self.re_obj: Any = None
+        self.re_obj: re.Pattern = None
         #
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
@@ -148,9 +149,9 @@ class LeoFind:
         # Internal state...
         self.changeAllFlag = False
         self.findAllUniqueFlag = False
-        self.find_def_data: Any = None  # A g.Bunch.
+        self.find_def_data: g.Bunch = None
         self.in_headline = False
-        self.match_obj: Any = None
+        self.match_obj: re.Match = None
         self.reverse = False
         self.root: Position = None  # The start of the search, especially for suboutline-only.
         self.unique_matches: Set = set()
@@ -1683,7 +1684,7 @@ class LeoFind:
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper
     def _find_all_helper(self,
         after: Optional[Position],
-        data: Any,
+        data: UndoData,
         p: Position,
         undoType: str,
     ) -> int:
@@ -2508,7 +2509,7 @@ class LeoFind:
 
         # g.printObj(list(groups), tag=f"groups in {change_text!r}")
 
-        def repl(match_object: Any) -> str:
+        def repl(match_object: re.Match) -> str:
             """re.sub calls this function once per group."""
             # # 1494...
             n = int(match_object.group(1)) - 1
@@ -2606,7 +2607,7 @@ class LeoFind:
             val = w_name.startswith('head')  # pragma: no cover
         return val
     #@+node:ekr.20031218072017.3089: *4* find.restore
-    def restore(self, data: Any) -> None:
+    def restore(self, data: UndoData) -> None:
         """
         Restore Leo's gui and settings from data, a g.Bunch.
         """
@@ -2626,7 +2627,7 @@ class LeoFind:
             w.seeInsertPoint()
             c.widgetWantsFocus(w)
     #@+node:ekr.20031218072017.3090: *4* find.save
-    def save(self) -> Any:
+    def save(self) -> UndoData:
         """Save everything needed to restore after a search fails."""
         c = self.c
         if self.in_headline:  # pragma: no cover
