@@ -15,13 +15,15 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
+    Wrapper = Any
+
 # mypy doesn't seem to handle this.
 Tag_List = Any  # Union[str, Sequence[str]]
-Wrapper = Any
 #@-<< leoPlugins annotations >>
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
