@@ -1936,7 +1936,7 @@ class QTextEditWrapper(QTextMixin):
         int_i = max(0, min(int_i, n))
         int_j = max(0, min(int_j, n))
         if insert is None:
-            ins = max(int_i, int_j)
+            int_ins = max(int_i, int_j)
         else:
             int_ins = self.toPythonIndex(insert)
             int_ins = max(0, min(int_ins, n))
@@ -1952,7 +1952,7 @@ class QTextEditWrapper(QTextMixin):
             tc.setPosition(int_i)
             tc.setPosition(int_j, MoveMode.KeepAnchor)
         elif int_ins == int_i:
-            # Put the insert point at i
+            # Put the insert point at int_i
             tc.setPosition(int_j)
             tc.setPosition(int_i, MoveMode.KeepAnchor)
         else:
@@ -1967,7 +1967,7 @@ class QTextEditWrapper(QTextMixin):
         #
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v  # Always accurate.
-        v.insertSpot = ins
+        v.insertSpot = int_ins
         if int_i > int_j:
             int_i, int_j = int_j, int_i
         assert int_i <= int_j
