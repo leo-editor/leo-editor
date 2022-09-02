@@ -642,7 +642,7 @@ class ViewRenderedProvider:
             if splitter:
                 splitter.register_provider(self)
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
-    def ns_provide(self, id_: str) -> Optional[Any]:
+    def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
         # #1678: duplicates in Open Window list
         if id_ == self.ns_provider_id():
@@ -1635,7 +1635,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setPlainText('')
     #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
     #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
-    def ensure_text_widget(self) -> Wrapper:
+    def ensure_text_widget(self) -> Widget:
         """Swap a text widget into the rendering pane if necessary."""
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):

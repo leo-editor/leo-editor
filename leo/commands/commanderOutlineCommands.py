@@ -275,7 +275,7 @@ def pasteAsTemplate(self: Self, event: Event=None) -> None:
             return gnx
         return g.app.nodeIndices.computeNewIndex()
     #@+node:vitalije.20200529115141.1: *4* viter
-    def viter(parent_gnx: str, xv: Any) -> Generator:  ###
+    def viter(parent_gnx: str, xv: Any) -> Generator:
         """
         iterates <v> nodes generating tuples:
 
