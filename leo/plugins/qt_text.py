@@ -285,7 +285,7 @@ class QTextMixin:
     #@+node:ekr.20140901062324.18705: *5* qtm.getSelectedText
     def getSelectedText(self) -> str:
         """QTextMixin"""
-        i, j = self.getSelectionRange()
+        i, j = self.getSelectionRange()  # Returns (int, int)
         if i == j:
             return ''
         s = self.getAllText()
@@ -327,7 +327,7 @@ class QTextMixin:
         w = self
         v = self.c.p.v  # Always accurate.
         v.insertSpot = w.getInsertPoint()
-        i, j = w.getSelectionRange()
+        i, j = w.getSelectionRange()  # Returns (int, int)
         if i > j:
             i, j = j, i
         assert i <= j
@@ -444,8 +444,6 @@ class QLineEditWrapper(QTextMixin):
         if s is None:
             s = w.text()
         n = len(s)
-        # i = self.toPythonIndex(i)
-        # j = self.toPythonIndex(j)
         int_i = max(0, min(int_i, n))
         int_j = max(0, min(int_j, n))
         if insert is None:
@@ -1950,7 +1948,7 @@ class QTextEditWrapper(QTextMixin):
         if int_i == int_j:
             tc.setPosition(int_i)
         elif int_ins == int_j:
-            # Put the insert point at j
+            # Put the insert point at int_j
             tc.setPosition(int_i)
             tc.setPosition(int_j, MoveMode.KeepAnchor)
         elif int_ins == int_i:

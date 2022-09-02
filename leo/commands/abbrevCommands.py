@@ -19,12 +19,13 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Position = Any
     Event = Any
+    Wrapper = Any
 Stroke = Any
-Wrapper = Any
 #@-<< abbrevCommands annotations >>
 
 def cmd(name: Any) -> Callable:

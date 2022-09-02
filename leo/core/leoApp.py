@@ -34,8 +34,6 @@ else:
     Event = Any
     Position = Any
     VNode = Any
-
-# Make *sure* all these are Any.
 Widget = Any
 Wrapper = Any
 #@-<< leoApp annotations >>

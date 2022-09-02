@@ -11,10 +11,10 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    ### from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
-
 Wrapper = Any
 #@-<< baseCommands imports and annotations >>
 
