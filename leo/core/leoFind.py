@@ -17,17 +17,18 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220415005920.1: ** << leoFind annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
     Stroke = Any
     VNode = Any
+    Wrapper = Any
 Settings = g.Bunch
-Wrapper = Any
 #@-<< leoFind annotations >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -99,7 +100,6 @@ class LeoFind:
         self.c = c
         self.expert_mode = False  # Set in finishCreate.
         self.ftm: Any = None  # Created by dw.createFindTab.
-        self.frame: Wrapper = None
         self.k: Any = c.k
         self.re_obj: Any = None
         #
