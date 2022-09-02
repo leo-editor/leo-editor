@@ -55,6 +55,7 @@ if TYPE_CHECKING:
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
     from leo.plugins.qt_gui import StyleSheetManager
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Event = Any
     Position = Any
@@ -89,12 +90,12 @@ else:
     SpellCommandsClass = Any
     # Special cases...
     StyleSheetManager = Any
+    Wrapper = Any
 
 RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
 
 # These gui classes are hard to specify...
 Widget = Any
-Wrapper = Any
 #@-<< leoCommands annotations >>
 
 def cmd(name: str) -> Callable:
