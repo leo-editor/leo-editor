@@ -56,11 +56,12 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828123840.1: ** << contextmenu annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
 else:
     Cmdr = Any
+    Event = Any
     Position = Any
-Event = LeoKeyEvent
 Wrapper = Any
 #@-<< contextmenu annotations >>
 

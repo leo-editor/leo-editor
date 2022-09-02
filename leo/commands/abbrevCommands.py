@@ -17,12 +17,12 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@+node:ekr.20220826065314.1: ** << abbrevCommands annotations >>
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
 else:
     Cmdr = Any
     Position = Any
-
-Event = Any
+    Event = Any
 Stroke = Any
 Wrapper = Any
 #@-<< abbrevCommands annotations >>
