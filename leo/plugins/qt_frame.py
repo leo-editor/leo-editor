@@ -39,14 +39,14 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    # from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
+    Wrapper = Any
 QComboBox = Any
 Widget = Any
-Wrapper = Any
 #@-<< qt_frame annotations >>
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
@@ -939,7 +939,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         #@+node:ekr.20131118172620.16892: *7* class EventWrapper
         class EventWrapper:
 
-            def __init__(self, c: Cmdr, w: Wrapper, next_w: Wrapper, func: Callable) -> None:
+            def __init__(self, c: Cmdr, w: Widget, next_w: Widget, func: Callable) -> None:
                 self.c = c
                 self.d = self.create_d()  # Keys: stroke.s; values: command-names.
                 self.w = w
@@ -1546,10 +1546,9 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
 class LeoQtBody(leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
     #@+others
-    #@+node:ekr.20150521061618.1: *3* LeoQtBody.body_cmd (decorator)
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
-    def __init__(self, frame: Wrapper, parentFrame: Widget) -> None:
+    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
         super().__init__(frame, parentFrame)
@@ -2148,7 +2147,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert self.c == c
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
-        self.iconBar = None
+        self.iconBar: Widget = None
         self.iconBarClass = self.QtIconBarClass  # type:ignore
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
@@ -2167,27 +2166,25 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
-        self.body: Wrapper = None
+        self.body: Widget = None
         self.f1 = self.f2 = None
-        self.findPanel = None  # Inited when first opened.
+        self.findPanel: Widget = None  # Inited when first opened.
         self.iconBarComponentName = 'iconBar'
-        self.iconFrame = None
-        self.log: Wrapper = None
-        self.canvas = None
-        self.outerFrame = None
-        self.statusFrame = None
+        self.iconFrame: Widget = None
+        self.log: Widget = None
+        self.canvas: Widget = None
+        self.outerFrame: Widget = None
+        self.statusFrame: Widget = None
         self.statusLineComponentName = 'statusLine'
-        self.statusText = None
-        self.statusLabel = None
-        self.top = None  # This will be a class Window object.
-        self.tree: Wrapper = None
+        self.statusText: Widget = None
+        self.statusLabel: Widget = None
+        self.top: Widget = None  # This will be a class Window object.
+        self.tree: Widget = None
         # Used by event handlers...
         self.controlKeyIsDown = False  # For control-drags
         self.isActive = True
         self.redrawCount = 0
-        self.wantedWidget = None
         self.wantedCallbackScheduled = False
-        self.scrollWay = None
     #@+node:ekr.20110605121601.18249: *4* qtFrame.__repr__
     def __repr__(self) -> str:
         return f"<LeoQtFrame: {self.title}>"
@@ -2206,12 +2203,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.createSplitterComponents()
         self.createStatusLine()  # A base class method.
         self.createFirstTreeNode()  # Call the base-class method.
-        self.menu: Wrapper = LeoQtMenu(c, self, label='top-level-menu')
+        self.menu: Widget = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
         t2 = time.process_time()
         self.setQtStyle()  # Slow, but only the first time it is called.
         t3 = time.process_time()
-        self.miniBufferWidget: Wrapper = qt_text.QMinibufferWrapper(c)
+        self.miniBufferWidget: Widget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
         t4 = time.process_time()
         if 'speed' in g.app.debug:
@@ -2367,7 +2364,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Keys are widgets, values are stylesheets.
         styleSheetCache: Dict[Any, str] = {}
 
-        def put_helper(self, s: str, w: Wrapper, bg: str=None, fg: str=None) -> None:
+        def put_helper(self, s: str, w: Widget, bg: str=None, fg: str=None) -> None:
             """Put string s in the indicated widget, with proper colors."""
             c = self.c
             bg = bg or c.config.getColor('status-bg') or 'white'
@@ -2572,7 +2569,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # self.addRow()
             # g.app.iconWidgetCount += 1
         #@+node:ekr.20110605121601.18267: *4* QtIconBar.addWidget
-        def addWidget(self, w: Wrapper) -> None:
+        def addWidget(self, w: Widget) -> None:
             self.w.addWidget(w)
         #@+node:ekr.20110605121601.18268: *4* QtIconBar.clear
         def clear(self) -> None:
@@ -2581,7 +2578,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.actions = []
             g.app.iconWidgetCount = 0
         #@+node:ekr.20110605121601.18269: *4* QtIconBar.createChaptersIcon
-        def createChaptersIcon(self) -> Optional[Wrapper]:
+        def createChaptersIcon(self) -> "LeoQtTreeTab":
 
             c = self.c
             f = c.frame
@@ -2589,7 +2586,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return LeoQtTreeTab(c, f.iconBar)
             return None
         #@+node:ekr.20110605121601.18270: *4* QtIconBar.deleteButton
-        def deleteButton(self, w: Wrapper) -> None:
+        def deleteButton(self, w: Widget) -> None:
             """ w is button """
             self.w.removeAction(w)
             self.c.bodyWantsFocus()
@@ -2774,7 +2771,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.trace(w, h, x, y)
             self.setTopGeometry(w, h, x, y)
     #@+node:ekr.20110605121601.18279: *4* qtFrame.setTabWidth
-    def setTabWidth(self, w: Wrapper) -> None:
+    def setTabWidth(self, w: int) -> None:
         # A do-nothing because tab width is set automatically.
         # It *is* called from Leo's core.
         pass
@@ -3087,7 +3084,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+others
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
-    def __init__(self, frame: Wrapper, parentFrame: Widget) -> None:
+    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)  # Calls createControl.
         # Set in finishCreate.
@@ -3233,7 +3230,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
     #@+node:ekr.20111120124732.10184: *3* LeoQtLog.isLogWidget
-    def isLogWidget(self, w: Wrapper) -> bool:
+    def isLogWidget(self, w: Widget) -> bool:
         val = w == self or w in list(self.contentsDict.values())
         return val
     #@+node:tbnorth.20171220123648.1: *3* LeoQtLog.linkClicked
@@ -3526,7 +3523,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
     #@+others
     #@+node:ekr.20110605121601.18341: *3* LeoQtMenu.__init__
-    def __init__(self, c: Cmdr, frame: Wrapper, label: str) -> None:
+    def __init__(self, c: Cmdr, frame: Widget, label: str) -> None:
         """ctor for LeoQtMenu class."""
         assert frame
         assert frame.c
@@ -3553,7 +3550,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20110605121601.18343: *4* LeoQtMenu.Methods with Tk spellings
     #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
-    def add_cascade(self, parent: Widget, label: str, menu: Wrapper, underline: int) -> Wrapper:
+    def add_cascade(self, parent: Widget, label: str, menu: Widget, underline: int) -> Widget:
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
@@ -3590,7 +3587,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
             action.triggered.connect(qt_add_command_callback)
     #@+node:ekr.20110605121601.18346: *5* LeoQtMenu.add_separator
-    def add_separator(self, menu: Wrapper) -> None:
+    def add_separator(self, menu: Widget) -> None:
         """Wrapper for the Tkinter add_separator menu method."""
         if menu:
             action = menu.addSeparator()
@@ -3664,7 +3661,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return menu
     #@+node:ekr.20110605121601.18354: *4* LeoQtMenu.Methods with other spellings
     #@+node:ekr.20110605121601.18355: *5* LeoQtMenu.clearAccel
-    def clearAccel(self, menu: Wrapper, name: str) -> None:
+    def clearAccel(self, menu: Widget, name: str) -> None:
         pass
         # if not menu:
             # return
@@ -3692,7 +3689,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             menu.insert_cascade(parent, index, label, menu, underline=amp_index)
         return menu
     #@+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
-    def disableMenu(self, menu: Wrapper, name: str) -> None:
+    def disableMenu(self, menu: Widget, name: str) -> None:
         self.enableMenu(menu, name, False)
 
     def enableMenu(self, menu: Wrapper, name: str, val: bool) -> None:
@@ -3704,12 +3701,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
                     action.setEnabled(val)
                     break
     #@+node:ekr.20110605121601.18359: *5* LeoQtMenu.getMenuLabel
-    def getMenuLabel(self, menu: Wrapper, name: str) -> None:
+    def getMenuLabel(self, menu: Widget, name: str) -> None:
         """Return the index of the menu item whose name (or offset) is given.
         Return None if there is no such menu item."""
         # At present, it is valid to always return None.
     #@+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
-    def setMenuLabel(self, menu: Wrapper, name: str, label: str, underline: int=-1) -> None:
+    def setMenuLabel(self, menu: Widget, name: str, label: str, underline: int=-1) -> None:
 
         def munge(s: str) -> str:
             return (s or '').replace('&', '')
@@ -4398,7 +4395,7 @@ class LeoQtTreeTab:
         class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
-            def __init__(self, tt: Wrapper) -> None:
+            def __init__(self, tt: Widget) -> None:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.

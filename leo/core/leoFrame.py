@@ -1815,7 +1815,7 @@ class NullBody(LeoBody):
     def assignPositionToEditor(self, p: Position) -> None:
         pass
 
-    def createEditorFrame(self, w: Wrapper) -> Wrapper:
+    def createEditorFrame(self, w: Widget) -> Widget:
         return None
 
     def cycleEditorFocus(self, event: Event=None) -> None:
@@ -1824,16 +1824,16 @@ class NullBody(LeoBody):
     def deleteEditor(self, event: Event=None) -> None:
         pass
 
-    def selectEditor(self, w: Wrapper) -> None:
+    def selectEditor(self, w: Widget) -> None:
         pass
 
-    def selectLabel(self, w: Wrapper) -> None:
+    def selectLabel(self, w: Widget) -> None:
         pass
 
     def setEditorColors(self, bg: str, fg: str) -> None:
         pass
 
-    def unselectLabel(self, w: Wrapper) -> None:
+    def unselectLabel(self, w: Widget) -> None:
         pass
 
     def updateEditors(self) -> None:
