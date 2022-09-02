@@ -293,6 +293,7 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
+Widget = Any
 #@-<< vr annotations >>
 # pylint: disable=no-member
 trace = False  # This global trace is convenient.
@@ -397,7 +398,7 @@ def show_scrolled_message(tag: str, kw: Any) -> bool:
     )
     return True
 #@+node:vitalije.20170713082256.1: *3* vr.split_last_sizes
-def split_last_sizes(sizes: Any) -> List[int]:
+def split_last_sizes(sizes: List[int]) -> List[int]:
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
     result.append(sizes[-1])
@@ -664,7 +665,7 @@ class ViewRenderedProvider:
         # #1678: duplicates in Open Window list
         return [('Viewrendered', self.ns_provider_id())]
     #@+node:ekr.20200917063221.1: *3* vr.ns_title
-    def ns_title(self, id_: Any) -> Optional[str]:
+    def ns_title(self, id_: str) -> Optional[str]:
         if id_ != self.ns_provider_id():
             return None
         filename = self.c.shortFileName() or 'Unnamed file'
@@ -687,9 +688,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.delete_callback: Callable = None
         self.gnx: str = None
         self.graphics_class = QtWidgets.QGraphicsWidget  # type:ignore
-        self.pyplot_canvas: Any = None
-        self.gs: Any = None  # For @graphics-script: a QGraphicsScene
-        self.gv: Any = None  # For @graphics-script: a QGraphicsView
+        self.pyplot_canvas: Widget = None
+        self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
+        self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
@@ -699,7 +700,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.splitter = None
         self.splitter_index: int = None  # The index of the rendering pane in the splitter.
         self.title: str = None
-        self.vp: Any = None  # The present video player.
+        self.vp: Widget = None  # The present video player.
         self.w: Wrapper = None  # The present widget in the rendering pane.
         # User settings.
         self.reloadSettings()

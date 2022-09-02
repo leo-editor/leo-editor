@@ -439,7 +439,7 @@ class VimCommands:
         self.handler: Callable = self.do_normal_mode  # Use the handler for normal mode.
         self.in_command = False  # True: we have seen some command characters.
         self.in_motion = False  # True if parsing an *inner* motion, the 2j in d2j.
-        self.motion_func = None  # The callback handler to execute after executing an inner motion.
+        self.motion_func: Callable = None  # The callback handler to execute after executing an inner motion.
         self.motion_i: int = None  # The offset into the text at the start of a motion.
         self.n1 = 1  # The first repeat count.
         self.n = 1  # The second repeat count.
@@ -621,7 +621,7 @@ class VimCommands:
         else:
             self.accept(handler=self.do_insert_mode, add_to_dot=True)
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
-    def begin_motion(self, motion_func: Any) -> None:
+    def begin_motion(self, motion_func: Callable) -> None:
         """Start an inner motion."""
         self.do_trace()
         w = self.w
@@ -2402,7 +2402,7 @@ class VimCommands:
                 p.v.b = newText
                 u.afterChangeBody(p, 'vc-save-body', bunch)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
-    def set_border(self, kind: str=None, w: Wrapper=None, activeFlag: Any=None) -> None:
+    def set_border(self, kind: str=None, w: Wrapper=None, activeFlag: bool=None) -> None:
         """
         Set the border color of self.w, depending on state.
         Called from qtBody.onFocusColorHelper and self.show_status.
@@ -2424,7 +2424,7 @@ class VimCommands:
             except Exception:
                 pass
     #@+node:ekr.20140807070500.18161: *5* vc.set_property
-    def set_property(self, w: Wrapper, focus_flag: Any) -> None:
+    def set_property(self, w: Wrapper, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
         c, state = self.c, self.state
         #

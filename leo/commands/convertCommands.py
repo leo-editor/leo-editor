@@ -25,7 +25,7 @@ else:
 Match = re.Match
 #@-<< convertCommands annotations >>
 
-def cmd(name: Any) -> Callable:
+def cmd(name: str) -> Callable:
     """Command decorator for the ConvertCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'convertCommands',])
 
