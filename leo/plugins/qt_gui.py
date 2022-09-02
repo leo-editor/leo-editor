@@ -36,12 +36,12 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    # from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
-Wrapper = Any
+    Wrapper = Any
 Widget = Any
 #@-<< qt_gui annotations >>
 #@+others
@@ -278,11 +278,11 @@ class LeoQtGui(leoGui.LeoGui):
         """Create a qt find tab in the indicated frame."""
         pass  # Now done in dw.createFindTab.
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> Wrapper:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a new Leo frame."""
         return qt_frame.LeoQtFrame(c, title, gui=self)
 
-    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Wrapper:
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Widget:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -358,7 +358,7 @@ class LeoQtGui(leoGui.LeoGui):
 
             def __init__(
                 self,
-                parent: Wrapper=None,
+                parent: Widget=None,
                 message: str='Select Date/Time',
                 init: Any=None,
                 step_min: Dict=None,
@@ -1639,62 +1639,6 @@ class StyleClassManager:
             props = [i for i in props if i not in prop]
 
         self.set_sclasses(w, props)
-    #@+node:tbrown.20150724090431.7: *3* sclass_tests
-    def sclass_tests(self) -> None:
-        """Test style class property manipulation functions"""
-        # pylint: disable=len-as-condition
-
-        class Test_W:
-            """simple standin for QWidget for testing"""
-
-            def __init__(self) -> None:
-                self.x = ''
-
-            def property(self, name: str, default: str=None) -> Any:
-                return self.x or default
-
-            def setProperty(self, name: str, value: Any) -> None:
-                self.x = value
-
-        w = Test_W()
-
-        assert not self.has_sclass(w, 'nonesuch')
-        assert not self.has_sclass(w, ['nonesuch'])
-        assert not self.has_sclass(w, ['nonesuch', 'either'])
-        assert len(self.sclasses(w)) == 0
-
-        self.add_sclass(w, 'test')
-
-        assert not self.has_sclass(w, 'nonesuch')
-        assert self.has_sclass(w, 'test')
-        assert self.has_sclass(w, ['test'])
-        assert not self.has_sclass(w, ['test', 'either'])
-        assert len(self.sclasses(w)) == 1
-
-        self.add_sclass(w, 'test')
-        assert len(self.sclasses(w)) == 1
-        self.add_sclass(w, ['test', 'test', 'other'])
-        assert len(self.sclasses(w)) == 2
-        assert self.has_sclass(w, 'test')
-        assert self.has_sclass(w, 'other')
-        assert self.has_sclass(w, ['test', 'other', 'test'])
-        assert not self.has_sclass(w, ['test', 'other', 'nonesuch'])
-
-        self.remove_sclass(w, ['other', 'nothere'])
-        assert self.has_sclass(w, 'test')
-        assert not self.has_sclass(w, 'other')
-        assert len(self.sclasses(w)) == 1
-
-        self.toggle_sclass(w, 'third')
-        assert len(self.sclasses(w)) == 2
-        assert self.has_sclass(w, ['test', 'third'])
-        self.toggle_sclass(w, 'third')
-        assert len(self.sclasses(w)) == 1
-        assert not self.has_sclass(w, ['test', 'third'])
-
-        self.clear_sclasses(w)
-        assert len(self.sclasses(w)) == 0
-        assert not self.has_sclass(w, 'test')
     #@+node:tbrown.20150724090431.8: *3* sclasses
     def sclasses(self, w: Wrapper) -> List[str]:
         """return list of style classes for QWidget w"""
@@ -1849,7 +1793,7 @@ class StyleSheetManager:
         sheet = w.styleSheet()
         print(f"style sheet for: {w}...\n\n{sheet}")
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
-    def set_style_sheets(self, all: bool=True, top: Widget=None, w: Wrapper=None) -> None:
+    def set_style_sheets(self, all: bool=True, top: Widget=None, w: Widget=None) -> None:
         """Set the master style sheet for all widgets using config settings."""
         if g.app.loadedThemes:
             return
