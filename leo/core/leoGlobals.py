@@ -2391,7 +2391,7 @@ class SettingsDict(dict):
         # The result is a g.SettingsDict.
         return copy.deepcopy(self)
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
-    def add_to_list(self, key: Any, val: Any) -> None:
+    def add_to_list(self, key: str, val: Any) -> None:
         """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())

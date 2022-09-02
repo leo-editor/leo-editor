@@ -209,7 +209,7 @@ class Undoer:
             return None
         return u.beads[n]
     #@+node:ekr.20060127113243: *4* u.pushBead
-    def pushBead(self, bunch: Any) -> None:
+    def pushBead(self, bunch: g.Bunch) -> None:
         u = self
         # New in 4.4b2:  Add this to the group if it is being accumulated.
         bunch2 = u.bead >= 0 and u.bead < len(u.beads) and u.beads[u.bead]
@@ -235,7 +235,7 @@ class Undoer:
             return name
         return "Undo " + name
     #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
-    def setIvarsFromBunch(self, bunch: Any) -> None:
+    def setIvarsFromBunch(self, bunch: g.Bunch) -> None:
         u = self
         u.clearOptionalIvars()
         if False and not g.unitTesting:  # Debugging. # pragma: no cover
@@ -327,7 +327,7 @@ class Undoer:
         for v, vInfo in treeInfo:
             u.restoreVnodeUndoInfo(vInfo)
     #@+node:ekr.20050415170737.2: *5* u.restoreVnodeUndoInfo
-    def restoreVnodeUndoInfo(self, bunch: Any) -> None:
+    def restoreVnodeUndoInfo(self, bunch: g.Bunch) -> None:
         """Restore all ivars saved in the bunch."""
         v = bunch.v
         v.statusBits = bunch.statusBits
@@ -338,7 +338,7 @@ class Undoer:
             v.unknownAttributes = uA
             v._p_changed = True
     #@+node:ekr.20050415170812.2: *5* u.restoreTnodeUndoInfo
-    def restoreTnodeUndoInfo(self, bunch: Any) -> None:
+    def restoreTnodeUndoInfo(self, bunch: g.Bunch) -> None:
         v = bunch.v
         v.h = bunch.headString
         v.b = bunch.bodyString
@@ -421,7 +421,7 @@ class Undoer:
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20201109075104.1: *5* u.afterChangeBody
-    def afterChangeBody(self, p: Position, command: str, bunch: Any) -> None:
+    def afterChangeBody(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """
         Create an undo node using d created by beforeChangeNode.
 
@@ -498,7 +498,7 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
-    def afterChangeNodeContents(self, p: Position, command: str, bunch: Any) -> None:
+    def afterChangeNodeContents(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeNode."""
         u = self
         c = self.c
@@ -522,7 +522,7 @@ class Undoer:
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
     #@+node:ekr.20201107145642.1: *5* u.afterChangeHeadline
-    def afterChangeHeadline(self, p: Position, command: str, bunch: Any) -> None:
+    def afterChangeHeadline(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
         if u.redoing or u.undoing:
@@ -537,7 +537,7 @@ class Undoer:
 
     afterChangeHead = afterChangeHeadline
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
-    def afterChangeTree(self, p: Position, command: str, bunch: Any) -> None:
+    def afterChangeTree(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node for general tree operations using d created by beforeChangeTree"""
         u = self
         c = self.c
@@ -555,7 +555,7 @@ class Undoer:
         bunch.newTree = u.saveTree(p)
         u.pushBead(bunch)
     #@+node:ekr.20050424161505: *5* u.afterClearRecentFiles
-    def afterClearRecentFiles(self, bunch: Any) -> None:
+    def afterClearRecentFiles(self, bunch: g.Bunch) -> None:
         u = self
         bunch.newRecentFiles = g.app.config.recentFiles[:]
         bunch.undoType = 'Clear Recent Files'
@@ -604,7 +604,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.5: *5* u.afterCloneNode
-    def afterCloneNode(self, p: Position, command: str, bunch: Any) -> None:
+    def afterCloneNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
         if u.redoing or u.undoing:
             return  # pragma: no cover
@@ -620,7 +620,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.8: *5* u.afterDeleteNode
-    def afterDeleteNode(self, p: Position, command: str, bunch: Any) -> None:
+    def afterDeleteNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -666,7 +666,7 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050411193627.9: *5* u.afterInsertNode
-    def afterInsertNode(self, p: Position, command: str, bunch: Any) -> None:
+    def afterInsertNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -689,7 +689,7 @@ class Undoer:
             bunch.afterTree = afterTree
         u.pushBead(bunch)
     #@+node:ekr.20050526124257: *5* u.afterMark
-    def afterMark(self, p: Position, command: str, bunch: Any) -> None:
+    def afterMark(self, p: Position, command: str, bunch: g.Bunch) -> None:
         """Create an undo node for mark and unmark commands."""
         # 'command' unused, but present for compatibility with similar methods.
         u = self
@@ -701,7 +701,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20050410110343: *5* u.afterMoveNode
-    def afterMoveNode(self, p: Position, command: str, bunch: Any) -> None:
+    def afterMoveNode(self, p: Position, command: str, bunch: g.Bunch) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -734,7 +734,7 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20080425060424.2: *5* u.afterSort
-    def afterSort(self, p: Position, bunch: Any) -> None:
+    def afterSort(self, p: Position, bunch: g.Bunch) -> None:
         """Create an undo node for sort operations"""
         u = self
         # c = self.c

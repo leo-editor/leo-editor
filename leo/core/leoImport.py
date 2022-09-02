@@ -2051,7 +2051,7 @@ class TabImporter:
             parent.b = parent.b + self.undent(level, s)
         return level
     #@+node:ekr.20161006071801.7: *3* tabbed.undent
-    def undent(self, level: Any, s: str) -> str:
+    def undent(self, level: int, s: str) -> str:
         """Unindent all lines of p.b by level."""
         if level <= 0:
             return s
@@ -2092,7 +2092,7 @@ class ToDoImporter:
             g.es_exception()
             return []
     #@+node:ekr.20200310101028.1: *3* todo_i.import_files
-    def import_files(self, files: Any) -> Dict[str, List[Any]]:
+    def import_files(self, files: List[str]) -> Dict[str, List[Any]]:
         """
         Import all todo.txt files in the given list of file names.
 
