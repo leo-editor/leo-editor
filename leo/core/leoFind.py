@@ -27,6 +27,7 @@ else:
     Cmdr = Any
     Event = Any
     FindTabManager = Any
+    KeyHandler = Any
     Position = Any
     Stroke = Any
     VNode = Any
