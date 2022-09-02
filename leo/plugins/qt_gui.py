@@ -36,13 +36,13 @@ if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
+    # from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
-Widget = Any
 Wrapper = Any
-
+Widget = Any
 #@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
