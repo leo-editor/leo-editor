@@ -30,7 +30,8 @@ free-layout-zoom
 #@+<< free_layout imports >>
 #@+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 import json
-from typing import Any, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 #
 # Qt imports. May fail from the bridge.
@@ -50,10 +51,11 @@ except Exception:
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
-Wrapper = Any
+    Wrapper = Any
 #@-<< free_layout annotations >>
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
@@ -368,7 +370,7 @@ class FreeLayoutController:
             return True
         return False
     #@+node:tbrown.20110628083641.11724: *3* flc.ns_provide
-    def ns_provide(self, id_: str) -> Optional[Wrapper]:
+    def ns_provide(self, id_: str) -> Union[str, Wrapper, None]:
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
             top = self.get_top_splitter()
