@@ -3,8 +3,8 @@
 #@+node:ekr.20140907131341.18707: * @file ../plugins/qt_tree.py
 #@@first
 """Leo's Qt tree class."""
-#@+<< imports: qt_tree.py >>
-#@+node:ekr.20140907131341.18709: ** << imports: qt_tree.py >>
+#@+<< qt_tree imports >>
+#@+node:ekr.20140907131341.18709: ** << qt_tree imports >>
 import re
 import time
 from typing import Any, Callable, Dict, Generator, List, Tuple
@@ -15,25 +15,26 @@ from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
 from leo.plugins import qt_text
-#@-<< imports: qt_tree.py >>
-#@+<< type aliases: qt_tree.py >>
-#@+node:ekr.20220417193741.1: ** << type aliases: qt_tree.py >>
+#@-<< qt_tree imports >>
+#@+<< qt_tree annotations >>
+#@+node:ekr.20220417193741.1: ** << qt_tree annotations >>
 if TYPE_CHECKING:  # Always False at runtime.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
     Position = Any
     VNode = Any
+    Wrapper = Any
 Editor = Any
 Icon = Any
 Item = Any
 Selection = Tuple[int, int, int]
 Widget = Any
-Wrapper = Any
-#@-<< type aliases: qt_tree.py >>
+#@-<< qt_tree annotations >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
 class LeoQtTree(leoFrame.LeoTree):
@@ -41,7 +42,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
-    def __init__(self, c: Cmdr, frame: Wrapper) -> None:
+    def __init__(self, c: Cmdr, frame: Any) -> None:  ### Frame is a LeoQtFrame.
         """Ctor for the LeoQtTree class."""
         super().__init__(frame)
         self.c = c
@@ -62,8 +63,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.editWidgetsDict: Dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
         self.reloadSettings()
         # Components.
-        self.canvas: Wrapper = self  # An official ivar used by Leo's core.
-        self.headlineWrapper: Wrapper = qt_text.QHeadlineWrapper  # This is a class.
+        self.canvas: Any = self  # An official ivar used by Leo's core.
+        self.headlineWrapper: Any = qt_text.QHeadlineWrapper  # This is a class.
         # w is a LeoQTreeWidget, a subclass of QTreeWidget.
         self.treeWidget: Widget = frame.top.treeWidget  # An internal ivar.
         w = self.treeWidget
