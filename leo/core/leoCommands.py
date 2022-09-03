@@ -834,6 +834,7 @@ class Commands:
         finally:
             g.app.log = oldLog
             self.unredirectScriptOutput()
+    #@+node:ekr.20220903070109.1: *4* newHeadline
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
     def executeScriptHelper(self, args: Any, define_g: Any, define_name: Any, namespace: Any, script: Any) -> None:
         c = self
@@ -3824,13 +3825,6 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2990: *4* c.Selecting
-    #@+node:ekr.20031218072017.2992: *5* c.endEditing
-    def endEditing(self) -> None:
-        """End the editing of a headline."""
-        c = self
-        p = c.p
-        if p:
-            c.frame.tree.endEditLabel()
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
     def getSelectedPositions(self) -> List[Position]:
         """ Get list of currently selected positions.
@@ -3939,6 +3933,13 @@ class Commands:
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()  # This is essential.
+    #@+node:ekr.20031218072017.2992: *4* c.endEditing
+    def endEditing(self) -> None:
+        """End the editing of a headline."""
+        c = self
+        p = c.p
+        if p:
+            c.frame.tree.endEditLabel()
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(
         self,

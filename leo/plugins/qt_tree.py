@@ -1360,7 +1360,12 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Trigger the end-editing event.
         w = self.treeWidget
+        import time  ###
+        g.trace(g.callers(8))  ###
+        t0 = time.process_time()
         w.closeEditor(e, EndEditHint.NoHint)
+        t1 = time.process_time()
+        print(f"w.closeEditor: {(t1-t0):4.3}")
         w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self) -> List[Position]:
