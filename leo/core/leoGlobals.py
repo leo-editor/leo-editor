@@ -1611,7 +1611,7 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12602: *4* sherlock.__init__
     def __init__(
         self,
-        patterns: List[Any],
+        patterns: List[str],
         indent: bool=True,
         show_args: bool=True,
         show_return: bool=True,

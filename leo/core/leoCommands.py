@@ -834,7 +834,6 @@ class Commands:
         finally:
             g.app.log = oldLog
             self.unredirectScriptOutput()
-    #@+node:ekr.20220903070109.1: *4* newHeadline
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
     def executeScriptHelper(self, args: Any, define_g: Any, define_name: Any, namespace: Any, script: Any) -> None:
         c = self

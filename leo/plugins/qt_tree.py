@@ -642,20 +642,32 @@ class LeoQtTree(leoFrame.LeoTree):
         # Bug fix: 2009/10/06
         self.redraw_after_icons_changed()
     #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed
+    redraw_after_icons_changed_lockout = False
+
     def redraw_after_icons_changed(self) -> None:
 
         if self.busy:
             return
+        if self.redraw_after_icons_changed_lockout:
+            return
         self.redrawCount += 1  # To keep a unit test happy.
         c = self.c
+        ### root = c.rootPosition()
+        root = c.p  ### Experimental
+        g.trace(root.h)  ###
+        t0 = time.process_time()
         try:
             self.busy = True  # Suppress call to setHeadString in onItemChanged!
+            self.redraw_after_icons_changed_lockout = True  # Suppress updateVisibleIcons!
             self.getCurrentItem()
-            for p in c.rootPosition().self_and_siblings(copy=False):
+            for p in root.self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:
             self.busy = False
+            self.redraw_after_icons_changed_lockout = False
+        t1 = time.process_time()
+        print(f"qtree.redraw_after_icons_changed: {(t1-t0):4.3}")  ###
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
@@ -987,8 +999,9 @@ class LeoQtTree(leoFrame.LeoTree):
             self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
     def updateVisibleIcons(self, p: Position) -> None:
-        """Update the icon for p and the icons
-        for all visible descendants of p."""
+        """
+        Update the icon for p and the icons for all visible descendants of p.
+        """
         self.updateAllIcons(p)
         if p.hasChildren() and p.isExpanded():
             for child in p.children():
@@ -1054,6 +1067,8 @@ class LeoQtTree(leoFrame.LeoTree):
         #@+node:ekr.20201109043641.1: *5* function: editingFinished_callback
         def editingFinished_callback() -> None:
             """Called when Qt emits the editingFinished signal."""
+            if self.end_editing_lockout:
+                return
             s = e.text()
             i = s.find('\n')
             # Truncate to one line.
@@ -1345,6 +1360,8 @@ class LeoQtTree(leoFrame.LeoTree):
                 g.trace('not a text widget!', wrapper)
         return e, wrapper
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
+    end_editing_lockout = False  # Used in the callback.
+
     def endEditLabel(self) -> None:
         """
         Override LeoTree.endEditLabel.
@@ -1358,15 +1375,21 @@ class LeoQtTree(leoFrame.LeoTree):
         e = self.getTreeEditorForItem(item)
         if not e:
             return
-        # Trigger the end-editing event.
-        w = self.treeWidget
-        import time  ###
-        g.trace(g.callers(8))  ###
-        t0 = time.process_time()
-        w.closeEditor(e, EndEditHint.NoHint)
-        t1 = time.process_time()
-        print(f"w.closeEditor: {(t1-t0):4.3}")
-        w.setCurrentItem(item)
+        # #2799: Fix a huge performance bug.
+        if self.end_editing_lockout:
+            g.trace('LOCKOUT', g.callers())
+            return
+        try:
+            self.end_editing_lockout = True
+            w = self.treeWidget
+            # Trigger the end-editing event.
+            t0 = time.process_time()
+            w.closeEditor(e, EndEditHint.NoHint)
+            t1 = time.process_time()
+            print(f"w.closeEditor: {(t1-t0):4.3}")  ###
+            w.setCurrentItem(item)
+        finally:
+            self.end_editing_lockout = False
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self) -> List[Position]:
         return [self.item2position(z) for z in self.getSelectedItems()]

@@ -1243,6 +1243,9 @@ class Undoer:
 
         This is ugly, ad-hoc code, but should be done uniformly.
         """
+        g.trace(p.h)
+        ### import time ###
+        ### t0 = time.process_time()
         c = self.c
         if g.isTextWrapper(w):
             # An important, ever-present unit test.
@@ -1288,10 +1291,18 @@ class Undoer:
         #
         # Recolor the body.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        ### t1 = time.process_time()
         c.recolor()
+        ### t2 = time.process_time()
         if redraw_flag:
             c.redraw_after_icons_changed()
         w.setFocus()
+        ###
+            # t3 = time.process_time()
+            # print(f"u.updateAfterTyping     1: {(t1-t0):4.3}")  ###
+            # print(f"u.updateAfterTyping     2: {(t2-t1):4.3}")  ###
+            # print(f"u.updateAfterTyping     3: {(t3-t2):4.3}")  ###
+            # print(f"u.updateAfterTyping total: {(t3-t0):4.3}")  ###
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event: Event=None) -> None:
