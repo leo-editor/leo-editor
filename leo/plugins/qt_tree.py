@@ -651,12 +651,11 @@ class LeoQtTree(leoFrame.LeoTree):
         try:
             self.busy = True  # Suppress call to setHeadString in onItemChanged!
             self.getCurrentItem()
-            ### for p in c.rootPosition().self_and_siblings(copy=False):
+            # 2799: Only c.p and its parents need to be updated.
+            #       This is a *huge* performance improvements.
             for p in c.p.self_and_parents(copy=False):
                 # Updates icons in p and all visible descendants of p.
-                ### self.updateVisibleIcons(p)
-                ### g.trace(p.h)
-                self.updateAllIcons(p)
+                self.updateIcon(p)
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
@@ -970,16 +969,17 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setIcon(0, icon)
 
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon & updateAllIcons
-    def updateIcon(self, p: Position) -> None:
-        """Update p's icon."""
-        if not p:
-            return
-        val = p.v.computeIcon()
-        if p.v.iconVal != val:
-            self.nodeIconsDict.pop(p.gnx, None)
-            self.getIcon(p)  # sets p.v.iconVal
+    # def updateIcon(self, p: Position) -> None:
+        # """Update p's icon."""
+        # if not p:
+            # return
+        # val = p.v.computeIcon()
+        # if p.v.iconVal != val:
+            # self.nodeIconsDict.pop(p.gnx, None)
+            # self.getIcon(p)  # sets p.v.iconVal
 
-    def updateAllIcons(self, p: Position) -> None:
+    def updateIcon(self, p: Position) -> None:
+        # Was updateAllIcons.
         if not p:
             return
         self.nodeIconsDict.pop(p.gnx, None)
@@ -988,6 +988,8 @@ class LeoQtTree(leoFrame.LeoTree):
         items = self.vnode2items(p.v)
         for item in items:
             self.setItemIcon(item, icon)
+
+    updateAllIcons = updateIcon
     #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
     def updateVisibleIcons(self, p: Position) -> None:
         """Update the icon for p and the icons
