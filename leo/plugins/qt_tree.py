@@ -654,7 +654,9 @@ class LeoQtTree(leoFrame.LeoTree):
             ### for p in c.rootPosition().self_and_siblings(copy=False):
             for p in c.p.self_and_parents(copy=False):
                 # Updates icons in p and all visible descendants of p.
-                self.updateVisibleIcons(p)
+                ### self.updateVisibleIcons(p)
+                ### g.trace(p.h)
+                self.updateAllIcons(p)
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
