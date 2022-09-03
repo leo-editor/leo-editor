@@ -1243,9 +1243,6 @@ class Undoer:
 
         This is ugly, ad-hoc code, but should be done uniformly.
         """
-        g.trace(p.h)
-        ### import time ###
-        ### t0 = time.process_time()
         c = self.c
         if g.isTextWrapper(w):
             # An important, ever-present unit test.
@@ -1256,8 +1253,6 @@ class Undoer:
                 g.trace(
                     f"\np.b != w.getAllText() p: {p.h} \n"
                     f"w: {w!r} \n{g.callers()}\n")
-                # g.printObj(g.splitLines(p.b), tag='p.b')
-                # g.printObj(g.splitLines(all), tag='getAllText')
             p.v.insertSpot = ins = w.getInsertPoint()
             # From u.doTyping.
             newSel = w.getSelectionRange()
@@ -1272,7 +1267,6 @@ class Undoer:
             g.trace('Not a text wrapper')
             p.v.insertSpot = 0
             p.v.selectionStart, p.v.selectionLength = (0, 0)
-        #
         # #1749.
         if p.isDirty():
             redraw_flag = False
@@ -1291,18 +1285,10 @@ class Undoer:
         #
         # Recolor the body.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        ### t1 = time.process_time()
         c.recolor()
-        ### t2 = time.process_time()
         if redraw_flag:
             c.redraw_after_icons_changed()
         w.setFocus()
-        ###
-            # t3 = time.process_time()
-            # print(f"u.updateAfterTyping     1: {(t1-t0):4.3}")  ###
-            # print(f"u.updateAfterTyping     2: {(t2-t1):4.3}")  ###
-            # print(f"u.updateAfterTyping     3: {(t3-t2):4.3}")  ###
-            # print(f"u.updateAfterTyping total: {(t3-t0):4.3}")  ###
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event: Event=None) -> None:

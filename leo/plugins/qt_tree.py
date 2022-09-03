@@ -7,7 +7,7 @@
 #@+node:ekr.20140907131341.18709: ** << qt_tree imports >>
 import re
 import time
-from typing import Any, Callable, Dict, Generator, List, Tuple
+from typing import Any, Callable, Dict, Generator, List, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
@@ -643,22 +643,24 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redraw_after_icons_changed()
     #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed
     redraw_after_icons_changed_lockout = False
+    redraw_icon_count = 0
 
     def redraw_after_icons_changed(self) -> None:
 
         if self.busy:
             return
         if self.redraw_after_icons_changed_lockout:
+            g.trace('LOCKOUT')  # Doesn't help.
             return
         self.redrawCount += 1  # To keep a unit test happy.
         c = self.c
-        ### root = c.rootPosition()
-        root = c.p  ### Experimental
+        root = c.rootPosition()
         g.trace(root.h)  ###
         t0 = time.process_time()
         try:
             self.busy = True  # Suppress call to setHeadString in onItemChanged!
             self.redraw_after_icons_changed_lockout = True  # Suppress updateVisibleIcons!
+            self.redraw_icon_count = 0  # For traces.
             self.getCurrentItem()
             for p in root.self_and_siblings(copy=False):
                 # Updates icons in p and all visible descendants of p.
@@ -667,7 +669,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.busy = False
             self.redraw_after_icons_changed_lockout = False
         t1 = time.process_time()
-        print(f"qtree.redraw_after_icons_changed: {(t1-t0):4.3}")  ###
+        print(f"qtree.redraw_after_icons_changed: icon_count: {self.redraw_icon_count} {(t1-t0):4.3}")  ###
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
@@ -983,29 +985,47 @@ class LeoQtTree(leoFrame.LeoTree):
         """Update p's icon."""
         if not p:
             return
+        ### g.trace(p.h)
         val = p.v.computeIcon()
         if p.v.iconVal != val:
+            self.redraw_icon_count += 1  ### For traces.
             self.nodeIconsDict.pop(p.gnx, None)
             self.getIcon(p)  # sets p.v.iconVal
 
     def updateAllIcons(self, p: Position) -> None:
         if not p:
             return
-        self.nodeIconsDict.pop(p.gnx, None)
-        icon = self.getIcon(p)  # sets p.v.iconVal
         # Update all cloned items.
         items = self.vnode2items(p.v)
+        # This is a performance bottleneck! Do as little as possible!
+        if not items:
+            return
+        self.redraw_icon_count += 1  ### For traces.
+        self.nodeIconsDict.pop(p.gnx, None)
+        icon = self.getIcon(p)  # sets p.v.iconVal
         for item in items:
             self.setItemIcon(item, icon)
-    #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
+    #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons ***
     def updateVisibleIcons(self, p: Position) -> None:
         """
         Update the icon for p and the icons for all visible descendants of p.
         """
-        self.updateAllIcons(p)
+        g.trace(p.h)
+        sherlock = False
+        if sherlock:
+            tracer = g.SherlockTracer(patterns=['+.*', '-:.*leoNodes.py', '-:.*leoCommands.py'])
+            tracer.run()
+        seen: Set[VNode] = set()
+        if p.isCloned() and p.v not in seen:
+            seen.add(p.v)
+            self.updateAllIcons(p)  # Slow.
+        else:
+            self.updateIcon(p)
         if p.hasChildren() and p.isExpanded():
             for child in p.children():
                 self.updateVisibleIcons(child)
+        if sherlock:
+            tracer.stop()
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
@@ -1067,8 +1087,6 @@ class LeoQtTree(leoFrame.LeoTree):
         #@+node:ekr.20201109043641.1: *5* function: editingFinished_callback
         def editingFinished_callback() -> None:
             """Called when Qt emits the editingFinished signal."""
-            if self.end_editing_lockout:
-                return
             s = e.text()
             i = s.find('\n')
             # Truncate to one line.
@@ -1386,7 +1404,7 @@ class LeoQtTree(leoFrame.LeoTree):
             t0 = time.process_time()
             w.closeEditor(e, EndEditHint.NoHint)
             t1 = time.process_time()
-            print(f"w.closeEditor: {(t1-t0):4.3}")  ###
+            print(f"endEditLabel: w.closeEditor: {(t1-t0):4.3}")  ###
             w.setCurrentItem(item)
         finally:
             self.end_editing_lockout = False
