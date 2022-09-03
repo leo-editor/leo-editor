@@ -63,13 +63,15 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
+UndoData = g.Bunch
 #@-<< leoUndo annotations >>
 # pylint: disable=unpacking-non-sequence
-#@+others
-#@+node:ekr.20150509193222.1: ** u.cmd (decorator)
-def cmd(name: Any) -> Callable:
+
+def cmd(name: str) -> Callable:
     """Command decorator for the Undoer class."""
     return g.new_cmd_decorator(name, ['c', 'undoer',])
+
+#@+others
 #@+node:ekr.20031218072017.3605: ** class Undoer
 class Undoer:
     """A class that implements unlimited undo and redo."""
@@ -191,7 +193,7 @@ class Undoer:
             return self.dumpBead(n - 1)
         return '<no top bead>'
     #@+node:EKR.20040526150818: *4* u.getBead
-    def getBead(self, n: int) -> Any:
+    def getBead(self, n: int) -> UndoData:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
@@ -202,7 +204,7 @@ class Undoer:
             print(f" u.getBead: {n:3} of {len(u.beads)}")
         return bunch
     #@+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> Any:
+    def peekBead(self, n: int) -> UndoData:
 
         u = self
         if n < 0 or n >= len(u.beads):
@@ -384,7 +386,7 @@ class Undoer:
             child = child.next()
         return treeInfo
     #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
-    def createVnodeUndoInfo(self, v: VNode) -> Any:
+    def createVnodeUndoInfo(self, v: VNode) -> UndoData:
         """Create a bunch containing all info needed to recreate a VNode for undo."""
         bunch = g.Bunch(
             v=v,
@@ -634,7 +636,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20111005152227.15555: *5* u.afterDeleteMarkedNodes
-    def afterDeleteMarkedNodes(self, data: Any, p: Position) -> None:
+    def afterDeleteMarkedNodes(self, data: UndoData, p: Position) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -855,7 +857,7 @@ class Undoer:
         bunch.oldParent_v = p._parentVnode()
         return bunch
     #@+node:ekr.20080425060424.3: *5* u.beforeSort
-    def beforeSort(self, p: Position, undoType: Any, oldChildren: Any, newChildren: Any, sortChildren: Any) -> None:
+    def beforeSort(self, p: Position, undoType: str, oldChildren: Any, newChildren: Any, sortChildren: Any) -> None:
         """Create an undo node for sort operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -908,9 +910,9 @@ class Undoer:
     def doTyping(
         self,
         p: Position,
-        undo_type: Any,
-        oldText: Any,
-        newText: Any,
+        undo_type: str,
+        oldText: str,
+        newText: str,
         newInsert: Any=None,
         oldSel: Any=None,
         newSel: Any=None,
@@ -1200,7 +1202,7 @@ class Undoer:
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
     #@+node:ekr.20110519074734.6094: *4* u.onSelect & helpers
-    def onSelect(self, old_p: Any, p: Position) -> None:
+    def onSelect(self, old_p: Position, p: Position) -> None:
 
         u = self
         if u.per_node_undo:
@@ -1972,7 +1974,7 @@ class Undoer:
         c.frame.body.recolor(p)
         w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
-    def undoRedoTree(self, new_data: Any, old_data: Any) -> None:
+    def undoRedoTree(self, new_data: Any, old_data: Any) -> Position:
         """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
         c, p, u = self.c, self.c.p, self
