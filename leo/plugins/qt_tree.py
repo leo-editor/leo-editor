@@ -651,7 +651,8 @@ class LeoQtTree(leoFrame.LeoTree):
         try:
             self.busy = True  # Suppress call to setHeadString in onItemChanged!
             self.getCurrentItem()
-            for p in c.rootPosition().self_and_siblings(copy=False):
+            ### for p in c.rootPosition().self_and_siblings(copy=False):
+            for p in c.p.self_and_parents(copy=False):
                 # Updates icons in p and all visible descendants of p.
                 self.updateVisibleIcons(p)
         finally:
