@@ -47,7 +47,7 @@
 #@-<< How Leo implements unlimited undo >>
 #@+<< leoUndo imports >>
 #@+node:ekr.20220821074023.1: ** << leoUndo imports >>
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, Callable, List, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoUndo imports >>
 #@+<< leoUndo annotations >>
@@ -103,10 +103,10 @@ class Undoer:
         self.afterTree = None
         self.beforeTree = None
         self.children = None
-        self.deleteMarkedNodesData = None
-        self.followingSibs = None
-        self.inHead = None
-        self.kind = None
+        self.deleteMarkedNodesData: Any = None
+        self.followingSibs: List[VNode] = None
+        self.inHead: bool = None
+        self.kind: str = None
         self.newBack = None
         self.newBody = None
         self.newChildren = None
@@ -652,7 +652,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.8: *5* u.afterDemote
-    def afterDemote(self, p: Position, followingSibs: Any) -> None:
+    def afterDemote(self, p: Position, followingSibs: List[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -720,7 +720,7 @@ class Undoer:
         bunch.newP = p.copy()
         u.pushBead(bunch)
     #@+node:ekr.20080425060424.12: *5* u.afterPromote
-    def afterPromote(self, p: Position, children: Any) -> None:
+    def afterPromote(self, p: Position, children: List[VNode]) -> None:
         """Create an undo node for demote operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -832,7 +832,7 @@ class Undoer:
         bunch.oldParent = p.parent()
         return bunch
     #@+node:ekr.20050411193627.4: *5* u.beforeInsertNode
-    def beforeInsertNode(self, p: Position, pasteAsClone: bool=False, copiedBunchList: Any=None) -> None:
+    def beforeInsertNode(self, p: Position, pasteAsClone: bool=False, copiedBunchList: List[g.Bunch]=None) -> None:
         u = self
         if copiedBunchList is None:
             copiedBunchList = []
@@ -857,7 +857,13 @@ class Undoer:
         bunch.oldParent_v = p._parentVnode()
         return bunch
     #@+node:ekr.20080425060424.3: *5* u.beforeSort
-    def beforeSort(self, p: Position, undoType: str, oldChildren: Any, newChildren: Any, sortChildren: Any) -> None:
+    def beforeSort(self,
+        p: Position,
+        undoType: str,
+        oldChildren: List[VNode],
+        newChildren: List[VNode],
+        sortChildren: List[VNode],
+    ) -> None:
         """Create an undo node for sort operations."""
         u = self
         bunch = u.createCommonBunch(p)
@@ -1935,7 +1941,7 @@ class Undoer:
         oldNewlines: Any,
         newNewlines: Any,  # Number of trailing newlines.
         tag: str="undo",  # "undo" or "redo"
-        undoType: Any=None,
+        undoType: str=None,
     ) -> None:
         """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.
