@@ -109,7 +109,7 @@ class FreeMindImporter:
         else:
             g.error(f"file not found: {sfn}")
     #@+node:ekr.20160503145113.1: *3* freemind.import_files
-    def import_files(self, files: Any) -> None:
+    def import_files(self, files: List[str]) -> None:
         """Import a list of FreeMind (.mmap) files."""
         c = self.c
         if files:
@@ -158,7 +158,7 @@ class JSON_Import_Helper:
 
     #@+others
     #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
-    def create_nodes(self, parent: Any, parent_d: Dict[str, str]) -> None:
+    def create_nodes(self, parent: Position, parent_d: Dict[str, str]) -> None:
         """Create the tree of nodes rooted in parent."""
         d = self.gnx_dict
         for child_gnx in parent_d.get('children'):
@@ -195,7 +195,7 @@ class JSON_Import_Helper:
         c.undoer.afterInsertNode(p, 'Import', undoData)
         return p
     #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
-    def scan(self, s: str, parent: Any) -> bool:
+    def scan(self, s: str, parent: Position) -> bool:
         """Create an outline from a MindMap (.csv) file."""
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
@@ -491,7 +491,7 @@ class LeoImportCommands:
                 theFile.write(s)
         theFile.close()
     #@+node:ekr.20031218072017.1148: *4* ic.outlineToWeb
-    def outlineToWeb(self, fileName: str, webType: Any) -> None:
+    def outlineToWeb(self, fileName: str, webType: str) -> None:
         c = self.c
         nl = self.output_newline
         current = c.p
@@ -636,7 +636,7 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, parent: Any, ext: Any=None, s: str=None) -> Position:
+    def createOutline(self, parent: Position, ext: str=None, s: str=None) -> Position:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -686,13 +686,13 @@ class LeoImportCommands:
         w.seeInsertPoint()
         return p
     #@+node:ekr.20140724064952.18038: *5* ic.dispatch & helpers
-    def dispatch(self, ext: Any, p: Position) -> Optional[Callable]:
+    def dispatch(self, ext: str, p: Position) -> Optional[Callable]:
         """Return the correct scanner function for p, an @auto node."""
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
-    def import_binary_file(self, fileName: str, parent: Any) -> Position:
+    def import_binary_file(self, fileName: str, parent: Position) -> Position:
 
         # Fix bug 1185409 importing binary files puts binary content in body editor.
         # Create an @url node.
@@ -822,10 +822,10 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
         self,
-        files: Any=None,
-        parent: Any=None,
+        files: List[str]=None,
+        parent: Position=None,
         shortFn: bool=False,
-        treeType: Any=None,
+        treeType: str=None,
         verbose: bool=True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
@@ -1326,7 +1326,7 @@ class LeoImportCommands:
         s = s.rstrip()
         return s
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
-    def setEncoding(self, p: Position=None, default: Any=None) -> None:
+    def setEncoding(self, p: Position=None, default: str=None) -> None:
         c = self.c
         encoding = g.getEncodingAt(p or c.p) or default
         if encoding and g.isValidEncoding(encoding):
@@ -1365,7 +1365,7 @@ class MindMapImporter:
         c.undoer.afterInsertNode(p, 'Import', undoData)
         return p
     #@+node:ekr.20160503144647.1: *3* mindmap.import_files
-    def import_files(self, files: Any) -> None:
+    def import_files(self, files: List[str]) -> None:
         """Import a list of MindMap (.csv) files."""
         c = self.c
         if files:
@@ -1657,12 +1657,12 @@ class RecursiveImportController:
         c: Cmdr,
         kind: str,
         add_context: bool=None,  # Override setting only if True/False
-        add_file_context: Any=None,  # Override setting only if True/False
+        add_file_context: bool=None,  # Override setting only if True/False
         add_path: bool=True,
         recursive: bool=True,
         safe_at_file: bool=True,
-        theTypes: Any=None,
-        ignore_pattern: Any=None,
+        theTypes: List[str]=None,
+        ignore_pattern: re.Pattern=None,
         verbose: bool=True,  # legacy value.
     ) -> None:
         """Ctor for RecursiveImportController class."""
@@ -2331,7 +2331,7 @@ class ZimImportController:
         rstNode.h = name
         return rstNode
     #@+node:davy.20141212140940.1: *3* zic.clean
-    def clean(self, zimNode: Position, rstType: Any) -> None:
+    def clean(self, zimNode: Position, rstType: str) -> None:
         """Clean useless nodes"""
         warning = 'Warning: this node is ignored when writing this file'
         for p in zimNode.subtree_iter():
@@ -2423,7 +2423,7 @@ class LegacyExternalFileImporter:
             self.level = level
             self.lines: List[str] = []
     #@+node:ekr.20200424092652.1: *3* legacy.add
-    def add(self, line: Any, stack: List[Any]) -> None:
+    def add(self, line: str, stack: List[Any]) -> None:
         """Add a line to the present node."""
         if stack:
             node = stack[-1]
