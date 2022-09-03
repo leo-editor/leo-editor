@@ -652,9 +652,8 @@ class LeoQtTree(leoFrame.LeoTree):
             self.busy = True  # Suppress call to setHeadString in onItemChanged!
             self.getCurrentItem()
             # 2799: Only c.p and its parents need to be updated.
-            #       This is a *huge* performance improvements.
+            #       This is a *huge* performance improvement.
             for p in c.p.self_and_parents(copy=False):
-                # Updates icons in p and all visible descendants of p.
                 self.updateIcon(p)
         finally:
             self.busy = False
@@ -968,18 +967,9 @@ class LeoQtTree(leoFrame.LeoTree):
             # but there is no itemChanged event handler.
             item.setIcon(0, icon)
 
-    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon & updateAllIcons
-    # def updateIcon(self, p: Position) -> None:
-        # """Update p's icon."""
-        # if not p:
-            # return
-        # val = p.v.computeIcon()
-        # if p.v.iconVal != val:
-            # self.nodeIconsDict.pop(p.gnx, None)
-            # self.getIcon(p)  # sets p.v.iconVal
-
+    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
     def updateIcon(self, p: Position) -> None:
-        # Was updateAllIcons.
+
         if not p:
             return
         self.nodeIconsDict.pop(p.gnx, None)
@@ -988,16 +978,6 @@ class LeoQtTree(leoFrame.LeoTree):
         items = self.vnode2items(p.v)
         for item in items:
             self.setItemIcon(item, icon)
-
-    updateAllIcons = updateIcon
-    #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
-    def updateVisibleIcons(self, p: Position) -> None:
-        """Update the icon for p and the icons
-        for all visible descendants of p."""
-        self.updateAllIcons(p)
-        if p.hasChildren() and p.isExpanded():
-            for child in p.children():
-                self.updateVisibleIcons(child)
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
