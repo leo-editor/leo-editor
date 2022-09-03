@@ -103,7 +103,7 @@ class Undoer:
         self.afterTree = None
         self.beforeTree = None
         self.children = None
-        self.deleteMarkedNodesData: Any = None
+        self.deleteMarkedNodesData: g.Bunch = None
         self.followingSibs: List[VNode] = None
         self.inHead: bool = None
         self.kind: str = None
@@ -919,7 +919,7 @@ class Undoer:
         undo_type: str,
         oldText: str,
         newText: str,
-        newInsert: Any=None,
+        newInsert: int=None,
         oldSel: Any=None,
         newSel: Any=None,
         oldYview: Any=None,
@@ -1168,16 +1168,16 @@ class Undoer:
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(
         self,
-        old_lines: Any,
-        old_row: Any,
-        old_col: Any,
-        old_ch: Any,
-        new_lines: Any,
-        new_row: Any,
-        new_col: Any,
-        new_ch: Any,
-        prev_row: Any,
-        prev_col: Any,
+        old_lines: List[str],
+        old_row: int,
+        old_col: int,
+        old_ch: str,
+        new_lines: List[str],
+        new_row: int,
+        new_col: int,
+        new_ch: str,
+        prev_row: int,
+        prev_col: int,
     ) -> None:
         """
         A potentially user-modifiable method that should return True if the
@@ -1934,12 +1934,12 @@ class Undoer:
     def undoRedoText(
         self,
         p: Position,
-        leading: Any,
-        trailing: Any,  # Number of matching leading & trailing lines.
-        oldMidLines: Any,
-        newMidLines: Any,  # Lists of unmatched lines.
-        oldNewlines: Any,
-        newNewlines: Any,  # Number of trailing newlines.
+        leading: int,
+        trailing: int,  # Number of matching leading & trailing lines.
+        oldMidLines: List[str],
+        newMidLines: List[str],  # Lists of unmatched lines.
+        oldNewlines: List[str],
+        newNewlines: List[str],  # Number of trailing newlines.
         tag: str="undo",  # "undo" or "redo"
         undoType: str=None,
     ) -> None:
