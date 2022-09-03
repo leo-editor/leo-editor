@@ -68,7 +68,8 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
 #
@@ -517,21 +518,26 @@ class todoController:
     #@+node:tbrown.20090630144958.5320: *3* menuicon
     def menuicon(self, pri: int, progress: bool=False) -> Icon:
         """return icon from cache, placing it there if needed"""
+        # if progress:
+            # prog = pri
+            # pri = 'prog-%d' % pri
+        # if pri not in self.menuicons:
+            # if progress:
+                # fn = 'prg%03d.png' % prog
+            # else:
+                # fn = self.priorities[pri]["icon"]
+            # # use getImageImage because it's theme aware
+            # fn = g.os_path_join('cleo', fn)
+            # self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
+        # return self.menuicons[pri]
 
-        if progress:
-            prog = pri
-            pri_s = 'prog-%d' % pri
-
-        if pri_s not in self.menuicons:
-            if progress:
-                fn = 'prg%03d.png' % prog
-            else:
-                fn = self.priorities[pri]["icon"]
+        key: Union[str, int] = f"prog-{pri}" if progress else pri
+        fn = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]
+        if key not in self.menuicons:
             # use getImageImage because it's theme aware
             fn = g.os_path_join('cleo', fn)
-            self.menuicons[pri_s] = QtGui.QIcon(g.app.gui.getImageImage(fn))
-
-        return self.menuicons[pri_s]
+            self.menuicons[key] = QtGui.QIcon(g.app.gui.getImageImage(fn))
+        return self.menuicons[key]
     #@+node:tbrown.20090119215428.13: *3* redrawer
     # mypy complains about missing 'self' arg.
     def redrawer(fn: Callable) -> Callable:  # type:ignore

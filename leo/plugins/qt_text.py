@@ -313,8 +313,7 @@ class QTextMixin:
         """QTextMixin"""
         if s is None:
             s = self.getAllText()
-        int_i = g.toPythonIndex(s, index)
-        return int_i
+        return g.toPythonIndex(s, index)
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """QTextMixin"""
