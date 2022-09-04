@@ -938,12 +938,12 @@ class GitDiffController:
                     p.moveToLastChildOf(parent)
                 else:
                     p = parent.insertAsLastChild()
-                p.h = f"diff: {v.h}"
+                p.h = v.h
                 p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
-                p.h = f"diff: {v.h}"
+                p.h = v.h
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list: List[str], fn: str) -> Position:
