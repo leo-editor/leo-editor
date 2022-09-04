@@ -99,6 +99,7 @@ class Undoer:
         # New in 4.2...
         self.optionalIvars = []
         # Set the following ivars to keep pylint happy.
+        # mypy doesn't care about these.
         self.afterTree = None
         self.beforeTree = None
         self.children = None
