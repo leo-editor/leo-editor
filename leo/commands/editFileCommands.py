@@ -897,7 +897,7 @@ class GitDiffController:
         if not d:
             return
         parent = self.file_node.insertAsLastChild()
-        parent.setHeadString(kind)
+        parent.setHeadString(f"diff: {kind}")
         for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
