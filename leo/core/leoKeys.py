@@ -408,6 +408,7 @@ class AutoCompleterClass:
         ch = event.char if event else ''
         stroke = event.stroke if event else ''
         is_plain = k.isPlainKey(stroke)
+        g.trace('stroke', repr(stroke))
         if state == 0:
             c.frame.log.clearTab(self.tabName)
             common_prefix, prefix, tabList = self.compute_completion_list()
