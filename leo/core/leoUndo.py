@@ -47,7 +47,7 @@
 #@-<< How Leo implements unlimited undo >>
 #@+<< leoUndo imports >>
 #@+node:ekr.20220821074023.1: ** << leoUndo imports >>
-from typing import Any, Callable, List, TYPE_CHECKING
+from typing import Any, Callable, List, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoUndo imports >>
 #@+<< leoUndo annotations >>
@@ -63,7 +63,6 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
-UndoData = g.Bunch
 #@-<< leoUndo annotations >>
 # pylint: disable=unpacking-non-sequence
 
@@ -193,7 +192,7 @@ class Undoer:
             return self.dumpBead(n - 1)
         return '<no top bead>'
     #@+node:EKR.20040526150818: *4* u.getBead
-    def getBead(self, n: int) -> UndoData:
+    def getBead(self, n: int) -> g.Bunch:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
@@ -204,7 +203,7 @@ class Undoer:
             print(f" u.getBead: {n:3} of {len(u.beads)}")
         return bunch
     #@+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> UndoData:
+    def peekBead(self, n: int) -> g.Bunch:
 
         u = self
         if n < 0 or n >= len(u.beads):
@@ -321,7 +320,7 @@ class Undoer:
             u.setRedoType("Can't Redo")
         u.cutStack()
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
-    def restoreTree(self, treeInfo: Any) -> None:
+    def restoreTree(self, treeInfo: g.Bunch) -> None:
         """Use the tree info to restore all VNode data,
         including all links."""
         u = self
@@ -350,7 +349,7 @@ class Undoer:
             v.unknownAttributes = uA
             v._p_changed = True
     #@+node:EKR.20040528075307: *4* u.saveTree & helpers
-    def saveTree(self, p: Position, treeInfo: Any=None) -> Any:
+    def saveTree(self, p: Position, treeInfo: g.Bunch=None) -> g.Bunch:
         """Return a list of tuples with all info needed to handle a general undo operation."""
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
@@ -386,7 +385,7 @@ class Undoer:
             child = child.next()
         return treeInfo
     #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
-    def createVnodeUndoInfo(self, v: VNode) -> UndoData:
+    def createVnodeUndoInfo(self, v: VNode) -> g.Bunch:
         """Create a bunch containing all info needed to recreate a VNode for undo."""
         bunch = g.Bunch(
             v=v,
@@ -636,7 +635,7 @@ class Undoer:
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
     #@+node:ekr.20111005152227.15555: *5* u.afterDeleteMarkedNodes
-    def afterDeleteMarkedNodes(self, data: UndoData, p: Position) -> None:
+    def afterDeleteMarkedNodes(self, data: g.Bunch, p: Position) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -920,9 +919,9 @@ class Undoer:
         oldText: str,
         newText: str,
         newInsert: int=None,
-        oldSel: Any=None,
-        newSel: Any=None,
-        oldYview: Any=None,
+        oldSel: Tuple[int, int]=None,
+        newSel: Tuple[int, int]=None,
+        oldYview: int=None,
     ) -> None:
         """
         Save enough information to undo or redo a typing operation efficiently,
@@ -1980,7 +1979,7 @@ class Undoer:
         c.frame.body.recolor(p)
         w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
-    def undoRedoTree(self, new_data: Any, old_data: Any) -> Position:
+    def undoRedoTree(self, new_data: g.Bunch, old_data: g.Bunch) -> Position:
         """Replace p and its subtree using old_data during undo."""
         # Same as undoReplace except uses g.Bunch.
         c, p, u = self.c, self.c.p, self
