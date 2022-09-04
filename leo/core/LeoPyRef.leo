@@ -733,8 +733,7 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">test-import
-test-one
+<t tx="ekr.20150425145248.1">expand-all-subheads
 pylint
 backup
 show-commands
@@ -2298,8 +2297,8 @@ convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
 efc.GitDiffController(c).diff_two_revs(
     # rev1='f85969ae8cb',  # Before.
     # rev2='dd0fadf7b15',  # After.
-    rev1='test',               # Old
-    rev2='ekr-mypy',   # New
+    rev1='6.6.4',               # Old
+    rev2='ekr-typing',   # New
 )
 </t>
 <t tx="ekr.20180816105258.1">g.cls()
@@ -2809,7 +2808,7 @@ while True:
 </t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">getCompositeIconImage  # This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
 </t>
