@@ -903,7 +903,7 @@ class GitDiffController:
                 v1, v2 = d.get(key)
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
-                organizer.h = v2.h
+                organizer.h = f"diff: {v2.h}"
                 body = list(difflib.unified_diff(
                     g.splitLines(v1.b),
                     g.splitLines(v2.b),
@@ -938,12 +938,12 @@ class GitDiffController:
                     p.moveToLastChildOf(parent)
                 else:
                     p = parent.insertAsLastChild()
-                p.h = v.h
+                p.h = f"diff: {v.h}"
                 p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
-                p.h = v.h
+                p.h = f"diff: {v.h}"
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list: List[str], fn: str) -> Position:
