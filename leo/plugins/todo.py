@@ -93,6 +93,7 @@ else:
     Wrapper = Any
 Icon = Any # QtGui.QIcon
 Menu = Any
+Priority = Union[int, str]
 #@-<< todo annotations >>
 
 NO_TIME = datetime.date(3000, 1, 1)
@@ -366,7 +367,7 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: Dict[str, Icon] = {}  # menu icon cache
+        self.menuicons: Dict[Priority, Icon] = {}  # menu icon cache
         self.recentIcons: List[Icon] = []
         #X self.smiley = None
         self.redrawLevels = 0
@@ -531,8 +532,9 @@ class todoController:
             # self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
         # return self.menuicons[pri]
 
-        key: Union[str, int] = f"prog-{pri}" if progress else pri
-        fn = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]
+        key: Priority = f"prog-{pri}" if progress else pri
+        # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
+        fn: str = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]  # type:ignore
         if key not in self.menuicons:
             # use getImageImage because it's theme aware
             fn = g.os_path_join('cleo', fn)
