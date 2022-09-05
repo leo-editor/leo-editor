@@ -1883,10 +1883,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh>
-<v t="ekr.20201016081803.1"><vh>Alphabetica list</vh></v>
-<v t="ekr.20201016081718.1"><vh>Not recommended</vh></v>
-</v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
@@ -3762,13 +3759,9 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # **Important**: to change these defaults, put
 # an @enabled-plugins node in myLeoSettings.leo.
 
-# Highly-recommended plugins:
+# Standard plugins...
 
-plugins_menu.py
-free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
-    
-# Recommended plugins:
-
+plugins_menu.py     # Adds 'Plugins' menu.
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
@@ -3776,9 +3769,6 @@ nodetags.py
 quicksearch.py      # Nav pane.
 todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
-
-# screen_capture.py
-# stickynotes.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.
@@ -11408,134 +11398,6 @@ LeoBlackSolarized.leo
 PaperLightTheme.leo
 ZephyrDarkTheme.leo</t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
-</t>
-<t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.
-
-# leo_pdf.py
-# leo_to_rtf.py
-# mnplugins.py
-# mod_speedups.py
-# run_nodes.py
-# settings_finder.py
-# stickynotes_plus.py
-# viewrendered2.py</t>
-<t tx="ekr.20201016081803.1"># Alphabetical list of plugins.
-
-# Note: This list may be out of date. leo/plugins contains all official plugins.
-# Note: Leo loads all qt_*.py files automatically when the qt gui is in effect.
-
-# active_path.py
-# add_directives.py
-# at_folder.py
-# at_produce.py
-# at_view.py
-# attrib_edit.py
-# backlink.py
-# bibtex.py
-# bigdash.py
-# bookmarks.py
-# bzr_qcommands.py
-# chapter_hoist.py
-# colorize_headlines.py
-# contextmenu.py
-# ctagscompleter.py
-# cursesGui.py
-# datenodes.py
-# debugger_pudb.py
-# dragdropgoodies.py
-# dtest.py
-# dump_globals.py
-# empty_leo_file.py
-# enable_gc.py
-# expfolder.py
-# FileActions.py
-# free_layout.py # loaded automatically
-# ftp.py
-# geotag.py
-# gitarchive.py
-# graphcanvas.py
-# import_cisco_config.py
-# initinclass.py
-# interact.py
-# jinjarender.py
-# leo_interface.py
-# leo_to_html.py
-# leocursor.py
-# leofeeds.py
-# leomail.py
-# leomylyn.py
-# leoOPML.py
-# leoremote.py
-# leoscreen.py
-# lineNumbers.py
-# livecode.py
-# macros.py
-# markup_inline.py
-# maximizeNewWindows.py
-# mime.py
-# mod_autosave.py
-# mod_framesize.py
-# mod_http.py
-# mod_leo2ascd.py
-# mod_read_dir_outline.py
-# mod_scripting.py
-# mod_tempfname.py
-# mod_timestamp.py
-# multifile.py
-# nav_qt.py
-# niceNosent.py
-# nodeActions.py
-# nodediff.py
-# nodetags.py
-# nodewatch.py
-# notebook.py
-# open_shell.py
-# outline_export.py
-# paste_as_headlines.py
-# plugins_menu.py
-# pretty_print.py
-# projectwizard.py
-# python_terminal.py
-# QNCalendarWidget.py
-# qt_quicksearch.py
-# quickMove.py
-# quicksearch.py
-# quit_leo.py
-# read_only_nodes.py
-# redirect_to_log.py
-# richtext.py
-# rss.py
-# rst3.py
-# screen_capture.py
-# screencast.py
-# screenshots.py
-# script_io_to_body.py
-# scripts_menu.py
-# setHomeDirectory.py
-# settings_finder.py
-# sftp.py
-# slideshow.py
-# spydershell.py
-# startfile.py
-# stickynotes.py
-# systray.py
-# testRegisterCommand.py
-# textnode.py
-# todo.py
-# tomboy_import.py
-# trace_gc_plugin.py
-# trace_keys.py
-# trace_tags.py
-# valuespace.py
-# viewrendered3.py
-# vim.py
-# wikiview.py
-# word_count.py
-# word_export.py
-# xemacs.py
-# xml_edit.py
-# xsltWithNodes.py
-# zenity_file_dialogs.py
 </t>
 <t tx="ekr.20201021105344.1"></t>
 <t tx="ekr.20201021105651.1">Path to ``asciidoc`` directory</t>
