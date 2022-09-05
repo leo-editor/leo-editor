@@ -132,8 +132,6 @@ class AtFile:
         self.rootSeen = False
         self.targetFileName = fileName  # For self.writeError only.
         self.v = None
-        ### self.vStack: List[VNode] = []
-        ### self.thinChildIndexStack: List[int] = []  # number of siblings at this level.
         self.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Position) -> Optional[str]:
@@ -628,7 +626,6 @@ class AtFile:
         fn = g.fullPath(c, p)  # #1521, #1341, #1914.
         if not g.os_path_exists(fn):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
-            ### return p
             return False
         # Delete all the child nodes.
         while p.hasChildren():

@@ -2268,10 +2268,6 @@ class NullTree(LeoTree):
 
     def scrollTo(self, p: Position) -> None:
         pass
-
-    ###
-    # def updateIcon(self, p: Position) -> None:
-        # pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:
         """Set the actual text of the headline widget.

@@ -2191,7 +2191,6 @@ class LeoFind:
         else:
             p.v.b = gui_w.getAllText()
             u.afterChangeBody(p, 'Change Body', bunch)
-        ### c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
     #@+node:ekr.20210110073117.31: *4* find.check_args
     def check_args(self, tag: str) -> bool:
@@ -2250,9 +2249,6 @@ class LeoFind:
                 if self.mark_finds:  # pragma: no cover
                     p.setMarked()
                     p.setDirty()
-                    ###
-                        # if not self.changeAllFlag:
-                            # c.frame.tree.updateIcon(p)  # redraw only the icon.
                 return p, pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self._fnm_should_stay_in_node(p):

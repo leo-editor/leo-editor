@@ -931,10 +931,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # but there is no itemChanged event handler.
             item.setIcon(0, icon)
 
-    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon (disabled)
-    ##
-    # def updateIcon(self, p: Position) -> None:
-        # pass  ### To be removed.
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
