@@ -1148,8 +1148,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             # no difference between original and current list of dictionaries
             return
         self._setIconListHelper(p, l, p.v, setDirty)
-        if g.app.gui.guiName() == 'qt':
-            self.c.frame.tree.updateIcon(p)
+        ### if g.app.gui.guiName() == 'qt':
+        ###    self.c.frame.tree.updateIcon(p)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self,
         p: Position,

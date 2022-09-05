@@ -862,15 +862,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18410: *4* qtree.drawIcon
     def drawIcon(self, p: Position) -> None:
         """Redraw the icon at p."""
-        self.updateIcon(p)
-        # the following code is wrong. It constructs a new item
-        # and assignes the icon to it. However this item is never
-        # added to the treeWidget so it is soon garbage collected
-            # w = self.treeWidget
-            # itemOrTree = self.position2item(p) or w
-            # item = QtWidgets.QTreeWidgetItem(itemOrTree)
-            # icon = self.getIcon(p)
-            # self.setItemIcon(item, icon)
+        ### self.updateIcon(p)
+       
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
     def getIcon(self, p: Position) -> Icon:
         """Return the proper icon for position p."""
@@ -944,8 +937,9 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setIcon(0, icon)
 
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon (disabled)
-    def updateIcon(self, p: Position) -> None:
-        pass  ### To be removed.
+    ##
+    # def updateIcon(self, p: Position) -> None:
+        # pass  ### To be removed.
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
