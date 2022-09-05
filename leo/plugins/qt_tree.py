@@ -211,7 +211,6 @@ class LeoQtTree(leoFrame.LeoTree):
             if self.use_declutter:
                 item._real_text = p.h
             # Draw the icon.
-            ### v.iconVal = v.computeIcon()
             icon = self.getCompositeIconImage(p.v)
             if icon:
                 self.setItemIcon(item, icon)
@@ -564,7 +563,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 item.setIcon(0, icon)
             return item
         # Draw the icon: **Slow**, but allows per-vnode icons.
-        ### v.iconVal = v.computeIcon()
         icon = self.getCompositeIconImage(p.v)
         if icon:
             item.setIcon(0, icon)
@@ -879,10 +877,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.use_declutter:
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
-        ### p.v.iconVal = p.v.computeIcon()
         return self.getCompositeIconImage(p.v)
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
-    ### def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
     def icon_filenames_for_node(self, v: VNode) -> List[str]:
         """Returns a list of icon filenames for v."""
         nicon = f'box{v.iconVal:02d}.png'

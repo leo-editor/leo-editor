@@ -2351,10 +2351,8 @@ class VNode:
         except AttributeError:
             return
 
-        ### v.iconVal = v.computeIcon()
-        icon = tree.getCompositeIconImage(v)
-
         # Update all cloned items.
+        icon = tree.getCompositeIconImage(v)
         items = tree.vnode2items(v)
         for item in items:
             tree.setItemIcon(item, icon)
