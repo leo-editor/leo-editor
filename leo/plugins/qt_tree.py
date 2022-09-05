@@ -859,11 +859,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def setFocus(self) -> None:
         g.app.gui.set_focus(self.c, self.treeWidget)
     #@+node:ekr.20110605121601.18409: *3* qtree.Icons
-    #@+node:ekr.20110605121601.18410: *4* qtree.drawIcon
-    def drawIcon(self, p: Position) -> None:
-        """Redraw the icon at p."""
-        ### self.updateIcon(p)
-       
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
     def getIcon(self, p: Position) -> Icon:
         """Return the proper icon for position p."""
