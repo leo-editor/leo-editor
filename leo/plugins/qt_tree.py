@@ -211,7 +211,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if self.use_declutter:
                 item._real_text = p.h
             # Draw the icon.
-            v.iconVal = v.computeIcon()
+            ### v.iconVal = v.computeIcon()
             icon = self.getCompositeIconImage(p.v)
             if icon:
                 self.setItemIcon(item, icon)
@@ -563,9 +563,8 @@ class LeoQtTree(leoFrame.LeoTree):
             if icon:
                 item.setIcon(0, icon)
             return item
-        # Draw the icon.
-        v.iconVal = v.computeIcon()
-        # **Slow**, but allows per-vnode icons.
+        # Draw the icon: **Slow**, but allows per-vnode icons.
+        ### v.iconVal = v.computeIcon()
         icon = self.getCompositeIconImage(p.v)
         if icon:
             item.setIcon(0, icon)
@@ -880,12 +879,13 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.use_declutter:
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
-        p.v.iconVal = p.v.computeIcon()
+        ### p.v.iconVal = p.v.computeIcon()
         return self.getCompositeIconImage(p.v)
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
-    def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
+    ### def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
+    def icon_filenames_for_node(self, v: VNode) -> List[str]:
         """Returns a list of icon filenames for v."""
-        nicon = f'box{val:02d}.png'
+        nicon = f'box{v.iconVal:02d}.png'
         fnames = self.nodeIconsDict.get(v.gnx)
         if not fnames:
             icons = self.c.editCommands.getIconList(v)
@@ -927,7 +927,8 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
     def getCompositeIconImage(self, v: VNode) -> Icon:
         """Get the icon at v."""
-        fnames = self.icon_filenames_for_node(v, v.iconVal)
+        v.iconVal = v.computeIcon()
+        fnames = self.icon_filenames_for_node(v)
         h = ':'.join(fnames)
         icon = g.app.gui.iconimages.get(h)
         loaded_images = self.loaded_images
