@@ -3227,7 +3227,6 @@ class Commands:
         c = self
         if c.enableRedrawFlag:
             pass
-            ### c.frame.tree.redraw_after_icons_changed()
             # Do not call c.treeFocusHelper here.
         else:
             c.requestLaterRedraw = True
