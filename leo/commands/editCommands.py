@@ -1128,7 +1128,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Hash a dictionary"""
         return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> List[Dict]:  ###
+    def getIconList(self, v: VNode) -> List[Dict]:
         """Return list of icons for v."""
         fromVnode: List[Dict] = []
         if hasattr(v, 'unknownAttributes'):
@@ -1189,7 +1189,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  ### t not used.
+    def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
         aList = self.getIconList(p.v)

@@ -42,7 +42,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
-    def __init__(self, c: Cmdr, frame: Any) -> None:  ### Frame is a LeoQtFrame.
+    def __init__(self, c: Cmdr, frame: Any) -> None:  # Frame is a LeoQtFrame.
         """Ctor for the LeoQtTree class."""
         super().__init__(frame)
         self.c = c
@@ -212,7 +212,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 item._real_text = p.h
             # Draw the icon.
             v.iconVal = v.computeIcon()
-            ## icon = self.getCompositeIconImage(p, v.iconVal)
             icon = self.getCompositeIconImage(p.v)
             if icon:
                 self.setItemIcon(item, icon)
@@ -567,7 +566,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # Draw the icon.
         v.iconVal = v.computeIcon()
         # **Slow**, but allows per-vnode icons.
-        ### icon = self.getCompositeIconImage(p, v.iconVal)
         icon = self.getCompositeIconImage(p.v)
         if icon:
             item.setIcon(0, icon)
@@ -887,7 +885,6 @@ class LeoQtTree(leoFrame.LeoTree):
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
         p.v.iconVal = p.v.computeIcon()
-        ### return self.getCompositeIconImage(p.v, iv)
         return self.getCompositeIconImage(p.v)
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
@@ -932,7 +929,6 @@ class LeoQtTree(leoFrame.LeoTree):
         painter.end()
         return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
     #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
-    ### def getCompositeIconImage(self, v: VNode, val: int) -> Icon:
     def getCompositeIconImage(self, v: VNode) -> Icon:
         """Get the icon at v."""
         fnames = self.icon_filenames_for_node(v, v.iconVal)
@@ -956,16 +952,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon (disabled)
     def updateIcon(self, p: Position) -> None:
-
-        if 0:  ###  Use qt_gui.updateIcon instead.
-            if not p:
-                return
-            self.nodeIconsDict.pop(p.gnx, None)
-            icon = self.getIcon(p)  # sets p.v.iconVal
-            # Update all cloned items.
-            items = self.vnode2items(p.v)
-            for item in items:
-                self.setItemIcon(item, icon)
+        pass  ### To be removed.
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
