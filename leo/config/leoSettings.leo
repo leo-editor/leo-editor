@@ -3765,20 +3765,17 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # Highly-recommended plugins:
 
 plugins_menu.py
-free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
+# free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
+mod_scripting.py
     
 # Recommended plugins:
 
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
-mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
 todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
-
-# screen_capture.py
-# stickynotes.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.

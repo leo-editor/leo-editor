@@ -1639,6 +1639,7 @@ class QTextEditWrapper(QTextMixin):
             int_j = self.toPythonIndex(j)
         if int_i > int_j:
             int_i, int_j = int_j, int_i
+        g.trace(int_i, int_j, g.callers())
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1753,20 +1754,12 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         w = self.widget
         int_i = self.toPythonIndex(i)
+        g.trace('(qtew)', int_i, len(self.getAllText()), repr(s))
         cursor = w.textCursor()
-        ### g.trace('(qtew)', i, int_i, repr(s))
         try:
             self.changingText = True  # Disable onTextChanged.
             cursor.setPosition(int_i)
-            ### Causes many events
-            tracer = g.SherlockTracer(patterns=[
-                # '+.*', '-:.*leoConfig.py', '-:.*leoColorizer.py',
-                # '-.*', '+:.*qt_events.py',
-                #'+.*setBodyString.*',
-            ])
-            ### tracer.run()
             cursor.insertText(s)
-            tracer.stop()
             w.setTextCursor(cursor)  # Bug fix: 2010/01/27
         finally:
             self.changingText = False
