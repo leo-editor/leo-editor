@@ -1127,7 +1127,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def dHash(self, d: Dict[str, str]) -> str:
         """Hash a dictionary"""
         return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
-    #@+node:ekr.20150514063305.233: *5* ec.getIconList (uses VNode)
+    #@+node:ekr.20150514063305.233: *5* ec.getIconList
     def getIconList(self, v: VNode) -> List[Dict]:  ###
         """Return list of icons for v."""
         fromVnode: List[Dict] = []

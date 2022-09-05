@@ -2249,9 +2249,12 @@ class VNode:
         """Clear the vnode dirty bit."""
         v = self
         v.statusBits &= ~v.dirtyBit
+        v.updateIcon()
     #@+node:ekr.20031218072017.3391: *5* v.clearMarked
     def clearMarked(self) -> None:
-        self.statusBits &= ~self.markedBit
+        v = self
+        self.statusBits &= ~v.markedBit
+        v.updateIcon()
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan(self) -> None:
         self.statusBits &= ~self.orphanBit
@@ -2290,10 +2293,12 @@ class VNode:
         """
         v = self
         v.statusBits |= v.dirtyBit
-        v.updateIcon()  ### Experimental
+        v.updateIcon()
     #@+node:ekr.20031218072017.3398: *5* v.setMarked & initMarkedBit
     def setMarked(self) -> None:
-        self.statusBits |= self.markedBit
+        v = self
+        v.statusBits |= v.markedBit
+        v.updateIcon()
 
     def initMarkedBit(self) -> None:
         self.statusBits |= self.markedBit

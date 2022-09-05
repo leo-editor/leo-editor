@@ -904,7 +904,7 @@ class LeoQtTree(leoFrame.LeoTree):
         p.v.iconVal = p.v.computeIcon()
         ### return self.getCompositeIconImage(p.v, iv)
         return self.getCompositeIconImage(p.v)
-    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node (uses VNode)
+    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
         """Returns a list of icon filenames for v."""
         nicon = f'box{val:02d}.png'
@@ -946,7 +946,7 @@ class LeoQtTree(leoFrame.LeoTree):
             x += i.width() + hsep
         painter.end()
         return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
-    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage (uses VNode)
+    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
     ### def getCompositeIconImage(self, v: VNode, val: int) -> Icon:
     def getCompositeIconImage(self, v: VNode) -> Icon:
         """Get the icon at v."""
