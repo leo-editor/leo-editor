@@ -633,17 +633,13 @@ class LeoQtTree(leoFrame.LeoTree):
         """Redraw all Qt outline items cloned to c.p."""
         if self.busy:
             return
-        p = self.c.p
+        c, p = self.c, self.c.p
         if p:
             h = p.h  # 2010/02/09: Fix bug 518823.
             for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
                     self.setItemText(item, h)
-        # Bug fix: 2009/10/06
-        self.redraw_after_icons_changed()
-    #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed (Disabled)
-    def redraw_after_icons_changed(self) -> None:
-        """No longer used."""
+        c.redraw_after_icons_changed()
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
