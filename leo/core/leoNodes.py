@@ -2342,16 +2342,15 @@ class VNode:
     def updateIcon(self) -> None:
 
         c, v = self.context, self
-        tree = c.frame.tree
-        if not tree:
-            g.trace('No tree')
-            return
         try:
-            tree.nodeIconsDict.pop(v.gnx, None)
+            tree = c.frame.tree  # May not exist at startup.
+            if not tree:
+                g.trace('No tree')
+                return
+            tree.nodeIconsDict.pop(v.gnx, None)  # Only exists for Qt gui.
         except AttributeError:
             return
 
-        # icon = self.getIcon(p)  # sets p.v.iconVal
         v.iconVal = v.computeIcon()
         icon = tree.getCompositeIconImage(v)
 
@@ -2427,11 +2426,13 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._bodyString = s
+            v.updateIcon()
             return
         else:  # pragma: no cover
             v._bodyString = g.toUnicode(s, reportErrors=True)
             self.contentModified()  # #1413.
             signal_manager.emit(self.context, 'body_changed', self)
+            v.updateIcon()
 
     def setHeadString(self, s: Any) -> None:
         # pylint: disable=no-else-return
@@ -2440,11 +2441,13 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
+            v.updateIcon()
             return
         else:  # pragma: no cover
             s = g.toUnicode(s, reportErrors=True)
             v._headString = s.replace('\n', '')  # type:ignore
             self.contentModified()  # #1413.
+            v.updateIcon()
 
     initBodyString = setBodyString
     initHeadString = setHeadString
