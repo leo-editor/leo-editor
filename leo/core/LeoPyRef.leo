@@ -12,7 +12,6 @@
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
-<v t="ekr.20190406193429.1"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
@@ -764,42 +763,6 @@ rust: rustc
 go ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
-<t tx="ekr.20190406193429.1"># Extra plugins, for this file only.
-
-# Essential...
-plugins_menu.py
-# free_layout.py
-    # Now loaded automatically.
-    # Disabled for testing bug 882824.
-mod_scripting.py
-viewrendered.py
-
-# Testing only...
-# nodetags.py
-# python_terminal.py
-# multifile.py
-# livecode.py
-
-# Others...
-# bookmarks.py
-# demo.py
-# mod_http.py
-# richtext.py
-
-# Standard plugins
-
-# backlink.py
-# bigdash.py
-# contextmenu.py
-# line_numbering.py
-# nav_qt.py
-# nodetags.py
-# quicksearch.py
-# screen_capture.py
-# todo.py
-# valuespace.py
-# xdb_pane.py
-</t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
@@ -2312,9 +2275,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='devel', # old branch/rev
-    branch2='ekr-6.6.1-devel', # new branch/rev
-    fn='leo/core/leoAst.py',  # Don't use back slashes.
+    branch1='6.6.4', # old branch/rev
+    branch2='devel', # new branch/rev
+    fn='leo/plugins/qt_text.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
