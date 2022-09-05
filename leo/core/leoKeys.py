@@ -408,10 +408,11 @@ class AutoCompleterClass:
         ch = event.char if event else ''
         stroke = event.stroke if event else ''
         is_plain = k.isPlainKey(stroke)
-        g.trace('stroke', repr(stroke))
+        ### g.trace('state', state, 'stroke', repr(stroke))  ###
         if state == 0:
             c.frame.log.clearTab(self.tabName)
             common_prefix, prefix, tabList = self.compute_completion_list()
+            g.trace('len(tabList)', len(tabList))
             if tabList:
                 k.setState(tag, 1, handler=self.auto_completer_state_handler)
             else:
@@ -445,6 +446,7 @@ class AutoCompleterClass:
         # elif ch == 'Up' and hasattr(self,'onUp'):
             # self.onUp()
         elif is_plain and ch and ch in string.printable:
+            ### g.trace('expected: insert_general_char')
             self.insert_general_char(ch)
         elif stroke == k.autoCompleteForceKey:
             # This is probably redundant because completions will exist.
@@ -456,6 +458,7 @@ class AutoCompleterClass:
                 g.warning('No completions')
                 self.exit()
         else:
+            g.trace('ABORT')
             self.abort()
             return 'do-standard-keys'
         return None

@@ -188,6 +188,7 @@ class QTextMixin:
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
         w = self
+        ### g.trace('w.changingText', w.changingText)
         c, p = self.c, self.c.p
         tree = c.frame.tree
         if w.changingText:
@@ -202,6 +203,7 @@ class QTextMixin:
         newText = w.getAllText()  # Converts to unicode.
         # Get the previous values from the VNode.
         oldText = p.b
+        ### g.trace('2', oldText == newText)
         if oldText == newText:
             # This can happen as the result of undo.
             # g.error('*** unexpected non-change')
@@ -1746,16 +1748,25 @@ class QTextEditWrapper(QTextMixin):
     def hasSelection(self) -> bool:
         """QTextEditWrapper."""
         return self.widget.textCursor().hasSelection()
-    #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
+    #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText) (Sherlock)
     def insert(self, i: Index, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
         int_i = self.toPythonIndex(i)
         cursor = w.textCursor()
+        ### g.trace('(qtew)', i, int_i, repr(s))
         try:
             self.changingText = True  # Disable onTextChanged.
             cursor.setPosition(int_i)
+            ### Causes many events
+            tracer = g.SherlockTracer(patterns=[
+                # '+.*', '-:.*leoConfig.py', '-:.*leoColorizer.py',
+                # '-.*', '+:.*qt_events.py',
+                #'+.*setBodyString.*',
+            ])
+            ### tracer.run()
             cursor.insertText(s)
+            tracer.stop()
             w.setTextCursor(cursor)  # Bug fix: 2010/01/27
         finally:
             self.changingText = False

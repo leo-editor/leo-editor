@@ -2397,6 +2397,7 @@ class VNode:
     def setBodyString(self, s: Any) -> None:
         # pylint: disable=no-else-return
         v = self
+        g.trace(len(s), v.h)
         if isinstance(s, str):
             v._bodyString = s
             return
