@@ -214,7 +214,7 @@ def pasteOutlineRetainingClones(
 def computeCopiedBunchList(
     c: Cmdr,
     pasted: Position,
-    vnodeInfoDict: Dict[VNode, Any],  ###
+    vnodeInfoDict: Dict[VNode, Any],
 ) -> List[Any]:
     """Create a dict containing only copied vnodes."""
     d = {}

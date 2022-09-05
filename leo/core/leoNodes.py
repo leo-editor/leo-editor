@@ -2249,9 +2249,12 @@ class VNode:
         """Clear the vnode dirty bit."""
         v = self
         v.statusBits &= ~v.dirtyBit
+        v.updateIcon()
     #@+node:ekr.20031218072017.3391: *5* v.clearMarked
     def clearMarked(self) -> None:
-        self.statusBits &= ~self.markedBit
+        v = self
+        v.statusBits &= ~v.markedBit
+        v.updateIcon()
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan(self) -> None:
         self.statusBits &= ~self.orphanBit
@@ -2288,10 +2291,14 @@ class VNode:
         This method is fast, but dangerous. Unlike p.setDirty, this method does
         not call v.setAllAncestorAtFileNodesDirty.
         """
-        self.statusBits |= self.dirtyBit
+        v = self
+        v.statusBits |= v.dirtyBit
+        v.updateIcon()
     #@+node:ekr.20031218072017.3398: *5* v.setMarked & initMarkedBit
     def setMarked(self) -> None:
-        self.statusBits |= self.markedBit
+        v = self
+        v.statusBits |= v.markedBit
+        v.updateIcon()
 
     def initMarkedBit(self) -> None:
         self.statusBits |= self.markedBit
@@ -2331,6 +2338,24 @@ class VNode:
 
     def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
+    #@+node:ekr.20220905044353.1: *4* v.updateIcon
+    def updateIcon(self) -> None:
+
+        c, v = self.context, self
+        try:
+            tree = c.frame.tree  # May not exist at startup.
+            if not tree:
+                g.trace('No tree')
+                return
+            tree.nodeIconsDict.pop(v.gnx, None)  # Only exists for Qt gui.
+        except AttributeError:
+            return
+
+        # Update all cloned items.
+        icon = tree.getCompositeIconImage(v)
+        items = tree.vnode2items(v)
+        for item in items:
+            tree.setItemIcon(item, icon)
     #@+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self) -> None:
         g.contentModifiedSet.add(self)
@@ -2399,11 +2424,13 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._bodyString = s
+            v.updateIcon()
             return
         else:  # pragma: no cover
             v._bodyString = g.toUnicode(s, reportErrors=True)
             self.contentModified()  # #1413.
             signal_manager.emit(self.context, 'body_changed', self)
+            v.updateIcon()
 
     def setHeadString(self, s: Any) -> None:
         # pylint: disable=no-else-return
@@ -2412,11 +2439,13 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
+            v.updateIcon()
             return
         else:  # pragma: no cover
             s = g.toUnicode(s, reportErrors=True)
             v._headString = s.replace('\n', '')  # type:ignore
             self.contentModified()  # #1413.
+            v.updateIcon()
 
     initBodyString = setBodyString
     initHeadString = setHeadString

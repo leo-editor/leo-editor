@@ -4757,7 +4757,7 @@ class LeoServer:
         for p in c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
-        return None  ### Was False.
+        return None
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package: Package, toAll: bool=False) -> None:
         """
