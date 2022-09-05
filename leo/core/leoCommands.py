@@ -3226,7 +3226,8 @@ class Commands:
         """Update the icon for the presently selected node"""
         c = self
         if c.enableRedrawFlag:
-            c.frame.tree.redraw_after_icons_changed()
+            pass
+            ### c.frame.tree.redraw_after_icons_changed()
             # Do not call treeFocusHelper here.
                 # c.treeFocusHelper()
         else:

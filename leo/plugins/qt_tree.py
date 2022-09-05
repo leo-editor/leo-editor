@@ -643,24 +643,9 @@ class LeoQtTree(leoFrame.LeoTree):
                     self.setItemText(item, h)
         # Bug fix: 2009/10/06
         self.redraw_after_icons_changed()
-    #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed
+    #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed (Disabled)
     def redraw_after_icons_changed(self) -> None:
-
-        if 0:  ### Disabled.
-
-            if self.busy:
-                return
-            self.redrawCount += 1  # To keep a unit test happy.
-            c = self.c
-            try:
-                self.busy = True  # Suppress call to setHeadString in onItemChanged!
-                self.getCurrentItem()
-                # 2799: Only c.p and its parents need to be updated.
-                #       This is a *huge* performance improvement.
-                for p in c.p.self_and_parents(copy=False):
-                    self.updateIcon(p)
-            finally:
-                self.busy = False
+        """No longer used."""
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""

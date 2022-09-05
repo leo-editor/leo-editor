@@ -2338,7 +2338,7 @@ class VNode:
 
     def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
-    #@+node:ekr.20220905044353.1: *4* v.updateIcon (new)
+    #@+node:ekr.20220905044353.1: *4* v.updateIcon
     def updateIcon(self) -> None:
 
         c, v = self.context, self
