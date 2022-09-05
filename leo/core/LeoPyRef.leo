@@ -9,11 +9,18 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
+<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+<v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
+<v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
+<v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
+<v t="ekr.20200212095937.3"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20200212095937.5"><vh>@int beautify-max-join-line-length = 0</vh></v>
+<v t="ekr.20200212095937.6"><vh>@int beautify-max-split-line-length = 0</vh></v>
+</v>
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
@@ -103,12 +110,6 @@
 <v t="ekr.20210110092457.5"><vh>@@@button cov @key=ctrl-6</vh></v>
 <v t="ekr.20210110092457.6"><vh>@@@button moz @key=ctrl-7</vh></v>
 <v t="ekr.20210110092457.7"><vh>@@@button unit</vh></v>
-</v>
-<v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
-<v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
-<v t="ekr.20200212095937.3"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
-<v t="ekr.20200212095937.5"><vh>@int beautify-max-join-line-length = 0</vh></v>
-<v t="ekr.20200212095937.6"><vh>@int beautify-max-split-line-length = 0</vh></v>
 </v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
@@ -732,11 +733,6 @@
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20150425145248.1">expand-all-subheads
-pylint
-backup
-show-commands
-show-bindings</t>
 <t tx="ekr.20210530065000.2"># This node contains the commands needed to execute a program in a particular language.
 # Format: language-name: command
 
@@ -763,6 +759,25 @@ rust: rustc
 go ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
+<t tx="ekr.20150425145248.1">expand-all-subheads
+pylint
+backup
+show-commands
+show-bindings</t>
+<t tx="ekr.20220904210247.1"># This is a copy of the @enabled-plugins node from leoSettings.leo,
+# ensuring that the @enabled-plugins node in myLeoSettings.leo has no effect.
+
+# Standard plugins...
+
+plugins_menu.py     # Adds 'Plugins' menu.
+contextmenu.py      # Required by the vim.py and xemacs.py plugins.
+mod_scripting.py
+nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
+nodetags.py
+quicksearch.py      # Nav pane.
+todo.py             # Task pane.
+viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+</t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
@@ -770,6 +785,15 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20200212095937.1"></t>
+<t tx="ekr.20200212095937.2">True:  allow joined lines to contain strings.
+False: (Recommended by EKR): Retain alignment of strings.</t>
+<t tx="ekr.20200212095937.3">True: Retain indentation of overindented stand-alone comment lines.</t>
+<t tx="ekr.20200212095937.5"># At present I am of the opinion that joining lines is usually a bad idea.
+
+Should be &lt;= beautify-max-split-line-length.
+Zero suppresses all line joining.</t>
+<t tx="ekr.20200212095937.6">Zero suppresses all line splitting.</t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
@@ -1792,15 +1816,6 @@ os.system('moz htmlcov/leo_core_leoFind_py.html')</t>
 import os
 os.system('python -m unittest leoFind.py')
 g.es_print('done')</t>
-<t tx="ekr.20200212095937.1"></t>
-<t tx="ekr.20200212095937.2">True:  allow joined lines to contain strings.
-False: (Recommended by EKR): Retain alignment of strings.</t>
-<t tx="ekr.20200212095937.3">True: Retain indentation of overindented stand-alone comment lines.</t>
-<t tx="ekr.20200212095937.5"># At present I am of the opinion that joining lines is usually a bad idea.
-
-Should be &lt;= beautify-max-split-line-length.
-Zero suppresses all line joining.</t>
-<t tx="ekr.20200212095937.6">Zero suppresses all line splitting.</t>
 <t tx="ekr.20140103105930.16446"></t>
 <t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
 unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
