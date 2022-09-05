@@ -505,7 +505,11 @@ class LeoQtTree(leoFrame.LeoTree):
             if cmd.startswith('#'):
                 pass
             elif cmd == 'RULE':
-                patterns.append((re.compile(arg), []))
+                try:
+                    patterns.append((re.compile(arg), []))
+                except re.error:
+                    g.log('Invalid declutter pattern: %r' % (arg,), color='error')
+                    patterns.append((re.compile('a^'), [])) # create a rule that matches nothing
             else:
                 if patterns:
                     patterns[-1][1].append((cmd, arg))
