@@ -2253,7 +2253,7 @@ class VNode:
     #@+node:ekr.20031218072017.3391: *5* v.clearMarked
     def clearMarked(self) -> None:
         v = self
-        self.statusBits &= ~v.markedBit
+        v.statusBits &= ~v.markedBit
         v.updateIcon()
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan(self) -> None:
