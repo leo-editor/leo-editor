@@ -2288,7 +2288,9 @@ class VNode:
         This method is fast, but dangerous. Unlike p.setDirty, this method does
         not call v.setAllAncestorAtFileNodesDirty.
         """
-        self.statusBits |= self.dirtyBit
+        v = self
+        v.statusBits |= v.dirtyBit
+        v.updateIcon()  ### Experimental
     #@+node:ekr.20031218072017.3398: *5* v.setMarked & initMarkedBit
     def setMarked(self) -> None:
         self.statusBits |= self.markedBit
@@ -2331,6 +2333,27 @@ class VNode:
 
     def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
+    #@+node:ekr.20220905044353.1: *4* v.updateIcon (new)
+    def updateIcon(self) -> None:
+
+        c, v = self.context, self
+        tree = c.frame.tree
+        if not tree:
+            g.trace('No tree')
+            return
+        try:
+            tree.nodeIconsDict.pop(v.gnx, None)
+        except AttributeError:
+            return
+
+        # icon = self.getIcon(p)  # sets p.v.iconVal
+        v.iconVal = v.computeIcon()
+        icon = tree.getCompositeIconImage(v)
+
+        # Update all cloned items.
+        items = tree.vnode2items(v)
+        for item in items:
+            tree.setItemIcon(item, icon)
     #@+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self) -> None:
         g.contentModifiedSet.add(self)

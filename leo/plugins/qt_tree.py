@@ -212,7 +212,8 @@ class LeoQtTree(leoFrame.LeoTree):
                 item._real_text = p.h
             # Draw the icon.
             v.iconVal = v.computeIcon()
-            icon = self.getCompositeIconImage(p, v.iconVal)
+            ## icon = self.getCompositeIconImage(p, v.iconVal)
+            icon = self.getCompositeIconImage(p.v)
             if icon:
                 self.setItemIcon(item, icon)
             # Set current item.
@@ -349,7 +350,7 @@ class LeoQtTree(leoFrame.LeoTree):
             Returns a list of icon filenames for this node.
             The list is sorted to owner the 'where' key of image dicts.
             """
-            icons = c.editCommands.getIconList(p)
+            icons = c.editCommands.getIconList(p.v)
             a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
             a.append(iconName)
             a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
@@ -566,7 +567,8 @@ class LeoQtTree(leoFrame.LeoTree):
         # Draw the icon.
         v.iconVal = v.computeIcon()
         # **Slow**, but allows per-vnode icons.
-        icon = self.getCompositeIconImage(p, v.iconVal)
+        ### icon = self.getCompositeIconImage(p, v.iconVal)
+        icon = self.getCompositeIconImage(p.v)
         if icon:
             item.setIcon(0, icon)
         return item
@@ -644,19 +646,21 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17883: *4* qtree.redraw_after_icons_changed
     def redraw_after_icons_changed(self) -> None:
 
-        if self.busy:
-            return
-        self.redrawCount += 1  # To keep a unit test happy.
-        c = self.c
-        try:
-            self.busy = True  # Suppress call to setHeadString in onItemChanged!
-            self.getCurrentItem()
-            # 2799: Only c.p and its parents need to be updated.
-            #       This is a *huge* performance improvement.
-            for p in c.p.self_and_parents(copy=False):
-                self.updateIcon(p)
-        finally:
-            self.busy = False
+        if 0:  ### Disabled.
+
+            if self.busy:
+                return
+            self.redrawCount += 1  # To keep a unit test happy.
+            c = self.c
+            try:
+                self.busy = True  # Suppress call to setHeadString in onItemChanged!
+                self.getCurrentItem()
+                # 2799: Only c.p and its parents need to be updated.
+                #       This is a *huge* performance improvement.
+                for p in c.p.self_and_parents(copy=False):
+                    self.updateIcon(p)
+            finally:
+                self.busy = False
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
@@ -897,29 +901,26 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.use_declutter:
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
-        p.v.iconVal = iv = p.v.computeIcon()
-        return self.getCompositeIconImage(p, iv)
-
-
-    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
-    def icon_filenames_for_node(self, p: Position, val: int) -> List[str]:
-        """Prepares and returns a list of icon filenames
-           related to this node.
-        """
+        p.v.iconVal = p.v.computeIcon()
+        ### return self.getCompositeIconImage(p.v, iv)
+        return self.getCompositeIconImage(p.v)
+    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node (uses VNode)
+    def icon_filenames_for_node(self, v: VNode, val: int) -> List[str]:
+        """Returns a list of icon filenames for v."""
         nicon = f'box{val:02d}.png'
-        fnames = self.nodeIconsDict.get(p.gnx)
+        fnames = self.nodeIconsDict.get(v.gnx)
         if not fnames:
-            icons = self.c.editCommands.getIconList(p)
+            icons = self.c.editCommands.getIconList(v)
             fnames = [x['file'] for x in icons if x['where'] == 'beforeIcon']
             fnames.append(nicon)
             fnames.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
-            self.nodeIconsDict[p.gnx] = fnames
+            self.nodeIconsDict[v.gnx] = fnames
         pat = re.compile(r'^box\d\d\.png$')
         loaded_images = self.loaded_images
         for i, f in enumerate(fnames):
             if pat.match(f):
                 fnames[i] = nicon
-                self.nodeIconsDict[p.gnx] = fnames
+                self.nodeIconsDict[v.gnx] = fnames
                 f = nicon
             if f not in loaded_images:
                 loaded_images[f] = g.app.gui.getImageImage(f)
@@ -945,10 +946,11 @@ class LeoQtTree(leoFrame.LeoTree):
             x += i.width() + hsep
         painter.end()
         return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
-    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
-    def getCompositeIconImage(self, p: Position, val: int) -> Icon:
-        """Get the icon at position p."""
-        fnames = self.icon_filenames_for_node(p, val)
+    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage (uses VNode)
+    ### def getCompositeIconImage(self, v: VNode, val: int) -> Icon:
+    def getCompositeIconImage(self, v: VNode) -> Icon:
+        """Get the icon at v."""
+        fnames = self.icon_filenames_for_node(v, v.iconVal)
         h = ':'.join(fnames)
         icon = g.app.gui.iconimages.get(h)
         loaded_images = self.loaded_images
@@ -967,17 +969,18 @@ class LeoQtTree(leoFrame.LeoTree):
             # but there is no itemChanged event handler.
             item.setIcon(0, icon)
 
-    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
+    #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon (disabled)
     def updateIcon(self, p: Position) -> None:
 
-        if not p:
-            return
-        self.nodeIconsDict.pop(p.gnx, None)
-        icon = self.getIcon(p)  # sets p.v.iconVal
-        # Update all cloned items.
-        items = self.vnode2items(p.v)
-        for item in items:
-            self.setItemIcon(item, icon)
+        if 0:  ###  Use qt_gui.updateIcon instead.
+            if not p:
+                return
+            self.nodeIconsDict.pop(p.gnx, None)
+            icon = self.getIcon(p)  # sets p.v.iconVal
+            # Update all cloned items.
+            items = self.vnode2items(p.v)
+            for item in items:
+                self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.18414: *3* qtree.Items
     #@+node:ekr.20110605121601.17943: *4*  qtree.item dict getters
     def itemHash(self, item: Item) -> str:
