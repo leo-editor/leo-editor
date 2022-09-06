@@ -297,7 +297,10 @@ class PrintingController:
         dialog = printsupport.QPrintDialog()
         result = dialog.exec_()
         if result == DialogCode.Accepted:
-            doc.print_(dialog.printer())
+            try:
+                doc.print_(dialog.printer())
+            except AttributeError:
+                doc.print(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc: Any) -> None:
         """Preview the document."""
