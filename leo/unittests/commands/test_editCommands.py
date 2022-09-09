@@ -45,8 +45,8 @@ class TestEditCommands(LeoUnitTest):
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
-        i = g.toPythonIndex(before_b, i)
-        j = g.toPythonIndex(before_b, j)
+        i = self.toPythonIndex(before_b, i)
+        j = self.toPythonIndex(before_b, j)
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
         c.k.simulateCommand(command_name)
