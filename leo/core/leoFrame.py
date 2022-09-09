@@ -2287,7 +2287,7 @@ class NullTree(LeoTree):
         This is called from the undo/redo logic to change the text before redrawing."""
         w = self.edit_widget(p)
         if w:
-            w.delete(0, 'end')
+            w.delete(0, len(w.getAllText()))
             if s.endswith('\n') or s.endswith('\r'):
                 s = s[:-1]
             w.insert(0, s)
