@@ -392,7 +392,7 @@ class LeoBody:
         # Create the text wrapper.
         f = self.createEditorFrame(pane)
         wrapper = self.createTextWidget(f, name=name, p=p)
-        wrapper.delete(0, wrapper.getAllText())
+        wrapper.delete(0, len(wrapper.getAllText()))
         wrapper.insert(0, p.b)
         wrapper.setInsertPoint(len(p.b))
         wrapper.see(0)
