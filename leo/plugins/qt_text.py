@@ -447,7 +447,7 @@ class QLineEditWrapper(QTextMixin):
         int_i = max(0, min(int_i, n))
         int_j = max(0, min(int_j, n))
         if insert is None:
-            insert = int_j
+            int_insert = int_j
         else:
             int_insert = self.toPythonIndex(insert)
             int_insert = max(0, min(int_insert, n))

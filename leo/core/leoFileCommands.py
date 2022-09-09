@@ -210,7 +210,7 @@ class FastRead:
                     return json.loads(g.toUnicode(val))
                 except json.JSONDecodeError:
                     # fall back to standard handling
-                    g.trace(f"attribute not JSON encoded {attr}={val}")
+                    g.trace(f"attribute not JSON encoded {attr}={g.toUnicode(val)}")
         try:
             # Throws a TypeError if val is not a hex string.
             binString = binascii.unhexlify(val)
