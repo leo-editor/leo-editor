@@ -1577,6 +1577,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setSelectionRange(i, j + len(result))
             else:
                 i = w.getInsertPoint()
+                ### Huh?  Bug?
                 w.delete(0, 'end')
                 w.insert(0, result)
                 w.setInsertPoint(i)
@@ -2223,6 +2224,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, end = w.getSelectionRange()
         else:
             i = w.getInsertPoint()
+            ### Hard.
             end = 'end'
         txt = w.get(i, end)
         tlines = txt.splitlines(True)
