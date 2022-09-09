@@ -367,7 +367,7 @@ class LeoBody:
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20070424053629: *4* LeoBody.entries
-    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor (overridden)
+    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
     def addEditor(self, event: Event=None) -> None:
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
@@ -392,8 +392,9 @@ class LeoBody:
         # Create the text wrapper.
         f = self.createEditorFrame(pane)
         wrapper = self.createTextWidget(f, name=name, p=p)
-        wrapper.delete(0, 'end')
-        wrapper.insert('end', p.b)
+        wrapper.delete(0, wrapper.getAllText())
+        wrapper.insert(0, p.b)
+        wrapper.setInsertPoint(len(p.b))
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p, wrapper)
@@ -541,8 +542,9 @@ class LeoBody:
             wrapper = d.get(key)
             v = wrapper.leo_v
             if v and v == p.v and wrapper != c.frame.body.wrapper:
-                wrapper.delete(0, 'end')
-                wrapper.insert('end', p.b)
+                wrapper.delete(0, len(wrapper.getAllText()))
+                wrapper.insert(0, p.b)
+                wrapper.setInsertPoint(len(p.b))
                 self.recolorWidget(p, wrapper)
         c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
@@ -1228,7 +1230,7 @@ class LeoLog:
         self.selectTab(tabName, wrap=wrap)
         w = self.logCtrl
         if w:
-            w.delete(0, 'end')
+            w.delete(0, len(w.getAllText()))
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
         # Important: widget *is* used in subclasses. Do not change the signature above.
@@ -2189,7 +2191,8 @@ class NullStatusLineClass:
         self.enabled = True
 
     def clear(self) -> None:
-        self.textWidget.delete(0, 'end')
+        w = self.textWidget
+        w.delete(0, len(w.getAllText()))
 
     def get(self) -> str:
         return self.textWidget.getAllText()
@@ -2198,7 +2201,8 @@ class NullStatusLineClass:
         return self.enabled
 
     def put(self, s: str, bg: str=None, fg: str=None) -> None:
-        self.textWidget.insert('end', s)
+        w = self.textWidget
+        w.insert(len(w.getAllText()), s)
 
     def setFocus(self) -> None:
         pass
@@ -2292,7 +2296,7 @@ class NullTree(LeoTree):
                 s = s[:-1]
             w.insert(0, s)
         else:
-            g.trace('-' * 20, 'oops')
+            g.trace('-' * 20, 'oops')  # pragma: no cover
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper:
@@ -2437,7 +2441,7 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18589: *4* stw.selectAllText
     def selectAllText(self, insert: int=None) -> None:
         """StringTextWrapper."""
-        self.setSelectionRange(0, 'end', insert=insert)
+        self.setSelectionRange(0, len(self.s), insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
     def setAllText(self, s: str) -> None:
         """StringTextWrapper."""
@@ -2459,7 +2463,7 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: Index) -> int:
+    def toPythonIndex(self, index: int) -> int:
         """
         StringTextWrapper.toPythonIndex.
 

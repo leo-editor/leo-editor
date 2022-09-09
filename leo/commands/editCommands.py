@@ -13,7 +13,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< editCommands imports >>
 #@+<< editCommands annotations >>
 #@+node:ekr.20220826191642.1: ** << editCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
@@ -1552,15 +1552,15 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
     def cleanLines(self, event: Event) -> None:
-        """Removes trailing whitespace from all lines, preserving newlines.
+        """
+        Removes trailing whitespace from all lines, preserving newlines.
+        
+        Not recommended: reindent is better.
         """
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
-        if w.hasSelection():
-            s = w.getSelectedText()
-        else:
-            s = w.getAllText()
+        s = w.getAllText()
         lines = []
         for line in g.splitlines(s):
             if line.rstrip():
@@ -1570,17 +1570,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         result = ''.join(lines)
         if s != result:
             self.beginCommand(w, undoType='clean-lines')
-            if w.hasSelection():
-                i, j = w.getSelectionRange()
-                w.delete(i, j)
-                w.insert(i, result)
-                w.setSelectionRange(i, j + len(result))
-            else:
-                i = w.getInsertPoint()
-                ### Huh?  Bug?
-                w.delete(0, 'end')
-                w.insert(0, result)
-                w.setInsertPoint(i)
+            w.delete(0, len(w.getAllText()))
+            w.insert(0, result)
+            w.setInsertPoint(0)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.257: *4* ec.clearSelectedText
     @cmd('clear-selected-text')
