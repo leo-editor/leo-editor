@@ -130,8 +130,8 @@ elevate = os.path.join(scripts_path, "elevate.py")
 this_script = os.path.join(scripts_path, "register-leo.leox")
 
 g.es_print("--- Running register-leo Leo script")
-#g.es_print(scripts_path)
-#g.es_print(elevate, this_script)
+g.es_print(scripts_path)
+g.es_print(elevate, this_script)
 import ctypes, sys
 
 if not ctypes.windll.shell32.IsUserAnAdmin():

@@ -203,6 +203,14 @@ class FastRead:
         if attr.startswith('str_'):
             if isinstance(val, (str, bytes)):
                 return g.toUnicode(val)
+        # Support JSON encoded attributes
+        if attr.startswith('json_'):
+            if isinstance(val, (str, bytes)):
+                try:
+                    return json.loads(g.toUnicode(val))
+                except json.JSONDecodeError:
+                    # fall back to standard handling
+                    g.trace(f"attribute not JSON encoded {attr}={g.toUnicode(val)}")
         try:
             # Throws a TypeError if val is not a hex string.
             binString = binascii.unhexlify(val)
@@ -2169,6 +2177,17 @@ class FileCommands:
             g.trace(type(val), repr(val))
             g.warning("ignoring non-string attribute", key, "in", torv)
             return ''
+        # Support JSON encoded attributes
+        if key.startswith('json_'):
+            try:
+                val = json.dumps(val, ensure_ascii=False, separators=(',', ':'), sort_keys=True)
+            except TypeError:
+                # fall back to pickle
+                g.trace(type(val), repr(val))
+                g.warning("pickling JSON incompatible attribute", key, "in", torv)
+            else:
+                attr = f' {key}={xml.sax.saxutils.quoteattr(val)}'
+                return attr
         return self.pickle(torv=torv, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
     def putUnknownAttributes(self, v: VNode) -> str:

@@ -372,7 +372,7 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'REPLACE-TAIL':
                 s = text[m.end() :].lstrip()
             elif cmd == 'REPLACE-REST':
-                s = (text[:m.start] + text[m.end() :]).strip()
+                s = (text[:m.start()] + text[m.end() :]).strip()
 
             # 's' is string when 'cmd' is recognised
             # and is None otherwise
@@ -399,6 +399,11 @@ class LeoQtTree(leoFrame.LeoTree):
                     # Does not fit well this function. And we cannot
                     # wrap list 'new_icons' in a saved argument as
                     # the list is recreated before each call.
+                    new_icons.append(param)
+            elif cmd == 'DOCICON':
+                param = g.os_path_join(g.os_path_dirname(c.fileName()), param)
+                def modifier(item: Item, param: str) -> None:
+                    # As above, but for document relative icons
                     new_icons.append(param)
             elif cmd == 'BG':
                 def modifier(item: Item, param: str) -> None:
