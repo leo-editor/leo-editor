@@ -528,7 +528,7 @@ class LeoFind:
                 seen.append(parent.v)
                 b = u.beforeCloneNode(parent)
                 # Bug fix 2021/06/15: Create the clone directly as a child of found.
-                clone = p.copy()
+                clone = parent.copy()
                 n = found.numberOfChildren()
                 clone._linkCopiedAsNthChild(found, n)
                 u.afterCloneNode(clone, 'clone', b)
