@@ -251,7 +251,6 @@ class QTextMixin:
         if j is None:
             int_j = int_i + 1
         else:
-            ### int_j = self.toPythonIndex(j)  ### Keep
             int_j = j
         # This allows subclasses to use this base class method.
         if int_i > int_j:
@@ -305,25 +304,12 @@ class QTextMixin:
     def selectAllText(self, s: str=None) -> None:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex (still used!)
-    def toPythonIndex(self, index: int, s: str=None) -> int:
-        """QTextMixin"""
-        if True:  ### not isinstance(index, int):
-            if g.unitTesting:
-                assert False, g.callers()
-            else:
-                g.trace('QTM', repr(index), g.callers())
-        if s is None:
-            s = self.getAllText()
-        return g.toPythonIndex(s, index)
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """QTextMixin"""
         s = self.getAllText()
-        ### i = self.toPythonIndex(index)  ### Keep.
-        i = index
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
+        row, col = g.convertPythonIndexToRowCol(s, index)
+        return index, row, col  ### index is never useful.
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self) -> None:
 
