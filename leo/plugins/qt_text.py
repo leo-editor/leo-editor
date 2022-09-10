@@ -1906,7 +1906,7 @@ class QTextEditWrapper(QTextMixin):
         # Part 1
         w = self.widget
         int_i = 0 if i is None else i
-        int_j = i if j is None else j
+        int_j = int_i if j is None else j
         if s is None:
             s = self.getAllText()
         n = len(s)

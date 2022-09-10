@@ -2482,11 +2482,9 @@ class StringTextWrapper:
             g.trace('StringTextWrapper', repr(index), g.callers())
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    ### def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
-        ### i = self.toPythonIndex(index)
         i = index
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
