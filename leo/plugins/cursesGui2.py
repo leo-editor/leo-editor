@@ -4095,11 +4095,11 @@ class TextMixin:
         g.app.gui.set_focus(self)
 
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """TextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)
-        return index, row, col  ### index is useless.
+        return row, col
     #@-others
 #@+node:ekr.20170504034655.1: *3* class BodyWrapper (leoFrame.StringTextWrapper)
 class BodyWrapper(leoFrame.StringTextWrapper):

@@ -12,8 +12,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
@@ -33,8 +32,6 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
-
-Index = Union[int, str]  # A zero-based index or a Tk index.
 Widget = Any
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
@@ -268,8 +265,8 @@ class WrapperAPI:
         pass
 
     ### To be removed.
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
-        return (0, 0, 0)
+    # def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
+        # return (0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
     """The required API for c.frame.iconBar."""
@@ -2461,12 +2458,11 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else insert
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
-        i = index
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
+        row, col = g.convertPythonIndexToRowCol(s, index)
+        return row, col
     #@-others
 #@-others
 #@@language python

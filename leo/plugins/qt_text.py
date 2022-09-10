@@ -302,11 +302,11 @@ class QTextMixin:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """QTextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)
-        return index, row, col  ### index is never useful.
+        return row, col
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self) -> None:
 
@@ -1961,16 +1961,14 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, i: int) -> Tuple[int, int]:
 
-        assert isinstance(index, int), g.callers()
         te = self.widget
         doc = te.document()
-        i = index
         bl = doc.findBlock(i)
         row = bl.blockNumber()
         col = i - bl.position()
-        return i, row, col
+        return row, col
     #@-others
 #@-others
 

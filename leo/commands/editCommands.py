@@ -2505,8 +2505,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setMoveCol(self, w: Wrapper, spot: int) -> None:
         """Set the column to which an up or down arrow will attempt to move."""
         p = self.c.p
-        i, row, col = w.toPythonIndexRowCol(spot)
-        self.moveSpot = i
+        row, col = w.toPythonIndexRowCol(spot)
+        self.moveSpot = spot
         self.moveCol = col
         self.moveSpotNode = p.v
     #@+node:ekr.20150514063305.290: *4* ec.backToHome/ExtendSelection
