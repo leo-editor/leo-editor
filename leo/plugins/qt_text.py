@@ -1960,7 +1960,7 @@ class QTextEditWrapper(QTextMixin):
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
+    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast)
     def toPythonIndexRowCol(self, i: int) -> Tuple[int, int]:
 
         te = self.widget

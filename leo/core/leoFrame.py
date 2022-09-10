@@ -263,10 +263,6 @@ class WrapperAPI:
 
     def setYScrollPosition(self, i: int) -> None:
         pass
-
-    ### To be removed.
-    # def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
-        # return (0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
     """The required API for c.frame.iconBar."""
@@ -2402,7 +2398,7 @@ class StringTextWrapper:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
         return i
-    #@+node:ekr.20220909182855.1: *4* stw.getLastPosition  (New)
+    #@+node:ekr.20220909182855.1: *4* stw.getLastPosition
     def getLastPosition(self) -> int:
         """Return the length of the self.s"""
         return len(self.s)
