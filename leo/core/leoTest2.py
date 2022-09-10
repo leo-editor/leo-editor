@@ -190,13 +190,10 @@ class LeoUnitTest(unittest.TestCase):
             return len(s)
         data = index.split('.')
         self.assertEqual(len(data), 2, msg=f"bad string index: {index}")
-        ###if len(data) == 2:
         row1, col1 = data
         row, col = int(row1), int(col1)
         i = g.convertRowColToPythonIndex(s, row - 1, col)
         return i
-        ### g.trace(f"bad string index: {index}")
-        ### return 0
     #@-others
 #@-others
 #@-leo
