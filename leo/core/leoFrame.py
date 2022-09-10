@@ -269,7 +269,8 @@ class WrapperAPI:
     def toPythonIndex(self, index: Index) -> int:
         return 0
 
-    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
+    ### def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
@@ -2364,7 +2365,8 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    def delete(self, i: Index, j: Index=None) -> None:
+    ### def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None:
@@ -2430,7 +2432,8 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    def insert(self, i: Index, s: str) -> None:
+    ### def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
@@ -2450,20 +2453,22 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
-    def setInsertPoint(self, pos: str, s: str=None) -> None:
+    ### def setInsertPoint(self, pos: str, s: str=None) -> None:
+    def setInsertPoint(self, pos: int, s: str=None) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(pos)
         self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
+    ### def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: Index) -> int:
+    def toPythonIndex(self, index: int) -> int:
         """
         StringTextWrapper.toPythonIndex.
 
@@ -2473,10 +2478,12 @@ class StringTextWrapper:
         """
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
+    ### def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
-        i = self.toPythonIndex(index)
+        ### i = self.toPythonIndex(index)
+        i = index
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
     #@-others

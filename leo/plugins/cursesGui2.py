@@ -4105,10 +4105,12 @@ class TextMixin:
         i = g.toPythonIndex(s, index)
         return i
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index):
+    ### def toPythonIndexRowCol(self, index):
+    def toPythonIndexRowCol(self, index: int):
         """TextMixin"""
         s = self.getAllText()
-        i = self.toPythonIndex(index)
+        ### i = self.toPythonIndex(index)
+        i = index
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
     #@-others

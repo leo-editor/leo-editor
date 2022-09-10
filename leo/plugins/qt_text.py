@@ -2011,15 +2011,18 @@ class QTextEditWrapper(QTextMixin):
         g.trace(f"bad string index: {index}")
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: Index) -> Tuple[int, int, int]:
-        w = self
-        if index == '1.0':
-            return 0, 0, 0
-        if index == 'end':
-            index = w.getLastPosition()
+    ### def toPythonIndexRowCol(self, index: Index) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+        ### w = self
+        assert isinstance(index, int), g.callers()
+        # if index == '1.0':
+            # return 0, 0, 0
+        # if index == 'end':
+            # index = w.getLastPosition()
         te = self.widget
         doc = te.document()
-        i = w.toPythonIndex(index)
+        ### i = w.toPythonIndex(index)
+        i = index
         bl = doc.findBlock(i)
         row = bl.blockNumber()
         col = i - bl.position()
