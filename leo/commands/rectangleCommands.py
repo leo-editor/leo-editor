@@ -148,13 +148,17 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'open-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         fill = ' ' * (r4 - r2)
         for r in range(r1, r3 + 1):
-            w.insert(f"{r}.{r2}", fill)
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2 + len(fill)}"
+            w.insert(toInt(f"{r}.{r2}"), fill)
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2 + len(fill)}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@+node:ekr.20150514063305.459: *4* stringRectangle
