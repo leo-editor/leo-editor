@@ -1723,12 +1723,10 @@ class QTextEditWrapper(QTextMixin):
     def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        ### int_i = self.toPythonIndex(i)  ### Keep
-        int_i = i
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged.
-            cursor.setPosition(int_i)
+            cursor.setPosition(i)
             cursor.insertText(s)
             w.setTextCursor(cursor)  # Bug fix: 2010/01/27
         finally:
@@ -1902,13 +1900,8 @@ class QTextEditWrapper(QTextMixin):
         #
         # Part 1
         w = self.widget
-        ### int_i = self.toPythonIndex(i)  ### Keep
         int_i = i
-        ### int_j = self.toPythonIndex(j)  ### Keep
-        if j is None:  ### Experimental.
-            int_j = i
-        else:
-            int_j = j
+        int_j = i if j is None else j
         if s is None:
             s = self.getAllText()
         n = len(s)
@@ -1917,7 +1910,8 @@ class QTextEditWrapper(QTextMixin):
         if insert is None:
             int_ins = max(int_i, int_j)
         else:
-            int_ins = self.toPythonIndex(insert)  ### Keep
+            ### int_ins = self.toPythonIndex(insert)  ### Keep
+            int_ins = int_j if insert is None else insert
             int_ins = max(0, min(int_ins, n))
         #
         # Part 2:
