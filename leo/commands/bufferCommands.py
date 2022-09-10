@@ -62,9 +62,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w = self.w
             c.selectPosition(p)
             self.beginCommand(w, f"append-to-buffer: {p.h}")
-            ### Hard.
-            ### w.insert('end', s)
-            ### w.setInsertPoint('end')
             end = w.getLastPosition()
             w.insert(end, s)
             w.setInsertPoint(end + len(s))
@@ -88,10 +85,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         if s and p:
             c.selectPosition(p)
             self.beginCommand(w, f"copy-to-buffer: {p.h}")
-            ### Hard.
-            ### w.insert('end', s)
             w.insert(w.getLastPosition(), s)
-            ### w.setInsertPoint('end')
             w.setInsertPoint(w.getLastPosition())
             self.endCommand()
             c.redraw_after_icons_changed()

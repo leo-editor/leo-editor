@@ -2216,8 +2216,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, end = w.getSelectionRange()
         else:
             i = w.getInsertPoint()
-            ### Hard.
-            ### end = 'end'
             end = w.getLastPosition()
         txt = w.get(i, end)
         tlines = txt.splitlines(True)
@@ -3792,9 +3790,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not self._chckSel(event):
             return  # pragma: no cover (defensive)
+        
+        s = w.getAllText()
+
+        def toInt(index: int) -> int:
+            return g.toPythonIndex(s, index)
+
         self.beginCommand(w, undoType='sort-columns')
         try:
-            s = w.getAllText()
             sel_1, sel_2 = w.getSelectionRange()
             sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
             sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
@@ -3803,8 +3806,11 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, junk = g.getLine(s, sel_1)
             junk, j = g.getLine(s, sel_2)
             txt = s[i:j]
-            columns = [w.get(f"{z}.{sint2}", f"{z}.{sint4}")
-                for z in range(sint1, sint3 + 1)]
+            columns = [
+                ### w.get(f"{z}.{sint2}", f"{z}.{sint4}")
+                w.get(toInt(f"{z}.{sint2}"), toInt(f"{z}.{sint4}"))
+                    for z in range(sint1, sint3 + 1)
+            ]
             aList = g.splitLines(txt)
             zlist = list(zip(columns, aList))
             zlist.sort()

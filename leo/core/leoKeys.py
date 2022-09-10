@@ -3639,8 +3639,6 @@ class KeyHandlerClass:
         if not (w and s):
             return
         c.widgetWantsFocusNow(w)
-        ### Hard
-        ### w.insert('end', s)
         w.insert(w.getLastPosition(), s)
         if select:
             i, j = k.getEditableTextRange()

@@ -2392,7 +2392,8 @@ class StringTextWrapper:
         i = self.toPythonIndex(i)
         if j is None:
             j = i + 1
-        j = self.toPythonIndex(j)
+        else:  ### change.
+            j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText
@@ -2480,7 +2481,7 @@ class StringTextWrapper:
         Unit tests *do* use non-integer indices, so removing this method would be tricky.
         """
         ### Rectangle commands and sortColumns use Tk indices.
-        if False:  ### not isinstance(index, int):
+        if False and not isinstance(index, int):
             g.trace('StringTextWrapper', repr(index), g.callers())
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
