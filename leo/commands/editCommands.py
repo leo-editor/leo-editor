@@ -3790,7 +3790,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not self._chckSel(event):
             return  # pragma: no cover (defensive)
-
         s = w.getAllText()
 
         def toInt(index: str) -> int:

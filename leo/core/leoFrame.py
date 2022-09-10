@@ -2391,11 +2391,6 @@ class StringTextWrapper:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         j = i + 1 if j is None else self.toPythonIndex(j)
-        ###
-            # if j is None:
-                # j = i + 1
-            # else:  ### change.
-                # j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText

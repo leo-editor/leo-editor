@@ -58,14 +58,19 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+        s = w.getAllText()
+            
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(s, index)
+
         self.beginCommand(w, 'clear-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         # Change the text.
         fill = ' ' * (r4 - r2)
         for r in range(r1, r3 + 1):
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-            w.insert(f"{r}.{r2}", fill)
-        w.setSelectionRange(f"{r1}.{r2}", f"{r3}.{r2 + len(fill)}")
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+            w.insert(toInt(f"{r}.{r2}"), fill)
+        w.setSelectionRange(toInt(f"{r1}.{r2}"), toInt(f"{r3}.{r2 + len(fill)}"))
         self.endCommand()
     #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
