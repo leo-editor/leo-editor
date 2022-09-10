@@ -1603,27 +1603,24 @@ class QTextEditWrapper(QTextMixin):
     def delete(self, i: int, j: int=None) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        int_i = i
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = j
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+            j = i + 1
+        if i > j:
+            i, j = j, i
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged
             old_i, old_j = self.getSelectionRange()
-            if int_i == old_i and int_j == old_j:
+            if i == old_i and j == old_j:
                 # Work around an apparent bug in cursor.movePosition.
                 cursor.removeSelectedText()
-            elif int_i == int_j:
+            elif i == j:
                 pass
             else:
-                cursor.setPosition(int_i)
-                moveCount = abs(int_j - int_i)
+                cursor.setPosition(i)
+                moveCount = abs(j - i)
                 cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
                 w.setTextCursor(cursor)  # Bug fix: 2010/01/27
                 cursor.removeSelectedText()
