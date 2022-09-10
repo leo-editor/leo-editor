@@ -415,7 +415,7 @@ class QLineEditWrapper(QTextMixin):
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:  ###
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None, s: str=None) -> None: 
         """QHeadlineWrapper."""
         if not self.check():
             return

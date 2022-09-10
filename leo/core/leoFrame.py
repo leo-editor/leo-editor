@@ -267,10 +267,6 @@ class WrapperAPI:
     def setYScrollPosition(self, i: int) -> None:
         pass
 
-    ###
-    # def toPythonIndex(self, index: Index) -> int:
-        # return 0
-
     ### To be removed.
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         return (0, 0, 0)
@@ -2464,19 +2460,6 @@ class StringTextWrapper:
         """StringTextWrapper."""
         self.sel = i, j
         self.ins = j if insert is None else insert
-    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex (remove *later*)
-    def toPythonIndex(self, index: int) -> int:
-        """
-        StringTextWrapper.toPythonIndex.
-
-        Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
-
-        Unit tests *do* use non-integer indices, so removing this method would be tricky.
-        """
-        ### Rectangle commands and sortColumns use Tk indices.
-        if not isinstance(index, int):
-            g.trace('StringTextWrapper', repr(index), g.callers())
-        return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """StringTextWrapper."""
