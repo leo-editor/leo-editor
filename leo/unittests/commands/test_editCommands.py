@@ -27,6 +27,10 @@ class TestEditCommands(LeoUnitTest):
         A helper for many commands tests.
         """
         c = self.c
+
+        def toInt(s):
+            return g.toPythonIndex(before_b, s)
+
         # For shortDescription().
         self.command_name = command_name
         # Compute the result in tempNode.b
@@ -47,8 +51,7 @@ class TestEditCommands(LeoUnitTest):
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
-        i = g.toPythonIndex(before_b, i)
-        j = g.toPythonIndex(before_b, j)
+        i, j = toInt(i), toInt(j)
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
         c.k.simulateCommand(command_name)
