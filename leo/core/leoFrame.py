@@ -1222,7 +1222,7 @@ class LeoLog:
         self.selectTab(tabName, wrap=wrap)
         w = self.logCtrl
         if w:
-            w.delete(0, len(w.getAllText()))
+            w.delete(0, w.getLastIndex())
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
         # Important: widget *is* used in subclasses. Do not change the signature above.
@@ -2184,7 +2184,7 @@ class NullStatusLineClass:
 
     def clear(self) -> None:
         w = self.textWidget
-        w.delete(0, len(w.getAllText()))
+        w.delete(0, w.getLastIndex())
 
     def get(self) -> str:
         return self.textWidget.getAllText()
@@ -2194,7 +2194,7 @@ class NullStatusLineClass:
 
     def put(self, s: str, bg: str=None, fg: str=None) -> None:
         w = self.textWidget
-        w.insert(len(w.getAllText()), s)
+        w.insert(w.getLastIndex(), s)
 
     def setFocus(self) -> None:
         pass
@@ -2283,7 +2283,7 @@ class NullTree(LeoTree):
         This is called from the undo/redo logic to change the text before redrawing."""
         w = self.edit_widget(p)
         if w:
-            w.delete(0, len(w.getAllText()))
+            w.delete(0, w.getLastIndex())
             if s.endswith('\n') or s.endswith('\r'):
                 s = s[:-1]
             w.insert(0, s)
@@ -2395,8 +2395,8 @@ class StringTextWrapper:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
         return i
-    #@+node:ekr.20220909182855.1: *4* stw.getLastPosition
-    def getLastPosition(self) -> int:
+    #@+node:ekr.20220909182855.1: *4* stw.getLastIndex
+    def getLastIndex(self) -> int:
         """Return the length of the self.s"""
         return len(self.s)
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText

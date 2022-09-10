@@ -367,7 +367,7 @@ def on_bodykey1(tag, keywords):
         if 0:  # Davide Salomoni requests that this code be eliminated.
             # An @read-only node: do not change its text.
             w = c.frame.body.wrapper
-            w.delete(0, len(w.getAllText()))
+            w.delete(0, w.getLastIndex())
             w.insert(0, p.b)
         return 1  # Override the body key event handler.
     return None

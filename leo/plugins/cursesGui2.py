@@ -4045,8 +4045,8 @@ class TextMixin:
         if j is None:
             j = i + 1
         return all_s[i:j]
-    #@+node:ekr.20170511053143.17: *5* tm.getLastPosition & getLength
-    def getLastPosition(self, s=None):
+    #@+node:ekr.20170511053143.17: *5* tm.getLastIndex & getLength
+    def getLastIndex(self, s=None):
         """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
 

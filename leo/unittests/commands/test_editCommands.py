@@ -4046,7 +4046,7 @@ class TestEditCommands(LeoUnitTest):
         w = c.edit_widget(p)
         try:
             assert w
-            end = w.getLastPosition()
+            end = w.getLastIndex()
             w.setSelectionRange(end, end)
         finally:
             if 1:
@@ -4203,7 +4203,7 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
@@ -4241,7 +4241,7 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         g.app.gui.set_focus(c, w)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
@@ -4260,7 +4260,7 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p)
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         w.setSelectionRange(end, end, insert=end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
@@ -4312,7 +4312,7 @@ class TestEditCommands(LeoUnitTest):
         c.redraw(p)  # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
@@ -4333,7 +4333,7 @@ class TestEditCommands(LeoUnitTest):
         c.redraw(p)  # Required
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         w.setSelectionRange(end, end)
         # char, shortcut.
         g.app.gui.event_generate(c, 'X', 'Shift+X', w)
@@ -4418,7 +4418,7 @@ class TestEditCommands(LeoUnitTest):
         c.redrawAndEdit(p)  # Required
         w = c.edit_widget(p)
         assert w
-        end = w.getLastPosition()
+        end = w.getLastIndex()
         wName = g.app.gui.widget_name(w)
         self.assertTrue(wName.startswith('head'))
         w.setSelectionRange(end, end)

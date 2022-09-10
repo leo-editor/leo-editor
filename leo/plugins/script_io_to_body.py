@@ -40,7 +40,7 @@ def newPut(self, s, *args, **keys):
     w = body.wrapper
     if w:
         bunch = u.beforeChangeBody(p)
-        w.insert(len(w.getAllText()), s)
+        w.insert(w.getLastIndex(), s)
         p.v.b = w.getAllText()
         u.afterChangeBody(p, 'put-to-body-text', bunch)
 

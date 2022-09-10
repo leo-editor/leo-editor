@@ -269,8 +269,8 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
         return s[i:j]
-    #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
-    def getLastPosition(self, s: str=None) -> int:
+    #@+node:ekr.20140901062324.18704: *5* qtm.getLastIndex & getLength
+    def getLastIndex(self, s: str=None) -> int:
         """QTextMixin"""
         return len(self.getAllText()) if s is None else len(s)
 

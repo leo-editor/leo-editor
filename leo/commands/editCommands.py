@@ -1570,7 +1570,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         result = ''.join(lines)
         if s != result:
             self.beginCommand(w, undoType='clean-lines')
-            w.delete(0, len(w.getAllText()))
+            w.delete(0, w.getLastIndex())
             w.insert(0, result)
             w.setInsertPoint(0)
             self.endCommand(changed=True, setLabel=True)
@@ -2216,7 +2216,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, end = w.getSelectionRange()
         else:
             i = w.getInsertPoint()
-            end = w.getLastPosition()
+            end = w.getLastIndex()
         txt = w.get(i, end)
         tlines = txt.splitlines(True)
         keeplines = list(tlines) if which == 'flush' else []
@@ -2696,7 +2696,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i = max(0, i - 1)
                 self.moveToHelper(event, i, extend=extend)
             elif spot == 'right':
-                i = min(i + 1, len(w.getAllText()))
+                i = min(i + 1, w.getLastIndex())
                 self.moveToHelper(event, i, extend=extend)
             else:
                 g.trace(f"can not happen: bad spot: {spot}")
