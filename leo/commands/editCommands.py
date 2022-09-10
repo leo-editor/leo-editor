@@ -3790,10 +3790,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not self._chckSel(event):
             return  # pragma: no cover (defensive)
-        
+
         s = w.getAllText()
 
-        def toInt(index: int) -> int:
+        def toInt(index: str) -> int:
             return g.toPythonIndex(s, index)
 
         self.beginCommand(w, undoType='sort-columns')
