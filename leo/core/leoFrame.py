@@ -182,7 +182,7 @@ class TreeAPI:
 
     def updateHead(self, event: Event, w: Wrapper) -> None:
         pass
-#@+node:ekr.20140903025053.18631: *3* class WrapperAPI
+#@+node:ekr.20140903025053.18631: *3* class WrapperAPI (remove)
 class WrapperAPI:
     """A class specifying the wrapper api used throughout Leo's core."""
 
@@ -2409,7 +2409,7 @@ class StringTextWrapper:
         self.virtualInsertPoint = i
         return i
     #@+node:ekr.20220909182855.1: *4* stw.getLastPosition  (New)
-    def getLastPosition(self):
+    def getLastPosition(self) -> int:
         """Return the length of the self.s"""
         return len(self.s)
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText
@@ -2468,7 +2468,7 @@ class StringTextWrapper:
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
-    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
+    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex (remove)
     def toPythonIndex(self, index: int) -> int:
         """
         StringTextWrapper.toPythonIndex.

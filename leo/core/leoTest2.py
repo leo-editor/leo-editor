@@ -16,7 +16,7 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 import time
 import unittest
 import warnings
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
 #@-<< leoTest2 imports >>
@@ -177,23 +177,6 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
-    #@+node:ekr.20220909164236.1: *3* LeoUnitTest.toPythonIndex
-    def toPythonIndex(self, s: str, index: Union[int, str]) -> int:
-
-        if index is None:
-            return 0
-        if isinstance(index, int):
-            return index
-        if index == '1.0':
-            return 0
-        if index == 'end':
-            return len(s)
-        data = index.split('.')
-        self.assertEqual(len(data), 2, msg=f"bad string index: {index}")
-        row1, col1 = data
-        row, col = int(row1), int(col1)
-        i = g.convertRowColToPythonIndex(s, row - 1, col)
-        return i
     #@-others
 #@-others
 #@-leo

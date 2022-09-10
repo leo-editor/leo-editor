@@ -4097,7 +4097,7 @@ class TextMixin:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
+    #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex (remove)
     def toPythonIndex(self, index: Union[int, str], s: str=None):
         """TextMixin"""
         if s is None:

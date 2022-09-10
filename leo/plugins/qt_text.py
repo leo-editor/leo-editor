@@ -307,7 +307,7 @@ class QTextMixin:
     def selectAllText(self, s: str=None) -> None:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex
+    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex (remove)
     def toPythonIndex(self, index: int, s: str=None) -> int:
         """QTextMixin"""
         if s is None:
@@ -429,9 +429,7 @@ class QLineEditWrapper(QTextMixin):
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
-    def setSelectionRange(self,
-        i: int, j: int, insert: int=None, s: str=None,  ###
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:  ###
         """QHeadlineWrapper."""
         if not self.check():
             return
@@ -1987,9 +1985,11 @@ class QTextEditWrapper(QTextMixin):
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex
+    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, remove)
     def toPythonIndex(self, index: int, s: str=None) -> int:
         """This is much faster than versions using g.toPythonIndex."""
+        if not isinstance(index, int):  ###
+            g.trace('QTextEditWrapper:', 'index:', repr(index), g.callers())
         w = self
         te = self.widget
         if index is None:
@@ -2009,7 +2009,7 @@ class QTextEditWrapper(QTextMixin):
             return bl.position() + col
         g.trace(f"bad string index: {index}")
         return 0
-    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
+    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
         ### w = self
         assert isinstance(index, int), g.callers()

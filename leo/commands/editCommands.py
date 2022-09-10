@@ -1554,7 +1554,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def cleanLines(self, event: Event) -> None:
         """
         Removes trailing whitespace from all lines, preserving newlines.
-        
+
         Not recommended: reindent is better.
         """
         w = self.editWidget(event)
