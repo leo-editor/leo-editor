@@ -179,7 +179,7 @@ class TreeAPI:
 
     def updateHead(self, event: Event, w: Wrapper) -> None:
         pass
-#@+node:ekr.20140903025053.18631: *3* class WrapperAPI (remove)
+#@+node:ekr.20140903025053.18631: *3* class WrapperAPI
 class WrapperAPI:
     """A class specifying the wrapper api used throughout Leo's core."""
 
