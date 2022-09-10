@@ -2440,7 +2440,7 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18598: *4* stw.insert
     def insert(self, i: int, s: str) -> None:
         """StringTextWrapper."""
-        i = self.toPythonIndex(i)
+        ### i = self.toPythonIndex(i)
         s1 = s
         self.s = self.s[:i] + s1 + self.s[i:]
         i += len(s1)
@@ -2458,16 +2458,16 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
-    def setInsertPoint(self, pos: int, s: str=None) -> None:
+    def setInsertPoint(self, i: int, s: str=None) -> None:
         """StringTextWrapper."""
-        i = self.toPythonIndex(pos)
+        ### i = self.toPythonIndex(pos)
         self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
     def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         """StringTextWrapper."""
-        i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+        ### i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex (remove *later*)
