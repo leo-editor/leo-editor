@@ -15,11 +15,13 @@ class TestEditCommands(LeoUnitTest):
     #@+others
     #@+node:ekr.20201129161726.5: *3* TestEditCommands.run_test
     def run_test(self,
-            before_b, after_b,  # before/after body text.
-            before_sel, after_sel,  # before and after selection ranges.
-            command_name,
-            directives='',
-            dedent=True,
+            before_b: str,
+            after_b: str,  # before/after body text.
+            before_sel: str,
+            after_sel: str,  # before and after selection ranges.
+            command_name: str,
+            directives: str='',
+            dedent: bool=True,
         ):
         """
         A helper for many commands tests.

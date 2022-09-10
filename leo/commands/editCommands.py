@@ -945,7 +945,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         extend = self.extend or self.extendMode
         ch = k.arg
         s = w.getAllText()
-        ins = g.toPythonIndex(s, self.insert)  ###
+        ins = self.insert
         i = ins + -1 if backward else +1  # skip the present character.
         if backward:
             start = 0
