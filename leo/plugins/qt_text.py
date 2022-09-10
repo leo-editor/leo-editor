@@ -420,30 +420,26 @@ class QLineEditWrapper(QTextMixin):
         if not self.check():
             return
         w = self.widget
-        int_i = i
-        int_j = j
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+        if i > j:
+            i, j = j, i
         if s is None:
             s = w.text()
         n = len(s)
-        int_i = max(0, min(int_i, n))
-        int_j = max(0, min(int_j, n))
+        i = max(0, min(i, n))
+        j = max(0, min(j, n))
         if insert is None:
-            int_insert = int_j
+            insert = j
         else:
-            int_insert = insert
-            int_insert = max(0, min(int_insert, n))
-        if int_i == int_j:
-            w.setCursorPosition(int_i)
+            insert = max(0, min(insert, n))
+        if i == j:
+            w.setCursorPosition(i)
         else:
-            length = int_j - int_i
+            length = j - i
             # Set selection is a QLineEditMethod
-            if int_insert < int_j:
-                w.setSelection(int_j, -length)
+            if insert < j:
+                w.setSelection(j, -length)
             else:
-                w.setSelection(int_i, length)
-    # setSelectionRangeHelper = setSelectionRange
+                w.setSelection(i, length)
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
 class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
