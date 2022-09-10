@@ -1509,8 +1509,9 @@ class QScintillaWrapper(QTextMixin):
     def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
-        int_insert = j if insert is None else insert
-        if int_insert >= i:
+        if insert is None:
+            insert = j
+        if insert >= i:
             w.SendScintilla(w.SCI_SETSEL, i, j)
         else:
             w.SendScintilla(w.SCI_SETSEL, j, i)
