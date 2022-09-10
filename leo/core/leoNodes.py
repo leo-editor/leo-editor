@@ -85,7 +85,11 @@ class NodeIndices:
         c = v.context
         fc = c.fileCommands
         t_s = self.update()  # Updates self.lastTime and self.lastIndex.
-        gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
+        if c.config.getBool('gnxisuuid'):
+            import uuid
+            gnx = g.toUnicode(str(uuid.uuid4()))
+        else:
+            gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         v.fileIndex = gnx
         self.check_gnx(c, gnx, v)
         fc.gnxDict[gnx] = v
