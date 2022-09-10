@@ -224,7 +224,6 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().appendText(s)
         self.finish_setter('appendText')
 
-    ### def delete(self, i: Union[int, str], j: Union[int, str]=None):
     def delete(self, i: int, j: Optional[int]=None):
         super().delete(i, j)
         self.finish_setter('delete')
@@ -233,7 +232,6 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().deleteTextSelection()
         self.finish_setter('deleteTextSelection')
 
-    ### def insert(self, i: Union[int, str], s):
     def insert(self, i: int, s):
         # Called from doPlainChar, insertNewlineHelper, etc. on every keystroke.
         super().insert(i, s)
@@ -1444,7 +1442,6 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
 
-    ### def delete(self, i: Union[int, str], j: Union[int, str]=None):
     def delete(self, i: int, j: Optional[int]=None):
         super().delete(i, j)
         self.update('delete')
@@ -1452,7 +1449,6 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
     def getAllText(self):
         return self.s
 
-    ### def insert(self, i: Union[int, str], s: str) -> None:
     def insert(self, i: int, s: str) -> None:
         super().insert(i, s)
         self.update('insert')
@@ -1461,7 +1457,6 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.update('setAllText')
 
-    ### def setSelectionRange(self, i: Union[int, str], j: Union[int, str], insert: Union[int, str]=None):
     def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
