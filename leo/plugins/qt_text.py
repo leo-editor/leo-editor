@@ -1603,13 +1603,11 @@ class QTextEditWrapper(QTextMixin):
     def delete(self, i: int, j: int=None) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        ### int_i = self.toPythonIndex(i)  ### Keep
-        int_i = i  ### Experimental
+        int_i = i
         if j is None:
             int_j = int_i + 1
         else:
-            ### int_j = self.toPythonIndex(j)  ### Keep
-            int_j = j  ### Experimental.
+            int_j = j
         if int_i > int_j:
             int_i, int_j = int_j, int_i
         sb = w.verticalScrollBar()
@@ -1722,10 +1720,11 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
-    def insert(self, i: int, s: str) -> None:  ###
+    def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged.
@@ -1898,13 +1897,18 @@ class QTextEditWrapper(QTextMixin):
         # Use the more careful code in setSelectionRange.
         self.setSelectionRange(i=i, j=i, insert=i, s=s)
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:  ###
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         """Set the selection range and the insert point."""
         #
         # Part 1
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep
-        int_j = self.toPythonIndex(j)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i
+        ### int_j = self.toPythonIndex(j)  ### Keep
+        if j is None:  ### Experimental.
+            int_j = i
+        else:
+            int_j = j
         if s is None:
             s = self.getAllText()
         n = len(s)
@@ -1991,7 +1995,7 @@ class QTextEditWrapper(QTextMixin):
         g.trace(f"bad string index: {index}")
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
 
         assert isinstance(index, int), g.callers()
         te = self.widget
