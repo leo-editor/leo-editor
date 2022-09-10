@@ -367,7 +367,10 @@ class LeoQtTree(leoFrame.LeoTree):
             replacement, s = None, None
 
             if cmd == 'REPLACE':
-                s = pattern.sub(arg, text)
+                try:
+                    s = pattern.sub(arg, text)
+                except re.error as e:
+                    g.log(f'Error in declutter REPLACE "{e!s}"\n  RULE:{pattern.pattern!r}\n  REPLACE:{arg!r}\n  HEADLINE:{text!r}', color='error')
             elif cmd == 'REPLACE-HEAD':
                 s = text[: m.start()].rstrip()
             elif cmd == 'REPLACE-TAIL':
