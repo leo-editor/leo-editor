@@ -2463,7 +2463,7 @@ class StringTextWrapper:
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: int) -> int:
+    def toPythonIndex(self, index: Index) -> int:
         """
         StringTextWrapper.toPythonIndex.
 

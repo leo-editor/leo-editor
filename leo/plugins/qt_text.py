@@ -1991,8 +1991,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex
     def toPythonIndex(self, index: Index, s: str=None) -> int:
         """This is much faster than versions using g.toPythonIndex."""
-        assert isinstance(index, int), g.callers()
-        return index
         w = self
         te = self.widget
         if index is None:
@@ -2013,9 +2011,8 @@ class QTextEditWrapper(QTextMixin):
         g.trace(f"bad string index: {index}")
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: Index) -> Tuple[int, int, int]:
         w = self
-        assert isinstance(index, int), g.callers()
         if index == '1.0':
             return 0, 0, 0
         if index == 'end':
