@@ -4180,11 +4180,18 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         ec = c.editCommands
         w = c.frame.body.wrapper
-        for i, result, direction in (('5.8', '4.8', 'up'), ('5.8', '6.8', 'down')):
-            w.setInsertPoint(i)
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
+        table = (
+            ('5.8', '4.8', 'up'),
+            ('5.8', '6.8', 'down'),
+        )
+        for i, result, direction in table:
+            w.setInsertPoint(toInt(i))
             ec.moveUpOrDownHelper(event=None, direction=direction, extend=False)
             w.getSelectionRange()
-
     #@+node:ekr.20210905064816.21: *4* TestEditCommands.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
         c, k = self.c, self.c.k

@@ -213,6 +213,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         killRect = self.theKillRectangle
+        
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         if g.unitTesting:
             # This value is used by the unit test.
             killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']
@@ -225,11 +229,11 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         for r in range(r1, r3 + 1):
             if n >= len(killRect):
                 break
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-            w.insert(f"{r}.{r2}", killRect[n])
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+            w.insert(toInt(f"{r}.{r2}"), killRect[n])
             n += 1
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2 + len(killRect[n - 1])}"
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2 + len(killRect[n - 1])}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@-others

@@ -5242,9 +5242,9 @@ def toPythonIndex(s: str, index: Union[int, str]) -> int:
     if (  ###
         not g.unitTesting
         and not isinstance(index, int)
-        and 'rectangle' not in g.callers().lower()
-        and 'sortColumns' not in g.callers()
-        and 'test_moveUpOrDownHelper' not in g.callers()
+        # and 'rectangle' not in g.callers().lower()
+        # and 'sortColumns' not in g.callers()
+        # and 'test_moveUpOrDownHelper' not in g.callers()
     ):
         g.trace(repr(index), g.callers())
     if index is None:

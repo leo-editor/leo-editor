@@ -2478,7 +2478,7 @@ class StringTextWrapper:
         Unit tests *do* use non-integer indices, so removing this method would be tricky.
         """
         ### Rectangle commands and sortColumns use Tk indices.
-        if False and not isinstance(index, int):
+        if not isinstance(index, int):
             g.trace('StringTextWrapper', repr(index), g.callers())
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
