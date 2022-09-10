@@ -1895,12 +1895,17 @@ class QTextEditWrapper(QTextMixin):
         # Use the more careful code in setSelectionRange.
         self.setSelectionRange(i=i, j=i, insert=i, s=s)
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
+    def setSelectionRange(self,
+        i: Optional[int],
+        j: Optional[int],
+        insert: Optional[int]=None,
+        s: Optional[str]=None,
+    ) -> None:
         """Set the selection range and the insert point."""
         #
         # Part 1
         w = self.widget
-        int_i = i
+        int_i = 0 if i is None else i
         int_j = i if j is None else j
         if s is None:
             s = self.getAllText()
@@ -1910,7 +1915,6 @@ class QTextEditWrapper(QTextMixin):
         if insert is None:
             int_ins = max(int_i, int_j)
         else:
-            ### int_ins = self.toPythonIndex(insert)  ### Keep
             int_ins = int_j if insert is None else insert
             int_ins = max(0, min(int_ins, n))
         #
@@ -1961,33 +1965,6 @@ class QTextEditWrapper(QTextMixin):
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, to be removed)
-    def toPythonIndex(self, index: Optional[int], s: str=None) -> int:
-        """This is much faster than versions using g.toPythonIndex."""
-        w = self
-        te = self.widget
-        if index is None:
-            return 0
-        if isinstance(index, int):
-            return index
-        if 1: ### Warning.
-            if g.unitTesting:
-                assert False, g.callers()
-            else:
-                g.trace('QTEW:', 'index:', repr(index), g.callers())
-        if index == '1.0':
-            return 0
-        if index == 'end':
-            return w.getLastPosition()
-        doc = te.document()
-        data = index.split('.')
-        if len(data) == 2:
-            row1, col1 = data
-            row, col = int(row1), int(col1)
-            bl = doc.findBlockByNumber(row - 1)
-            return bl.position() + col
-        g.trace(f"bad string index: {index}")
-        return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
 
