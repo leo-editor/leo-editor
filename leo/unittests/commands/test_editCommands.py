@@ -4334,7 +4334,8 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         ec, w = c.editCommands, c.frame.body.wrapper
         table = (
-            ('1.0', 0),
+            # ('1.0', 0),
+            (0, 0),
             (5, 5),
         )
         w.setAllText('1234567890')
