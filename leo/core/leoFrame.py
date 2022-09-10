@@ -12,8 +12,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
-from typing import Any, Callable, Dict, List, Tuple, Union
-from typing import TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
@@ -33,7 +32,6 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
-Index = Union[int, str]  # A zero-based index or a Tk index.
 Widget = Any
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
@@ -194,7 +192,7 @@ class WrapperAPI:
     def clipboard_clear(self) -> None:
         pass
 
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         pass
 
     def deleteTextSelection(self) -> None:
@@ -233,7 +231,7 @@ class WrapperAPI:
     def hasSelection(self) -> bool:
         return False
 
-    def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:
         pass
 
     def see(self, i: int) -> None:
@@ -254,7 +252,7 @@ class WrapperAPI:
     def setInsertPoint(self, pos: str, s: str=None) -> None:
         pass
 
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         pass
 
     def setXScrollPosition(self, i: int) -> None:
@@ -262,12 +260,6 @@ class WrapperAPI:
 
     def setYScrollPosition(self, i: int) -> None:
         pass
-
-    def toPythonIndex(self, index: Index) -> int:
-        return 0
-
-    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
-        return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
     """The required API for c.frame.iconBar."""
@@ -364,7 +356,7 @@ class LeoBody:
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20070424053629: *4* LeoBody.entries
-    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor (overridden)
+    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
     def addEditor(self, event: Event=None) -> None:
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
@@ -389,8 +381,9 @@ class LeoBody:
         # Create the text wrapper.
         f = self.createEditorFrame(pane)
         wrapper = self.createTextWidget(f, name=name, p=p)
-        wrapper.delete(0, 'end')
-        wrapper.insert('end', p.b)
+        wrapper.delete(0, len(wrapper.getAllText()))
+        wrapper.insert(0, p.b)
+        wrapper.setInsertPoint(len(p.b))
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p, wrapper)
@@ -538,8 +531,9 @@ class LeoBody:
             wrapper = d.get(key)
             v = wrapper.leo_v
             if v and v == p.v and wrapper != c.frame.body.wrapper:
-                wrapper.delete(0, 'end')
-                wrapper.insert('end', p.b)
+                wrapper.delete(0, len(wrapper.getAllText()))
+                wrapper.insert(0, p.b)
+                wrapper.setInsertPoint(len(p.b))
                 self.recolorWidget(p, wrapper)
         c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
@@ -1225,7 +1219,7 @@ class LeoLog:
         self.selectTab(tabName, wrap=wrap)
         w = self.logCtrl
         if w:
-            w.delete(0, 'end')
+            w.delete(0, w.getLastIndex())
     #@+node:ekr.20070302094848.2: *3* LeoLog.createTab
     def createTab(self, tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none') -> Widget:
         # Important: widget *is* used in subclasses. Do not change the signature above.
@@ -2183,7 +2177,8 @@ class NullStatusLineClass:
         self.enabled = True
 
     def clear(self) -> None:
-        self.textWidget.delete(0, 'end')
+        w = self.textWidget
+        w.delete(0, w.getLastIndex())
 
     def get(self) -> str:
         return self.textWidget.getAllText()
@@ -2192,7 +2187,8 @@ class NullStatusLineClass:
         return self.enabled
 
     def put(self, s: str, bg: str=None, fg: str=None) -> None:
-        self.textWidget.insert('end', s)
+        w = self.textWidget
+        w.insert(w.getLastIndex(), s)
 
     def setFocus(self) -> None:
         pass
@@ -2275,12 +2271,12 @@ class NullTree(LeoTree):
         This is called from the undo/redo logic to change the text before redrawing."""
         w = self.edit_widget(p)
         if w:
-            w.delete(0, 'end')
+            w.delete(0, w.getLastIndex())
             if s.endswith('\n') or s.endswith('\r'):
                 s = s[:-1]
             w.insert(0, s)
         else:
-            g.trace('-' * 20, 'oops')
+            g.trace('-' * 20, 'oops')  # pragma: no cover
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper:
@@ -2348,12 +2344,10 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         """StringTextWrapper."""
-        i = self.toPythonIndex(i)
         if j is None:
             j = i + 1
-        j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
         if i > j:
             i, j = j, i
@@ -2367,12 +2361,10 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         self.delete(i, j)
     #@+node:ekr.20140903172510.18595: *4* stw.get
-    def get(self, i: int, j: int=None) -> str:
+    def get(self, i: int, j: Optional[int]=None) -> str:
         """StringTextWrapper."""
-        i = self.toPythonIndex(i)
         if j is None:
             j = i + 1
-        j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText
@@ -2391,6 +2383,10 @@ class StringTextWrapper:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
         return i
+    #@+node:ekr.20220909182855.1: *4* stw.getLastIndex
+    def getLastIndex(self) -> int:
+        """Return the length of the self.s"""
+        return len(self.s)
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText
     def getSelectedText(self) -> str:
         """StringTextWrapper."""
@@ -2414,18 +2410,16 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:
         """StringTextWrapper."""
-        i = self.toPythonIndex(i)
-        s1 = s
-        self.s = self.s[:i] + s1 + self.s[i:]
-        i += len(s1)
+        self.s = self.s[:i] + s + self.s[i:]
+        i += len(s)
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18589: *4* stw.selectAllText
     def selectAllText(self, insert: int=None) -> None:
         """StringTextWrapper."""
-        self.setSelectionRange(0, 'end', insert=insert)
+        self.setSelectionRange(0, len(self.s), insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
     def setAllText(self, s: str) -> None:
         """StringTextWrapper."""
@@ -2434,35 +2428,22 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
-    def setInsertPoint(self, pos: str, s: str=None) -> None:
+    def setInsertPoint(self, i: int, s: str=None) -> None:
         """StringTextWrapper."""
-        i = self.toPythonIndex(pos)
         self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         """StringTextWrapper."""
-        i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
-        self.ins = j if insert is None else self.toPythonIndex(insert)
-    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
-    def toPythonIndex(self, index: Index) -> int:
-        """
-        StringTextWrapper.toPythonIndex.
-
-        Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
-
-        Unit tests *do* use non-integer indices, so removing this method would be tricky.
-        """
-        return g.toPythonIndex(self.s, index)
+        self.ins = j if insert is None else insert
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """StringTextWrapper."""
         s = self.getAllText()
-        i = self.toPythonIndex(index)
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
+        row, col = g.convertPythonIndexToRowCol(s, index)
+        return row, col
     #@-others
 #@-others
 #@@language python

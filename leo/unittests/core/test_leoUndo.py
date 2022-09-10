@@ -262,7 +262,7 @@ class TestUndo(LeoUnitTest):
         c.selectPosition(node1)
         c.editHeadline()
         w = c.frame.tree.edit_widget(node1)
-        w.insert('1.0', 'changed - ')
+        w.insert(0, 'changed - ')
         c.endEditing()
         self.assertEqual([p.h for p in p.subtree()], ['changed - node 1', 'node 2', 'node 3'])
         # Move the selection and undo the headline change

@@ -2151,7 +2151,7 @@ class LeoServer:
                 i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
             # g.convertPythonIndexToRowCol instead !
-            junk, line, col = wrapper.toPythonIndexRowCol(i)
+            line, col = wrapper.toPythonIndexRowCol(i)
             return {"line": line, "col": col, "index": i}
 
         def row_col_pv_dict(i: int, s: str) -> Dict:

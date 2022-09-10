@@ -13,7 +13,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< editCommands imports >>
 #@+<< editCommands annotations >>
 #@+node:ekr.20220826191642.1: ** << editCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
@@ -945,7 +945,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         extend = self.extend or self.extendMode
         ch = k.arg
         s = w.getAllText()
-        ins = w.toPythonIndex(self.insert)
+        ins = self.insert
         i = ins + -1 if backward else +1  # skip the present character.
         if backward:
             start = 0
@@ -1550,15 +1550,15 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
     def cleanLines(self, event: Event) -> None:
-        """Removes trailing whitespace from all lines, preserving newlines.
+        """
+        Removes trailing whitespace from all lines, preserving newlines.
+
+        Not recommended: reindent is better.
         """
         w = self.editWidget(event)
         if not w:
             return  # pragma: no cover (defensive)
-        if w.hasSelection():
-            s = w.getSelectedText()
-        else:
-            s = w.getAllText()
+        s = w.getAllText()
         lines = []
         for line in g.splitlines(s):
             if line.rstrip():
@@ -1568,16 +1568,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         result = ''.join(lines)
         if s != result:
             self.beginCommand(w, undoType='clean-lines')
-            if w.hasSelection():
-                i, j = w.getSelectionRange()
-                w.delete(i, j)
-                w.insert(i, result)
-                w.setSelectionRange(i, j + len(result))
-            else:
-                i = w.getInsertPoint()
-                w.delete(0, 'end')
-                w.insert(0, result)
-                w.setInsertPoint(i)
+            w.delete(0, w.getLastIndex())
+            w.insert(0, result)
+            w.setInsertPoint(0)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.257: *4* ec.clearSelectedText
     @cmd('clear-selected-text')
@@ -2221,7 +2214,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, end = w.getSelectionRange()
         else:
             i = w.getInsertPoint()
-            end = 'end'
+            end = w.getLastIndex()
         txt = w.get(i, end)
         tlines = txt.splitlines(True)
         keeplines = list(tlines) if which == 'flush' else []
@@ -2510,8 +2503,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setMoveCol(self, w: Wrapper, spot: int) -> None:
         """Set the column to which an up or down arrow will attempt to move."""
         p = self.c.p
-        i, row, col = w.toPythonIndexRowCol(spot)
-        self.moveSpot = i
+        row, col = w.toPythonIndexRowCol(spot)
+        self.moveSpot = spot
         self.moveCol = col
         self.moveSpotNode = p.v
     #@+node:ekr.20150514063305.290: *4* ec.backToHome/ExtendSelection
@@ -2701,7 +2694,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i = max(0, i - 1)
                 self.moveToHelper(event, i, extend=extend)
             elif spot == 'right':
-                i = min(i + 1, len(w.getAllText()))
+                i = min(i + 1, w.getLastIndex())
                 self.moveToHelper(event, i, extend=extend)
             else:
                 g.trace(f"can not happen: bad spot: {spot}")
@@ -3795,9 +3788,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not self._chckSel(event):
             return  # pragma: no cover (defensive)
+        s = w.getAllText()
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(s, index)
+
         self.beginCommand(w, undoType='sort-columns')
         try:
-            s = w.getAllText()
             sel_1, sel_2 = w.getSelectionRange()
             sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
             sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
@@ -3806,8 +3803,10 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, junk = g.getLine(s, sel_1)
             junk, j = g.getLine(s, sel_2)
             txt = s[i:j]
-            columns = [w.get(f"{z}.{sint2}", f"{z}.{sint4}")
-                for z in range(sint1, sint3 + 1)]
+            columns = [
+                w.get(toInt(f"{z}.{sint2}"), toInt(f"{z}.{sint4}"))
+                    for z in range(sint1, sint3 + 1)
+            ]
             aList = g.splitLines(txt)
             zlist = list(zip(columns, aList))
             zlist.sort()

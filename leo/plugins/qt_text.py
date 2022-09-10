@@ -7,7 +7,7 @@
 #@+node:ekr.20220416085845.1: ** << qt_text imports >>
 import time
 assert time
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
@@ -28,7 +28,6 @@ else:
     Wrapper = Any
 Widget = Any
 
-Index = Union[int, str]  # A zero-based index or a Tk index.
 MousePressEvent = Any
 #@-<< qt_text annotations >>
 
@@ -246,20 +245,17 @@ class QTextMixin:
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
     #@+node:ekr.20140901141402.18706: *5* qtm.delete
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         """QTextMixin"""
-        int_i = self.toPythonIndex(i)
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = self.toPythonIndex(j)
+            j = i + 1
         # This allows subclasses to use this base class method.
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
-        self.setAllText(s[:int_i] + s[int_j:])
+        self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
-        self.setSelectionRange(int_i, int_i, insert=int_i)
+        self.setSelectionRange(i, i, insert=i)
     #@+node:ekr.20140901062324.18827: *5* qtm.deleteTextSelection
     def deleteTextSelection(self) -> None:
         """QTextMixin"""
@@ -272,11 +268,9 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toPythonIndex(i)
-        j = self.toPythonIndex(j)
         return s[i:j]
-    #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
-    def getLastPosition(self, s: str=None) -> int:
+    #@+node:ekr.20140901062324.18704: *5* qtm.getLastIndex & getLength
+    def getLastIndex(self, s: str=None) -> int:
         """QTextMixin"""
         return len(self.getAllText()) if s is None else len(s)
 
@@ -292,13 +286,12 @@ class QTextMixin:
         s = self.getAllText()
         return s[i:j]
     #@+node:ekr.20140901141402.18702: *5* qtm.insert
-    def insert(self, i: Index, s: str) -> int:
+    def insert(self, i: int, s: str) -> int:
         """QTextMixin"""
         s2 = self.getAllText()
-        int_i = self.toPythonIndex(i)
-        self.setAllText(s2[:int_i] + s + s2[int_i:])
-        self.setInsertPoint(int_i + len(s))
-        return int_i
+        self.setAllText(s2[:i] + s + s2[i:])
+        self.setInsertPoint(i + len(s))
+        return i
     #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
@@ -308,19 +301,12 @@ class QTextMixin:
     def selectAllText(self, s: str=None) -> None:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex
-    def toPythonIndex(self, index: Index, s: str=None) -> int:
-        """QTextMixin"""
-        if s is None:
-            s = self.getAllText()
-        return g.toPythonIndex(s, index)
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """QTextMixin"""
         s = self.getAllText()
-        i = self.toPythonIndex(index)
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
+        row, col = g.convertPythonIndexToRowCol(s, index)
+        return row, col
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self) -> None:
 
@@ -426,41 +412,34 @@ class QLineEditWrapper(QTextMixin):
         w = self.widget
         if s is None:
             s = w.text()
-        i = self.toPythonIndex(i)
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
-    def setSelectionRange(self,
-        i: Index, j: Index, insert: Index=None, s: str=None,
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None, s: str=None) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
         w = self.widget
-        int_i = self.toPythonIndex(i)
-        int_j = self.toPythonIndex(j)
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+        if i > j:
+            i, j = j, i
         if s is None:
             s = w.text()
         n = len(s)
-        int_i = max(0, min(int_i, n))
-        int_j = max(0, min(int_j, n))
+        i = max(0, min(i, n))
+        j = max(0, min(j, n))
         if insert is None:
-            int_insert = int_j
+            insert = j
         else:
-            int_insert = self.toPythonIndex(insert)
-            int_insert = max(0, min(int_insert, n))
-        if int_i == int_j:
-            w.setCursorPosition(int_i)
+            insert = max(0, min(insert, n))
+        if i == j:
+            w.setCursorPosition(i)
         else:
-            length = int_j - int_i
+            length = j - i
             # Set selection is a QLineEditMethod
-            if int_insert < int_j:
-                w.setSelection(int_j, -length)
+            if insert < j:
+                w.setSelection(j, -length)
             else:
-                w.setSelection(int_i, length)
-    # setSelectionRangeHelper = setSelectionRange
+                w.setSelection(i, length)
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
 class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
@@ -1307,7 +1286,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None, s: str=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
         insert = j if insert is None else insert
         if self.widget:
@@ -1356,15 +1335,12 @@ class QScintillaWrapper(QTextMixin):
         w.setAutoIndent(True)
     #@+node:ekr.20110605121601.18107: *3* qsciw.WidgetAPI
     #@+node:ekr.20140901062324.18593: *4* qsciw.delete
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         """Delete s[i:j]"""
         w = self.widget
-        int_i = self.toPythonIndex(i)
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = self.toPythonIndex(int_j)
-        self.setSelectionRange(int_i, int_j)
+            j = i + 1
+        self.setSelectionRange(i, j)
         try:
             self.changingText = True  # Disable onTextChanged
             w.replaceSelectedText('')
@@ -1416,7 +1392,7 @@ class QScintillaWrapper(QTextMixin):
             # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
-            self.flashIndex = self.toPythonIndex(i)
+            self.flashIndex = i
             self.flashBg = None if bg.lower() == 'same' else bg
             self.flashFg = None if fg.lower() == 'same' else fg
             addFlashCallback()
@@ -1426,8 +1402,6 @@ class QScintillaWrapper(QTextMixin):
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toPythonIndex(i)
-        j = self.toPythonIndex(j)
         return s[i:j]
     #@+node:ekr.20110605121601.18108: *4* qsciw.getAllText
     def getAllText(self) -> str:
@@ -1462,15 +1436,14 @@ class QScintillaWrapper(QTextMixin):
         """Return True if a QsciScintilla widget has a selection range."""
         return self.widget.hasSelectedText()
     #@+node:ekr.20140901062324.18601: *4* qsciw.insert
-    def insert(self, i: Index, s: str) -> int:
+    def insert(self, i: int, s: str) -> int:
         """Insert s at position i."""
         w = self.widget
-        int_i = self.toPythonIndex(i)
-        w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
+        w.SendScintilla(w.SCI_SETSEL, i, i)
         w.SendScintilla(w.SCI_ADDTEXT, len(s), g.toEncodedString(s))
-        int_i += len(s)
-        w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
-        return int_i
+        i += len(s)
+        w.SendScintilla(w.SCI_SETSEL, i, i)
+        return i
     #@+node:ekr.20140901062324.18603: *4* qsciw.linesPerPage
     def linesPerPage(self) -> int:
         """Return the number of lines presently visible."""
@@ -1516,7 +1489,6 @@ class QScintillaWrapper(QTextMixin):
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
         w = self.widget
         s = self.getAllText()
-        i = self.toPythonIndex(i)
         row, col = g.convertPythonIndexToRowCol(s, i)
         w.ensureLineVisible(row)
     #@+node:ekr.20110605121601.18113: *4* qsciw.setAllText
@@ -1530,21 +1502,19 @@ class QScintillaWrapper(QTextMixin):
     def setInsertPoint(self, i: int, s: str=None) -> None:
         """Set the insertion point in a QsciScintilla widget."""
         w = self.widget
-        i = self.toPythonIndex(i)
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL, i, i)
     #@+node:ekr.20110605121601.18115: *4* qsciw.setSelectionRange
-    def setSelectionRange(self, i: Index, j: int, insert: Index=None, s: str=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
-        int_i = self.toPythonIndex(i)
-        int_j = self.toPythonIndex(j)
-        int_insert = int_j if insert is None else self.toPythonIndex(insert)
-        if int_insert >= int_i:
-            w.SendScintilla(w.SCI_SETSEL, int_i, int_j)
+        if insert is None:
+            insert = j
+        if insert >= i:
+            w.SendScintilla(w.SCI_SETSEL, i, j)
         else:
-            w.SendScintilla(w.SCI_SETSEL, int_j, int_i)
+            w.SendScintilla(w.SCI_SETSEL, j, i)
     #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition (to do)
     def setXScrollPosition(self, pos: int) -> None:
         """Set the position of the horizontal scrollbar."""
@@ -1627,30 +1597,27 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
     # These are all widget-dependent
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        int_i = self.toPythonIndex(i)
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = self.toPythonIndex(j)
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+            j = i + 1
+        if i > j:
+            i, j = j, i
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged
             old_i, old_j = self.getSelectionRange()
-            if int_i == old_i and int_j == old_j:
+            if i == old_i and j == old_j:
                 # Work around an apparent bug in cursor.movePosition.
                 cursor.removeSelectedText()
-            elif int_i == int_j:
+            elif i == j:
                 pass
             else:
-                cursor.setPosition(int_i)
-                moveCount = abs(int_j - int_i)
+                cursor.setPosition(i)
+                moveCount = abs(j - i)
                 cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
                 w.setTextCursor(cursor)  # Bug fix: 2010/01/27
                 cursor.removeSelectedText()
@@ -1747,14 +1714,13 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
-    def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        int_i = self.toPythonIndex(i)
         cursor = w.textCursor()
         try:
             self.changingText = True  # Disable onTextChanged.
-            cursor.setPosition(int_i)
+            cursor.setPosition(i)
             cursor.insertText(s)
             w.setTextCursor(cursor)  # Bug fix: 2010/01/27
         finally:
@@ -1918,112 +1884,92 @@ class QTextEditWrapper(QTextMixin):
         finally:
             self.changingText = False
     #@+node:ekr.20110605121601.18095: *4* qtew.setInsertPoint
-    def setInsertPoint(self, i: Index, s: str=None) -> None:
+    def setInsertPoint(self, i: int, s: str=None) -> None:
         # Fix bug 981849: incorrect body content shown.
         # Use the more careful code in setSelectionRange.
         self.setSelectionRange(i=i, j=i, insert=i, s=s)
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None, s: str=None) -> None:
+    def setSelectionRange(self,
+        i: Optional[int],
+        j: Optional[int],
+        insert: Optional[int]=None,
+        s: Optional[str]=None,
+    ) -> None:
         """Set the selection range and the insert point."""
         #
         # Part 1
         w = self.widget
-        int_i = self.toPythonIndex(i)
-        int_j = self.toPythonIndex(j)
+        if i is None:
+            i = 0
+        if j is None:
+            j = i
         if s is None:
             s = self.getAllText()
         n = len(s)
-        int_i = max(0, min(int_i, n))
-        int_j = max(0, min(int_j, n))
+        i = max(0, min(i, n))
+        j = max(0, min(j, n))
         if insert is None:
-            int_ins = max(int_i, int_j)
+            ins = max(i, j)
         else:
-            int_ins = self.toPythonIndex(insert)
-            int_ins = max(0, min(int_ins, n))
+            ins = j if insert is None else insert
+            ins = max(0, min(ins, n))
         #
         # Part 2:
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
         tc = w.textCursor()
-        if int_i == int_j:
-            tc.setPosition(int_i)
-        elif int_ins == int_j:
-            # Put the insert point at int_j
-            tc.setPosition(int_i)
-            tc.setPosition(int_j, MoveMode.KeepAnchor)
-        elif int_ins == int_i:
-            # Put the insert point at int_i
-            tc.setPosition(int_j)
-            tc.setPosition(int_i, MoveMode.KeepAnchor)
+        if i == j:
+            tc.setPosition(i)
+        elif ins == j:
+            # Put the insert point at j
+            tc.setPosition(i)
+            tc.setPosition(j, MoveMode.KeepAnchor)
+        elif ins == i:
+            # Put the insert point at i
+            tc.setPosition(j)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         else:
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
-            tc.setPosition(int_j)
-            tc.setPosition(int_i, MoveMode.KeepAnchor)
+            tc.setPosition(j)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         w.setTextCursor(tc)
         # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):
-            if s[int_i:int_j]:
-                g.app.gui.setClipboardSelection(s[int_i:int_j])
+            if s[i:j]:
+                g.app.gui.setClipboardSelection(s[i:j])
         #
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v  # Always accurate.
-        v.insertSpot = int_ins
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
-        assert int_i <= int_j
-        v.selectionStart = int_i
-        v.selectionLength = int_j - int_i
+        v.insertSpot = ins
+        if i > j:
+            i, j = j, i
+        assert i <= j
+        v.selectionStart = i
+        v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
-    def setXScrollPosition(self, pos: Index) -> None:
+    def setXScrollPosition(self, pos: int) -> None:
         """Set the position of the horizonatl scrollbar."""
         if pos is not None:
             w = self.widget
             sb = w.horizontalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18098: *4* qtew.setYScrollPosition
-    def setYScrollPosition(self, pos: Index) -> None:
+    def setYScrollPosition(self, pos: int) -> None:
         """Set the vertical scrollbar position."""
         if pos is not None:
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex
-    def toPythonIndex(self, index: Index, s: str=None) -> int:
-        """This is much faster than versions using g.toPythonIndex."""
-        w = self
-        te = self.widget
-        if index is None:
-            return 0
-        if isinstance(index, int):
-            return index
-        if index == '1.0':
-            return 0
-        if index == 'end':
-            return w.getLastPosition()
-        doc = te.document()
-        data = index.split('.')
-        if len(data) == 2:
-            row1, col1 = data
-            row, col = int(row1), int(col1)
-            bl = doc.findBlockByNumber(row - 1)
-            return bl.position() + col
-        g.trace(f"bad string index: {index}")
-        return 0
-    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
-        w = self
-        if index == '1.0':
-            return 0, 0, 0
-        if index == 'end':
-            index = w.getLastPosition()
+    #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast)
+    def toPythonIndexRowCol(self, i: int) -> Tuple[int, int]:
+
         te = self.widget
         doc = te.document()
-        i = w.toPythonIndex(index)
         bl = doc.findBlock(i)
         row = bl.blockNumber()
         col = i - bl.position()
-        return i, row, col
+        return row, col
     #@-others
 #@-others
 
