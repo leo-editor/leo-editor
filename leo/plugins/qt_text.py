@@ -291,7 +291,7 @@ class QTextMixin:
         s2 = self.getAllText()
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i + len(s))
-        return i  ### Not needed.
+        return i
     #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
@@ -1286,7 +1286,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 
-    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:  ###
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
         insert = j if insert is None else insert
         if self.widget:
@@ -1947,14 +1947,14 @@ class QTextEditWrapper(QTextMixin):
         v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
-    def setXScrollPosition(self, pos: int) -> None:  ###
+    def setXScrollPosition(self, pos: int) -> None:
         """Set the position of the horizonatl scrollbar."""
         if pos is not None:
             w = self.widget
             sb = w.horizontalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18098: *4* qtew.setYScrollPosition
-    def setYScrollPosition(self, pos: int) -> None:  ###
+    def setYScrollPosition(self, pos: int) -> None:
         """Set the vertical scrollbar position."""
         if pos is not None:
             w = self.widget

@@ -42,7 +42,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
-    def __init__(self, c: Cmdr, frame: Any) -> None:  ### Frame is a LeoQtFrame.
+    def __init__(self, c: Cmdr, frame: Any) -> None:  # Frame is a LeoQtFrame.
         """Ctor for the LeoQtTree class."""
         super().__init__(frame)
         self.c = c

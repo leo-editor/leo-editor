@@ -4045,7 +4045,6 @@ class TestEditCommands(LeoUnitTest):
         try:
             assert w
             end = w.getLastPosition()
-            ### w.setSelectionRange('end', 'end')
             w.setSelectionRange(end, end)
         finally:
             if 1:
@@ -4203,11 +4202,9 @@ class TestEditCommands(LeoUnitTest):
         w = c.edit_widget(p)
         assert w
         end = w.getLastPosition()
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
@@ -4226,7 +4223,6 @@ class TestEditCommands(LeoUnitTest):
         assert w
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        ### w.setSelectionRange('1.1', '1.2')
         w.setSelectionRange(1, 2)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
@@ -4248,7 +4244,6 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         g.app.gui.set_focus(c, w)
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
@@ -4264,7 +4259,6 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         end = w.getLastPosition()
-        ### w.setSelectionRange('end', 'end', insert='end')
         w.setSelectionRange(end, end, insert=end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
@@ -4317,11 +4311,9 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         end = w.getLastPosition()
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         k.manufactureKeyPressForCommandName(w, 'paste-text')
         c.selectPosition(p.visBack(c))
@@ -4340,7 +4332,6 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         end = w.getLastPosition()
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         # char, shortcut.
         g.app.gui.event_generate(c, 'X', 'Shift+X', w)
@@ -4428,7 +4419,6 @@ class TestEditCommands(LeoUnitTest):
         end = w.getLastPosition()
         wName = g.app.gui.widget_name(w)
         self.assertTrue(wName.startswith('head'))
-        ### w.setSelectionRange('end', 'end')
         w.setSelectionRange(end, end)
         g.app.gui.event_generate(c, 'X', 'Shift+X', w)
         g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
