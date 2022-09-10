@@ -33,6 +33,7 @@ else:
     Position = Any
     VNode = Any
     Wrapper = Any
+
 Index = Union[int, str]  # A zero-based index or a Tk index.
 Widget = Any
 #@-<< leoFrame annotations >>
@@ -197,7 +198,7 @@ class WrapperAPI:
     def clipboard_clear(self) -> None:
         pass
 
-    def delete(self, i: Index, j: Index=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:  ###
         pass
 
     def deleteTextSelection(self) -> None:
@@ -236,7 +237,7 @@ class WrapperAPI:
     def hasSelection(self) -> bool:
         return False
 
-    def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:  ###
         pass
 
     def see(self, i: int) -> None:
@@ -257,7 +258,7 @@ class WrapperAPI:
     def setInsertPoint(self, pos: str, s: str=None) -> None:
         pass
 
-    def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:  ###
         pass
 
     def setXScrollPosition(self, i: int) -> None:
@@ -2365,8 +2366,7 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    ### def delete(self, i: Index, j: Index=None) -> None:
-    def delete(self, i: int, j: int=None) -> None:
+    def delete(self, i: int, j: int=None) -> None:  ###
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None:
@@ -2432,8 +2432,7 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    ### def insert(self, i: Index, s: str) -> None:
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:  ###
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
@@ -2461,8 +2460,7 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    ### def setSelectionRange(self, i: Index, j: Index, insert: Index=None) -> None:
-    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:  ###
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j

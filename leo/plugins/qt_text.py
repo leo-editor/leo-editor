@@ -7,7 +7,7 @@
 #@+node:ekr.20220416085845.1: ** << qt_text imports >>
 import time
 assert time
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
@@ -28,7 +28,6 @@ else:
     Wrapper = Any
 Widget = Any
 
-Index = Union[int, str]  # A zero-based index or a Tk index.
 MousePressEvent = Any
 #@-<< qt_text annotations >>
 
@@ -1356,7 +1355,7 @@ class QScintillaWrapper(QTextMixin):
         w.setAutoIndent(True)
     #@+node:ekr.20110605121601.18107: *3* qsciw.WidgetAPI
     #@+node:ekr.20140901062324.18593: *4* qsciw.delete
-    def delete(self, i: int, j: Index=None) -> None:  ###
+    def delete(self, i: int, j: int=None) -> None:  ###
         """Delete s[i:j]"""
         w = self.widget
         int_i = self.toPythonIndex(i)
@@ -1747,7 +1746,7 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         return self.widget.textCursor().hasSelection()
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
-    def insert(self, i: Index, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:  ###
         """QTextEditWrapper."""
         w = self.widget
         int_i = self.toPythonIndex(i)
@@ -1989,7 +1988,7 @@ class QTextEditWrapper(QTextMixin):
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
     #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex
-    def toPythonIndex(self, index: Index, s: str=None) -> int:
+    def toPythonIndex(self, index: int, s: str=None) -> int:
         """This is much faster than versions using g.toPythonIndex."""
         w = self
         te = self.widget
@@ -2011,8 +2010,7 @@ class QTextEditWrapper(QTextMixin):
         g.trace(f"bad string index: {index}")
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol
-    ### def toPythonIndexRowCol(self, index: Index) -> Tuple[int, int, int]:
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
         ### w = self
         assert isinstance(index, int), g.callers()
         # if index == '1.0':
