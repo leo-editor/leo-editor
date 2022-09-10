@@ -12,7 +12,7 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
@@ -2387,13 +2387,15 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         self.delete(i, j)
     #@+node:ekr.20140903172510.18595: *4* stw.get
-    def get(self, i: int, j: int=None) -> str:
+    def get(self, i: int, j: Optional[int]=None) -> str:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
-        if j is None:
-            j = i + 1
-        else:  ### change.
-            j = self.toPythonIndex(j)
+        j = i + 1 if j is None else self.toPythonIndex(j)
+        ###
+            # if j is None:
+                # j = i + 1
+            # else:  ### change.
+                # j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText
