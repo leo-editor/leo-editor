@@ -57,7 +57,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """Clear the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
-            return 
+            return
 
         def toInt(index: str) -> int:
             return g.toPythonIndex(w.getAllText(), index)
@@ -78,7 +78,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
-            
+
         def toInt(index: str) -> int:
             return g.toPythonIndex(w.getAllText(), index)
 
@@ -213,7 +213,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         killRect = self.theKillRectangle
-        
+
         def toInt(index: str) -> int:
             return g.toPythonIndex(w.getAllText(), index)
 
