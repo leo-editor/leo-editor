@@ -270,8 +270,7 @@ class WrapperAPI:
     def toPythonIndex(self, index: Index) -> int:
         return 0
 
-    ### def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
         return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
@@ -2409,6 +2408,10 @@ class StringTextWrapper:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
         return i
+    #@+node:ekr.20220909182855.1: *4* stw.getLastPosition  (New)
+    def getLastPosition(self):
+        """Return the length of the self.s"""
+        return len(self.s)
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText
     def getSelectedText(self) -> str:
         """StringTextWrapper."""

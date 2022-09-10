@@ -5239,6 +5239,13 @@ def toPythonIndex(s: str, index: Union[int, str]) -> int:
 
     index may be a Tk index (x.y) or 'end'.
     """
+    if (  ###
+        not isinstance(index, int)
+        and 'rectangle' not in g.callers().lower()
+        and 'sortColumns' not in g.callers()
+        and 'test_moveUpOrDownHelper' not in g.callers()
+    ):
+        g.trace(repr(index), g.callers())
     if index is None:
         return 0
     if isinstance(index, int):

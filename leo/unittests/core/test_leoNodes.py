@@ -966,7 +966,8 @@ class TestNodes(LeoUnitTest):
         next = self.root_p.next()
         c.setBodyString(next, "after")
         c.selectPosition(next)
-        s = w.get("1.0", "end")
+        ### s = w.get("1.0", "end")
+        s = w.get(0, w.getLastPosition())
         self.assertEqual(s.rstrip(), "after")
     #@+node:ekr.20210830095545.4: *5* TestNodes.test_position_not_hashable
     def test_position_not_hashable(self):
