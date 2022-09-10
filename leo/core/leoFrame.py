@@ -2367,10 +2367,13 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18593: *4* stw.delete
     def delete(self, i: int, j: int=None) -> None:  ###
         """StringTextWrapper."""
-        i = self.toPythonIndex(i)
+        ### i = self.toPythonIndex(i)
+        all_s = self.getAllText()
+        i = g.toPythonIndex(all_s, i)
         if j is None:
             j = i + 1
-        j = self.toPythonIndex(j)
+        ### j = self.toPythonIndex(j)
+        j = g.toPythonIndex(all_s, j)
         # This allows subclasses to use this base class method.
         if i > j:
             i, j = j, i
