@@ -3807,7 +3807,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             junk, j = g.getLine(s, sel_2)
             txt = s[i:j]
             columns = [
-                ### w.get(f"{z}.{sint2}", f"{z}.{sint4}")
                 w.get(toInt(f"{z}.{sint2}"), toInt(f"{z}.{sint4}"))
                     for z in range(sint1, sint3 + 1)
             ]
