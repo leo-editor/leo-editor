@@ -2218,7 +2218,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             i = w.getInsertPoint()
             ### Hard.
-            end = 'end'
+            ### end = 'end'
+            end = w.getLastPosition()
         txt = w.get(i, end)
         tlines = txt.splitlines(True)
         keeplines = list(tlines) if which == 'flush' else []

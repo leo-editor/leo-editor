@@ -3640,7 +3640,8 @@ class KeyHandlerClass:
             return
         c.widgetWantsFocusNow(w)
         ### Hard
-        w.insert('end', s)
+        ### w.insert('end', s)
+        w.insert(w.getLastPosition(), s)
         if select:
             i, j = k.getEditableTextRange()
             w.setSelectionRange(i, j, insert=j)

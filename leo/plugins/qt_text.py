@@ -7,7 +7,7 @@
 #@+node:ekr.20220416085845.1: ** << qt_text imports >>
 import time
 assert time
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt6, QtCore, QtGui, Qsci, QtWidgets
@@ -430,7 +430,7 @@ class QLineEditWrapper(QTextMixin):
         w = self.widget
         if s is None:
             s = w.text()
-        i = self.toPythonIndex(i)  ### Keep.
+        ### i = self.toPythonIndex(i)  ### Keep.
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
@@ -454,7 +454,8 @@ class QLineEditWrapper(QTextMixin):
         if insert is None:
             int_insert = int_j
         else:
-            int_insert = self.toPythonIndex(insert)  ### Keep.
+            ### int_insert = self.toPythonIndex(insert)  ### Keep.
+            int_insert = insert
             int_insert = max(0, min(int_insert, n))
         if int_i == int_j:
             w.setCursorPosition(int_i)
@@ -1994,21 +1995,20 @@ class QTextEditWrapper(QTextMixin):
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, keep)
-    def toPythonIndex(self, index: int, s: str=None) -> int:
+    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, keep??)
+    def toPythonIndex(self, index: Optional[int], s: str=None) -> int:
         """This is much faster than versions using g.toPythonIndex."""
-        ###
-            # if g.unitTesting:
-                # assert False, g.callers()
-            # else:
-                # ### if not isinstance(index, int):  ###
-                # g.trace('QTextEditWrapper:', 'index:', repr(index), g.callers())
         w = self
         te = self.widget
         if index is None:
             return 0
         if isinstance(index, int):
             return index
+        if 1: ### Warning.
+            if g.unitTesting:
+                assert False, g.callers()
+            else:
+                g.trace('QTEW:', 'index:', repr(index), g.callers())
         if index == '1.0':
             return 0
         if index == 'end':
@@ -2024,15 +2024,10 @@ class QTextEditWrapper(QTextMixin):
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
-        ### w = self
+       
         assert isinstance(index, int), g.callers()
-        # if index == '1.0':
-            # return 0, 0, 0
-        # if index == 'end':
-            # index = w.getLastPosition()
         te = self.widget
         doc = te.document()
-        ### i = w.toPythonIndex(index)
         i = index
         bl = doc.findBlock(i)
         row = bl.blockNumber()
