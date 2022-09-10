@@ -247,7 +247,8 @@ class QTextMixin:
     #@+node:ekr.20140901141402.18706: *5* qtm.delete
     def delete(self, i: int, j: int=None) -> None:
         """QTextMixin"""
-        int_i = self.toPythonIndex(i)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i
         if j is None:
             int_j = int_i + 1
         else:
@@ -271,8 +272,8 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toPythonIndex(i)  ### Keep.
-        j = self.toPythonIndex(j)  ### Keep.
+        ### i = self.toPythonIndex(i)  ### Keep.
+        ### j = self.toPythonIndex(j)  ### Keep.
         return s[i:j]
     #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
     def getLastPosition(self, s: str=None) -> int:
@@ -294,10 +295,13 @@ class QTextMixin:
     def insert(self, i: int, s: str) -> int:
         """QTextMixin"""
         s2 = self.getAllText()
-        int_i = self.toPythonIndex(i)  ### Keep.
-        self.setAllText(s2[:int_i] + s + s2[int_i:])
-        self.setInsertPoint(int_i + len(s))
-        return int_i
+        ### int_i = self.toPythonIndex(i)  ### Keep.
+        ### self.setAllText(s2[:int_i] + s + s2[int_i:])
+        self.setAllText(s2[:i] + s + s2[i:])
+        ### self.setInsertPoint(int_i + len(s))
+        self.setInsertPoint(i + len(s))
+        ### return int_i
+        return i  ### Not needed.
     #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
@@ -310,7 +314,7 @@ class QTextMixin:
     #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex (remove?)
     def toPythonIndex(self, index: int, s: str=None) -> int:
         """QTextMixin"""
-        if not isinstance(index, int):
+        if True:  ### not isinstance(index, int):
             if g.unitTesting:
                 assert False, g.callers()
             else:
@@ -322,7 +326,8 @@ class QTextMixin:
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """QTextMixin"""
         s = self.getAllText()
-        i = self.toPythonIndex(index)  ### Keep.
+        ### i = self.toPythonIndex(index)  ### Keep.
+        i = index
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
