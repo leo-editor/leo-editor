@@ -1360,12 +1360,14 @@ class QScintillaWrapper(QTextMixin):
     def delete(self, i: int, j: int=None) -> None:
         """Delete s[i:j]"""
         w = self.widget
-        int_i = i
+        ### int_i = i
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = j
-        self.setSelectionRange(int_i, int_j)
+            ### int_j = int_i + 1
+            j = i + 1
+        ### else:
+        ###    j = j
+        ### self.setSelectionRange(int_i, int_j)
+        self.setSelectionRange(i, j)
         try:
             self.changingText = True  # Disable onTextChanged
             w.replaceSelectedText('')
@@ -1464,12 +1466,15 @@ class QScintillaWrapper(QTextMixin):
     def insert(self, i: int, s: str) -> int:
         """Insert s at position i."""
         w = self.widget
-        int_i = i
-        w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
+        ### int_i = i
+        ### w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
+        w.SendScintilla(w.SCI_SETSEL, i, i)
         w.SendScintilla(w.SCI_ADDTEXT, len(s), g.toEncodedString(s))
-        int_i += len(s)
-        w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
-        return int_i
+        ### int_i += len(s)
+        i += len(s)
+        ### w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
+        w.SendScintilla(w.SCI_SETSEL, i, i)
+        return i
     #@+node:ekr.20140901062324.18603: *4* qsciw.linesPerPage
     def linesPerPage(self) -> int:
         """Return the number of lines presently visible."""
@@ -1532,16 +1537,19 @@ class QScintillaWrapper(QTextMixin):
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL, i, i)
     #@+node:ekr.20110605121601.18115: *4* qsciw.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None: 
+    def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
-        int_i = i
-        int_j = j
-        int_insert = int_j if insert is None else insert
-        if int_insert >= int_i:
-            w.SendScintilla(w.SCI_SETSEL, int_i, int_j)
+        ### int_i = i
+        ### int_j = j
+        ### int_insert = int_j if insert is None else insert
+        int_insert = j if insert is None else insert
+        ### if int_insert >= int_i:
+        if int_insert >= i:
+            ### w.SendScintilla(w.SCI_SETSEL, int_i, int_j)
+            w.SendScintilla(w.SCI_SETSEL, i, j)
         else:
-            w.SendScintilla(w.SCI_SETSEL, int_j, int_i)
+            w.SendScintilla(w.SCI_SETSEL, j, i)
     #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition (to do)
     def setXScrollPosition(self, pos: int) -> None:
         """Set the position of the horizontal scrollbar."""
