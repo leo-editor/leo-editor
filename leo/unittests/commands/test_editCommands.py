@@ -15,16 +15,22 @@ class TestEditCommands(LeoUnitTest):
     #@+others
     #@+node:ekr.20201129161726.5: *3* TestEditCommands.run_test
     def run_test(self,
-            before_b, after_b,  # before/after body text.
-            before_sel, after_sel,  # before and after selection ranges.
-            command_name,
-            directives='',
-            dedent=True,
+            before_b: str,
+            after_b: str,  # before/after body text.
+            before_sel: str,
+            after_sel: str,  # before and after selection ranges.
+            command_name: str,
+            directives: str='',
+            dedent: bool=True,
         ):
         """
         A helper for many commands tests.
         """
         c = self.c
+
+        def toInt(s):
+            return g.toPythonIndex(before_b, s)
+
         # For shortDescription().
         self.command_name = command_name
         # Compute the result in tempNode.b
@@ -45,8 +51,7 @@ class TestEditCommands(LeoUnitTest):
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
-        i = g.toPythonIndex(before_b, i)
-        j = g.toPythonIndex(before_b, j)
+        i, j = toInt(i), toInt(j)
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
         c.k.simulateCommand(command_name)
@@ -4044,7 +4049,8 @@ class TestEditCommands(LeoUnitTest):
         w = c.edit_widget(p)
         try:
             assert w
-            w.setSelectionRange('end', 'end')
+            end = w.getLastIndex()
+            w.setSelectionRange(end, end)
         finally:
             if 1:
                 c.setHeadString(p, h)  # Essential
@@ -4178,11 +4184,18 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         ec = c.editCommands
         w = c.frame.body.wrapper
-        for i, result, direction in (('5.8', '4.8', 'up'), ('5.8', '6.8', 'down')):
-            w.setInsertPoint(i)
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
+        table = (
+            ('5.8', '4.8', 'up'),
+            ('5.8', '6.8', 'down'),
+        )
+        for i, result, direction in table:
+            w.setInsertPoint(toInt(i))
             ec.moveUpOrDownHelper(event=None, direction=direction, extend=False)
             w.getSelectionRange()
-
     #@+node:ekr.20210905064816.21: *4* TestEditCommands.test_paste_and_undo_in_headline__at_end
     def test_paste_and_undo_in_headline__at_end(self):
         c, k = self.c, self.c.k
@@ -4193,10 +4206,11 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
-        w.setSelectionRange('end', 'end')
+        end = w.getLastIndex()
+        w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end', 'end')
+        w.setSelectionRange(end, end)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
@@ -4214,7 +4228,7 @@ class TestEditCommands(LeoUnitTest):
         assert w
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1', '1.2')
+        w.setSelectionRange(1, 2)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h[0] + paste + h[2:])
@@ -4230,11 +4244,12 @@ class TestEditCommands(LeoUnitTest):
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
         assert w
+        end = w.getLastIndex()
         g.app.gui.set_focus(c, w)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         g.app.gui.set_focus(c, w)
-        w.setSelectionRange('end', 'end')
+        w.setSelectionRange(end, end)
         c.frame.pasteText(event=g.Bunch(widget=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
@@ -4248,7 +4263,8 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p)
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end', 'end', insert='end')
+        end = w.getLastIndex()
+        w.setSelectionRange(end, end, insert=end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         event = g.app.gui.create_key_event(c, w=w)
@@ -4299,10 +4315,11 @@ class TestEditCommands(LeoUnitTest):
         c.redraw(p)  # To make node visible
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end', 'end')
+        end = w.getLastIndex()
+        w.setSelectionRange(end, end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end', 'end')
+        w.setSelectionRange(end, end)
         k.manufactureKeyPressForCommandName(w, 'paste-text')
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
@@ -4319,7 +4336,8 @@ class TestEditCommands(LeoUnitTest):
         c.redraw(p)  # Required
         c.frame.tree.editLabel(p)
         w = c.edit_widget(p)
-        w.setSelectionRange('end', 'end')
+        end = w.getLastIndex()
+        w.setSelectionRange(end, end)
         # char, shortcut.
         g.app.gui.event_generate(c, 'X', 'Shift+X', w)
         g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
@@ -4334,7 +4352,7 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         ec, w = c.editCommands, c.frame.body.wrapper
         table = (
-            ('1.0', 0),
+            (0, 0),
             (5, 5),
         )
         w.setAllText('1234567890')
@@ -4403,9 +4421,10 @@ class TestEditCommands(LeoUnitTest):
         c.redrawAndEdit(p)  # Required
         w = c.edit_widget(p)
         assert w
+        end = w.getLastIndex()
         wName = g.app.gui.widget_name(w)
         self.assertTrue(wName.startswith('head'))
-        w.setSelectionRange('end', 'end')
+        w.setSelectionRange(end, end)
         g.app.gui.event_generate(c, 'X', 'Shift+X', w)
         g.app.gui.event_generate(c, 'Y', 'Shift+Y', w)
         g.app.gui.event_generate(c, 'Z', 'Shift+Z', w)

@@ -34,7 +34,7 @@ import logging
 import logging.handlers
 import re
 import sys
-from typing import Any, List, Union
+from typing import Any, List, Tuple, Union
 # Third-party.
 try:
     import curses
@@ -4013,16 +4013,14 @@ class TextMixin:
     def clipboard_clear(self):
         g.app.gui.replaceClipboardWith('')
     #@+node:ekr.20170511053143.14: *5* tm.delete
-    def delete(self, i: Union[int, str], j: Union[int, str]=None):
+    def delete(self, i: int, j: int=None):
         """TextMixin"""
-        i = self.toPythonIndex(i)
+        s = self.getAllText()
         if j is None:
             j = i + 1
-        j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
         if i > j:
             i, j = j, i
-        s = self.getAllText()
         self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
@@ -4038,17 +4036,17 @@ class TextMixin:
     def enable(self, enabled=True):
         self.enabled = enabled
     #@+node:ekr.20170511053143.16: *5* tm.get
-    def get(self, i, j=None):
+    def get(self, i: int, j: int=None):
         """TextMixin"""
         # 2012/04/12: fix the following two bugs by using the vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
-        s = self.getAllText()
-        i = self.toPythonIndex(i)
-        j = self.toPythonIndex(j)
-        return s[i:j]
-    #@+node:ekr.20170511053143.17: *5* tm.getLastPosition & getLength
-    def getLastPosition(self, s=None):
+        all_s = self.getAllText()
+        if j is None:
+            j = i + 1
+        return all_s[i:j]
+    #@+node:ekr.20170511053143.17: *5* tm.getLastIndex & getLength
+    def getLastIndex(self, s=None):
         """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
 
@@ -4064,11 +4062,10 @@ class TextMixin:
         s = self.getAllText()
         return s[i:j]
     #@+node:ekr.20170511053143.19: *5* tm.insert
-    def insert(self, i: Union[int, str], s: str) -> int:
+    def insert(self, i: int, s: str) -> int:
         """TextMixin"""
-        s2 = self.getAllText()
-        i = self.toPythonIndex(i)
-        self.setAllText(s2[:i] + s + s2[i:])
+        all_s = self.getAllText()
+        self.setAllText(all_s[:i] + s + all_s[i:])
         self.setInsertPoint(i + len(s))
         return i
     #@+node:ekr.20170511053143.24: *5* tm.rememberSelectionAndScroll
@@ -4097,20 +4094,12 @@ class TextMixin:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
-    def toPythonIndex(self, index: Union[int, str], s: str=None):
-        """TextMixin"""
-        if s is None:
-            s = self.getAllText()
-        i = g.toPythonIndex(s, index)
-        return i
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index):
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int]:
         """TextMixin"""
         s = self.getAllText()
-        i = self.toPythonIndex(index)
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
+        row, col = g.convertPythonIndexToRowCol(s, index)
+        return row, col
     #@-others
 #@+node:ekr.20170504034655.1: *3* class BodyWrapper (leoFrame.StringTextWrapper)
 class BodyWrapper(leoFrame.StringTextWrapper):

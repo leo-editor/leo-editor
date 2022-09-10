@@ -42,7 +42,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
-    def __init__(self, c: Cmdr, frame: Any) -> None:  ### Frame is a LeoQtFrame.
+    def __init__(self, c: Cmdr, frame: Any) -> None:  # Frame is a LeoQtFrame.
         """Ctor for the LeoQtTree class."""
         super().__init__(frame)
         self.c = c
@@ -370,7 +370,10 @@ class LeoQtTree(leoFrame.LeoTree):
                 try:
                     s = pattern.sub(arg, text)
                 except re.error as e:
-                    g.log(f'Error in declutter REPLACE "{e!s}"\n  RULE:{pattern.pattern!r}\n  REPLACE:{arg!r}\n  HEADLINE:{text!r}', color='error')
+                    g.log(
+                        f'Error in declutter REPLACE "{e!s}"\n'
+                        f'  RULE:{pattern.pattern!r}\n'
+                        f'  REPLACE:{arg!r}\n  HEADLINE:{text!r}', color='error')
             elif cmd == 'REPLACE-HEAD':
                 s = text[: m.start()].rstrip()
             elif cmd == 'REPLACE-TAIL':

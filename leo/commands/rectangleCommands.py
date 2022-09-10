@@ -58,14 +58,18 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'clear-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         # Change the text.
         fill = ' ' * (r4 - r2)
         for r in range(r1, r3 + 1):
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-            w.insert(f"{r}.{r2}", fill)
-        w.setSelectionRange(f"{r1}.{r2}", f"{r3}.{r2 + len(fill)}")
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+            w.insert(toInt(f"{r}.{r2}"), fill)
+        w.setSelectionRange(toInt(f"{r1}.{r2}"), toInt(f"{r3}.{r2 + len(fill)}"))
         self.endCommand()
     #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
@@ -74,18 +78,22 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'close-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         # Return if any part of the selection contains something other than whitespace.
         for r in range(r1, r3 + 1):
-            s = w.get(f"{r}.{r2}", f"{r}.{r4}")
+            s = w.get(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
             if s.strip():
                 return
         # Change the text.
         for r in range(r1, r3 + 1):
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2}"
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@+node:ekr.20150514063305.456: *4* deleteRectangle
@@ -95,12 +103,16 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'delete-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         for r in range(r1, r3 + 1):
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2}"
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@+node:ekr.20150514063305.457: *4* killRectangle
@@ -110,16 +122,20 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'kill-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         self.theKillRectangle = []
         r = 0
         for r in range(r1, r3 + 1):
-            s = w.get(f"{r}.{r2}", f"{r}.{r4}")
+            s = w.get(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
             self.theKillRectangle.append(s)
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
         if self.theKillRectangle:
-            ins = f"{r}.{r2}"
+            ins = toInt(f"{r}.{r2}")
             w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
     #@+node:ekr.20150514063305.458: *4* openRectangle
@@ -132,13 +148,17 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'open-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         fill = ' ' * (r4 - r2)
         for r in range(r1, r3 + 1):
-            w.insert(f"{r}.{r2}", fill)
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2 + len(fill)}"
+            w.insert(toInt(f"{r}.{r2}"), fill)
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2 + len(fill)}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@+node:ekr.20150514063305.459: *4* stringRectangle
@@ -193,6 +213,10 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         killRect = self.theKillRectangle
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         if g.unitTesting:
             # This value is used by the unit test.
             killRect = ['Y1Y', 'Y2Y', 'Y3Y', 'Y4Y']
@@ -205,11 +229,11 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         for r in range(r1, r3 + 1):
             if n >= len(killRect):
                 break
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
-            w.insert(f"{r}.{r2}", killRect[n])
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
+            w.insert(toInt(f"{r}.{r2}"), killRect[n])
             n += 1
-        i = f"{r1}.{r2}"
-        j = f"{r3}.{r2 + len(killRect[n - 1])}"
+        i = toInt(f"{r1}.{r2}")
+        j = toInt(f"{r3}.{r2 + len(killRect[n - 1])}")
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@-others
