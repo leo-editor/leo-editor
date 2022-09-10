@@ -430,7 +430,6 @@ class QLineEditWrapper(QTextMixin):
         w = self.widget
         if s is None:
             s = w.text()
-        ### i = self.toPythonIndex(i)  ### Keep.
         i = max(0, min(i, len(s)))
         w.setCursorPosition(i)
     #@+node:ekr.20110605121601.18130: *4* qlew.setSelectionRange
@@ -439,9 +438,6 @@ class QLineEditWrapper(QTextMixin):
         if not self.check():
             return
         w = self.widget
-        ###
-        # int_i = self.toPythonIndex(i)
-        # int_j = self.toPythonIndex(j)
         int_i = i
         int_j = j
         if int_i > int_j:
@@ -454,7 +450,6 @@ class QLineEditWrapper(QTextMixin):
         if insert is None:
             int_insert = int_j
         else:
-            ### int_insert = self.toPythonIndex(insert)  ### Keep.
             int_insert = insert
             int_insert = max(0, min(int_insert, n))
         if int_i == int_j:
@@ -1365,12 +1360,13 @@ class QScintillaWrapper(QTextMixin):
     def delete(self, i: int, j: int=None) -> None:  ###
         """Delete s[i:j]"""
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep.
+        ### int_i = self.toPythonIndex(i)  ### Keep.
+        int_i = i
         if j is None:
             int_j = int_i + 1
         else:
-            ### int_j = self.toPythonIndex(int_j)  ### Another bug!!!
-            int_j = self.toPythonIndex(j)  ### Keep
+            ### int_j = self.toPythonIndex(j)  ### Keep
+            int_j = j
         self.setSelectionRange(int_i, int_j)
         try:
             self.changingText = True  # Disable onTextChanged
@@ -1423,7 +1419,8 @@ class QScintillaWrapper(QTextMixin):
             # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
-            self.flashIndex = self.toPythonIndex(i)
+            ### self.flashIndex = self.toPythonIndex(i)
+            self.flashIndex = i
             self.flashBg = None if bg.lower() == 'same' else bg
             self.flashFg = None if fg.lower() == 'same' else fg
             addFlashCallback()
@@ -1433,8 +1430,8 @@ class QScintillaWrapper(QTextMixin):
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        i = self.toPythonIndex(i)  ### Keep
-        j = self.toPythonIndex(j)  ### Keep
+        ### i = self.toPythonIndex(i)  ### Keep
+        ### j = self.toPythonIndex(j)  ### Keep
         return s[i:j]
     #@+node:ekr.20110605121601.18108: *4* qsciw.getAllText
     def getAllText(self) -> str:
@@ -1472,7 +1469,8 @@ class QScintillaWrapper(QTextMixin):
     def insert(self, i: int, s: str) -> int:  ###
         """Insert s at position i."""
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i
         w.SendScintilla(w.SCI_SETSEL, int_i, int_i)
         w.SendScintilla(w.SCI_ADDTEXT, len(s), g.toEncodedString(s))
         int_i += len(s)
@@ -1523,7 +1521,7 @@ class QScintillaWrapper(QTextMixin):
         # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
         w = self.widget
         s = self.getAllText()
-        i = self.toPythonIndex(i)  ### Keep
+        ### i = self.toPythonIndex(i)  ### Keep
         row, col = g.convertPythonIndexToRowCol(s, i)
         w.ensureLineVisible(row)
     #@+node:ekr.20110605121601.18113: *4* qsciw.setAllText
@@ -1537,7 +1535,7 @@ class QScintillaWrapper(QTextMixin):
     def setInsertPoint(self, i: int, s: str=None) -> None:
         """Set the insertion point in a QsciScintilla widget."""
         w = self.widget
-        i = self.toPythonIndex(i)  ### Keep
+        ### i = self.toPythonIndex(i)  ### Keep
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
         # w.SendScintilla(w.SCI_SETANCHOR,i)
         w.SendScintilla(w.SCI_SETSEL, i, i)
@@ -1545,9 +1543,12 @@ class QScintillaWrapper(QTextMixin):
     def setSelectionRange(self, i: int, j: int, insert: int=None, s: str=None) -> None:  ###
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep
-        int_j = self.toPythonIndex(j)  ### Keep
-        int_insert = int_j if insert is None else self.toPythonIndex(insert)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i
+        ### int_j = self.toPythonIndex(j)  ### Keep
+        int_j = j
+        ### int_insert = int_j if insert is None else self.toPythonIndex(insert)  ### Keep
+        int_insert = int_j if insert is None else insert
         if int_insert >= int_i:
             w.SendScintilla(w.SCI_SETSEL, int_i, int_j)
         else:
@@ -2024,7 +2025,7 @@ class QTextEditWrapper(QTextMixin):
         return 0
     #@+node:ekr.20110605121601.18101: *4* qtew.toPythonIndexRowCol (fast. Use it for tkIndexToInt)
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
-       
+
         assert isinstance(index, int), g.callers()
         te = self.widget
         doc = te.document()

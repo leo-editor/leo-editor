@@ -198,7 +198,7 @@ class WrapperAPI:
     def clipboard_clear(self) -> None:
         pass
 
-    def delete(self, i: int, j: int=None) -> None:  ###
+    def delete(self, i: int, j: int=None) -> None:
         pass
 
     def deleteTextSelection(self) -> None:
@@ -237,7 +237,7 @@ class WrapperAPI:
     def hasSelection(self) -> bool:
         return False
 
-    def insert(self, i: int, s: str) -> None:  ###
+    def insert(self, i: int, s: str) -> None:
         pass
 
     def see(self, i: int) -> None:
@@ -258,7 +258,7 @@ class WrapperAPI:
     def setInsertPoint(self, pos: str, s: str=None) -> None:
         pass
 
-    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:  ###
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         pass
 
     def setXScrollPosition(self, i: int) -> None:
@@ -270,7 +270,7 @@ class WrapperAPI:
     def toPythonIndex(self, index: Index) -> int:
         return 0
 
-    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:  ###
+    def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
 class IconBarAPI:
