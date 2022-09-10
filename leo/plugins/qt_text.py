@@ -247,12 +247,12 @@ class QTextMixin:
     #@+node:ekr.20140901141402.18706: *5* qtm.delete
     def delete(self, i: int, j: int=None) -> None:
         """QTextMixin"""
-        ### int_i = self.toPythonIndex(i)  ### Keep
         int_i = i
         if j is None:
             int_j = int_i + 1
         else:
-            int_j = self.toPythonIndex(j)  ### Keep
+            ### int_j = self.toPythonIndex(j)  ### Keep
+            int_j = j
         # This allows subclasses to use this base class method.
         if int_i > int_j:
             int_i, int_j = int_j, int_i
@@ -272,8 +272,6 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
-        ### i = self.toPythonIndex(i)  ### Keep.
-        ### j = self.toPythonIndex(j)  ### Keep.
         return s[i:j]
     #@+node:ekr.20140901062324.18704: *5* qtm.getLastPosition & getLength
     def getLastPosition(self, s: str=None) -> int:
@@ -295,12 +293,8 @@ class QTextMixin:
     def insert(self, i: int, s: str) -> int:
         """QTextMixin"""
         s2 = self.getAllText()
-        ### int_i = self.toPythonIndex(i)  ### Keep.
-        ### self.setAllText(s2[:int_i] + s + s2[int_i:])
         self.setAllText(s2[:i] + s + s2[i:])
-        ### self.setInsertPoint(int_i + len(s))
         self.setInsertPoint(i + len(s))
-        ### return int_i
         return i  ### Not needed.
     #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
     def seeInsertPoint(self) -> None:
@@ -311,7 +305,7 @@ class QTextMixin:
     def selectAllText(self, s: str=None) -> None:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex (remove?)
+    #@+node:ekr.20140901141402.18710: *5* qtm.toPythonIndex (still used!)
     def toPythonIndex(self, index: int, s: str=None) -> int:
         """QTextMixin"""
         if True:  ### not isinstance(index, int):
