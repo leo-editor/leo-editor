@@ -1905,51 +1905,53 @@ class QTextEditWrapper(QTextMixin):
         #
         # Part 1
         w = self.widget
-        int_i = 0 if i is None else i
-        int_j = int_i if j is None else j
+        if i is None:
+            i = 0
+        if j is None:
+            j = i
         if s is None:
             s = self.getAllText()
         n = len(s)
-        int_i = max(0, min(int_i, n))
-        int_j = max(0, min(int_j, n))
+        i = max(0, min(i, n))
+        j = max(0, min(j, n))
         if insert is None:
-            int_ins = max(int_i, int_j)
+            ins = max(i, j)
         else:
-            int_ins = int_j if insert is None else insert
-            int_ins = max(0, min(int_ins, n))
+            ins = j if insert is None else insert
+            ins = max(0, min(ins, n))
         #
         # Part 2:
         # 2010/02/02: Use only tc.setPosition here.
         # Using tc.movePosition doesn't work.
         tc = w.textCursor()
-        if int_i == int_j:
-            tc.setPosition(int_i)
-        elif int_ins == int_j:
-            # Put the insert point at int_j
-            tc.setPosition(int_i)
-            tc.setPosition(int_j, MoveMode.KeepAnchor)
-        elif int_ins == int_i:
-            # Put the insert point at int_i
-            tc.setPosition(int_j)
-            tc.setPosition(int_i, MoveMode.KeepAnchor)
+        if i == j:
+            tc.setPosition(i)
+        elif ins == j:
+            # Put the insert point at j
+            tc.setPosition(i)
+            tc.setPosition(j, MoveMode.KeepAnchor)
+        elif ins == i:
+            # Put the insert point at i
+            tc.setPosition(j)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         else:
             # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
-            tc.setPosition(int_j)
-            tc.setPosition(int_i, MoveMode.KeepAnchor)
+            tc.setPosition(j)
+            tc.setPosition(i, MoveMode.KeepAnchor)
         w.setTextCursor(tc)
         # #218.
         if hasattr(g.app.gui, 'setClipboardSelection'):
-            if s[int_i:int_j]:
-                g.app.gui.setClipboardSelection(s[int_i:int_j])
+            if s[i:j]:
+                g.app.gui.setClipboardSelection(s[i:j])
         #
         # Remember the values for v.restoreCursorAndScroll.
         v = self.c.p.v  # Always accurate.
-        v.insertSpot = int_ins
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
-        assert int_i <= int_j
-        v.selectionStart = int_i
-        v.selectionLength = int_j - int_i
+        v.insertSpot = ins
+        if i > j:
+            i, j = j, i
+        assert i <= j
+        v.selectionStart = i
+        v.selectionLength = j - i
         v.scrollBarSpot = w.verticalScrollBar().value()
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self, pos: int) -> None:  ###
