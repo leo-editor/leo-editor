@@ -1603,11 +1603,13 @@ class QTextEditWrapper(QTextMixin):
     def delete(self, i: int, j: int=None) -> None:
         """QTextEditWrapper."""
         w = self.widget
-        int_i = self.toPythonIndex(i)  ### Keep
+        ### int_i = self.toPythonIndex(i)  ### Keep
+        int_i = i  ### Experimental
         if j is None:
             int_j = int_i + 1
         else:
-            int_j = self.toPythonIndex(j)  ### Keep
+            ### int_j = self.toPythonIndex(j)  ### Keep
+            int_j = j  ### Experimental.
         if int_i > int_j:
             int_i, int_j = int_j, int_i
         sb = w.verticalScrollBar()
@@ -1961,7 +1963,7 @@ class QTextEditWrapper(QTextMixin):
             w = self.widget
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, keep??)
+    #@+node:ekr.20110605121601.18100: *4* qtew.toPythonIndex (fast, to be removed)
     def toPythonIndex(self, index: Optional[int], s: str=None) -> int:
         """This is much faster than versions using g.toPythonIndex."""
         w = self

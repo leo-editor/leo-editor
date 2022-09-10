@@ -2365,14 +2365,12 @@ class StringTextWrapper:
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
-    def delete(self, i: int, j: int=None) -> None:  ###
+    def delete(self, i: int, j: int=None) -> None:
         """StringTextWrapper."""
-        ### i = self.toPythonIndex(i)
         all_s = self.getAllText()
         i = g.toPythonIndex(all_s, i)
         if j is None:
             j = i + 1
-        ### j = self.toPythonIndex(j)
         j = g.toPythonIndex(all_s, j)
         # This allows subclasses to use this base class method.
         if i > j:
@@ -2438,7 +2436,7 @@ class StringTextWrapper:
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
-    def insert(self, i: int, s: str) -> None:  ###
+    def insert(self, i: int, s: str) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
@@ -2458,7 +2456,6 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
-    ### def setInsertPoint(self, pos: str, s: str=None) -> None:
     def setInsertPoint(self, pos: int, s: str=None) -> None:
         """StringTextWrapper."""
         i = self.toPythonIndex(pos)
@@ -2466,12 +2463,12 @@ class StringTextWrapper:
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:  ###
+    def setSelectionRange(self, i: int, j: int, insert: int=None) -> None:
         """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
-    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex (remove)
+    #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex (remove *later*)
     def toPythonIndex(self, index: int) -> int:
         """
         StringTextWrapper.toPythonIndex.
@@ -2480,6 +2477,9 @@ class StringTextWrapper:
 
         Unit tests *do* use non-integer indices, so removing this method would be tricky.
         """
+        ### Rectangle commands and sortColumns use Tk indices.
+        if False:  ### not isinstance(index, int):
+            g.trace('StringTextWrapper', repr(index), g.callers())
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
     ### def toPythonIndexRowCol(self, index: str) -> Tuple[int, int, int]:
