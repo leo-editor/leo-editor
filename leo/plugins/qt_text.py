@@ -247,18 +247,15 @@ class QTextMixin:
     #@+node:ekr.20140901141402.18706: *5* qtm.delete
     def delete(self, i: int, j: int=None) -> None:
         """QTextMixin"""
-        int_i = i
         if j is None:
-            int_j = int_i + 1
-        else:
-            int_j = j
+            j = i + 1
         # This allows subclasses to use this base class method.
-        if int_i > int_j:
-            int_i, int_j = int_j, int_i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
-        self.setAllText(s[:int_i] + s[int_j:])
+        self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
-        self.setSelectionRange(int_i, int_i, insert=int_i)
+        self.setSelectionRange(i, i, insert=i)
     #@+node:ekr.20140901062324.18827: *5* qtm.deleteTextSelection
     def deleteTextSelection(self) -> None:
         """QTextMixin"""
