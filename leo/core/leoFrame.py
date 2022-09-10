@@ -267,9 +267,11 @@ class WrapperAPI:
     def setYScrollPosition(self, i: int) -> None:
         pass
 
-    def toPythonIndex(self, index: Index) -> int:
-        return 0
+    ###
+    # def toPythonIndex(self, index: Index) -> int:
+        # return 0
 
+    ### To be removed.
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
