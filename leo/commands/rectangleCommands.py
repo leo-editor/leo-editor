@@ -122,16 +122,20 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w or not self.check(event):
             return
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(w.getAllText(), index)
+
         self.beginCommand(w, 'kill-rectangle')
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         self.theKillRectangle = []
         r = 0
         for r in range(r1, r3 + 1):
-            s = w.get(f"{r}.{r2}", f"{r}.{r4}")
+            s = w.get(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
             self.theKillRectangle.append(s)
-            w.delete(f"{r}.{r2}", f"{r}.{r4}")
+            w.delete(toInt(f"{r}.{r2}"), toInt(f"{r}.{r4}"))
         if self.theKillRectangle:
-            ins = f"{r}.{r2}"
+            ins = toInt(f"{r}.{r2}")
             w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
     #@+node:ekr.20150514063305.458: *4* openRectangle
