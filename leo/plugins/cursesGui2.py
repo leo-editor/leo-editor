@@ -4094,14 +4094,6 @@ class TextMixin:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.22: *5* tm.toPythonIndex
-    def toPythonIndex(self, index: Union[int, str], s: str=None):
-        """TextMixin"""
-        assert False, g.callers()
-        if s is None:
-            s = self.getAllText()
-        i = g.toPythonIndex(s, index)
-        return i
     #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> Tuple[int, int, int]:
         """TextMixin"""
