@@ -2291,7 +2291,7 @@ os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
     branch1='6.6.4', # old branch/rev
-    branch2='devel', # new branch/rev
+    branch2='ekr-index', # new branch/rev
     fn='leo/plugins/qt_text.py',  # Don't use back slashes.
 )
 </t>
@@ -2786,7 +2786,7 @@ while True:
 </t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">getCompositeIconImage  # This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">-getCompositeIconImage  # This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
 </t>
