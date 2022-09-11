@@ -19,21 +19,28 @@ class TestQt6(BaseTestImporter):
             import leo.core.leoQt6 as Qt6
         except Exception:
             self.fail('Requires Qt6')
-            
+
         attrs = [z for z in dir(Qt6) if not z.startswith('__')]
 
-        def print_attr(attr: str) -> str:
-            obj = getattr(Qt6, attr, None)
-            r = repr(obj)
-            return (
-                f"{attr:>25}: ***Missing***" if obj is None else
-                f"{attr:>25}: module" if 'module' in r else
-                f"{attr:>25}: class" if 'class' in r else
-                f"{attr:>25}: enum" if 'enum' in r else
-                f"{attr:>25}: {obj}"
-            )
+        if 1:  # The usual unit test.
+            exceptions = ('Qsci', 'QtSvg', 'uic')
+            fails = [
+                attr for attr in attrs
+                    if attr not in exceptions and getattr(Qt6, attr, None) is None
+            ]
+            self.assertFalse(fails, msg=','.join(fails))
+        else:  # Inspection
 
-        if 1:
+            def print_attr(attr: str) -> str:
+                obj = getattr(Qt6, attr, None)
+                r = repr(obj)
+                return (
+                    f"{attr:>25}: ***Missing***" if obj is None else
+                    f"{attr:>25}: module" if 'module' in r else
+                    f"{attr:>25}: class" if 'class' in r else
+                    f"{attr:>25}: enum" if 'enum' in r else
+                    f"{attr:>25}: {obj}"
+                )
             g.printObj([print_attr(attr) for attr in attrs])
     #@-others
 #@-others

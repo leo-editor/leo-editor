@@ -123,7 +123,6 @@ FocusReason = Qt.FocusReason
 Format = QtGui.QImage.Format
 GlobalColor = Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
-### Information = QtWidgets.QMessageBox.Icon.Information
 Information = Icon.Information
 ItemDataRole = Qt.ItemDataRole  # 2347
 Key = Qt.Key
