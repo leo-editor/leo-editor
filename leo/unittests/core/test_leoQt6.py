@@ -22,13 +22,14 @@ class TestQt6(BaseTestImporter):
 
         attrs = [z for z in dir(Qt6) if not z.startswith('__')]
 
-        if 1:  # The usual unit test.
-            exceptions = ('Qsci', 'QtSvg', 'uic')
+        if 1:  # A real unit test.
+            exceptions = ('Qsci', 'QtSvg', 'uic')  # Optional modules.
             fails = [
                 attr for attr in attrs
                     if attr not in exceptions and getattr(Qt6, attr, None) is None
             ]
             self.assertFalse(fails, msg=','.join(fails))
+
         else:  # Inspection
 
             def print_attr(attr: str) -> str:
