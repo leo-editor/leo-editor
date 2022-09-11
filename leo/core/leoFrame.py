@@ -1680,7 +1680,7 @@ class LeoTree:
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
-    def select_new_node(self, old_p: str, p: Position) -> None:
+    def select_new_node(self, old_p: Position, p: Position) -> None:
         """Select the new node, part 1."""
         c = self.c
         call_event_handlers = p != old_p
@@ -1695,7 +1695,7 @@ class LeoTree:
         self.set_body_text_after_select(p, old_p)
         c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p: Position, old_p: str) -> None:
+    def set_body_text_after_select(self, p: Position, old_p: Position) -> None:
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper

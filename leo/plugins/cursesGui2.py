@@ -1081,7 +1081,7 @@ class KeyEvent:
         c: Cmdr,
         char: str,
         event: Event,
-        shortcut: Any,
+        shortcut: str,
         w: Wrapper,
         x: int=None,
         y: int=None,
@@ -1283,7 +1283,7 @@ class LeoCursesGui(leoGui.LeoGui):
         """Ctor for the CursesGui class."""
         super().__init__('curses')  # Init the base class.
         self.consoleOnly: bool = False  # Required attribute.
-        self.curses_app: Any = None  # The singleton LeoApp instance.
+        self.curses_app: Wrapper = None  # The singleton LeoApp instance.
         # The top-level curses Form instance. Form.editw is the widget with focus.
         self.curses_form: Wrapper = None
         self.curses_gui_arg: Any = None  # A hack for interfacing with k.getArg.
@@ -1531,7 +1531,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # A new ivar.
         c.inFindCommand = False
     #@+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
-    def createLeoFrame(self, c: Cmdr, title: Any) -> Any:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Wrapper:
         """
         Create a LeoFrame for the current gui.
         Called from Leo's core (c.initObjects).
@@ -1833,7 +1833,7 @@ class LeoCursesGui(leoGui.LeoGui):
         """Put focus in minibuffer text widget."""
         self.set_focus(c, c.frame.miniBufferWidget)
     #@+node:ekr.20170502101347.1: *5* CGui.get_focus
-    def get_focus(self, c: Cmdr=None, raw: bool=False, at_idle: bool=False) -> Optional[Any]:
+    def get_focus(self, c: Cmdr=None, raw: bool=False, at_idle: bool=False) -> Optional[Wrapper]:
         """
         Return the Leo wrapper for the npyscreen widget that is being edited.
         """
@@ -1854,7 +1854,7 @@ class LeoCursesGui(leoGui.LeoGui):
         g.trace('(CursesGui) ===== no leo_wrapper', widget)
         return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
-    set_focus_fail: List[Any] = []  # List of widgets
+    set_focus_fail: List[Wrapper] = []  # List of widgets
 
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Given a Leo wrapper, set focus to the underlying npyscreen widget."""
@@ -1915,7 +1915,7 @@ class LeoCursesGui(leoGui.LeoGui):
         if 0:
             # Inject 'leo-set-focus' into form.how_exited_handers
 
-            def switch_focus_callback(form: Wrapper=form, i: Any=i, w: Any=w) -> None:
+            def switch_focus_callback(form: Wrapper=form, i: int=i, w: Wrapper=w) -> None:
                 g.trace(i, w.__class__.__name__)
                 g.trace(g.callers(verbose=True))
                 w.display()
@@ -2009,8 +2009,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
     #@+node:ekr.20170514060742.1: *4* CGui.Fonts
-    def getFontFromParams(self, family: Any, size: Any, slant: Any, weight: Any, defaultSize: int=12) -> None:
-
+    def getFontFromParams(self, family: str, size: str, slant: str, weight: str, defaultSize: int=12) -> None:
         return None
     #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
     def isTextWrapper(self, w: Wrapper) -> bool:
@@ -2021,7 +2020,7 @@ class LeoCursesGui(leoGui.LeoGui):
         """Ignore do-nothing methods."""
         g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20170612063102.1: *4* CGui.put_help
-    def put_help(self, c: Cmdr, s: str, short_title: Any) -> None:
+    def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         """Put a help message in a dialog."""
         if not g.unitTesting:
             utilNotify.notify_confirm(
@@ -2138,7 +2137,7 @@ class CoreBody(leoFrame.LeoBody):
         # Init the base class.
         super().__init__(frame=c.frame, parentFrame=None)
         self.c: Cmdr = c
-        self.colorizer: Any = leoFrame.NullColorizer(c)
+        self.colorizer: Wrapper = leoFrame.NullColorizer(c)
         self.widget: Wrapper = None
         self.wrapper: Wrapper = None  # Set in createCursesBody.
 #@+node:ekr.20170419105852.1: *3* class CoreFrame (leoFrame.LeoFrame)
@@ -2166,7 +2165,7 @@ class CoreFrame(leoFrame.LeoFrame):
         self.body = CoreBody(c)  # type:ignore
         self.menu = CoreMenu(c)  # type:ignore
         self.miniBufferWidget: Wrapper = None  # Set later.
-        self.statusLine: Any = g.NullObject()  # For unit tests.
+        self.statusLine: Wrapper = g.NullObject()  # For unit tests.
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)  # type:ignore
 
@@ -2285,15 +2284,15 @@ class CoreFrame(leoFrame.LeoFrame):
             assert getattr(ftm, name) is None
             setattr(ftm, name, w)
     #@+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
-    def createCheckBox(self, name: str, label: Any) -> Any:
+    def createCheckBox(self, name: str, label: str) -> Wrapper:
 
         return leoGui.StringCheckBox(name, label)
     #@+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
-    def createLineEdit(self, name: str, disabled: bool=True) -> Any:
+    def createLineEdit(self, name: str, disabled: bool=True) -> Wrapper:
 
         return leoGui.StringLineEdit(name, disabled)
     #@+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
-    def createRadioButton(self, name: str, label: Any) -> Any:
+    def createRadioButton(self, name: str, label: str) -> Wrapper:
 
         return leoGui.StringRadioButton(name, label)
     #@+node:ekr.20170501161029.1: *4* CFrame.do nothings
@@ -2437,13 +2436,13 @@ class CoreLog(leoFrame.LeoLog):
     def isLogWidget(self, w: Wrapper) -> bool:
         return w == self or w in list(self.contentsDict.values())
     #@+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: Any=None) -> List:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: Wrapper=None) -> List[Any]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
         #return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20170419143731.15: *4* CLog.put
-    def put(self, s: str, color: Any=None, tabName: str='Log', from_redirect: bool=False) -> None:  # type:ignore
+    def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False) -> None:  # type:ignore
         """All output to the log stream eventually comes here."""
         c, w = self.c, self.widget
         if not c or not c.exists or not w:
@@ -2637,23 +2636,22 @@ class CoreTree(leoFrame.LeoTree):
         """Return the hPos,vPos for the tree's scrollbars."""
         return 0, 0
     #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
-    def setHScroll(self, hPos: Any) -> None:
+    def setHScroll(self, hPos: int) -> None:
         pass
         # w = self.widget
         # hScroll = w.horizontalScrollBar()
         # hScroll.setValue(hPos)
 
-    def setVScroll(self, vPos: Any) -> None:
+    def setVScroll(self, vPos: int) -> None:
         pass
         # w = self.widget
         # vScroll = w.verticalScrollBar()
         # vScroll.setValue(vPos)
     #@+node:ekr.20170511105355.1: *4* CTree.Selecting & editing
     #@+node:ekr.20170511105355.4: *5* CTree.edit_widget
-    def edit_widget(self, p: Position) -> Any:
+    def edit_widget(self, p: Position) -> Wrapper:
         """Returns the edit widget for position p."""
-        wrapper = HeadWrapper(c=self.c, name='head', p=p)
-        return wrapper
+        return HeadWrapper(c=self.c, name='head', p=p)
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[None, None]:
         """Start editing p's headline."""
@@ -2688,7 +2686,7 @@ class CoreTree(leoFrame.LeoTree):
         if trace:
             g.trace(e)
     #@+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
-    def set_body_text_after_select(self, p: Position, old_p: Any) -> None:
+    def set_body_text_after_select(self, p: Position, old_p: Position) -> None:
         """Set the text after selecting a node."""
         c = self.c
         wrapper = c.frame.body.wrapper
