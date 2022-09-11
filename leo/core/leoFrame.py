@@ -2234,6 +2234,9 @@ class NullTree(LeoTree):
             e = None
             return e, wrapper
         return None, None
+    #@+node:ekr.20220911115337.1: *3* NullTree.injectCallbacks
+    def injectCallbacks(self) -> None:
+            pass
     #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self) -> None:
         d = self.editWidgetsDict

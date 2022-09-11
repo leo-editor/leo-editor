@@ -2319,35 +2319,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     class QtStatusLineClass:
         """A class representing the status line."""
         #@+others
-        #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
-        def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
-            """Ctor for LeoQtFrame class."""
-            self.c = c
-            self.statusBar = c.frame.top.statusBar
-            self.lastFcol = 0
-            self.lastRow = 0
-            self.lastCol = 0
-            # Create the text widgets.
-            self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
-            self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
-            w1.setObjectName('status1')
-            w2.setObjectName('status2')
-            w1.setReadOnly(True)
-            w2.setReadOnly(True)
-            splitter = QtWidgets.QSplitter()
-            self.statusBar.addWidget(splitter, True)
-            sizes = c.config.getString('status-line-split-sizes') or '1 2'
-            sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-            for n, i in enumerate(sizes):
-                w = [w1, w2][n]
-                policy = w.sizePolicy()
-                policy.setHorizontalStretch(i)
-                policy.setHorizontalPolicy(Policy.Minimum)
-                w.setSizePolicy(policy)
-            splitter.addWidget(w1)
-            splitter.addWidget(w2)
-            self.put('')
-            self.update()
         #@+node:ekr.20110605121601.18260: *4* QtStatusLineClass.clear, get & put/1
         def clear(self) -> None:
             self.put('')
@@ -2396,6 +2367,35 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     c.styleSheetManager.mng.add_sclass(w, status)
                     c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
+        #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
+        def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+            """Ctor for LeoQtFrame class."""
+            self.c = c
+            self.statusBar = c.frame.top.statusBar
+            self.lastFcol = 0
+            self.lastRow = 0
+            self.lastCol = 0
+            # Create the text widgets.
+            self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
+            self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
+            w1.setObjectName('status1')
+            w2.setObjectName('status2')
+            w1.setReadOnly(True)
+            w2.setReadOnly(True)
+            splitter = QtWidgets.QSplitter()
+            self.statusBar.addWidget(splitter, True)
+            sizes = c.config.getString('status-line-split-sizes') or '1 2'
+            sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+            for n, i in enumerate(sizes):
+                w = [w1, w2][n]
+                policy = w.sizePolicy()
+                policy.setHorizontalStretch(i)
+                policy.setHorizontalPolicy(Policy.Minimum)
+                w.setSizePolicy(policy)
+            splitter.addWidget(w1)
+            splitter.addWidget(w2)
+            self.put('')
+            self.update()
         #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helpers
         def update(self) -> None:
             if g.app.killed:
@@ -2464,6 +2464,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 fline = '' if fline is None else fline + row
                 self.put1(
                     f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
+        #@+node:ekr.20220911120019.1: *4* QtStatusLineClass: do-nothings
+        def disable(self, background: str=None) -> None:
+                pass
+
+        def enable(self, background: str="white") -> None:
+            pass
+            
+        def isEnabled(self) -> bool:
+            return False
+            
+        def setFocus(self) -> None:
+            pass
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass:
