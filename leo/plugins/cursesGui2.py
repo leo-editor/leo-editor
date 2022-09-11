@@ -339,6 +339,7 @@ class LeoTreeData(npyscreen.TreeData):
     #@-<< about LeoTreeData ivars >>
 
     _children: List["LeoTreeData"]
+    content = Union[str, Position]
 
     def __len__(self) -> int:
         if native:
@@ -446,7 +447,7 @@ class LeoTreeData(npyscreen.TreeData):
             # May be useful when child is cloned.
             self._children = [z for z in self._children if z != child]
     #@+node:ekr.20170518103807.21: *5* LeoTreeData.set_content
-    def set_content(self, content: Any) -> None:  # content is strange!
+    def set_content(self, content: Union[str, Position]) -> None:
 
         if native:
             if content is None:
