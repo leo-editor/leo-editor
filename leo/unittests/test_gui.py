@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoQt import QtCore
 from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
-from leo.core.leoFrame import StringTextWrapper
+from leo.core.leoFrame import NullStatusLineClass, StringTextWrapper
 from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
 #@-<< test_gui imports >>
 
@@ -140,7 +140,13 @@ class TestAPIClasses(LeoUnitTest):
     #@+node:ekr.20220911101304.1: *3* test_status_line_api
     def test_status_line_api(self):
 
-        assert StatusLineAPI
+        def get_methods(cls):
+            return [z for z in dir(cls) if not z.startswith('__')]
+
+        def get_missing(cls):
+            return [z for z in get_methods(StatusLineAPI) if z not in get_methods(cls)]
+
+        self.assertFalse(get_missing(NullStatusLineClass), msg='Missing NullStatusLineClass methods')
     #@+node:ekr.20220911101329.1: *3* test_tree_api
     def test_tree_api(self):
 
