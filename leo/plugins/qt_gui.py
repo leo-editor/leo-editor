@@ -68,7 +68,7 @@ class LeoQtGui(leoGui.LeoGui):
         super().__init__('qt')  # Initialize the base class.
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
-        self.iconimages: Dict = {}
+        self.iconimages: Dict[str, Any] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: Widget = None
         self.idleTimeClass: Any = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.

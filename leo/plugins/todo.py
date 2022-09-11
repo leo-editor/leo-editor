@@ -582,7 +582,7 @@ class todoController:
     def loadIcons(self, p: Position, clear: bool=False) -> None:
 
         com = self.c.editCommands
-        allIcons = com.getIconList(p)
+        allIcons = com.getIconList(p.v)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
         if self.icon_order == 'pri-first':
             iterations = ['priority', 'progress', 'duedate']

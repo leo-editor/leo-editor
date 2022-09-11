@@ -118,9 +118,6 @@ class TreeAPI:
         pass
     # Must be defined in subclasses.
 
-    def drawIcon(self, p: Position) -> None:
-        pass
-
     def editLabel(self, v: VNode, selectAll: bool=False, selection: Any=None) -> None:
         pass
 
@@ -1575,9 +1572,6 @@ class LeoTree:
     #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
     # Drawing & scrolling.
 
-    def drawIcon(self, p: Position) -> None:
-        self.oops()
-
     def redraw(self, p: Position=None) -> None:
         self.oops()
     redraw_now = redraw
@@ -2248,9 +2242,6 @@ class NullTree(LeoTree):
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
     #@+node:ekr.20070228163350.1: *3* NullTree.Drawing & scrolling
-    def drawIcon(self, p: Position) -> None:
-        pass
-
     def redraw(self, p: Position=None) -> None:
         self.redrawCount += 1
 
@@ -2272,9 +2263,6 @@ class NullTree(LeoTree):
         self.redraw()
 
     def scrollTo(self, p: Position) -> None:
-        pass
-
-    def updateIcon(self, p: Position) -> None:
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:

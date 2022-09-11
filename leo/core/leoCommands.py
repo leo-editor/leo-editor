@@ -3226,9 +3226,8 @@ class Commands:
         """Update the icon for the presently selected node"""
         c = self
         if c.enableRedrawFlag:
-            c.frame.tree.redraw_after_icons_changed()
-            # Do not call treeFocusHelper here.
-                # c.treeFocusHelper()
+            pass
+            # Do not call c.treeFocusHelper here.
         else:
             c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract

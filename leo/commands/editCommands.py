@@ -1128,18 +1128,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Hash a dictionary"""
         return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, p: Position) -> List[Dict]:
-        """Return list of icons for position p, call setIconList to apply changes"""
+    def getIconList(self, v: VNode) -> List[Dict]:
+        """Return list of icons for v."""
         fromVnode: List[Dict] = []
-        if hasattr(p.v, 'unknownAttributes'):
-            fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
+        if hasattr(v, 'unknownAttributes'):
+            fromVnode = [dict(i) for i in v.u.get('icons', [])]
             for i in fromVnode:
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p: Position, l: List[Any], setDirty: bool=True) -> None:
         """Set list of icons for position p to l"""
-        current = self.getIconList(p)
+        current = self.getIconList(p.v)
         if not l and not current:
             return  # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
@@ -1148,8 +1148,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             # no difference between original and current list of dictionaries
             return
         self._setIconListHelper(p, l, p.v, setDirty)
-        if g.app.gui.guiName() == 'qt':
-            self.c.frame.tree.updateIcon(p)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self,
         p: Position,
@@ -1183,7 +1181,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteFirstIcon(self, event: Event=None) -> None:
         """Delete the first icon in the selected node's icon list."""
         c = self.c
-        aList = self.getIconList(c.p)
+        aList = self.getIconList(c.p.v)
         if aList:
             self.setIconList(c.p, aList[1:])
             c.setChanged()
@@ -1192,7 +1190,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
-        aList = self.getIconList(p)
+        aList = self.getIconList(p.v)
         if not aList:
             return
         basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")  # #1341.
@@ -1216,7 +1214,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteLastIcon(self, event: Event=None) -> None:
         """Delete the first icon in the selected node's icon list."""
         c = self.c
-        aList = self.getIconList(c.p)
+        aList = self.getIconList(c.p.v)
         if aList:
             self.setIconList(c.p, aList[:-1])
             c.setChanged()
@@ -1255,7 +1253,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         xoffset = 2
         for path in paths:
             xoffset = self.appendImageDictToList(aList, path, xoffset)
-        aList2 = self.getIconList(p)
+        aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
         c.setChanged()
@@ -1268,7 +1266,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList: List[Any] = []
         xoffset = 2
         xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
-        aList2 = self.getIconList(p)
+        aList2 = self.getIconList(p.v)
         if pos is None:
             pos = len(aList2)
         aList2.insert(pos, aList[0])
