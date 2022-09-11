@@ -102,7 +102,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
     #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
-    def h_addch(self, ch_i: Any) -> None:
+    def h_addch(self, ch_i: int) -> None:
         """
         Update a single line of the body text, carefully recomputing c.p.b.
         Also, update v.insertSpot, v.selectionLength, and v.selectionStart.
@@ -135,12 +135,12 @@ class LeoBodyTextfield(npyscreen.Textfield):
         # Update the parent and Leo's data structures.
         parent_w.update_body(self.cursor_position, self.value)
     #@+node:ekr.20170603131317.1: *5* LeoBodyTextfield.h_cursor_left
-    def h_cursor_left(self, ch_i: Any) -> None:
+    def h_cursor_left(self, ch_i: int) -> None:
 
         self.cursor_position -= 1  # -1 Means something.
 
     #@+node:ekr.20170603131253.1: *5* LeoBodyTextfield.h_delete_left
-    def h_delete_left(self, ch_i: Any) -> None:
+    def h_delete_left(self, ch_i: int) -> None:
 
         # pylint: disable=no-member
         i = self.cursor_position
@@ -153,7 +153,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         parent_w = self.leo_parent
         parent_w.update_body(self.cursor_position, self.value)
     #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
-    def h_exit_down(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """
         From InputHandler.h_exit_down
         Terminate editing for *this* line, but not overall editing.
@@ -170,7 +170,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.how_exited = EXITED_DOWN
         return None
     #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
-    def h_exit_escape(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_escape(self, ch_i: int) -> Optional[bool]:
         """From InputHandler.h_exit_escape"""
         # Leo-specific exit code.
         self.leo_parent.set_box_name('Body Pane')
@@ -181,7 +181,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.how_exited = EXITED_ESCAPE
         return None
     #@+node:ekr.20170602110807.4: *5* LeoBodyTextfield.h_exit_mouse
-    def h_exit_mouse(self, ch_i: Any) -> None:
+    def h_exit_mouse(self, ch_i: int) -> None:
         """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
         parent_w = self.leo_parent
@@ -197,7 +197,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
             self.editing = False
             self.how_exited = EXITED_MOUSE
     #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
-    def h_exit_up(self, ch_i: Any) -> None:
+    def h_exit_up(self, ch_i: int) -> None:
         """LeoBodyTextfield.h_exit_up."""
         # Don't end overall editing.
             # self.leo_parent.set_box_name('Body Pane')
@@ -245,7 +245,7 @@ class LeoLogTextfield(npyscreen.Textfield):
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
     #@+node:ekr.20170603104320.5: *5* LeoLogTextfield.h_exit_escape
-    def h_exit_escape(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_escape(self, ch_i: int) -> Optional[bool]:
         """From InputHandler.h_exit_escape"""
         parent_w = self.leo_parent
         parent_w.set_box_name('Log Pane')
@@ -255,7 +255,7 @@ class LeoLogTextfield(npyscreen.Textfield):
         self.how_exited = EXITED_ESCAPE
         return None
     #@+node:ekr.20170603104320.6: *5* LeoLogTextfield.h_exit_mouse
-    def h_exit_mouse(self, ch_i: Any) -> None:
+    def h_exit_mouse(self, ch_i: int) -> None:
         """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
         parent_w = self.leo_parent
@@ -271,7 +271,7 @@ class LeoLogTextfield(npyscreen.Textfield):
             self.editing = False
             self.how_exited = EXITED_MOUSE
     #@+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
-    def h_exit_down(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         # g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
@@ -287,7 +287,7 @@ class LeoLogTextfield(npyscreen.Textfield):
         self.how_exited = EXITED_DOWN
         return None
     #@+node:ekr.20170603104320.9: *5* LeoLogTextfield.h_exit_up
-    def h_exit_up(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_up(self, ch_i: int) -> Optional[bool]:
         """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         parent_w = self.leo_parent
         if not self._test_safe_to_exit():
@@ -1125,7 +1125,7 @@ class KeyHandler:
 
     #@+others
     #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
-    def do_key(self, ch_i: Any) -> bool:
+    def do_key(self, ch_i: int) -> bool:
         """
         Handle a key event by calling k.masterKeyHandler.
         Return True if the event was completely handled.
@@ -1225,7 +1225,7 @@ class KeyHandler:
             w=w, x=0, y=0, x_root=0, y_root=0,
         )
     #@+node:ekr.20170430115030.1: *5* CKey.is_key_event
-    def is_key_event(self, ch_i: Any) -> bool:
+    def is_key_event(self, ch_i: int) -> bool:
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170430115131.3: *5* CKey.to_key
@@ -1790,7 +1790,7 @@ class LeoCursesGui(leoGui.LeoGui):
             c.last_dir = g.os_path_dirname(s)
         return s
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
-    def do_key(self, ch_i: Any) -> bool:
+    def do_key(self, ch_i: int) -> bool:
 
         # Ignore all printable characters.
         if not self.in_dialog and 32 <= ch_i < 128:
@@ -2778,7 +2778,7 @@ class LeoBody(npyscreen.MultiLineEditable):
     #@+others
     #@+node:ekr.20170604183231.1: *4*  LeoBody handlers
     #@+node:ekr.20170526114040.4: *5* LeoBody.h_cursor_line_down
-    def h_cursor_line_down(self, ch_i: Any) -> None:
+    def h_cursor_line_down(self, ch_i: int) -> None:
         """
         From MultiLine.h_cursor_line_down. Never exit.
         """
@@ -2796,13 +2796,13 @@ class LeoBody(npyscreen.MultiLineEditable):
             else:
                 self.start_display_at = self.cursor_line
     #@+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
-    def h_cursor_line_up(self, ch_i: Any) -> None:
+    def h_cursor_line_up(self, ch_i: int) -> None:
         """From MultiLine.h_cursor_line_up. Never exit here."""
         # Reset editing mode.
         self.set_box_name('Body Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
     #@+node:ekr.20170604181755.1: *5* LeoBody.h_exit_down
-    def h_exit_down(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             return False
@@ -2813,7 +2813,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         self.how_exited = EXITED_DOWN
         return None
     #@+node:ekr.20170604181821.1: *5* LeoBody.h_exit_up
-    def h_exit_up(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_up(self, ch_i: int) -> Optional[bool]:
 
         self.set_box_name('Body Pane')
         if not self._test_safe_to_exit():
@@ -2830,7 +2830,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
     #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
-    def delete_line_value(self, ch_i: Any=None) -> None:
+    def delete_line_value(self, ch_i: int=None) -> None:
 
         c = self.leo_c
         if self.values:
@@ -2964,13 +2964,13 @@ class LeoLog(npyscreen.MultiLineEditable):
 
     #@+others
     #@+node:ekr.20170604184928.2: *4* LeoLog.delete_line_value
-    def delete_line_value(self, ch_i: Any=None) -> None:
+    def delete_line_value(self, ch_i: int=None) -> None:
         if self.values:
             del self.values[self.cursor_line]
             self.display()
     #@+node:ekr.20170604183417.1: *4*  LeoLog handlers
     #@+node:ekr.20170603103946.32: *5* LeoLog.h_cursor_line_down
-    def h_cursor_line_down(self, ch_i: Any) -> None:
+    def h_cursor_line_down(self, ch_i: int) -> None:
         """
         From MultiLine.h_cursor_line_down. Never exit.
         """
@@ -2992,20 +2992,20 @@ class LeoLog(npyscreen.MultiLineEditable):
             g.trace('n: %s, start: %s, line: %s' % (
                 n, self.start_display_at, self.cursor_line))
     #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
-    def h_cursor_line_up(self, ch_i: Any) -> None:
+    def h_cursor_line_up(self, ch_i: int) -> None:
         """From MultiLine.h_cursor_line_up. Never exit here."""
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
 
     #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
-    def h_edit_cursor_line_value(self, ch_i: Any) -> None:
+    def h_edit_cursor_line_value(self, ch_i: int) -> None:
         """From MultiLineEditable.h_edit_cursor_line_value"""
         self.set_box_name('Log Pane (Editing)')
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
     #@+node:ekr.20170604113733.2: *5* LeoLog.h_exit_down
-    def h_exit_down(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
         trace = False and not g.unitTesting
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
@@ -3020,7 +3020,7 @@ class LeoLog(npyscreen.MultiLineEditable):
         self.how_exited = EXITED_DOWN
         return None
     #@+node:ekr.20170604113733.4: *5* LeoLog.h_exit_up
-    def h_exit_up(self, ch_i: Any) -> Optional[bool]:
+    def h_exit_up(self, ch_i: int) -> Optional[bool]:
         self.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
             return False
