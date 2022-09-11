@@ -69,7 +69,7 @@ else:
     Position = Any
     VNode = Any
 Event = Any  # Not usually a LeoKeyEvent.
-Wrapper = Any  # Everything is a wrapper!
+Wrapper = Any  # Everything, including widgets, is a wrapper!
 #@-<< cursesGui2 annotations >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
@@ -1286,7 +1286,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.curses_app: Wrapper = None  # The singleton LeoApp instance.
         # The top-level curses Form instance. Form.editw is the widget with focus.
         self.curses_form: Wrapper = None
-        self.curses_gui_arg: Any = None  # A hack for interfacing with k.getArg.
+        self.curses_gui_arg: str = None  # A hack for interfacing with k.getArg.
         self.in_dialog: bool = False  # True: executing a modal dialog.
         self.log: Wrapper = None  # The present log. Used by g.es
         self.log_inited: bool = False  # True: don't use the wait_list.
@@ -2436,7 +2436,7 @@ class CoreLog(leoFrame.LeoLog):
     def isLogWidget(self, w: Wrapper) -> bool:
         return w == self or w in list(self.contentsDict.values())
     #@+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: Wrapper=None) -> List[Any]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: Wrapper=None) -> List[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
@@ -2894,7 +2894,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         }
         # self.dump_handlers()
     #@+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
-    def update_body(self, ins: Any, s: str) -> None:
+    def update_body(self, ins: int, s: str) -> None:
         """
         Update self.values and p.b and vnode ivars after the present line changes.
         """
@@ -3287,8 +3287,8 @@ class LeoMLTree(npyscreen.MLTree):
     # pylint: disable=used-before-assignment
     _contained_widgets: Wrapper = LeoTreeLine
     continuation_line = "- more -"  # value of contination line.
-    _cached_tree: Any
-    _cached_tree_as_list: List[Any]
+    _cached_tree: "LeoTreeData"
+    _cached_tree_as_list: List["LeoTreeData"]
     start_display_at: int
     cursor_line: int
 
@@ -3377,7 +3377,7 @@ class LeoMLTree(npyscreen.MLTree):
         trace = False and not g.unitTesting
         assert self.values, g.callers()
         try:
-            active_line: Any = self._my_widgets[(self.cursor_line - self.start_display_at)]
+            active_line: "LeoTreeLine" = self._my_widgets[(self.cursor_line - self.start_display_at)]
             assert isinstance(active_line, LeoTreeLine)
             if trace:
                 g.trace('LeoMLTree.active_line: %r' % active_line)
@@ -3504,7 +3504,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506045346.1: *4* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
-    def handle_mouse_event(self, mouse_event: Any) -> None:
+    def handle_mouse_event(self, mouse_event: Event) -> None:
         """Called from InputHandler.h_exit_mouse."""
         # pylint: disable=no-member
         #
@@ -3927,7 +3927,7 @@ class LeoMLTree(npyscreen.MLTree):
         # To invalidate the cache, set __cached_tree = None
         #@+others
         #@+node:ekr.20170517142822.1: *5* _getValues
-        def _getValues(self) -> Any:
+        def _getValues(self) -> List["LeoTreeData"]:
             """
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
 
@@ -3939,9 +3939,8 @@ class LeoMLTree(npyscreen.MLTree):
             self._cached_tree = self._myFullValues
             self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
             return self._cached_tree_as_list
-
         #@+node:ekr.20170518054457.1: *5* _setValues
-        def _setValues(self, tree: Any) -> None:
+        def _setValues(self, tree: "LeoTreeData") -> None:
             self._myFullValues = tree or LeoTreeData()
         #@-others
         values = property(_getValues, _setValues)
@@ -3955,7 +3954,7 @@ class LeoValues(npyscreen.TreeData):
 
     #@+others
     #@+node:ekr.20170619070717.1: *4* values.__init__
-    def __init__(self, c: Cmdr, tree: Any) -> None:
+    def __init__(self, c: Cmdr, tree: "LeoTreeData") -> None:
         """Ctor for LeoValues class."""
         super().__init__()  # Init the base class.
         self.c: Cmdr = c  # The commander of this outline.
@@ -3963,13 +3962,13 @@ class LeoValues(npyscreen.TreeData):
         self.last_generation = -1  # The last value of c.frame.tree.generation.
         self.last_len = 0  # The last computed value of the number of visible nodes.
         self.n_refreshes = 0  # Number of calls to refresh_cache.
-        self.tree: "LeoMLTree" = tree  # A LeoMLTree. (not used here)
+        self.tree: "LeoTreeData" = tree  # not used here.
     #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
-    def __getitem__(self, n: int) -> Any:
+    def __getitem__(self, n: int) -> "LeoTreeData":
         """Called from LeoMLTree._setLineValues."""
         return self.get_data(n)
 
-    def get_data(self, n: int) -> Any:
+    def get_data(self, n: int) -> "LeoTreeData":
         """Return a LeoTreeData for the n'th visible position of the outline."""
         c = self.c
         # This will almost always be true, because __len__ updates the cache.
@@ -4040,7 +4039,7 @@ class TextMixin:
         if c:
             self.injectIvars(c)
     #@+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
-    def injectIvars(self, c: Cmdr) -> Any:
+    def injectIvars(self, c: Cmdr) -> Wrapper:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         self.leo_p = c.p.copy() if c.p else None
         self.leo_active = True
