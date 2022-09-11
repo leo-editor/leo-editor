@@ -68,7 +68,7 @@ else:
     Cmdr = Any
     Position = Any
     VNode = Any
-Event = Any
+Event = Any  # Not usually a LeoKeyEvent.
 Widget = Any
 Wrapper = Any
 #@-<< cursesGui2 annotations >>
@@ -338,7 +338,7 @@ class LeoTreeData(npyscreen.TreeData):
         # self.sort_function = sort_function
         # self.sort_function_wrapper = True
     #@-<< about LeoTreeData ivars >>
-    
+
     _children: List[Any]
 
     def __len__(self) -> int:
@@ -1286,7 +1286,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.consoleOnly: bool = False  # Required attribute.
         self.curses_app: Any = None  # The singleton LeoApp instance.
         # The top-level curses Form instance. Form.editw is the widget with focus.
-        self.curses_form: Any = None
+        self.curses_form: Wrapper = None
         self.curses_gui_arg: Any = None  # A hack for interfacing with k.getArg.
         self.in_dialog: bool = False  # True: executing a modal dialog.
         self.log: Wrapper = None  # The present log. Used by g.es
@@ -1295,7 +1295,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.wait_list: List[Tuple[str, Any]] = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
-        self.top_form: Any = None  # The top-level form. Set in createCursesTop.
+        self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
         self.key_handler = KeyHandler()
     #@+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
     def createCursesTop(self) -> Any:
@@ -2153,6 +2153,9 @@ class CoreFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         super().__init__(c, gui=g.app.gui)  # Init the base class.
         assert c and self.c == c
+        #
+        # These type mismatches arise from declared types in leoFrame.py.
+        #
         c.frame = self  # type:ignore
         self.log = CoreLog(c)  # type:ignore
         g.app.gui.log = self.log
@@ -2167,6 +2170,7 @@ class CoreFrame(leoFrame.LeoFrame):
         self.statusLine: Any = g.NullObject()  # For unit tests.
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)  # type:ignore
+
         # Official ivars...
             # self.iconBar = None
             # self.iconBarClass = None # self.QtIconBarClass
@@ -2412,10 +2416,10 @@ class CoreLog(leoFrame.LeoLog):
         self.enabled = True  # Required by Leo's core.
         self.isNull = False  # Required by Leo's core.
         # The npyscreen log widget. Queue all output until set. Set in CApp.main.
-        self.widget = None
+        self.widget: Widget = None
         self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are widgets.
         self.logDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are the widgets.
-        self.tabWidget = None
+        self.tabWidget: Widget = None
     #@+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')
     def clearLog(self, event: Event=None) -> None:
@@ -2471,7 +2475,7 @@ class CoreMenu(leoMenu.LeoMenu):
         dummy_frame = g.Bunch(c=c)
         super().__init__(dummy_frame)
         self.c = c
-        self.d: Dict = {}  # Unused??
+        ### self.d: Dict = {}  # Unused??
 
     def oops(self) -> None:
         """Ignore do-nothing methods."""
@@ -2499,7 +2503,7 @@ class CoreTree(leoFrame.LeoTree):
         assert self.c
         assert not hasattr(self, 'widget')
         self.redrawCount = 0  # For unit tests.
-        self.widget = None  # A LeoMLTree set by CGui.createCursesTree.
+        self.widget: Wrapper = None  # A LeoMLTree set by CGui.createCursesTree.
         # self.setConfigIvars()
         # Status flags, for busy()
         self.contracting = False
@@ -2710,8 +2714,8 @@ class CoreStatusLine:
         # g.trace('(CoreStatusLine)', c)
         self.c = c
         self.enabled = False
-        self.parentFrame = parentFrame
-        self.textWidget = None
+        self.parentFrame: Wrapper = parentFrame
+        self.textWidget: Widget = None
         # The official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
@@ -3285,10 +3289,10 @@ class LeoStatusLine(npyscreen.Textfield):
 class LeoMLTree(npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
-    _contained_widgets: Any = LeoTreeLine
-    continuation_line: str = "- more -"  # value of contination line.
+    _contained_widgets: Wrapper = LeoTreeLine
+    continuation_line = "- more -"  # value of contination line.
     _cached_tree: Any
-    _cached_tree_as_list: Any
+    _cached_tree_as_list: List[Any]
     start_display_at: int
     cursor_line: int
 
