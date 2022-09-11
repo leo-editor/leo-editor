@@ -2310,6 +2310,12 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18579: *3* stw.Do-nothings
     # For StringTextWrapper.
 
+    def disable(self) -> None:
+        pass
+
+    def enable(self, enabled: bool=True) -> None:
+        pass
+
     def flashCharacter(self, i: int, bg: str='white', fg: str='red', flashes: int=3, delay: int=75) -> None:
         pass
 

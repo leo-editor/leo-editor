@@ -349,6 +349,21 @@ class QLineEditWrapper(QTextMixin):
         """
         return True
     #@+node:ekr.20110605121601.18118: *3* qlew.Widget-specific overrides
+    #@+node:ekr.20220911105050.1: *4* qlew: do-nothings
+    def flashCharacter(self, i: int, bg: str='white', fg: str='red', flashes: int=3, delay: int=75) -> None:
+        pass
+
+    def getXScrollPosition(self) -> int:
+        return 0
+
+    def getYScrollPosition(self) -> int:
+        return 0
+
+    def setXScrollPosition(self, i: int) -> None:
+        pass
+
+    def setYScrollPosition(self, i: int) -> None:
+        pass
     #@+node:ekr.20110605121601.18120: *4* qlew.getAllText
     def getAllText(self) -> str:
         """QHeadlineWrapper."""
@@ -375,9 +390,6 @@ class QLineEditWrapper(QTextMixin):
                 i = j = w.cursorPosition()
             return i, j
         return 0, 0
-    #@+node:ekr.20210104122029.1: *4* qlew.getYScrollPosition
-    def getYScrollPosition(self) -> int:
-        return 0  # #1801.
     #@+node:ekr.20110605121601.18123: *4* qlew.hasSelection
     def hasSelection(self) -> bool:
         """QHeadlineWrapper."""

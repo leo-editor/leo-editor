@@ -3,13 +3,17 @@
 #@+node:ekr.20210910084607.1: * @file ../unittests/test_gui.py
 #@@first
 """Tests of gui base classes"""
-
+#@+<< test_gui imports >>
+#@+node:ekr.20220911102700.1: ** << test_gui imports >>
 import os
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoQt import QtCore
 from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
+from leo.core.leoFrame import StringTextWrapper
+from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper
+#@-<< test_gui imports >>
 
 #@+others
 #@+node:ekr.20210910084607.2: ** class TestNullGui(LeoUnitTest)
@@ -131,7 +135,7 @@ class TestQtGui(LeoUnitTest):
 #@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
 class TestAPIClasses(LeoUnitTest):
     """Tests that gui classes are compatible with the corresponding API class."""
-    
+
     # @classmethod
     # def setUpClass(cls: Any) -> None:
         # create_app(gui_name='null')
@@ -148,7 +152,25 @@ class TestAPIClasses(LeoUnitTest):
     #@+node:ekr.20220911101330.1: *3* test_wrapper_api
     def test_wrapper_api(self):
 
-        assert WrapperAPI
+        def get_methods(cls):
+            return [z for z in dir(cls) if not z.startswith('__')]
+
+        wrapper_methods = get_methods(WrapperAPI)
+
+        def get_missing(methods):
+            return [z for z in wrapper_methods if z not in methods]
+
+        qt_wrapper_methods = get_methods(QTextEditWrapper)
+        qt_lineedit_wrapper_methods = get_methods(QLineEditWrapper)
+        stringtext_wrapper_methods = get_methods(StringTextWrapper)
+
+        missing1 = get_missing(qt_wrapper_methods)
+        missing2 = get_missing(qt_lineedit_wrapper_methods)
+        missing3 = get_missing(stringtext_wrapper_methods)
+
+        self.assertFalse(missing1, msg='Missing QTextEditWrapper methods')
+        self.assertFalse(missing2, msg='Missing QLineEditWrapper methods')
+        self.assertFalse(missing3, msg='Missing StringTextWrapper methods')
     #@-others
 #@-others
 #@-leo
