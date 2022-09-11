@@ -154,10 +154,10 @@ class TestAPIClasses(LeoUnitTest):
         def get_missing(cls):
             return [z for z in get_methods(WrapperAPI) if z not in get_methods(cls)]
 
-        self.assertFalse(get_missing(QLineEditWrapper), msg='Missing QLineEditWrapper methods')
-        self.assertFalse(get_missing(QTextEditWrapper), msg='Missing QTextEditWrapper methods')
-        self.assertFalse(get_missing(QScintillaWrapper), msg='Missing QScintillaWrapper methods')
-        self.assertFalse(get_missing(StringTextWrapper), msg='Missing StringTextWrapper methods')
+        table = (QLineEditWrapper, QTextEditWrapper, QScintillaWrapper, StringTextWrapper)
+
+        for cls in table:
+            self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@-others
 #@-others
 #@-leo
