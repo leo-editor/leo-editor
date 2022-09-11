@@ -135,7 +135,6 @@ class TreeAPI:
     def initAfterLoad(self) -> None:
         pass
 
-    ### def onHeadChanged(self, p: Position, undoType: str='Typing', s: str=None, e: str=None) -> None:
     def onHeadChanged(self, p: Position, undoType: str='Typing') -> None:
         pass
     # Hints for optimization. The proper default is c.redraw()

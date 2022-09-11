@@ -2475,7 +2475,6 @@ class CoreMenu(leoMenu.LeoMenu):
         dummy_frame = g.Bunch(c=c)
         super().__init__(dummy_frame)
         self.c = c
-        ### self.d: Dict = {}  # Unused??
 
     def oops(self) -> None:
         """Ignore do-nothing methods."""
