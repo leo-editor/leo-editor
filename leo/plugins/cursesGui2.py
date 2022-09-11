@@ -367,7 +367,7 @@ class LeoTreeData(npyscreen.TreeData):
         # g.trace(n, len(aList), repr(data))
         return data
     #@+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
-    def is_ancestor_of(self, node: Any) -> bool:
+    def is_ancestor_of(self, node: "LeoTreeData") -> bool:
 
         assert isinstance(node, LeoTreeData), repr(node)
         parent = node._parent
@@ -588,7 +588,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         # This draws the actual line.
         super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
-    def display_value(self, vl: Any) -> str:
+    def display_value(self, vl: "LeoTreeData") -> str:
 
         # vl is a LeoTreeData.
         if native:
@@ -630,7 +630,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         s = content.h if native else content
         self.cursor_position = max(0, len(s) - 1)
     #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
-    def h_cursor_left(self, input: Any) -> None:
+    def h_cursor_left(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         # native: content is a position.
@@ -639,7 +639,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         i = min(self.cursor_position, len(s) - 1)
         self.cursor_position = max(0, i - 1)
     #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
-    def h_cursor_right(self, input: Any) -> None:
+    def h_cursor_right(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         # native: content is a position.
@@ -652,7 +652,7 @@ class LeoTreeLine(npyscreen.TreeLine):
 
 
     #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
-    def h_delete_left(self, input: Any) -> None:
+    def h_delete_left(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         n = self.cursor_position
@@ -1196,7 +1196,7 @@ class KeyHandler:
     def char_to_tk_name(self, ch: str) -> str:
         return self.tk_dict.get(ch, ch)
     #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
-    def create_key_event(self, c: Cmdr, w: Wrapper, ch: str, binding: Any) -> Event:
+    def create_key_event(self, c: Cmdr, w: Wrapper, ch: str, binding: str) -> Event:
         trace = False
         # Last-minute adjustments...
         if binding == 'Return':
@@ -1298,7 +1298,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
         self.key_handler = KeyHandler()
     #@+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
-    def createCursesTop(self) -> Any:
+    def createCursesTop(self) -> Wrapper:
         """Create the top-level curses Form."""
         trace = False and not g.unitTesting
         # Assert the key relationships required by the startup code.
@@ -1322,7 +1322,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # self.focus_to_body(c)
         return form
     #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
-    def createCursesBody(self, c: Cmdr, form: Any) -> None:
+    def createCursesBody(self, c: Cmdr, form: Wrapper) -> None:
         """
         Create the curses body widget in the given curses Form.
         Populate it with c.p.b.
@@ -1367,7 +1367,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_box = box
 
     #@+node:ekr.20170502083613.1: *6* CGui.createCursesLog
-    def createCursesLog(self, c: Cmdr, form: Any) -> None:
+    def createCursesLog(self, c: Cmdr, form: Wrapper) -> None:
         """
         Create the curses log widget in the given curses Form.
         Populate the widget with the queued log messages.
@@ -1405,7 +1405,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_wrapper = wrapper
         w.leo_box = box
     #@+node:ekr.20170502084249.1: *6* CGui.createCursesMinibuffer
-    def createCursesMinibuffer(self, c: Cmdr, form: Any) -> None:
+    def createCursesMinibuffer(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses minibuffer widget in the given curses Form."""
         trace = False
 
@@ -1437,7 +1437,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_wrapper = wrapper
 
     #@+node:ekr.20171129193946.1: *6* CGui.createCursesStatusLine
-    def createCursesStatusLine(self, c: Cmdr, form: Any) -> None:
+    def createCursesStatusLine(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses minibuffer widget in the given curses Form."""
 
         class StatusLineBox(npyscreen.BoxTitle):
@@ -1465,7 +1465,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_wrapper = wrapper
     #@+node:ekr.20170502083754.1: *6* CGui.createCursesTree
-    def createCursesTree(self, c: Cmdr, form: Any) -> None:
+    def createCursesTree(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses tree widget in the given curses Form."""
 
         class BoxTitleTree(npyscreen.BoxTitle):
@@ -1916,7 +1916,7 @@ class LeoCursesGui(leoGui.LeoGui):
         if 0:
             # Inject 'leo-set-focus' into form.how_exited_handers
 
-            def switch_focus_callback(form: Any=form, i: Any=i, w: Any=w) -> None:
+            def switch_focus_callback(form: Wrapper=form, i: Any=i, w: Any=w) -> None:
                 g.trace(i, w.__class__.__name__)
                 g.trace(g.callers(verbose=True))
                 w.display()
