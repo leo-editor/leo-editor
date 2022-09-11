@@ -9,6 +9,7 @@ import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoQt import QtCore
+from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
 
 #@+others
 #@+node:ekr.20210910084607.2: ** class TestNullGui(LeoUnitTest)
@@ -126,6 +127,28 @@ class TestQtGui(LeoUnitTest):
             s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
+    #@-others
+#@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
+class TestAPIClasses(LeoUnitTest):
+    """Tests that gui classes are compatible with the corresponding API class."""
+    
+    # @classmethod
+    # def setUpClass(cls: Any) -> None:
+        # create_app(gui_name='null')
+
+    #@+others
+    #@+node:ekr.20220911101304.1: *3* test_status_line_api
+    def test_status_line_api(self):
+
+        assert StatusLineAPI
+    #@+node:ekr.20220911101329.1: *3* test_tree_api
+    def test_tree_api(self):
+
+        assert TreeAPI
+    #@+node:ekr.20220911101330.1: *3* test_wrapper_api
+    def test_wrapper_api(self):
+
+        assert WrapperAPI
     #@-others
 #@-others
 #@-leo
