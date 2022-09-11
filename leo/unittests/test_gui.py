@@ -12,7 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoQt import QtCore
 from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
 from leo.core.leoFrame import StringTextWrapper
-from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper
+from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
 #@-<< test_gui imports >>
 
 #@+others
@@ -136,10 +136,6 @@ class TestQtGui(LeoUnitTest):
 class TestAPIClasses(LeoUnitTest):
     """Tests that gui classes are compatible with the corresponding API class."""
 
-    # @classmethod
-    # def setUpClass(cls: Any) -> None:
-        # create_app(gui_name='null')
-
     #@+others
     #@+node:ekr.20220911101304.1: *3* test_status_line_api
     def test_status_line_api(self):
@@ -155,22 +151,13 @@ class TestAPIClasses(LeoUnitTest):
         def get_methods(cls):
             return [z for z in dir(cls) if not z.startswith('__')]
 
-        wrapper_methods = get_methods(WrapperAPI)
+        def get_missing(cls):
+            return [z for z in get_methods(WrapperAPI) if z not in get_methods(cls)]
 
-        def get_missing(methods):
-            return [z for z in wrapper_methods if z not in methods]
-
-        qt_wrapper_methods = get_methods(QTextEditWrapper)
-        qt_lineedit_wrapper_methods = get_methods(QLineEditWrapper)
-        stringtext_wrapper_methods = get_methods(StringTextWrapper)
-
-        missing1 = get_missing(qt_wrapper_methods)
-        missing2 = get_missing(qt_lineedit_wrapper_methods)
-        missing3 = get_missing(stringtext_wrapper_methods)
-
-        self.assertFalse(missing1, msg='Missing QTextEditWrapper methods')
-        self.assertFalse(missing2, msg='Missing QLineEditWrapper methods')
-        self.assertFalse(missing3, msg='Missing StringTextWrapper methods')
+        self.assertFalse(get_missing(QLineEditWrapper), msg='Missing QLineEditWrapper methods')
+        self.assertFalse(get_missing(QTextEditWrapper), msg='Missing QTextEditWrapper methods')
+        self.assertFalse(get_missing(QScintillaWrapper), msg='Missing QScintillaWrapper methods')
+        self.assertFalse(get_missing(StringTextWrapper), msg='Missing StringTextWrapper methods')
     #@-others
 #@-others
 #@-leo
