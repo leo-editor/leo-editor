@@ -165,9 +165,6 @@ class TreeAPI:
     def getEditTextDict(self, v: VNode) -> None:
         return None
 
-    def injectCallbacks(self) -> None:
-        pass
-
     def onHeadlineKey(self, event: Event) -> None:
         pass
 
@@ -1588,6 +1585,7 @@ class LeoTree:
     def edit_widget(self, p: Position) -> Wrapper:  # pylint: disable=useless-return
         self.oops()
         return None
+
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
@@ -2234,9 +2232,6 @@ class NullTree(LeoTree):
             e = None
             return e, wrapper
         return None, None
-    #@+node:ekr.20220911115337.1: *3* NullTree.injectCallbacks
-    def injectCallbacks(self) -> None:
-            pass
     #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self) -> None:
         d = self.editWidgetsDict

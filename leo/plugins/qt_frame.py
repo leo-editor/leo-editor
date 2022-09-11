@@ -2466,14 +2466,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
         #@+node:ekr.20220911120019.1: *4* QtStatusLineClass: do-nothings
         def disable(self, background: str=None) -> None:
-                pass
+            pass
 
         def enable(self, background: str="white") -> None:
             pass
-            
+
         def isEnabled(self) -> bool:
             return False
-            
+
         def setFocus(self) -> None:
             pass
         #@-others
