@@ -44,12 +44,11 @@ def create_app(gui_name: str='null') -> Cmdr:
     """
     trace = False
     t1 = time.process_time()
-    #
     # Set g.unitTesting *early*, for guards, to suppress the splash screen, etc.
     g.unitTesting = True
     # Create g.app now, to avoid circular dependencies.
     g.app = leoApp.LeoApp()
-    # Late imports.
+    # Do late imports.
     warnings.simplefilter("ignore")
     from leo.core import leoConfig
     from leo.core import leoNodes
@@ -61,9 +60,10 @@ def create_app(gui_name: str='null') -> Cmdr:
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
     lm.computeStandardDirectories()
-    g.app.leoID = 'TestLeoId'  # 2022/03/06: Use a standard user id for all tests.
+    g.app.leoID = 'TestLeoId'  # Use a standard user id for all tests.
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
+    # Disable dangerous code.
     g.app.db = g.NullObject('g.app.db')  # type:ignore
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
     g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
@@ -74,9 +74,7 @@ def create_app(gui_name: str='null') -> Cmdr:
     else:  # pragma: no cover
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
-    # Create a dummy commander, to do the imports in c.initObjects.
-    # Always use a null gui to avoid screen flash.
-    # setUp will create another commander.
+    # Create the commander, for c.initObjects.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # Create minimal config dictionaries.
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
