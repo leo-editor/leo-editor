@@ -41,12 +41,12 @@ class TestNullGui(LeoUnitTest):
 class TestQtGui(LeoUnitTest):
     """Test cases for gui base classes."""
 
-    #@+others
-    #@+node:ekr.20210912143315.1: *3*  TestQtGui.setUpClass
     # Override LeoUnitTest setUpClass.
     @classmethod
     def setUpClass(cls):
         create_app(gui_name='qt')
+
+    #@+others
     #@+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
@@ -136,14 +136,17 @@ class TestQtGui(LeoUnitTest):
     #@+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_text
     def test_qt_text(self):
 
-        # g.trace(self.c)
-
+        c = self.c
         if 0:
             print('')
             for z in dir(g.app.gui):
                 if not z.startswith('__'):
                     obj = getattr(g.app.gui, z, None)
                     print(f"{z:>30} {g.objToString(obj)}")
+        if 0:
+            print('')
+            g.trace(g.app.gui)
+            g.trace(c.frame.body)
 
         ### To do: test various g.app.gui (LeoQtGui) methods
     #@-others

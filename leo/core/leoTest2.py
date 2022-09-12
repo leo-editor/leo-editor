@@ -111,22 +111,25 @@ class LeoUnitTest(unittest.TestCase):
 
     def setUp(self) -> None:
         """
-        Create a commander using a **null** gui, regardless of g.app.gui.
+        Create a commander using g.app.gui.
         Create the nodes in the commander.
         """
         # Do the import here to avoid circular dependencies.
         from leo.core import leoCommands
-        from leo.core.leoGui import NullGui
+
         # Set g.unitTesting *early*, for guards.
         g.unitTesting = True
+
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=NullGui())
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()
         self.root_p.h = 'root'
         self.settings_p = self.root_p.insertAfter()
         self.settings_p.h = '@settings'
+
         # Select the 'root' node.
         c.selectPosition(self.root_p)
 
