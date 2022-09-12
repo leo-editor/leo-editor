@@ -2211,7 +2211,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.miniBufferWidget: Widget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
         t4 = time.process_time()
-        if 'speed' in g.app.debug:
+        if 'speed' in g.app.debug and not g.unitTesting:
             print('qtFrame.finishCreate')
             print(
                 f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: before.

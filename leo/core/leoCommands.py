@@ -188,7 +188,7 @@ class Commands:
         t2 = time.process_time()
         c.finishCreate()  # Slightly slow.
         t3 = time.process_time()
-        if 'speed' in g.app.debug:
+        if 'speed' in g.app.debug and not g.unitTesting:
             print('c.__init__')
             print(
                 f"    1: {t2-t1:5.2f}\n"  # 0.00 sec.
@@ -480,7 +480,7 @@ class Commands:
         g.check_cmd_instance_dict(c, g)
         c.bodyWantsFocus()
         t3 = time.process_time()
-        if 'speed' in g.app.debug:
+        if 'speed' in g.app.debug and not g.unitTesting:
             print('c.finishCreate')
             print(
                 f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: qtGui.finishCreate.

@@ -74,9 +74,7 @@ def create_app(gui_name: str='null') -> Cmdr:
     else:  # pragma: no cover
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
-    # Create a dummy commander, to do the imports in c.initObjects.
-    # Always use a null gui to avoid screen flash.
-    # setUp will create another commander.
+    # Create a commander with the given gui.
     c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # Create minimal config dictionaries.
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
