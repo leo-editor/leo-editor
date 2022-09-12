@@ -2736,40 +2736,30 @@ def listToString(obj: Any, indent: str='', tag: str=None) -> str:
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent: str='', printCaller: bool=False, tag: str=None) -> str:
-    """Pretty print any Python object to a string."""
-    # pylint: disable=undefined-loop-variable
-        # Looks like a a pylint bug.
-    #
-    # Compute s.
+def objToString(obj: Any, indent: str='', tag: str='') -> str:
+    """
+    Simplified pretty print any Python object to a string.
+
+    g.dictToString or g.listToString give more detailed dumps.
+    """
+    r = repr(obj)
+    if tag:
+        print(tag.strip())
+    if obj is None:
+        return f"{indent}None"
     if isinstance(obj, dict):
-        s = dictToString(obj, indent=indent)
-    elif isinstance(obj, list):
-        s = listToString(obj, indent=indent)
-    elif isinstance(obj, tuple):
-        s = tupleToString(obj, indent=indent)
-    elif isinstance(obj, str):
-        # Print multi-line strings as lists.
-        s = obj
-        lines = g.splitLines(s)
-        if len(lines) > 1:
-            s = listToString(lines, indent=indent)
-        else:
-            s = repr(s)
-    else:
-        s = repr(obj)
-    #
-    # Compute the return value.
-    if printCaller and tag:
-        prefix = f"{g.caller()}: {tag}"
-    elif printCaller or tag:
-        prefix = g.caller() if printCaller else tag
-    else:
-        prefix = ''
-    if prefix:
-        sep = '\n' if '\n' in s else ' '
-        return f"{prefix}:{sep}{s}"
-    return s
+        return f"{indent}dict: {len(obj.keys())} keys"
+    if isinstance(obj, list):
+        return f"{indent}list: {len(obj)} itemg.plural(len(obj))"
+    if isinstance(obj, tuple):
+        return f"{indent}tuple: {len(obj)} item{g.plural(len(obj))}"
+    if 'method' in r:
+        return f"{indent}method: {obj.__name__}"
+    if 'class' in r:
+        return f"{indent}class"
+    if 'module' in r:
+        return f"{indent}module"
+    return f"{indent}object: {obj!r}"
 
 toString = objToString
 #@+node:ekr.20120912153732.10597: *4* g.wait
@@ -2778,9 +2768,9 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, indent: str='', printCaller: bool=False, tag: str=None) -> None:
+def printObj(obj: Any, indent: str='', tag: str=None) -> None:
     """Pretty print any Python object using g.pr."""
-    g.pr(objToString(obj, indent=indent, printCaller=printCaller, tag=tag))
+    g.pr(objToString(obj, indent=indent, tag=tag))
 
 printDict = printObj
 printList = printObj
