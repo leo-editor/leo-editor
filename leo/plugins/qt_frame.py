@@ -1749,12 +1749,9 @@ class LeoQtBody(leoFrame.LeoBody):
         return c.frame.body.wrapper
     #@+node:ekr.20110605121601.18201: *5* LeoQtBody.select/unselectLabel
     def unselectLabel(self, wrapper: Wrapper) -> None:
-        # pylint: disable=arguments-differ
         pass
-        # self.createChapterIvar(wrapper)
 
     def selectLabel(self, wrapper: Wrapper) -> None:
-        # pylint: disable=arguments-differ
         c = self.c
         w = wrapper.widget
         label = getattr(w, 'leo_label', None)
@@ -1767,7 +1764,6 @@ class LeoQtBody(leoFrame.LeoBody):
 
     def selectEditor(self, wrapper: Wrapper) -> None:
         """Select editor w and node w.leo_p."""
-        # pylint: disable=arguments-differ
         trace = 'select' in g.app.debug and not g.unitTesting
         tag = 'qt_body.selectEditor'
         c = self.c
@@ -1928,7 +1924,6 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p: Position, wrapper: Wrapper) -> None:
         """Support QScintillaColorizer.colorize."""
-        # pylint: disable=arguments-differ
         c = self.c
         colorizer = c.frame.body.colorizer
         if p and colorizer and hasattr(colorizer, 'colorize'):
@@ -2814,7 +2809,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio: float, ratio2: float) -> None:
         """Resize splitter1 and splitter2 using the given ratios."""
-        # pylint: disable=arguments-differ
+        # py--lint: disable=arguments-differ
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
@@ -3071,7 +3066,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.top.raise_()
     #@+node:ekr.20190611053431.8: *4* qtFrame.setTitle
     def setTitle(self, s: str) -> None:
-        # pylint: disable=arguments-differ
         if self.top:
             # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
             # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.

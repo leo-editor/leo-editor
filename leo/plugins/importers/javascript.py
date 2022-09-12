@@ -44,7 +44,6 @@ class JS_Importer(Importer):
 
     def compute_headline(self, s: str) -> str:
         """Return a cleaned up headline s."""
-        # pylint: disable=arguments-differ
         s = s.strip()
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):  # pragma: no cover (missing test)
