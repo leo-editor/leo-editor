@@ -136,7 +136,7 @@ class TestQtGui(LeoUnitTest):
             self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_attributes
     def test_qt_attributes(self):
-
+        # Various preliminary tests.
         c = self.c
         if 0:
             print('')
@@ -148,7 +148,6 @@ class TestQtGui(LeoUnitTest):
             print('')
             g.trace(g.app.gui)
             g.trace(c.frame.body)
-
         if 0:
             g.trace(c.frame.body.wrapper)
             for method in ('delete', 'insert', 'toPythonIndexRowCol'):
