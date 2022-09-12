@@ -57,7 +57,7 @@ from typing import Any, Optional, TYPE_CHECKING
 #@-<< leoBridge imports >>
 #@+<< leoBridge annotatations >>
 #@+node:ekr.20220901084238.1: ** << leoBridge annotatations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

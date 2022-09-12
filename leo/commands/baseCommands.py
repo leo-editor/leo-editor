@@ -7,7 +7,7 @@ from typing import Any, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@+<< baseCommands annotations >>
 #@+node:ekr.20220828071357.1: ** << baseCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper

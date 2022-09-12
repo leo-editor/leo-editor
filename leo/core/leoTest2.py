@@ -22,7 +22,7 @@ from leo.core import leoApp
 #@-<< leoTest2 imports >>
 #@+<< leoTest2 annotations >>
 #@+node:ekr.20220901083851.1: ** << leoTest2 annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

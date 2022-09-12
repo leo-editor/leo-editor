@@ -38,7 +38,7 @@ if 'plugins' in getattr(g.app, 'debug', []):
 #@-<< leoRst imports >>
 #@+<< leoRst annotations >>
 #@+node:ekr.20220901082236.1: ** << leoRst annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

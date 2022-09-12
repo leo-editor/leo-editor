@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if TYPE_CHECKING:  # Always False at runtime. # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
 else:
     Cmdr = Any

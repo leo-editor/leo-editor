@@ -12,7 +12,7 @@ from leo.core import leoGlobals as g
 #@-<< leoPersistence imports >>
 #@+<< leoPersistence annotations >>
 #@+node:ekr.20220901064516.1: ** << leoPersistence annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

@@ -49,7 +49,7 @@ g.app.ipython_inited = IPKernelApp is not None
 #@-<< leoIPython imports >>
 #@+<< leoIPython annotations >>
 #@+node:ekr.20220901090431.1: ** << leoIPython annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

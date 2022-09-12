@@ -20,7 +20,7 @@ from typing import Any, Callable, Dict, List, TYPE_CHECKING
 #@-<< signal_manager imports >>
 #@+<< signal_manager annotations >>
 #@+node:ekr.20220901092755.1: ** << signal_manager annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

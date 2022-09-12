@@ -15,7 +15,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< helpCommands imports >>
 #@+<< helpCommands annotations >>
 #@+node:ekr.20220828064812.1: ** << helpCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
 else:

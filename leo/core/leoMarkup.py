@@ -19,7 +19,7 @@ StringIO = io.StringIO
 #@-<< leoMarkup imports >>
 #@+<< leoMarkup annotations >>
 #@+node:ekr.20220901062551.1: ** << leoMarkup annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

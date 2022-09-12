@@ -28,7 +28,7 @@ from leo.core.leoGui import LeoKeyEvent
 #@-<< leoVim imports >>
 #@+<< leoVim annotations >>
 #@+node:ekr.20220901100956.1: ** << leoVim annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper

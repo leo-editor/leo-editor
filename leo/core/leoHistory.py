@@ -5,7 +5,7 @@
 from typing import Any, List, Optional, Tuple, TYPE_CHECKING
 #@+<< leoHistory annotations >>
 #@+node:ekr.20220821202656.1: ** << leoHistory annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import Chapter
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position

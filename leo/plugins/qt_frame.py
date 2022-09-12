@@ -35,7 +35,7 @@ from leo.plugins.nested_splitter import NestedSplitter
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

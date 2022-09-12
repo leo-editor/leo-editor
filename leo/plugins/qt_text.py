@@ -18,7 +18,7 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 #@-<< qt_text imports >>
 #@+<< qt_text annotations >>
 #@+node:ekr.20220416085945.1: ** << qt_text annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper  # pylint: disable=import-self

@@ -42,7 +42,7 @@ from leo.core import leoGlobals as g
 #@-<< checkerCommands imports >>
 #@+<< checkerCommands annotations >>
 #@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

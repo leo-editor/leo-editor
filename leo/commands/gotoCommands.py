@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 #@-<< gotoCommands imports >>
 #@+<< gotoCommands annotations >>
 #@+node:ekr.20220827065107.1: ** << gotoCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

@@ -8,7 +8,7 @@ import time
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
 else:
     Event = Any

@@ -16,7 +16,7 @@ from leo.core import leoGlobals as g
 #@-<< leoCache imports >>
 #@+<< leoCache annotations >>
 #@+node:ekr.20220901155714.1: ** << leoCache annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

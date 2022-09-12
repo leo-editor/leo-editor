@@ -18,7 +18,7 @@ from leo.core import leoGlobals as g
 #@-<< leoConfig imports >>
 #@+<< leoConfig annotations >>
 #@+node:ekr.20220417212402.1: ** << leoConfig annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
 else:
     Position = Any

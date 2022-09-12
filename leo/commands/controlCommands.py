@@ -14,7 +14,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< controlCommands imports >>
 #@+<< controlCommands annotations >>
 #@+node:ekr.20220826190244.1: ** << controlCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

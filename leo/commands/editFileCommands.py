@@ -16,7 +16,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< editFileCommands imports >>
 #@+<< editFileCommands annotations >>
 #@+node:ekr.20220826200438.1: ** << editFileCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

@@ -52,7 +52,7 @@ from leo.core import leoGlobals as g
 #@-<< leoUndo imports >>
 #@+<< leoUndo annotations >>
 #@+node:ekr.20220821074054.1: ** << leoUndo annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

@@ -94,7 +94,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< quicksearch imports >>
 #@+<< quicksearch annotations >>
 #@+node:ekr.20220828094201.1: ** << quicksearch annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

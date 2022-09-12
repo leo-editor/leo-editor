@@ -13,7 +13,7 @@ from leo.core import leoGlobals as g
 #@-<< leoCompare imports >>
 #@+<< leoCompare annotations >>
 #@+node:ekr.20220901162009.1: ** << leoCompare annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

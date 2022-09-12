@@ -18,7 +18,7 @@ from leo.plugins import qt_text
 #@-<< qt_tree imports >>
 #@+<< qt_tree annotations >>
 #@+node:ekr.20220417193741.1: ** << qt_tree annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

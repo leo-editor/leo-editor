@@ -48,7 +48,7 @@ except Exception:
 #@-<< free_layout imports >>
 #@+<< free_layout annotations >>
 #@+node:ekr.20220828125201.1: ** << free_layout annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper

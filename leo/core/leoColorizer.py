@@ -35,7 +35,7 @@ except Exception:
 #@-<< leoColorizer imports >>
 #@+<< leoColorizer annotations >>
 #@+node:ekr.20220901164936.1: ** << leoColorizer annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

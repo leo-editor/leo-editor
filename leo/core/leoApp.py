@@ -25,7 +25,7 @@ StringIO = io.StringIO
 #@-<< leoApp imports >>
 #@+<< leoApp annotations >>
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

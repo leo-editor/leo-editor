@@ -13,7 +13,7 @@ from leo.core import leoGlobals as g
 #@-<< leoExternalFiles imports >>
 #@+<< leoExternalFiles annotations >>
 #@+node:ekr.20220821203011.1: ** << leoExternalFiles annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 else:

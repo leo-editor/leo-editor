@@ -19,7 +19,7 @@ from leo.core import leoFrame
 #@-<< leoGui imports >>
 #@+<< leoGui annotations >>
 #@+node:ekr.20220827062419.1: ** << leoGui annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position

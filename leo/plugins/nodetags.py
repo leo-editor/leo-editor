@@ -107,7 +107,7 @@ from leo.core.leoQt import MouseButton
 #@-<< nodetags imports >>
 #@+<< nodetags annotations >>
 #@+node:ekr.20220828131716.1: ** << nodetags annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

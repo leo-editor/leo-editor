@@ -13,7 +13,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< debugCommands imports >>
 #@+<< debugCommands annotations >>
 #@+node:ekr.20220826190831.1: ** << debugCommands annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode

@@ -54,7 +54,7 @@ StringIO = io.StringIO
 #@-<< leoGlobals imports >>
 #@+<< leoGlobals annotations >>
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     from leo.core.leoNodes import VNode

@@ -27,7 +27,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< nav_qt imports >>
 #@+<< nav_qt annotations >>
 #@+node:ekr.20220828130258.1: ** << nav_qt annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
 else:

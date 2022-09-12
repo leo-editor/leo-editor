@@ -27,7 +27,7 @@ except ImportError:
 #@+<< leoKeys annotations >>
 #@+node:ekr.20220414165644.1: ** << leoKeys annotations >>
 # Leo never imports any other Leo module.
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     # from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

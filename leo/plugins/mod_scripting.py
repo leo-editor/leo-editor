@@ -234,7 +234,7 @@ from leo.core import leoGui
 #@-<< mod_scripting imports >>
 #@+<< mod_scripting annotations >>
 #@+node:ekr.20220828080640.1: ** << mod_scripting annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position

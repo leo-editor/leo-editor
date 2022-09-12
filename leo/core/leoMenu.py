@@ -10,7 +10,7 @@ from leo.core import leoGlobals as g
 #@-<< leoMenu imports >>
 #@+<< leoMenu annotations >>
 #@+node:ekr.20220824085300.1: ** << leoMenu annotations >>
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
 else:
     Event = Any

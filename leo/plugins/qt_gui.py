@@ -32,7 +32,7 @@ from leo.core.leoTips import UserTip
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
-if TYPE_CHECKING:  # Always False at runtime.
+if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
