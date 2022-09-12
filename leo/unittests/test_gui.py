@@ -155,7 +155,7 @@ class TestQtGui(LeoUnitTest):
                 print(repr(f))
     #@+node:ekr.20220912140743.1: *3* TestQtGui.test_QTextEditWrapper_delete
     def test_QTextEditWrapper_delete(self):
-        
+
         c = self.c
         wrapper = c.frame.body.wrapper
         widget = wrapper.widget
