@@ -39,14 +39,22 @@ class TestNullGui(LeoUnitTest):
     #@-others
 #@+node:ekr.20210912064439.1: ** class TestQtGui(LeoUnitTest)
 class TestQtGui(LeoUnitTest):
-    """Test cases for gui base classes."""
+    """
+    *Limited* test cases the Qt gui.
 
-    #@+others
-    #@+node:ekr.20210912143315.1: *3*  TestQtGui.setUpClass
+    These tests only test attributes. They don't update Qt widgets!
+
+    For example, dialog tests are short-circuited when g.unitTesting is True.
+
+    New in Leo 6.7: Use the TestDummyQtGui class for more sophisticated tests.
+    """
+
     # Override LeoUnitTest setUpClass.
     @classmethod
     def setUpClass(cls):
         create_app(gui_name='qt')
+
+    #@+others
     #@+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
@@ -79,6 +87,7 @@ class TestQtGui(LeoUnitTest):
     #@+node:ekr.20210912064439.2: *3* TestQtGui.test_qt_ctors_for_all_dialogs
     def test_qt_ctors_for_all_dialogs(self):
         # Make sure the dialogs don't crash.
+        # These methods just return if g.unitTesting is True!
         c = self.c
         gui = g.app.gui
         self.assertEqual(gui.__class__.__name__, 'LeoQtGui')
@@ -133,6 +142,23 @@ class TestQtGui(LeoUnitTest):
             s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
+    #@-others
+#@+node:ekr.20220912023140.1: ** class TestDummyQtGui(LeoUnitTest)
+class TestDummyQtGui(LeoUnitTest):
+    """Test cases for gui base classes."""
+
+    # Override LeoUnitTest setUpClass.
+    @classmethod
+    def setUpClass(cls):
+        # Run tests of qt code using proxy qt widgets.
+        create_app(gui_name='dummy-qt')
+
+    #@+others
+    #@+node:ekr.20220912023631.1: *3* dummy_qt.test_qt_text
+    def test_qt_text(self):
+
+        if 0:
+            g.trace()
     #@-others
 #@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
 class TestAPIClasses(LeoUnitTest):

@@ -301,7 +301,7 @@ class Commands:
             g.doHook("before-create-leo-frame", c=c)
         self.frame = gui.createLeoFrame(c, title)
         assert self.frame
-        assert self.frame.c == c
+        assert self.frame.c == c, repr(self.frame.c)
         from leo.core import leoHistory
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()

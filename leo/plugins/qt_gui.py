@@ -58,6 +58,44 @@ def init() -> bool:
     g.app.gui.finishCreate()
     g.plugin_signon(__name__)
     return True
+#@+node:ekr.20220912024231.1: ** class DummyQtGui(leoGui.LeoGui)
+class DummyQtGui(leoGui.LeoGui):  ### Highly experimental.
+    """
+    A class implementing Leo's Qt gui using proxy Qt widgets.
+    """
+
+    def __init__(self):
+        self.isNullGui = True
+
+    def createLeoFrame(self, c: Cmdr, title: str):
+        self.c = c
+        if 1:
+            self.frame = g.Bunch(
+                c=c,
+                finishCreate = self.finishCreate,
+                miniBufferWidget = None,
+                body = g.NullObject(),
+                log = g.NullObject(),
+                menu = g.NullObject(),
+                top = g.NullObject(),
+            )
+        else:
+            self.frame = g.Bunch(
+                c=c,
+                finishCreate = self.finishCreate,
+                miniBufferWidget = None,
+                body = g.TracingNullObject(tag='body'),
+                log = g.TracingNullObject(tag='log'),
+                menu = g.TracingNullObject(tag='menu'),
+                top = g.TracingNullObject(tag='top'),
+            )
+        return self.frame
+
+    def finishCreate(self):
+        pass
+
+    def set_focus(self, c, w):
+        pass
 #@+node:ekr.20140907085654.18700: ** class LeoQtGui(leoGui.LeoGui)
 class LeoQtGui(leoGui.LeoGui):
     """A class implementing Leo's Qt gui."""

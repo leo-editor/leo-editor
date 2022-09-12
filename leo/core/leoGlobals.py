@@ -2278,7 +2278,7 @@ class TracingNullObject:
     #
     # All other methods...
     def __bool__(self) -> bool:
-        if 0: # To do: print only once.
+        if 0:  # To do: print only once.
             suppress = ('getShortcut','on_idle', 'setItemText')
             callers = g.callers(2)
             if not callers.endswith(suppress):

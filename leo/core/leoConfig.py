@@ -1826,7 +1826,8 @@ class LocalConfigManager:
         if not c.frame.menu:
             if c not in self.no_menu_dict:
                 self.no_menu_dict[c] = True
-                g.trace(f"no menu: {c.shortFileName()}:{commandName}")
+                if not g.unitTesting:
+                    g.trace(f"no menu: {c.shortFileName()}:{commandName}")
             return None, []
         if d:
             assert isinstance(d, g.SettingsDict), repr(d)  # was TypedDictOfLists.

@@ -57,6 +57,8 @@ def create_app(gui_name: str='null') -> Cmdr:
     from leo.core.leoGui import NullGui
     if gui_name == 'qt':
         from leo.plugins.qt_gui import LeoQtGui
+    if gui_name == 'dummy-qt':
+        from leo.plugins.qt_gui import DummyQtGui
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
@@ -71,6 +73,8 @@ def create_app(gui_name: str='null') -> Cmdr:
         g.app.gui = NullGui()
     elif gui_name == 'qt':
         g.app.gui = LeoQtGui()
+    elif gui_name == 'dummy-qt':
+        g.app.gui = DummyQtGui()
     else:  # pragma: no cover
         raise TypeError(f"create_gui: unknown gui_name: {gui_name!r}")
     t3 = time.process_time()
