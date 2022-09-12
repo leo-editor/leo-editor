@@ -617,7 +617,6 @@ class LeoQtGui(leoGui.LeoGui):
         """
         Create and run an Qt open file dialog.
         """
-        # pylint: disable=arguments-differ
         if g.unitTesting:
             return ''
 
@@ -874,7 +873,6 @@ class LeoQtGui(leoGui.LeoGui):
         Check to see if c.frame is in a tabbed ui, and if so, make sure
         the tab is visible
         """
-        # pylint: disable=arguments-differ
         if 'focus' in g.app.debug:
             g.trace(c1)
         if hasattr(g.app.gui, 'frameFactory'):
@@ -886,7 +884,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190601054958.1: *4* qt_gui.get_focus (no longer used)
     def get_focus(self, c: Cmdr=None, raw: bool=False, at_idle: bool=False) -> Widget:
         """Returns the widget that has focus."""
-        # pylint: disable=arguments-differ
         trace = 'focus' in g.app.debug
         trace_idle = False
         trace = trace and (trace_idle or not at_idle)
@@ -908,7 +905,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190601054959.1: *4* qt_gui.set_focus
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Put the focus on the widget."""
-        # pylint: disable=arguments-differ
         if not w:
             return
         if getattr(w, 'widget', None):
