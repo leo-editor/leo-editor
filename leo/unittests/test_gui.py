@@ -133,6 +133,14 @@ class TestQtGui(LeoUnitTest):
             s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
+    #@+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_text
+    def test_qt_text(self):
+
+        # g.printObj([z for z in dir(g.app.gui) if not z.startswith('__')])
+        if 0:
+            print('')
+            g.trace('g.app', g.app)
+        ### g.trace('g.app.gui.main_window', g.app.gui.main_window)
     #@-others
 #@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
 class TestAPIClasses(LeoUnitTest):

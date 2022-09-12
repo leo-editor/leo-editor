@@ -499,9 +499,6 @@ class NullGui(LeoGui):
 
     def onDeactivateEvent(self, *args: str, **keys: str) -> None:
         pass
-
-    def set_top_geometry(self, w: Widget, h: str, x: str, y: str) -> None:
-        pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w: Any) -> bool:
         return True  # Must be True for unit tests.

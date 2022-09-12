@@ -70,11 +70,10 @@ class LeoQtGui(leoGui.LeoGui):
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages: Dict[str, Any] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: Widget = None
-        self.idleTimeClass: Any = qt_idle_time.IdleTime
+        self.idleTimeClass: qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
-        self.main_window = None  # The *singleton* QMainWindow.
-        self.plainTextWidget: Any = qt_text.PlainTextWrapper
+        self.plainTextWidget: qt_text.PlainTextWrapper
         self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
         # Be aware of the systems native colors, fonts, etc.
@@ -1096,28 +1095,6 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window
-    def make_main_window(self) -> None:
-        """Make the *singleton* QMainWindow."""
-        window = QtWidgets.QMainWindow()
-        window.setObjectName('LeoGlobalMainWindow')
-        # Calling window.show() here causes flash.
-        self.attachLeoIcon(window)
-        # Monkey-patch
-        window.closeEvent = self.close_event  # Use self: g.app.gui does not exist yet.
-        self.runAtIdle(self.set_main_window_style_sheet)  # No StyleSheetManager exists yet.
-        return window
-
-    def set_main_window_style_sheet(self) -> None:
-        """Style the main window, using the first .leo file."""
-        commanders = g.app.commanders()
-        if commanders:
-            c = commanders[0]
-            ssm = c.styleSheetManager
-            ssm.set_style_sheets(w=self.main_window)
-            self.main_window.setWindowTitle(c.frame.title)  # #1506.
-        else:
-            g.trace("No open commanders!")
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
     def makeScriptButton(
         self,
@@ -1298,16 +1275,6 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
-    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry
-    already_sized = False
-
-    def set_top_geometry(self, w: int, h: int, x: int, y: int) -> None:
-        """Set the geometry of the main window."""
-        if 'size' in g.app.debug:
-            g.trace('(qt_gui) already_sized', self.already_sized, w, h, x, y)
-        if not self.already_sized:
-            self.already_sized = True
-            self.main_window.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-tips')
     def show_next_tip(self, event: Event=None) -> None:
