@@ -70,26 +70,19 @@ class DummyQtGui(leoGui.LeoGui):  ### Highly experimental.
 
     def createLeoFrame(self, c: Cmdr, title: str):
         self.c = c
-        if 1:
-            self.frame = g.Bunch(
-                c=c,
-                finishCreate = self.finishCreate,
-                miniBufferWidget = None,
-                body = g.NullObject(),
-                log = g.NullObject(),
-                menu = g.NullObject(),
-                top = g.NullObject(),
-            )
-        else:
-            self.frame = g.Bunch(
-                c=c,
-                finishCreate = self.finishCreate,
-                miniBufferWidget = None,
-                body = g.TracingNullObject(tag='body'),
-                log = g.TracingNullObject(tag='log'),
-                menu = g.TracingNullObject(tag='menu'),
-                top = g.TracingNullObject(tag='top'),
-            )
+        self.frame = g.Bunch(
+            c=c,
+            finishCreate = self.finishCreate,
+            miniBufferWidget = None,
+            body = g.NullObject(),
+            log = g.NullObject(),
+            menu = g.NullObject(),
+            top = g.NullObject(),
+            # body = g.TracingNullObject(tag='body'),
+            # log = g.TracingNullObject(tag='log'),
+            # menu = g.TracingNullObject(tag='menu'),
+            # top = g.TracingNullObject(tag='top'),
+        )
         return self.frame
 
     def finishCreate(self):
