@@ -137,10 +137,30 @@ class TestQtGui(LeoUnitTest):
     def test_qt_text(self):
 
         # g.printObj([z for z in dir(g.app.gui) if not z.startswith('__')])
-        if 0:
+        if 1:
             print('')
-            g.trace('g.app', g.app)
-        ### g.trace('g.app.gui.main_window', g.app.gui.main_window)
+            for z in dir(g.app.gui):
+                if not z.startswith('__'):
+                    obj = getattr(g.app.gui, z, None)
+                    if 0:  # Poor.
+                        print(f"{z:>30} {g.objToString(obj)}")
+                    else:
+                        # Maybe this should be model for g.objToString.
+                        if 'method' in repr(obj):
+                            print(f"{z:>30} method: {obj.__name__}")
+                        elif 'module' in repr(obj):
+                            print(f"{z:>30} module")
+                        elif 'class' in repr(obj):
+                            print(f"{z:>30} class")
+                        elif isinstance(obj, list):
+                            print(f"{z:>30} list: {len(obj)} items")
+                        elif isinstance(obj, dict):
+                            print(f"{z:>30} dict: {len(obj.keys())} keys")
+                        elif obj is None:
+                            print(f"{z:>30} None")
+                        else:
+                            print(f"{z:>30} object: {obj!r}")
+        ### To do: test various g.app.gui (LeoQtGui) methods
     #@-others
 #@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
 class TestAPIClasses(LeoUnitTest):
