@@ -70,10 +70,10 @@ class LeoQtGui(leoGui.LeoGui):
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages: Dict[str, Any] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: Widget = None
-        self.idleTimeClass: qt_idle_time.IdleTime
+        self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
-        self.plainTextWidget: qt_text.PlainTextWrapper
+        self.plainTextWidget = qt_text.PlainTextWrapper
         self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
         # Be aware of the systems native colors, fonts, etc.

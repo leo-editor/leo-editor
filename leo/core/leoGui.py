@@ -46,7 +46,7 @@ class LeoGui:
         self.consoleOnly = True  # True if g.es goes to console.
         self.globalFindTabManager: Any = None
         self.globalFindTab: Widget = None
-        self.idleTimeClass = None
+        self.idleTimeClass: Any = None
         self.isNullGui = False
         self.lastFrame: Any = None
         self.leoIcon = None
