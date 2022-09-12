@@ -14,6 +14,7 @@ from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
 from leo.core.leoFrame import LeoTree, NullStatusLineClass, NullTree, StringTextWrapper
 from leo.plugins.qt_frame import LeoQtFrame
 from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
+from leo.plugins.qt_text import LeoQTextBrowser
 from leo.plugins.qt_tree import LeoQtTree
 #@-<< test_gui imports >>
 
@@ -133,8 +134,8 @@ class TestQtGui(LeoUnitTest):
             s = s.replace('\\', os.sep).rstrip() + '\n'
             result = c.frame.log.put_html_links(s)
             self.assertEqual(result, expected, msg=repr(s))
-    #@+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_text
-    def test_qt_text(self):
+    #@+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_attributes
+    def test_qt_attributes(self):
 
         c = self.c
         if 0:
@@ -148,7 +149,27 @@ class TestQtGui(LeoUnitTest):
             g.trace(g.app.gui)
             g.trace(c.frame.body)
 
-        ### To do: test various g.app.gui (LeoQtGui) methods
+        if 0:
+            g.trace(c.frame.body.wrapper)
+            for method in ('delete', 'insert', 'toPythonIndexRowCol'):
+                f = getattr(c.frame.body.wrapper, method, None)
+                print(repr(f))
+    #@+node:ekr.20220912140743.1: *3* TestQtGui.test_QTextEditWrapper_delete
+    def test_QTextEditWrapper_delete(self):
+        
+        c = self.c
+        wrapper = c.frame.body.wrapper
+        widget = wrapper.widget
+        self.assertTrue(isinstance(wrapper, QTextEditWrapper))
+        self.assertTrue(isinstance(widget, LeoQTextBrowser))
+        widget.setText('line1\nline2')
+        # g.trace(wrapper.getAllText())
+        wrapper.delete(0, 6)
+        # g.trace(wrapper.getAllText())
+        widget.setText('line1\nline2')
+        # g.trace(wrapper.getAllText())
+        wrapper.delete(6, 0)
+        # g.trace(wrapper.getAllText())
     #@-others
 #@+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
 class TestAPIClasses(LeoUnitTest):
