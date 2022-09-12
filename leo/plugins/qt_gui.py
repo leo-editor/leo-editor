@@ -65,6 +65,7 @@ class DummyQtGui(leoGui.LeoGui):  ### Highly experimental.
     """
 
     def __init__(self):
+        super().__init__(guiName='dummyQtGui')
         self.isNullGui = True
 
     def createLeoFrame(self, c: Cmdr, title: str):
