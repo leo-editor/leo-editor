@@ -1739,7 +1739,7 @@ class KeyHandlerClass:
         self.getArgEscapes: List[str] = []
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode prompt.
-        self.state: Any = g.bunch(kind=None, n=None, handler=None)
+        self.state = g.bunch(kind=None, n=None, handler=None)
 
         # Remove ???
         self.givenArgs: List[str] = []  # Args specified after the command name in k.simulateCommand.
