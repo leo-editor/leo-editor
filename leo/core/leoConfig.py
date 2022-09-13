@@ -75,7 +75,7 @@ class ParserBaseClass:
     def __init__(self, c: Cmdr, localFlag: bool) -> None:
         """Ctor for the ParserBaseClass class."""
         self.c = c
-        self.clipBoard: Any = []
+        self.clipBoard: List[str] = []
         # True if this is the .leo file being opened,
         # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.localFlag = localFlag
