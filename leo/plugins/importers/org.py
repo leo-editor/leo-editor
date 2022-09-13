@@ -4,10 +4,11 @@
 #@@first
 """The @auto importer for the org language."""
 import re
-from typing import Any, Dict, List
+from typing import Dict, List
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.linescanner import Importer
+from leo.plugins.nodetags import TagController
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer(Importer)
 class Org_Importer(Importer):
@@ -69,7 +70,7 @@ class Org_Importer(Importer):
         Call tag_controller.add_tag for all tags at the end of the headline s.
         """
         c = self.c
-        tag_controller: Any = getattr(c, 'theTagController', None)
+        tag_controller: TagController = getattr(c, 'theTagController', None)
         if not tag_controller:
             # It would be useless to load the nodetags plugin.
             return  # pragma: no cover
