@@ -355,7 +355,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 class QuickSearchController:
 
     #@+others
-    #@+node:ekr.20111015194452.15685: *3* __init__
+    #@+node:ekr.20111015194452.15685: *3* QuickSearchController.__init__
     def __init__(self, c: Cmdr, listWidget: Widget, ui: Any) -> None:
         self.c = c
         self.lw: Widget = listWidget  # A QListWidget.
@@ -396,7 +396,7 @@ class QuickSearchController:
             self.addHeadlineMatches(hm)
             self.addBodyMatches(bm)
 
-        self.throttler: Any = threadutil.NowOrLater(throttledDump)
+        self.throttler = threadutil.NowOrLater(throttledDump)
         self.worker.set_worker(searcher)
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
