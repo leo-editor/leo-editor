@@ -2740,7 +2740,7 @@ def objToString(obj: Any, indent: str='', tag: str='', concise: bool=False) -> s
     """
     Pretty print any Python object to a string.
 
-    concise=False: (Lagacy) return a detailed string.
+    concise=False: (Legacy) return a detailed string.
     concise=True: Return a summary string.
     """
     if concise:
