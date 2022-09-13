@@ -1726,7 +1726,7 @@ class KeyHandlerClass:
         self.reloadSettings()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
-        self.autoCompleter: Any = AutoCompleterClass(self)
+        self.autoCompleter = AutoCompleterClass(self)
         self.qcompleter = None  # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction()
