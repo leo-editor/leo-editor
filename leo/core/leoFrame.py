@@ -1856,12 +1856,12 @@ class NullFrame(LeoFrame):
         super().__init__(c, gui)
         assert self.c
         self.wrapper: Wrapper = None
-        self.iconBar: Widget = NullIconBarClass(self.c, self)
+        self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
         self.outerFrame: Wrapper = None
         self.ratio = self.secondary_ratio = 0.5
-        self.statusLineClass: Any = NullStatusLineClass
+        self.statusLineClass = NullStatusLineClass
         self.title = title
         self.top: Any = None  # Always None.
         # Create the component objects.
