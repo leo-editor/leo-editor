@@ -2386,8 +2386,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20220831093321.1"></v>
-<v t="ekr.20220831093111.1"><vh>Leo 6.6.4 release notes</vh></v>
+<v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
+<v t="ekr.20220912154618.1"><vh>Leo 6.7.0 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11199,14 +11199,14 @@ Leo's outline or hierarchical structure is distinct from the web of interleaved 
 [[Category:Software that uses Scintilla]]
 [[Category:Software using the MIT license]]
 </t>
-<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.6 or above.
+<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.9 or above.
 To install Python, see http://python.org.
 
 **PyQt**: `PyQt`_ provides Leo's widgets:
 
 * Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
 
-**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.6 or later.
+**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.9 or later.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
 </t>
@@ -14731,7 +14731,7 @@ This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 These instructions look complicated because they're long, but really they just boil down to:
 
-- install python. Python 3.9 or later is highly recommended.
+- install python. Python 3.9 or later is required.
 - run `pip install leo` from a python enabled command prompt.
 - run leo from that same python enabled command prompt.
 
@@ -17287,7 +17287,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 
 Leo's minimal dependencies are:
 
-* `Python`_ 3.6 or later. Python 3.9 or later is highly recommended.
+* `Python`_ 3.9 or later.
 * `PyQt5`_.
 * `PyQtWebEngine`
 
@@ -29002,9 +29002,7 @@ You can specify per-language settings by preceding the settings names by a prefi
 message to the Log pane.
 
 Clicking it selects the given line number of p.b.</t>
-<t tx="ekr.20190616175854.1">Leo now requires python 3.6 or above. This greatly simplifies Leo's code.
-
-Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
+<t tx="ekr.20190616175854.1">Leo's default gui uses Qt Docks. Use --no-dock to use Leo's legacy gui.
 
 New and improved commands and features:
 
@@ -29380,8 +29378,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 6.0**
 
-- Leo now requires python 3.6 or above.
-  This greatly simplifies Leo's code.
 - Leo's default gui uses Qt Docks.
   Use --no-dock to use Leo's legacy gui.
 - Several commands now generate clickable links in the Log pane.
@@ -31329,23 +31325,30 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - Improve how Leo handles url's.
 - Simplify the GlobalConfigManager class.
 - The usual assortment of tweaks and bug fixes.</t>
-<t tx="ekr.20220831093111.1">Leo http://leoeditor.com 6.6.4 is now available on
+<t tx="ekr.20220831093321.1">- Enhance leoserver.py to support leoInteg and leoJS.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Begin annotating Leo's core files.
+- The usual assortment of minor bug fixes.</t>
+<t tx="ekr.20220912154542.1">Leo now requires Python 3.9 or later.</t>
+<t tx="ekr.20220912154618.1">Leo http://leoeditor.com 6.7.0 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
 Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.4**
+**The highlights of Leo 6.7.0**
 
+- Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
 - Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
-- Begin annotating Leo's core files.
+- Annotate most of Leo's core files.
 - The usual assortment of minor bug fixes.
 
 **Links**
 
-- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- 6.7.0 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
@@ -31360,11 +31363,6 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 @nowrap
 @language md
 </t>
-<t tx="ekr.20220831093321.1">- Enhance leoserver.py to support leoInteg and leoJS.
-- Simplify all of Leo's importers.
-- Importers no longer generate underindented escape strings.
-- Begin annotating Leo's core files.
-- The usual assortment of minor bug fixes.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
@@ -31547,7 +31545,7 @@ If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_
 
 Linux: it's generally advised to use pip ``--user`` flag instead of `sudo`.
 
-Assumes **Python 3.6+** is installed and in PATH.
+Assumes **Python 3.9 or later** is installed and in PATH.
 
 Installing from source code into a new environment must be done in discrete steps: **download**, **unpack archive**, and **install as editable** mode.
 
@@ -31578,7 +31576,7 @@ Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`
 
 See `Running Leo`_ for how to run Leo after installing it.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
