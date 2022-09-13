@@ -22,11 +22,13 @@ from leo.core import leoNodes
 #@+<< leoFrame annotations >>
 #@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoChapters import ChapterController
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
+    ChapterController = Any
     Cmdr = Any
     Event = Any
     Position = Any
@@ -1748,9 +1750,9 @@ class LeoTreeTab:
     """A class representing a tabbed outline pane."""
     #@+others
     #@+node:ekr.20070317073627.1: *3*  ctor (LeoTreeTab)
-    def __init__(self, c: Cmdr, chapterController: Any, parentFrame: Widget) -> None:
+    def __init__(self, c: Cmdr, chapterController: ChapterController, parentFrame: Widget) -> None:
         self.c = c
-        self.cc: Any = chapterController
+        self.cc: ChapterController
         self.nb: Any = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
