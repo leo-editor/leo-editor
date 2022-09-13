@@ -252,8 +252,8 @@ class LeoApp:
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
         from leo.core import leoFrame
         from leo.core import leoGui
-        self.nullGui: Any = leoGui.NullGui()
-        self.nullLog: Any = leoFrame.NullLog()
+        self.nullGui = leoGui.NullGui()
+        self.nullLog = leoFrame.NullLog()
         #@-<< LeoApp: global types >>
         #@+<< LeoApp: plugins and event handlers >>
         #@+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
