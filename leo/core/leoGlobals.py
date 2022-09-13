@@ -2736,30 +2736,46 @@ def listToString(obj: Any, indent: str='', tag: str=None) -> str:
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj: Any, indent: str='', tag: str='') -> str:
+def objToString(obj: Any, indent: str='', tag: str='', concise: bool=False) -> str:
     """
-    Simplified pretty print any Python object to a string.
+    Pretty print any Python object to a string.
 
-    g.dictToString or g.listToString give more detailed dumps.
+    concise=False: (Lagacy) return a detailed string.
+    concise=True: Return a summary string.
     """
-    r = repr(obj)
-    if tag:
-        print(tag.strip())
-    if obj is None:
-        return f"{indent}None"
+    if concise:
+        r = repr(obj)
+        if tag:
+            print(tag.strip())
+        if obj is None:
+            return f"{indent}None"
+        if isinstance(obj, dict):
+            return f"{indent}dict: {len(obj.keys())} keys"
+        if isinstance(obj, list):
+            return f"{indent}list: {len(obj)} itemg.plural(len(obj))"
+        if isinstance(obj, tuple):
+            return f"{indent}tuple: {len(obj)} item{g.plural(len(obj))}"
+        if 'method' in r:
+            return f"{indent}method: {obj.__name__}"
+        if 'class' in r:
+            return f"{indent}class"
+        if 'module' in r:
+            return f"{indent}module"
+        return f"{indent}object: {obj!r}"
+
+    # concise = False
     if isinstance(obj, dict):
-        return f"{indent}dict: {len(obj.keys())} keys"
+        return dictToString(obj, indent=indent)
     if isinstance(obj, list):
-        return f"{indent}list: {len(obj)} itemg.plural(len(obj))"
+        return listToString(obj, indent=indent)
     if isinstance(obj, tuple):
-        return f"{indent}tuple: {len(obj)} item{g.plural(len(obj))}"
-    if 'method' in r:
-        return f"{indent}method: {obj.__name__}"
-    if 'class' in r:
-        return f"{indent}class"
-    if 'module' in r:
-        return f"{indent}module"
-    return f"{indent}object: {obj!r}"
+        return tupleToString(obj, indent=indent)
+    if isinstance(obj, str):
+        # Print multi-line strings as lists.
+        lines = g.splitLines(obj)
+        if len(lines) > 1:
+            return listToString(lines, indent=indent)
+    return f"{indent} {obj!r}"
 
 toString = objToString
 #@+node:ekr.20120912153732.10597: *4* g.wait
