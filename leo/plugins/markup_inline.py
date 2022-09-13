@@ -33,7 +33,6 @@ def markup_inline(c, kind='unknown'):
         'italic': ('*', '*'),
         'underline': (':ul:`', '`'),
     }[kind]
-    text: Any
 
     if c.frame.body.bodyCtrl.hasSelection():
         c.user_dict['markup_inline']['last'] = 'close'
