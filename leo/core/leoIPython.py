@@ -276,7 +276,7 @@ class LeoNameSpace:
         """LeoNameSpace ctor."""
         self.commander: Cmdr = None  # The commander returned by the c property.
         self.commanders_list: List[Cmdr] = []  # The list of commanders returned by the commanders property.
-        self.g: Any = g
+        self.g = g
         self.update()
     #@+others
     #@+node:ekr.20130930062914.16006: *3* LeoNS.c property
