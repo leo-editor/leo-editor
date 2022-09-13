@@ -7680,7 +7680,7 @@ def unquoteUrl(url: str) -> str:
     return urllib.parse.unquote(url)
 #@-others
 # set g when the import is about to complete.
-g: Any = sys.modules.get('leo.core.leoGlobals')
+g = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
 if __name__ == '__main__':
     unittest.main()
