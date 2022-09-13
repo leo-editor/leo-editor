@@ -3221,15 +3221,16 @@ class Commands:
 
     force_redraw = redraw
     redraw_now = redraw
-    #@+node:ekr.20090110073010.3: *6* c.redraw_after_icons_changed
+    #@+node:ekr.20090110073010.3: *6* c.redraw_after_icons_changed (to be removed)
     def redraw_after_icons_changed(self) -> None:
         """Update the icon for the presently selected node"""
-        c = self
-        if c.enableRedrawFlag:
-            pass
-            # Do not call c.treeFocusHelper here.
-        else:
-            c.requestLaterRedraw = True
+        if 0:
+            c = self
+            if c.enableRedrawFlag:
+                pass
+                # Do not call c.treeFocusHelper here.
+            else:
+                c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
     def redraw_after_contract(self, p: Position=None) -> None:
         c = self

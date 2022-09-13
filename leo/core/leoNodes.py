@@ -2353,12 +2353,11 @@ class VNode:
         try:
             tree = c.frame.tree  # May not exist at startup.
             if not tree:
-                g.trace('No tree')
                 return
-            tree.nodeIconsDict.pop(v.gnx, None)  # Only exists for Qt gui.
+            if not hasattr(tree, 'nodeIconsDict'):  # Only exists for Qt gui.
+                return
         except AttributeError:
             return
-
         # Update all cloned items.
         icon = tree.getCompositeIconImage(v)
         items = tree.vnode2items(v)

@@ -62,18 +62,19 @@ class LeoQtTree(leoFrame.LeoTree):
         self.vnode2itemsDict: Dict[VNode, List[Item]] = {}  # values are lists of items.
         self.editWidgetsDict: Dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
         self.reloadSettings()
-        # Components.
-        self.canvas: Any = self  # An official ivar used by Leo's core.
+        # Components...
+        self.canvas = self  # An official ivar used by Leo's core.
         self.headlineWrapper: Any = qt_text.QHeadlineWrapper  # This is a class.
-        # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-        self.treeWidget: Widget = frame.top.treeWidget  # An internal ivar.
+        self.treeWidget: Widget = frame.top.treeWidget  # A LeoQTreeWidget, a subclass of QTreeWidget.
         w = self.treeWidget
-        #
-        # "declutter", node appearance tweaking
+        # Declutter data...
         self.declutter_patterns: List[Any] = None  # list of pairs of patterns for decluttering
         self.declutter_data: Dict[Any, Any] = {}
         self.loaded_images: Dict[str, Icon] = {}
-        if 0:  # Drag and drop
+
+        if 0:  # None of this works.
+            #@+<< Drag and drop >>
+            #@+node:ekr.20220913074246.1: *5* << Drag and drop >>
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
             w.showDropIndicator = True
@@ -88,9 +89,9 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 def mimeData(self, indexes: str) -> None:
                     g.trace()
+            #@-<< Drag and drop >>
 
         # Early inits...
-
         try:
             w.headerItem().setHidden(True)
         except Exception:
@@ -208,7 +209,7 @@ class LeoQtTree(leoFrame.LeoTree):
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
 
-        returns composite icon for this node
+        returns composite icon for this node, containing the icon box and perhaps other icons.
         """
         dd = self.declutter_data
         iconVal = p.v.computeIcon()
@@ -339,12 +340,10 @@ class LeoQtTree(leoFrame.LeoTree):
                     loaded_images[f] = g.app.gui.getImageImage(f)
         #@-others
         if (p.h, iconVal) in dd:
-            # Apply saved adjustments to the text and to the _style_
-            # of the node
+            # Apply saved adjustments to the text and to the _style_ of the node.
             new_icons, modifiers_and_args = dd[(p.h, iconVal)]
             for modifier, arg in modifiers_and_args:
                 modifier(item, arg)
-
             new_icons = sorted_icons(p) + new_icons
         else:
             text = p.h
@@ -354,9 +353,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 m = pattern.match(text) or pattern.search(text)
                 if m:
                     modifiers_and_args.extend(apply_declutter_rules(cmds))
-
-            # Save the lists of the icons and the adjusting operations
-            # for future reuse.
+            # Save the lists of the icons and the adjusting operations.
             dd[(p.h, iconVal)] = new_icons, modifiers_and_args
             new_icons = sorted_icons(p) + new_icons
             preload_images()
@@ -368,7 +365,7 @@ class LeoQtTree(leoFrame.LeoTree):
             images = [loaded_images.get(x) for x in new_icons]
             icon = self.make_composite_icon(images)
             g.app.gui.iconimages[h] = icon
-        p.v.updateIcon()  # #2844.
+        # There is always at least a box icon.
         return icon
     #@+node:vitalije.20200327162532.1: *6* qtree.get_declutter_patterns
     def get_declutter_patterns(self) -> List[Any]:
@@ -525,7 +522,12 @@ class LeoQtTree(leoFrame.LeoTree):
             for item in self.vnode2items(p.v):
                 if self.isValidItem(item):
                     self.setItemText(item, h)
-        c.redraw_after_icons_changed()
+                    if self.use_declutter:  # #2844.
+                        icon = self.declutter_node(c, p, item)
+                        item.setIcon(0, icon)  # 0 is the column number.
+            p.v.updateIcon()  # #2844.
+
+        ### c.redraw_after_icons_changed()
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
@@ -753,7 +755,8 @@ class LeoQtTree(leoFrame.LeoTree):
         """Return the proper icon for position p."""
         if self.use_declutter:
             item = self.position2item(p)
-            return item and self.declutter_node(self.c, p, item)
+            if item:
+                return self.declutter_node(self.c, p, item)
         return self.getCompositeIconImage(p.v)
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, v: VNode) -> List[str]:
@@ -784,11 +787,13 @@ class LeoQtTree(leoFrame.LeoTree):
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
-        pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
-        # .rgba() call required for Qt4.7, later versions work with straight color
+        pix.fill(QtGui.QColor(0, 0, 0, 0))
+        ### pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
+        ### .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
-        if not painter.begin(pix):
-            print("Failed to init. painter for icon")
+        painter.begin(pix)
+        ### if not painter.begin(pix):
+            ### print("Failed to init. painter for icon")
             # don't return, the code still makes an icon for the cache
             # which stops this being called again and again
         x = 0
