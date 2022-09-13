@@ -70,6 +70,14 @@ class NodeIndices:
     #@+node:ekr.20200528131303.1: *3* ni.computeNewIndex
     def computeNewIndex(self) -> str:
         """Return a new gnx."""
+
+        # Warning! Warning! Warning!
+        
+        # Don't even *think* about changing the format of gnxs!
+        # Doing so could introduce the worst kind of bugs: subtle and rare.
+        
+        # See this post: https://groups.google.com/g/leo-editor/c/Lldywoievn4/m/RUMMzB7fBgAJ
+
         t_s = self.update()  # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         return gnx
