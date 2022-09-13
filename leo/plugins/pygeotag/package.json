@@ -1,0 +1,27 @@
+
+{
+  "name": "leo-plugins-pygeotag",
+  "version": "0.0.1",
+  "description": "Leo's pygeotag plugin",
+  "main": "map.js",
+  "scripts": {
+    "start": "node map.js"
+  },
+  "dependencies": {
+  },
+  "engines": {
+    "node": "4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leo-editor/leo-editor/tree/devel"
+  },
+  "keywords": [
+    "node",
+  ],
+  "author": "Edward K. Ream",
+  "contributors": [
+    "Edward K. Ream <edreamleo@gmail.com> (http://leoeditor.com/)"
+  ],
+  "license": "MIT"
+}
