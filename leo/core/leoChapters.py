@@ -43,7 +43,7 @@ class ChapterController:
         self.re_chapter: re.Pattern = None  # Set where used.
         self.selectedChapter = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
-        self.tt: Any = None  # May be set in finishCreate.
+        self.tt: Any = None  # May be set in createChaptersIcon.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
