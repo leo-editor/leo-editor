@@ -271,7 +271,7 @@ class Commands:
     def initOptionsIvars(self) -> None:
         """Init Commander ivars corresponding to user options."""
         self.fixed = False
-        self.fixedWindowPosition: Any = []
+        self.fixedWindowPosition: List[Tuple[int, int, int, int]] = []
         self.forceExecuteEntireBody = False
         self.focus_border_color = 'white'
         self.focus_border_width = 1  # pixels
