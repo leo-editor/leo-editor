@@ -525,9 +525,6 @@ class LeoQtTree(leoFrame.LeoTree):
                     if self.use_declutter:  # #2844.
                         icon = self.declutter_node(c, p, item)
                         item.setIcon(0, icon)  # 0 is the column number.
-            p.v.updateIcon()  # #2844.
-
-        ### c.redraw_after_icons_changed()
     #@+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
@@ -788,19 +785,14 @@ class LeoQtTree(leoFrame.LeoTree):
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         pix = QtGui.QImage(width, height, Format.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0))
-        ### pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
-        ### .rgba() call required for Qt4.7, later versions work with straight color
         painter = QtGui.QPainter()
-        painter.begin(pix)
-        ### if not painter.begin(pix):
-            ### print("Failed to init. painter for icon")
-            # don't return, the code still makes an icon for the cache
-            # which stops this being called again and again
+        ok = painter.begin(pix)
         x = 0
         for i in images:
             painter.drawPixmap(x, 0, i)
             x += i.width() + hsep
-        painter.end()
+        if ok:
+            painter.end()
         return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
     #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
     def getCompositeIconImage(self, v: VNode) -> Icon:
