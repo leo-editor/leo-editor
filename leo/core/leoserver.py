@@ -25,6 +25,7 @@ import socket
 import textwrap
 import time
 from typing import Any, Callable, Dict, Generator, Iterable, Iterator, List, Optional, Set, Tuple, Union
+import warnings
 
 # Third-party.
 try:
@@ -1009,6 +1010,9 @@ class LeoServer:
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
+
+        warnings.simplefilter("ignore")
+
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self,
