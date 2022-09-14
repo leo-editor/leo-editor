@@ -3102,7 +3102,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
         self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are widgets.
         self.eventFilters: List = []  # Apparently needed to make filters work!
-        self.logCtrl: Any = None
+        self.logCtrl: Wrapper = None
         self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
         self.logWidget: Widget = None  # Set in finishCreate.
         self.menu: Widget = None  # A menu that pops up on right clicks in the hull or in tabs.
