@@ -27,10 +27,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
     Cmdr = Any
     Event = Any
+    NbController = Any
     Position = Any
     VNode = Any
     Wrapper = Any
@@ -1753,7 +1755,7 @@ class LeoTreeTab:
     def __init__(self, c: Cmdr, chapterController: ChapterController, parentFrame: Widget) -> None:
         self.c = c
         self.cc: ChapterController
-        self.nb: Any = None  # Created in createControl.
+        self.nb: NbController = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
     def createControl(self) -> Wrapper:  # pylint: disable=useless-return
@@ -1787,7 +1789,7 @@ class NullBody(LeoBody):
         self.selection = 0, 0
         self.s = ""  # The body text
         self.widget: Widget = None
-        self.wrapper: Any = StringTextWrapper(c=self.c, name='body')
+        self.wrapper: Any = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
         self.editorWrappers['1'] = self.wrapper
         self.colorizer: Any = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface

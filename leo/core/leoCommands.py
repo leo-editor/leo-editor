@@ -23,6 +23,7 @@ from leo.core import leoNodes
 #@+<< leoCommands annotations >>
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoApp import PreviousSettings
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     # 11 subcommanders...
@@ -60,6 +61,7 @@ if TYPE_CHECKING:  # pragma: no cover
 else:
     Event = Any
     Position = Any
+    PreviousSettings = Any
     VNode = Any
     # Subcommanders...
     AtFile = Any
@@ -129,8 +131,8 @@ class Commands:
         fileName: str,
         gui: Any=None,
         parentFrame: Wrapper=None,
-        previousSettings: Any=None,
-        relativeFileName: Any=None,
+        previousSettings: "PreviousSettings"=None,
+        relativeFileName: str=None,
     ) -> None:
         t1 = time.process_time()
         c = self
@@ -434,7 +436,7 @@ class Commands:
         else:
             self.styleSheetManager = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
-    def initSettings(self, previousSettings: Any) -> None:
+    def initSettings(self, previousSettings: "PreviousSettings") -> None:
         """Instantiate c.config from previous settings."""
         c = self
         from leo.core import leoConfig
@@ -767,12 +769,12 @@ class Commands:
         event: Event=None,
         args: Any=None,
         p: Position=None,
-        script: Any=None,
+        script: str=None,
         useSelectedText: bool=True,
         define_g: bool=True,
         define_name: str='__main__',
         silent: bool=False,
-        namespace: Any=None,
+        namespace: Dict=None,
         raiseFlag: bool=False,
         runPyflakes: bool=True,
     ) -> None:

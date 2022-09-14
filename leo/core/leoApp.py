@@ -254,7 +254,7 @@ class LeoApp:
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
         #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
-        self.log: Any = None  # The LeoFrame containing the present log.
+        self.log: Widget = None  # The LeoFrame containing the present log.
         self.logInited = False  # False: all log message go to logWaiting list.
         self.logIsLocked = False  # True: no changes to log are allowed.
         self.logWaiting: List[Tuple] = []  # List of tuples (s, color, newline) waiting to go to a log.

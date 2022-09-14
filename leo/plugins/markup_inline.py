@@ -28,7 +28,7 @@ def markup_inline(c, kind='unknown'):
         'markup_inline', {'last': 'close'})['last']
 
     p = c.p
-    delim: Any = {
+    delim: Any = {  # Hard to annotate.
         'bold': ('**', '**'),
         'italic': ('*', '*'),
         'underline': (':ul:`', '`'),

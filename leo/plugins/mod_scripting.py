@@ -244,6 +244,7 @@ else:
     Event = Any
     Position = Any
     Wrapper = Any
+Widget = Any
 #@-<< mod_scripting annotations >>
 #@+others
 #@+node:ekr.20210228135810.1: ** cmd decorator
@@ -417,7 +418,7 @@ class ScriptingController:
     """A class defining scripting commands."""
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
-    def __init__(self, c: Cmdr, iconBar: Any=None) -> None:
+    def __init__(self, c: Cmdr, iconBar: Widget=None) -> None:
         self.c = c
         self.gui = c.frame.gui
         getBool = c.config.getBool

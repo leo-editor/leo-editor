@@ -337,7 +337,7 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: Widget=None, init: Any=None, step_min: Any=None) -> None:
+            def __init__(self, parent: Widget=None, init: bool=None, step_min: Dict=None) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min

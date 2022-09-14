@@ -20,8 +20,10 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220417212402.1: ** << leoConfig annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
+    from leo.core.leoApp import PreviousSettings
 else:
     Position = Any
+    PreviousSettings = Any
 
 Widget = Any
 #@-<< leoConfig annotations >>
@@ -1492,7 +1494,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: Any=None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: "PreviousSettings"=None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
