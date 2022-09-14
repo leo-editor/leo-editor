@@ -2625,7 +2625,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Controller is a ScriptingController.
 
         def setCommandForButton(self,
-            button: Any, command: Callable, command_p: Position, controller: Any, gnx: str, script: str,
+            button: Any, command: Callable, command_p: Position, controller: Cmdr, gnx: str, script: str,
         ) -> None:
             """
             Set the "Goto Script" rlick item of an @button button.
