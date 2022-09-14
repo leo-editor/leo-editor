@@ -797,7 +797,7 @@ class todoController:
     #@+node:tbrown.20090119215428.32: *4* set_progress
     @redrawer
     @projectChanger
-    def set_progress(self, p: Position=None, val: Any=None) -> None:
+    def set_progress(self, p: Position=None, val: Any=None) -> None:  # Hard to annotate.
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -809,7 +809,7 @@ class todoController:
     #@+node:tbrown.20090119215428.33: *4* set_time_req
     @redrawer
     @projectChanger
-    def set_time_req(self, p: Position=None, val: Any=None) -> None:
+    def set_time_req(self, p: Position=None, val: Any=None) -> None:  # Hard to annotate.
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -950,7 +950,7 @@ class todoController:
     #@+node:tbrown.20110213091328.16233: *4* set_due_date
     def set_due_date(self,
         p: Position=None,
-        val: Any=None,
+        val: Any=None,  # Hard to annotate.
         mode: str='adjust',
         field: str='duedate',
     ) -> None:
@@ -978,7 +978,7 @@ class todoController:
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
     def set_due_time(self,
         p: Position=None,
-        val: Any=None,
+        val: Any=None,  # Hard to annotate.
         mode: str='adjust',
         field: str='duetime',
     ) -> None:
@@ -1054,7 +1054,7 @@ class todoController:
         for p in p.subtree():
             self.setat(p.v, 'duedate', '')
     #@+node:tbrown.20130207103126.28498: *4* needs_doing
-    def needs_doing(self, v: VNode=None, pri: Any=None, due: Any=None) -> bool:
+    def needs_doing(self, v: VNode=None, pri: Any=None, due: Any=None) -> bool:  # Hard to annotate.
         """needs_doing - Return true if the node is a todo node that needs doing
 
         :Parameters:

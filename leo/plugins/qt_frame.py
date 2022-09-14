@@ -2644,7 +2644,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             b = button.button
             b.clicked.connect(command)
 
-            def goto_callback(checked: str, controller: Any=controller, gnx: str=gnx) -> None:
+            def goto_callback(checked: str, controller: Cmdr=controller, gnx: str=gnx) -> None:
                 self.goto_command(controller, gnx)
 
             b.goto_script = gts = QAction('Goto Script', b)

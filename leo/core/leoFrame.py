@@ -1582,7 +1582,7 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Tuple=None) -> Tuple[Any, Any]:
         self.oops()
         return None, None  # pylint: disable=useless-return
 
@@ -2028,7 +2028,7 @@ class NullIconBarClass:
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args: Any, **keys: Any) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
-        command: Any = keys.get('command')
+        command: Callable = keys.get('command')
         text = keys.get('text')
         try:
             g.app.iconWidgetCount += 1

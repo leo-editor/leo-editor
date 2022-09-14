@@ -791,7 +791,7 @@ class QuickSearchController:
         return aList
 
     #@+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
-    def onSelectItem(self, it: Any, it_prev: Any=None) -> None:  # it_prev not used.
+    def onSelectItem(self, it: Any, it_prev: Any=None) -> None:  # it_prev not used. Hard to annotate.
         c = self.c
         tgt = self.its.get(it)
         if not tgt:

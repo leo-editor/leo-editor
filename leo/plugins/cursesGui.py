@@ -469,7 +469,7 @@ class textTree(leoFrame.LeoTree):
         w.setAllText(p.b)
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
-    def editLabel(self, v, selectAll=False, selection=None):
+    def editLabel(self, v, selectAll: bool=False, selection: Tuple=None):
         pass  # N/A?
 
     def edit_widget(self, p):

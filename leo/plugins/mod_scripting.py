@@ -689,7 +689,7 @@ class ScriptingController:
                 source_c=c,
                 tag='icon button')
 
-        def deleteButtonCallback(event: Event=None, self: Any=self, b: Any=b) -> None:
+        def deleteButtonCallback(event: Event=None, self: Any=self, b: Widget=b) -> None:
             self.deleteButton(b, event=event)
 
         # Register the delete-x-button command.
@@ -773,7 +773,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: Any=None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: List[Any]=None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -910,7 +910,7 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event=None, args: Any=args, c: Any=c, p: Any=p.copy()) -> None:
+        def atCommandCallback(event: Event=None, args: Any=args, c: Cmdr=c, p: Position=p.copy()) -> None:
             # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
 

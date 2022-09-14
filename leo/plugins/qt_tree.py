@@ -34,7 +34,6 @@ else:
 Editor = Any
 Icon = Any
 Item = Any
-Selection = Tuple[int, int, int]
 Widget = Any
 #@-<< qt_tree annotations >>
 #@+others
@@ -1103,7 +1102,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return None
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self,
-        p: Position, selectAll: bool=False, selection: Selection=None,
+        p: Position, selectAll: bool=False, selection: Tuple=None,
     ) -> Tuple[Editor, Any]:
         """Start editing p's headline."""
         if self.busy:
@@ -1127,7 +1126,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return e, wrapper
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
-        item: Any, selectAll: bool=False, selection: Selection=None,
+        item: Any, selectAll: bool=False, selection: Tuple=None,
     ) -> Tuple[Item, Any]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands

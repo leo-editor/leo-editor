@@ -309,7 +309,7 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str='Select Date/Time',
-        init: Any=None,
+        init: datetime.datetime=None,
         step_min: Dict=None,
     ) -> None:
         """Create and run a qt date/time selection dialog.
