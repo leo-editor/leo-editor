@@ -33,6 +33,42 @@ Pattern = Union[Any, str]
 def bpm_status(event: Event) -> None:
     bpm = g.app.backgroundProcessManager
     bpm.show_status()
+#@+node:ekr.20161028090624.1: **  class BPM.ProcessData
+class ProcessData:
+    """A class to hold data about running or queued processes."""
+
+    def __init__(self,
+        c: Cmdr,
+        kind: str,
+        fn: str,
+        link_pattern: Optional[Pattern]=None,
+        link_root: Optional[Position]=None,
+    ) -> None:
+        """Ctor for the ProcessData class."""
+        self.c = c
+        self.callback: Callable = None
+        self.fn = fn
+        self.kind = kind
+        self.link_pattern = link_pattern
+        self.link_root = link_root
+        # Auto-compile string patterns.
+        if isinstance(link_pattern, str):
+            try:
+                self.link_pattern = re.compile(link_pattern)
+            except Exception:
+                g.trace(f"Invalid link pattern: {link_pattern}")
+                self.link_pattern = None
+
+    def __repr__(self) -> str:
+        return (
+            f"c: {self.c.shortFileName()} "
+            f"kind: {self.kind} "
+            f"callback: {id(self.callback) if self.callback else None} "
+            f"fn: {self.fn}\n"
+            # f"link_pattern: {self.link_pattern}, link_root: {self.link_root.h}"
+        )
+
+    __str__ = __repr__
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
     #@+<< BPM docstring>>
@@ -76,46 +112,10 @@ class BackgroundProcessManager:
     #@-<< BPM docstring>>
 
     #@+others
-    #@+node:ekr.20161028090624.1: *3*  class BPM.ProcessData
-    class ProcessData:
-        """A class to hold data about running or queued processes."""
-
-        def __init__(self,
-            c: Cmdr,
-            kind: str,
-            fn: str,
-            link_pattern: Optional[Pattern]=None,
-            link_root: Optional[Position]=None,
-        ) -> None:
-            """Ctor for the ProcessData class."""
-            self.c = c
-            self.callback: Callable = None
-            self.fn = fn
-            self.kind = kind
-            self.link_pattern = link_pattern
-            self.link_root = link_root
-            # Auto-compile string patterns.
-            if isinstance(link_pattern, str):
-                try:
-                    self.link_pattern = re.compile(link_pattern)
-                except Exception:
-                    g.trace(f"Invalid link pattern: {link_pattern}")
-                    self.link_pattern = None
-
-        def __repr__(self) -> str:
-            return (
-                f"c: {self.c.shortFileName()} "
-                f"kind: {self.kind} "
-                f"callback: {id(self.callback) if self.callback else None} "
-                f"fn: {self.fn}\n"
-                # f"link_pattern: {self.link_pattern}, link_root: {self.link_root.h}"
-            )
-
-        __str__ = __repr__
     #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self) -> None:
         """Ctor for the base BackgroundProcessManager class."""
-        self.data: Any = None  # a ProcessData instance.
+        self.data: ProcessData = None  # a ProcessData instance.
         self.process_queue: List = []  # List of g.Bunches.
         self.pid: Any = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
@@ -287,7 +287,7 @@ class BackgroundProcessManager:
 
         # Don't set self.data unless we start the process!
         self.process_return_data = []
-        data = self.ProcessData(c, kind, fn, link_pattern, link_root)
+        data = ProcessData(c, kind, fn, link_pattern, link_root)
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
