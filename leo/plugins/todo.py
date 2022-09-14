@@ -573,7 +573,7 @@ class todoController:
         return project_changer_callback
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
-    def loadAllIcons(self, tag: str=None, k: int=None, clear: Any=None) -> None:
+    def loadAllIcons(self, tag: str=None, k: int=None, clear: bool=None) -> None:
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)

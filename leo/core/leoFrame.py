@@ -1500,7 +1500,7 @@ class LeoTree:
         self.redrawCount = 0  # For traces
         self.use_chapters = False  # May be overridden in subclasses.
         # Define these here to keep pylint happy.
-        self.canvas: Any = None
+        self.canvas: Widget = None
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self) -> None:

@@ -474,7 +474,7 @@ class LeoTreeData(npyscreen.TreeData):
             self,
             only_expanded: bool=True,
             ignore_root: bool=True,
-            sort: Any=None,  # not used here.
+            sort: bool=None,  # not used here.
             sort_function: Callable=None,
         ) -> Generator:
             # Never change the stored position!
