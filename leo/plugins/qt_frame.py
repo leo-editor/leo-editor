@@ -40,9 +40,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.core.leoQt import QComboBox
 else:
     Cmdr = Any
     Event = Any
+    QComboBox = Any
     Position = Any
     Wrapper = Any
 QComboBox = Any
@@ -4391,7 +4393,7 @@ class LeoQtTreeTab:
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
         self.tabNames: List[str] = []  # The list of tab names. Changes when tabs are renamed.
-        self.w: Any = None  # The QComboBox, not a QWidget.
+        self.w: QComboBox = None  # The QComboBox, not a QWidget.
         # self.reloadSettings()
         self.createControl()
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
