@@ -22,10 +22,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    LeoQtFrame = Any
     Position = Any
     VNode = Any
     Wrapper = Any
@@ -42,7 +44,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
-    def __init__(self, c: Cmdr, frame: Any) -> None:  # Frame is a LeoQtFrame.
+    def __init__(self, c: Cmdr, frame: LeoQtFrame) -> None:  # Frame is a LeoQtFrame.
         """Ctor for the LeoQtTree class."""
         super().__init__(frame)
         self.c = c
