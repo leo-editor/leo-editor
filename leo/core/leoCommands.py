@@ -65,6 +65,7 @@ else:
     AtFile = Any
     ChapterController = Any
     FileCommands = Any
+    InternalIPKernel = Any
     LeoFind = Any
     LeoImportCommands = Any
     KeyHandlerClass = Any
@@ -220,7 +221,7 @@ class Commands:
         self.outlineToNowebDefaultFileName: str = "noweb.nw"  # For Outline To Noweb dialog.
         # For hoist/dehoist commands.
         # Affects drawing routines and find commands, but *not* generators.
-        self.hoistStack: List[Any] = []  # Stack of g.Bunches to be root of drawn tree.
+        self.hoistStack: List[g.Bunch] = []  # Stack of g.Bunches to be root of drawn tree.
         # For outline navigation.
         self.navPrefix: str = ''  # Must always be a string.
         self.navTime: Optional[float] = None

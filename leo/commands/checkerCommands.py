@@ -439,7 +439,6 @@ class PylintCommand:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.data: Any = None  # Data for the *running* process.
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
