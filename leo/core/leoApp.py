@@ -32,6 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoPlugins import PluginsManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     BackgroundProcessManager = Any
@@ -194,11 +195,11 @@ class LeoApp:
         self.db: Any = None  # A global db, managed by g.app.global_cacher.
         self.externalFilesController: Any = None  # An ExternalFilesController.
         self.global_cacher: Any = None  # A leoCacher.GlobalCacher.
-        self.idleTimeManager: Any = None  # An IdleTimeManager.
+        self.idleTimeManager: IdleTimeManager = None  # An IdleTimeManager.
         self.ipk: Any = None  # A python kernel.
-        self.loadManager: Any = None  # A LoadManager.
+        self.loadManager: LoadManager = None
         self.nodeIndices: Any = None  # A NodeIndices.
-        self.pluginsController: Any = None  # A PluginsManager.
+        self.pluginsController: PluginsManager = None
         self.sessionManager: Any = None  # A SessionManager.
 
         # Global status vars for the Commands class...
