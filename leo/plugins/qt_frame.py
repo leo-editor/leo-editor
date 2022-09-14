@@ -4433,7 +4433,7 @@ class LeoQtTreeTab:
             ibw.addWidget(frame)
             ibw.addWidget(w)
 
-        def onIndexChanged(s: Any, tt: Any=tt) -> None:
+        def onIndexChanged(s: str, tt: LeoQtTreeTab=tt) -> None:
             if isinstance(s, int):
                 s = '' if s == -1 else tt.w.currentText()
             else:  # s is the tab name.
