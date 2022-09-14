@@ -75,7 +75,7 @@ class ChapterController:
         cc.selectChapterByName('main')
         c.redraw()
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
-    def makeCommand(self, chapterName: Any, binding: str=None) -> None:
+    def makeCommand(self, chapterName: str, binding: str=None) -> None:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
@@ -85,7 +85,7 @@ class ChapterController:
         if commandName in c.commandsDict:
             return
 
-        def select_chapter_callback(event: Event, cc: Any=cc, name: Any=chapterName) -> None:
+        def select_chapter_callback(event: Event, cc: ChapterController=cc, name: str=chapterName) -> None:
             """
             Select specific chapter.
             """
@@ -294,7 +294,7 @@ class ChapterController:
         s = s.replace('--', '-')
         return s[:128]
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition (calls c.redraw_later)
-    def selectChapterForPosition(self, p: Position, chapter: Any=None) -> None:
+    def selectChapterForPosition(self, p: Position, chapter: "Chapter"=None) -> None:
         """
         Select a chapter containing position p.
         New in Leo 4.11: prefer the given chapter if possible.

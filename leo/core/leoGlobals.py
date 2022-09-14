@@ -56,8 +56,7 @@ StringIO = io.StringIO
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
-    from leo.core.leoNodes import VNode
+    from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
     Position = Any
@@ -407,10 +406,10 @@ class BindingInfo:
         self,
         kind: str,
         commandName: str='',
-        func: Any=None,
-        nextMode: Any=None,
-        pane: Any=None,
-        stroke: Any=None,
+        func: Callable=None,
+        nextMode: str=None,
+        pane: str=None,
+        stroke: "KeyStroke"=None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))

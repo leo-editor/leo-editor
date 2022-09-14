@@ -117,7 +117,7 @@ class BackgroundProcessManager:
         """Ctor for the base BackgroundProcessManager class."""
         self.data: ProcessData = None  # a ProcessData instance.
         self.process_queue: List = []  # List of g.Bunches.
-        self.pid: Any = None  # The process id of the running process.
+        self.pid: str = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: List[str] = None
         # #2528: A timer that runs independently of idle time.

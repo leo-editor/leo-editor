@@ -318,7 +318,7 @@ class PickleShareDB:
         except Exception:
             return None
     #@+node:ekr.20100208223942.10454: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: Any=None) -> Generator:
+    def _walkfiles(self, s: str, pattern: str=None) -> Generator:
         """ D.walkfiles() -> iterator over files in D, recursively.
 
         The optional argument, pattern, limits the results to files
@@ -334,7 +334,7 @@ class PickleShareDB:
                 for f in self._walkfiles(child, pattern):
                     yield f
     #@+node:ekr.20100208223942.10456: *4* _listdir
-    def _listdir(self, s: str, pattern: Any=None) -> List[str]:
+    def _listdir(self, s: str, pattern: str=None) -> List[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -593,7 +593,7 @@ class SqlitePickleShare:
         extension.
         """
     #@+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: Any=None) -> List[str]:
+    def _listdir(self, s: str, pattern: str=None) -> List[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing

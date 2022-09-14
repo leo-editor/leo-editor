@@ -1764,7 +1764,7 @@ def toggleSparseMove(self: Self, event: Event=None) -> None:
 #@+node:ekr.20080425060424.1: ** c_oc.Sort commands
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
-def sortChildren(self: Self, event: Event=None, key: Any=None, reverse: bool=False) -> None:
+def sortChildren(self: Self, event: Event=None, key: str=None, reverse: bool=False) -> None:
     """Sort the children of a node."""
     # This method no longer supports the 'cmp' keyword arg.
     c, p = self, self.p

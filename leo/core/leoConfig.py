@@ -1664,7 +1664,7 @@ class LocalConfigManager:
         d = self.get('abbrev', 'abbrev')
         return d or {}
     #@+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting: str, default: Any=None) -> bool:
+    def getBool(self, setting: str, default: bool=None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):

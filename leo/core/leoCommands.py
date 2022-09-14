@@ -932,7 +932,7 @@ class Commands:
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: Any=None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: List[Tuple]=None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -971,7 +971,7 @@ class Commands:
                     yield from c.all_positions_for_v(v2, stack)
                 stack.pop(0)
     #@+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool=True, predicate: Any=None) -> Generator:
+    def all_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1013,7 +1013,7 @@ class Commands:
 
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool=True, predicate: Any=None) -> Generator:
+    def all_unique_roots(self, copy: bool=True, predicate: Callable=None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1201,7 +1201,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Any=None, trace: bool=False) -> bool:
+    def positionExists(self, p: Position, root: Position=None, trace: bool=False) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -1490,7 +1490,7 @@ class Commands:
         p.setDirty()  # Defensive programming.
         g.doHook("set-mark", c=c, p=p)
     #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
-    def setRootPosition(self, unused_p: Any=None) -> None:
+    def setRootPosition(self, unused_p: Position=None) -> None:
         """Set c._rootPosition."""
         # 2011/03/03: No longer used.
     #@+node:ekr.20060906131836: *5* c.setRootVnode (A do-nothing)
@@ -2548,7 +2548,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: Event, function: Any=function) -> None:
+        def minibufferCallback(event: Event, function: Callable=function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = getattr(self, 'theContextMenuController')
@@ -2735,9 +2735,9 @@ class Commands:
     #@+node:ekr.20180210092235.1: *4* c.backup_helper
     def backup_helper(
         self,
-        base_dir: Any=None,
+        base_dir: str=None,
         env_key: str='LEO_BACKUP',
-        sub_dir: Any=None,
+        sub_dir: str=None,
         use_git_prefix: bool=True,
     ) -> None:
         """
@@ -2907,7 +2907,7 @@ class Commands:
         x = efc.GitDiffController(c=self)
         x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
-    def diff_two_revs(self, directory: Any=None, rev1: str='', rev2: str='') -> None:
+    def diff_two_revs(self, directory: str=None, rev1: str='', rev2: str='') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -3108,7 +3108,7 @@ class Commands:
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2949: *4* c.Drawing
     #@+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2: Any=None) -> None:
+    def bringToFront(self, c2: "Commands"=None) -> None:
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -3845,7 +3845,7 @@ class Commands:
     def redrawAndEdit(self,
         p: Position,
         selectAll: bool=False,
-        selection: Any=None,
+        selection: Tuple=None,
         keepMinibuffer: bool=False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
@@ -3944,15 +3944,15 @@ class Commands:
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(
         self,
-        dir_: Any,
-        kind: Any,
-        add_context: Any=None,  # Override setting only if True/False
-        add_file_context: Any=None,  # Override setting only if True/False
+        dir_: str,
+        kind: str,
+        add_context: Union[bool, None]=None,  # Override setting only if True/False
+        add_file_context: Union[bool, None]=None,  # Override setting only if True/False
         add_path: bool=True,
         recursive: bool=True,
         safe_at_file: bool=True,
         theTypes: Any=None,  # force_at_others=False, # tag:no-longer-used
-        ignore_pattern: Any=None,
+        ignore_pattern: re.Pattern=None,
         verbose: bool=True,  # legacy value.
     ) -> None:
         #@+<< docstring >>
@@ -4079,7 +4079,9 @@ class Commands:
         root.h = undoType + (' (flattened)' if flatten else '')
         return root
     #@+node:peckj.20131023115434.10114: *4* c.createNodeHierarchy
-    def createNodeHierarchy(self, heads: Any, parent: Any=None, forcecreate: bool=False) -> Position:
+    def createNodeHierarchy(self,
+        heads: List[str], parent: Position=None, forcecreate: bool=False,
+    ) -> Position:
         """ Create the proper hierarchy of nodes with headlines defined in
             'heads' under 'parent'
 

@@ -252,7 +252,7 @@ def eval_cmd(name: str) -> Callable:
     return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Any, rclicks: Any=None, top_level: bool=False) -> List:
+def build_rclick_tree(command_p: Position, rclicks: List[Any]=None, top_level: bool=False) -> List:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.

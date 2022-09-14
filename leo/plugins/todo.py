@@ -494,7 +494,7 @@ class todoController:
             a = submenu.addAction(icon, "%d%%" % (i * 10))
             a.setIconVisibleInMenu(True)
 
-            def progress_cb(checked: Any, prog: Any=i) -> None:
+            def progress_cb(checked: bool, prog: int=i) -> None:
                 self.set_progress(val=10 * prog)
 
             a.triggered.connect(progress_cb)
