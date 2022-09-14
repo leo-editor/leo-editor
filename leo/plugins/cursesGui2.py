@@ -2654,7 +2654,7 @@ class CoreTree(leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         return HeadWrapper(c=self.c, name='head', p=p)
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[None, None]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Tuple=None) -> Tuple[None, None]:
         """Start editing p's headline."""
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)

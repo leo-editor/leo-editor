@@ -8,7 +8,7 @@
 import difflib
 import filecmp
 import os
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, BinaryIO, Dict, List, Optional, Tuple, TYPE_CHECKING
 from leo.core import leoGlobals as g
 #@-<< leoCompare imports >>
 #@+<< leoCompare annotations >>
@@ -71,7 +71,7 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile: Any = None
+        self.outputFile: BinaryIO = None
     #@+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
 
@@ -177,8 +177,8 @@ class BaseLeoCompare:
             if self.outputFileName:
                 self.openOutputFile()
             ok = self.outputFileName is None or self.outputFile
-            ok = 1 if ok and ok != 0 else 0
-            if f1 and f2 and ok:
+            ok1 = 1 if ok and ok != 0 else 0
+            if f1 and f2 and ok1:
                 # Don't compare if there is an error opening the output file.
                 self.compare_open_files(f1, f2, name1, name2)
         except Exception:

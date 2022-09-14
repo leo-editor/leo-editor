@@ -217,7 +217,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         else:
             event.ignore()
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
-    def construct(self, master: Any=None) -> None:
+    def construct(self, master: Widget=None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master  # A LeoTabbedTopLevel or None for non-tabbed windows.
@@ -569,8 +569,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self,
         parent: Widget,
         name: str,
-        hPolicy: Any=None,
-        vPolicy: Any=None,
+        hPolicy: Policy=None,
+        vPolicy: Policy=None,
         lineWidth: int=1,
         shadow: Any=None,
         shape: Any=None,
@@ -634,8 +634,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         parent: Widget,
         name: str,
         lineWidth: int=1,
-        hPolicy: Any=None,
-        vPolicy: Any=None,
+        hPolicy: Policy=None,
+        vPolicy: Policy=None,
     ) -> Widget:
         w = QtWidgets.QStackedWidget(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
@@ -644,7 +644,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18162: *5* dw.createTabWidget
-    def createTabWidget(self, parent: Widget, name: str, hPolicy: Any=None, vPolicy: Any=None) -> Widget:
+    def createTabWidget(self,
+        parent: Widget, name: str, hPolicy: Policy=None, vPolicy: Policy=None,
+    ) -> Widget:
         w = QtWidgets.QTabWidget(parent)
         # tb = w.tabBar()
         # tb.setTabsClosable(True)
@@ -657,8 +659,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         parent: Widget,
         name: str,
         lineWidth: int=0,
-        shadow: Any=None,
-        shape: Any=None,
+        shadow: Shadow=None,
+        shape: Shape=None,
     ) -> Widget:
         # Create a text widget.
         c = self.leo_c
@@ -1042,7 +1044,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 # name = 'leo_' + name
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
-    def setSizePolicy(self, widget: Widget, kind1: Any=None, kind2: Any=None) -> None:
+    def setSizePolicy(self, widget: Widget, kind1: Policy=None, kind2: Policy=None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
