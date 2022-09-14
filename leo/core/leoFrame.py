@@ -1791,7 +1791,7 @@ class NullBody(LeoBody):
         self.widget: Widget = None
         self.wrapper: Any = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
         self.editorWrappers['1'] = self.wrapper
-        self.colorizer: Any = NullColorizer(self.c)
+        self.colorizer: Any = NullColorizer(self.c)  # A Union.
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
 

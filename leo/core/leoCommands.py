@@ -129,7 +129,7 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: Any=None,
+        gui: Any=None,  # A Union.
         parentFrame: Wrapper=None,
         previousSettings: "PreviousSettings"=None,
         relativeFileName: str=None,
@@ -141,7 +141,7 @@ class Commands:
         self._topPosition: Optional[Position] = None
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
-        self.gui: Any = gui or g.app.gui
+        self.gui: Any = gui or g.app.gui  # A Union.
         self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
@@ -3953,7 +3953,7 @@ class Commands:
         add_path: bool=True,
         recursive: bool=True,
         safe_at_file: bool=True,
-        theTypes: Any=None,  # force_at_others=False, # tag:no-longer-used
+        theTypes: List[str]=None,  # force_at_others=False, # tag:no-longer-used
         ignore_pattern: re.Pattern=None,
         verbose: bool=True,  # legacy value.
     ) -> None:

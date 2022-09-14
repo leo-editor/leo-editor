@@ -484,7 +484,7 @@ def hide_rendering_pane(event: Event) -> None:
     vr.deactivate()
     vr.deleteLater()
 
-    def at_idle(c: Cmdr=c, _vr: Any=vr) -> None:
+    def at_idle(c: Cmdr=c, _vr: ViewRenderedController=vr) -> None:
         _vr.adjust_layout('closed')
         c.bodyWantsFocusNow()
 

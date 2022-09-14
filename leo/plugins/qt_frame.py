@@ -572,8 +572,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         hPolicy: Policy=None,
         vPolicy: Policy=None,
         lineWidth: int=1,
-        shadow: Any=None,
-        shape: Any=None,
+        shadow: Shadow=None,
+        shape: Shape=None,
     ) -> Widget:
         """Create a Qt Frame."""
         if shadow is None:
@@ -1558,7 +1558,7 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.colorizer: Any = None
+        self.colorizer: Any = None  # A Union
         self.wrapper: Wrapper = None
         self.widget: Widget = None
         self.reloadSettings()

@@ -359,7 +359,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self,
                 parent: Widget=None,
                 message: str='Select Date/Time',
-                init: Any=None,
+                init: Any=None,  # Hard to annotate.
                 step_min: Dict=None,
             ) -> None:
                 if step_min is None:

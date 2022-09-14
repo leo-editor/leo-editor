@@ -147,7 +147,7 @@ def stickynoter_f(event):
     v = p.v
     # #2471: Just show the node if it already exists.
     d = outer_dict.get(c.hash(), {})
-    nf: Any = d.get(p.gnx)
+    nf: Any = d.get(p.gnx)  # Hard to annotate.
     if nf:
         nf.show()
         nf.raise_()
@@ -249,7 +249,7 @@ if encOK:
                 return
         else:
             decoded = v.b
-        nf: Any = mknote(c, p,
+        nf: Any = mknote(c, p,  # Hard to annotate.
             focusin=stickynoteenc_focusin,
             focusout=stickynoteenc_focusout)
         nf.setPlainText(decoded)
