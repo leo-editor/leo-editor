@@ -33,7 +33,7 @@ class BaseLeoCompare:
 
     def __init__(
         self,  # Keyword arguments are much convenient and more clear for scripts.
-        commands: Any=None,
+        commands: Cmdr=None,
         appendOutput: bool=False,
         ignoreBlankLines: bool=True,
         ignoreFirstLine1: bool=False,
@@ -48,7 +48,7 @@ class BaseLeoCompare:
         printMatches: bool=False,
         printMismatches: bool=True,
         printTrailingMismatches: bool=False,
-        outputFileName: Any=None,
+        outputFileName: str=None,
     ) -> None:
         # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
