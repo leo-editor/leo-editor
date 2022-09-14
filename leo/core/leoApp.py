@@ -27,20 +27,29 @@ StringIO = io.StringIO
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoBackground import BackgroundProcessManager
-    from leo.core.leoCache import CommanderCacher
+    from leo.core.leoCache import CommanderCacher, GlobalCacher
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
+    from leo.core.leoExternalFiles import ExternalFilesController
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoIPython import InternalIPKernel
+    from leo.core.leoNodes import NodeIndices, Position, VNode
     from leo.core.leoPlugins import PluginsManager
+    from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     BackgroundProcessManager = Any
     Cmdr = Any
     CommanderCacher = Any
+    ExternalFilesController = Any
     Event = Any
+    GlobalCacher = Any
     GlobalConfigManager = Any
+    InternalIPKernel = Any
+    NodeIndices = Any
+    PluginsManager = Any
     Position = Any
+    SessionManager = Any
     VNode = Any
     Wrapper = Any
 Widget = Any
@@ -190,17 +199,17 @@ class LeoApp:
         # Singleton applications objects...
         self.backgroundProcessManager: BackgroundProcessManager = None  # A BackgroundProcessManager.
         self.commander_cacher: CommanderCacher = None
-        self.commander_db: Any = None  # Managed by g.app.commander_cacher.
+        self.commander_db: GlobalCacher = None  # Managed by g.app.commander_cacher.
         self.config: GlobalConfigManager = None  # g.app.config.
-        self.db: Any = None  # A global db, managed by g.app.global_cacher.
-        self.externalFilesController: Any = None  # An ExternalFilesController.
-        self.global_cacher: Any = None  # A leoCacher.GlobalCacher.
-        self.idleTimeManager: IdleTimeManager = None  # An IdleTimeManager.
-        self.ipk: Any = None  # A python kernel.
+        self.db: GlobalCacher = None  # A global db, managed by g.app.global_cacher.
+        self.externalFilesController: ExternalFilesController = None
+        self.global_cacher: GlobalCacher = None
+        self.idleTimeManager: IdleTimeManager = None
+        self.ipk: InternalIPKernel = None  # A python kernel.
         self.loadManager: LoadManager = None
-        self.nodeIndices: Any = None  # A NodeIndices.
+        self.nodeIndices: NodeIndices = None
         self.pluginsController: PluginsManager = None
-        self.sessionManager: Any = None  # A SessionManager.
+        self.sessionManager: SessionManager = None
 
         # Global status vars for the Commands class...
         self.commandName: str = None  # The name of the command being executed.
