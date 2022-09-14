@@ -31,6 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoFileCommands import FileCommands
     from leo.core.leoFind import LeoFind
     from leo.core.leoImport import LeoImportCommands
+    from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoKeys import KeyHandlerClass
     from leo.core.leoHistory import NodeHistory
     from leo.core.leoPersistence import PersistenceDataController
@@ -135,10 +136,10 @@ class Commands:
         # Official ivars.
         self._currentPosition: Optional[Position] = None
         self._topPosition: Optional[Position] = None
-        self.frame = None
-        self.parentFrame = parentFrame  # New in Leo 6.0.
-        self.gui = gui or g.app.gui
-        self.ipythonController = None  # Set only by the ipython plugin.
+        self.frame: Widget = None
+        self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
+        self.gui: Any = gui or g.app.gui
+        self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
         self.chapterController: ChapterController = None
@@ -148,7 +149,7 @@ class Commands:
         self.keyHandler: KeyHandlerClass = None
         self.nodeHistory: NodeHistory = None
         self.persistenceController: PersistenceDataController = None
-        self.printingController: Any = None
+        self.printingController: PrintingController = None
         self.shadowController: ShadowController = None
         self.undoer: Undoer = None
         self.vimCommands: VimCommands = None
