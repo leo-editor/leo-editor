@@ -1539,9 +1539,7 @@ class LeoQtGui(leoGui.LeoGui):
         w.setObjectName(name)
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
-    def setSizePolicy(self,
-        widget: Widget, kind1: Any=None, kind2: Any=None,
-    ) -> None:
+    def setSizePolicy(self, widget: Widget, kind1: Policy=None, kind2: Policy=None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
