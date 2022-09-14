@@ -1758,8 +1758,6 @@ class StyleSheetManager:
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all: bool=True, top: Widget=None, w: Widget=None) -> None:
         """Set the master style sheet for all widgets using config settings."""
-        if g.app.loadedThemes:
-            return
         c = self.c
         if top is None:
             top = c.frame.top

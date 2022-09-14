@@ -139,7 +139,7 @@ class LeoApp:
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: List[Any] = []  # A list of IdleTime instances, so they persist.
-        self.log_listener: Any = None  # The process created by the 'listen-for-log' command.
+        self.log_listener: Any = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.structure_errors = 0  # Set by p.safeMoveToThreadNext.
@@ -171,7 +171,6 @@ class LeoApp:
         self.globalKillBuffer: List[str] = []  # The global kill buffer.
         self.globalRegisters: Dict[str, str] = {}  # The global register list.
         self.leoID: str = None  # The id part of gnx's.
-        self.loadedThemes: List[Any] = []  # List of loaded theme.leo files.
         self.lossage: List[Any] = []  # List of last 100 keystrokes.
         self.paste_c: Optional[Cmdr] = None  # The commander that pasted the last outline.
         self.spellDict: Any = None  # The singleton PyEnchant spell dict.
