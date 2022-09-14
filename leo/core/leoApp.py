@@ -173,7 +173,7 @@ class LeoApp:
         self.leoID: str = None  # The id part of gnx's.
         self.lossage: List[Any] = []  # List of last 100 keystrokes.
         self.paste_c: Optional[Cmdr] = None  # The commander that pasted the last outline.
-        self.spellDict: Any = None  # The singleton PyEnchant spell dict.
+        self.spellDict: Dict = None  # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
         self.windowList: List[Any] = []  # Global list of all frames.
         self.realMenuNameDict: Dict[str, str] = {}  # Translations of menu names.
