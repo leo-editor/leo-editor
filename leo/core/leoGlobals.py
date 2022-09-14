@@ -62,6 +62,7 @@ else:
     Cmdr = Any
     Position = Any
     VNode = Any
+Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
@@ -2896,7 +2897,7 @@ def clearStats() -> None:
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: Any=None, name: str=None) -> None:
+def printStats(event: Event=None, name: str=None) -> None:
     """
     Print all gathered statistics.
 
@@ -3068,7 +3069,7 @@ def findReference(name: str, root: Position) -> Optional[Position]:
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
-def get_directives_dict(p: Position, root: Any=None) -> Dict[str, str]:
+def get_directives_dict(p: Position, root: List[Position]=None) -> Dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
 
@@ -4702,9 +4703,9 @@ class GitIssueController:
     def backup_issues(self,
         base_url: str,
         c: Cmdr,
-        label_list: List,
+        label_list: List[str],
         root: Position,
-        state: Any=None,
+        state: str=None,
     ) -> None:
 
         self.base_url = base_url
@@ -6296,7 +6297,7 @@ def CheckVersionToInt(s: str) -> int:
         return 0
 #@+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
-def cls(event: Any=None) -> None:
+def cls(event: Event=None) -> None:
     """Clear the screen."""
     if sys.platform.lower().startswith('win'):
         os.system('cls')

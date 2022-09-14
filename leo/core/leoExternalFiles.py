@@ -614,7 +614,7 @@ class ExternalFilesController:
         """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
     #@+node:tbrown.20150904102518.1: *4* efc.set_time
-    def set_time(self, path: str, new_time: Any=None) -> None:
+    def set_time(self, path: str, new_time: float=None) -> None:
         """
         Implements c.setTimeStamp.
 

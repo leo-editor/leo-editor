@@ -656,7 +656,7 @@ class todoController:
             and isinstance(node.unknownAttributes.get(udict), dict)
         )
     #@+node:tbrown.20090119215428.22: *4* getat
-    def getat(self, node: VNode, attrib: str) -> Any:
+    def getat(self, node: VNode, attrib: str) -> Any:  # Weird result type.
         "new attribute getter"
         if (hasattr(node, 'unknownAttributes') and
             "annotate" in node.unknownAttributes and
