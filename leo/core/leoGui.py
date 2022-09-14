@@ -48,7 +48,7 @@ class LeoGui:
         self.globalFindTab: Widget = None
         self.idleTimeClass: Any = None
         self.isNullGui = False
-        self.lastFrame: Any = None
+        self.lastFrame: Widget = None
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None

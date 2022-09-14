@@ -25,7 +25,7 @@ Leo commanders.
 #@+<< leoIPython imports >>
 #@+node:ekr.20130930062914.15990: ** << leoIPython imports >>
 import sys
-from typing import Any, List, Optional, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Set, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 def import_fail(s: str) -> None:
@@ -97,15 +97,14 @@ class InternalIPKernel:
         """Ctor for InternalIPKernal class."""
         # Part 1: create the ivars.
         self.consoles: List[Any] = []  # List of Qt consoles.
-        self.kernelApp: Any = None  # The IPKernelApp instance.
-        self.namespace: Any = None  # Inited below.
+        self.kernelApp: InternalIPKernel = None  # The IPKernelApp instance.
         # Keys present at startup so we don't print the entire pylab/numpy
         # namespace when the user clicks the 'namespace' button
-        self._init_keys = None
+        self._init_keys: Set[str] = None
         # Start IPython kernel with GUI event loop and pylab support.
         kernelApp = self.pylab_kernel(backend)  # Sets self.kernelApp.
         assert kernelApp == self.kernelApp
-        self.namespace = kernelApp.shell.user_ns  # Import the shell namespace.
+        self.namespace: Dict[str, Any] = kernelApp.shell.user_ns  # Import the shell namespace.
         self._init_keys = set(self.namespace.keys())
         if 'ipython' in g.app.debug:
             self.namespace['kernelApp'] = kernelApp
