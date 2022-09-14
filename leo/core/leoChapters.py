@@ -15,11 +15,13 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    LeoQtTreeTab = Any
     Position = Any
     Wrapper = Any
 #@-<< leoChapters annotations >>
@@ -43,7 +45,7 @@ class ChapterController:
         self.re_chapter: re.Pattern = None  # Set where used.
         self.selectedChapter = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
-        self.tt: Any = None  # May be set in createChaptersIcon.
+        self.tt: LeoQtTreeTab = None  # May be set in createChaptersIcon.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
