@@ -120,7 +120,7 @@ class TreeAPI:
         pass
     # Must be defined in subclasses.
 
-    def editLabel(self, v: VNode, selectAll: bool=False, selection: Any=None) -> None:
+    def editLabel(self, v: VNode, selectAll: bool=False, selection: Tuple=None) -> None:
         pass
 
     def edit_widget(self, p: Position) -> None:
@@ -2161,7 +2161,7 @@ class NullStatusLineClass:
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget: Any = StringTextWrapper(c, name='status-line')
+        self.textWidget: Any = StringTextWrapper(c, name='status-line')  # Union.
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None

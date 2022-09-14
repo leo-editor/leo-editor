@@ -657,7 +657,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str='Properties',
         data: Any=None,
         callback: Callable=None,
-        buttons: Any=None,
+        buttons: List[str]=None,
     ) -> Tuple[str, Dict]:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:

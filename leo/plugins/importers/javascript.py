@@ -92,7 +92,7 @@ class Tok:
 
     num = 0
 
-    def __init__(self, name: str, regex: str, next: Any=None) -> None:
+    def __init__(self, name: str, regex: str, next: str=None) -> None:
         self.id = Tok.num
         Tok.num += 1
         self.name = name

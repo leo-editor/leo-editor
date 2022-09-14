@@ -139,7 +139,7 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: Any=None) -> None:
+    def __init__(self, words: List[str]=None) -> None:
         self.added_words: Set[str] = set()
         self.ignored_words: Set[str] = set()
         self.words: Set[str] = set() if words is None else set(words)

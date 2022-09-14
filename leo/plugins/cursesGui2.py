@@ -1765,7 +1765,7 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str='Properties',
         data: Any=None,
         callback: Callable=None,
-        buttons: Any=None,
+        buttons: List[str]=None,
     ) -> None:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:

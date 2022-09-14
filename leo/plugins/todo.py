@@ -1398,7 +1398,7 @@ for cmd, method in [
     ("todo-find-todo", "find_todo"),
 ]:
 
-    def f(event: Event, method: Any=method) -> None:
+    def f(event: Event, method: str=method) -> None:
         getattr(event.c.cleo, method)()
         event.c.redraw()
 

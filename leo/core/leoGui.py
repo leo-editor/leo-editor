@@ -167,7 +167,7 @@ class LeoGui:
         title: str='Properties',
         data: str=None,
         callback: Callable=None,
-        buttons: str=None,
+        buttons: List[str]=None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
         self.oops()
