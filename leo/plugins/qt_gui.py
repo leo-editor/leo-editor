@@ -1484,11 +1484,11 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         parent: Widget,
         name: str,
-        hPolicy: Any=None,
-        vPolicy: Any=None,
+        hPolicy: Policy=None,
+        vPolicy: Policy=None,
         lineWidth: int=1,
-        shadow: Any=None,
-        shape: Any=None,
+        shadow: Shadow=None,
+        shape: Shape=None,
     ) -> Widget:
         """Create a Qt Frame."""
         if shadow is None:
@@ -1531,9 +1531,7 @@ class LeoQtGui(leoGui.LeoGui):
         w.setText(label)
         return w
     #@+node:ekr.20190819092523.1: *4* qt_gui.createTabWidget
-    def createTabWidget(self,
-        parent: Widget, name: str, hPolicy: Any=None, vPolicy: Any=None,
-    ) -> Widget:
+    def createTabWidget(self, parent: Widget, name: str, hPolicy: Policy=None, vPolicy: Policy=None) -> Widget:
         w = QtWidgets.QTabWidget(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setObjectName(name)
