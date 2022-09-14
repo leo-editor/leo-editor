@@ -23,10 +23,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    FindTabManager = Any
     Position = Any
     Wrapper = Any
 Widget = Any
@@ -44,7 +46,7 @@ class LeoGui:
         """Ctor for the LeoGui class."""
         self.active = False  # Used only by qt_gui.
         self.consoleOnly = True  # True if g.es goes to console.
-        self.globalFindTabManager: Any = None
+        self.globalFindTabManager: FindTabManager = None
         self.globalFindTab: Widget = None
         self.idleTimeClass: Any = None
         self.isNullGui = False
