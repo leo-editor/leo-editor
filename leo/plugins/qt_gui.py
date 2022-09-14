@@ -2053,7 +2053,7 @@ class StyleSheetManager:
         return newsheet
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
-    def get_master_widget(self, top: Any=None) -> Widget:
+    def get_master_widget(self, top: Widget=None) -> Widget:
         """
         Carefully return the master widget.
         c.frame.top is a DynamicWindow.
