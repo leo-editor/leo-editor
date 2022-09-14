@@ -1457,7 +1457,7 @@ class GetArg:
         returnKind: str=None,
         returnState: int=None,
         handler: Callable=None,
-        tabList: List[str]=None,
+        tabList: Any=None,
         completion: bool=True,
         oneCharacter: bool=False,
         stroke: Stroke=None,
@@ -1708,8 +1708,8 @@ class KeyHandlerClass:
         """Create a key handler for c."""
         self.c = c
         self.dispatchEvent = None
-        self.fnc: Any = None  # A singleton defined in k.finishCreate.
-        self.getArgInstance: Any = None  # A singleton defined in k.finishCreate.
+        self.fnc: FileNameChooser = None  # A singleton defined in k.finishCreate.
+        self.getArgInstance: GetArg = None  # A singleton defined in k.finishCreate.
         self.inited = False  # Set at end of finishCreate.
         # A list of commands whose bindings have been set to None in the local file.
         self.killedBindings: List[Any] = []
@@ -2880,7 +2880,7 @@ class KeyHandlerClass:
         self,
         event: Event,
         returnKind: str=None,
-        returnState: str=None,
+        returnState: int=None,
         handler: Callable=None,
         prefix: List[str]=None,
         tabList: str=None,
@@ -3089,7 +3089,7 @@ class KeyHandlerClass:
         self,
         event: Event,
         callback: Callable=None,
-        filterExt: str=None,
+        filterExt: List[str]=None,
         prompt: str='Enter File Name: ',
         tabName: str='Dired',
     ) -> None:
@@ -4088,7 +4088,7 @@ class KeyHandlerClass:
         k.state.n = None
         k.state.handler = None
     #@+node:ekr.20061031131434.196: *4* k.getState
-    def getState(self, kind: str) -> str:
+    def getState(self, kind: str) -> int:
         k = self
         val = k.state.n if k.state.kind == kind else 0
         return val

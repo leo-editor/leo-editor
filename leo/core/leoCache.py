@@ -385,7 +385,7 @@ class PickleShareDB:
     #@+node:ekr.20100208223942.5982: *3* keys & helpers (PickleShareDB)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: Any=None) -> List[str]:
+    def keys(self, globpat: str=None) -> List[str]:
         """Return all keys in DB, or all keys matching a glob"""
         files: List[str]
         if globpat is None:
