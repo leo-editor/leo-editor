@@ -258,7 +258,7 @@ class BaseLeoPlugin:
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
     #@+node:ekr.20100908125007.6015: *3* setButton
-    def setButton(self, buttonText: Any=None, commandName: str=None, color: str=None) -> None:
+    def setButton(self, buttonText: str=None, commandName: str=None, color: str=None) -> None:
         """Associate an existing command with a 'button'
         """
         if buttonText is None:
