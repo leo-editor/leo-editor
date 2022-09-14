@@ -612,7 +612,7 @@ class FileCommands:
         # For writing...
         self.read_only = False
         self.rootPosition: Position = None
-        self.outputFile: Any = None  # StringIO
+        self.outputFile: io.StringIO = None
         self.openDirectory: str = None
         self.usingClipboard = False
         self.currentPosition: Position = None
