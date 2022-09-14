@@ -1132,7 +1132,7 @@ class JEditColorizer(BaseColorizer):
         for leadins_list, pattern in zip(leadins, patterns):
             for ch in leadins_list:
 
-                def wiki_rule(self: Any, s: str, i: int, pattern: Any=pattern) -> int:
+                def wiki_rule(self: Any, s: str, i: int, pattern: re.Pattern=pattern) -> int:
                     """Bind pattern and leadin for jedit.match_wiki_pattern."""
                     return self.match_wiki_pattern(s, i, pattern)
 
