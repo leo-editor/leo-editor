@@ -26,13 +26,19 @@ StringIO = io.StringIO
 #@+<< leoApp annotations >>
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoBackground import BackgroundProcessManager
+    from leo.core.leoCache import CommanderCacher
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
+    BackgroundProcessManager = Any
     Cmdr = Any
+    CommanderCacher = Any
     Event = Any
+    GlobalConfigManager = Any
     Position = Any
     VNode = Any
     Wrapper = Any
@@ -181,10 +187,10 @@ class LeoApp:
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Singleton applications objects...
-        self.backgroundProcessManager: Any = None  # A BackgroundProcessManager.
-        self.commander_cacher: Any = None  # A leoCacher.CommanderCacher.
+        self.backgroundProcessManager: BackgroundProcessManager = None  # A BackgroundProcessManager.
+        self.commander_cacher: CommanderCacher = None
         self.commander_db: Any = None  # Managed by g.app.commander_cacher.
-        self.config: Any = None  # g.app.config.
+        self.config: GlobalConfigManager = None  # g.app.config.
         self.db: Any = None  # A global db, managed by g.app.global_cacher.
         self.externalFilesController: Any = None  # An ExternalFilesController.
         self.global_cacher: Any = None  # A leoCacher.GlobalCacher.
