@@ -1863,12 +1863,12 @@ class NullFrame(LeoFrame):
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
-        self.top: Any = None  # Always None.
+        self.top: Widget = None  # Always None.
         # Create the component objects.
-        self.body: Any = NullBody(frame=self, parentFrame=None)
-        self.log: Any = NullLog(frame=self, parentFrame=None)
-        self.menu: Any = leoMenu.NullMenu(frame=self)
-        self.tree: Any = NullTree(frame=self)
+        self.body: Widget = NullBody(frame=self, parentFrame=None)
+        self.log: Widget = NullLog(frame=self, parentFrame=None)
+        self.menu: Widget = leoMenu.NullMenu(frame=self)
+        self.tree: Widget = NullTree(frame=self)
         # Default window position.
         self.w = 600
         self.h = 500
@@ -2024,7 +2024,7 @@ class NullIconBarClass:
     def show(self) -> None:
         pass
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
-    def add(self, *args: str, **keys: str) -> Widget:
+    def add(self, *args: Any, **keys: Any) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
         command: Any = keys.get('command')
         text = keys.get('text')
@@ -2226,7 +2226,7 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Position, selectAll: bool=False, selection: Any=None) -> Tuple[Any, Any]:
+    def editLabel(self, p: Position, selectAll: bool=False, selection: Tuple=None) -> Tuple[Any, Any]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
