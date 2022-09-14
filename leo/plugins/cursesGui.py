@@ -10,7 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 import os
-from typing import Any, Callable
+from typing import Any, Callable, Tuple
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
