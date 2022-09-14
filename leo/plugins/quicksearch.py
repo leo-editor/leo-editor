@@ -190,7 +190,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     c.frame.nav = wdg
 
     # make activating this tab activate the input box
-    def activate_input(idx: int, c: Any=c) -> None:
+    def activate_input(idx: int, c: Cmdr=c) -> None:
         wdg = c.frame.nav
         tab_widget = wdg.parent().parent()
         if (tab_widget and
