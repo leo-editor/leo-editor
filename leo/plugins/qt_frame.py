@@ -1552,7 +1552,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+others
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    def __init__(self, frame: "LeoQtFrame", parentFrame: "LeoQtFrame") -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
         super().__init__(frame, parentFrame)
@@ -2367,7 +2367,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     c.styleSheetManager.mng.update_view(w)  # force appearance update
             w.setText(s)
         #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
-        def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+        def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
             """Ctor for LeoQtFrame class."""
             self.c = c
             self.statusBar = c.frame.top.statusBar
@@ -2922,7 +2922,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         for frame in g.app.windowList:
             self.minimize(frame)
 
-    def minimize(self, frame: Widget) -> None:
+    def minimize(self, frame: "LeoQtFrame") -> None:
         # This unit test will fail when run externally.
         if frame and frame.top:
             w = frame.top.leo_master or frame.top
@@ -3094,7 +3094,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+others
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    def __init__(self, frame: "LeoQtFrame", parentFrame: "LeoQtFrame") -> None:
         """Ctor for LeoQtLog class."""
         super().__init__(frame, parentFrame)  # Calls createControl.
         # Set in finishCreate.
@@ -3533,7 +3533,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
     #@+others
     #@+node:ekr.20110605121601.18341: *3* LeoQtMenu.__init__
-    def __init__(self, c: Cmdr, frame: Widget, label: str) -> None:
+    def __init__(self, c: Cmdr, frame: "LeoQtFrame", label: str) -> None:
         """ctor for LeoQtMenu class."""
         assert frame
         assert frame.c
@@ -3679,7 +3679,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # realName = realName.replace("&","")
         # menu.entryconfig(realName,accelerator='')
     #@+node:ekr.20110605121601.18356: *5* LeoQtMenu.createMenuBar
-    def createMenuBar(self, frame: Widget) -> None:
+    def createMenuBar(self, frame: "LeoQtFrame") -> None:
         """
         (LeoQtMenu) Create all top-level menus.
         The menuBar itself has already been created.
@@ -4518,7 +4518,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
 class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
-    def __init__(self, c: Cmdr, frame: Widget, parent: Widget, label: str) -> None:
+    def __init__(self, c: Cmdr, frame: "LeoQtFrame", parent: Widget, label: str) -> None:
         """ctor for QtMenuWrapper class."""
         assert c
         assert frame
