@@ -2104,23 +2104,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self) -> None:
         # "Official ivars created in createLeoFrame and its allies.
-        self.bar1 = None
-        self.bar2 = None
+        self.bar1: "LeoQtFrame" = None
+        self.bar2: "LeoQtFrame"= None
         self.body: "LeoQtBody" = None
-        self.f1 = self.f2 = None
-        self.iconBarComponentName = 'iconBar'
         self.iconFrame: "QtIconBarClass" = None
         self.log: "LeoQtLog" = None
-        self.canvas: Widget = None
         self.outerFrame: "LeoQtFrame" = None
         self.statusFrame: "LeoQtFrame" = None
-        self.top: Widget = None  # This will be a class Window object.
+        self.top: "DynamicWindow" = None
         self.tree: LeoQtTree = None
         # Used by event handlers...
         self.controlKeyIsDown = False  # For control-drags
-        self.isActive = True
         self.redrawCount = 0
-        self.wantedCallbackScheduled = False
     #@+node:ekr.20110605121601.18249: *4* qtFrame.__repr__
     def __repr__(self) -> str:
         return f"<LeoQtFrame: {self.title}>"

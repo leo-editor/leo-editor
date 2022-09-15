@@ -2187,7 +2187,6 @@ class CoreFrame(leoFrame.LeoFrame):
             # self.bar1 = None
             # self.bar2 = None
             # self.f1 = self.f2 = None
-            # self.iconBarComponentName = 'iconBar'
             # self.iconFrame = None
             # self.canvas = None
             # self.outerFrame = None
@@ -2197,10 +2196,7 @@ class CoreFrame(leoFrame.LeoFrame):
             # self.top = None # This will be a class Window object.
             # Used by event handlers...
             # self.controlKeyIsDown = False # For control-drags
-            # self.isActive = True
             # self.redrawCount = 0
-            # self.wantedWidget = None
-            # self.wantedCallbackScheduled = False
             # self.scrollWay = None
     #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate
     def finishCreate(self) -> None:
