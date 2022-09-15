@@ -1566,7 +1566,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert c.frame == frame and frame.c == c
         self.colorizer: Any = None  # A Union
         self.wrapper: Wrapper = None
-        self.widget: Widget = None
+        self.widget: "LeoQtFrame" = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
