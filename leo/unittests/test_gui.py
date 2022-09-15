@@ -12,7 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoQt import QtCore
 from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
 from leo.core.leoFrame import LeoTree, NullStatusLineClass, NullTree, StringTextWrapper
-from leo.plugins.qt_frame import LeoQtFrame
+from leo.plugins.qt_frame import QtStatusLineClass
 from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
 from leo.plugins.qt_text import LeoQTextBrowser
 from leo.plugins.qt_tree import LeoQtTree
@@ -184,7 +184,7 @@ class TestAPIClasses(LeoUnitTest):
         def get_missing(cls):
             return [z for z in get_methods(StatusLineAPI) if z not in get_methods(cls)]
 
-        for cls in (LeoQtFrame.QtStatusLineClass, NullStatusLineClass):
+        for cls in (QtStatusLineClass, NullStatusLineClass):
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@+node:ekr.20220911101329.1: *3* test_tree_api
     def test_tree_api(self):

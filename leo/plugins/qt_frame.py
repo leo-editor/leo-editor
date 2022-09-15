@@ -50,80 +50,8 @@ else:
 QComboBox = Any
 Widget = Any
 #@-<< qt_frame annotations >>
-#@+others
-#@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
-#@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
-@g.command('contract-body-pane')
-@g.command('expand-outline-pane')
-def contractBodyPane(event: Event) -> None:
-    """Contract the body pane. Expand the outline/log splitter."""
-    c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = min(1.0, f.ratio + 0.1)
-    f.divideLeoSplitter1(r)
-
-expandOutlinePane = contractBodyPane
-#@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
-@g.command('contract-log-pane')
-def contractLogPane(event: Event) -> None:
-    """Contract the log pane. Expand the outline pane."""
-    c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = min(1.0, f.secondary_ratio + 0.1)
-    f.divideLeoSplitter2(r)
-#@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
-@g.command('contract-outline-pane')
-@g.command('expand-body-pane')
-def contractOutlinePane(event: Event) -> None:
-    """Contract the outline pane. Expand the body pane."""
-    c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = max(0.0, f.ratio - 0.1)
-    f.divideLeoSplitter1(r)
-
-expandBodyPane = contractOutlinePane
-#@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
-@g.command('expand-log-pane')
-def expandLogPane(event: Event) -> None:
-    """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = max(0.0, f.secondary_ratio - 0.1)
-    f.divideLeoSplitter2(r)
-#@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
-@g.command('hide-body-pane')
-def hideBodyPane(event: Event) -> None:
-    """Hide the body pane. Fully expand the outline/log splitter."""
-    c = event.get('c')
-    if not c:
-        return
-    c.frame.divideLeoSplitter1(1.0)
-#@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
-@g.command('hide-log-pane')
-def hideLogPane(event: Event) -> None:
-    """Hide the log pane. Fully expand the outline pane."""
-    c = event.get('c')
-    if not c:
-        return
-    c.frame.divideLeoSplitter2(1.0)
-#@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
-@g.command('hide-outline-pane')
-def hideOutlinePane(event: Event) -> None:
-    """Hide the outline/log splitter. Fully expand the body pane."""
-    c = event.get('c')
-    if not c:
-        return
-    c.frame.divideLeoSplitter1(0.0)
-
-#@+node:ekr.20210228142208.1: ** decorators (qt_frame.py)
+#@+<< qt_frame decorators >>
+#@+node:ekr.20210228142208.1: ** << qt_frame decorators >>
 def body_cmd(name: str) -> Callable:
     """Command decorator for the LeoQtBody class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
@@ -135,6 +63,8 @@ def frame_cmd(name: str) -> Callable:
 def log_cmd(name: str) -> Callable:
     """Command decorator for the LeoQtLog class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
+#@-<< qt_frame decorators >>
+#@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     """
@@ -2157,10 +2087,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
         self.iconBar: Widget = None
-        self.iconBarClass = self.QtIconBarClass  # type:ignore
+        self.iconBarClass: Widget = QtIconBarClass  # A Union
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
-        self.statusLineClass = self.QtStatusLineClass  # type:ignore
+        self.statusLineClass: Widget = QtStatusLineClass  # A Union
         self.title = title
         self.setIvars()
         self.reloadSettings()
@@ -2324,398 +2254,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c.exists = False  # Make sure this one ivar has not been destroyed.
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
-    #@+node:ekr.20110605121601.18257: *3* qtFrame.class QtStatusLineClass
-    class QtStatusLineClass:
-        """A class representing the status line."""
-        #@+others
-        #@+node:ekr.20110605121601.18260: *4* QtStatusLineClass.clear, get & put/1
-        def clear(self) -> None:
-            self.put('')
-
-        def get(self) -> str:
-            return self.textWidget2.text()
-
-        def put(self, s: str, bg: str=None, fg: str=None) -> None:
-            self.put_helper(s, self.textWidget2, bg, fg)
-
-        def put1(self, s: str, bg: str=None, fg: str=None) -> None:
-            self.put_helper(s, self.textWidget1, bg, fg)
-
-        # Keys are widgets, values are stylesheets.
-        styleSheetCache: Dict[Any, str] = {}
-
-        def put_helper(self, s: str, w: "LeoQtFrame", bg: str=None, fg: str=None) -> None:
-            """Put string s in the indicated widget, with proper colors."""
-            c = self.c
-            bg = bg or c.config.getColor('status-bg') or 'white'
-            fg = fg or c.config.getColor('status-fg') or 'black'
-            if True:
-                # Work around #804. w is a QLineEdit.
-                w.setStyleSheet(f"background: {bg}; color: {fg};")
-            else:
-                # Rather than put(msg, explicit_color, explicit_color) we should use
-                # put(msg, status) where status is None, 'info', or 'fail'.
-                # Just as a quick hack to avoid dealing with propagating those changes
-                # back upstream, infer status like this:
-                if (
-                    fg == c.config.getColor('find-found-fg') and
-                    bg == c.config.getColor('find-found-bg')
-                ):
-                    status = 'info'
-                elif (
-                    fg == c.config.getColor('find-not-found-fg') and
-                    bg == c.config.getColor('find-not-found-bg')
-                ):
-                    status = 'fail'
-                else:
-                    status = None
-                d = self.styleSheetCache
-                if status != d.get(w, '__undefined__'):
-                    d[w] = status
-                    c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
-                    c.styleSheetManager.mng.add_sclass(w, status)
-                    c.styleSheetManager.mng.update_view(w)  # force appearance update
-            w.setText(s)
-        #@+node:ekr.20110605121601.18258: *4* QtStatusLineClass.ctor
-        def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
-            """Ctor for LeoQtFrame class."""
-            self.c = c
-            self.statusBar = c.frame.top.statusBar
-            self.lastFcol = 0
-            self.lastRow = 0
-            self.lastCol = 0
-            # Create the text widgets.
-            self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
-            self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
-            w1.setObjectName('status1')
-            w2.setObjectName('status2')
-            w1.setReadOnly(True)
-            w2.setReadOnly(True)
-            splitter = QtWidgets.QSplitter()
-            self.statusBar.addWidget(splitter, True)
-            sizes = c.config.getString('status-line-split-sizes') or '1 2'
-            sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-            for n, i in enumerate(sizes):
-                w = [w1, w2][n]
-                policy = w.sizePolicy()
-                policy.setHorizontalStretch(i)
-                policy.setHorizontalPolicy(Policy.Minimum)
-                w.setSizePolicy(policy)
-            splitter.addWidget(w1)
-            splitter.addWidget(w2)
-            self.put('')
-            self.update()
-        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helpers
-        def update(self) -> None:
-            if g.app.killed:
-                return
-            c, body = self.c, self.c.frame.body
-            if not c.p:
-                return
-            te = body.widget
-            if not isinstance(te, QtWidgets.QTextEdit):
-                return
-            cursor = te.textCursor()
-            block = cursor.block()
-            row = block.blockNumber() + 1
-            col, fcol = self.compute_columns(block, cursor)
-            words = len(c.p.b.split(None))
-            self.put_status_line(col, fcol, row, words)
-            self.lastRow = row
-            self.lastCol = col
-            self.lastFcol = fcol
-        #@+node:ekr.20190118082646.1: *5* qstatus.compute_columns
-        def compute_columns(self, block: Any, cursor: Any) -> Tuple[int, int]:
-
-            c = self.c
-            line = block.text()
-            col = cursor.columnNumber()
-            offset = c.p.textOffset()
-            fcol_offset = 0
-            s2 = line[0:col]
-            col = g.computeWidth(s2, c.tab_width)
-            #
-            # #195: fcol when using @first directive is inaccurate
-            i = line.find('<<')
-            j = line.find('>>')
-            if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
-                offset = None
-            else:
-                for tag in ('@first ', '@last '):
-                    if line.startswith(tag):
-                        fcol_offset = len(tag)
-                        break
-            #
-            # fcol is '' if there is no ancestor @<file> node.
-            fcol = None if offset is None else max(0, col + offset - fcol_offset)
-            return col, fcol
-        #@+node:chris.20180320072817.2: *5* qstatus.file_line (not used)
-        def file_line(self) -> Optional[int]:
-            """
-            Return the line of the first line of c.p in its external file.
-            Return None if c.p is not part of an external file.
-            """
-            c, p = self.c, self.c.p
-            if p:
-                goto = gotoCommands.GoToCommands(c)
-                return goto.find_node_start(p)
-            return None
-        #@+node:ekr.20190118082047.1: *5* qstatus.put_status_line
-        def put_status_line(self, col: int, fcol: int, row: int, words: int) -> None:
-
-            if 1:
-                fcol_part = '' if fcol is None else f" fcol: {fcol}"
-                # For now, it seems to0 difficult to get alignment *exactly* right.
-                self.put1(f"line: {row:d} col: {col:d} {fcol_part} words: {words}")
-            else:
-                # #283 is not ready yet, and probably will never be.
-                fline = self.file_line()
-                fline = '' if fline is None else fline + row
-                self.put1(
-                    f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
-        #@+node:ekr.20220911120019.1: *4* QtStatusLineClass: do-nothings
-        def disable(self, background: str=None) -> None:
-            pass
-
-        def enable(self, background: str="white") -> None:
-            pass
-
-        def isEnabled(self) -> bool:
-            return False
-
-        def setFocus(self) -> None:
-            pass
-        #@-others
-    #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
-    class QtIconBarClass:
-        """A class representing the singleton Icon bar"""
-        #@+others
-        #@+node:ekr.20110605121601.18263: *4*  QtIconBar.ctor & reloadSettings
-        def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
-            """Ctor for QtIconBarClass."""
-            # Copy ivars
-            self.c = c
-            self.parentFrame = parentFrame
-            # Status ivars.
-            self.actions: List[Any] = []
-            self.chapterController = None
-            self.toolbar = self
-            self.w = c.frame.top.iconBar  # A QToolBar.
-            self.reloadSettings()
-
-        def reloadSettings(self) -> None:
-            c = self.c
-            c.registerReloadSettings(self)
-            self.buttonColor = c.config.getString('qt-button-color')
-            self.toolbar_orientation = c.config.getString('qt-toolbar-location')
-        #@+node:ekr.20110605121601.18264: *4*  QtIconBar.do-nothings
-        # These *are* called from Leo's core.
-
-        def addRow(self, height: int=None) -> None:
-            pass  # To do.
-
-        def getNewFrame(self) -> None:
-            return None  # To do
-        #@+node:ekr.20110605121601.18265: *4* QtIconBar.add
-        def add(self, *args: Any, **keys: Any) -> Any:
-            """Add a button to the icon bar."""
-            c = self.c
-            if not self.w:
-                return None
-            command: Callable = keys.get('command')
-            text: str = keys.get('text')
-            # able to specify low-level QAction directly (QPushButton not forced)
-            qaction: Any = keys.get('qaction')
-            if not text and not qaction:
-                g.es('bad toolbar item')
-            kind: str = keys.get('kind') or 'generic-button'
-            # imagefile = keys.get('imagefile')
-            # image = keys.get('image')
-
-
-            class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
-
-                # toolbar is a QtIconBarClass object, not a QWidget.
-                def __init__(self, parent: "LeoQtFrame", text: str, toolbar: Any) -> None:
-                    super().__init__(parent)
-                    self.button: Widget = None  # set below
-                    self.text = text
-                    self.toolbar = toolbar
-
-                def createWidget(self, parent: "LeoQtFrame") -> None:
-                    self.button = b = QtWidgets.QPushButton(self.text, parent)
-                    self.button.setProperty('button_kind', kind)  # for styling
-                    return b
-
-            action: Any
-            if qaction is None:
-                action = leoIconBarButton(parent=self.w, text=text, toolbar=self)
-                button_name = text
-            else:
-                action = qaction
-                button_name = action.text()
-            self.w.addAction(action)
-            self.actions.append(action)
-            b = self.w.widgetForAction(action)
-            # Set the button's object name so we can use the stylesheet to color it.
-            if not button_name:
-                button_name = 'unnamed'
-            button_name = button_name + '-button'
-            b.setObjectName(button_name)
-            b.setContextMenuPolicy(ContextMenuPolicy.ActionsContextMenu)
-
-            def delete_callback(checked: str, action: str=action) -> None:
-                self.w.removeAction(action)
-
-            b.leo_removeAction = rb = QAction('Remove Button', b)
-            b.addAction(rb)
-            rb.triggered.connect(delete_callback)
-            if command:
-
-                def button_callback(event: Event, c: Cmdr=c, command: Callable=command) -> None:
-                    val = command()
-                    if c.exists:
-                        # c.bodyWantsFocus()
-                        c.outerUpdate()
-                    return val
-
-                b.clicked.connect(button_callback)
-            return action
-        #@+node:ekr.20110605121601.18266: *4* QtIconBar.addRowIfNeeded (not used)
-        def addRowIfNeeded(self) -> None:
-            """Add a new icon row if there are too many widgets."""
-            # n = g.app.iconWidgetCount
-            # if n >= self.widgets_per_row:
-                # g.app.iconWidgetCount = 0
-                # self.addRow()
-            # g.app.iconWidgetCount += 1
-        #@+node:ekr.20110605121601.18267: *4* QtIconBar.addWidget
-        def addWidget(self, w: "LeoQtFrame") -> None:
-            self.w.addWidget(w)
-        #@+node:ekr.20110605121601.18268: *4* QtIconBar.clear
-        def clear(self) -> None:
-            """Destroy all the widgets in the icon bar"""
-            self.w.clear()
-            self.actions = []
-            g.app.iconWidgetCount = 0
-        #@+node:ekr.20110605121601.18269: *4* QtIconBar.createChaptersIcon
-        def createChaptersIcon(self) -> "LeoQtTreeTab":
-
-            c = self.c
-            f = c.frame
-            if f.use_chapters and f.use_chapter_tabs:
-                return LeoQtTreeTab(c, f.iconBar)
-            return None
-        #@+node:ekr.20110605121601.18270: *4* QtIconBar.deleteButton
-        def deleteButton(self, w: "LeoQtFrame") -> None:
-            """ w is button """
-            self.w.removeAction(w)
-            self.c.bodyWantsFocus()
-            self.c.outerUpdate()
-        #@+node:ekr.20141031053508.14: *4* QtIconBar.goto_command
-        def goto_command(self, controller: Any, gnx: str) -> None:
-            """
-            Select the node corresponding to the given gnx.
-            controller is a ScriptingController instance.
-            """
-            # Fix bug 74: command_p may be in another outline.
-            c = self.c
-            c2, p = controller.open_gnx(c, gnx)
-            if p:
-                assert c2.positionExists(p)
-                if c == c2:
-                    c2.selectPosition(p)
-                else:
-                    g.app.selectLeoWindow(c2)
-                    # Fix #367: Process events before selecting.
-                    g.app.gui.qtApp.processEvents()
-                    c2.selectPosition(p)
-            else:
-                g.trace('not found', gnx)
-        #@+node:ekr.20110605121601.18271: *4* QtIconBar.setCommandForButton (@rclick nodes) & helper
-        # qtFrame.QtIconBarClass.setCommandForButton
-        # Controller is a ScriptingController.
-
-        def setCommandForButton(self,
-            button: Any, command: Callable, command_p: Position, controller: Cmdr, gnx: str, script: str,
-        ) -> None:
-            """
-            Set the "Goto Script" rlick item of an @button button.
-            Called from mod_scripting.py plugin.
-
-            button is a leoIconBarButton.
-            command is a callback, defined in mod_scripting.py.
-            command_p exists only if the @button node exists in the local .leo file.
-            gnx is the gnx of the @button node.
-            script is a static script for common @button nodes.
-            """
-            if not command:
-                return
-            b = button.button
-            b.clicked.connect(command)
-
-            def goto_callback(checked: str, controller: Cmdr=controller, gnx: str=gnx) -> None:
-                self.goto_command(controller, gnx)
-
-            b.goto_script = gts = QAction('Goto Script', b)
-            b.addAction(gts)
-            gts.triggered.connect(goto_callback)
-            rclicks = build_rclick_tree(command_p, top_level=True)
-            self.add_rclick_menu(b, rclicks, controller, script=script)
-        #@+node:ekr.20141031053508.15: *5* add_rclick_menu (QtIconBarClass)
-        def add_rclick_menu(
-            self,
-            action_container: Any,
-            rclicks: List[Any],
-            controller: Cmdr,
-            top_level: bool=True,
-            button: str=None,
-            script: str=None,
-        ) -> None:
-            c = controller.c
-            top_offset = -2  # insert before the remove button and goto script items
-            if top_level:
-                button = action_container
-            for rc in rclicks:
-                # pylint: disable=cell-var-from-loop
-                headline = rc.position.h[8:].strip()
-                act = QAction(headline, action_container)
-                if '---' in headline and headline.strip().strip('-') == '':
-                    act.setSeparator(True)
-                elif rc.position.b.strip():
-
-                    def cb(checked: str, p: str=rc.position, button: str=button) -> None:
-                        controller.executeScriptFromButton(
-                            b=button,
-                            buttonText=p.h[8:].strip(),
-                            p=p,
-                            script=script,
-                        )
-                        if c.exists:
-                            c.outerUpdate()
-
-                    act.triggered.connect(cb)
-                else:  # recurse submenu
-                    sub_menu = QtWidgets.QMenu(action_container)
-                    act.setMenu(sub_menu)
-                    self.add_rclick_menu(sub_menu, rc.children, controller,
-                        top_level=False, button=button)
-                if top_level:
-                    # insert act before Remove Button
-                    action_container.insertAction(
-                        action_container.actions()[top_offset], act)
-                else:
-                    action_container.addAction(act)
-            if top_level and rclicks:
-                act = QAction('---', action_container)
-                act.setSeparator(True)
-                action_container.insertAction(
-                    action_container.actions()[top_offset], act)
-                action_container.setText(
-                    action_container.text() +
-                    (c.config.getString('mod-scripting-subtext') or '')
-                )
-        #@-others
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
@@ -4509,20 +4047,235 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
-#@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
-class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
+#@+node:ekr.20110605121601.18262: ** class QtIconBarClass (moved)
+class QtIconBarClass:
+    """A class representing the singleton Icon bar"""
     #@+others
-    #@+node:peckj.20140516114832.10108: *3* __init__
-    def __init__(self, parent: "LeoQtFrame"=None) -> None:
-        super().__init__(parent)
-        self.setMovable(True)
-    #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
-    def mouseReleaseEvent(self, event: Event) -> None:
-        # middle click close on tabs -- JMP 20140505
-        # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-        if event.button() == MouseButton.MiddleButton:
-            self.tabCloseRequested.emit(self.tabAt(event.pos()))
-        QtWidgets.QTabBar.mouseReleaseEvent(self, event)
+    #@+node:ekr.20110605121601.18263: *3*  QtIconBar.ctor & reloadSettings
+    def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
+        """Ctor for QtIconBarClass."""
+        # Copy ivars
+        self.c = c
+        self.parentFrame = parentFrame
+        # Status ivars.
+        self.actions: List[Any] = []
+        self.chapterController = None
+        self.toolbar = self
+        self.w = c.frame.top.iconBar  # A QToolBar.
+        self.reloadSettings()
+
+    def reloadSettings(self) -> None:
+        c = self.c
+        c.registerReloadSettings(self)
+        self.buttonColor = c.config.getString('qt-button-color')
+        self.toolbar_orientation = c.config.getString('qt-toolbar-location')
+    #@+node:ekr.20110605121601.18264: *3*  QtIconBar.do-nothings
+    # These *are* called from Leo's core.
+
+    def addRow(self, height: int=None) -> None:
+        pass  # To do.
+
+    def getNewFrame(self) -> None:
+        return None  # To do
+    #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
+    def add(self, *args: Any, **keys: Any) -> Any:
+        """Add a button to the icon bar."""
+        c = self.c
+        if not self.w:
+            return None
+        command: Callable = keys.get('command')
+        text: str = keys.get('text')
+        # able to specify low-level QAction directly (QPushButton not forced)
+        qaction: Any = keys.get('qaction')
+        if not text and not qaction:
+            g.es('bad toolbar item')
+        kind: str = keys.get('kind') or 'generic-button'
+        # imagefile = keys.get('imagefile')
+        # image = keys.get('image')
+
+
+        class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
+
+            # toolbar is a QtIconBarClass object, not a QWidget.
+            def __init__(self, parent: "LeoQtFrame", text: str, toolbar: Any) -> None:
+                super().__init__(parent)
+                self.button: Widget = None  # set below
+                self.text = text
+                self.toolbar = toolbar
+
+            def createWidget(self, parent: "LeoQtFrame") -> None:
+                self.button = b = QtWidgets.QPushButton(self.text, parent)
+                self.button.setProperty('button_kind', kind)  # for styling
+                return b
+
+        action: Any
+        if qaction is None:
+            action = leoIconBarButton(parent=self.w, text=text, toolbar=self)
+            button_name = text
+        else:
+            action = qaction
+            button_name = action.text()
+        self.w.addAction(action)
+        self.actions.append(action)
+        b = self.w.widgetForAction(action)
+        # Set the button's object name so we can use the stylesheet to color it.
+        if not button_name:
+            button_name = 'unnamed'
+        button_name = button_name + '-button'
+        b.setObjectName(button_name)
+        b.setContextMenuPolicy(ContextMenuPolicy.ActionsContextMenu)
+
+        def delete_callback(checked: str, action: str=action) -> None:
+            self.w.removeAction(action)
+
+        b.leo_removeAction = rb = QAction('Remove Button', b)
+        b.addAction(rb)
+        rb.triggered.connect(delete_callback)
+        if command:
+
+            def button_callback(event: Event, c: Cmdr=c, command: Callable=command) -> None:
+                val = command()
+                if c.exists:
+                    # c.bodyWantsFocus()
+                    c.outerUpdate()
+                return val
+
+            b.clicked.connect(button_callback)
+        return action
+    #@+node:ekr.20110605121601.18266: *3* QtIconBar.addRowIfNeeded (not used)
+    def addRowIfNeeded(self) -> None:
+        """Add a new icon row if there are too many widgets."""
+        # n = g.app.iconWidgetCount
+        # if n >= self.widgets_per_row:
+            # g.app.iconWidgetCount = 0
+            # self.addRow()
+        # g.app.iconWidgetCount += 1
+    #@+node:ekr.20110605121601.18267: *3* QtIconBar.addWidget
+    def addWidget(self, w: "LeoQtFrame") -> None:
+        self.w.addWidget(w)
+    #@+node:ekr.20110605121601.18268: *3* QtIconBar.clear
+    def clear(self) -> None:
+        """Destroy all the widgets in the icon bar"""
+        self.w.clear()
+        self.actions = []
+        g.app.iconWidgetCount = 0
+    #@+node:ekr.20110605121601.18269: *3* QtIconBar.createChaptersIcon
+    def createChaptersIcon(self) -> "LeoQtTreeTab":
+
+        c = self.c
+        f = c.frame
+        if f.use_chapters and f.use_chapter_tabs:
+            return LeoQtTreeTab(c, f.iconBar)
+        return None
+    #@+node:ekr.20110605121601.18270: *3* QtIconBar.deleteButton
+    def deleteButton(self, w: "LeoQtFrame") -> None:
+        """ w is button """
+        self.w.removeAction(w)
+        self.c.bodyWantsFocus()
+        self.c.outerUpdate()
+    #@+node:ekr.20141031053508.14: *3* QtIconBar.goto_command
+    def goto_command(self, controller: Any, gnx: str) -> None:
+        """
+        Select the node corresponding to the given gnx.
+        controller is a ScriptingController instance.
+        """
+        # Fix bug 74: command_p may be in another outline.
+        c = self.c
+        c2, p = controller.open_gnx(c, gnx)
+        if p:
+            assert c2.positionExists(p)
+            if c == c2:
+                c2.selectPosition(p)
+            else:
+                g.app.selectLeoWindow(c2)
+                # Fix #367: Process events before selecting.
+                g.app.gui.qtApp.processEvents()
+                c2.selectPosition(p)
+        else:
+            g.trace('not found', gnx)
+    #@+node:ekr.20110605121601.18271: *3* QtIconBar.setCommandForButton (@rclick nodes) & helper
+    # qtFrame.QtIconBarClass.setCommandForButton
+    # Controller is a ScriptingController.
+
+    def setCommandForButton(self,
+        button: Any, command: Callable, command_p: Position, controller: Cmdr, gnx: str, script: str,
+    ) -> None:
+        """
+        Set the "Goto Script" rlick item of an @button button.
+        Called from mod_scripting.py plugin.
+
+        button is a leoIconBarButton.
+        command is a callback, defined in mod_scripting.py.
+        command_p exists only if the @button node exists in the local .leo file.
+        gnx is the gnx of the @button node.
+        script is a static script for common @button nodes.
+        """
+        if not command:
+            return
+        b = button.button
+        b.clicked.connect(command)
+
+        def goto_callback(checked: str, controller: Cmdr=controller, gnx: str=gnx) -> None:
+            self.goto_command(controller, gnx)
+
+        b.goto_script = gts = QAction('Goto Script', b)
+        b.addAction(gts)
+        gts.triggered.connect(goto_callback)
+        rclicks = build_rclick_tree(command_p, top_level=True)
+        self.add_rclick_menu(b, rclicks, controller, script=script)
+    #@+node:ekr.20141031053508.15: *4* add_rclick_menu (QtIconBarClass)
+    def add_rclick_menu(
+        self,
+        action_container: Any,
+        rclicks: List[Any],
+        controller: Cmdr,
+        top_level: bool=True,
+        button: str=None,
+        script: str=None,
+    ) -> None:
+        c = controller.c
+        top_offset = -2  # insert before the remove button and goto script items
+        if top_level:
+            button = action_container
+        for rc in rclicks:
+            # pylint: disable=cell-var-from-loop
+            headline = rc.position.h[8:].strip()
+            act = QAction(headline, action_container)
+            if '---' in headline and headline.strip().strip('-') == '':
+                act.setSeparator(True)
+            elif rc.position.b.strip():
+
+                def cb(checked: str, p: str=rc.position, button: str=button) -> None:
+                    controller.executeScriptFromButton(
+                        b=button,
+                        buttonText=p.h[8:].strip(),
+                        p=p,
+                        script=script,
+                    )
+                    if c.exists:
+                        c.outerUpdate()
+
+                act.triggered.connect(cb)
+            else:  # recurse submenu
+                sub_menu = QtWidgets.QMenu(action_container)
+                act.setMenu(sub_menu)
+                self.add_rclick_menu(sub_menu, rc.children, controller,
+                    top_level=False, button=button)
+            if top_level:
+                # insert act before Remove Button
+                action_container.insertAction(
+                    action_container.actions()[top_offset], act)
+            else:
+                action_container.addAction(act)
+        if top_level and rclicks:
+            act = QAction('---', action_container)
+            act.setSeparator(True)
+            action_container.insertAction(
+                action_container.actions()[top_offset], act)
+            action_container.setText(
+                action_container.text() +
+                (c.config.getString('mod-scripting-subtext') or '')
+            )
     #@-others
 #@+node:ekr.20110605121601.18458: ** class QtMenuWrapper (LeoQtMenu,QMenu)
 class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
@@ -4607,6 +4360,183 @@ class QtSearchWidget:
         self.wrapper = self
         self.body = self
         self.text = None
+#@+node:ekr.20110605121601.18257: ** class QtStatusLineClass (moved)
+class QtStatusLineClass:
+    """A class representing the status line."""
+    #@+others
+    #@+node:ekr.20110605121601.18260: *3* QtStatusLineClass.clear, get & put/1
+    def clear(self) -> None:
+        self.put('')
+
+    def get(self) -> str:
+        return self.textWidget2.text()
+
+    def put(self, s: str, bg: str=None, fg: str=None) -> None:
+        self.put_helper(s, self.textWidget2, bg, fg)
+
+    def put1(self, s: str, bg: str=None, fg: str=None) -> None:
+        self.put_helper(s, self.textWidget1, bg, fg)
+
+    # Keys are widgets, values are stylesheets.
+    styleSheetCache: Dict[Any, str] = {}
+
+    def put_helper(self, s: str, w: "LeoQtFrame", bg: str=None, fg: str=None) -> None:
+        """Put string s in the indicated widget, with proper colors."""
+        c = self.c
+        bg = bg or c.config.getColor('status-bg') or 'white'
+        fg = fg or c.config.getColor('status-fg') or 'black'
+        if True:
+            # Work around #804. w is a QLineEdit.
+            w.setStyleSheet(f"background: {bg}; color: {fg};")
+        else:
+            # Rather than put(msg, explicit_color, explicit_color) we should use
+            # put(msg, status) where status is None, 'info', or 'fail'.
+            # Just as a quick hack to avoid dealing with propagating those changes
+            # back upstream, infer status like this:
+            if (
+                fg == c.config.getColor('find-found-fg') and
+                bg == c.config.getColor('find-found-bg')
+            ):
+                status = 'info'
+            elif (
+                fg == c.config.getColor('find-not-found-fg') and
+                bg == c.config.getColor('find-not-found-bg')
+            ):
+                status = 'fail'
+            else:
+                status = None
+            d = self.styleSheetCache
+            if status != d.get(w, '__undefined__'):
+                d[w] = status
+                c.styleSheetManager.mng.remove_sclass(w, ['info', 'fail'])
+                c.styleSheetManager.mng.add_sclass(w, status)
+                c.styleSheetManager.mng.update_view(w)  # force appearance update
+        w.setText(s)
+    #@+node:ekr.20110605121601.18258: *3* QtStatusLineClass.ctor
+    def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
+        """Ctor for LeoQtFrame class."""
+        self.c = c
+        self.statusBar = c.frame.top.statusBar
+        self.lastFcol = 0
+        self.lastRow = 0
+        self.lastCol = 0
+        # Create the text widgets.
+        self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
+        self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
+        w1.setObjectName('status1')
+        w2.setObjectName('status2')
+        w1.setReadOnly(True)
+        w2.setReadOnly(True)
+        splitter = QtWidgets.QSplitter()
+        self.statusBar.addWidget(splitter, True)
+        sizes = c.config.getString('status-line-split-sizes') or '1 2'
+        sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+        for n, i in enumerate(sizes):
+            w = [w1, w2][n]
+            policy = w.sizePolicy()
+            policy.setHorizontalStretch(i)
+            policy.setHorizontalPolicy(Policy.Minimum)
+            w.setSizePolicy(policy)
+        splitter.addWidget(w1)
+        splitter.addWidget(w2)
+        self.put('')
+        self.update()
+    #@+node:chris.20180320072817.1: *3* QtStatusLineClass.update & helpers
+    def update(self) -> None:
+        if g.app.killed:
+            return
+        c, body = self.c, self.c.frame.body
+        if not c.p:
+            return
+        te = body.widget
+        if not isinstance(te, QtWidgets.QTextEdit):
+            return
+        cursor = te.textCursor()
+        block = cursor.block()
+        row = block.blockNumber() + 1
+        col, fcol = self.compute_columns(block, cursor)
+        words = len(c.p.b.split(None))
+        self.put_status_line(col, fcol, row, words)
+        self.lastRow = row
+        self.lastCol = col
+        self.lastFcol = fcol
+    #@+node:ekr.20190118082646.1: *4* qstatus.compute_columns
+    def compute_columns(self, block: Any, cursor: Any) -> Tuple[int, int]:
+
+        c = self.c
+        line = block.text()
+        col = cursor.columnNumber()
+        offset = c.p.textOffset()
+        fcol_offset = 0
+        s2 = line[0:col]
+        col = g.computeWidth(s2, c.tab_width)
+        #
+        # #195: fcol when using @first directive is inaccurate
+        i = line.find('<<')
+        j = line.find('>>')
+        if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
+            offset = None
+        else:
+            for tag in ('@first ', '@last '):
+                if line.startswith(tag):
+                    fcol_offset = len(tag)
+                    break
+        #
+        # fcol is '' if there is no ancestor @<file> node.
+        fcol = None if offset is None else max(0, col + offset - fcol_offset)
+        return col, fcol
+    #@+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
+    def file_line(self) -> Optional[int]:
+        """
+        Return the line of the first line of c.p in its external file.
+        Return None if c.p is not part of an external file.
+        """
+        c, p = self.c, self.c.p
+        if p:
+            goto = gotoCommands.GoToCommands(c)
+            return goto.find_node_start(p)
+        return None
+    #@+node:ekr.20190118082047.1: *4* qstatus.put_status_line
+    def put_status_line(self, col: int, fcol: int, row: int, words: int) -> None:
+
+        if 1:
+            fcol_part = '' if fcol is None else f" fcol: {fcol}"
+            # For now, it seems to0 difficult to get alignment *exactly* right.
+            self.put1(f"line: {row:d} col: {col:d} {fcol_part} words: {words}")
+        else:
+            # #283 is not ready yet, and probably will never be.
+            fline = self.file_line()
+            fline = '' if fline is None else fline + row
+            self.put1(
+                f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
+    #@+node:ekr.20220911120019.1: *3* QtStatusLineClass: do-nothings
+    def disable(self, background: str=None) -> None:
+        pass
+
+    def enable(self, background: str="white") -> None:
+        pass
+
+    def isEnabled(self) -> bool:
+        return False
+
+    def setFocus(self) -> None:
+        pass
+    #@-others
+#@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
+class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
+    #@+others
+    #@+node:peckj.20140516114832.10108: *3* __init__
+    def __init__(self, parent: "LeoQtFrame"=None) -> None:
+        super().__init__(parent)
+        self.setMovable(True)
+    #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
+    def mouseReleaseEvent(self, event: Event) -> None:
+        # middle click close on tabs -- JMP 20140505
+        # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
+        if event.button() == MouseButton.MiddleButton:
+            self.tabCloseRequested.emit(self.tabAt(event.pos()))
+        QtWidgets.QTabBar.mouseReleaseEvent(self, event)
+    #@-others
 #@+node:ekr.20110605121601.18464: ** class TabbedFrameFactory
 class TabbedFrameFactory:
     """
@@ -4797,6 +4727,78 @@ class TabbedFrameFactory:
         if c:
             c.redraw()
     #@-others
+#@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
+#@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
+@g.command('contract-body-pane')
+@g.command('expand-outline-pane')
+def contractBodyPane(event: Event) -> None:
+    """Contract the body pane. Expand the outline/log splitter."""
+    c = event.get('c')
+    if not c:
+        return
+    f = c.frame
+    r = min(1.0, f.ratio + 0.1)
+    f.divideLeoSplitter1(r)
+
+expandOutlinePane = contractBodyPane
+#@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
+@g.command('contract-log-pane')
+def contractLogPane(event: Event) -> None:
+    """Contract the log pane. Expand the outline pane."""
+    c = event.get('c')
+    if not c:
+        return
+    f = c.frame
+    r = min(1.0, f.secondary_ratio + 0.1)
+    f.divideLeoSplitter2(r)
+#@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
+@g.command('contract-outline-pane')
+@g.command('expand-body-pane')
+def contractOutlinePane(event: Event) -> None:
+    """Contract the outline pane. Expand the body pane."""
+    c = event.get('c')
+    if not c:
+        return
+    f = c.frame
+    r = max(0.0, f.ratio - 0.1)
+    f.divideLeoSplitter1(r)
+
+expandBodyPane = contractOutlinePane
+#@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
+@g.command('expand-log-pane')
+def expandLogPane(event: Event) -> None:
+    """Expand the log pane. Contract the outline pane."""
+    c = event.get('c')
+    if not c:
+        return
+    f = c.frame
+    r = max(0.0, f.secondary_ratio - 0.1)
+    f.divideLeoSplitter2(r)
+#@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
+@g.command('hide-body-pane')
+def hideBodyPane(event: Event) -> None:
+    """Hide the body pane. Fully expand the outline/log splitter."""
+    c = event.get('c')
+    if not c:
+        return
+    c.frame.divideLeoSplitter1(1.0)
+#@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
+@g.command('hide-log-pane')
+def hideLogPane(event: Event) -> None:
+    """Hide the log pane. Fully expand the outline pane."""
+    c = event.get('c')
+    if not c:
+        return
+    c.frame.divideLeoSplitter2(1.0)
+#@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
+@g.command('hide-outline-pane')
+def hideOutlinePane(event: Event) -> None:
+    """Hide the outline/log splitter. Fully expand the body pane."""
+    c = event.get('c')
+    if not c:
+        return
+    c.frame.divideLeoSplitter1(0.0)
+
 #@-others
 #@@language python
 #@@tabwidth -4
