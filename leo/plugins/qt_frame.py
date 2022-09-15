@@ -1090,7 +1090,11 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
         g.app.gui.attachLeoIcon(self)
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
-    def setSplitDirection(self, main_splitter: Widget, secondary_splitter: Widget, orientation: Any) -> None:
+    def setSplitDirection(self,
+        main_splitter: "LeoQtFrame",
+        secondary_splitter: "LeoQtFrame",
+        orientation: Orientation,
+    ) -> None:
         """Set the orientations of the splitters in the Leo main window."""
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
@@ -4617,11 +4621,11 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames: Dict[Any, Widget] = {}  # Keys are DynamicWindows, values are frames.
+        self.leoFrames: Dict["DynamicWindow", "LeoQtFrame"] = {}
         self.masterFrame: Widget = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
-    def createFrame(self, leoFrame: Widget) -> Widget:
+    def createFrame(self, leoFrame: "LeoQtFrame") -> "LeoQtFrame":
 
         c = leoFrame.c
         tabw = self.masterFrame
@@ -4670,7 +4674,7 @@ class TabbedFrameFactory:
         if g.app.start_minimized:
             window.showMinimized()
     #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
-    def detachTab(self, wdg: Widget) -> None:
+    def detachTab(self, wdg: "DynamicWindow") -> None:
         """ Detach specified tab as individual toplevel window """
         del self.leoFrames[wdg]
         wdg.setParent(None)
@@ -4726,7 +4730,7 @@ class TabbedFrameFactory:
             tab_cycle(-1)
         #@-<< Commands for tabs >>
     #@+node:ekr.20110605121601.18467: *3* frameFactory.deleteFrame
-    def deleteFrame(self, wdg: Widget) -> None:
+    def deleteFrame(self, wdg: "DynamicWindow") -> None:
 
         if not wdg:
             return
