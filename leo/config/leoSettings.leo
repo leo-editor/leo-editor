@@ -1883,7 +1883,9 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh>
+<v t="ekr.20220915162805.1"><vh>Alphabetica list of plugins</vh></v>
+</v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
@@ -11558,6 +11560,125 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 <t tx="ekr.20220524035531.1">Column number for right margin guidelines.</t>
 <t tx="ekr.20220624062948.1"></t>
 <t tx="ekr.20220718105957.1">True: Position the Chapters drop-down at the left of the icon bar.</t>
+<t tx="ekr.20220915162805.1"># Alphabetical list of plugins.
+
+# Notes:
+# - This list may be out of date. The leo/plugins folders contains all official plugins.
+# - Plugins in the leo/plugins/experimental folder are not recommended and are not in this list.
+# - Leo automatically loads all qt_*.py files when the qt gui is in effect.
+
+# active_path.py
+# add_directives.py
+# at_folder.py
+# at_produce.py
+# at_view.py
+# attrib_edit.py
+# backlink.py
+# bibtex.py
+# bigdash.py
+# bookmarks.py
+# bzr_qcommands.py
+# chapter_hoist.py
+# colorize_headlines.py
+# contextmenu.py
+# ctagscompleter.py
+# cursesGui.py
+# datenodes.py
+# debugger_pudb.py
+# dragdropgoodies.py
+# dtest.py
+# dump_globals.py
+# empty_leo_file.py
+# enable_gc.py
+# expfolder.py
+# FileActions.py
+# free_layout.py # loaded automatically
+# ftp.py
+# geotag.py
+# gitarchive.py
+# graphcanvas.py
+# import_cisco_config.py
+# initinclass.py
+# interact.py
+# jinjarender.py
+# leo_interface.py
+# leo_to_html.py
+# leocursor.py
+# leofeeds.py
+# leomail.py
+# leomylyn.py
+# leoOPML.py
+# leoremote.py
+# leoscreen.py
+# lineNumbers.py
+# livecode.py
+# macros.py
+# markup_inline.py
+# maximizeNewWindows.py
+# mime.py
+# mod_autosave.py
+# mod_framesize.py
+# mod_http.py
+# mod_leo2ascd.py
+# mod_read_dir_outline.py
+# mod_scripting.py
+# mod_tempfname.py
+# mod_timestamp.py
+# multifile.py
+# nav_qt.py
+# niceNosent.py
+# nodeActions.py
+# nodediff.py
+# nodetags.py
+# nodewatch.py
+# notebook.py
+# open_shell.py
+# outline_export.py
+# paste_as_headlines.py
+# plugins_menu.py
+# pretty_print.py
+# projectwizard.py
+# python_terminal.py
+# QNCalendarWidget.py
+# qt_quicksearch.py
+# quickMove.py
+# quicksearch.py
+# quit_leo.py
+# read_only_nodes.py
+# redirect_to_log.py
+# richtext.py
+# rss.py
+# rst3.py
+# screen_capture.py
+# screencast.py
+# screenshots.py
+# script_io_to_body.py
+# scripts_menu.py
+# setHomeDirectory.py
+# sftp.py
+# slideshow.py
+# spydershell.py
+# startfile.py
+# stickynotes.py
+# systray.py
+# testRegisterCommand.py
+# textnode.py
+# todo.py
+# tomboy_import.py
+# trace_gc_plugin.py
+# trace_keys.py
+# trace_tags.py
+# valuespace.py
+# viewrendered3.py
+# vim.py
+# wikiview.py
+# word_count.py
+# word_export.py
+# xemacs.py
+# xml_edit.py
+# xsltWithNodes.py
+# zenity_file_dialogs.py
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
