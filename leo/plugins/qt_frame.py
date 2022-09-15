@@ -943,7 +943,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         #@+node:ekr.20131118172620.16892: *7* class EventWrapper
         class EventWrapper:
 
-            def __init__(self, c: Cmdr, w: Widget, next_w: Widget, func: Callable) -> None:
+            def __init__(self,
+                c: Cmdr, w: "LeoQtFrame", next_w: "LeoQtFrame", func: Callable,
+            ) -> None:
                 self.c = c
                 self.d = self.create_d()  # Keys: stroke.s; values: command-names.
                 self.w = w
@@ -2334,7 +2336,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Keys are widgets, values are stylesheets.
         styleSheetCache: Dict[Any, str] = {}
 
-        def put_helper(self, s: str, w: Widget, bg: str=None, fg: str=None) -> None:
+        def put_helper(self, s: str, w: "LeoQtFrame", bg: str=None, fg: str=None) -> None:
             """Put string s in the indicated widget, with proper colors."""
             c = self.c
             bg = bg or c.config.getColor('status-bg') or 'white'
@@ -2580,7 +2582,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # self.addRow()
             # g.app.iconWidgetCount += 1
         #@+node:ekr.20110605121601.18267: *4* QtIconBar.addWidget
-        def addWidget(self, w: Widget) -> None:
+        def addWidget(self, w: "LeoQtFrame") -> None:
             self.w.addWidget(w)
         #@+node:ekr.20110605121601.18268: *4* QtIconBar.clear
         def clear(self) -> None:
@@ -2597,7 +2599,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 return LeoQtTreeTab(c, f.iconBar)
             return None
         #@+node:ekr.20110605121601.18270: *4* QtIconBar.deleteButton
-        def deleteButton(self, w: Widget) -> None:
+        def deleteButton(self, w: "LeoQtFrame") -> None:
             """ w is button """
             self.w.removeAction(w)
             self.c.bodyWantsFocus()
@@ -3240,7 +3242,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
     #@+node:ekr.20111120124732.10184: *3* LeoQtLog.isLogWidget
-    def isLogWidget(self, w: Widget) -> bool:
+    def isLogWidget(self, w: "LeoQtFrame") -> bool:
         val = w == self or w in list(self.contentsDict.values())
         return val
     #@+node:tbnorth.20171220123648.1: *3* LeoQtLog.linkClicked
