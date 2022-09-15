@@ -41,15 +41,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.core.leoQt import QComboBox
 else:
     Cmdr = Any
     Event = Any
-    QComboBox = Any
     Position = Any
     Wrapper = Any
-QComboBox = Any
-QPushButton = Any
 Widget = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -152,7 +148,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     def construct(self, master: "LeoTabbedTopLevel"=None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
-        self.leo_master = master  # A LeoTabbedTopLevel or None for non-tabbed windows.
+        self.leo_master = master
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
@@ -2027,7 +2023,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 w.leo_label = None
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18220: *4* LeoQtBody.packRenderer
-    def packRenderer(self, f: str, name: str, w: Wrapper) -> Widget:
+    def packRenderer(self, f: str, name: str, w: Wrapper) -> Widget:  # A QLineEdit
         n = max(1, self.numberOfEditors)
         assert isinstance(f, QtWidgets.QFrame), f
         layout = f.layout()
@@ -3936,7 +3932,7 @@ class LeoQtTreeTab:
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
         self.tabNames: List[str] = []  # The list of tab names. Changes when tabs are renamed.
-        self.w: QComboBox = None  # The QComboBox, not a QWidget.
+        self.w: Widget = None  # A QComboBox
         # self.reloadSettings()
         self.createControl()
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
@@ -4091,7 +4087,7 @@ class QtIconBarClass:
 
             def __init__(self, parent: "LeoQtFrame", text: str, toolbar: "QtIconBarClass") -> None:
                 super().__init__(parent)
-                self.button: QPushButton = None  # set below
+                self.button: Widget = None  # A QPushButton
                 self.text = text
                 self.toolbar = toolbar
 
