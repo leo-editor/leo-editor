@@ -311,7 +311,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             body.recolorWidget(p, wrapper)
         return parent_frame, wrapper
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
-    def createBodyPane(self, parent: "LeoQtFrame") -> Widget:
+    def createBodyPane(self, parent: "LeoQtFrame") -> "LeoQtFrame":
         """
         Create the *pane* for the body, not the actual QTextBrowser.
         """
@@ -349,7 +349,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return bodyFrame
 
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
-    def createCentralWidget(self) -> Widget:
+    def createCentralWidget(self) -> "LeoQtFrame":
         """Create the central widget."""
         dw = self
         w = QtWidgets.QWidget(dw)
@@ -436,7 +436,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # Official ivars.
         self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
-    def createMiniBuffer(self, parent: "LeoQtFrame") -> Widget:
+    def createMiniBuffer(self, parent: "LeoQtFrame") -> "LeoQtFrame":
         """Create the widgets for Leo's minibuffer area."""
         # Create widgets.
         frame = self.createFrame(parent, 'minibufferFrame',
@@ -498,7 +498,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # self.leo_minibuffer_layout = layout
         return frame
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
-    def createOutlinePane(self, parent: "LeoQtFrame") -> Widget:
+    def createOutlinePane(self, parent: "LeoQtFrame") -> "LeoQtFrame":
         """Create the widgets and ivars for Leo's outline."""
         # Create widgets.
         treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
@@ -553,13 +553,13 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         dw.resize(691, 635)
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
-    def createButton(self, parent: "LeoQtFrame", name: str, label: str) -> Widget:
+    def createButton(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
         w = QtWidgets.QPushButton(parent)
         w.setObjectName(name)
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20110605121601.18154: *5* dw.createCheckBox
-    def createCheckBox(self, parent: "LeoQtFrame", name: str, label: str) -> Widget:
+    def createCheckBox(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
         w = QtWidgets.QCheckBox(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
@@ -574,7 +574,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         lineWidth: int=1,
         shadow: Shadow=None,
         shape: Shape=None,
-    ) -> Widget:
+    ) -> "LeoQtFrame":
         """Create a Qt Frame."""
         if shadow is None:
             shadow = Shadow.Plain
@@ -589,7 +589,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18156: *5* dw.createGrid
-    def createGrid(self, parent: "LeoQtFrame", name: str, margin: int=0, spacing: int=0) -> Widget:
+    def createGrid(self,
+        parent: "LeoQtFrame", name: str, margin: int=0, spacing: int=0,
+    ) -> "LeoQtFrame":
         w = QtWidgets.QGridLayout(parent)
         w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
         w.setSpacing(spacing)
@@ -610,20 +612,22 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.setName(vLayout, name)
         return vLayout
     #@+node:ekr.20110605121601.18158: *5* dw.createLabel
-    def createLabel(self, parent: "LeoQtFrame", name: str, label: str) -> Widget:
+    def createLabel(self, parent: "LeoQtFrame", name: str, label: str) -> "LeoQtFrame":
         w = QtWidgets.QLabel(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
         return w
     #@+node:ekr.20110605121601.18159: *5* dw.createLineEdit
-    def createLineEdit(self, parent: "LeoQtFrame", name: str, disabled: bool=True) -> Widget:
+    def createLineEdit(self, parent: "LeoQtFrame", name: str, disabled: bool=True) -> "LeoQtFrame":
 
         w = QtWidgets.QLineEdit(parent)
         w.setObjectName(name)
         w.leo_disabled = disabled  # Inject the ivar.
         return w
     #@+node:ekr.20110605121601.18160: *5* dw.createRadioButton
-    def createRadioButton(self, parent: "LeoQtFrame", name: str, label: str) -> Widget:
+    def createRadioButton(self,
+        parent: "LeoQtFrame", name: str, label: str,
+    ) -> Widget:  # QtWidgets.QRadioButton:
         w = QtWidgets.QRadioButton(parent)
         self.setName(w, name)
         w.setText(self.tr(label))
@@ -636,7 +640,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         lineWidth: int=1,
         hPolicy: Policy=None,
         vPolicy: Policy=None,
-    ) -> Widget:
+    ) -> Widget:  # QtWidgets.QStackedWidget
         w = QtWidgets.QStackedWidget(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setAcceptDrops(True)
@@ -793,7 +797,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_findbox is None
-        ftm.find_findbox = w = dw.createLineEdit(
+        ftm.find_findbox = w = dw.createLineEdit(  # type:ignore
             parent, 'findPattern', disabled=fc.expert_mode)
         lab2 = self.createLabel(parent, 'findLabel', 'Find:')
         grid.addWidget(lab2, row, 0)
@@ -807,7 +811,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_replacebox is None
-        ftm.find_replacebox = w = dw.createLineEdit(
+        ftm.find_replacebox = w = dw.createLineEdit(  # type:ignore
             parent, 'findChange', disabled=fc.expert_mode)
         lab3 = dw.createLabel(parent, 'changeLabel', 'Replace:')  # Leo 4.11.1.
         grid.addWidget(lab3, row, 0)
