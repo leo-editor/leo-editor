@@ -87,7 +87,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             # parent is a LeoTabbedTopLevel.
         super().__init__(parent)
         self.leo_c = c
-        self.leo_master = None  # Set in construct.
+        self.leo_master: "LeoTabbedTopLevel" = None  # Set in construct.
         self.leo_menubar = None  # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
@@ -149,7 +149,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         else:
             event.ignore()
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
-    def construct(self, master: Widget=None) -> None:
+    def construct(self, master: "LeoTabbedTopLevel"=None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master  # A LeoTabbedTopLevel or None for non-tabbed windows.
@@ -4544,7 +4544,7 @@ class TabbedFrameFactory:
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
         self.leoFrames: Dict["DynamicWindow", "LeoQtFrame"] = {}
-        self.masterFrame: Widget = None
+        self.masterFrame: "LeoTabbedTopLevel" = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
     def createFrame(self, leoFrame: "LeoQtFrame") -> "LeoQtFrame":
