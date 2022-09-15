@@ -149,7 +149,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     """
     #@+others
     #@+node:ekr.20110605121601.18138: *3*  dw.ctor & reloadSettings
-    def __init__(self, c: Cmdr, parent: Widget=None) -> None:
+    def __init__(self, c: Cmdr, parent: "LeoQtFrame"=None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
             # Called from LeoQtFrame.finishCreate.
             # parent is a LeoTabbedTopLevel.
@@ -4386,7 +4386,7 @@ class LeoQtTreeTab:
     #@+others
     #@+node:ekr.20110605121601.18439: *3*  Birth & death
     #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
-    def __init__(self, c: Cmdr, iconBar: Widget) -> None:
+    def __init__(self, c: Cmdr, iconBar: "LeoQtLog") -> None:
         """Ctor for LeoQtTreeTab class."""
 
         self.c = c
