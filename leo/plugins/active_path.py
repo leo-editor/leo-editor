@@ -113,7 +113,7 @@ from leo.core import leoPlugins  # uses leoPlugins.TryNext
 #@-<< imports >>
 testing = False
 #@+others
-#@+node:tbrown.20091128094521.15048: ** init
+#@+node:tbrown.20091128094521.15048: ** init (active_path.py)
 def init():
     """Return True if the plugin has loaded successfully."""
     g.registerHandler('after-create-leo-frame', attachToCommander)

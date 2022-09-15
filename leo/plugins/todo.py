@@ -118,9 +118,11 @@ def onCreate(tag: str, key: Dict) -> None:
 
     c = key.get('c')
     todoController(c)
-#@+node:tbrown.20090630144958.5318: ** popup_entry
+#@+node:tbrown.20090630144958.5318: ** popup_entry (todo.py)
 def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
 
+    ### if hasattr(c, 'cleo'):
+    g.trace(p.h)
     c.cleo.addPopupMenu(c, p, menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
