@@ -717,7 +717,6 @@ class LeoFrame:
         self.body: Any = None  # A Union
         self.colorPanel: Any = None  # A Union
         self.comparePanel: Any = None  # A Union
-        self.findPanel: Any = None  # A Union.
         self.fontPanel: Any = None  # A Union.
         self.iconBar: Any = None  # A Union.
         self.isNullFrame = False

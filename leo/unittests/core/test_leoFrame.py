@@ -21,9 +21,6 @@ class TestFrame(LeoUnitTest):
             assert hasattr(f, ivar), 'missing frame ivar: %s' % ivar
             val = getattr(f, ivar)
             self.assertTrue(val is not None, msg=ivar)
-        # These do not have to be initied.
-        for ivar in ('findPanel',):
-            self.assertTrue(hasattr(f, ivar), msg=ivar)
     #@-others
 #@-others
 #@-leo

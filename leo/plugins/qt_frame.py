@@ -2107,7 +2107,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.bar2 = None
         self.body: LeoQtBody = None
         self.f1 = self.f2 = None
-        self.findPanel: Widget = None  # Inited when first opened.
         self.iconBarComponentName = 'iconBar'
         self.iconFrame: Widget = None
         self.log: Widget = None

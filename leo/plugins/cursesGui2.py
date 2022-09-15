@@ -2187,7 +2187,6 @@ class CoreFrame(leoFrame.LeoFrame):
             # self.bar1 = None
             # self.bar2 = None
             # self.f1 = self.f2 = None
-            # self.findPanel = None # Inited when first opened.
             # self.iconBarComponentName = 'iconBar'
             # self.iconFrame = None
             # self.canvas = None
