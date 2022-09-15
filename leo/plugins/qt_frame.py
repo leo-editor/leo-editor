@@ -1390,7 +1390,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         c = w.leo_c
         c.new()
     #@+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
-    def detach(self, index: int) -> Widget:
+    def detach(self, index: int) -> Widget:  # A QIcon.
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
         name = self.tabText(index)
@@ -1509,10 +1509,10 @@ class LeoQtBody(leoFrame.LeoBody):
         self.totalNumberOfEditors = 1
         # For renderer panes.
         self.canvasRenderer = None
-        self.canvasRendererLabel: Widget = None
+        self.canvasRendererLabel: Widget = None  # A QLineEdit.
         self.canvasRendererVisible = False
-        self.textRenderer: Widget = None
-        self.textRendererLabel: Widget = None
+        self.textRenderer: Widget = None  # A QFrame
+        self.textRendererLabel: Widget = None  # A QLineEdit.
         self.textRendererVisible = False
         self.textRendererWrapper: Wrapper = None
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
@@ -2084,11 +2084,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         assert self.c == c
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
-        self.iconBar: Widget = None
-        self.iconBarClass: Widget = QtIconBarClass  # A Union
+        self.iconBar: QtIconBarClass = None
+        self.iconBarClass: Any = QtIconBarClass  # A Union
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
-        self.statusLineClass: Widget = QtStatusLineClass  # A Union
+        self.statusLineClass: Any = QtStatusLineClass  # A Union
         self.title = title
         self.setIvars()
         self.reloadSettings()
@@ -2639,13 +2639,13 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl  # type:ignore
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are widgets.
+        self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
         self.eventFilters: List = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None
         self.logDict: Dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
-        self.logWidget: Widget = None  # Set in finishCreate.
-        self.menu: Widget = None  # A menu that pops up on right clicks in the hull or in tabs.
-        self.tabWidget: Widget = c.frame.top.tabWidget  # The Qt.QTabWidget that holds all the tabs.
+        self.logWidget: "LeoQtLog" = None  # Set in finishCreate.
+        self.menu: Widget = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
+        self.tabWidget: Widget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
         tw = self.tabWidget
 
         # Bug 917814: Switching Log Pane tabs is done incompletely.
@@ -3097,7 +3097,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20110605121601.18343: *4* LeoQtMenu.Methods with Tk spellings
     #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
-    def add_cascade(self, parent: "LeoQtFrame", label: str, menu: Widget, underline: int) -> Widget:
+    def add_cascade(self,
+        parent: "LeoQtFrame", label: str, menu: Widget, underline: int,
+    ) -> Widget:  # A QMenu.
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
@@ -3114,8 +3116,13 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu.leo_menu_label = label
         return menu
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
-    def add_command(self, menu: Widget,
-        accelerator: str='', command: Callable=None, commandName: str=None, label: str=None, underline: int=0,
+    def add_command(self,
+        menu: Widget,  # A QMenu.
+        accelerator: str='',
+        command: Callable=None,
+        commandName: str=None,
+        label: str=None,
+        underline: int=0,
     ) -> None:
         """Wrapper for the Tkinter add_command menu method."""
         if not label:
@@ -3182,9 +3189,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
         parent: "LeoQtFrame",
         index: int,
         label: str,
-        menu: Widget,
+        menu: Widget,  # A QMenu.
         underline: int,  # Not used
-    ) -> Widget:
+    ) -> Widget:  # A QMenu.
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
