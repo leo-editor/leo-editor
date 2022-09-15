@@ -49,6 +49,7 @@ else:
     Position = Any
     Wrapper = Any
 QComboBox = Any
+QPushButton = Any
 Widget = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -4088,17 +4089,16 @@ class QtIconBarClass:
 
         class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
-            # toolbar is a QtIconBarClass object, not a QWidget.
-            def __init__(self, parent: "LeoQtFrame", text: str, toolbar: Any) -> None:
+            def __init__(self, parent: "LeoQtFrame", text: str, toolbar: "QtIconBarClass") -> None:
                 super().__init__(parent)
-                self.button: Widget = None  # set below
+                self.button: QPushButton = None  # set below
                 self.text = text
                 self.toolbar = toolbar
 
             def createWidget(self, parent: "LeoQtFrame") -> None:
-                self.button = b = QtWidgets.QPushButton(self.text, parent)
+                self.button = QtWidgets.QPushButton(self.text, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
-                return b
+                return self.button
 
         action: Any
         if qaction is None:
