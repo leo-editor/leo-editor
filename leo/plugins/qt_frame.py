@@ -2481,7 +2481,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """A class representing the singleton Icon bar"""
         #@+others
         #@+node:ekr.20110605121601.18263: *4*  QtIconBar.ctor & reloadSettings
-        def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+        def __init__(self, c: Cmdr, parentFrame: "LeoQtFrame") -> None:
             """Ctor for QtIconBarClass."""
             # Copy ivars
             self.c = c
@@ -4405,7 +4405,7 @@ class LeoQtTreeTab:
         class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
-            def __init__(self, tt: Widget) -> None:
+            def __init__(self, tt: "LeoQtTreeTab") -> None:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
@@ -4418,7 +4418,8 @@ class LeoQtTreeTab:
         tt = self
         frame = QtWidgets.QLabel('Chapters: ')
         ibw = tt.iconBar.w  # "ibw": iconbar widget (a QToolbar)
-        tt.w = w = LeoQComboBox(tt)
+        tt.w = LeoQComboBox(tt)
+        w = tt.w
         tt.setNames()
 
         # Should the "Chapters" group be installed at the left of the toolbar?
