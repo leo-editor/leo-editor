@@ -254,7 +254,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if where:
             self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
-    def createMainWindow(self) -> Tuple[Widget, Widget]:
+    def createMainWindow(self) -> Tuple["LeoQtFrame", "LeoQtFrame"]:
         """
         Create the component ivars of the main window.
         Copied/adapted from qt_main.py.
@@ -285,7 +285,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
-    def addNewEditor(self, name: str) -> Tuple[Widget, Wrapper]:
+    def addNewEditor(self, name: str) -> Tuple["LeoQtFrame", Wrapper]:
         """Create a new body editor."""
         c, p = self.leo_c, self.leo_c.p
         body = c.frame.body
@@ -409,7 +409,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
-    def createMainLayout(self, parent: "LeoQtFrame") -> Tuple[Widget, Widget]:
+    def createMainLayout(self, parent: "LeoQtFrame") -> Tuple["LeoQtFrame", "LeoQtFrame"]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
@@ -650,7 +650,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     #@+node:ekr.20110605121601.18162: *5* dw.createTabWidget
     def createTabWidget(self,
         parent: "LeoQtFrame", name: str, hPolicy: Policy=None, vPolicy: Policy=None,
-    ) -> Widget:
+    ) -> "LeoQtFrame":
         w = QtWidgets.QTabWidget(parent)
         # tb = w.tabBar()
         # tb.setTabsClosable(True)
@@ -665,7 +665,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         lineWidth: int=0,
         shadow: Shadow=None,
         shape: Shape=None,
-    ) -> Widget:
+    ) -> "LeoQtFrame":
         # Create a text widget.
         c = self.leo_c
         if name == 'richTextEdit' and self.useScintilla and Qsci:
@@ -685,7 +685,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
-    def createTreeWidget(self, parent: "LeoQtFrame", name: str) -> Widget:
+    def createTreeWidget(self, parent: "LeoQtFrame", name: str) -> "LeoQtFrame":
         c = self.leo_c
         w = LeoQTreeWidget(c, parent)
         self.setSizePolicy(w)
@@ -748,7 +748,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.leo_spell_listBox = listBox  # Must exist
         self.leo_spell_label = lab  # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
-    def createFindTab(self, parent: "LeoQtFrame", tab_widget: Widget) -> None:
+    def createFindTab(self, parent: "LeoQtFrame", tab_widget: "LeoQtFrame") -> None:
         """Create a Find Tab in the given parent."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -1044,13 +1044,13 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
     #@+node:ekr.20110605121601.18169: *5* dw.setName
-    def setName(self, widget: Widget, name: str) -> None:
+    def setName(self, widget: "LeoQtFrame", name: str) -> None:
         if name:
             # if not name.startswith('leo_'):
                 # name = 'leo_' + name
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
-    def setSizePolicy(self, widget: Widget, kind1: Policy=None, kind2: Policy=None) -> None:
+    def setSizePolicy(self, widget: "LeoQtFrame", kind1: Policy=None, kind2: Policy=None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -3407,7 +3407,7 @@ class LeoQtLog(leoFrame.LeoLog):
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
     def createTab(self,
-        tabName: str, createText: bool=True, widget: Widget=None, wrap: str='none',
+        tabName: str, createText: bool=True, widget: "LeoQtFrame"=None, wrap: str='none',
     ) -> Any:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
