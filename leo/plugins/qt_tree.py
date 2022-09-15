@@ -20,6 +20,7 @@ from leo.plugins import qt_text
 #@+node:ekr.20220417193741.1: ** << qt_tree annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoFrame import LeoQTreeWidget
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
@@ -28,6 +29,7 @@ else:
     Cmdr = Any
     Event = Any
     LeoQtFrame = Any
+    LeoQTreeWidget = Any
     Position = Any
     VNode = Any
     Wrapper = Any
@@ -66,7 +68,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Components...
         self.canvas = self  # An official ivar used by Leo's core.
         self.headlineWrapper: Any = qt_text.QHeadlineWrapper  # This is a class.
-        self.treeWidget: Widget = frame.top.treeWidget  # A LeoQTreeWidget, a subclass of QTreeWidget.
+        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
         w = self.treeWidget
         # Declutter data...
         self.declutter_patterns: List[Any] = None  # list of pairs of patterns for decluttering
