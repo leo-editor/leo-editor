@@ -2192,7 +2192,6 @@ class CoreFrame(leoFrame.LeoFrame):
             # self.canvas = None
             # self.outerFrame = None
             # self.statusFrame = None
-            # self.statusLineComponentName = 'statusLine'
             # self.statusText = None
             # self.statusLabel = None
             # self.top = None # This will be a class Window object.

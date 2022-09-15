@@ -30,6 +30,7 @@ from leo.core.leoQt import TextInteractionFlag, ToolBarArea, Type, Weight, Windo
 from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
+from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.nested_splitter import NestedSplitter
 #@-<< qt_frame imports >>
@@ -2105,19 +2106,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
-        self.body: LeoQtBody = None
+        self.body: "LeoQtBody" = None
         self.f1 = self.f2 = None
         self.iconBarComponentName = 'iconBar'
-        self.iconFrame: Widget = None
-        self.log: Widget = None
+        self.iconFrame: "QtIconBarClass" = None
+        self.log: "LeoQtLog" = None
         self.canvas: Widget = None
-        self.outerFrame: Widget = None
-        self.statusFrame: Widget = None
-        self.statusLineComponentName = 'statusLine'
-        self.statusText: Widget = None
-        self.statusLabel: Widget = None
+        self.outerFrame: "LeoQtFrame" = None
+        self.statusFrame: "LeoQtFrame" = None
         self.top: Widget = None  # This will be a class Window object.
-        self.tree: Widget = None
+        self.tree: LeoQtTree = None
         # Used by event handlers...
         self.controlKeyIsDown = False  # For control-drags
         self.isActive = True
