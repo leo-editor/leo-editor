@@ -2105,7 +2105,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1 = None
         self.bar2 = None
-        self.body: Widget = None
+        self.body: LeoQtBody = None
         self.f1 = self.f2 = None
         self.findPanel: Widget = None  # Inited when first opened.
         self.iconBarComponentName = 'iconBar'
@@ -2142,12 +2142,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.createSplitterComponents()
         self.createStatusLine()  # A base class method.
         self.createFirstTreeNode()  # Call the base-class method.
-        self.menu: Widget = LeoQtMenu(c, self, label='top-level-menu')
+        self.menu = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
         t2 = time.process_time()
         self.setQtStyle()  # Slow, but only the first time it is called.
         t3 = time.process_time()
-        self.miniBufferWidget: Widget = qt_text.QMinibufferWrapper(c)
+        self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
         t4 = time.process_time()
         if 'speed' in g.app.debug:
@@ -4047,7 +4047,7 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         self.setMovable(False)
         tb = QtTabBarWrapper(self)
         self.setTabBar(tb)
-#@+node:ekr.20110605121601.18262: ** class QtIconBarClass (moved)
+#@+node:ekr.20110605121601.18262: ** class QtIconBarClass
 class QtIconBarClass:
     """A class representing the singleton Icon bar"""
     #@+others
@@ -4360,7 +4360,7 @@ class QtSearchWidget:
         self.wrapper = self
         self.body = self
         self.text = None
-#@+node:ekr.20110605121601.18257: ** class QtStatusLineClass (moved)
+#@+node:ekr.20110605121601.18257: ** class QtStatusLineClass
 class QtStatusLineClass:
     """A class representing the status line."""
     #@+others

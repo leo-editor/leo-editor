@@ -714,21 +714,21 @@ class LeoFrame:
         self.statusLineClass = NullStatusLineClass
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
-        self.body = None
-        self.colorPanel = None
-        self.comparePanel = None
-        self.findPanel: Widget = None
-        self.fontPanel: Widget = None
-        self.iconBar: Widget = None
+        self.body: Any = None  # A Union
+        self.colorPanel: Any = None  # A Union
+        self.comparePanel: Any = None  # A Union
+        self.findPanel: Any = None  # A Union.
+        self.fontPanel: Any = None  # A Union.
+        self.iconBar: Any = None  # A Union.
         self.isNullFrame = False
         self.keys = None
-        self.log: Wrapper = None
-        self.menu: Wrapper = None
+        self.log: Any = None  # A Union.
+        self.menu: Any = None  # A Union
         self.miniBufferWidget: Widget = None
-        self.outerFrame: Widget = None
-        self.prefsPanel: Widget = None
-        self.statusLine: Widget = g.NullObject()  # For unit tests.
-        self.tree: Wrapper = None
+        self.outerFrame: Any = None  # A Union
+        self.prefsPanel: Any = None  # A Union
+        self.statusLine: Any = g.NullObject()  # A Union.
+        self.tree: Any = None  # A Union
         self.useMiniBufferWidget = False
         # Gui-independent data
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
