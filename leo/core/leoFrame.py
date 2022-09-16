@@ -26,22 +26,27 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import ChapterController
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreTree
+    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreTree
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtTree
+    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
     from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
     Cmdr = Any
     CoreBody = Any
     CoreLog = Any
+    CoreMenu = Any
     CoreTree = Any
     Event = Any
+    LeoMenu = Any
     LeoQtBody = Any
     LeoQtLog = Any
+    LeoQtMenu = Any
     LeoQtTree = Any
     NbController = Any
+    NullMenu = Any
     Position = Any
     VNode = Any
     Wrapper = Any
@@ -728,9 +733,8 @@ class LeoFrame:
         self.isNullFrame = False
         self.keys = None
         self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
-        self.menu: Any = None  # A Union
+        self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None  # A Union
         self.miniBufferWidget: Widget = None
-        self.prefsPanel: Any = None  # A Union
         self.statusLine: Any = g.NullObject()  # A Union.
         self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None  # A Union
         self.useMiniBufferWidget = False
@@ -1865,7 +1869,7 @@ class NullFrame(LeoFrame):
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
-        self.menu: Widget = leoMenu.NullMenu(frame=self)
+        self.menu = leoMenu.NullMenu(frame=self)
         self.tree = NullTree(frame=self)
         # Default window position.
         self.w = 600

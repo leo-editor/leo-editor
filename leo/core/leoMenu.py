@@ -15,6 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
 else:
     Event = Any
 Widget = Any
+Wrapper = Any
 #@-<< leoMenu annotations >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
@@ -28,6 +29,7 @@ class LeoMenu:
         self.frame = frame
         self.isNull = False
         self.menus: Dict[str, Any] = {}  # Menu dictionary.
+        self.wrapper: Wrapper = None
 
     def finishCreate(self) -> None:
         self.define_enable_dict()
@@ -682,7 +684,7 @@ class LeoMenu:
     def setMenuLabel(self, menu: str, name: str, label: str, underline: int=-1) -> None:
         self.oops()
     #@-others
-#@+node:ekr.20031218072017.3811: ** class NullMenu
+#@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)
 class NullMenu(LeoMenu):
     """A null menu class for testing and batch execution."""
     #@+others
