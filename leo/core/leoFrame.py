@@ -27,14 +27,17 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreLog
+    from leo.core.cursesGui2 import CoreBody, CoreLog
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.plugins.qt_text import LeoQtLog
+    from leo.plugins.qt_text import LeoQtBody, LeoQtLog
     from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
     Cmdr = Any
+    CoreBody = Any
+    CoreLog = Any
     Event = Any
+    LeoQtBody = Any
     LeoQtLog = Any
     NbController = Any
     Position = Any
@@ -718,7 +721,7 @@ class LeoFrame:
         self.statusLineClass = NullStatusLineClass
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
-        self.body: Any = None  # A Union
+        self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
         self.colorPanel: Any = None  # A Union
         self.comparePanel: Any = None  # A Union
         self.fontPanel: Any = None  # A Union.
