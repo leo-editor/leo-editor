@@ -27,18 +27,20 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreBody, CoreLog
+    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreTree
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.plugins.qt_text import LeoQtBody, LeoQtLog
+    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtTree
     from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
     Cmdr = Any
     CoreBody = Any
     CoreLog = Any
+    CoreTree = Any
     Event = Any
     LeoQtBody = Any
     LeoQtLog = Any
+    LeoQtTree = Any
     NbController = Any
     Position = Any
     VNode = Any
@@ -730,7 +732,7 @@ class LeoFrame:
         self.miniBufferWidget: Widget = None
         self.prefsPanel: Any = None  # A Union
         self.statusLine: Any = g.NullObject()  # A Union.
-        self.tree: Any = None  # A Union
+        self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None  # A Union
         self.useMiniBufferWidget = False
         # Gui-independent data
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
@@ -1864,7 +1866,7 @@ class NullFrame(LeoFrame):
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
         self.menu: Widget = leoMenu.NullMenu(frame=self)
-        self.tree: Widget = NullTree(frame=self)
+        self.tree = NullTree(frame=self)
         # Default window position.
         self.w = 600
         self.h = 500
