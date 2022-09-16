@@ -30,7 +30,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
+    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
     from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
@@ -46,6 +46,7 @@ else:
     LeoQtLog = Any
     LeoQtMenu = Any
     LeoQtTree = Any
+    QtIconBarClass = Any
     NbController = Any
     NullMenu = Any
     Position = Any
@@ -731,7 +732,7 @@ class LeoFrame:
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
         self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
-        self.iconBar: Any = None  # A Union.
+        self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
         self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
         self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None
         self.miniBufferWidget: Widget = None
@@ -884,13 +885,13 @@ class LeoFrame:
             return self.iconBar.clear()
         return None
 
-    def createIconBar(self) -> None:
+    def createIconBar(self) -> Union["NullIconBarClass", QtIconBarClass]:
         c = self.c
         if not self.iconBar:
             self.iconBar = self.iconBarClass(c, None)
         return self.iconBar
 
-    def getIconBar(self) -> None:
+    def getIconBar(self) -> Union["NullIconBarClass", QtIconBarClass]:
         if not self.iconBar:
             self.iconBar = self.iconBarClass(self.c, None)
         return self.iconBar
@@ -1865,7 +1866,7 @@ class NullFrame(LeoFrame):
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
-        self.top: Widget = None  # Always None.
+        ### self.top: Widget = None  # Always None.
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
