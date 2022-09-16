@@ -722,8 +722,6 @@ class LeoFrame:
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
         self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
-        self.comparePanel: Any = None  # A Union
-        self.fontPanel: Any = None  # A Union.
         self.iconBar: Any = None  # A Union.
         self.isNullFrame = False
         self.keys = None

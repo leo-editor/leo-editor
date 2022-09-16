@@ -638,15 +638,6 @@ def findMatchingBracket(self: Self, event: Event=None) -> None:
         g.es('match-brackets not supported for', language)
     else:
         g.MatchBrackets(c, p, language).run()
-#@+node:ekr.20171123135625.9: ** c_ec.fontPanel
-@g.commander_command('set-font')
-def fontPanel(self: Self, event: Event=None) -> None:
-    """Open the font dialog."""
-    c = self
-    frame = c.frame
-    if not frame.fontPanel:
-        frame.fontPanel = g.app.gui.createFontPanel(c)
-    frame.fontPanel.bringToFront()
 #@+node:ekr.20110402084740.14490: ** c_ec.goToNext/PrevHistory
 @g.commander_command('goto-next-history-node')
 def goToNextHistory(self: Self, event: Event=None) -> None:
