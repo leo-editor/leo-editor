@@ -2405,6 +2405,7 @@ class CoreLog(leoFrame.LeoLog):
         # w = self.tabWidget
         #return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20170419143731.15: *4* CLog.put
+    # Signature is different.
     def put(self, s: str, color: str=None, tabName: str='Log', from_redirect: bool=False) -> None:  # type:ignore
         """All output to the log stream eventually comes here."""
         c, w = self.c, self.widget

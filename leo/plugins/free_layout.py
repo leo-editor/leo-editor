@@ -51,10 +51,12 @@ except Exception:
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    Position = Any
     Wrapper = Any
 #@-<< free_layout annotations >>
 #@+others
@@ -178,10 +180,11 @@ class FreeLayoutController:
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
         if not nd:
+            settings: Position
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()
-                settings.h = "@settings"  # type:ignore
+                settings.h = "@settings"
             nd = settings.insertAsNthChild(0)
         nd.h = "@data free-layout-layout"
         nd.b = json.dumps(layout, indent=4)
