@@ -1134,7 +1134,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         # Always allocate room for 2 columns
         #width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if isQt6:
-            width = self.fm.boundingRect(str(max(1000, self.highest_line))).width()
+            width = self.fm.boundingRect(str(max(1000, self.highest_line))).width() + self.w_adjust
         else:
             width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
