@@ -28,7 +28,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreTree
+    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
     from leo.plugins.notebook import NbController
@@ -38,6 +38,7 @@ else:
     CoreBody = Any
     CoreLog = Any
     CoreMenu = Any
+    CoreStatusLine = Any
     CoreTree = Any
     Event = Any
     LeoMenu = Any
@@ -725,18 +726,17 @@ class LeoFrame:
         self.c = c
         self.gui = gui
         self.iconBarClass = NullIconBarClass
+        self.isNullFrame = False
         self.statusLineClass = NullStatusLineClass
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
         self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
         self.iconBar: Any = None  # A Union.
-        self.isNullFrame = False
-        self.keys = None
         self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
-        self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None  # A Union
+        self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None
         self.miniBufferWidget: Widget = None
-        self.statusLine: Any = g.NullObject()  # A Union.
-        self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None  # A Union
+        self.statusLine: Union[CoreStatusLine, "NullStatusLineClass", g.NullObject] = g.NullObject()
+        self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None
         self.useMiniBufferWidget = False
         # Gui-independent data
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
@@ -910,7 +910,7 @@ class LeoFrame:
         if self.iconBar:
             self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
-    def createStatusLine(self) -> str:
+    def createStatusLine(self) -> Union[CoreStatusLine, "NullStatusLineClass", g.NullObject]:
         if not self.statusLine:
             self.statusLine = self.statusLineClass(self.c, None)  # type:ignore
         return self.statusLine
@@ -927,7 +927,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> str:
+    def getStatusLine(self) -> Union[CoreStatusLine, "NullStatusLineClass", g.NullObject]:
         return self.statusLine
 
     getStatusObject = getStatusLine
