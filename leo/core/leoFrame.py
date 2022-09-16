@@ -12,7 +12,8 @@ These classes should be overridden to create frames for a particular gui.
 #@+node:ekr.20120219194520.10464: ** << leoFrame imports >>
 import os
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
@@ -27,11 +28,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import LeoQtLog
     from leo.plugins.notebook import NbController
 else:
     ChapterController = Any
     Cmdr = Any
     Event = Any
+    LeoQtLog = Any
     NbController = Any
     Position = Any
     VNode = Any
@@ -721,7 +724,7 @@ class LeoFrame:
         self.iconBar: Any = None  # A Union.
         self.isNullFrame = False
         self.keys = None
-        self.log: Any = None  # A Union.
+        self.log: Union[LeoLog, NullLog, LeoQtLog] = None
         self.menu: Any = None  # A Union
         self.miniBufferWidget: Widget = None
         self.outerFrame: Any = None  # A Union
@@ -764,23 +767,15 @@ class LeoFrame:
 
     def setTitle(self, title: str) -> None:
         self.title = title
-    #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
-    def initAfterLoad(self) -> None:
-        """Provide official hooks for late inits of components of Leo frames."""
-        frame = self
-        frame.body.initAfterLoad()
-        frame.log.initAfterLoad()
-        frame.menu.initAfterLoad()
-        # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
-        frame.tree.initAfterLoad()
-
-    def initCompleteHint(self) -> None:
-        pass
     #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
     def setTabWidth(self, w: int) -> None:
         """Set the tab width in effect for this frame."""
         # Subclasses may override this to affect drawing.
         self.tab_width = w
+    #@+node:ekr.20220916041432.1: *4* LeoFrame.initCompleteHint
+    def initCompleteHint(self) -> None:
+        """A hook for Qt."""
+        pass
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self) -> Tuple[bool, float, float]:
@@ -1214,6 +1209,7 @@ class LeoLog:
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: Dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
+        self.wrapper: Any = None  # For cursesGui2.py.
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str='none') -> None:
         self.selectTab(tabName, wrap=wrap)
@@ -2091,6 +2087,7 @@ class NullLog(LeoLog):
         # self.logCtrl is now a property of the base LeoLog class.
         self.logNumber = 0
         self.widget: Widget = self.createControl(parentFrame)
+        self.wrapper: Any = None  # For cursesGui2.py.
     #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self) -> None:
         pass

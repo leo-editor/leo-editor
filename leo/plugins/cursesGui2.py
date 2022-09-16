@@ -2172,7 +2172,6 @@ class CoreFrame(leoFrame.LeoFrame):
 
         # Official ivars...
             # self.iconBar = None
-            # self.initComplete = False # Set by initCompleteHint().
             # self.minibufferVisible = True
             # self.statusLineClass = None # self.QtStatusLineClass
             #
