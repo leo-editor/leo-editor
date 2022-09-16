@@ -2658,7 +2658,7 @@ getLineAfter = get_line_after
 def getIvarsDict(obj: Any) -> Dict[str, Any]:
     """Return a dictionary of ivars:values for non-methods of obj."""
     d: Dict[str, Any] = dict(
-        [[key, getattr(obj, key)] for key in dir(obj)  # type:ignore
+        [[key, getattr(obj, key)] for key in dir(obj)
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
@@ -2857,9 +2857,9 @@ def printGcObjects() -> int:
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2: Dict[int, str] = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):  # type:ignore
-        val = d2.get(key)  # type:ignore
+    d2: Dict[Any, Any] = {v: k for k, v in d.items()}
+    for key in reversed(sorted(d2.keys())):
+        val = d2.get(key)
         print(f"{key:7} {val}")
     lastObjectCount = count
     return delta
@@ -3583,8 +3583,7 @@ def createHiddenCommander(fn: str) -> Cmdr:
     c = Commands(fn, gui=g.app.nullGui)
     theFile = g.app.loadManager.openAnyLeoFile(fn)
     if theFile:
-        c.fileCommands.openLeoFile(  # type:ignore
-            theFile, fn, readAtFileNodesFlag=True, silent=True)
+        c.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
         return c
     return None
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
@@ -4968,7 +4967,7 @@ def gitInfo(path: str=None) -> Tuple[str, str]:
     git_dir = g.os_path_finalize_join(path, '..')
     try:
         path = g.os_path_finalize_join(git_dir, pointer)
-        with open(path) as f:  # type:ignore
+        with open(path) as f:
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
@@ -5908,7 +5907,7 @@ def es_exception(full: bool=True, c: Cmdr=None, color: str="red") -> Tuple[str, 
 def es_exception_type(c: Cmdr=None, color: str="red") -> None:
     # exctype is a Exception class object; value is the error message.
     exctype, value = sys.exc_info()[:2]
-    g.es_print('', f"{exctype.__name__}, {value}", color=color)  # type:ignore
+    g.es_print('', f"{exctype.__name__}, {value}", color=color)
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -6038,7 +6037,7 @@ def pr(*args: Any, **keys: Any) -> None:
         pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj: Any) -> str:
-    if isinstance(obj, str):  # type:ignore
+    if isinstance(obj, str):
         return 'string'
     t: Any = type(obj)
     if t in (types.BuiltinFunctionType, types.FunctionType):
@@ -7054,7 +7053,7 @@ def composeScript(
             # s = g.insertCodingLine(encoding,s)
     if not s.strip():
         return ''
-    at = c.atFileCommands  # type:ignore
+    at = c.atFileCommands
     old_in_script = g.app.inScript
     try:
         # #1297: set inScript flags.
