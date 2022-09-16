@@ -1358,6 +1358,7 @@ class LeoCursesGui(leoGui.LeoGui):
         assert c.frame.body.widget is None, repr(c.frame.body.widget)
         c.frame.body.widget = w
         assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
+        # A Union: hard to annotate.
         c.frame.body.wrapper = wrapper = BodyWrapper(c, 'body', w)  # type:ignore
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
