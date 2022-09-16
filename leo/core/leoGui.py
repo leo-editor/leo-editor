@@ -189,10 +189,6 @@ class LeoGui:
         self.oops()
         return 'no'
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
-    def createColorPanel(self, c: Cmdr) -> None:
-        """Create a color panel"""
-        self.oops()
-
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
         self.oops()

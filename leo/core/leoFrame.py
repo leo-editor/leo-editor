@@ -722,7 +722,6 @@ class LeoFrame:
         self.title: str = None  # Must be created by subclasses.
         # Objects attached to this frame.
         self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
-        self.colorPanel: Any = None  # A Union
         self.comparePanel: Any = None  # A Union
         self.fontPanel: Any = None  # A Union.
         self.iconBar: Any = None  # A Union.
@@ -743,7 +742,7 @@ class LeoFrame:
         self.openDirectory = ""
         self.saved = False  # True if ever saved
         self.splitVerticalFlag = True  # Set by initialRatios later.
-        self.stylesheet = None  # The contents of <?xml-stylesheet...?> line.
+        self.stylesheet: str = None  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self) -> VNode:

@@ -100,15 +100,6 @@ def addComments(self: Self, event: Event=None) -> None:
     #
     # "after" snapshot.
     u.afterChangeBody(p, 'Add Comments', bunch)
-#@+node:ekr.20171123135625.3: ** c_ec.colorPanel
-@g.commander_command('set-colors')
-def colorPanel(self: Self, event: Event=None) -> None:
-    """Open the color dialog."""
-    c = self
-    frame = c.frame
-    if not frame.colorPanel:
-        frame.colorPanel = g.app.gui.createColorPanel(c)
-    frame.colorPanel.bringToFront()
 #@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self: Self, event: Event=None) -> None:
