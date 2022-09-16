@@ -2152,50 +2152,20 @@ class CoreFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         super().__init__(c, gui=g.app.gui)  # Init the base class.
         assert c and self.c == c
-        #
-        # These type mismatches arise from declared types in leoFrame.py.
-        #
-        c.frame = self  # type:ignore
-        self.log = CoreLog(c)  # type:ignore
+        c.frame = self
+        self.log = CoreLog(c)
         g.app.gui.log = self.log
         self.title: str = title
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.5
         # Widgets
         self.top = TopFrame(c)
-        self.body = CoreBody(c)  # type:ignore
-        self.menu = CoreMenu(c)  # type:ignore
-        self.miniBufferWidget: Wrapper = None  # Set later.
+        self.body = CoreBody(c)
+        self.menu = CoreMenu(c)
+        self.miniBufferWidget: MiniBufferWrapper = None
         self.statusLine: Wrapper = g.NullObject()  # For unit tests.
         assert self.tree is None, self.tree
-        self.tree = CoreTree(c)  # type:ignore
-
-        # Official ivars...
-            # self.iconBar = None
-            # self.minibufferVisible = True
-            # self.statusLineClass = None # self.QtStatusLineClass
-            #
-            # Config settings.
-            # self.trace_status_line = c.config.getBool('trace_status_line')
-            # self.use_chapters = c.config.getBool('use_chapters')
-            # self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
-            #
-            # self.set_ivars()
-            #
-            # "Official ivars created in createLeoFrame and its allies.
-            # self.bar1 = None
-            # self.bar2 = None
-            # self.f1 = self.f2 = None
-            # self.iconFrame = None
-            # self.canvas = None
-            # self.statusFrame = None
-            # self.statusText = None
-            # self.statusLabel = None
-            # self.top = None # This will be a class Window object.
-            # Used by event handlers...
-            # self.controlKeyIsDown = False # For control-drags
-            # self.redrawCount = 0
-            # self.scrollWay = None
+        self.tree = CoreTree(c)
     #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate
     def finishCreate(self) -> None:
 

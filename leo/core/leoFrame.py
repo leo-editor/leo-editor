@@ -28,7 +28,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
-    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree
+    from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree, TopFrame
+    from leo.plugins.qt_frame import DynamicWindow
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
     from leo.plugins.notebook import NbController
@@ -40,12 +41,14 @@ else:
     CoreMenu = Any
     CoreStatusLine = Any
     CoreTree = Any
+    DynamicWindow = Any
     Event = Any
     LeoMenu = Any
     LeoQtBody = Any
     LeoQtLog = Any
     LeoQtMenu = Any
     LeoQtTree = Any
+    TopFrame = Any
     QtIconBarClass = Any
     NbController = Any
     NullMenu = Any
@@ -726,28 +729,29 @@ class LeoFrame:
     def __init__(self, c: Cmdr, gui: Any) -> None:
         self.c = c
         self.gui = gui
+        # Types...
         self.iconBarClass = NullIconBarClass
-        self.isNullFrame = False
         self.statusLineClass = NullStatusLineClass
-        self.title: str = None  # Must be created by subclasses.
-        # Objects attached to this frame.
+        # Objects attached to this frame...
         self.body: Union[CoreBody, LeoBody, NullBody, LeoQtBody] = None
         self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
         self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
         self.menu: Union[CoreMenu, LeoMenu, LeoQtMenu, NullMenu] = None
         self.miniBufferWidget: Widget = None
         self.statusLine: Union[CoreStatusLine, "NullStatusLineClass", g.NullObject] = g.NullObject()
+        self.top: Union[TopFrame, DynamicWindow] = None
         self.tree: Union[CoreTree, LeoTree, NullTree, LeoQtTree] = None
         self.useMiniBufferWidget = False
-        # Gui-independent data
+        # Other ivars...
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
-        self.componentsDict: Dict[str, Any] = {}  # Keys are names, values are componentClass instances.
-        self.es_newlines = 0  # newline count for this log stream
+        self.es_newlines = 0  # newline count for this log stream.
+        self.isNullFrame = False
         self.openDirectory = ""
         self.saved = False  # True if ever saved
         self.splitVerticalFlag = True  # Set by initialRatios later.
         self.stylesheet: str = None  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
+        self.title: str = None  # Must be created by subclasses.
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self) -> VNode:
         c = self.c
@@ -1866,7 +1870,6 @@ class NullFrame(LeoFrame):
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
-        ### self.top: Widget = None  # Always None.
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
