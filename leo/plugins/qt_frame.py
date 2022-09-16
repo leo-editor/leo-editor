@@ -2085,10 +2085,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
         # Official ivars...
         self.iconBar: QtIconBarClass = None
-        self.iconBarClass: Any = QtIconBarClass  # A Union. Can't easily be removed.
+        self.iconBarClass: Any = QtIconBarClass  # A Union. 'Any' can't easily be removed.
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
-        self.statusLineClass: Any = QtStatusLineClass  # A Union
+        self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
         self.title = title
         self.setIvars()
         self.reloadSettings()
