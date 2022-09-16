@@ -112,7 +112,6 @@ def init() -> bool:
     g.plugin_signon(__name__)
     g.tree_popup_handlers.append(popup_entry)
     return True
-
 #@+node:tbrown.20090119215428.7: ** onCreate
 def onCreate(tag: str, key: Dict) -> None:
 
@@ -121,9 +120,8 @@ def onCreate(tag: str, key: Dict) -> None:
 #@+node:tbrown.20090630144958.5318: ** popup_entry (todo.py)
 def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
 
-    ### if hasattr(c, 'cleo'):
-    g.trace(p.h)
-    c.cleo.addPopupMenu(c, p, menu)
+    if hasattr(c, 'cleo'):  # #2856.
+        c.cleo.addPopupMenu(c, p, menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
 
@@ -1363,6 +1361,8 @@ class todoController:
 def todo_fix_datetime(event: Event) -> None:
 
     c = event['c']
+    if not hasattr(c, 'cleo'):  # 2856.
+        return
     changed = 0
     for nd in c.all_unique_nodes():
         for key in c.cleo._datetime_fields:
@@ -1378,6 +1378,8 @@ def todo_fix_datetime(event: Event) -> None:
 def todo_dec_pri(event: Event, direction: int=1) -> None:
 
     c = event['c']
+    if not hasattr(c, 'cleo'):  # 2856.
+        return
     p = c.p
     pri = int(c.cleo.getat(p.v, 'priority'))
 
