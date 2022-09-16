@@ -2188,7 +2188,6 @@ class CoreFrame(leoFrame.LeoFrame):
             # self.f1 = self.f2 = None
             # self.iconFrame = None
             # self.canvas = None
-            # self.outerFrame = None
             # self.statusFrame = None
             # self.statusText = None
             # self.statusLabel = None

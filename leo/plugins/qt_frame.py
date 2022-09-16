@@ -2106,7 +2106,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.body: "LeoQtBody" = None
         self.iconFrame: "QtIconBarClass" = None
         self.log: "LeoQtLog" = None
-        self.outerFrame: "LeoQtFrame" = None
         self.statusFrame: "LeoQtFrame" = None
         self.top: "DynamicWindow" = None
         self.tree: LeoQtTree = None

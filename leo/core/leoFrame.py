@@ -728,7 +728,6 @@ class LeoFrame:
         self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
         self.menu: Any = None  # A Union
         self.miniBufferWidget: Widget = None
-        self.outerFrame: Any = None  # A Union
         self.prefsPanel: Any = None  # A Union
         self.statusLine: Any = g.NullObject()  # A Union.
         self.tree: Any = None  # A Union
@@ -882,19 +881,19 @@ class LeoFrame:
     def createIconBar(self) -> None:
         c = self.c
         if not self.iconBar:
-            self.iconBar = self.iconBarClass(c, self.outerFrame)
+            self.iconBar = self.iconBarClass(c, None)
         return self.iconBar
 
     def getIconBar(self) -> None:
         if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            self.iconBar = self.iconBarClass(self.c, None)
         return self.iconBar
 
     getIconBarObject = getIconBar
 
     def getNewIconFrame(self) -> None:
         if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            self.iconBar = self.iconBarClass(self.c, None)
         return self.iconBar.getNewFrame()
 
     def hideIconBar(self) -> None:
@@ -907,7 +906,7 @@ class LeoFrame:
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self) -> str:
         if not self.statusLine:
-            self.statusLine = self.statusLineClass(self.c, self.outerFrame)  # type:ignore
+            self.statusLine = self.statusLineClass(self.c, None)  # type:ignore
         return self.statusLine
 
     def clearStatusLine(self) -> None:
@@ -1857,7 +1856,6 @@ class NullFrame(LeoFrame):
         self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.outerFrame: Wrapper = None
         self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
