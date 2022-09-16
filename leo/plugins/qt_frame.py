@@ -1574,8 +1574,8 @@ class LeoQtBody(leoFrame.LeoBody):
         wrap = g.scanAllAtWrapDirectives(c, p)
         policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
         w.setHorizontalScrollBarPolicy(policy)
-        wrap = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap  # type:ignore
-        w.setWordWrapMode(wrap)
+        wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
+        w.setWordWrapMode(wrap_setting)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
@@ -2636,7 +2636,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # Set in finishCreate.
         # Important: depending on the log *tab*,
         # logCtrl may be either a wrapper or a widget.
-        assert self.logCtrl is None, self.logCtrl  # type:ignore
+        assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
         self.contentsDict: Dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
         self.eventFilters: List = []  # Apparently needed to make filters work!
@@ -2704,7 +2704,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def clearLog(self, event: Event=None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
-        w = self.logCtrl.widget  # type:ignore
+        w = self.logCtrl.widget
         if w:
             w.clear()
 
@@ -2713,7 +2713,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def dumpLog(self, event: Event=None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
-        w = self.logCtrl.widget  # type:ignore
+        w = self.logCtrl.widget
         if not w:
             return
 
@@ -3130,7 +3130,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             label = label[:underline] + '&' + label[underline:]
         if accelerator:
             label = f"{label}\t{accelerator}"
-        action = menu.addAction(label)  # type:ignore
+        action = menu.addAction(label)
         # Inject the command name into the action so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName or ''
         if command:

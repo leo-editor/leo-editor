@@ -358,7 +358,7 @@ class RstCommands:
 
         Return True if the directory existed or was made.
         """
-        c, ok = self.c, False  # 1815.
+        c = self.c
         # Create the directory if it doesn't exist.
         theDir, junk = g.os_path_split(fn)
         theDir = g.os_path_finalize(theDir)  # 1341
@@ -366,10 +366,10 @@ class RstCommands:
             return True
         if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
             theDir = c.expand_path_expression(theDir)
-            ok = g.makeAllNonExistentDirectories(theDir)  # type:ignore
+            ok: str = g.makeAllNonExistentDirectories(theDir)
             if not ok:
                 g.error('did not create:', theDir)
-        return ok
+        return bool(ok)
     #@+node:ekr.20100813041139.5912: *5* rst.writeIntermediateFile
     def writeIntermediateFile(self, fn: str, s: str) -> None:
         """Write s to to the file whose name is fn."""

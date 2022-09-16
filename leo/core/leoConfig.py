@@ -884,7 +884,7 @@ class ParserBaseClass:
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
-        d[key] = g.GeneralSetting(kind,  # type:ignore
+        d[key] = g.GeneralSetting(kind,
             path=c.mFileName,
             tag='setting',
             unl=p.get_UNL() if p else '',
@@ -2023,6 +2023,7 @@ class SettingsTreeParser(ParserBaseClass):
             f = self.dispatchDict.get(kind)
             if f:
                 try:
+                    # mypy: can not call function of unknown type.
                     return f(p, kind, name, val)  # type:ignore
                 except Exception:
                     g.es_exception()

@@ -3013,7 +3013,7 @@ class LeoLog(npyscreen.MultiLineEditable):
             ))
         # Inject leo_parent ivar so the contained widgets can get leo_c later.
         for w in self._my_widgets:
-            w.leo_parent = self  # type:ignore
+            w.leo_parent = self
         if trace and trace_widgets:
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
@@ -4227,6 +4227,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
         self.widget.value = ''
         self.widget.display()
 
+    # The signature is different.
     def get(self) -> Any:  # type:ignore
         return self.widget.value
 

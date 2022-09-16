@@ -646,7 +646,7 @@ class LeoQtGui(leoGui.LeoGui):
             if c and files:
                 c.last_dir = g.os_path_dirname(files[-1])
             # A consequence of the evil "multiple" kwarg.
-            return files  # type:ignore
+            return files
         s = g.os_path_normslashes(val)
         if c and s:
             c.last_dir = g.os_path_dirname(s)

@@ -816,7 +816,7 @@ class Position:
         p = self
         try:
             parent_v = p._parentVnode()  # Returns None if p.v is None.
-            return p.v and parent_v and p._childIndex + 1 < len(parent_v.children)  # type:ignore
+            return bool(p.v and parent_v and p._childIndex + 1 < len(parent_v.children))
         except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
             g.es_exception()
@@ -2608,8 +2608,8 @@ class VNode:
         # Wrong: return getattr(v, 'unknownAttributes', {})
         # It is does not set v.unknownAttributes, which can cause problems.
         if not hasattr(v, 'unknownAttributes'):
-            v.unknownAttributes = {}  # type:ignore
-        return v.unknownAttributes  # type:ignore
+            v.unknownAttributes = {}
+        return v.unknownAttributes
 
     def __set_u(self, val: Any) -> None:
         v = self
@@ -2617,7 +2617,7 @@ class VNode:
             if hasattr(v, 'unknownAttributes'):
                 delattr(v, 'unknownAttributes')
         elif isinstance(val, dict):
-            v.unknownAttributes = val  # type:ignore
+            v.unknownAttributes = val
         else:
             raise ValueError  # pragma: no cover
 

@@ -312,7 +312,7 @@ class LeoNameSpace:
     #@+node:ekr.20130930062914.16009: *3* LeoNS.find_c
     def find_c(self, path: str) -> Optional[Cmdr]:
         """Return the commander associated with path, or None."""
-        g = self.g  # type:ignore # mypy seems confused. g is a local var.
+        g = self.g
         self.update()
         path = g.os_path_normcase(path)
         short_path = g.shortFileName(path)

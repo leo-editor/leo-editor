@@ -730,7 +730,7 @@ class KeyStroke:
         }
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
-            return shift_d.get(s.lower())  # type:ignore
+            return shift_d.get(s.lower())
         #
         # Make all other translations...
         #
@@ -884,7 +884,7 @@ class KeyStroke:
         }
         if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
-            s = shift_d.get(s)  # type:ignore
+            s = shift_d.get(s)
         return s
     #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
@@ -1021,7 +1021,7 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s)  # type:ignore
+            return d.get(s)
         return s if len(s) == 1 else ''
     #@-others
 
@@ -1201,7 +1201,7 @@ class MatchBrackets:
                 # Scan to the end/beginning of the string.
                 i = self.scan_string(s, i)
             elif self.starts_comment(s, i):
-                i = self.scan_comment(s, i)  # type:ignore
+                i = self.scan_comment(s, i)
             elif ch == '/' and self.is_regex(s, i):
                 i = self.scan_regex(s, i)
             elif ch == ch1:

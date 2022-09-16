@@ -917,7 +917,7 @@ class LeoFrame:
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self) -> Union[CoreStatusLine, "NullStatusLineClass", g.NullObject]:
         if not self.statusLine:
-            self.statusLine = self.statusLineClass(self.c, None)  # type:ignore
+            self.statusLine = self.statusLineClass(self.c, None)
         return self.statusLine
 
     def clearStatusLine(self) -> None:
@@ -1631,7 +1631,7 @@ class LeoTree:
                     c.outerUpdate()  # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
                         # pylint: disable=no-member
-                        self.setItemForCurrentPosition()  # type:ignore
+                        self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
     #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
