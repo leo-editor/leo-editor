@@ -1861,8 +1861,8 @@ class NullFrame(LeoFrame):
         self.title = title
         self.top: Widget = None  # Always None.
         # Create the component objects.
-        self.body: Widget = NullBody(frame=self, parentFrame=None)
-        self.log: Widget = NullLog(frame=self, parentFrame=None)
+        self.body = NullBody(frame=self, parentFrame=None)
+        self.log = NullLog(frame=self, parentFrame=None)
         self.menu: Widget = leoMenu.NullMenu(frame=self)
         self.tree: Widget = NullTree(frame=self)
         # Default window position.
