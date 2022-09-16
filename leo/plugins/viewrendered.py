@@ -687,7 +687,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.badColors: List[str] = []
         self.delete_callback: Callable = None
         self.gnx: str = None
-        self.graphics_class = QtWidgets.QGraphicsWidget  # type:ignore
+        self.graphics_class = QtWidgets.QGraphicsWidget
         self.pyplot_canvas: Widget = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView

@@ -644,10 +644,11 @@ class KeyStroke:
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding: str) -> None:
 
+        self.s: str
         if binding:
             self.s = self.finalize_binding(binding)
         else:
-            self.s = None  # type:ignore
+            self.s = None
     #@+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)

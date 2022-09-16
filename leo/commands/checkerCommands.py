@@ -520,10 +520,10 @@ class PylintCommand:
         args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
         if is_win:
             args = args.replace('\\', '\\\\')
-        command = (
+        command_s = (
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
-            command = shlex.split(command)  # type:ignore
+            command = shlex.split(command_s)
         #
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager

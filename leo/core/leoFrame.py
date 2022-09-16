@@ -1684,7 +1684,7 @@ class LeoTree:
             # #1168: Ctrl-minus selects multiple nodes.
             if hasattr(self, 'unselectItem'):
                 # pylint: disable=no-member
-                self.unselectItem(old_p)  # type:ignore
+                self.unselectItem(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper

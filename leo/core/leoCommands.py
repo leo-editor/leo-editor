@@ -749,7 +749,7 @@ class Commands:
         with open(fname, 'wt', encoding='utf8') as out:
             out.write(script)
         tree = ast.parse(script, filename=fname)
-        # A mypy bug: the script can be str.
+        # A mypy bug? the script can be str.
         rewrite_asserts(tree, script, config=cfg)  # type:ignore
         co = compile(tree, fname, "exec", dont_inherit=True)
         sys.path.insert(0, '.')

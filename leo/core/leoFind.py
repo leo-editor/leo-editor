@@ -105,7 +105,8 @@ class LeoFind:
         """Ctor for LeoFind class."""
         self.c = c
         self.expert_mode = False  # Set in finishCreate.
-        self.ftm: FindTabManager = None  # Created by dw.createFindTab.
+        # Created by dw.createFindTab.
+        self.ftm: FindTabManager = None  # A Union. Hard to annotate.
         self.k: KeyHandler = c.k
         self.re_obj: re.Pattern = None
         #
