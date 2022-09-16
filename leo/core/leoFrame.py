@@ -27,6 +27,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.core.cursesGui2 import CoreLog
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtLog
     from leo.plugins.notebook import NbController
@@ -724,7 +725,7 @@ class LeoFrame:
         self.iconBar: Any = None  # A Union.
         self.isNullFrame = False
         self.keys = None
-        self.log: Union[LeoLog, NullLog, LeoQtLog] = None
+        self.log: Union[CoreLog, LeoLog, NullLog, LeoQtLog] = None
         self.menu: Any = None  # A Union
         self.miniBufferWidget: Widget = None
         self.outerFrame: Any = None  # A Union
