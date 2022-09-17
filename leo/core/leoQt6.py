@@ -40,8 +40,10 @@ try:
     assert QtWebEngineWidgets
     has_WebEngineWidgets = True
 except ImportError:
-    print('No Qt6 QtWebEngineWidgets')
-    print('pip install PyQt6-WebEngine')
+    # 2866: This message pollutes leoserver.py.
+        # print('No Qt6 QtWebEngineWidgets')
+        # print('pip install PyQt6-WebEngine')
+    pass
 
 try:
     from PyQt6 import QtPrintSupport as printsupport
