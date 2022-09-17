@@ -7127,7 +7127,8 @@ def onCreate(tag, keys): # pyzo_file_browser.py
         name="File Browser",
         widget=PyzoFileBrowser(parent=None),
     )
-#@+node:ekr.20220728055642.1: ** Old importer code
+#@+node:ekr.20220917052530.1: ** Old code
+#@+node:ekr.20220728055642.1: *3* Old importer code
 @nosearch
 @language plain
 
@@ -7141,7 +7142,7 @@ Summary of deleted methods:
 - Importer: i.gen_lines, i.generate_nodes, i.undent*, i.indent*, i.finish (The old api), i.check.
 
 @language python
-#@+node:ekr.20161105140842.5: *3* js_i.scan_line
+#@+node:ekr.20161105140842.5: *4* js_i.scan_line
 def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
     """
     Update the scan state at the *end* of the line.
@@ -7187,7 +7188,7 @@ def scan_line(self, s: str, prev_state: "JS_ScanState") -> "JS_ScanState":
     d = {'context': context, 'curlies': curlies, 'parens': parens}
     state = JS_ScanState(d)
     return state
-#@+node:ekr.20171224145755.1: *3* js_i.starts_block
+#@+node:ekr.20171224145755.1: *4* js_i.starts_block
 func_patterns = [
     re.compile(r'.*?\)\s*=>\s*\{'),
     re.compile(r'\s*class\b'),
@@ -7210,7 +7211,7 @@ def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any
         if pattern.match(line) is not None:
             return True
     return False
-#@+node:ekr.20170530035601.1: *3* lua_i.starts_block (not used)
+#@+node:ekr.20170530035601.1: *4* lua_i.starts_block (not used)
 # The function must be an "outer" function, without indentation.
 function_pattern = re.compile(r'^(local\s+)?function')
 function_pattern2 = re.compile(r'(local\s+)?function')
@@ -7245,7 +7246,7 @@ def starts_block(self, i: int, lines: List[str], new_state: Any, prev_state: Any
                 self.start_stack.append(z)
                 break
     return False
-#@+node:ekr.20161129213808.1: *3* php_i.get_new_dict
+#@+node:ekr.20161129213808.1: *4* php_i.get_new_dict
 @nobeautify
 
 def get_new_dict(self, context: str) -> Dict:
@@ -7286,7 +7287,7 @@ def get_new_dict(self, context: str) -> Dict:
             ']':    [('len', ']', context, (0,0,-1))],
         }
     return d
-#@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
+#@+node:ekr.20161129214803.1: *4* php_i.scan_dict (supports here docs)
 def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
     """
     i.scan_dict: Scan at position i of s with the give context and dict.
@@ -7351,7 +7352,7 @@ def scan_dict(self, context: str, i: int, s: str, d: Dict) -> scan_tuple:
     # No match: stay in present state. All deltas are zero.
     new_context = context
     return scan_tuple(new_context, i + 1, 0, 0, 0, False)
-#@+node:ekr.20200203060718.1: *3* TestJavascript.test_scan_line
+#@+node:ekr.20200203060718.1: *4* TestJavascript.test_scan_line
 def test_scan_line(self):
 
     c = self.c
@@ -7385,7 +7386,7 @@ def test_scan_line(self):
                 f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
                 f"new_state: {new_state}\n"
                 f"        s: {s!r}")
-#@+node:ekr.20210904065459.54: *3* TestPerl.test_regex_1
+#@+node:ekr.20210904065459.54: *4* TestPerl.test_regex_1
 def test_regex_1(self):
 
     # ('len',   'tr///', '/',       context,  0,       0,       0),
@@ -7413,7 +7414,7 @@ def test_regex_1(self):
     """
     self.run_test(s)
 
-#@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
+#@+node:ekr.20161118093751.2: *4* ts_i.skip_possible_regex
 def skip_possible_regex(self, s: str, i: int) -> int:
     """look ahead for a regex /"""
     assert s[i] in '=(', repr(s[i])
@@ -7435,8 +7436,8 @@ def skip_possible_regex(self, s: str, i: int) -> int:
             assert progress < i
 
     return i - 1
-#@+node:ekr.20220825080908.1: ** Old scripts
-#@+node:ekr.20210309083845.1: *3* script: old check-leoPy.leo
+#@+node:ekr.20220825080908.1: *3* Old scripts
+#@+node:ekr.20210309083845.1: *4* script: old check-leoPy.leo
 """
 Issue https://github.com/leo-editor/leo-editor/issues/1789
 """
@@ -7478,7 +7479,7 @@ for module in ('core', 'external', 'plugins'):
             print(f"Missing: {path}")
     print('')
 print('done')
-#@+node:ekr.20210709045755.1: *3* script: wax_off.py
+#@+node:ekr.20210709045755.1: *4* script: wax_off.py
 @first # -*- coding: utf-8 -*-
 << docstring >>
 import argparse
@@ -7503,7 +7504,7 @@ class WaxOff:
 
 if __name__ == '__main__':
     WaxOff().main()
-#@+node:ekr.20210710050822.1: *4* << docstring >>
+#@+node:ekr.20210710050822.1: *5* << docstring >>
 """
 The "wax-off" utility.
 
@@ -7541,7 +7542,7 @@ methods directly in the source files. When mypy is happy, just run wax_off
 to move the def lines into stub files. wax_off then "declutters" the def
 lines.
 """
-#@+node:ekr.20210709065306.1: *4* wax_off.do_file
+#@+node:ekr.20210709065306.1: *5* wax_off.do_file
 def do_file(self, input_fn):
     """Handle one file"""
     # Define output files.
@@ -7612,7 +7613,7 @@ def do_file(self, input_fn):
         with open(new_fn, 'w') as f:
             f.write(new_contents)
     print(f"{len(replacements)} replacements")
-#@+node:ekr.20210709052929.3: *4* wax_off.get_next_arg
+#@+node:ekr.20210709052929.3: *5* wax_off.get_next_arg
 name_pat = re.compile(r'\s*([\w_]+)\s*')
 
 def get_next_arg(self, s, i):
@@ -7650,7 +7651,7 @@ def get_next_arg(self, s, i):
     i = self.skip_ws(s, j)
     return f"{name}={initializer}", i
 
-#@+node:ekr.20210709102722.1: *4* wax_off.main
+#@+node:ekr.20210709102722.1: *5* wax_off.main
 def main(self):
     """The main line of the wax_off script."""
     # Handle command-line options & set ivars.
@@ -7659,7 +7660,7 @@ def main(self):
     for fn in self.files:
         path = os.path.join(self.input_directory, fn)
         self.do_file(path)
-#@+node:ekr.20210709055018.1: *4* wax_off.scan_options
+#@+node:ekr.20210709055018.1: *5* wax_off.scan_options
 def scan_options(self):
     """Run commands specified by sys.argv."""
 
@@ -7718,7 +7719,7 @@ def scan_options(self):
         print('No input files')
         sys.exit(1)
 
-#@+node:ekr.20210709052929.4: *4* wax_off.skip_to_outer_delim & helpers
+#@+node:ekr.20210709052929.4: *5* wax_off.skip_to_outer_delim & helpers
 def skip_to_outer_delim(self, s, i, delims):
     """
     Skip to next *outer*, ignoring inner delimis contained in strings, etc.
@@ -7758,14 +7759,14 @@ def skip_to_outer_delim(self, s, i, delims):
         assert progress < i, (i, repr(s[i:]))
     assert(c_level, p_level, s_level) == (0, 0, 0), (c_level, p_level, s_level)
     return len(s)
-#@+node:ekr.20210709052929.5: *5* wax_off.skip_comment
+#@+node:ekr.20210709052929.5: *6* wax_off.skip_comment
 def skip_comment(self, s, i):
     """Scan forward to the end of a comment."""
     assert s[i] == '#'
     while i < len(s) and s[i] != '\n':
         i += 1
     return i
-#@+node:ekr.20210709052929.6: *5* wax_off.skip_string
+#@+node:ekr.20210709052929.6: *6* wax_off.skip_string
 def skip_string(self, s, i):
     """Scan forward to the end of a string."""
     delim = s[i]
@@ -7780,12 +7781,12 @@ def skip_string(self, s, i):
     assert i < len(s) and s[i] == delim, (i, delim)
     i += 1
     return i
-#@+node:ekr.20210709053410.1: *5* wax_off.skip_ws
+#@+node:ekr.20210709053410.1: *6* wax_off.skip_ws
 def skip_ws(self, s, i):
     while i < len(s) and s[i] in ' \t':
         i += 1
     return i
-#@+node:ekr.20210709052929.2: *4* wax_off.stripped_args
+#@+node:ekr.20210709052929.2: *5* wax_off.stripped_args
 def stripped_args(self, s):
     """
     s is the argument list, without parens, possibly containing annotations.
@@ -7802,7 +7803,7 @@ def stripped_args(self, s):
         args.append(arg)
         assert progress < i, (i, repr(s[i:]))
     return ', '.join(args)
-#@+node:ekr.20220913064923.2: ** qtree.drawVisible & helpers (not used)
+#@+node:ekr.20220913064923.2: *3* qtree.drawVisible & helpers (not used)
 def drawVisible(self, p: Position) -> None:
     """
     Add only the visible nodes to the outline.
@@ -7863,7 +7864,7 @@ def drawVisible(self, p: Position) -> None:
     t2 = time.process_time()
     if t2 - t1 > 0.1:
         g.trace(f"{n} nodes, {t2 - t1:5.2f} sec")
-#@+node:ekr.20220913064923.3: *3* qtree.yieldVisible (not used)
+#@+node:ekr.20220913064923.3: *4* qtree.yieldVisible (not used)
 def yieldVisible(self, first_p: Position, target_p: Position=None) -> Generator:
     """
     A generator yielding positions from first_p to target_p.
@@ -7915,7 +7916,7 @@ def yieldVisible(self, first_p: Position, target_p: Position=None) -> Generator:
         continue
     if target_p:
         g.trace('NOT FOUND:', target_p.h)
-#@+node:ekr.20220913064923.4: *3* qtree.slowYieldVisible (not used)
+#@+node:ekr.20220913064923.4: *4* qtree.slowYieldVisible (not used)
 def slowYieldVisible(self, first_p: Position, target_p: Position=None) -> Generator:
     """
     A generator yielding positions from first_p to target_p.
@@ -7929,6 +7930,351 @@ def slowYieldVisible(self, first_p: Position, target_p: Position=None) -> Genera
         p.moveToVisNext(c)
     if target_p:
         g.trace('NOT FOUND:', target_p.h)
+#@+node:ekr.20220917052540.1: ** Old commands
+#@+node:ekr.20210907103011.1: *3* leo/commands/testCommands.py
+@first # -*- coding: utf-8 -*-
+"""Unit test commands"""
+import os
+import time
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoGui import LeoKeyEvent as Event
+else:
+    Event = Any
+
+@others
+@language python
+@tabwidth -4
+@pagewidth 70
+#@+node:ekr.20210907103024.2: *4* coverage test commands...
+#@+node:ekr.20210907103024.3: *5* cover-all
+@nowrap
+@g.command('cover-all')
+def cover_all(event: Event=None) -> None:
+    """Run all coverage tests in leo.unittests."""
+    if 1:
+        # This is usually best:
+        # - It creates a full report in leo/unittests/htmlcov/index.html.
+        # - It runs all unit tests in the leo.unittests directory.
+        g.run_coverage_tests()
+    else:
+        unittests_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'unittests')
+        assert os.path.exists(unittests_dir)
+        os.chdir(unittests_dir)
+        # This runs only the listed files. index.html describes only the last file.
+        table = (
+            ('leo.core.leoApp', 'core/test_leoApp.py'),
+            ('leo.core.leoAst', 'core/test_leoAst.py'),
+            ('leo.core.leoAtFile', 'core/test_leoAtFile.py'),
+            ('leo.core.leoBridge', 'core/test_leoBridge.py'),
+            ('leo.commands.checkerCommands', 'commands/test_checkerCommands.py'),
+            ('leo.core.leoColorizer', 'core/test_leoColorizer.py'),
+            ('leo.core.leoCommands', 'core/test_leoCommands.py'),
+            ('leo.core.leoConfig', 'core/test_leoConfig.py'),
+            ('leo.commands.convertCommands', 'commands/test_convertCommands.py'),
+            ('leo.commands.editCommands', 'commands/test_editCommands.py'),
+            ('leo.core.leoFileCommands', 'core/test_leoFileCommands.py'),
+            ('leo.core.leoFind', 'core/test_leoFind.py'),
+            ('leo.core.leoFrame', 'core/test_leoFrame.py'),
+            ('leo.core.leoGlobals', 'core/test_leoGlobals.py'),
+            ('leo.core.leoImport', 'core/test_leoImport.py'),
+            ('leo.core.leoKeys', 'core/test_leoKeys.py'),
+            ('leo.core.leoserver', 'core/test_leoserver.py'),
+            ('leo.core.leoNodes', 'core/test_leoNodes.py'),
+            ('leo.core.leoPersistence', 'core/test_leoPersistence.py'),
+            ('leo.core.leoRst', 'core/test_leoRst.py'),
+            ('leo.core.leoShadow', 'core/test_leoShadow.py'),
+            ('leo.core.leoUndo', 'core/test_leoUndo.py'),
+            ('leo.core.leoVim', 'core/test_leoVim.py'),
+        )
+        for module, filename in table:
+            g.run_coverage_tests(module, filename)
+#@+node:ekr.20210911072153.3: *5* cover-app
+@g.command('cover-app')
+def cover_app(event: Event=None) -> None:
+    """Run all coverage tests for leoApp.py."""
+    g.run_coverage_tests('leo.core.leoApp', 'core/test_leoApp.py')
+#@+node:ekr.20210907103024.4: *5* cover-ast
+@g.command('cover-ast')
+def cover_ast(event: Event=None) -> None:
+    """Run all coverage tests for leoAst.py."""
+    g.run_coverage_tests('leo.core.leoAst', 'core/test_leoAst.py')
+#@+node:ekr.20210907103024.5: *5* cover-atfile
+@g.command('cover-atfile')
+def cover_atfile(event: Event=None) -> None:
+    """Run all coverage tests for leoAtFile.py."""
+    g.run_coverage_tests('leo.core.leoAtFile', 'core/test_leoAtFile.py')
+#@+node:ekr.20210911072153.6: *5* cover-bridge
+@g.command('cover-bridge')
+def cover_bridge(event: Event=None) -> None:
+    """Run all coverage tests for leoBridge.py."""
+    g.run_coverage_tests('leo.core.leoBridge', 'core/test_leoBridge.py')
+#@+node:ekr.20210911072153.7: *5* cover-checker-commands
+@g.command('cover-checker-commands')
+def cover_checker_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoCheckerCommands.py."""
+    g.run_coverage_tests('leo.commands.checkerCommands', 'commands/test_checkerCommands.py')
+#@+node:ekr.20210911072153.8: *5* cover-colorizer
+@g.command('cover-colorizer')
+def cover_colorizer(event: Event=None) -> None:
+    """Run all coverage tests for leoColorizer.py."""
+    g.run_coverage_tests('leo.core.leoColorizer', 'core/test_leoColorizer.py')
+#@+node:ekr.20210911072153.10: *5* cover-commands
+@g.command('cover-commands')
+def cover_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoCommands.py."""
+    g.run_coverage_tests('leo.core.leoCommands', 'core/test_leoCommands.py')
+#@+node:ekr.20220109041701.1: *5* cover-convert-commands
+@g.command('cover-convert-commands')
+def cover_convert_commands(event: Event=None) -> None:
+    """Run all coverage tests for convertCommands.py."""
+    g.run_coverage_tests('leo.commands.convertCommands', 'commands/test_convertCommands.py')
+#@+node:ekr.20210911072153.9: *5* cover-config
+@g.command('cover-config')
+def cover_config(event: Event=None) -> None:
+    """Run all coverage tests for leoConfig.py."""
+    g.run_coverage_tests('leo.core.leoConfig', 'core/test_leoConfig.py')
+#@+node:ekr.20210907103024.6: *5* cover-edit-commands
+@g.command('cover-edit-commands')
+def cover_edit_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoEditCommands.py."""
+    g.run_coverage_tests('leo.commands.editCommands', 'commands/test_editCommands.py')
+#@+node:ekr.20210911072153.12: *5* cover-external-files
+@g.command('cover-external-files')
+def cover_external_files(event: Event=None) -> None:
+    """Run all coverage tests for leoExternalFiles.py."""
+    g.run_coverage_tests('leo.core.leoExternalFiles', 'core/test_leoExternalFiles.py')
+#@+node:ekr.20210911072153.14: *5* cover-file-commands
+@g.command('cover-file-commands')
+def cover_file_commands(event: Event=None) -> None:
+    """Run all coverage tests for leoFileCommands.py."""
+    g.run_coverage_tests('leo.core.leoFileCommands', 'core/test_leoFileCommands.py')
+#@+node:ekr.20210907103024.7: *5* cover-find
+@g.command('cover-find')
+def cover_find(event: Event=None) -> None:
+    """Run all coverage tests for leoFind.py."""
+    g.run_coverage_tests('leo.core.leoFind', 'core/test_leoFind.py')
+#@+node:ekr.20210911072153.15: *5* cover-frame
+@g.command('cover-frame')
+def cover_frame(event: Event=None) -> None:
+    """Run all coverage tests for leoFrame.py."""
+    g.run_coverage_tests('leo.core.leoFrame', 'core/test_leoFrame.py')
+#@+node:ekr.20210911072153.16: *5* cover-globals
+@g.command('cover-globals')
+def cover_globals(event: Event=None) -> None:
+    """Run all coverage tests for leoGlobals.py."""
+    g.run_coverage_tests('leo.core.leoGlobals', 'core/test_leoGlobals.py')
+#@+node:ekr.20210911072153.18: *5* cover-import
+@g.command('cover-import')
+def cover_import(event: Event=None) -> None:
+    """Run all coverage tests for leoImport.py."""
+    g.run_coverage_tests('leo.core.leoImport', 'core/test_leoImport.py')
+#@+node:ekr.20210911072153.19: *5* cover-keys
+@g.command('cover-keys')
+def cover_keys(event: Event=None) -> None:
+    """Run all coverage tests for leoKeys.py."""
+    g.run_coverage_tests('leo.core.leoKeys', 'core/test_leoKeys.py')
+#@+node:ekr.20210911072153.20: *5* cover-leoserver
+@g.command('cover-leoserver')
+def cover_leoserver(event: Event=None) -> None:
+    """Run all unittests for leoserver.py"""
+    g.run_coverage_tests('leo.core.leoserver', 'core/test_leoserver.py')
+#@+node:ekr.20210907103024.8: *5* cover-nodes
+@g.command('cover-nodes')
+def cover_node(event: Event=None) -> None:
+    """Run all coverage tests for leoNodes.py."""
+    g.run_coverage_tests('leo.core.leoNodes', 'core/test_leoNodes.py')
+#@+node:ekr.20210911072153.23: *5* cover-persistence
+@g.command('cover-persistence')
+def cover_persistence(event: Event=None) -> None:
+    """Run all coverage tests for leoPersistence.py."""
+    g.run_coverage_tests('leo.core.leoPersistence', 'core/test_leoPersistence.py')
+#@+node:ekr.20210911072153.25: *5* cover-rst
+@g.command('cover-rst')
+def cover_rst3(event: Event=None) -> None:
+    """Run all coverage tests for leoRst.py."""
+    g.run_coverage_tests('leo.core.leoRst', 'core/test_leoRst.py')
+#@+node:ekr.20210911072153.26: *5* cover-shadow
+@g.command('cover-shadow')
+def cover_shadow(event: Event=None) -> None:
+    """Run all coverage tests for leoShadow.py."""
+    g.run_coverage_tests('leo.core.leoShadow', 'core/test_leoShadow.py')
+#@+node:ekr.20210911072153.28: *5* cover-undo
+@g.command('cover-undo')
+def cover_undo(event: Event=None) -> None:
+    """Run all coverage tests for leoUndo.py."""
+    g.run_coverage_tests('leo.core.leoUndo', 'core/test_leoUndo.py')
+#@+node:ekr.20210911072153.29: *5* cover-vim
+@g.command('cover-vim')
+def cover_vim(event: Event=None) -> None:
+    """Run all coverage tests for leoVim.py."""
+    g.run_coverage_tests('leo.core.leoVim', 'core/test_leoVim.py')
+#@+node:ekr.20210907113937.1: *4* unit test commands...
+#@+node:ekr.20210907103024.11: *5* test-all
+@g.command('test-all')
+def test_all(event: Event=None) -> None:
+    """Run all unit tests in leo.unittests."""
+    g.run_unit_tests()
+    # g.es_print('test-all: all tests complete')
+#@+node:ekr.20210907103024.12: *5* test-app
+@g.command('test-app')
+def test_app(event: Event=None) -> None:
+    """Run all unit tests for leoApp.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoApp')
+#@+node:ekr.20210907103024.13: *5* test-ast
+@g.command('test-ast')
+def test_ast(event: Event=None) -> None:
+    """Run all unit tests for leoAst.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoAst')
+#@+node:ekr.20210907103024.14: *5* test-atfile
+@g.command('test-atfile')
+def test_atfile(event: Event=None) -> None:
+    """Run all unit tests for leoAtFile.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoAtFile')
+#@+node:ekr.20210907103024.15: *5* test-bridge
+@g.command('test-bridge')
+def test_bridge(event: Event=None) -> None:
+    """Run all unit tests for leoBridge.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoBridge')
+#@+node:ekr.20210907103024.16: *5* test-checker-commands
+@g.command('test-checker-commands')
+def test_checker_commands(event: Event=None) -> None:
+    """Run all unit tests for leoCheckerCommands.py."""
+    g.run_unit_tests('leo.unittests.commands.test_checkerCommands')
+#@+node:ekr.20210907103024.17: *5* test-colorizer
+@g.command('test-colorizer')
+def test_colorizer(event: Event=None) -> None:
+    """Run all unit tests for leoColorizer.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoColorizer')
+#@+node:ekr.20211013080906.1: *5* test-convert
+@g.command('test-convert')
+def test_convert(event: Event=None) -> None:
+    """Run all unit tests for leo/commands/leoConvertCommands.py."""
+    #.TestPythonToTypeScript')
+    g.run_unit_tests('leo.unittests.commands.test_convertCommands')
+#@+node:ekr.20210907103024.18: *5* test-commands
+@g.command('test-commands')
+def test_commands(event: Event=None) -> None:
+    """Run all unit tests for leoCommands.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoCommands')
+#@+node:ekr.20210910074026.1: *5* test-config
+@g.command('test-config')
+def test_config(event: Event=None) -> None:
+    """Run all unit tests for leoConfig.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoConfig')
+#@+node:ekr.20210926051147.1: *5* test-doctests
+@g.command('test-doctests')
+def test_doctests(event: Event=None) -> None:
+    """Run all doctests in Leo."""
+    g.run_unit_tests('leo.unittests.test_doctests')
+#@+node:ekr.20210907103024.19: *5* test-edit-commands
+@g.command('test-edit-commands')
+def test_edit_commands(event: Event=None) -> None:
+    """Run all unit tests for leo.commands.editCommands."""
+    g.run_unit_tests('leo.unittests.commands.test_editCommands')
+#@+node:ekr.20210907103024.20: *5* test-external-files
+@g.command('test-external-files')
+def test_external_files(event: Event=None) -> None:
+    """Run all unit tests for leoExternalFiles.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoExternalFiles')
+#@+node:ekr.20210910065945.1: *5* test-file-commands
+@g.command('test-file-commands')
+def test_file_commands(event: Event=None) -> None:
+    """Run all unit tests for leoFileCommands.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFileCommands')
+#@+node:ekr.20210907103024.21: *5* test-find
+@g.command('test-find')
+def test_find(event: Event=None) -> None:
+    """Run all unit tests for leoFind.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFind')
+#@+node:ekr.20210907103024.22: *5* test-frame
+@g.command('test-frame')
+def test_frame(event: Event=None) -> None:
+    """Run all unit tests for leoFrame.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoFrame')
+#@+node:ekr.20210907103024.23: *5* test-globals
+@g.command('test-globals')
+def test_globals(event: Event=None) -> None:
+    """Run all unit tests for leoGlobals.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoGlobals')
+#@+node:ekr.20210907103024.24: *5* test-import
+@g.command('test-import')
+def test_import(event: Event=None) -> None:
+    """Run all unit tests for leoImport.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoImport')
+#@+node:ekr.20210907103024.25: *5* test-keys
+@g.command('test-keys')
+def test_keys(event: Event=None) -> None:
+    """Run all unit tests for leoKeys.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoKeys.TestKeys')
+#@+node:ekr.20210907103024.29: *5* test-leoserver
+@g.command('test-leoserver')
+def test_leoserver(event: Event=None) -> None:
+    """Run all unittests for leoserver.py"""
+    g.run_unit_tests('leo.unittests.core.test_leoserver')
+#@+node:ekr.20210907103024.10: *5* test-leoserver-with-leoclient
+@g.command('test-leoserver-with-leoclient')
+def test_leo_client_and_server(event: Event=None) -> None:
+    """
+    Test leoserver.py with leoclient.py.
+
+    The test-all command does *not* run this command, because there is
+    no corresponding test*.py file.
+    """
+    g.cls()
+    leo_dir = os.path.abspath(os.path.join(g.app.loadDir, '..', '..'))
+    assert os.path.exists(leo_dir), repr(leo_dir)
+    os.chdir(leo_dir)
+    g.execute_shell_commands('start cmd /k "python -m leo.core.leoserver --trace=request,response,verbose"')
+    time.sleep(1.5)
+    g.execute_shell_commands('start cmd /k "python -m leo.core.leoclient"')
+#@+node:ekr.20210907103024.26: *5* test-nodes
+@g.command('test-nodes')
+def test_nodes(event: Event=None) -> None:
+    """Run all unit tests for leoNodes.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoNodes')
+#@+node:ekr.20210909091424.1: *5* test-persistence
+@g.command('test-persistence')
+def test_persistence(event: Event=None) -> None:
+    """Run all unit tests for leoPersistence.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoPersistence')
+#@+node:ekr.20210907103024.27: *5* test-plugins
+@g.command('test-plugins')
+def test_plugins(event: Event=None) -> None:
+    """Run all unit tests relating to plugins."""
+    g.run_unit_tests('leo.unittests.test_plugins')
+#@+node:ekr.20210907103024.28: *5* test-rst
+@g.command('test-rst')
+def test_rst3(event: Event=None) -> None:
+    """Run all unit tests for leoRst.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoRst')
+#@+node:ekr.20210907103024.30: *5* test-shadow
+@g.command('test-shadow')
+def test_shadow(event: Event=None) -> None:
+    """Run all unit tests for leoShadow.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoShadow')
+#@+node:ekr.20210907103024.31: *5* test-syntax
+@g.command('test-syntax')
+def test_syntax(event: Event=None) -> None:
+    """Run all testss in test_syntax.py."""
+    g.run_unit_tests('leo.unittests.test_syntax')
+#@+node:ekr.20210907103024.32: *5* test-undo
+@g.command('test-undo')
+def test_undo(event: Event=None) -> None:
+    """Run all unit tests for leoUndo.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoUndo')
+#@+node:ekr.20210910073036.1: *5* test-vim
+@g.command('test-vim')
+def test_vim(event: Event=None) -> None:
+    """Run all unit tests for leoVim.py."""
+    g.run_unit_tests('leo.unittests.core.test_leoVim')
+#@+node:ekr.20210910085337.1: *5* test_gui
+@g.command('test-gui')
+def test_gui(event: Event=None) -> None:
+    """Run all gui-related unit tests."""
+    g.run_unit_tests('leo.unittests.test_gui')
 #@-all
 #@@nosearch
 #@-leo
