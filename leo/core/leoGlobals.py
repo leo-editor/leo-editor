@@ -2744,10 +2744,10 @@ def objToString(obj: Any, indent: str='', tag: str='', concise: bool=False) -> s
     concise=False: (Legacy) return a detailed string.
     concise=True: Return a summary string.
     """
+    if tag:
+        print(tag.strip())
     if concise:
         r = repr(obj)
-        if tag:
-            print(tag.strip())
         if obj is None:
             return f"{indent}None"
         if isinstance(obj, dict):

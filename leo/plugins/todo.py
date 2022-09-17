@@ -577,11 +577,12 @@ class todoController:
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
-    #@+node:tbrown.20090119215428.16: *3* loadIcons
+    #@+node:tbrown.20090119215428.16: *3* loadIcons (todo.py)
     @redrawer
     def loadIcons(self, p: Position, clear: bool=False) -> None:
 
-        com = self.c.editCommands
+        c = self.c
+        com = c.editCommands
         allIcons = com.getIconList(p.v)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
         if self.icon_order == 'pri-first':
@@ -621,10 +622,37 @@ class todoController:
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
-                    com.appendImageDictToList(icons, g.os_path_join('cleo', icon),
-                        2, on='vnode', cleoIcon='1', where=self.prog_location)
+                    # Append the icon to the icons list.
+                    com.appendImageDictToList(icons,
+                        g.os_path_join('cleo', icon),
+                        2,
+                        on='vnode',
+                        cleoIcon='1',
+                        where=self.prog_location)
 
-        com.setIconList(p, icons, setDirty=False)
+        if icons:
+            ### g.trace('Icons for', p.h)
+            g.printObj(icons, tag=p.h)
+        
+        # Set the p.v.u for the icons.
+        com.setIconList(p, icons)
+        d = p.v.u.get('icons')
+        if d:
+            ### g.trace(p.h)
+            g.printObj(d, tag=p.h)
+        
+        # Update the vnode's icon.
+        
+        ### Add guard??? 
+        # tree = c.frame.tree
+
+        # # Like v.updateIcons:
+        # items = tree.vnode2items(p.v)
+        # for item in items:
+            # for icon in icons:
+                # tree.setItemIcon(item, icon)
+        ### v.updateIcon()
+        # c.redraw_after_icons_changed()
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag: str, key: Any) -> None:
         "unregister handlers on closing commander"

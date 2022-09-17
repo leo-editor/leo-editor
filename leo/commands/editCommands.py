@@ -1137,53 +1137,41 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, l: List[Any], setDirty: bool=True) -> None:
-        """Set list of icons for position p to l"""
+    def setIconList(self, p: Position, aList: List[Any]) -> None:  ###, setDirty: bool=True) -> None:
+        """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
-        if not l and not current:
+        if not aList and not current:
             return  # nothing to do
-        lHash = ''.join([self.dHash(i) for i in l])
+        lHash = ''.join([self.dHash(i) for i in aList])
         cHash = ''.join([self.dHash(i) for i in current])
         if lHash == cHash:
             # no difference between original and current list of dictionaries
             return
-        self._setIconListHelper(p, l, p.v, setDirty)
+        # set p.u.
+        self._setIconListHelper(p, aList)  ###, setDirty)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self,
-        p: Position,
-        subl: List[Any],
-        uaLoc: VNode,
-        setDirty: bool,
-    ) -> None:
-        """icon setting code common between v and t nodes
-
-        p - position
-        subl - list of icons for the v or t node
-        uaLoc - the v or t node
-        """
-        if subl:  # Update the uA.
-            if not hasattr(uaLoc, 'unknownAttributes'):
-                uaLoc.unknownAttributes = {}
-            uaLoc.unknownAttributes['icons'] = list(subl)
-            # g.es((p.h,uaLoc.unknownAttributes['icons']))
-            uaLoc._p_changed = True
-            if setDirty:
-                p.setDirty()
+    def _setIconListHelper(self, p: Position, aList: List[Any]) -> None:
+        """Set icon UA for p.v. to the given list of Icons."""
+        v = p.v
+        if aList:  # Update the uA.
+            if not hasattr(v, 'unknownAttributes'):
+                v.unknownAttributes = {}
+            v.unknownAttributes['icons'] = list(aList)
+            v._p_changed = True
         else:  # delete the uA.
-            if hasattr(uaLoc, 'unknownAttributes'):
-                if 'icons' in uaLoc.unknownAttributes:
-                    del uaLoc.unknownAttributes['icons']
-                    uaLoc._p_changed = True
-                    if setDirty:
-                        p.setDirty()
+            if hasattr(v, 'unknownAttributes'):
+                if 'icons' in v.unknownAttributes:
+                    del v.unknownAttributes['icons']
+                    v._p_changed = True
     #@+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
     @cmd('delete-first-icon')
     def deleteFirstIcon(self, event: Event=None) -> None:
         """Delete the first icon in the selected node's icon list."""
-        c = self.c
+        c, p = self.c, self.c.p
         aList = self.getIconList(c.p.v)
         if aList:
-            self.setIconList(c.p, aList[1:])
+            self.setIconList(p, aList[1:])
+            p.setDirty()  ###
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
@@ -1205,6 +1193,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 newList.append(d)
         if len(newList) != len(aList):
             self.setIconList(p, newList)
+            p.setDirty()  ###
             c.setChanged()
             c.redraw_after_icons_changed()
         else:
@@ -1213,10 +1202,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-last-icon')
     def deleteLastIcon(self, event: Event=None) -> None:
         """Delete the first icon in the selected node's icon list."""
-        c = self.c
-        aList = self.getIconList(c.p.v)
+        c, p = self.c, self.c.p
+        aList = self.getIconList(p.v)
         if aList:
             self.setIconList(c.p, aList[:-1])
+            p.setDirty()  ###
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
@@ -1228,7 +1218,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if p.u:
             p.v._p_changed = True
             self.setIconList(p, [])
-            p.setDirty()
+            p.setDirty()  ###
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.240: *4* ec.insertIcon
@@ -1256,6 +1246,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
+        p.setDirty()  ###
         c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
@@ -1271,6 +1262,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             pos = len(aList2)
         aList2.insert(pos, aList[0])
         self.setIconList(p, aList2)
+        p.setDirty()  ###
         c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.242: *3* ec: indent
