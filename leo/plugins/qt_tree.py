@@ -215,7 +215,6 @@ class LeoQtTree(leoFrame.LeoTree):
 
         returns composite icon for this node, containing the icon box and perhaps other icons.
         """
-        g.trace(v.h) ### 
         dd = self.declutter_data
         iconVal = v.computeIcon()
         iconName = f'box{iconVal:02d}.png'
@@ -783,7 +782,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 f = nicon
             if f not in loaded_images:
                 loaded_images[f] = g.app.gui.getImageImage(f)
-        if v.h == 'Test': g.trace(fnames, g.callers(2))
         return fnames
     #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
     def make_composite_icon(self, images: List[Any]) -> Icon:

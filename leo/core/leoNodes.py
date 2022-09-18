@@ -2360,9 +2360,9 @@ class VNode:
             return
 
         ### icon = tree.getIcon(v)  ### Supports declutter, but that's for later.
+        # #2870: Clear the icon cache (Remove v.gnx from the dict).
+        tree.nodeIconsDict.pop(v.gnx, None)
         icon = tree.getCompositeIconImage(v)
-        if v.h == 'Test':
-            g.trace(v.iconVal, id(icon), g.callers(2))  ###
         items = tree.vnode2items(v)
         for item in items:
             tree.setItemIcon(item, icon)
