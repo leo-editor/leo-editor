@@ -631,7 +631,7 @@ class todoController:
                         where=self.prog_location)
         # Set the p.v.u for the icons.
         com.setIconList(p, icons)
-        p.v.updateIcon()
+        p.v.updateIcon()  # #2870.
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag: str, key: Any) -> None:
         "unregister handlers on closing commander"
