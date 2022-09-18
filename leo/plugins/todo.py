@@ -629,30 +629,9 @@ class todoController:
                         on='vnode',
                         cleoIcon='1',
                         where=self.prog_location)
-
-        if icons:
-            ### g.trace('Icons for', p.h)
-            g.printObj(icons, tag=p.h)
-        
         # Set the p.v.u for the icons.
         com.setIconList(p, icons)
-        d = p.v.u.get('icons')
-        if d:
-            ### g.trace(p.h)
-            g.printObj(d, tag=p.h)
-        
-        # Update the vnode's icon.
-        
-        ### Add guard??? 
-        # tree = c.frame.tree
-
-        # # Like v.updateIcons:
-        # items = tree.vnode2items(p.v)
-        # for item in items:
-            # for icon in icons:
-                # tree.setItemIcon(item, icon)
-        ### v.updateIcon()
-        # c.redraw_after_icons_changed()
+        p.v.updateIcon()
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag: str, key: Any) -> None:
         "unregister handlers on closing commander"

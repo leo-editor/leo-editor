@@ -2348,7 +2348,7 @@ class VNode:
         pass  # Compatibility routine for old scripts
     #@+node:ekr.20220905044353.1: *4* v.updateIcon
     def updateIcon(self) -> None:
-
+        """Update any user icon."""
         c, v = self.context, self
         try:
             tree = c.frame.tree  # May not exist at startup.
@@ -2358,8 +2358,11 @@ class VNode:
                 return
         except AttributeError:
             return
-        # Update all cloned items.
+
+        ### icon = tree.getIcon(v)  ### Supports declutter, but that's for later.
         icon = tree.getCompositeIconImage(v)
+        if v.h == 'Test':
+            g.trace(v.iconVal, id(icon), g.callers(2))  ###
         items = tree.vnode2items(v)
         for item in items:
             tree.setItemIcon(item, icon)

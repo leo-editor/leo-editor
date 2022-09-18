@@ -205,7 +205,8 @@ class LeoQtTree(leoFrame.LeoTree):
     redraw_now = full_redraw  #type:ignore
     #@+node:vitalije.20200329160945.1: *5* tree declutter code
     #@+node:tbrown.20150807090639.1: *6* qtree.declutter_node & helpers
-    def declutter_node(self, c: Cmdr, p: Position, item: Item) -> Icon:
+    ### def declutter_node(self, c: Cmdr, p: Position, item: Item) -> Icon:
+    def declutter_node(self, c: Cmdr, v: VNode, item: Item) -> Icon:
         """declutter_node - change the appearance of a node
 
         :param commander c: commander containing node
@@ -214,18 +215,20 @@ class LeoQtTree(leoFrame.LeoTree):
 
         returns composite icon for this node, containing the icon box and perhaps other icons.
         """
+        g.trace(v.h) ### 
         dd = self.declutter_data
-        iconVal = p.v.computeIcon()
+        iconVal = v.computeIcon()
         iconName = f'box{iconVal:02d}.png'
         loaded_images = self.loaded_images
         #@+others
         #@+node:vitalije.20200329153544.1: *7* sorted_icons
-        def sorted_icons(p: Position) -> List[str]:
+        ### def sorted_icons(p: Position) -> List[str]:
+        def sorted_icons(v: VNode) -> List[str]:
             """
             Returns a list of icon filenames for this node.
             The list is sorted to owner the 'where' key of image dicts.
             """
-            icons = c.editCommands.getIconList(p.v)
+            icons = c.editCommands.getIconList(v)
             a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
             a.append(iconName)
             a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
@@ -342,14 +345,14 @@ class LeoQtTree(leoFrame.LeoTree):
                 if f not in loaded_images:
                     loaded_images[f] = g.app.gui.getImageImage(f)
         #@-others
-        if (p.h, iconVal) in dd:
+        if (v.h, iconVal) in dd:
             # Apply saved adjustments to the text and to the _style_ of the node.
-            new_icons, modifiers_and_args = dd[(p.h, iconVal)]
+            new_icons, modifiers_and_args = dd[(v.h, iconVal)]
             for modifier, arg in modifiers_and_args:
                 modifier(item, arg)
-            new_icons = sorted_icons(p) + new_icons
+            new_icons = sorted_icons(v) + new_icons
         else:
-            text = p.h
+            text = v.h
             new_icons = []
             modifiers_and_args = []
             for pattern, cmds in self.get_declutter_patterns():
@@ -357,10 +360,10 @@ class LeoQtTree(leoFrame.LeoTree):
                 if m:
                     modifiers_and_args.extend(apply_declutter_rules(cmds))
             # Save the lists of the icons and the adjusting operations.
-            dd[(p.h, iconVal)] = new_icons, modifiers_and_args
-            new_icons = sorted_icons(p) + new_icons
+            dd[(v.h, iconVal)] = new_icons, modifiers_and_args
+            new_icons = sorted_icons(v) + new_icons
             preload_images()
-        self.nodeIconsDict[p.gnx] = new_icons
+        self.nodeIconsDict[v.gnx] = new_icons
         h = ':'.join(new_icons)
         icon = g.app.gui.iconimages.get(h)
         if not icon:
@@ -447,7 +450,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1310: Add a tool tip.
         item.setToolTip(0, p.h)
         if self.use_declutter:
-            icon = self.declutter_node(c, p, item)
+            icon = self.declutter_node(c, p.v, item)
             if icon:
                 item.setIcon(0, icon)
             return item
@@ -751,13 +754,15 @@ class LeoQtTree(leoFrame.LeoTree):
         g.app.gui.set_focus(self.c, self.treeWidget)
     #@+node:ekr.20110605121601.18409: *3* qtree.Icons
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
-    def getIcon(self, p: Position) -> Icon:
+    ### def getIcon(self, p: Position) -> Icon:
+    def getIcon(self, v: VNode) -> Icon:
         """Return the proper icon for position p."""
         if self.use_declutter:
-            item = self.position2item(p)
-            if item:
-                return self.declutter_node(self.c, p, item)
-        return self.getCompositeIconImage(p.v)
+            ### item = self.position2item(p)
+            items = self.vnode2items(v)
+            if items:
+                return self.declutter_node(self.c, v, items[0])
+        return self.getCompositeIconImage(v)
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, v: VNode) -> List[str]:
         """Returns a list of icon filenames for v."""
@@ -809,6 +814,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if not icon:
             icon = self.make_composite_icon(images)
             g.app.gui.iconimages[h] = icon
+        if v.h == 'Test':
+            g.trace(v.iconVal, id(icon), g.callers(2))  ###
         return icon
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
     def setItemIcon(self, item: Item, icon: str) -> None:
