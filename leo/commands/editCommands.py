@@ -1137,7 +1137,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, aList: List[Any]) -> None:  ###, setDirty: bool=True) -> None:
+    def setIconList(self, p: Position, aList: List[Any]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
@@ -1148,7 +1148,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # no difference between original and current list of dictionaries
             return
         # set p.u.
-        self._setIconListHelper(p, aList)  ###, setDirty)
+        self._setIconListHelper(p, aList)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self, p: Position, aList: List[Any]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""

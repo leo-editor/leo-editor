@@ -2359,10 +2359,9 @@ class VNode:
         except AttributeError:
             return
 
-        ### icon = tree.getIcon(v)  ### Supports declutter, but that's for later.
         # #2870: Clear the icon cache (Remove v.gnx from the dict).
         tree.nodeIconsDict.pop(v.gnx, None)
-        icon = tree.getCompositeIconImage(v)
+        icon = tree.getIcon(v)
         items = tree.vnode2items(v)
         for item in items:
             tree.setItemIcon(item, icon)
