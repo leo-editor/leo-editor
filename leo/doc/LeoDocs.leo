@@ -31347,6 +31347,7 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 
 - Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
+- Significantly speed up drawing.
 - Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
 - Annotate most of Leo's core files.
@@ -31354,7 +31355,8 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 
 **Links**
 
-- 6.7.0 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
+- 6.7.0 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
+- 6.7.0 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
