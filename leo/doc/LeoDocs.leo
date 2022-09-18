@@ -31336,7 +31336,13 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - Importers no longer generate underindented escape strings.
 - Begin annotating Leo's core files.
 - The usual assortment of minor bug fixes.</t>
-<t tx="ekr.20220912154542.1">Leo now requires Python 3.9 or later.</t>
+<t tx="ekr.20220912154542.1">- Leo now requires Python 3.9 or later.
+- Enhance leoserver.py to support leoInteg and leoJS.
+- Significantly speed up drawing.
+- Simplify all of Leo's importers.
+- Importers no longer generate underindented escape strings.
+- Annotate most of Leo's core files.
+- Delete all of Leo's cover- and test- commands.</t>
 <t tx="ekr.20220912154618.1">Leo http://leoeditor.com 6.7.0 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -31345,12 +31351,15 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 
 **The highlights of Leo 6.7.0**
 
+The 6.7.0 version denotes significant changes to Leo's code base.
+
 - Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
 - Significantly speed up drawing.
 - Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
 - Annotate most of Leo's core files.
+- Delete all of Leo's cover- and test- commands.
 - The usual assortment of minor bug fixes.
 
 **Links**
