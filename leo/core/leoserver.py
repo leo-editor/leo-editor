@@ -124,7 +124,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self.yesno_all_time: Union[None, bool, float] = None  # previous yes/no to all answer, time of answer
+        self.yesno_all_time: float = 0.0  # time of answer (previous yes/no to all answer)
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
