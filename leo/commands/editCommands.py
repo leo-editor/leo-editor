@@ -1171,7 +1171,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(c.p.v)
         if aList:
             self.setIconList(p, aList[1:])
-            p.setDirty()  ###
+            p.setDirty()
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
@@ -1193,7 +1193,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 newList.append(d)
         if len(newList) != len(aList):
             self.setIconList(p, newList)
-            p.setDirty()  ###
+            p.setDirty()
             c.setChanged()
             c.redraw_after_icons_changed()
         else:
@@ -1206,7 +1206,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = self.getIconList(p.v)
         if aList:
             self.setIconList(c.p, aList[:-1])
-            p.setDirty()  ###
+            p.setDirty()
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
@@ -1218,7 +1218,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if p.u:
             p.v._p_changed = True
             self.setIconList(p, [])
-            p.setDirty()  ###
+            p.setDirty()
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.240: *4* ec.insertIcon
@@ -1246,7 +1246,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
-        p.setDirty()  ###
+        p.setDirty()
         c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
@@ -1262,7 +1262,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             pos = len(aList2)
         aList2.insert(pos, aList[0])
         self.setIconList(p, aList2)
-        p.setDirty()  ###
+        p.setDirty()
         c.setChanged()
         c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.242: *3* ec: indent
