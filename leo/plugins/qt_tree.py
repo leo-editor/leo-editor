@@ -753,7 +753,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def setFocus(self) -> None:
         g.app.gui.set_focus(self.c, self.treeWidget)
     #@+node:ekr.20110605121601.18409: *3* qtree.Icons
-    #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
+    #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helpers
     ### def getIcon(self, p: Position) -> Icon:
     def getIcon(self, v: VNode) -> Icon:
         """Return the proper icon for position p."""
@@ -783,6 +783,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 f = nicon
             if f not in loaded_images:
                 loaded_images[f] = g.app.gui.getImageImage(f)
+        if v.h == 'Test': g.trace(fnames, g.callers(2))
         return fnames
     #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
     def make_composite_icon(self, images: List[Any]) -> Icon:
@@ -814,8 +815,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if not icon:
             icon = self.make_composite_icon(images)
             g.app.gui.iconimages[h] = icon
-        if v.h == 'Test':
-            g.trace(v.iconVal, id(icon), g.callers(2))  ###
+        ### if v.h == 'Test':  g.trace(v.iconVal, id(icon), g.callers(2))  ###
         return icon
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
     def setItemIcon(self, item: Item, icon: str) -> None:
