@@ -249,7 +249,7 @@ from leo.core import leoColorizer
 from leo.plugins import qt_text
 
 # pylint: disable=ungrouped-imports
-
+#pylint: disable = c-extension-no-member
 try:
     # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
@@ -662,6 +662,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
     #@+node:tom.20210527185804.1: *3* ctor
     def __init__(self, c, title='Z-editor'):
         # pylint: disable=too-many-locals
+        # pylint: disable = too-many-statements
         global TAB2SPACES
         super().__init__()
         QWidget().__init__()
