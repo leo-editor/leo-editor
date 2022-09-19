@@ -64,11 +64,12 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 3)
+version_tuple = (1, 0, 4)
 # Version History
 # 1.0.1 Initial commit
-# 1.0.2 Félix on July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
-# 1.0.3 Félix on July 2022: Fixed original node selection upon opening a file.
+# 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
+# 1.0.3 July 2022: Fixed original node selection upon opening a file.
+# 1.0.4 September 2022: Full type checking
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
