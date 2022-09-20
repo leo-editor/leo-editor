@@ -96,6 +96,10 @@ Menu = Any
 Priority = Union[int, str]
 #@-<< todo annotations >>
 
+# Aliases: these should be in leoQt5.py or leoQt6.py.
+Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
+Unchecked = QtConst.CheckState.Unchecked if isQt6 else QtConst.Unchecked
+
 NO_TIME = datetime.date(3000, 1, 1)
 
 #@+others
@@ -545,17 +549,23 @@ class todoController:
     def redrawer(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which create the need for a redraw"""
 
-        # pylint: disable=no-self-argument
+            # pylint: disable=no-self-argument
         def todo_redrawer_callback(self: Any, *args: Any, **kargs: Any) -> Any:
-            self.redrawLevels += 1
-            try:
-                # pylint: disable=not-callable
-                ans = fn(self, *args, **kargs)
-            finally:
-                self.redrawLevels -= 1
-                if self.redrawLevels == 0:
-                    self.redraw()
-            return ans
+
+            if 1:  ### All @redrawer decorators *might* be removed.
+                self.redrawLevels += 1
+                try:
+                    # pylint: disable=not-callable
+                    ans = fn(self, *args, **kargs)
+                finally:
+                    self.redrawLevels -= 1
+                    if self.redrawLevels == 0:
+                        g.trace('fn:', fn.__name__, g.callers(3))  ### pylint: disable=no-member
+                        self.redraw()
+                    else:  ###
+                        g.trace('Skip Redraw', 'fn:', fn.__name__, g.callers(3))  ### pylint: disable=no-member
+                return ans
+            return None
 
         return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
@@ -972,12 +982,12 @@ class todoController:
             toggle = self.ui.UI.nxtwkDateToggle
 
         if mode == 'check':
-            if toggle.checkState() == QtConst.Unchecked:
+            if toggle.checkState() == Unchecked:
                 self.setat(v, field, "")
             else:
                 self.setat(v, field, val.toPyDate())
         else:
-            toggle.setCheckState(QtConst.Checked)
+            toggle.setCheckState(Checked)
             self.setat(v, field, val.toPyDate())
 
         self.updateUI()  # if change was made to date with offset selector
@@ -1000,12 +1010,12 @@ class todoController:
             toggle = self.ui.UI.nxtwkTimeToggle
 
         if mode == 'check':
-            if toggle.checkState() == QtConst.Unchecked:
+            if toggle.checkState() == Unchecked:
                 self.setat(v, field, "")
             else:
                 self.setat(v, field, val.toPyTime())
         else:
-            toggle.setCheckState(QtConst.Checked)
+            toggle.setCheckState(Checked)
             self.setat(v, field, val.toPyTime())
         self.loadIcons(p)
 
