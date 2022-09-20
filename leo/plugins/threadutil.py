@@ -9,7 +9,7 @@ import time
 import traceback
 from typing import Any, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 log = None
@@ -86,10 +86,7 @@ def main():
     g.procs.add(['ls', '-la'])
     #a.setMainWidget(b)
     b.show()
-    if isQt6:
-        a.exec()
-    else:
-        a.exec_()
+    a.exec()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others

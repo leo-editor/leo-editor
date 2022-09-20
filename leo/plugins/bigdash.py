@@ -39,7 +39,7 @@ import os
 import sys
 from typing import Dict
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets, QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
     # pylint: disable=no-name-in-module
@@ -105,29 +105,18 @@ class BigDash:
             # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
             not QtWebKitWidgets
             # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-            or isQt5 and sys.platform.startswith('win')
+            # or isQt5 and sys.platform.startswith('win')
         ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:
             self.web = web = QtWebKitWidgets.QWebView(w)
-        try:
-            # PyQt4
-            self.web.linkClicked.connect(self._lnk_handler)
-            # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
         self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
         self.lc = lc = LeoConnector()
-        try:
-            web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
-            web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
+        web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
+        web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
         w.setLayout(lay)
         #web.load(QUrl("http://google.fi"))
         self.show_help()
@@ -581,10 +570,7 @@ class GnxCache:
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     bd = GlobalSearch()
-    if isQt6:
-        sys.exit(app.exec())
-    else:
-        sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 #@@language python
 #@@tabwidth -4

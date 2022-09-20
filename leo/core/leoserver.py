@@ -4983,7 +4983,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             g.app.processEvents()
             # val is the same as the creation order.
             # Tested with both Qt6 and Qt5.
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
             if val == 0:
                 print(f"Saved: {c.fileName()}")
                 return 'yes'
@@ -4992,7 +4992,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import QtGui, QtWidgets
             from leo.core.leoQt import ButtonRole, Information
             if QtGui and QtWidgets:
                 app = QtWidgets.QApplication([])

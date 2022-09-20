@@ -3,7 +3,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import Policy
 QtGui = QtWidgets
 
@@ -50,28 +50,15 @@ class Ui_LeoQuickSearchWidget:
         LeoQuickSearchWidget.setTabOrder(self.showParents, self.listWidget)
 
     def retranslateUi(self, LeoQuickSearchWidget):
-        # pylint: disable=no-member
-        if isQt5 or isQt6:
-            # QApplication.UnicodeUTF8 no longer exists.
-            self.showParents.setText(
-                QtWidgets.QApplication.translate(
-                    "LeoQuickSearchWidget",
-                    "Show Parents",
-                    None))
-            LeoQuickSearchWidget.setWindowTitle(
-                QtWidgets.QApplication.translate(
-                    "LeoQuickSearchWidget",
-                    "Form",
-                    None))
-        else:
-            LeoQuickSearchWidget.setWindowTitle(
-                QtGui.QApplication.translate(
-                    "LeoQuickSearchWidget", "Form",
-                    None,
-                    QtGui.QApplication.UnicodeUTF8))
-            self.showParents.setText(
-                QtGui.QApplication.translate(
-                    "LeoQuickSearchWidget",
-                    "Show Parents",
-                    None,
-                    QtGui.QApplication.UnicodeUTF8))
+        # py--lint: disable=no-member
+        # QApplication.UnicodeUTF8 no longer exists.
+        self.showParents.setText(
+            QtWidgets.QApplication.translate(
+                "LeoQuickSearchWidget",
+                "Show Parents",
+                None))
+        LeoQuickSearchWidget.setWindowTitle(
+            QtWidgets.QApplication.translate(
+                "LeoQuickSearchWidget",
+                "Form",
+                None))

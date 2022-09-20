@@ -20,7 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
@@ -990,12 +990,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s: str) -> str:
-        # pylint: disable=no-member
-        if isQt5 or isQt6:
-            # QApplication.UnicodeUTF8 no longer exists.
-            return QtWidgets.QApplication.translate('MainWindow', s, None)
-        return QtWidgets.QApplication.translate(
-            'MainWindow', s, None, QtWidgets.QApplication.UnicodeUTF8)
+        # py--lint: disable=no-member
+        return QtWidgets.QApplication.translate('MainWindow', s, None)
+
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
@@ -2188,17 +2185,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         #
         # Change the style and palette.
         app = g.app.gui.qtApp
-        if isQt5 or isQt6:
-            qstyle = app.setStyle(stylename)
-            if not qstyle:
-                g.es_print(f"failed to set Qt style name: {stylename!r}")
-        else:
-            QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
-            qstyle = QtWidgets.qApp.setStyle(stylename)
-            if not qstyle:
-                g.es_print(f"failed to set Qt style name: {stylename!r}")
-                return
-            app.setPalette(QtWidgets.qApp.nativePalette)
+        qstyle = app.setStyle(stylename)
+        if not qstyle:
+            g.es_print(f"failed to set Qt style name: {stylename!r}")
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self) -> None:
         """A kludge: called to enable text changed events."""
@@ -3376,7 +3365,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             g.trace('no mimeData!')
             return
         try:
-            mods = ev.modifiers() if isQt6 else int(ev.keyboardModifiers())
+            mods = ev.modifiers()
             self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
             self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
         except Exception:  # Defensive.
@@ -3385,7 +3374,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             return
         c, tree = self.c, self.c.frame.tree
         p = None
-        point = ev.position().toPoint() if isQt6 else ev.pos()
+        point = ev.position().toPoint()
         item = self.itemAt(point)
         if item:
             itemHash = tree.itemHash(item)

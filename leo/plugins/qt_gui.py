@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Qsci, QtConst, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 # This import causes pylint to fail on this file and on leoBridge.py.
 # The failure is in astroid: raw_building.py.
@@ -185,7 +185,7 @@ class LeoQtGui(leoGui.LeoGui):
         Set the clipboard selection to s.
         There are problems with PyQt5.
         """
-        if isQt5 or isQt6:
+        if True:
             # Alas, returning s reopens #218.
             return
         if s:
@@ -390,13 +390,13 @@ class LeoQtGui(leoGui.LeoGui):
             try:
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec() if isQt6 else dialog.exec_()
+                val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
         else:
             dialog.setWindowTitle(title)
             dialog.raise_()
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
@@ -538,7 +538,7 @@ class LeoQtGui(leoGui.LeoGui):
         try:
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
         finally:
             c.in_qt_dialog = False
         # val is the same as the creation order.
@@ -583,12 +583,12 @@ class LeoQtGui(leoGui.LeoGui):
             try:
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec() if isQt6 else dialog.exec_()
+                val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
         else:
             dialog.raise_()
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
         return {
@@ -639,8 +639,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.in_qt_dialog = False
         else:
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
-        if isQt5 or isQt6:  # This is a *Py*Qt change rather than a Qt change
-            val, junk_selected_filter = val
+        val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
             if c and files:
@@ -764,10 +763,11 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.addButton('Ok', ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if isQt6:
-                dialog.exec()
-            else:
-                dialog.exec_()
+            # if isQt6:
+                # dialog.exec()
+            # else:
+                # dialog.exec_()
+            dialog.exec()
         finally:
             c.in_qt_dialog = False
         #@-<< emergency fallback >>
@@ -1260,10 +1260,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.
-            if isQt6:
-                sys.exit(self.qtApp.exec())
-            else:
-                sys.exit(self.qtApp.exec_())
+            sys.exit(self.qtApp.exec())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self) -> None:
         """Init Leo to run in an IPython shell."""
@@ -1410,68 +1407,11 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    if isQt5:
-        # pylint: disable=no-name-in-module
-        # To do: https://doc.qt.io/qt-5/qsignalspy.html
-        from PyQt5.QtTest import QSignalSpy
-        assert QSignalSpy
-    elif isQt6:
-        # pylint: disable=c-extension-no-member,no-name-in-module
-        import PyQt6.QtTest as QtTest
-        # mypy complains about assigning to a type.
-        QSignalSpy = QtTest.QSignalSpy  # type:ignore
-        assert QSignalSpy
-    else:
-        # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
-        _oldConnect = QtCore.QObject.connect
-        _oldDisconnect = QtCore.QObject.disconnect
-        _oldEmit = QtCore.QObject.emit
-
-        def _wrapConnect(self, callableObject: Callable) -> Callable:
-            """Returns a wrapped call to the old version of QtCore.QObject.connect"""
-
-            @staticmethod  # type:ignore
-            def call(*args: Any) -> None:
-                callableObject(*args)
-                self._oldConnect(*args)
-
-            return call
-
-        def _wrapDisconnect(self, callableObject: Callable) -> Callable:
-            """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
-
-            @staticmethod  # type:ignore
-            def call(*args: Any) -> None:
-                callableObject(*args)
-                self._oldDisconnect(*args)
-
-            return call
-
-        def enableSignalDebugging(self, **kwargs: Any) -> None:
-            """Call this to enable Qt Signal debugging. This will trap all
-            connect, and disconnect calls."""
-            f = lambda * args: None
-            connectCall: Callable = kwargs.get('connectCall', f)
-            disconnectCall: Callable = kwargs.get('disconnectCall', f)
-            emitCall: Callable = kwargs.get('emitCall', f)
-
-            def printIt(msg: str) -> Callable:
-
-                def call(*args: Any) -> None:
-                    print(msg, args)
-
-                return call
-
-            # Monkey-patch.
-
-            QtCore.QObject.connect = self._wrapConnect(connectCall)
-            QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
-
-            def new_emit(self, *args: Any) -> None:  # type:ignore
-                emitCall(self, *args)
-                self._oldEmit(self, *args)
-
-            QtCore.QObject.emit = new_emit
+    # pylint: disable=c-extension-no-member,no-name-in-module
+    import PyQt6.QtTest as QtTest
+    # mypy complains about assigning to a type.
+    QSignalSpy = QtTest.QSignalSpy  # type:ignore
+    assert QSignalSpy
     #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: Widget, name: str, label: str) -> Widget:

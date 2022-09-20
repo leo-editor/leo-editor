@@ -9,7 +9,7 @@ import re
 import time
 from typing import Any, Callable, Dict, List, Tuple
 from typing import TYPE_CHECKING
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
@@ -935,12 +935,10 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        if isQt6:
-            item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
-            ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-            item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
-        else:
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
+        item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
+        ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
+        item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
+
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:

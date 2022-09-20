@@ -71,7 +71,7 @@ import time
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -96,9 +96,9 @@ Menu = Any
 Priority = Union[int, str]
 #@-<< todo annotations >>
 
-# Aliases: these should be in leoQt5.py or leoQt6.py.
-Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
-Unchecked = QtConst.CheckState.Unchecked if isQt6 else QtConst.Unchecked
+### Aliases: these should be in leoQt.py.
+Checked = QtConst.CheckState.Checked
+Unchecked = QtConst.CheckState.Unchecked
 
 NO_TIME = datetime.date(3000, 1, 1)
 
@@ -288,10 +288,12 @@ if g.app.gui.guiName() == "qt":
                 if value:
                     getattr(edit, method)(value)
                     # edit.setEnabled(True)
-                    toggle.setChecked(True if isQt6 else QtConst.Checked)
+                    ### toggle.setChecked(QtConst.CheckState.Checked)
+                    toggle.setChecked(True)
                 else:
                     getattr(edit, method)(default)
-                    toggle.setChecked(False if isQt6 else QtConst.Unchecked)
+                    ## toggle.setChecked(QtConst.CheckState.Unchecked)
+                    toggle.setChecked(False)
                 edit.blockSignals(False)
                 toggle.blockSignals(False)
 

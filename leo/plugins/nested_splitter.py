@@ -4,7 +4,7 @@
 #@@first
 """Nested splitter classes."""
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
 # pylint: disable=cell-var-from-loop
 #@+others
@@ -329,7 +329,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
 
-        # point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         point = pos
         global_point = self.mapToGlobal(point)
         menu.exec_(global_point)
@@ -1013,13 +1012,10 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             g.trace('level', level)
             tag = f"layout: {c.shortFileName()}"
             g.printObj(layout, tag=tag)
-        if isQt6:
-            if layout['orientation'] == 1:
-                self.setOrientation(Orientation.Horizontal)
-            else:
-                self.setOrientation(Orientation.Vertical)
+        if layout['orientation'] == 1:
+            self.setOrientation(Orientation.Horizontal)
         else:
-            self.setOrientation(layout['orientation'])
+            self.setOrientation(Orientation.Vertical)
         found = 0
         if level == 0:
             for i in self.self_and_descendants():

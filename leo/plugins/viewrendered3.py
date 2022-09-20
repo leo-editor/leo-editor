@@ -2880,11 +2880,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            # if isQt6:
-                # WrapAtWordBoundaryOrAnywhere = QtGui.QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
-            # else:
-                # WrapAtWordBoundaryOrAnywhere = WrapMode.WrapAtWordBoundaryOrAnywhere
-            # w.setWordWrapMode(WrapAtWordBoundaryOrAnywhere)
             w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):

@@ -2,59 +2,157 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 #@@first
-#@@nopyflakes
 """
-General import wrapper for PyQt5 and PyQt6.
+Import wrapper for pyQt6.
 
-Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
+For Qt6, plugins are responsible for loading all optional modules.
 
-- QtWidgets, not QtGui, for all widget classes.
-- QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
-- QtWebKitWidgets, not QtWebKit.
-- Enums: KeyboardModifier, not KeyboardModifiers, etc.
 """
-import leo.core.leoGlobals as g
+
+# For now, suppress all mypy checks
+# ty--pe: ignore
+
+# pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
+
+# Required imports
+from typing import Any
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
+from PyQt6.QtCore import pyqtSignal as Signal
 #
-# Set defaults.
-isQt6 = isQt5 = False
+# For pyflakes.
+assert QtCore and QtGui and QtWidgets
+assert QAction and QActionGroup
+assert QCloseEvent
+assert Qt and QUrl and Signal
 #
-# Make *sure* this module always imports the following symbols.
-Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = QCloseEvent = None
-QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
-phonon = uic = None
-QtMultimedia = None  # Replacement for phonon.
-qt_version = '<no qt version>'
-printsupport = Signal = None
+# Standard abbreviations.
+QtConst = Qt
+qt_version = QtCore.QT_VERSION_STR
 #
-# Skip all other imports in the bridge.
-if not g.in_bridge:
-    #
-    # Pyflakes will complaint about * imports.
-    #
-    # pylint: disable=unused-wildcard-import,wildcard-import
-    #
-    # Set the isQt* constants only if all required imports succeed.
+# Optional imports: #2005
+# Must import this before creating the GUI
+has_WebEngineWidgets = False
+try:
+    from PyQt6 import QtWebEngineWidgets
+    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # 2866: This message pollutes leoserver.py.
+        # print('No Qt6 QtWebEngineWidgets')
+        # print('pip install PyQt6-WebEngine')
+    pass
+
+try:
+    from PyQt6 import QtPrintSupport as printsupport
+except Exception:
+    printsupport = None
+
+try:
+    from PyQt6 import Qsci
+except ImportError:
+    Qsci = None
+try:
+    import PyQt6.QtSvg as QtSvg
+except ImportError:
+    QtSvg = None
+try:
+    from PyQt6 import uic
+except ImportError:
+    uic = None
+#
+# #2005: Do not import these by default. All of these *do* work.
+if 0:
     try:
-        if 0:  # Testing: Force Qt5.
-            raise AttributeError
-        from leo.core.leoQt6 import *  # type:ignore
-        #
-        # Restore the exec_method!
-        def exec_(self, *args, **kwargs):
-            return self.exec(*args, **kwargs)
-
-        # pylint: disable=c-extension-no-member
-        g.funcToMethod(exec_, QtWidgets.QWidget)
-        isQt6 = True
-        # print('\n===== Qt6 =====')
+        from PyQt6 import QtDesigner
     except Exception:
-        # g.es_exception()
-        try:
-            from leo.core.leoQt5 import *  # type:ignore
-            isQt5 = True
-            # print('\n===== Qt5 =====')
-        except Exception:
-            # print('===== No Qt =====')
-            if g.app.gui.guiName() == 'qt':
-                print('Can not load pyQt5 or pyQt6')
+        QtDesigner = None
+    try:
+        from PyQt6 import QtOpenGL
+    except Exception:
+        QtOpenGL = None
+    try:
+        from PyQt6 import QtMultimedia
+    except ImportError:
+        QtMultimedia = None
+    try:
+        from PyQt6 import QtNetwork
+    except Exception:
+        QtNetwork = None
+#
+# Enumerations, with (sheesh) variable spellings.
+try:
+    # New spellings (6.1+): mostly singular.
+    Alignment = Qt.AlignmentFlag
+    ControlType = QtWidgets.QSizePolicy.ControlType
+    DropAction = Qt.DropAction
+    ItemFlag = Qt.ItemFlag
+    KeyboardModifier = Qt.KeyboardModifier
+    Modifier = Qt.Modifier
+    MouseButton = Qt.MouseButton
+    Orientation = Qt.Orientation
+    StandardButton = QtWidgets.QDialogButtonBox.StandardButton
+    TextInteractionFlag = Qt.TextInteractionFlag
+    ToolBarArea = Qt.ToolBarArea
+    WidgetAttribute = Qt.WidgetAttribute  # #2347
+    WindowType = Qt.WindowType
+    WindowState = Qt.WindowState
+except AttributeError:
+    # Old spellings (6.0): mostly plural.
+    Alignment = Qt.Alignment  # type:ignore
+    ControlType = QtWidgets.QSizePolicy.ControlTypes  # type:ignore
+    DropAction = Qt.DropActions  # type:ignore
+    ItemFlag = Qt.ItemFlags  # type:ignore
+    KeyboardModifier = Qt.KeyboardModifiers  # type:ignore
+    Modifier = Qt.Modifiers  # type:ignore
+    MouseButton = Qt.MouseButtons  # type:ignore
+    Orientation = Qt.Orientations  # type:ignore
+    StandardButton = QtWidgets.QDialog.StandardButtons  # type:ignore
+    TextInteractionFlag = Qt.TextInteractionFlags  # type:ignore
+    ToolBarArea = Qt.ToolBarAreas  # type:ignore
+    WindowType = Qt.WindowFlags  # type:ignore
+    WindowState = Qt.WindowStates  # type:ignore
+#
+# Other enums.
+ButtonRole = QtWidgets.QMessageBox.ButtonRole
+ContextMenuPolicy = Qt.ContextMenuPolicy
+DialogCode = QtWidgets.QDialog.DialogCode
+EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
+FocusPolicy = Qt.FocusPolicy
+FocusReason = Qt.FocusReason
+Format = QtGui.QImage.Format
+GlobalColor = Qt.GlobalColor
+Icon = QtWidgets.QMessageBox.Icon
+Information = Icon.Information
+ItemDataRole = Qt.ItemDataRole  # 2347
+Key = Qt.Key
+MoveMode = QtGui.QTextCursor.MoveMode
+MoveOperation = QtGui.QTextCursor.MoveOperation
+Policy = QtWidgets.QSizePolicy.Policy
+ScrollBarPolicy = Qt.ScrollBarPolicy
+SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
+SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
+Shadow = QtWidgets.QFrame.Shadow
+Shape = QtWidgets.QFrame.Shape
+SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
+SliderAction = QtWidgets.QAbstractSlider.SliderAction
+SolidLine = Qt.PenStyle.SolidLine
+StandardPixmap = QtWidgets.QStyle.StandardPixmap
+Style = QtGui.QFont.Style
+TextOption = QtGui.QTextOption
+Type = QtCore.QEvent.Type
+UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+QWebEngineSettings: Any
+WebEngineAttribute: Any
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
+
+Weight = QtGui.QFont.Weight
+WrapMode = QtGui.QTextOption.WrapMode
 #@-leo

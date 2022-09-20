@@ -67,7 +67,7 @@ from typing import List
 # Leo imports
 from leo.core import leoGlobals as g
 try:
-    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import QtCore, QtGui, QtWidgets
     from leo.core.leoQt import ButtonRole, Information
 except ImportError:
     QtWidgets = None
@@ -197,10 +197,7 @@ def main():
 
     ok = Slides().run(**args)
     if ok:
-        if isQt5:
-            sys.exit(gApp.exec_())
-        else:
-            sys.exit(gApp.exec())
+        sys.exit(gApp.exec())
 #@+node:ekr.20211021202356.1: ** class Slides
 if QtWidgets:
 
@@ -251,7 +248,7 @@ if QtWidgets:
 
             dialog.keyPressEvent = dialog_keypress_event
             dialog.raise_()
-            result = dialog.exec() if isQt6 else dialog.exec_()
+            result = dialog.exec()
             if result == 0:
                 # Move the file to the trash.
                 send2trash(file_name)
@@ -470,11 +467,11 @@ if QtWidgets:
             # Create the scroll area.
             w.scroll_area = area = QtWidgets.QScrollArea()
             area.setWidget(self.picture)
-            AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+            AlignmentFlag = QtCore.Qt.AlignmentFlag
             area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
 
             # Disable scrollbars.
-            ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+            ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
             area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
             area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
 
@@ -516,8 +513,8 @@ if QtWidgets:
             # Display the picture.
             pixmap = QtGui.QPixmap(file_name)
             try:
-                TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
-                AspectRatioMode = QtCore.Qt if isQt5 else QtCore.Qt.AspectRatioMode
+                TransformationMode = QtCore.Qt.TransformationMode
+                AspectRatioMode = QtCore.Qt.AspectRatioMode
                 if 0:
                     w = self.scroll_area.width()
                     h = self.scroll_area.height()
@@ -571,7 +568,7 @@ if QtWidgets:
                 w.showNormal()
             else:
                 w.full_screen = True
-                WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+                WindowState = QtCore.Qt.WindowState
                 w.setWindowState(WindowState.WindowFullScreen)  # pylint: disable=no-member
                 w.picture.setGeometry(0, 0, w.width(), w.height())
                 w.picture.adjustSize()
