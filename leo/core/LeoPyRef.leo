@@ -94,15 +94,6 @@
 </v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
-<v t="ekr.20220207070921.1"><vh>@@button test-findUNL</vh>
-<v t="tbrown.20140311095634.15188"><vh>g.findUNL &amp; helpers</vh>
-<v t="ekr.20220213142925.1"><vh>function: convert_unl_list</vh></v>
-<v t="ekr.20220213142735.1"><vh>function: full_match</vh></v>
-</v>
-</v>
-<v t="ekr.20220211154839.1"><vh>@@button test-show-clones</vh>
-<v t="ekr.20191010112910.1"><vh>@g.command('show-clone-ancestors')</vh></v>
-</v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 </v>
 </v>
@@ -1767,31 +1758,6 @@ if c.isChanged():
 c.k.simulateCommand('pylint')
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
-<t tx="ekr.20220207070921.1"># Do NOT try to reload g!
-g.cls()
-import re
-from typing import Any, List, Optional
-Cmdr = Any
-Position = Any
-VNode = Any
-    
-@others  # g.findUNL should be a cloned child.
-
-unlList = [
-    # Old-style.
-    'Code:3,0',
-    'Plugins:4,0',
-    'Auto completion',  # Plain.
-    '@file ../plugins/ctagscompleter.py::-8'  # Was -44
-]
-
-p = findUNL(unlList, c)
-print(p and p.h or '&lt;None&gt;')</t>
-<t tx="ekr.20220211154839.1">g.cls()
-@others
-p = c.lastTopLevel()
-c.selectPosition(p)
-show_clone_ancestors(event={'c':c})</t>
 <t tx="ekr.20131121084830.16362">@language python
 
 # Toggle the settings.
