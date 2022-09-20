@@ -260,7 +260,7 @@ class BridgeController:
             return False
         try:
             version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-            ok = g.CheckVersion(version, '2.2.1')
+            ok = g.CheckVersion(version, g.minimum_python_version)
             if not ok:
                 print(message)
                 g.app.gui.runAskOkDialog(
