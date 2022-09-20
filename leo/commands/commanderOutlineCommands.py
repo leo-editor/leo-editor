@@ -1437,7 +1437,6 @@ def markChangedHeadlines(self: Self, event: Event=None) -> None:
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.blue('done')
-    c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
 def markChangedRoots(self: Self, event: Event=None) -> None:
     """Mark all changed @root nodes."""
@@ -1458,7 +1457,6 @@ def markChangedRoots(self: Self, event: Event=None) -> None:
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.blue('done')
-    c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
 @g.commander_command('mark')  # Compatibility
 @g.commander_command('toggle-mark')
@@ -1478,7 +1476,6 @@ def markHeadline(self: Self, event: Event=None) -> None:
     p.setDirty()
     c.setChanged()
     u.afterMark(p, undoType, bunch)
-    c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
 @g.commander_command('mark-subheads')
 def markSubheads(self: Self, event: Event=None) -> None:
@@ -1497,7 +1494,6 @@ def markSubheads(self: Self, event: Event=None) -> None:
             c.setChanged()
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType)
-    c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
 @g.commander_command('unmark-all')
 def unmarkAll(self: Self, event: Event=None) -> None:
@@ -1522,7 +1518,6 @@ def unmarkAll(self: Self, event: Event=None) -> None:
         g.doHook("clear-all-marks", c=c, p=p)
         c.setChanged()
     u.afterChangeGroup(current, undoType)
-    c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.1766: ** c_oc.Move commands
 #@+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')

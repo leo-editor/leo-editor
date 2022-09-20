@@ -1173,7 +1173,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(p, aList[1:])
             p.setDirty()
             c.setChanged()
-            c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
     def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  # t not used.
         """for use by the right-click remove icon callback"""
@@ -1195,7 +1194,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(p, newList)
             p.setDirty()
             c.setChanged()
-            c.redraw_after_icons_changed()
         else:
             g.trace('not found', name)
     #@+node:ekr.20150514063305.238: *4* ec.deleteLastIcon
@@ -1208,7 +1206,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(c.p, aList[:-1])
             p.setDirty()
             c.setChanged()
-            c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
     @cmd('delete-node-icons')
     def deleteNodeIcons(self, event: Event=None, p: Position=None) -> None:
@@ -1220,7 +1217,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.setIconList(p, [])
             p.setDirty()
             c.setChanged()
-            c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.240: *4* ec.insertIcon
     @cmd('insert-icon')
     def insertIcon(self, event: Event=None) -> None:
@@ -1248,7 +1244,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.setIconList(p, aList2)
         p.setDirty()
         c.setChanged()
-        c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
     def insertIconFromFile(self, path: str, p: Position=None, pos: int=None, **kargs: Any) -> None:
         c = self.c
@@ -1264,7 +1259,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.setIconList(p, aList2)
         p.setDirty()
         c.setChanged()
-        c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.242: *3* ec: indent
     #@+node:ekr.20150514063305.243: *4* ec.deleteIndentation
     @cmd('delete-indentation')
@@ -1537,7 +1531,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 n += 1
                 u.afterChangeNodeContents(p, tag, bunch)
         u.afterChangeGroup(c.p, tag)
-        c.redraw_after_icons_changed()
         g.es(f"cleaned {n} nodes")
     #@+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')

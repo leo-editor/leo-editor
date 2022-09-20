@@ -252,7 +252,6 @@ def marknodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
             for p in pl:
                 p.v.setMarked()
                 p.v.setDirty()  # 2020/04/29.
-            c.redraw_after_icons_changed()
 
         action = menu.addAction("Mark")
         action.triggered.connect(marknodes_rclick_cb)
@@ -262,7 +261,6 @@ def marknodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
             for p in pl:
                 p.v.clearMarked()
                 p.v.setDirty()  # 2020/04/29.
-            c.redraw_after_icons_changed()
 
         action = menu.addAction("Unmark")
         action.triggered.connect(unmarknodes_rclick_cb)

@@ -1412,7 +1412,6 @@ class Commands:
             p.setDirty()
             if not c.isChanged():
                 c.setChanged()
-            c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self) -> None:
         """Set the marker that indicates that the .leo file has been changed."""
@@ -2841,7 +2840,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
     def markAtFileNodesDirty(self, event: Event=None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
@@ -2858,7 +2856,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
     def openWith(self, event: Event=None, d: Dict[str, Any]=None) -> None:
         """
@@ -3222,16 +3219,6 @@ class Commands:
 
     force_redraw = redraw
     redraw_now = redraw
-    #@+node:ekr.20090110073010.3: *6* c.redraw_after_icons_changed (to be removed)
-    def redraw_after_icons_changed(self) -> None:
-        """Update the icon for the presently selected node"""
-        if 0:
-            c = self
-            if c.enableRedrawFlag:
-                pass
-                # Do not call c.treeFocusHelper here.
-            else:
-                c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *6* c.redraw_after_contract
     def redraw_after_contract(self, p: Position=None) -> None:
         c = self

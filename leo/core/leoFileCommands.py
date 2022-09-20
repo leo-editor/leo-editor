@@ -1418,7 +1418,6 @@ class FileCommands:
                 if c.config.getBool('save-clears-undo-buffer'):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
-            c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:vitalije.20170831135146.1: *5* fc.save_ref & helpers
@@ -1529,7 +1528,6 @@ class FileCommands:
                     self.putSavedMessage(fileName)
             finally:
                 c.ignoreChangedPaths = False  # #1367.
-            c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
     def saveTo(self, fileName: str, silent: bool=False) -> None:
@@ -1551,7 +1549,6 @@ class FileCommands:
                 c.ignoreChangedPaths = False
             if not silent:
                 self.putSavedMessage(fileName)
-            c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20210316034237.1: *4* fc: Writing top-level
     #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite & helpers

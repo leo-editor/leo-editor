@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tom.20210613135525.1: * @file C:/Tom/git/leo-editor/leo/plugins/freewin.py
+#@+node:tom.20210613135525.1: * @file ../plugins/freewin.py
 #@@language python
 r"""
 #@+<< docstring >>

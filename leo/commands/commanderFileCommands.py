@@ -439,7 +439,6 @@ def save(self: Self, event: Event=None, fileName: str=None) -> None:
             c.fileCommands.save(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-    # FileCommands.save calls c.redraw_after_icons_changed()
     c.raise_error_dialogs(kind='write')
     # *Safely* restore focus, without using the old w directly.
     if inBody:
@@ -517,7 +516,6 @@ def saveAs(self: Self, event: Event=None, fileName: str=None) -> None:
         c.fileCommands.saveAs(c.mFileName)
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    # FileCommands.saveAs calls c.redraw_after_icons_changed()
     c.raise_error_dialogs(kind='write')
     # *Safely* restore focus, without using the old w directly.
     if inBody:

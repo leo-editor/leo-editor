@@ -1253,8 +1253,6 @@ class Undoer:
                 g.trace(
                     f"\np.b != w.getAllText() p: {p.h} \n"
                     f"w: {w!r} \n{g.callers()}\n")
-                # g.printObj(g.splitLines(p.b), tag='p.b')
-                # g.printObj(g.splitLines(all), tag='getAllText')
             p.v.insertSpot = ins = w.getInsertPoint()
             # From u.doTyping.
             newSel = w.getSelectionRange()
@@ -1269,13 +1267,8 @@ class Undoer:
             g.trace('Not a text wrapper')
             p.v.insertSpot = 0
             p.v.selectionStart, p.v.selectionLength = (0, 0)
-        #
-        # #1749.
-        if p.isDirty():
-            redraw_flag = False
-        else:
-            p.setDirty()  # Do not call p.v.setDirty!
-            redraw_flag = True
+        if not p.isDirty():
+            p.setDirty()
         if not c.isChanged():
             c.setChanged()
         # Update editors.
@@ -1284,13 +1277,9 @@ class Undoer:
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-            redraw_flag = True
-        #
         # Recolor the body.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor()
-        if redraw_flag:
-            c.redraw_after_icons_changed()
         w.setFocus()
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')

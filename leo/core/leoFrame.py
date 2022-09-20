@@ -171,9 +171,6 @@ class TreeAPI:
     def redraw_after_head_changed(self) -> None:
         pass
 
-    def redraw_after_icons_changed(self) -> None:
-        pass
-
     def redraw_after_select(self, p: Position=None) -> None:
         pass
     # Must be defined in the LeoTree class...
@@ -1439,9 +1436,6 @@ class LeoTree:
     def redraw_after_head_changed(self) -> None:
         self.c.redraw()
 
-    def redraw_after_icons_changed(self) -> None:
-        self.c.redraw()
-
     def redraw_after_select(self, p: Position=None) -> None:
         self.c.redraw()
     #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
@@ -2261,9 +2255,6 @@ class NullTree(LeoTree):
         self.redraw()
 
     def redraw_after_head_changed(self) -> None:
-        self.redraw()
-
-    def redraw_after_icons_changed(self) -> None:
         self.redraw()
 
     def redraw_after_select(self, p: Position=None) -> None:

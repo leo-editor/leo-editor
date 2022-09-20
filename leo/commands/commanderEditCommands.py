@@ -141,8 +141,6 @@ def convertAllBlanks(self: Self, event: Event=None) -> None:
     if not g.unitTesting:
         # Must come before c.redraw().
         g.es("blanks converted to tabs in", count, "nodes")
-    if count > 0:
-        c.redraw_after_icons_changed()
 #@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self: Self, event: Event=None) -> None:
@@ -184,8 +182,6 @@ def convertAllTabs(self: Self, event: Event=None) -> None:
     u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.es("tabs converted to blanks in", count, "nodes")
-    if count > 0:
-        c.redraw_after_icons_changed()
 #@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
 def convertBlanks(self: Self, event: Event=None) -> bool:
@@ -801,7 +797,6 @@ def line_to_headline(self: Self, event: Event=None) -> None:
     #
     # Finish outer undo.
     u.afterChangeGroup(p, undoType=undoType)
-    c.redraw_after_icons_changed()
     p.expand()
     c.redraw(p)
     c.bodyWantsFocus()

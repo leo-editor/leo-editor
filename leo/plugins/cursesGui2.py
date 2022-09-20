@@ -2501,9 +2501,6 @@ class CoreTree(leoFrame.LeoTree):
     def redraw_after_head_changed(self) -> None:
         self.redraw()
 
-    def redraw_after_icons_changed(self) -> None:
-        self.redraw()
-
     def redraw_after_select(self, p: Position=None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
         # Prevent the selecting lockout from disabling the redraw.

@@ -67,7 +67,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(end + len(s))
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed()
             c.recolor()
     #@+node:ekr.20150514045829.7: *4* copyToBuffer
     @cmd('buffer-copy')
@@ -88,7 +87,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w.insert(w.getLastIndex(), s)
             w.setInsertPoint(w.getLastIndex())
             self.endCommand()
-            c.redraw_after_icons_changed()
             c.recolor()
     #@+node:ekr.20150514045829.8: *4* insertToBuffer
     @cmd('buffer-insert')
@@ -110,7 +108,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w.insert(i, s)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed()
     #@+node:ekr.20150514045829.9: *4* killBuffer
     @cmd('buffer-kill')
     def killBuffer(self, event: Event) -> None:
@@ -175,7 +172,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(0)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed()
             c.recolor()
     #@+node:ekr.20150514045829.12: *4* renameBuffer (not ready)
     def renameBuffer(self, event: Event) -> None:
