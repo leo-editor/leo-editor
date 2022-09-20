@@ -546,26 +546,20 @@ class todoController:
         return self.menuicons[key]
     #@+node:tbrown.20090119215428.13: *3* redrawer
     # mypy complains about missing 'self' arg.
+    # pylint: disable=no-self-argument
     def redrawer(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which create the need for a redraw"""
 
-            # pylint: disable=no-self-argument
         def todo_redrawer_callback(self: Any, *args: Any, **kargs: Any) -> Any:
 
-            if 1:  ### All @redrawer decorators *might* be removed.
-                self.redrawLevels += 1
-                try:
-                    # pylint: disable=not-callable
-                    ans = fn(self, *args, **kargs)
-                finally:
-                    self.redrawLevels -= 1
-                    if self.redrawLevels == 0:
-                        g.trace('fn:', fn.__name__, g.callers(3))  ### pylint: disable=no-member
-                        self.redraw()
-                    else:  ###
-                        g.trace('Skip Redraw', 'fn:', fn.__name__, g.callers(3))  ### pylint: disable=no-member
-                return ans
-            return None
+            self.redrawLevels += 1
+            try:
+                ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
+            finally:
+                self.redrawLevels -= 1
+                if self.redrawLevels == 0:
+                    self.updateUI()
+            return ans
 
         return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
@@ -780,13 +774,6 @@ class todoController:
         if k in d:
             del d[k]
     #@+node:tbrown.20090119215428.27: *3* drawing...
-    #@+node:tbrown.20090119215428.28: *4* redraw (todo.py)
-    def redraw(self) -> None:
-
-        self.updateUI()
-        if not g.app.initing:
-            # This is disabled (converted to redraw_later) during startup.
-            self.c.redraw()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse: bool=False, all: bool=False) -> None:
