@@ -673,8 +673,6 @@
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
-<v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
-<v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
