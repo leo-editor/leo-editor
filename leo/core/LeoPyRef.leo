@@ -277,7 +277,6 @@
 <v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
 <v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
-<v t="ekr.20210907103011.1"><vh>@file ../commands/testCommands.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -713,6 +712,7 @@
 <v t="ekr.20210903161742.1"><vh>@file ../unittests/core/test_leoFrame.py</vh></v>
 <v t="ekr.20210902164946.1"><vh>@file ../unittests/core/test_leoGlobals.py</vh></v>
 <v t="ekr.20220822082042.1"><vh>@file ../unittests/core/test_leoImport.py</vh></v>
+<v t="ekr.20220911163718.1"><vh>@file ../unittests/core/test_leoQt6.py</vh></v>
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
@@ -775,7 +775,7 @@ mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
-todo.py             # Task pane.
+# todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 </t>
 <t tx="ekr.20140920064112.17946"></t>
@@ -927,29 +927,32 @@ main(node_list = ['Startup', 'Notes', 'Code'])
     
     Based on code by Виталије Милошевић.
     """
-    # Make only one copy for all calls.
     fc = c.fileCommands
-    fc.currentPosition = c.p
-    fc.rootPosition = c.rootPosition()
+    # Make only a few copies.
+    p = c.rootPosition().copy()
+    fc.currentPosition = p.copy()
+    fc.rootPosition = p.copy()
     old_vnodesDict = fc.vnodesDict  # Save.
     fc.vnodesDict = {}
-    # Put the file
-    fc.outputFile = io.StringIO()
-    put_prolog()  # Put prolog w/o the stylesheet.
-    fc.putHeader()
-    fc.putGlobals()
-    fc.putPrefs()
-    fc.putFindSettings()
-    fc.put("&lt;vnodes&gt;\n")
-    for p in positions_list:
-        # An optimization: Write the next top-level node.
-        fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
-    fc.put("&lt;/vnodes&gt;\n")
-    put_tnodes(positions_list)  # Put only *required* tnodes.
-    fc.putPostlog()
-    s = fc.outputFile.getvalue()
-    fc.outputFile = None
-    fc.vnodesDict = old_vnodesDict  # Restore!
+    try:
+        # Put the file
+        fc.outputFile = io.StringIO()
+        put_prolog()  # Put prolog w/o the stylesheet.
+        fc.putHeader()
+        fc.putGlobals()
+        fc.putPrefs()
+        fc.putFindSettings()
+        fc.put("&lt;vnodes&gt;\n")
+        for p in positions_list:
+            # An optimization: Write the next top-level node.
+            fc.put_v_element(p, isIgnore=p.isAtIgnoreNode())
+        fc.put("&lt;/vnodes&gt;\n")
+        put_tnodes(positions_list)  # Put only *required* tnodes.
+        fc.putPostlog()
+        s = fc.outputFile.getvalue()
+    finally:
+        fc.outputFile = None
+        fc.vnodesDict = old_vnodesDict  # Restore!
     return s
 </t>
 <t tx="ekr.20210510071427.1">def put_prolog():
@@ -2786,7 +2789,7 @@ while True:
 </t>
 <t tx="EKR.20040430162943">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">-getCompositeIconImage  # This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
 </t>
