@@ -525,19 +525,6 @@ class todoController:
     #@+node:tbrown.20090630144958.5320: *3* menuicon
     def menuicon(self, pri: int, progress: bool=False) -> Icon:
         """return icon from cache, placing it there if needed"""
-        # if progress:
-            # prog = pri
-            # pri = 'prog-%d' % pri
-        # if pri not in self.menuicons:
-            # if progress:
-                # fn = 'prg%03d.png' % prog
-            # else:
-                # fn = self.priorities[pri]["icon"]
-            # # use getImageImage because it's theme aware
-            # fn = g.os_path_join('cleo', fn)
-            # self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
-        # return self.menuicons[pri]
-
         key: Priority = f"prog-{pri}" if progress else pri
         # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
         fn: str = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]  # type:ignore
