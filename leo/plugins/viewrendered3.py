@@ -3372,7 +3372,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
-        # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
         template = textwrap.dedent(template).strip()

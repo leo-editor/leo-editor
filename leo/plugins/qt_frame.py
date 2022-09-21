@@ -990,7 +990,6 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s: str) -> str:
-        # py--lint: disable=no-member
         return QtWidgets.QApplication.translate('MainWindow', s, None)
 
     #@+node:ekr.20110605121601.18173: *3* dw.select
@@ -2338,7 +2337,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio: float, ratio2: float) -> None:
         """Resize splitter1 and splitter2 using the given ratios."""
-        # py--lint: disable=arguments-differ
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2

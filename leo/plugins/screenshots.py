@@ -403,7 +403,6 @@ def make_screen_shot(path):
     """Create a screenshot of the present Leo outline and save it to path.
     This is a callback called from make_screen_shot in runLeo.py"""
     app = g.app.gui.qtApp
-    # py--lint: disable=no-member
     screen = QtGui.QScreen()
     w = screen.grabWindow(app.activeWindow().winId())
     w.save(path, 'png')

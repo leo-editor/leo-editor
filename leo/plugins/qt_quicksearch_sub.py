@@ -50,7 +50,6 @@ class Ui_LeoQuickSearchWidget:
         LeoQuickSearchWidget.setTabOrder(self.showParents, self.listWidget)
 
     def retranslateUi(self, LeoQuickSearchWidget):
-        # py--lint: disable=no-member
         # QApplication.UnicodeUTF8 no longer exists.
         self.showParents.setText(
             QtWidgets.QApplication.translate(
