@@ -115,6 +115,7 @@ else:
     Cmdr = Any
     Event = Any
     Position = Any
+Widget = Any
 #@-<< nodetags annotations >>
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
@@ -268,15 +269,15 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: Position=None) -> None:
+        def __init__(self, c: Cmdr, parent: Widget=None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
             self.initUI()
             self.registerCallbacks()
-            self.mapping = {}
+            self.mapping: Dict = {}
             self.search_re = r'(&|\||-|\^)'
-            self.custom_searches = []
+            self.custom_searches: List = []
             g.registerHandler('select2', self.select2_hook)
             # fix tag jumplist positions after new node insertion
             g.registerHandler('create-node', self.command2_hook)
@@ -383,7 +384,7 @@ if QtWidgets:
                 label.setText(tag)
                 label.setObjectName('nodetags-label3')
                 layout.addWidget(label)
-                label.mouseReleaseEvent = self.callback_factory(tag)
+                label.mouseReleaseEvent = self.callback_factory(tag)  # type:ignore
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
         def callback_factory(self, tag: str) -> Callable:
             c = self.c
