@@ -403,8 +403,8 @@ if QtWidgets:
         def focusInEvent(self, event=None):
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusInEvent(self, event)
-            sys.stdout = self
-            sys.stderr = self
+            sys.stdout = self  # type:ignore
+            sys.stderr = self  # type:ignore
             self.ensureCursorVisible()
         #@+node:peckj.20150428142729.21: *3* PyInterp.focusOutEvent
         def focusOutEvent(self, event):

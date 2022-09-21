@@ -246,7 +246,7 @@ if QtWidgets:
                 elif s == 'n' or s == '\x1b':  # ESC.
                     dialog.done(1)
 
-            dialog.keyPressEvent = dialog_keypress_event
+            dialog.keyPressEvent = dialog_keypress_event  # type:ignore
             dialog.raise_()
             result = dialog.exec()
             if result == 0:
@@ -462,7 +462,7 @@ if QtWidgets:
 
             # Create the picture area.
             w.picture = QtWidgets.QLabel('picture', self)
-            w.picture.keyPressEvent = w.keyPressEvent
+            w.picture.keyPressEvent = w.keyPressEvent  # type:ignore
 
             # Create the scroll area.
             w.scroll_area = area = QtWidgets.QScrollArea()
