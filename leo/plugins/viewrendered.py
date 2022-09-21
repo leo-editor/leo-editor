@@ -284,15 +284,15 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828161918.1: ** << vr annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    # from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
-    Event = Any
     Position = Any
     VNode = Any
     Wrapper = Any
+Event = Any
 Widget = Any
 #@-<< vr annotations >>
 # pylint: disable=no-member
@@ -676,7 +676,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Position=None) -> None:
+    def __init__(self, c: Cmdr, parent: Widget=None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -872,7 +872,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:
+    ### This might be a real bug.  Overrides QWidget.update!
+    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
         """Update the vr pane. Called at idle time."""
         pc = self
         p = pc.c.p
@@ -937,7 +938,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pass
         return w
     #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
-    def embed_widget(self, w: Wrapper, delete_callback: Callable=None) -> None:
+    def embed_widget(self, w: Widget, delete_callback: Callable=None) -> None:
         """Embed widget w in the free_layout splitter."""
         pc = self
         c = pc.c
@@ -1600,7 +1601,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             s = textwrap.dedent(s).strip()
             s_bytes = g.toEncodedString(s)
             pc.show()
-            w.load(QtCore.QByteArray(s_bytes))
+            w.load(QtCore.QByteArray(s_bytes))  # type:ignore
             w.show()
         else:
             # Get a filename from the headline or body text.
@@ -1651,7 +1652,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             w.customContextMenuRequested.connect(contextMenuCallback)
 
-            def handleClick(url: str, w: Wrapper=w) -> None:
+            def handleClick(url: str, w: Widget=w) -> None:
                 wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
