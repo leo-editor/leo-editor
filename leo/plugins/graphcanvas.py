@@ -1276,7 +1276,8 @@ class graphcanvasController:
             newcolor = QtWidgets.QColorDialog.getColor()
 
         if QtGui.QColor.isValid(newcolor):
-            newcolor = str(newcolor.name())  # store strings not objects
+            # store strings not objects
+            newcolor = str(newcolor.name())  # type:ignore 
             item.set_bg_color(newcolor)
             node.u['_bklnk']['color'] = newcolor
 
@@ -1297,7 +1298,8 @@ class graphcanvasController:
             newcolor = QtWidgets.QColorDialog.getColor()
 
         if QtGui.QColor.isValid(newcolor):
-            newcolor = str(newcolor.name())  # store strings not objects
+            # store strings not objects
+            newcolor = str(newcolor.name())  # type:ignore
             item.set_text_color(newcolor)
             node.u['_bklnk']['tcolor'] = newcolor
 

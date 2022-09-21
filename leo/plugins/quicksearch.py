@@ -96,15 +96,14 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828094201.1: ** << quicksearch annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
-    Event = Any
     Position = Any
     Wrapper = Any
 
+Event = Any
 Match = re.Match
 Match_Iter = Iterator[re.Match[str]]
 Match_List = List[Tuple[Position, Match_Iter]]
@@ -292,13 +291,13 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c: Cmdr, mode: str="nav", parent: Position=None) -> None:
+    def __init__(self, c: Cmdr, mode: str="nav", parent: Any=None) -> None:
 
         super().__init__(parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
         self.frozen = False  # True: disable live updates.
-        w = self.ui.listWidget
+        w: Any = self.ui.listWidget
         u = self.ui
         cc = QuickSearchController(c, w, u)
         self.scon = cc
@@ -309,7 +308,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
         else:
             self.ui.lineEdit.returnPressed.connect(self.returnPressed)
         self.ui.lineEdit.textChanged.connect(self.liveUpdate)
-        self.ev_filter = QuickSearchEventFilter(c, w, self.ui.lineEdit)
+        self.ev_filter: "QuickSearchEventFilter" = QuickSearchEventFilter(c, w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
         self.c = c
     #@+node:ekr.20111015194452.15696: *3* quick_w.returnPressed
@@ -463,7 +462,7 @@ class QuickSearchController:
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
-    def addGeneric(self, text: Any, f: Any) -> None:
+    def addGeneric(self, text: Any, f: Any) -> Any:
         """ Add generic callback """
         it = QtWidgets.QListWidgetItem(text, self.lw)
         self.its[id(it)] = f
