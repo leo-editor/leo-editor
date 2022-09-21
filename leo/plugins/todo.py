@@ -288,10 +288,10 @@ if g.app.gui.guiName() == "qt":
                 if value:
                     getattr(edit, method)(value)
                     # edit.setEnabled(True)
-                    toggle.setChecked(True if isQt6 else QtConst.Checked)
+                    toggle.setChecked(True)
                 else:
                     getattr(edit, method)(default)
-                    toggle.setChecked(False if isQt6 else QtConst.Unchecked)
+                    toggle.setChecked(False)
                 edit.blockSignals(False)
                 toggle.blockSignals(False)
 

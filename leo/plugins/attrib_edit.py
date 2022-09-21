@@ -104,7 +104,7 @@ plugins. Here are some points of interest:
 # Written by TNB.
 from typing import Any, List, Tuple
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtConst, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
 #
 # Fail fast, right after all imports.
@@ -431,7 +431,7 @@ class ListDialog(QtWidgets.QDialog):  # type:ignore
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setChecked(True if isQt6 else QtConst.Checked)
+                cb.setChecked(True)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)

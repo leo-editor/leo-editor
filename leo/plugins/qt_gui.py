@@ -1306,7 +1306,8 @@ class LeoQtGui(leoGui.LeoGui):
             cb = QtWidgets.QCheckBox()
             cb.setObjectName('TipCheckbox')
             cb.setText('Show Tip On Startup')
-            state = QtConst.CheckState.Checked if checked else QtConst.CheckState.Unchecked  # #2383
+            # #2383: State is a tri-state, so use the official constants.
+            state = QtConst.CheckState.Checked if checked else QtConst.CheckState.Unchecked
             cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
             layout.addWidget(cb, 4, 0, -1, -1)
