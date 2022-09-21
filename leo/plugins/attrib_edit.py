@@ -104,7 +104,7 @@ plugins. Here are some points of interest:
 # Written by TNB.
 from typing import Any, List, Tuple
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtConst, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
 #
 # Fail fast, right after all imports.
@@ -431,7 +431,8 @@ class ListDialog(QtWidgets.QDialog):  # type:ignore
             cb = QtWidgets.QCheckBox(entry[0])
             self.buttons.append(cb)
             if entry[1]:
-                cb.setChecked(QtConst.CheckState.Checked)
+                ### cb.setChecked(QtConst.CheckState.Checked)
+                cb.setChecked(True)
             hbox.addWidget(cb)
             salo.addLayout(hbox)
         sa.setWidget(frame)
@@ -529,6 +530,8 @@ class attrib_edit_Controller:
         # 'body' or 'tab' mode
         # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
         self.guiMode = 'tab'
+        self.holder: Any
+        self.parent: Any
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':
             self.holder = QtWidgets.QSplitter(Orientation.Vertical)
@@ -705,6 +708,7 @@ class attrib_edit_Controller:
             g.es('No attributes seen (yet)')
             return
         dat.sort(key=lambda x: x[0])
+        res: Any
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", dat)
         res.exec_()
