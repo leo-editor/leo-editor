@@ -12,6 +12,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 
 import sys
 import datetime
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 #
@@ -94,7 +95,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
                 year += 1
                 month = 1
 
-    activated = QtCore.pyqtSignal(QtCore.QDate)
+    activated: Any = QtCore.pyqtSignal(QtCore.QDate)
 
     def return_result(self, date):
         """return_result - Return result
