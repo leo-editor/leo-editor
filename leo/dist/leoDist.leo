@@ -1453,12 +1453,12 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Change 6.6.x to 6.6.5.
+First: Change 6.7.0 to 6.7.0.
 
-*Never* merge devel into 6.6.x!
+*Never* merge devel into 6.7.0!
 
-- It's OK to merge bug fix branches into both devel and 6.6.x
-- It's OK to merge the 6.6.x into devel after the release.
+- It's OK to merge bug fix branches into both devel and 6.7.0
+- It's OK to merge the 6.7.0 branch into devel after the release.
 
 @language rest
 </t>
@@ -1518,7 +1518,7 @@ LeoPyRef.leo:
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.6.x -m "Added v6.6.x tag"
+git tag -a v6.7.0 -m "Added v6.7.0 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1527,9 +1527,9 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.6.x
+git merge 6.7.0
 update version in leoVersion.py.
-git tag -a v6.6.x-devel -m "Added v6.6.x-devel tag"
+git tag -a v6.7.0-devel -m "Added v6.7.0-devel tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
@@ -1988,12 +1988,12 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.x branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.0 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.6.x</t>
+- git merge 6.7.0</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -2076,12 +2076,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.6.x-2-py3-none-any.whl
-    leo-6.6.x-2.tar.gz
+    leo-6.7.0-2-py3-none-any.whl
+    leo-6.7.0-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6.x
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.0
 
 **test**
 
