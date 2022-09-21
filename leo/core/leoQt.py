@@ -79,9 +79,6 @@ except Exception:
 #@-<< optional PyQt6 imports >>
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20220920184440.1: ** << PyQt6 enumerations >>
-QWebEngineSettings: Any
-WebEngineAttribute: Any
-
 Alignment = Qt.AlignmentFlag
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
 ContextMenuPolicy = Qt.ContextMenuPolicy
@@ -143,6 +140,7 @@ QtWebKitWidgets = None
 # Standard abbreviations.
 QtConst = Qt  ###
 qt_version = QtCore.QT_VERSION_STR
+
 QWebEngineSettings: Any
 WebEngineAttribute: Any
 if has_WebEngineWidgets:

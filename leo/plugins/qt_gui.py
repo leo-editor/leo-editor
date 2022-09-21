@@ -436,7 +436,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(dialog)
         dialog.raise_()
         ok = dialog.exec_()
-        n = dialog.textValue()
+        n: Any = dialog.textValue()
         try:
             n = float(n)
         except ValueError:
