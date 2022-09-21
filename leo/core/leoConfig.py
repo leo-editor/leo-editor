@@ -2032,7 +2032,7 @@ class SettingsTreeParser(ParserBaseClass):
         return None
     #@-others
 #@+node:ekr.20171229131953.1: ** parseFont (leoConfig.py)
-def parseFont(b: str) -> Tuple[str, str, bool, bool, float]:
+def parseFont(b: str) -> Tuple[str, str, bool, bool, int]:
     family = None
     weight = None
     slant = None
