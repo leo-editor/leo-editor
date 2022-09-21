@@ -1149,6 +1149,7 @@ class todoController:
         g.es('\n Current distribution:')
         self.showDist()
         dat = {}
+        x0: Any
         for end in 'from', 'to':
             if QtConst:
                 x0, ok = QtWidgets.QInputDialog.getText(
@@ -1188,6 +1189,7 @@ class todoController:
             return
 
         cnt = 0
+        pri: Any
         for p in p.subtree():
             pri = int(self.getat(p.v, 'priority'))
             if pri in dat['from']:
