@@ -257,7 +257,7 @@ class LeoQtGui(leoGui.LeoGui):
             event.ignore()
             dialog.hide()
 
-        dialog.closeEvent = closeEvent
+        dialog.closeEvent = closeEvent  # type:ignore
         layout = QtWidgets.QVBoxLayout(dialog)
         layout.addWidget(w)
         self.attachLeoIcon(dialog)
@@ -292,7 +292,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt About Leo dialog."""
         if g.unitTesting:
             return
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        # dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        dialog = QtWidgets.QMessageBox(c.frame.top if c else None)
         dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         dialog.setIcon(Icon.Information)
         yes = dialog.addButton('Ok', ButtonRole.YesRole)
@@ -311,7 +312,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str='Select Date/Time',
         init: datetime.datetime=None,
         step_min: Dict=None,
-    ) -> None:
+    ) -> Any:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -342,7 +343,7 @@ class LeoQtGui(leoGui.LeoGui):
                     step_min = {}
                 self.step_min = step_min
                 if init:
-                    super().__init__(init, parent)
+                    super().__init__(init, parent)  # type:ignore
                 else:
                     super().__init__(parent)
 
@@ -480,7 +481,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
             return
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        # dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        dialog = QtWidgets.QMessageBox(c.frame.top if c else None)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             dialog.setStyleSheet(stylesheet)
@@ -515,7 +517,8 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        # dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        dialog = QtWidgets.QMessageBox(c.frame.top if c else None)
         stylesheet = getattr(c, 'active_stylesheet', None)
         if stylesheet:
             dialog.setStyleSheet(stylesheet)
@@ -563,7 +566,8 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        # dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        dialog = QtWidgets.QMessageBox(c.frame.top if c else None)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
         dialog.addButton('No', ButtonRole.NoRole)
@@ -631,6 +635,7 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
+        val: Any
         if c:
             try:
                 c.in_qt_dialog = True
@@ -1306,7 +1311,7 @@ class LeoQtGui(leoGui.LeoGui):
             state = QtConst.CheckState.Checked if checked else QtConst.CheckState.Unchecked  # #2383
             cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
-            layout.addWidget(cb, 4, 0, -1, -1)
+            layout.addWidget(cb, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
                 vSpacer = QtWidgets.QSpacerItem(

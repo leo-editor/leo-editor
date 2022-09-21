@@ -152,7 +152,7 @@ def showFonts(self, event=None):
             font.setFamily(family)
         font.setBold(weight)
         font.setItalic(slant)
-        font.setPointSize(size)
+        font.setPointSize(int(size))
         picker.setCurrentFont(font)
     except ValueError:
         pass
