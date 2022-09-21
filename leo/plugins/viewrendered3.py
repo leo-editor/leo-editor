@@ -3893,7 +3893,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=W1510 # Using subprocess.run without explicitly setting `check`
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
         return result.stdout, result.stderr
     #@-others
     #@+node:TomP.20200112103934.1: *5* process_rst_node
