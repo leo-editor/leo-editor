@@ -104,7 +104,9 @@ class LeoGui:
     def destroySelf(self) -> None:
         self.oops()
     #@+node:ekr.20031218072017.3730: *4* LeoGui.dialogs
-    def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> Any:
+    def runAboutLeoDialog(self,
+        c: Cmdr, version: str, theCopyright: str, url: str, email: str,
+    ) -> Any:  # Must be any, for compatibility with testing subclass.
         """Create and run Leo's About Leo dialog."""
         self.oops()
 

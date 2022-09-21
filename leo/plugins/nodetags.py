@@ -115,6 +115,7 @@ else:
     Cmdr = Any
     Event = Any
     Position = Any
+Widget = Any
 #@-<< nodetags annotations >>
 #@+others
 #@+node:peckj.20140804103733.9244: ** init (nodetags.py)
@@ -268,7 +269,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: Position=None) -> None:
+        def __init__(self, c: Cmdr, parent: Widget=None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController

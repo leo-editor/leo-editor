@@ -1653,7 +1653,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             w.customContextMenuRequested.connect(contextMenuCallback)
 
-            def handleClick(url: str, w: Wrapper=w) -> None:
+            def handleClick(url: str, w: Widget=w) -> None:
                 wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
