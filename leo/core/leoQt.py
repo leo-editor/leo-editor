@@ -3,37 +3,30 @@
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 #@@first
 """
-Import wrapper for pyQt6.
+Leo's main import wrapper, specialized for Qt6.
 
-For Qt6, plugins are responsible for loading all optional modules.
-
+Plugins are responsible for loading all optional modules.
 """
 
-# For now, suppress all mypy checks
-# ty--pe: ignore
-
-# pylint: disable=unused-import,no-name-in-module,c-extension-no-member,import-error
-
-# Required imports
 from typing import Any
+
+# pylint: disable=unused-import
+
+# disable=c-extension-no-member does not seem to work.
+# pylint: disable=c-extension-no-member
+
+# Instead, run pylint like this:
+# pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets
+
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt, QUrl
-from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
-from PyQt6.QtCore import pyqtSignal as Signal
-#
-# For pyflakes.
-assert QtCore and QtGui and QtWidgets
-assert QAction and QActionGroup
-assert QCloseEvent
-assert Qt and QUrl and Signal
-#
-# Standard abbreviations.
-QtConst = Qt
-qt_version = QtCore.QT_VERSION_STR
-#
+from PyQt6.QtCore import Qt, QUrl  # pylint: disable=no-name-in-module
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent  # pylint: disable=no-name-in-module
+
+#@+<< optional PyQt6 imports >>
+#@+node:ekr.20220920184407.1: ** << optional PyQt6 imports >>
+
 # Optional imports: #2005
 # Must import this before creating the GUI
-has_WebEngineWidgets = False
 try:
     from PyQt6 import QtWebEngineWidgets
     from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
@@ -43,7 +36,7 @@ except ImportError:
     # 2866: This message pollutes leoserver.py.
         # print('No Qt6 QtWebEngineWidgets')
         # print('pip install PyQt6-WebEngine')
-    pass
+    has_WebEngineWidgets = False
 
 try:
     from PyQt6 import QtPrintSupport as printsupport
@@ -62,63 +55,39 @@ try:
     from PyQt6 import uic
 except ImportError:
     uic = None
-#
-# #2005: Do not import these by default. All of these *do* work.
-if 0:
-    try:
-        from PyQt6 import QtDesigner
-    except Exception:
-        QtDesigner = None
-    try:
-        from PyQt6 import QtOpenGL
-    except Exception:
-        QtOpenGL = None
-    try:
-        from PyQt6 import QtMultimedia
-    except ImportError:
-        QtMultimedia = None
-    try:
-        from PyQt6 import QtNetwork
-    except Exception:
-        QtNetwork = None
-#
-# Enumerations, with (sheesh) variable spellings.
+
+# Contrary to #2005: *Do* import these by default.
 try:
-    # New spellings (6.1+): mostly singular.
-    Alignment = Qt.AlignmentFlag
-    ControlType = QtWidgets.QSizePolicy.ControlType
-    DropAction = Qt.DropAction
-    ItemFlag = Qt.ItemFlag
-    KeyboardModifier = Qt.KeyboardModifier
-    Modifier = Qt.Modifier
-    MouseButton = Qt.MouseButton
-    Orientation = Qt.Orientation
-    StandardButton = QtWidgets.QDialogButtonBox.StandardButton
-    TextInteractionFlag = Qt.TextInteractionFlag
-    ToolBarArea = Qt.ToolBarArea
-    WidgetAttribute = Qt.WidgetAttribute  # #2347
-    WindowType = Qt.WindowType
-    WindowState = Qt.WindowState
-except AttributeError:
-    # Old spellings (6.0): mostly plural.
-    Alignment = Qt.Alignment  # type:ignore
-    ControlType = QtWidgets.QSizePolicy.ControlTypes  # type:ignore
-    DropAction = Qt.DropActions  # type:ignore
-    ItemFlag = Qt.ItemFlags  # type:ignore
-    KeyboardModifier = Qt.KeyboardModifiers  # type:ignore
-    Modifier = Qt.Modifiers  # type:ignore
-    MouseButton = Qt.MouseButtons  # type:ignore
-    Orientation = Qt.Orientations  # type:ignore
-    StandardButton = QtWidgets.QDialog.StandardButtons  # type:ignore
-    TextInteractionFlag = Qt.TextInteractionFlags  # type:ignore
-    ToolBarArea = Qt.ToolBarAreas  # type:ignore
-    WindowType = Qt.WindowFlags  # type:ignore
-    WindowState = Qt.WindowStates  # type:ignore
-#
-# Other enums.
+    from PyQt6 import QtDesigner  # pylint: disable=unused-import
+except Exception:
+    QtDesigner = None
+
+try:
+    from PyQt6 import QtOpenGL  # pylint: disable=unused-import
+except Exception:
+    QtOpenGL = None
+
+try:
+    from PyQt6 import QtMultimedia  # pylint: disable=unused-import
+except ImportError:
+    QtMultimedia = None
+
+try:
+    from PyQt6 import QtNetwork  # pylint: disable=unused-import
+except Exception:
+    QtNetwork = None
+#@-<< optional PyQt6 imports >>
+#@+<< PyQt6 enumerations >>
+#@+node:ekr.20220920184440.1: ** << PyQt6 enumerations >>
+QWebEngineSettings: Any
+WebEngineAttribute: Any
+
+Alignment = Qt.AlignmentFlag
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
 ContextMenuPolicy = Qt.ContextMenuPolicy
+ControlType = QtWidgets.QSizePolicy.ControlType
 DialogCode = QtWidgets.QDialog.DialogCode
+DropAction = Qt.DropAction
 EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
 FocusPolicy = Qt.FocusPolicy
 FocusReason = Qt.FocusReason
@@ -127,9 +96,14 @@ GlobalColor = Qt.GlobalColor
 Icon = QtWidgets.QMessageBox.Icon
 Information = Icon.Information
 ItemDataRole = Qt.ItemDataRole  # 2347
+ItemFlag = Qt.ItemFlag
 Key = Qt.Key
+KeyboardModifier = Qt.KeyboardModifier
+Modifier = Qt.Modifier
+MouseButton = Qt.MouseButton
 MoveMode = QtGui.QTextCursor.MoveMode
 MoveOperation = QtGui.QTextCursor.MoveOperation
+Orientation = Qt.Orientation
 Policy = QtWidgets.QSizePolicy.Policy
 ScrollBarPolicy = Qt.ScrollBarPolicy
 SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
@@ -139,11 +113,36 @@ Shape = QtWidgets.QFrame.Shape
 SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
 SliderAction = QtWidgets.QAbstractSlider.SliderAction
 SolidLine = Qt.PenStyle.SolidLine
+StandardButton = QtWidgets.QDialogButtonBox.StandardButton
 StandardPixmap = QtWidgets.QStyle.StandardPixmap
 Style = QtGui.QFont.Style
+TextInteractionFlag = Qt.TextInteractionFlag
 TextOption = QtGui.QTextOption
+ToolBarArea = Qt.ToolBarArea
 Type = QtCore.QEvent.Type
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+Weight = QtGui.QFont.Weight
+WidgetAttribute = Qt.WidgetAttribute
+WindowState = Qt.WindowState
+WindowType = Qt.WindowType
+WrapMode = QtGui.QTextOption.WrapMode
+#@-<< PyQt6 enumerations >>
+
+# For pyflakes.
+assert QtCore and QtGui and QtWidgets and QUrl
+assert QAction and QActionGroup and QCloseEvent
+
+
+# No longer available modules
+phonon = None
+QtDeclarative = None
+QtWebKit = None
+QtWebKitWidgets = None
+# Signal
+
+# Standard abbreviations.
+QtConst = Qt  ###
+qt_version = QtCore.QT_VERSION_STR
 QWebEngineSettings: Any
 WebEngineAttribute: Any
 if has_WebEngineWidgets:
@@ -152,7 +151,4 @@ if has_WebEngineWidgets:
 else:
     QWebEngineSettings = None
     WebEngineAttribute = None
-
-Weight = QtGui.QFont.Weight
-WrapMode = QtGui.QTextOption.WrapMode
 #@-leo

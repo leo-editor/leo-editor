@@ -492,7 +492,7 @@ class LeoQtGui(leoGui.LeoGui):
         try:
             c.in_qt_dialog = True
             dialog.raise_()
-            dialog.exec_()
+            dialog.exec()
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
