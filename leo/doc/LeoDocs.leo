@@ -31338,12 +31338,14 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - The usual assortment of minor bug fixes.</t>
 <t tx="ekr.20220912154542.1">- Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Significantly speed up drawing.
-- Simplify all of Leo's importers.
-- Retire Tk indices, except in unit tests.
 - Importers no longer generate underindented escape strings.
-- Annotate most of Leo's core files.
-- Delete all of Leo's cover- and test- commands.</t>
+- Delete all of Leo's cover- and test- commands.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
+</t>
 <t tx="ekr.20220912154618.1">Leo http://leoeditor.com 6.7.0 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -31356,12 +31358,13 @@ The 6.7.0 version denotes significant changes to Leo's code base.
 
 - Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Significantly speed up drawing.
-- Simplify all of Leo's importers.
-- Retire Tk indices, except in unit tests.
 - Importers no longer generate underindented escape strings.
-- Annotate most of Leo's core files.
 - Delete all of Leo's cover- and test- commands.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
 - The usual assortment of minor bug fixes.
 
 **Links**
