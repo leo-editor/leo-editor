@@ -1495,7 +1495,7 @@ LeoDist.leo:
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
-- Make sure Leo runs with Python 3.6.
+- Make sure Leo runs with Python 3.9
 
 - Run Leo's beautify-files command on the following nodes:
   - Core classes
