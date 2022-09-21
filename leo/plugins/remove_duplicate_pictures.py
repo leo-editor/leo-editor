@@ -270,7 +270,7 @@ class RemoveDuplicates:
             window.close()
             self.next_window()
 
-        window.closeEvent = closeEvent
+        window.closeEvent = closeEvent  # type:ignore
         # Show the window.
         window.show()
     #@+node:ekr.20220126064335.1: *3* Dups.delete_file
