@@ -36,7 +36,7 @@ classifiers = [
 #@+<< define install_requires >>
 #@+node:maphew.20171120133429.1: ** << define install_requires >>
 install_requires = [
-    'PyQt5 >= 5.12',  # v5.12+ to close #1217
+    'PyQt5 >= 5.15',  # #2884: reuire v5.15. #1217: require v5.12+.
     'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
     'build >= 0.6.0',  # simple PEP 517 package builder
@@ -154,7 +154,7 @@ if production:
         setup_requires=[],  # No longer needed with PEP-518 and pip >v10.
         install_requires=install_requires,
         entry_points=entry_points,
-        python_requires='>=3.6',
+        python_requires='>=3.9',
     )
 print('setup.py: done')
 #@@language python
