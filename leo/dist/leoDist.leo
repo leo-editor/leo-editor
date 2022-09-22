@@ -1504,8 +1504,9 @@ LeoSettings.leo:
 - Run all "check" buttons in leoSettings.leo.
 
 LeoPyRef.leo:
-- run write-LeoPyRef button in LeoPy.leo.
-- Run `script: check-files`.</t>
+- Run write-LeoPyRef button in LeoPy.leo.
+- Open LeoPyRef.leo. Verify the diff after saving.
+</t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
