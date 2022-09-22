@@ -225,7 +225,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6.4
+Version: 6.7.0
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -244,23 +244,32 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.4 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.7.0 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
 Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.4**
+**The highlights of Leo 6.7.0**
 
+The 6.7.0 version denotes significant changes to Leo's code base.
+
+- Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
-- Begin annotating Leo's core files.
+- Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
 - The usual assortment of minor bug fixes.
 
 **Links**
 
-- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- 6.7.0 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
+- 6.7.0 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
@@ -271,9 +280,6 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
-
-@nowrap
-@language md
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -1465,7 +1471,7 @@ First: Create release branch. Change version in this checklist to match.
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the version numbers in index.html, index.html and conf.py:
-  Search for 6.6.
+  Search for 6.7.
 - Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
 - Remove top-level clones.
@@ -1476,7 +1482,7 @@ First: Create release branch. Change version in this checklist to match.
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.x, not 6.x-final.
+  The final version in PKG-INFO.TXT must be called 6.7.0, not 7.6.0-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check 'PKG-INFO.TXT'
