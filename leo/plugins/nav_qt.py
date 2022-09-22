@@ -78,7 +78,7 @@ class NavController:
         self._buttons: Optional[Tuple[Action, Action]] = self.makeButtons()
 
     #@+others
-    #@+node:ville.20090518182905.5427: *3* makeButtons (NavController)
+    #@+node:ville.20090518182905.5427: *3* NavController.makeButtons
     def makeButtons(self) -> Tuple[Action, Action]:
 
         c = self.c
@@ -97,8 +97,10 @@ class NavController:
         self.c.frame.iconBar.add(qaction=act_l)
         self.c.frame.iconBar.add(qaction=act_r)
         return act_l, act_r
-
+    #@+node:ekr.20220922085357.1: *3* NavController.removeButtons
     def removeButtons(self) -> None:
+        if not self._buttons:
+            return
         for b in self._buttons:
             self.c.frame.iconBar.deleteButton(b)
         self._buttons = None
