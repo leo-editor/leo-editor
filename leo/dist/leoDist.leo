@@ -162,7 +162,7 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
-<v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
+<v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
@@ -1453,7 +1453,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Change 6.7.0 to 6.7.0.
+First: Create release branch. Change version in this checklist to match.
 
 *Never* merge devel into 6.7.0!
 
