@@ -31340,6 +31340,7 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - Enhance leoserver.py to support leoInteg and leoJS.
 - Importers no longer generate underindented escape strings.
 - Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
 - Several mass code updates:
   - Annotate Leo's core files and important plugins.
   - Simplify all of Leo's importers.
@@ -31360,6 +31361,7 @@ The 6.7.0 version denotes significant changes to Leo's code base.
 - Enhance leoserver.py to support leoInteg and leoJS.
 - Importers no longer generate underindented escape strings.
 - Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
 - Several mass code updates:
   - Annotate Leo's core files and important plugins.
   - Simplify all of Leo's importers.
