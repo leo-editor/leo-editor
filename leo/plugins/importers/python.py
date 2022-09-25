@@ -250,7 +250,9 @@ def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
         # Look ahead to see if we have a one-line definition (INDENT comes after the NEWLINE).
         i1, t = find_token(i + 1, token.INDENT)  # t is used below.
         i2, t2 = find_token(i + 1, token.NEWLINE)
-        oneliner = i1 > i2 if t and t2 else False
+        if t is None or t2 is None:
+            return None
+        oneliner = i1 > i2
 
         # Find the end of this definition
         if oneliner:
