@@ -1940,7 +1940,7 @@ efc.GitDiffController(c).diff_two_revs(
     # rev1='f85969ae8cb',  # Before.
     # rev2='dd0fadf7b15',  # After.
     rev1='6.6.4',               # Old
-    rev2='ekr-typing',   # New
+    rev2='devel',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>

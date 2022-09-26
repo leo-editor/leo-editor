@@ -162,7 +162,7 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
-<v t="ekr.20180405171433.4"><vh>Pre-testing (in devel)</vh></v>
+<v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
@@ -225,7 +225,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.6.4
+Version: 6.7.0
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -244,23 +244,32 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.6.4 is now available on
+<t tx="EKR.20040519090846.9">Leo http://leoeditor.com 6.7.0 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
 Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.6.4**
+**The highlights of Leo 6.7.0**
 
+The 6.7.0 version denotes significant changes to Leo's code base.
+
+- Leo now requires Python 3.9 or later.
 - Enhance leoserver.py to support leoInteg and leoJS.
-- Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
-- Begin annotating Leo's core files.
+- Delete all of Leo's cover- and test- commands.
+- Allow unit tests to run with the Qt gui.
+- Several mass code updates:
+  - Annotate Leo's core files and important plugins.
+  - Simplify all of Leo's importers.
+  - Speed Leo's redraw code by rewriting Leo's icon drawing logic.
+  - Retire Tk indices, except in unit tests.
 - The usual assortment of minor bug fixes.
 
 **Links**
 
-- 6.6.3 issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.6.3+
+- 6.7.0 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
+- 6.7.0 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
@@ -271,9 +280,6 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
-
-@nowrap
-@language md
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -1453,19 +1459,19 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-First: Change 6.6.x to 6.6.5.
+First: Create release branch. Change version in this checklist to match.
 
-*Never* merge devel into 6.6.x!
+*Never* merge devel into 6.7.0!
 
-- It's OK to merge bug fix branches into both devel and 6.6.x
-- It's OK to merge the 6.6.x into devel after the release.
+- It's OK to merge bug fix branches into both devel and 6.7.0
+- It's OK to merge the 6.7.0 branch into devel after the release.
 
 @language rest
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the version numbers in index.html, index.html and conf.py:
-  Search for 6.6.
+  Search for 6.7.
 - Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
 - Remove top-level clones.
@@ -1476,7 +1482,7 @@ First: Change 6.6.x to 6.6.5.
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.x, not 6.x-final.
+  The final version in PKG-INFO.TXT must be called 6.7.0, not 7.6.0-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check 'PKG-INFO.TXT'
@@ -1495,30 +1501,22 @@ LeoDist.leo:
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
-- Make sure Leo runs with Python 3.6.
+- Make sure Leo runs with Python 3.9.
 
-- Run Leo's beautify-files command on the following nodes:
-  - Core classes
-  - Command classes
-  - Gui base classes
-  - Qt gui
-
-- Run the following checks:
-    - reindent leo.
-    - Run test-all command.
-    - mypy leo.
-    - Run pylint on all files.
+- Run the full-tests script. See #2867:
+  https://github.com/leo-editor/leo-editor/issues/2867
 
 LeoSettings.leo:
 - Run all "check" buttons in leoSettings.leo.
 
 LeoPyRef.leo:
-- run write-LeoPyRef button in LeoPy.leo.
-- Run `script: check-files`.</t>
+- Run write-LeoPyRef button in LeoPy.leo.
+- Open LeoPyRef.leo. Verify the diff after saving.
+</t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.6.x -m "Added v6.6.x tag"
+git tag -a v6.7.0 -m "Added v6.7.0 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1527,9 +1525,9 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.6.x
+git merge 6.7.0
 update version in leoVersion.py.
-git tag -a v6.6.x-devel -m "Added v6.6.x-devel tag"
+git tag -a v6.7.0-devel -m "Added v6.7.0-devel tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20190429113053.1"># Commit all files before running this script.
@@ -1988,12 +1986,12 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.6.x branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.0 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.6.x</t>
+- git merge 6.7.0</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -2076,12 +2074,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.6.x-2-py3-none-any.whl
-    leo-6.6.x-2.tar.gz
+    leo-6.7.0-2-py3-none-any.whl
+    leo-6.7.0-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.6.x
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.0
 
 **test**
 
