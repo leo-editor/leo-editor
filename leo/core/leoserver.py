@@ -1560,7 +1560,21 @@ class LeoServer:
         return self._make_response()
 
 
-    #@+node:felix.20220305211828.1: *5* server.nav_search
+    #@+node:felix.20220305211828.1: *5* server.nav_clear
+    def nav_clear(self, param: Param) -> Response:
+        """
+        Clear goto pane (nav/tag) content
+        """
+        tag = 'nav_clear'
+        c = self._check_c()
+        scon: QuickSearchController = c.patched_quicksearch_controller
+        try:
+            scon.clear()
+        except Exception as e:
+            raise ServerError(f"{tag}: exception doing nav clear: {e}")
+        return self._make_response()
+
+    #@+node:felix.20220925180823.1: *5* server.nav_search
     def nav_search(self, param: Param) -> Response:
         """
         Performs nav search and fills results of go to panel
