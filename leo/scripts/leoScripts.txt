@@ -4083,12 +4083,10 @@ popd
 """
 Convert jEdit description file (an .xml file) to an equivalent .py file.
 """
-
-@language python
-@tabwidth -4
-@pagewidth 80
-g.cls()
-<< imports >>
+import string
+import textwrap
+import xml.sax
+import xml.sax.saxutils
 
 # Globals...
 files_list = ['ocaml.xml',]
@@ -4098,11 +4096,11 @@ files = [g.os_path_abspath(g.os_path_join(theDir, s)) for s in files_list]
 @others
 
 main()
+
+@language python
+@tabwidth -4
+@pagewidth 80
 #@+node:ekr.20060824111500.109: *4* << imports >>
-import string
-import textwrap
-import xml.sax
-import xml.sax.saxutils
 #@+node:ekr.20060824111500.113: *4* top-level
 #@+node:ekr.20160319080102.1: *5* cleanSaxInputString
 def cleanSaxInputString(s):
@@ -4193,31 +4191,14 @@ def main():
     g.es_print('done')
 #@+node:ekr.20060824111500.117: *4* class Mode
 class Mode:
-    """
-    A class representing one jEdit language-description mode.
+    """A class representing one jEdit language-description mode."""
 
-    Use getters to access the attributes, properties and rules of this mode.
-    """
-
-    @others
-#@+node:ekr.20060824111500.118: *5*  Mode.__init__
-def __init__ (self, contentHandler, fileName):
-    self.contentHandler = contentHandler
-    self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
-    modeName, junk = g.os_path_splitext(self.fileName)
-    self.fileModeName = modeName
-    self.modeName = munge(modeName).lower()
-    self.outputFile = None # The open output file to which Python statements get written.
-
-    # List of boolean attributes.
-    self.boolAttrs = [
+    boolAttrs = [  # Boolean attributes.
         'at_line_start', 'at_whitespace_end', 'at_word_start',
         'exclude_match', 'highlight_digits', 'ignore_case',
         'no_escape', 'no_line_break', 'no_word_break',
     ]
-
-    # List of elements that start a rule.
-    self.ruleElements = [
+    ruleElements = [  # Elements that start a rule.
         'eol_span', 'eol_span_regexp',
         'import', 'keywords',
         'mark_following', 'mark_previous',
@@ -4226,43 +4207,179 @@ def __init__ (self, contentHandler, fileName):
         'terminate',
     ]
 
-    if 0: # Not used at present.
-        self.seqSpanElements = [
-            'eol_span', 'eol_span_regexp',
-            'seq', 'seq_regexp',
-            'span', 'span_regexp',
-        ]
+    @others
+#@+node:ekr.20060824111500.118: *5*  Mode.__init__
+def __init__ (self, contentHandler, fileName):
+    
+    self.contentHandler = contentHandler
+    self.fileName = g.shortFileName(fileName)  # The file from which the mode was imported.
+    modeName, junk = g.os_path_splitext(self.fileName)
+    self.fileModeName = modeName
+    self.modeName = munge(modeName).lower()
+    self.outputFile = None  # The open output file to which Python statements get written.
 
     # Mode semantics.
     self.attributes = {}
     self.handlerCount = 0
-    self.importedRules = [] # A bunch describing the imported ruleset.
+    self.importedRules = []  # A bunch describing the imported ruleset.
     self.inProps = False
     self.inRules = False
     self.keywords = None
     self.modeProperties = []
-    self.presentProperty = None # A bunch to be assigned to modeProperties or rulesetProperties.
+    self.presentProperty = None  # A bunch to be assigned to modeProperties or rulesetProperties.
     self.rule = None
     self.rulesets = []
-    self.rules = [] # The rules of the present rules element.
+    self.rules = []  # The rules of the present rules element.
     self.rulesetProperties = []
-    self.rulesetAttributes = {} # The attributes of the present rules element.
+    self.rulesetAttributes = {}  # The attributes of the present rules element.
 #@+node:ekr.20060824111500.119: *5*  Mode.__str__ & __repr__
 def __str__ (self):
-
-    return '<Mode for %s>' % self.fileName
+    return f"<Mode for {self.fileName}>"
 
 __repr__ = __str__
-#@+node:ekr.20060824111500.120: *5*  Mode:Output...
-# Similar to printing, but generates the output file.
-#@+node:ekr.20060827162343: *6* Mode.fullDelegate
-def fullDelegate (self, delegate):
-    if not delegate:
-        return ''
-    delegate = delegate.lower()
-    if '::' in delegate:
-        return delegate
-    return f"{self.fileModeName.lower()}::{delegate}"
+#@+node:ekr.20060824111500.153: *5* Mode.error
+def error (self, message):
+    self.contentHandler.error(message)
+#@+node:ekr.20060824111500.154: *5* Mode: Getters
+def getAttributes (self):
+    return self.attributes
+
+def getAttributesForRuleset (self, ruleset):
+    bunch = ruleset
+    return bunch.attributes
+
+def getFileName (self):
+    return self.fileName
+
+def getKeywords (self, n, ruleset):
+    bunch = ruleset
+    keywords = bunch.keywords
+    if keywords:
+        return keywords.get('keyword%d'%(n), [])
+    return []
+
+def getLanguage (self):
+    path, name = g.os_path_split(self.fileName)
+    language, ext = g.os_path_splitext(name)
+    return language
+
+def getPropertiesForMode (self):
+    return self.props
+
+def getPropertiesForRuleset (self, name=''):
+    bunch = self.getRuleset(name)
+    if bunch:
+        return bunch.properties
+    else:
+        return []
+
+def getRuleset(self, name=''):
+    if not name:
+        return self.rulesets[0] # Return the main ruleset.
+    for ruleset in self.rulesets:
+        if ruleset.name.lower()==name.lower():
+            return ruleset
+    else: return None
+
+def getRulesets(self):
+    return self.rulesets
+
+def getRulesForRuleset (self, name=''):
+    bunch = self.getRuleset(name)
+    if bunch:
+        return bunch.rules
+    else:
+        return []
+#@+node:ekr.20220927115543.1: *5* Mode: Handlers
+#@+node:ekr.20060824111500.150: *6* Mode.doAttribute
+def doAttribute (self, name, val):
+
+    name = str(name.lower())
+    if name in self.boolAttrs:
+        val = True if val.lower() == 'true' else False
+    else:
+        val = str(val) # Do NOT lower this value!
+    if self.rule:
+        d = self.rule.attributes
+        d [name] = val
+    elif self.presentProperty:
+        d = self.presentProperty.get('attributes')
+        d [name] = val
+    elif self.inRules:
+        self.rulesetAttributes[name] = val
+    else:
+        self.attributes[name] = val
+#@+node:ekr.20060824111500.151: *6* Mode.doContent
+def doContent (self, elementName, content):
+
+    if not content:
+        return
+    name = str(elementName.lower())
+    if self.inRule('keywords'):
+        d = self.rule.keywordsDict
+        d [ content ] = name
+    elif self.rule:
+        d = self.rule.contents
+        s = d.get(name, '')
+        d [name] = s + g.toUnicode(content)
+        self.contents = d
+#@+node:ekr.20060824111500.152: *6* Mode.endElement
+def endElement (self, elementName):
+
+    name = elementName.lower()
+
+    if name == 'props':
+        self.inProps = True
+    if name == 'rules':
+        self.inRules = False
+        ruleset = Ruleset(self.rulesetAttributes, self.keywords, self.rulesetProperties, self.rules)
+        self.rulesets.append(ruleset)
+    if name == 'property':
+        bunch = self.presentProperty
+        if bunch:
+            if self.inRules:
+                self.rulesetProperties.append(bunch)
+            else:
+                self.modeProperties.append(bunch)
+        else:
+            self.error('end %s not matched by start %s' % (name, name))
+        self.presentProperty = None
+    if name in self.ruleElements:
+        if self.inRule(name):
+            self.rules.append(self.rule)
+            self.rule = None
+        else:
+            self.error('end %s not matched by start %s' % (name, name))
+#@+node:ekr.20060824111500.155: *6* Mode.inRule
+def inRule (self, elementName):
+    return self.rule and self.rule.name == elementName
+#@+node:ekr.20060824111500.156: *6* Mode.startElement
+def startElement (self, elementName):
+
+    name = elementName.lower()
+
+    if name == 'props':
+        self.inProps = True
+    if name == 'rules':
+        self.inRules = True
+        self.attributes=[]
+        self.keywords=[]
+        self.rulesetProperties=[]
+        self.rules=[]
+    if name == 'property':
+        if self.inProps:
+            self.presentProperty = g.bunch(name=name, attributes={})
+        else:
+            self.error('property not in props element')
+    if name in self.ruleElements:
+        if self.inRules:
+            self.rule = Rule(name=name)
+            if name == 'keywords':
+                self.keywords = self.rule
+        else:
+            self.error('%s not in rules element' % name)
+#@+node:ekr.20060824111500.120: *5* Mode: Output...
+# These methods generate the output file.
 #@+node:ekr.20060824111500.121: *6* Mode.escapeString & quoteString
 def escapeString (self, s):
     '''Return string s enclosed in double quotes.'''
@@ -4275,6 +4392,14 @@ def escapeString (self, s):
     return '"%s"' % s.replace('\\', '\\\\').replace('"', '\\"').replace('\t', '\\t')
 
 quoteString = escapeString
+#@+node:ekr.20060827162343: *6* Mode.fullDelegate
+def fullDelegate (self, delegate):
+    if not delegate:
+        return ''
+    delegate = delegate.lower()
+    if '::' in delegate:
+        return delegate
+    return f"{self.fileModeName.lower()}::{delegate}"
 #@+node:ekr.20060824111500.122: *6* Mode.put
 def put (self, s):
     self.outputFile.write(s)
@@ -4705,29 +4830,8 @@ def write (self, theFile, language):
     self.putKeywordsData()
     self.putRules()
     self.putImportDict()
-#@+node:ekr.20060824111500.127: *5* Mode.putList
-def putList (self, name, theList, escape=True, lineCount=0):
-
-    def comma(i):
-        return ','
-
-    def nl(i):
-        ### return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
-        return '\n' if lineCount == 0 or (i%lineCount)==lineCount-1 else ' '
-
-    def tab(i, n):
-        return '\t' if i > 0 and nl(i-1) != ' ' else ''
-
-    ### Remove escape kwarg?
-    esc = self.escapeString if escape else lambda a:a
-    result = []
-    n = len(theList)
-    for i in range(n):
-        result.append('%s%s%s%s' % (tab(i, n), esc(theList[i]), comma(i), nl(i)))
-    vals = ''.join(result)
-    self.put('%s = [%s]\n\n' % (name, vals))
-#@+node:ekr.20060824111500.144: *5*  Mode:Printing...
-### Remove these?
+#@+node:ekr.20060824111500.144: *5* Mode: Printing...
+# Not used.
 #@+node:ekr.20060824111500.145: *6* Mode.printModeAttributes, printRulesetAttributes & printAttributesHelper
 def printModeAttributes (self):
     self.printAttributesHelper('mode attributes', self.attributes)
@@ -4778,165 +4882,6 @@ def printRuleset (self, ruleset, tag):
 
     for rule in self.rulesets[0].rules:
         self.printRule(rule)
-#@+node:ekr.20060824111500.150: *5* Mode.doAttribute
-def doAttribute (self, name, val):
-
-    name = str(name.lower())
-    if name in self.boolAttrs:
-        val = True if val.lower() == 'true' else False
-    else:
-        val = str(val) # Do NOT lower this value!
-    if self.rule:
-        d = self.rule.attributes
-        d [name] = val
-    elif self.presentProperty:
-        d = self.presentProperty.get('attributes')
-        d [name] = val
-    elif self.inRules:
-        self.rulesetAttributes[name] = val
-    else:
-        self.attributes[name] = val
-#@+node:ekr.20060824111500.151: *5* Mode.doContent
-def doContent (self, elementName, content):
-
-    if not content:
-        return
-    name = str(elementName.lower())
-    if self.inRule('keywords'):
-        d = self.rule.keywordsDict
-        d [ content ] = name
-    elif self.rule:
-        d = self.rule.contents
-        s = d.get(name, '')
-        d [name] = s + g.toUnicode(content)
-        self.contents = d
-#@+node:ekr.20060824111500.152: *5* Mode.endElement
-def endElement (self, elementName):
-
-    name = elementName.lower()
-
-    if name == 'props':
-        self.inProps = True
-    if name == 'rules':
-        self.inRules = False
-        ruleset = Ruleset(self.rulesetAttributes, self.keywords, self.rulesetProperties, self.rules)
-        self.rulesets.append(ruleset)
-    if name == 'property':
-        bunch = self.presentProperty
-        if bunch:
-            if self.inRules:
-                self.rulesetProperties.append(bunch)
-            else:
-                self.modeProperties.append(bunch)
-        else:
-            self.error('end %s not matched by start %s' % (name, name))
-        self.presentProperty = None
-    if name in self.ruleElements:
-        if self.inRule(name):
-            self.rules.append(self.rule)
-            self.rule = None
-        else:
-            self.error('end %s not matched by start %s' % (name, name))
-#@+node:ekr.20060824111500.153: *5* Mode.error
-def error (self, message):
-    self.contentHandler.error(message)
-#@+node:ekr.20060824111500.154: *5* Mode:getters
-def getAttributes (self):
-    return self.attributes
-
-def getAttributesForRuleset (self, ruleset):
-    bunch = ruleset
-    return bunch.attributes
-
-def getFileName (self):
-    return self.fileName
-
-def getKeywords (self, n, ruleset):
-    bunch = ruleset
-    keywords = bunch.keywords
-    if keywords:
-        return keywords.get('keyword%d'%(n), [])
-    return []
-
-def getLanguage (self):
-    path, name = g.os_path_split(self.fileName)
-    language, ext = g.os_path_splitext(name)
-    return language
-
-def getPropertiesForMode (self):
-    return self.props
-
-def getPropertiesForRuleset (self, name=''):
-    bunch = self.getRuleset(name)
-    if bunch:
-        return bunch.properties
-    else:
-        return []
-
-def getRuleset(self, name=''):
-    if not name:
-        return self.rulesets[0] # Return the main ruleset.
-    for ruleset in self.rulesets:
-        if ruleset.name.lower()==name.lower():
-            return ruleset
-    else: return None
-
-def getRulesets(self):
-    return self.rulesets
-
-def getRulesForRuleset (self, name=''):
-    bunch = self.getRuleset(name)
-    if bunch:
-        return bunch.rules
-    else:
-        return []
-#@+node:ekr.20060824111500.155: *5* Mode.inRule
-def inRule (self, elementName):
-
-    return self.rule and self.rule.name == elementName
-#@+node:ekr.20060824111500.156: *5* Mode.startElement
-def startElement (self, elementName):
-
-    name = elementName.lower()
-
-    if name == 'props':
-        self.inProps = True
-    if name == 'rules':
-        self.inRules = True
-        self.attributes=[]
-        self.keywords=[]
-        self.rulesetProperties=[]
-        self.rules=[]
-    if name == 'property':
-        if self.inProps:
-            self.presentProperty = g.bunch(name=name, attributes={})
-        else:
-            self.error('property not in props element')
-    if name in self.ruleElements:
-        if self.inRules:
-            self.rule = Rule(name=name)
-            if name == 'keywords':
-                self.keywords = self.rule
-        else:
-            self.error('%s not in rules element' % name)
-#@+node:ekr.20060824111500.157: *4* class Ruleset
-class Ruleset:
-
-    @others
-#@+node:ekr.20060824111500.158: *5* ruleset.ctor & __str__
-def __init__ (self, attributes, keywords, properties, rules):
-    
-    self.name=munge(attributes.get('set', 'main'))
-    self.attributes=attributes.copy() # A dict.
-    self.properties=properties[:] # A list.
-    self.keywords=keywords # A bunch.
-    self.rules=rules[:] # A list.
-    self.defaultColor = self.attributes.get('default')
-
-def __str__ (self):
-    return '<ruleset %s>' % self.name
-
-__repr__ = __str__
 #@+node:ekr.20060824111500.159: *4* class Rule
 class Rule:
     """A class representing one xml rule."""
@@ -4988,6 +4933,22 @@ def getStrAttrib(self, name):
 def getSeq(self, kind):
     d = self.contents
     return d.get(kind, '')
+#@+node:ekr.20060824111500.157: *4* class Ruleset
+class Ruleset:
+
+    def __init__ (self, attributes, keywords, properties, rules):
+    
+        self.name = munge(attributes.get('set', 'main'))
+        self.attributes = attributes.copy()  # A dict.
+        self.properties = properties[:]  # A list.
+        self.keywords = keywords  # A bunch.
+        self.rules = rules[:]  # A list.
+        self.defaultColor = self.attributes.get('default')
+
+    def __str__ (self):
+        return '<ruleset %s>' % self.name
+
+    __repr__ = __str__
 #@+node:ekr.20060824111500.162: *4* class ContentHandler(xml.sax.saxutils.XMLGenerator)
 class ContentHandler (xml.sax.saxutils.XMLGenerator):
 
