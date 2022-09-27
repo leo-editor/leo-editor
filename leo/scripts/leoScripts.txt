@@ -4087,26 +4087,23 @@ Convert jEdit description file (an .xml file) to an equivalent .py file.
 @language python
 @tabwidth -4
 @pagewidth 80
-
+g.cls()
 << imports >>
-<< to do >>
-theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
-files = [g.os_path_abspath(g.os_path_join(theDir,s))
-    for s in ['ocaml.xml',]]
 
-opt_print_summary = False # True: print summary in doEndElement.
-opt_print_elements = False
+# Globals...
+trace = True
+files_list = ['ocaml.xml',]
+theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
+files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
+
 @others
+
 main()
 #@+node:ekr.20060824111500.109: *4* << imports >>
 import string
 import textwrap
 import xml.sax
 import xml.sax.saxutils
-#@+node:ekr.20060824111500.110: *4* << to do >>
-# AT_LINE_START, AT_WHITESPACE_END and AT_WORD_START attributes can also be used
-# on the BEGIN and END elements. Setting these attributes to the same value on
-# both elements has the same effect as setting them on the SPAN element.
 #@+node:ekr.20060824111500.113: *4* top-level
 #@+node:ekr.20160319080102.1: *5* cleanSaxInputString
 def cleanSaxInputString(s):
@@ -4124,7 +4121,7 @@ def cleanSaxInputString(s):
     transtable = bytes.maketrans(flatten, pad)
     return s.translate(transtable)
 #@+node:ekr.20060824111500.115: *5* parse_jEdit_file
-def parse_jEdit_file(inputFileName,language):
+def parse_jEdit_file(inputFileName, language):
 
     if not inputFileName:
         return None
@@ -4148,7 +4145,8 @@ def parse_jEdit_file(inputFileName,language):
                 # The actual feature name is
                 # "http://xml.org/sax/features/external-general-entities"
             parser.setFeature(xml.sax.handler.feature_external_ges,0)
-            handler = contentHandler(c,inputFileName,language)
+            ### handler = contentHandler(c, inputFileName, language)
+            handler = ContentHandler(inputFileName)
             parser.setContentHandler(handler)
             parser.parse(f)
                 # Works with Python 3.
@@ -4161,7 +4159,7 @@ def parse_jEdit_file(inputFileName,language):
         f.close()
         return mode
 #@+node:ekr.20060824111500.114: *5* convert
-def convert (c,inputFileName, outputFileName):
+def convert(inputFileName, outputFileName):
 
     junk, fn = g.os_path_split(inputFileName)
     language, junk = g.os_path_splitext(fn)
@@ -4190,13 +4188,13 @@ def main():
         else:
             path2 = path1 + '.py'
         try:
-            convert (c, path1, path2)
+            convert(path1, path2)
         except Exception:
             print('Exception creating', path2)
             g.es_exception()
     g.es_print('done')
-#@+node:ekr.20060824111500.117: *4* class modeClass
-class modeClass:
+#@+node:ekr.20060824111500.117: *4* class Mode
+class Mode:
 
     '''A class representing one jEdit language-description mode.
 
@@ -4204,12 +4202,12 @@ class modeClass:
 
     @others
 #@+node:ekr.20060824111500.118: *5*  mode.__init__
-def __init__ (self,contentHandler,fileName):
+def __init__ (self, contentHandler, fileName):
 
-    # g.trace('mode',fileName)
+    if trace:
+        print('mode:', fileName)
 
     self.contentHandler = contentHandler
-    self.c = contentHandler.c
     self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
     modeName, junk = g.os_path_splitext(self.fileName)
     self.fileModeName = modeName
@@ -4258,7 +4256,7 @@ def __init__ (self,contentHandler,fileName):
 #@+node:ekr.20060824111500.119: *5*  mode.__str__ & __repr__
 def __str__ (self):
 
-    return '<modeClass for %s>' % self.fileName
+    return '<Mode for %s>' % self.fileName
 
 __repr__ = __str__
 #@+node:ekr.20060824111500.120: *5*  Output...
@@ -4276,9 +4274,10 @@ def fullDelegate (self,delegate):
     else:
         return ''
 #@+node:ekr.20060824111500.121: *6* escapeString & quoteString
-def escapeString (self,s):
+def escapeString (self, s):
     '''Return string s enclosed in double quotes.'''
-    if not s: s = ''
+    if not s:
+        return '""'
     if isinstance(s, (list, tuple)):
         s = ''.join(s)
     s = g.toUnicode(s)
@@ -4287,11 +4286,11 @@ def escapeString (self,s):
 
 quoteString = escapeString
 #@+node:ekr.20060824111500.122: *6* put, putTripleString
-def put (self,s):
+def put (self, s):
 
     self.outputFile.write(s)
 
-def putTripleString(self,s):
+def putTripleString(self, s):
     
     return textwrap.dedent(s)
 
@@ -4329,7 +4328,7 @@ def putAttributes (self):
     self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('attributesDictDict',dd,escape=False)
 #@+node:ekr.20060824111500.124: *6* putDict & putDictOfLists
-def putDict (self,name,theDict,escape=True):
+def putDict (self, name, theDict, escape=True):
 
     esc = self.escapeString
     esc2 = self.escapeString if escape else lambda a: a
@@ -4342,7 +4341,7 @@ def putDict (self,name,theDict,escape=True):
         s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
 
-def putDictOfLists (self,name,theDict,strings=False):
+def putDictOfLists (self, name, theDict, strings=False):
 
     esc = self.escapeString
     keys = list(set(theDict.keys()))
@@ -4413,40 +4412,39 @@ def putKeywordsData (self):
     self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('keywordsDictDict',dd,escape=False)
 #@+node:ekr.20060824111500.127: *6* putList
-def putList (self,name,theList,escape=True,lineCount=0):
+def putList (self, name, theList, escape=True, lineCount=0):
 
     def comma(i):
         return ','
+
     def nl(i):
         return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+
     def tab(i,n):
         return '\t' if i > 0 and nl(i-1) != ' ' else ''
-    esc = g.choose(escape,self.escapeString,lambda a:a)
 
+    # esc = g.choose(escape,self.escapeString,lambda a:a)
+    esc = self.escapeString if escape else lambda a:a
     result = []
     n = len(theList)
     for i in range(n):
-        result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
+        result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
     vals = ''.join(result)
     self.put('%s = [%s]\n\n' % (name,vals))
 #@+node:ekr.20060824111500.128: *6* putModeProperties
 def putModeProperties (self,language):
 
     d = {}
-
-    self.put('# Properties for %s mode.\n' % (language))
-
+    ### self.put('# Properties for %s mode.\n' % (language))
+    self.put(f"# Properties for {language} mode.\n")
     for prop in self.modeProperties:
         d2 = prop.attributes
         name = d2.get('name')
         d [name] = d2.get('value')
-
     self.putDict('properties', d)
 #@+node:ekr.20060824111500.129: *6* putRule & rule creators
 def putRule (self, rule):
-
-    '''Call the rule creator for the given rule.'''
-
+    """Call the rule creator for the given rule."""
     d = {
         'eol_span':         self.putEolSpan,
         'eol_span_regexp':  self.putEolSpanRegexp,
@@ -4460,12 +4458,9 @@ def putRule (self, rule):
         'span_regexp':      self.putSpanRegexp,
         'terminate':        self.putTerminate,
     }
-
-    # Call the rule creator.
     f = d.get(rule.name,self.putBadRule)
     val = f (rule)
     self.handlerCount += 1
-
     return val
 #@+node:ekr.20060824111500.130: *7* putBadRule
 def putBadRule (self,rule):
@@ -4815,23 +4810,6 @@ def printRuleset (self,ruleset,tag):
 
     for rule in self.rulesets[0].rules:
         self.printRule(rule)
-#@+node:ekr.20060824111500.149: *6* printSummary
-def printSummary (self,printStats=True):
-
-    if printStats:
-        print('-' * 10, 'mode statistics')
-        print('elements',self.numberOfElements)
-        print('errors',self.numberOfErrors)
-        print('mode attributes',self.numberOfAttributes)
-        print('property attributes',self.numberOfPropertyAttributes)
-        print('rule attributes',self.numberOfRuleAttributes)
-
-    self.printModeAttributes()
-
-    for bunch in self.modeProperties:
-        self.printProperty(bunch)
-
-    self.printRuleset(self.rulesets[0],tag='main ruleset')
 #@+node:ekr.20060824111500.150: *5* doAttribute
 def doAttribute (self,name,val):
 
@@ -4883,10 +4861,8 @@ def endElement (self,elementName):
         self.inProps = True
     if name == 'rules':
         self.inRules = False
-        ruleset = rulesetClass(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
+        ruleset = Ruleset(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
         self.rulesets.append(ruleset)
-        #g.trace('rules...\n',g.listToString(self.rules))
-        #g.trace('ruleset attributes...\n',g.dictToString(self.rulesetAttributes))
     if name == 'property':
         bunch = self.presentProperty
         if bunch:
@@ -4983,42 +4959,42 @@ def startElement (self,elementName):
             self.error('property not in props element')
     if name in self.ruleElements:
         if self.inRules:
-            self.rule = ruleClass(name=name)
+            self.rule = Rule(name=name)
             if name == 'keywords':
                 self.keywords = self.rule
         else:
             self.error('%s not in rules element' % name)
-#@+node:ekr.20060824111500.157: *4* class rulesetClass
-class rulesetClass:
+#@+node:ekr.20060824111500.157: *4* class Ruleset
+class Ruleset:
 
     @others
-#@+node:ekr.20060824111500.158: *5* ctor & __str__
-def __init__ (self,attributes,keywords,properties,rules):
+#@+node:ekr.20060824111500.158: *5* ruleset.ctor & __str__
+def __init__ (self, attributes, keywords, properties, rules):
 
     self.name=munge(attributes.get('set','main'))
     self.attributes=attributes.copy() # A dict.
     self.properties=properties[:] # A list.
     self.keywords=keywords # A bunch.
     self.rules=rules[:] # A list.
-
-    # g.trace('ruleset',self.name or 'main')
-
     self.defaultColor = self.attributes.get('default')
+    if trace:
+        print('ruleset:', self.name or 'main')
 
 def __str__ (self):
-
     return '<ruleset %s>' % self.name
 
 __repr__ = __str__
-#@+node:ekr.20060824111500.159: *4* class ruleClass
-class ruleClass:
+#@+node:ekr.20060824111500.159: *4* class Rule
+class Rule:
 
     '''A class to represent one xml rule.'''
 
     @others
-#@+node:ekr.20060824111500.160: *5* ctor & __str__
-def __init__ (self,name):
+#@+node:ekr.20060824111500.160: *5* rule.ctor & __str__
+def __init__ (self, name):
 
+    if trace:
+        print('rule', name)
     self.attributes = {}
     self.contents = {}
     self.keywordsDict = {}
@@ -5043,27 +5019,27 @@ def getIntAttrib(self,name):
         try:
             val = int(val)
         except ValueError:
-            g.trace('bad int argument: %s = %s' % (name,val))
+            # g.trace('bad int argument: %s = %s' % (name,val))
+            g.trace(f"bad int argument: {name} = {val!r}")
             val = None
     return val
 
 def getSpan (self):
     d = self.contents
-    begin = d.get('begin','')
-    end   = d.get('end','')
-    return begin,end
+    begin = d.get('begin', '')
+    end   = d.get('end', '')
+    return begin, end
 
 def getStrAttrib(self,name):
     d = self.attributes
-    val = d.get(name,'')
+    val = d.get(name, '')
     return str(val)
 
 def getSeq(self,kind):
-    # g.trace(repr(self.contents))
     d = self.contents
-    return d.get(kind,'')
-#@+node:ekr.20060824111500.162: *4* class contentHandler (xml.sax.saxutils.XMLGenerator)
-class contentHandler (xml.sax.saxutils.XMLGenerator):
+    return d.get(kind, '')
+#@+node:ekr.20060824111500.162: *4* class ContentHandler(xml.sax.saxutils.XMLGenerator)
+class ContentHandler (xml.sax.saxutils.XMLGenerator):
 
     '''A sax content handler class that handles jEdit language-description files.
 
@@ -5071,53 +5047,17 @@ class contentHandler (xml.sax.saxutils.XMLGenerator):
 
     @others
 #@+node:ekr.20060824111500.163: *5*  __init__ & helpers
-def __init__ (self,c,inputFileName,language):
-
-    self.c = c
-    self.inputFileName = inputFileName
-    self.language = language
+def __init__ (self, inputFileName):
 
     # Init the base class.
     xml.sax.saxutils.XMLGenerator.__init__(self)
-
-    # Non-mode statistics.
-    self.numberOfAttributes = 0
-    self.numberOfElements = 0
+    self.inputFileName = inputFileName
 
     # Options...
-    self.ignoreWs = True # True: don't print contents with only ws.
+    self.ignoreWs = True  # True: don't print contents with only ws.
     self.newLineAfterStartElement = [
         'keywords','mode','props','property','rules','span','eol_span',
-        # 'seq',
     ]
-
-    # Printing options
-    if opt_print_elements:
-        self.printAllElements = True
-        self.printCharacters = False or self.printAllElements
-        self.printAttributes = False and not self.printAllElements
-        self.printElements = [
-            #'begin','end',
-            #'eol_span',
-            #'keyword1','keyword2','keyword3','keyword4',
-            #'mark_previous',
-            #'mode',
-            #'props',
-            #'property',
-            #'rules',
-            #'span',
-            #'seq',
-        ]
-
-        if self.printAllElements:
-            self.suppressContent = []
-        else:
-            self.suppressContent = ['keyword1','keyword2','keyword3','keyword4']
-    else:
-        self.printAllElements = False
-        self.printCharacters = False
-        self.printAttributes = False
-        self.printElements = []
 
     # Semantics: most of these should be mode ivars.
     self.elementStack = []
@@ -5126,20 +5066,18 @@ def __init__ (self,c,inputFileName,language):
     self.modes = [] # All modes defined here or by imports.
 #@+node:ekr.20060824111500.164: *5* helpers
 #@+node:ekr.20060824111500.165: *6* attrsToList
-def attrsToList (self,attrs):
-
-    '''Convert the attributes to a list of g.Bunches.
+def attrsToList (self, attrs):
+    """
+    Convert attrs to a list of g.Bunches.
 
     attrs: an Attributes item passed to startElement.
-
-    sep: the separator charater between attributes.'''
-
+    """
     return [
-        g.Bunch(name=name,val=attrs.getValue(name))
-        for name in attrs.getNames()
+        g.Bunch(name=name, val=attrs.getValue(name))
+            for name in attrs.getNames()
     ]
 #@+node:ekr.20060824111500.166: *6* attrsToString
-def attrsToString (self,attrs,sep='\n'):
+def attrsToString (self,attrs, sep='\n'):
 
     '''Convert the attributes to a string.
 
@@ -5148,46 +5086,41 @@ def attrsToString (self,attrs,sep='\n'):
     sep: the separator charater between attributes.'''
 
     result = [
-        '%s="%s"' % (bunch.name,bunch.val)
-        for bunch in self.attrsToList(attrs)
+        '%s="%s"' % (
+            bunch.name, bunch.val)
+                for bunch in self.attrsToList(attrs)
     ]
-
     return sep.join(result)
-#@+node:ekr.20060824111500.167: *6* clean
-def clean(self,s):
-
-    return g.toEncodedString(s,"ascii")
 #@+node:ekr.20060824111500.168: *6* error
 def error (self, message):
-
-    print()
-    print()
-    print('XML error: %s' % (message))
-    print()
-
+    print(f"\n\nXML error: {message}\n")
     self.errors += 1
 #@+node:ekr.20060824111500.169: *6* printStartElement
-def printStartElement(self,name,attrs):
+def printStartElement(self, name, attrs):
 
+    name_s = g.toEncodedString(name, "ascii").strip()
     if attrs.getLength() > 0:
-        print('<%s %s>' % (
-            self.clean(name).strip(),
-            self.attrsToString(attrs,sep=' '))) ## ,
+        attrs_s = self.attrsToString(attrs, sep=' ')
+        # print('<%s %s>' % (
+            # self.clean(name).strip(),
+            # self.attrsToString(attrs,sep=' ')))
+        print(f"<{name_s} {attrs_s}")
     else:
-        print('<%s>' % (self.clean(name).strip())) ## ,
-
+        # print('<%s>' % (self.clean(name).strip()))
+        print(f"<{name_s}>")
+        
     if name.lower() in self.newLineAfterStartElement:
-        print()
-#@+node:ekr.20060824111500.170: *6* printSummary
-def printSummary (self):
-
-    print('Summary...')
-    print('-' * 10, 'non- mode statistics')
-    print('modes',len(self.modes))
-    print('elements', self.numberOfElements)
+        print('')
 #@+node:ekr.20060824111500.171: *5* sax over-rides
 #@+node:ekr.20060824111500.172: *6*  Do nothing...
-#@+node:ekr.20060824111500.173: *7* other methods
+# Expected calls...
+def endDocument(self):
+    pass
+    
+def startDocument(self):
+    pass
+
+# Trace unexpected calls...
 def ignorableWhitespace(self):
     g.trace()
 
@@ -5202,97 +5135,55 @@ def startElementNS(self,name,qname,attrs):
 
 def endElementNS(self,name,qname):
     g.trace(name)
-#@+node:ekr.20060824111500.174: *7* endDocument
-def endDocument(self):
-
-    pass
-
-
-#@+node:ekr.20060824111500.175: *7* startDocument
-def startDocument(self):
-
-    pass
 #@+node:ekr.20060824111500.176: *6* characters
-def characters(self,content):
+def characters(self, content):
+    content = content.replace('\r', '')
+    if content.strip():
+        content = content.strip()
+    ### content = self.clean(content)
+    content = g.toEncodedString(content, "ascii")
 
-    # content = content.replace('\r','').strip()
-    content = content.replace('\r','')
-    if content.strip(): content = content.strip()
-    content = self.clean(content)
-
-    elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
-
-    if self.printAllElements:
-        print(content) ## ,
-    elif self.printCharacters and content and elementName not in self.suppressContent:
-        print('content:',elementName,repr(content))
-
+    # elementName = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
+    elementName = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
     if self.mode:
         self.mode.doContent(elementName,content)
     else:
         self.error('characters outside of mode')
-#@+node:ekr.20060824111500.177: *6* endElement
-def endElement(self,name):
-
+#@+node:ekr.20060824111500.177: *6* elements & helpers
+def endElement(self, name):
     self.doEndElement(name)
-
     name2 = self.elementStack.pop()
     assert name == name2
-#@+node:ekr.20060824111500.178: *6* startElement
-def startElement(self,name,attrs):
 
-    if self.mode:
-        self.mode.numberOfElements += 1
-    else:
-        self.numberOfElements += 1
-
+def startElement(self, name, attrs):
     self.elementStack.append(name)
-    self.doStartElement(name,attrs)
-#@+node:ekr.20060824111500.179: *5* doStartElement
-def doStartElement (self,elementName,attrs):
-
-    if self.printAllElements or elementName.lower() in self.printElements:
-        self.printStartElement(elementName,attrs)
+    self.doStartElement(name, attrs)
+#@+node:ekr.20060824111500.179: *7* doStartElement
+def doStartElement (self, elementName, attrs):
 
     elementName = elementName.lower()
-
     if elementName == 'mode':
         if self.mode:
             self.error('Multiple modes')
         else:
-            self.mode = modeClass(self,self.inputFileName)
+            self.mode = Mode(self, self.inputFileName)
     elif self.mode:
         self.mode.startElement(elementName)
         for bunch in self.attrsToList(attrs):
-            if self.printAttributes:
-                print('attr:',elementName,bunch.name,'=',bunch.val)
             self.mode.doAttribute(bunch.name,bunch.val)
     else:
         self.error('Start element appears outside of Mode:%s' % elementName)
         for bunch in self.attrsToList(attrs):
             self.error('Attribute appears outside of Mode:%s' % bunch.name)
-#@+node:ekr.20060824111500.180: *5* doEndElement
-def doEndElement (self,elementName):
-
-    if self.printAllElements or elementName.lower() in self.printElements:
-        print('</' + self.clean(elementName).strip() + '>')
-
-    if elementName.lower() == 'mode':
-        if opt_print_summary:
-            self.mode.printSummary()
-    elif self.mode:
+#@+node:ekr.20060824111500.180: *7* doEndElement
+def doEndElement (self, elementName):
+    if self.mode:
         self.mode.endElement(elementName)
     else:
         self.error('End element appears outside of Mode:%s' % elementName)
-        # for bunch in self.attrsToList(attrs):
-        #    self.error('Attribute appears outside of Mode:%s' %bunch.name)
 #@+node:ekr.20060824111500.181: *5* getMode
 def getMode (self):
-
-    if self.errors:
-        return None
-    else:
-        return self.mode
+    return None if self.errors else self.mode
 #@+node:ekr.20060824111500.1: *3* @ignore Colorizing test scripts
 #@+node:ekr.20060824111500.2: *4* @button colorize
 w = c.frame.body.bodyCtrl # comment

@@ -327,18 +327,46 @@
 <v t="ekr.20181019042544.1"><vh>script: regularize settings names</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d7100285806000000302e392e313671017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a711565735806000000302e392e323671167d7117580b0000005f5f626f6f6b6d61726b7371187d7119580700000069735f64757065711a4930300a7373752e"><vh>@file leoScripts.txt</vh></v>
 </v>
+<v t="ekr.20220927100819.1"><vh>--- no longer used</vh>
+<v t="ekr.20060824111500.167"><vh>clean (no longer used)</vh></v>
+<v t="ekr.20060824111500.170"><vh>printSummary</vh></v>
+<v t="ekr.20060824111500.149"><vh>printSummary</vh></v>
+</v>
+<v t="ekr.20060824111500.162"><vh>class ContentHandler(xml.sax.saxutils.XMLGenerator)</vh>
+<v t="ekr.20060824111500.163"><vh> __init__ &amp; helpers</vh></v>
+<v t="ekr.20060824111500.164"><vh>helpers</vh>
+<v t="ekr.20060824111500.165"><vh>attrsToList</vh></v>
+<v t="ekr.20060824111500.166"><vh>attrsToString</vh></v>
+<v t="ekr.20060824111500.168"><vh>error</vh></v>
+<v t="ekr.20060824111500.169"><vh>printStartElement</vh></v>
+</v>
+<v t="ekr.20060824111500.171"><vh>sax over-rides</vh>
+<v t="ekr.20060824111500.172"><vh> Do nothing...</vh></v>
+<v t="ekr.20060824111500.176"><vh>characters</vh></v>
+<v t="ekr.20060824111500.177"><vh>elements &amp; helpers</vh>
+<v t="ekr.20060824111500.179"><vh>doStartElement</vh></v>
+<v t="ekr.20060824111500.180"><vh>doEndElement</vh></v>
+</v>
+</v>
+<v t="ekr.20060824111500.181"><vh>getMode</vh></v>
+</v>
+<v t="ekr.20060824111500.115"><vh>parse_jEdit_file</vh></v>
+<v t="ekr.20220927093710.1"><vh>--- traces</vh>
+<v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
+<v t="ekr.20060824111500.158"><vh>ruleset.ctor &amp; __str__</vh></v>
+<v t="ekr.20060824111500.160"><vh>rule.ctor &amp; __str__</vh></v>
+</v>
 <v t="ekr.20060824111500.108"><vh>@button jEdit2Py</vh>
 <v t="ekr.20060824111500.109"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20060824111500.110"><vh>&lt;&lt; to do &gt;&gt;</vh></v>
 <v t="ekr.20060824111500.113"><vh>top-level</vh>
 <v t="ekr.20160319080102.1"><vh>cleanSaxInputString</vh></v>
-<v t="ekr.20060824111500.115"><vh>parse_jEdit_file</vh></v>
+<v t="ekr.20060824111500.115"></v>
 <v t="ekr.20060824111500.114"><vh>convert</vh></v>
 <v t="ekr.20060824111500.116"><vh>munge</vh></v>
 <v t="ekr.20160319081141.1"><vh>main</vh></v>
 </v>
-<v t="ekr.20060824111500.117"><vh>class modeClass</vh>
-<v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
+<v t="ekr.20060824111500.117"><vh>class Mode</vh>
+<v t="ekr.20060824111500.118"></v>
 <v t="ekr.20060824111500.119"><vh> mode.__str__ &amp; __repr__</vh></v>
 <v t="ekr.20060824111500.120"><vh> Output...</vh>
 <v t="ekr.20060827162343"><vh>fullDelegate</vh></v>
@@ -372,7 +400,6 @@
 <v t="ekr.20060824111500.146"><vh>printProperty</vh></v>
 <v t="ekr.20060824111500.147"><vh>printRule</vh></v>
 <v t="ekr.20060824111500.148"><vh>printRuleset</vh></v>
-<v t="ekr.20060824111500.149"><vh>printSummary</vh></v>
 </v>
 <v t="ekr.20060824111500.150"><vh>doAttribute</vh></v>
 <v t="ekr.20060824111500.151"><vh>doContent</vh></v>
@@ -382,39 +409,17 @@
 <v t="ekr.20060824111500.155"><vh>inRule</vh></v>
 <v t="ekr.20060824111500.156"><vh>startElement</vh></v>
 </v>
-<v t="ekr.20060824111500.157"><vh>class rulesetClass</vh>
-<v t="ekr.20060824111500.158"><vh>ctor &amp; __str__</vh></v>
+<v t="ekr.20060824111500.157"><vh>class Ruleset</vh>
+<v t="ekr.20060824111500.158"></v>
 </v>
-<v t="ekr.20060824111500.159"><vh>class ruleClass</vh>
-<v t="ekr.20060824111500.160"><vh>ctor &amp; __str__</vh></v>
+<v t="ekr.20060824111500.159"><vh>class Rule</vh>
+<v t="ekr.20060824111500.160"></v>
 <v t="ekr.20060824111500.161"><vh>rule.getters</vh></v>
 </v>
-<v t="ekr.20060824111500.162"><vh>class contentHandler (xml.sax.saxutils.XMLGenerator)</vh>
-<v t="ekr.20060824111500.163"><vh> __init__ &amp; helpers</vh></v>
-<v t="ekr.20060824111500.164"><vh>helpers</vh>
-<v t="ekr.20060824111500.165"><vh>attrsToList</vh></v>
-<v t="ekr.20060824111500.166"><vh>attrsToString</vh></v>
-<v t="ekr.20060824111500.167"><vh>clean</vh></v>
-<v t="ekr.20060824111500.168"><vh>error</vh></v>
-<v t="ekr.20060824111500.169"><vh>printStartElement</vh></v>
-<v t="ekr.20060824111500.170"><vh>printSummary</vh></v>
+<v t="ekr.20060824111500.162"></v>
 </v>
-<v t="ekr.20060824111500.171"><vh>sax over-rides</vh>
-<v t="ekr.20060824111500.172"><vh> Do nothing...</vh>
-<v t="ekr.20060824111500.173"><vh>other methods</vh></v>
-<v t="ekr.20060824111500.174"><vh>endDocument</vh></v>
-<v t="ekr.20060824111500.175"><vh>startDocument</vh></v>
-</v>
-<v t="ekr.20060824111500.176"><vh>characters</vh></v>
-<v t="ekr.20060824111500.177"><vh>endElement</vh></v>
-<v t="ekr.20060824111500.178"><vh>startElement</vh></v>
-</v>
-<v t="ekr.20060824111500.179"><vh>doStartElement</vh></v>
-<v t="ekr.20060824111500.180"><vh>doEndElement</vh></v>
-<v t="ekr.20060824111500.181"><vh>getMode</vh></v>
-</v>
-</v>
-<v t="ekr.20060824111500.115"></v>
+<v t="ekr.20060824111500.117"></v>
+<v t="ekr.20060824111500.162"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20060824111500.108">"""
@@ -424,16 +429,17 @@ Convert jEdit description file (an .xml file) to an equivalent .py file.
 @language python
 @tabwidth -4
 @pagewidth 80
-
+g.cls()
 &lt;&lt; imports &gt;&gt;
-&lt;&lt; to do &gt;&gt;
-theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
-files = [g.os_path_abspath(g.os_path_join(theDir,s))
-    for s in ['ocaml.xml',]]
 
-opt_print_summary = False # True: print summary in doEndElement.
-opt_print_elements = False
+# Globals...
+trace = True
+files_list = ['ocaml.xml',]
+theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
+files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
+
 @others
+
 main()
 </t>
 <t tx="ekr.20060824111500.109">import string
@@ -441,12 +447,8 @@ import textwrap
 import xml.sax
 import xml.sax.saxutils
 </t>
-<t tx="ekr.20060824111500.110"># AT_LINE_START, AT_WHITESPACE_END and AT_WORD_START attributes can also be used
-# on the BEGIN and END elements. Setting these attributes to the same value on
-# both elements has the same effect as setting them on the SPAN element.
-</t>
 <t tx="ekr.20060824111500.113"></t>
-<t tx="ekr.20060824111500.114">def convert (c,inputFileName, outputFileName):
+<t tx="ekr.20060824111500.114">def convert(inputFileName, outputFileName):
 
     junk, fn = g.os_path_split(inputFileName)
     language, junk = g.os_path_splitext(fn)
@@ -461,7 +463,7 @@ import xml.sax.saxutils
         except IOError:
             g.es_print('can not create', outputFileName)
 </t>
-<t tx="ekr.20060824111500.115">def parse_jEdit_file(inputFileName,language):
+<t tx="ekr.20060824111500.115">def parse_jEdit_file(inputFileName, language):
 
     if not inputFileName:
         return None
@@ -485,7 +487,8 @@ import xml.sax.saxutils
                 # The actual feature name is
                 # "http://xml.org/sax/features/external-general-entities"
             parser.setFeature(xml.sax.handler.feature_external_ges,0)
-            handler = contentHandler(c,inputFileName,language)
+            ### handler = contentHandler(c, inputFileName, language)
+            handler = ContentHandler(inputFileName)
             parser.setContentHandler(handler)
             parser.parse(f)
                 # Works with Python 3.
@@ -505,7 +508,7 @@ import xml.sax.saxutils
     valid = string.ascii_letters + string.digits + '_'
     return ''.join([ch.lower() if ch in valid else '_' for ch in s])
 </t>
-<t tx="ekr.20060824111500.117">class modeClass:
+<t tx="ekr.20060824111500.117">class Mode:
 
     '''A class representing one jEdit language-description mode.
 
@@ -513,12 +516,12 @@ import xml.sax.saxutils
 
     @others
 </t>
-<t tx="ekr.20060824111500.118">def __init__ (self,contentHandler,fileName):
+<t tx="ekr.20060824111500.118">def __init__ (self, contentHandler, fileName):
 
-    # g.trace('mode',fileName)
+    if trace:
+        print('mode:', fileName)
 
     self.contentHandler = contentHandler
-    self.c = contentHandler.c
     self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
     modeName, junk = g.os_path_splitext(self.fileName)
     self.fileModeName = modeName
@@ -567,15 +570,16 @@ import xml.sax.saxutils
 </t>
 <t tx="ekr.20060824111500.119">def __str__ (self):
 
-    return '&lt;modeClass for %s&gt;' % self.fileName
+    return '&lt;Mode for %s&gt;' % self.fileName
 
 __repr__ = __str__
 </t>
 <t tx="ekr.20060824111500.120"># Similar to printing, but generates the output file.
 </t>
-<t tx="ekr.20060824111500.121">def escapeString (self,s):
+<t tx="ekr.20060824111500.121">def escapeString (self, s):
     '''Return string s enclosed in double quotes.'''
-    if not s: s = ''
+    if not s:
+        return '""'
     if isinstance(s, (list, tuple)):
         s = ''.join(s)
     s = g.toUnicode(s)
@@ -584,11 +588,11 @@ __repr__ = __str__
 
 quoteString = escapeString
 </t>
-<t tx="ekr.20060824111500.122">def put (self,s):
+<t tx="ekr.20060824111500.122">def put (self, s):
 
     self.outputFile.write(s)
 
-def putTripleString(self,s):
+def putTripleString(self, s):
     
     return textwrap.dedent(s)
 
@@ -626,7 +630,7 @@ def putTripleString(self,s):
     self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('attributesDictDict',dd,escape=False)
 </t>
-<t tx="ekr.20060824111500.124">def putDict (self,name,theDict,escape=True):
+<t tx="ekr.20060824111500.124">def putDict (self, name, theDict, escape=True):
 
     esc = self.escapeString
     esc2 = self.escapeString if escape else lambda a: a
@@ -639,7 +643,7 @@ def putTripleString(self,s):
         s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
 
-def putDictOfLists (self,name,theDict,strings=False):
+def putDictOfLists (self, name, theDict, strings=False):
 
     esc = self.escapeString
     keys = list(set(theDict.keys()))
@@ -710,40 +714,39 @@ def putDictOfLists (self,name,theDict,strings=False):
     self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('keywordsDictDict',dd,escape=False)
 </t>
-<t tx="ekr.20060824111500.127">def putList (self,name,theList,escape=True,lineCount=0):
+<t tx="ekr.20060824111500.127">def putList (self, name, theList, escape=True, lineCount=0):
 
     def comma(i):
         return ','
+
     def nl(i):
         return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+
     def tab(i,n):
         return '\t' if i &gt; 0 and nl(i-1) != ' ' else ''
-    esc = g.choose(escape,self.escapeString,lambda a:a)
 
+    # esc = g.choose(escape,self.escapeString,lambda a:a)
+    esc = self.escapeString if escape else lambda a:a
     result = []
     n = len(theList)
     for i in range(n):
-        result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
+        result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
     vals = ''.join(result)
     self.put('%s = [%s]\n\n' % (name,vals))
 </t>
 <t tx="ekr.20060824111500.128">def putModeProperties (self,language):
 
     d = {}
-
-    self.put('# Properties for %s mode.\n' % (language))
-
+    ### self.put('# Properties for %s mode.\n' % (language))
+    self.put(f"# Properties for {language} mode.\n")
     for prop in self.modeProperties:
         d2 = prop.attributes
         name = d2.get('name')
         d [name] = d2.get('value')
-
     self.putDict('properties', d)
 </t>
 <t tx="ekr.20060824111500.129">def putRule (self, rule):
-
-    '''Call the rule creator for the given rule.'''
-
+    """Call the rule creator for the given rule."""
     d = {
         'eol_span':         self.putEolSpan,
         'eol_span_regexp':  self.putEolSpanRegexp,
@@ -757,12 +760,9 @@ def putDictOfLists (self,name,theDict,strings=False):
         'span_regexp':      self.putSpanRegexp,
         'terminate':        self.putTerminate,
     }
-
-    # Call the rule creator.
     f = d.get(rule.name,self.putBadRule)
     val = f (rule)
     self.handlerCount += 1
-
     return val
 </t>
 <t tx="ekr.20060824111500.130">def putBadRule (self,rule):
@@ -1180,10 +1180,8 @@ def printAttributesHelper (self,kind,attrs):
         self.inProps = True
     if name == 'rules':
         self.inRules = False
-        ruleset = rulesetClass(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
+        ruleset = Ruleset(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
         self.rulesets.append(ruleset)
-        #g.trace('rules...\n',g.listToString(self.rules))
-        #g.trace('ruleset attributes...\n',g.dictToString(self.rulesetAttributes))
     if name == 'property':
         bunch = self.presentProperty
         if bunch:
@@ -1280,42 +1278,42 @@ def getRulesForRuleset (self,name=''):
             self.error('property not in props element')
     if name in self.ruleElements:
         if self.inRules:
-            self.rule = ruleClass(name=name)
+            self.rule = Rule(name=name)
             if name == 'keywords':
                 self.keywords = self.rule
         else:
             self.error('%s not in rules element' % name)
 </t>
-<t tx="ekr.20060824111500.157">class rulesetClass:
+<t tx="ekr.20060824111500.157">class Ruleset:
 
     @others
 </t>
-<t tx="ekr.20060824111500.158">def __init__ (self,attributes,keywords,properties,rules):
+<t tx="ekr.20060824111500.158">def __init__ (self, attributes, keywords, properties, rules):
 
     self.name=munge(attributes.get('set','main'))
     self.attributes=attributes.copy() # A dict.
     self.properties=properties[:] # A list.
     self.keywords=keywords # A bunch.
     self.rules=rules[:] # A list.
-
-    # g.trace('ruleset',self.name or 'main')
-
     self.defaultColor = self.attributes.get('default')
+    if trace:
+        print('ruleset:', self.name or 'main')
 
 def __str__ (self):
-
     return '&lt;ruleset %s&gt;' % self.name
 
 __repr__ = __str__
 </t>
-<t tx="ekr.20060824111500.159">class ruleClass:
+<t tx="ekr.20060824111500.159">class Rule:
 
     '''A class to represent one xml rule.'''
 
     @others
 </t>
-<t tx="ekr.20060824111500.160">def __init__ (self,name):
+<t tx="ekr.20060824111500.160">def __init__ (self, name):
 
+    if trace:
+        print('rule', name)
     self.attributes = {}
     self.contents = {}
     self.keywordsDict = {}
@@ -1340,27 +1338,27 @@ def getIntAttrib(self,name):
         try:
             val = int(val)
         except ValueError:
-            g.trace('bad int argument: %s = %s' % (name,val))
+            # g.trace('bad int argument: %s = %s' % (name,val))
+            g.trace(f"bad int argument: {name} = {val!r}")
             val = None
     return val
 
 def getSpan (self):
     d = self.contents
-    begin = d.get('begin','')
-    end   = d.get('end','')
-    return begin,end
+    begin = d.get('begin', '')
+    end   = d.get('end', '')
+    return begin, end
 
 def getStrAttrib(self,name):
     d = self.attributes
-    val = d.get(name,'')
+    val = d.get(name, '')
     return str(val)
 
 def getSeq(self,kind):
-    # g.trace(repr(self.contents))
     d = self.contents
-    return d.get(kind,'')
+    return d.get(kind, '')
 </t>
-<t tx="ekr.20060824111500.162">class contentHandler (xml.sax.saxutils.XMLGenerator):
+<t tx="ekr.20060824111500.162">class ContentHandler (xml.sax.saxutils.XMLGenerator):
 
     '''A sax content handler class that handles jEdit language-description files.
 
@@ -1368,53 +1366,17 @@ def getSeq(self,kind):
 
     @others
 </t>
-<t tx="ekr.20060824111500.163">def __init__ (self,c,inputFileName,language):
-
-    self.c = c
-    self.inputFileName = inputFileName
-    self.language = language
+<t tx="ekr.20060824111500.163">def __init__ (self, inputFileName):
 
     # Init the base class.
     xml.sax.saxutils.XMLGenerator.__init__(self)
-
-    # Non-mode statistics.
-    self.numberOfAttributes = 0
-    self.numberOfElements = 0
+    self.inputFileName = inputFileName
 
     # Options...
-    self.ignoreWs = True # True: don't print contents with only ws.
+    self.ignoreWs = True  # True: don't print contents with only ws.
     self.newLineAfterStartElement = [
         'keywords','mode','props','property','rules','span','eol_span',
-        # 'seq',
     ]
-
-    # Printing options
-    if opt_print_elements:
-        self.printAllElements = True
-        self.printCharacters = False or self.printAllElements
-        self.printAttributes = False and not self.printAllElements
-        self.printElements = [
-            #'begin','end',
-            #'eol_span',
-            #'keyword1','keyword2','keyword3','keyword4',
-            #'mark_previous',
-            #'mode',
-            #'props',
-            #'property',
-            #'rules',
-            #'span',
-            #'seq',
-        ]
-
-        if self.printAllElements:
-            self.suppressContent = []
-        else:
-            self.suppressContent = ['keyword1','keyword2','keyword3','keyword4']
-    else:
-        self.printAllElements = False
-        self.printCharacters = False
-        self.printAttributes = False
-        self.printElements = []
 
     # Semantics: most of these should be mode ivars.
     self.elementStack = []
@@ -1423,20 +1385,18 @@ def getSeq(self,kind):
     self.modes = [] # All modes defined here or by imports.
 </t>
 <t tx="ekr.20060824111500.164"></t>
-<t tx="ekr.20060824111500.165">def attrsToList (self,attrs):
-
-    '''Convert the attributes to a list of g.Bunches.
+<t tx="ekr.20060824111500.165">def attrsToList (self, attrs):
+    """
+    Convert attrs to a list of g.Bunches.
 
     attrs: an Attributes item passed to startElement.
-
-    sep: the separator charater between attributes.'''
-
+    """
     return [
-        g.Bunch(name=name,val=attrs.getValue(name))
-        for name in attrs.getNames()
+        g.Bunch(name=name, val=attrs.getValue(name))
+            for name in attrs.getNames()
     ]
 </t>
-<t tx="ekr.20060824111500.166">def attrsToString (self,attrs,sep='\n'):
+<t tx="ekr.20060824111500.166">def attrsToString (self,attrs, sep='\n'):
 
     '''Convert the attributes to a string.
 
@@ -1445,36 +1405,35 @@ def getSeq(self,kind):
     sep: the separator charater between attributes.'''
 
     result = [
-        '%s="%s"' % (bunch.name,bunch.val)
-        for bunch in self.attrsToList(attrs)
+        '%s="%s"' % (
+            bunch.name, bunch.val)
+                for bunch in self.attrsToList(attrs)
     ]
-
     return sep.join(result)
 </t>
 <t tx="ekr.20060824111500.167">def clean(self,s):
 
-    return g.toEncodedString(s,"ascii")
+    return g.toEncodedString(s, "ascii")
 </t>
 <t tx="ekr.20060824111500.168">def error (self, message):
-
-    print()
-    print()
-    print('XML error: %s' % (message))
-    print()
-
+    print(f"\n\nXML error: {message}\n")
     self.errors += 1
 </t>
-<t tx="ekr.20060824111500.169">def printStartElement(self,name,attrs):
+<t tx="ekr.20060824111500.169">def printStartElement(self, name, attrs):
 
+    name_s = g.toEncodedString(name, "ascii").strip()
     if attrs.getLength() &gt; 0:
-        print('&lt;%s %s&gt;' % (
-            self.clean(name).strip(),
-            self.attrsToString(attrs,sep=' '))) ## ,
+        attrs_s = self.attrsToString(attrs, sep=' ')
+        # print('&lt;%s %s&gt;' % (
+            # self.clean(name).strip(),
+            # self.attrsToString(attrs,sep=' ')))
+        print(f"&lt;{name_s} {attrs_s}")
     else:
-        print('&lt;%s&gt;' % (self.clean(name).strip())) ## ,
-
+        # print('&lt;%s&gt;' % (self.clean(name).strip()))
+        print(f"&lt;{name_s}&gt;")
+        
     if name.lower() in self.newLineAfterStartElement:
-        print()
+        print('')
 </t>
 <t tx="ekr.20060824111500.170">def printSummary (self):
 
@@ -1484,8 +1443,15 @@ def getSeq(self,kind):
     print('elements', self.numberOfElements)
 </t>
 <t tx="ekr.20060824111500.171"></t>
-<t tx="ekr.20060824111500.172"></t>
-<t tx="ekr.20060824111500.173">def ignorableWhitespace(self):
+<t tx="ekr.20060824111500.172"># Expected calls...
+def endDocument(self):
+    pass
+    
+def startDocument(self):
+    pass
+
+# Trace unexpected calls...
+def ignorableWhitespace(self):
     g.trace()
 
 def processingInstruction (self,target,data):
@@ -1500,96 +1466,53 @@ def startElementNS(self,name,qname,attrs):
 def endElementNS(self,name,qname):
     g.trace(name)
 </t>
-<t tx="ekr.20060824111500.174">def endDocument(self):
+<t tx="ekr.20060824111500.176">def characters(self, content):
+    content = content.replace('\r', '')
+    if content.strip():
+        content = content.strip()
+    ### content = self.clean(content)
+    content = g.toEncodedString(content, "ascii")
 
-    pass
-
-
-</t>
-<t tx="ekr.20060824111500.175">def startDocument(self):
-
-    pass
-</t>
-<t tx="ekr.20060824111500.176">def characters(self,content):
-
-    # content = content.replace('\r','').strip()
-    content = content.replace('\r','')
-    if content.strip(): content = content.strip()
-    content = self.clean(content)
-
-    elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
-
-    if self.printAllElements:
-        print(content) ## ,
-    elif self.printCharacters and content and elementName not in self.suppressContent:
-        print('content:',elementName,repr(content))
-
+    # elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
+    elementName = self.elementStack[-1].lower() if self.elementStack else '&lt;no element name&gt;'
     if self.mode:
         self.mode.doContent(elementName,content)
     else:
         self.error('characters outside of mode')
 </t>
-<t tx="ekr.20060824111500.177">def endElement(self,name):
-
+<t tx="ekr.20060824111500.177">def endElement(self, name):
     self.doEndElement(name)
-
     name2 = self.elementStack.pop()
     assert name == name2
-</t>
-<t tx="ekr.20060824111500.178">def startElement(self,name,attrs):
 
-    if self.mode:
-        self.mode.numberOfElements += 1
-    else:
-        self.numberOfElements += 1
-
+def startElement(self, name, attrs):
     self.elementStack.append(name)
-    self.doStartElement(name,attrs)
+    self.doStartElement(name, attrs)
 </t>
-<t tx="ekr.20060824111500.179">def doStartElement (self,elementName,attrs):
-
-    if self.printAllElements or elementName.lower() in self.printElements:
-        self.printStartElement(elementName,attrs)
+<t tx="ekr.20060824111500.179">def doStartElement (self, elementName, attrs):
 
     elementName = elementName.lower()
-
     if elementName == 'mode':
         if self.mode:
             self.error('Multiple modes')
         else:
-            self.mode = modeClass(self,self.inputFileName)
+            self.mode = Mode(self, self.inputFileName)
     elif self.mode:
         self.mode.startElement(elementName)
         for bunch in self.attrsToList(attrs):
-            if self.printAttributes:
-                print('attr:',elementName,bunch.name,'=',bunch.val)
             self.mode.doAttribute(bunch.name,bunch.val)
     else:
         self.error('Start element appears outside of Mode:%s' % elementName)
         for bunch in self.attrsToList(attrs):
             self.error('Attribute appears outside of Mode:%s' % bunch.name)
 </t>
-<t tx="ekr.20060824111500.180">def doEndElement (self,elementName):
-
-    if self.printAllElements or elementName.lower() in self.printElements:
-        print('&lt;/' + self.clean(elementName).strip() + '&gt;')
-
-    if elementName.lower() == 'mode':
-        if opt_print_summary:
-            self.mode.printSummary()
-    elif self.mode:
+<t tx="ekr.20060824111500.180">def doEndElement (self, elementName):
+    if self.mode:
         self.mode.endElement(elementName)
     else:
-        self.error('End element appears outside of Mode:%s' % elementName)
-        # for bunch in self.attrsToList(attrs):
-        #    self.error('Attribute appears outside of Mode:%s' %bunch.name)
-</t>
+        self.error('End element appears outside of Mode:%s' % elementName)</t>
 <t tx="ekr.20060824111500.181">def getMode (self):
-
-    if self.errors:
-        return None
-    else:
-        return self.mode
+    return None if self.errors else self.mode
 </t>
 <t tx="ekr.20060827162343">def fullDelegate (self,delegate):
 
@@ -3480,7 +3403,7 @@ def format_arguments(self, node):
         else:
             path2 = path1 + '.py'
         try:
-            convert (c, path1, path2)
+            convert(path1, path2)
         except Exception:
             print('Exception creating', path2)
             g.es_exception()
@@ -5243,6 +5166,8 @@ main()
     checkSets()
     g.es('Check Bindings done')
 </t>
+<t tx="ekr.20220927093710.1"># Found 3 marked nodes</t>
+<t tx="ekr.20220927100819.1"></t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>
