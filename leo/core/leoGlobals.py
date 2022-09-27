@@ -326,7 +326,6 @@ g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
 # g_is_directive_pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
 g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
-g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 
 # #2267: Support for @section-delims.
@@ -3066,23 +3065,14 @@ def findReference(name: str, root: Position) -> Optional[Position]:
             return p.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
-# The caller passes [root_node] or None as the second arg.
-# This allows us to distinguish between None and [None].
-
-def get_directives_dict(p: Position, root: List[Position]=None) -> Dict[str, str]:
+def get_directives_dict(p: Position) -> Dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
 
     Returns a dict containing the stripped remainder of the line
-    following the first occurrence of each recognized directive
+    following the first occurrence of each recognized directive.
     """
-    if root:
-        root_node = root[0]
     d = {}
-    #
-    # #1688:    legacy: Always compute the pattern.
-    #           g.directives_pat is updated whenever loading a plugin.
-    #
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
         anIter = g.directives_pat.finditer(s)
@@ -3094,19 +3084,10 @@ def get_directives_dict(p: Position, root: List[Position]=None) -> Dict[str, str
             j = i + len(word)
             if j < len(s) and s[j] not in ' \t\n':
                 # Not a valid directive: just ignore it.
-                # A unit test tests that @path:any is invalid.
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
             d[word] = val
-    if root:
-        anIter = g_noweb_root.finditer(p.b)
-        for m in anIter:
-            if root_node:
-                d["root"] = 0  # value not important
-            else:
-                g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
-            break
     return d
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p: Position) -> List[Dict]:
@@ -3118,8 +3099,7 @@ def get_directives_dict_list(p: Position) -> List[Dict]:
     p1 = p.copy()
     for p in p1.self_and_parents(copy=False):
         # No copy necessary: g.get_directives_dict does not change p.
-        root = None if p.hasParent() else [p]
-        result.append(g.get_directives_dict(p, root=root))
+        result.append(g.get_directives_dict(p))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
