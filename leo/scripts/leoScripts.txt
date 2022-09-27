@@ -4079,7 +4079,7 @@ start dist
 popd
 @set prompt=%_p%
 #@+node:ekr.20060824111500: ** jEdit2Py
-#@+node:ekr.20060824111500.108: *3* @button jEdit2Py
+#@+node:ekr.20060824111500.108: *3* @@button jEdit2Py
 """
 Convert jEdit description file (an .xml file) to an equivalent .py file.
 """
