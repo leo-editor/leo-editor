@@ -4079,7 +4079,7 @@ start dist
 popd
 @set prompt=%_p%
 #@+node:ekr.20060824111500: ** jEdit2Py
-#@+node:ekr.20060824111500.108: *3* @@button jEdit2Py
+#@+node:ekr.20060824111500.108: *3* @button jEdit2Py
 """
 Convert jEdit description file (an .xml file) to an equivalent .py file.
 """
@@ -4187,6 +4187,8 @@ def main():
     for path1 in files:
         if path1.endswith('.xml'):
             path2 = path1[:-4] + '.py'
+        else:
+            path2 = path1 + '.py'
         try:
             convert (c, path1, path2)
         except Exception:
