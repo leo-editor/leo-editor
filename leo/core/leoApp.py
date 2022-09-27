@@ -594,7 +594,7 @@ class LeoApp:
             "objective_c"        : "// /* */",
             "objectrexx"         : "-- /* */",
             "occam"              : "--",
-            "ocaml"              : "--",
+            "ocaml"              : "(* *)",
             "omnimark"           : ";",
             "pandoc"             : "<!-- -->",
             "pascal"             : "// { }",
