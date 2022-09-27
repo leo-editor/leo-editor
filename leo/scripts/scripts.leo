@@ -377,7 +377,6 @@
 <v t="ekr.20060824111500.124"><vh>Mode.putDict &amp; putDictOfLists</vh></v>
 <v t="ekr.20060824111500.125"><vh>Mode.putImportDict</vh></v>
 <v t="ekr.20060824111500.126"><vh>Mode.putKeywordsData</vh></v>
-<v t="ekr.20060824111500.127"><vh>Mode.putList</vh></v>
 <v t="ekr.20060824111500.128"><vh>Mode.putModeProperties</vh></v>
 <v t="ekr.20060824111500.129"><vh>Mode.putRule &amp; rule creators</vh>
 <v t="ekr.20060824111500.130"><vh>Mode.putBadRule</vh></v>
@@ -396,6 +395,7 @@
 <v t="ekr.20060824111500.142"><vh>Mode.putRules</vh></v>
 <v t="ekr.20060824111500.143"><vh>Mode.write</vh></v>
 </v>
+<v t="ekr.20060824111500.127"><vh>Mode.putList</vh></v>
 <v t="ekr.20060824111500.144"><vh> Mode:Printing...</vh>
 <v t="ekr.20060824111500.145"><vh>Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh></v>
 <v t="ekr.20060824111500.146"><vh>Mode.printProperty</vh></v>
@@ -419,175 +419,201 @@
 <v t="ekr.20060824111500.162"></v>
 </v>
 <v t="ekr.20060824111500.117"></v>
-<v t="ekr.20220927112605.1"><vh>git diff HEAD </vh>
-<v t="ekr.20220927112605.3"><vh>diff: leo/scripts/leoScripts.txt</vh>
-<v t="ekr.20220927112605.8"><vh>diff: Deleted</vh>
-<v t="ekr.20220927112605.9"><vh>rule.ctor &amp; __str__</vh></v>
+<v t="ekr.20220927115135.1"><vh>git diff HEAD </vh>
+<v t="ekr.20220927115135.2"><vh>diff: leo/modes/ocaml.py</vh></v>
+<v t="ekr.20220927115135.3"><vh>diff: leo/scripts/leoScripts.txt</vh>
+<v t="ekr.20220927115135.8"><vh>diff: Changed</vh>
+<v t="ekr.20220927115135.9"><vh>diff: @button jEdit2Py</vh>
+<v t="ekr.20220927115135.10"><vh>Old:@button jEdit2Py</vh></v>
+<v t="ekr.20060824111500.108"></v>
 </v>
-<v t="ekr.20220927112605.10"><vh>diff: Changed</vh>
-<v t="ekr.20220927112605.11"><vh>diff:  Mode.__init__</vh>
-<v t="ekr.20220927112605.12"><vh>Old: mode.__init__</vh></v>
+<v t="ekr.20220927115135.11"><vh>diff: parse_jEdit_file</vh>
+<v t="ekr.20220927115135.12"><vh>Old:parse_jEdit_file</vh></v>
+<v t="ekr.20060824111500.115"></v>
+</v>
+<v t="ekr.20220927115135.13"><vh>diff: convert</vh>
+<v t="ekr.20220927115135.14"><vh>Old:convert</vh></v>
+<v t="ekr.20060824111500.114"></v>
+</v>
+<v t="ekr.20220927115135.15"><vh>diff: class Mode</vh>
+<v t="ekr.20220927115135.16"><vh>Old:class Mode</vh></v>
+<v t="ekr.20060824111500.117"></v>
+</v>
+<v t="ekr.20220927115135.17"><vh>diff:  Mode.__init__</vh>
+<v t="ekr.20220927115135.18"><vh>Old: Mode.__init__</vh></v>
 <v t="ekr.20060824111500.118"></v>
 </v>
-<v t="ekr.20220927112605.13"><vh>diff:  Mode.__str__ &amp; __repr__</vh>
-<v t="ekr.20220927112605.14"><vh>Old: mode.__str__ &amp; __repr__</vh></v>
-<v t="ekr.20060824111500.119"></v>
-</v>
-<v t="ekr.20220927112605.15"><vh>diff:  Mode:Output...</vh>
-<v t="ekr.20220927112605.16"><vh>Old: Output...</vh></v>
-<v t="ekr.20060824111500.120"></v>
-</v>
-<v t="ekr.20220927112605.17"><vh>diff: Mode.fullDelegate</vh>
-<v t="ekr.20220927112605.18"><vh>Old:fullDelegate</vh></v>
+<v t="ekr.20220927115135.19"><vh>diff: Mode.fullDelegate</vh>
+<v t="ekr.20220927115135.20"><vh>Old:Mode.fullDelegate</vh></v>
 <v t="ekr.20060827162343"></v>
 </v>
-<v t="ekr.20220927112605.19"><vh>diff: Mode.escapeString &amp; quoteString</vh>
-<v t="ekr.20220927112605.20"><vh>Old:escapeString &amp; quoteString</vh></v>
+<v t="ekr.20220927115135.21"><vh>diff: Mode.escapeString &amp; quoteString</vh>
+<v t="ekr.20220927115135.22"><vh>Old:Mode.escapeString &amp; quoteString</vh></v>
 <v t="ekr.20060824111500.121"></v>
 </v>
-<v t="ekr.20220927112605.21"><vh>diff: Mode.put</vh>
-<v t="ekr.20220927112605.22"><vh>Old:put, putTripleString</vh></v>
-<v t="ekr.20060824111500.122"></v>
-</v>
-<v t="ekr.20220927112605.23"><vh>diff: Mode.putAttributes</vh>
-<v t="ekr.20220927112605.24"><vh>Old:putAttributes</vh></v>
+<v t="ekr.20220927115135.23"><vh>diff: Mode.putAttributes</vh>
+<v t="ekr.20220927115135.24"><vh>Old:Mode.putAttributes</vh></v>
 <v t="ekr.20060824111500.123"></v>
 </v>
-<v t="ekr.20220927112605.25"><vh>diff: Mode.putDict &amp; putDictOfLists</vh>
-<v t="ekr.20220927112605.26"><vh>Old:putDict &amp; putDictOfLists</vh></v>
+<v t="ekr.20220927115135.25"><vh>diff: Mode.putDict &amp; putDictOfLists</vh>
+<v t="ekr.20220927115135.26"><vh>Old:Mode.putDict &amp; putDictOfLists</vh></v>
 <v t="ekr.20060824111500.124"></v>
 </v>
-<v t="ekr.20220927112605.27"><vh>diff: Mode.putImportDict</vh>
-<v t="ekr.20220927112605.28"><vh>Old:putImportDict</vh></v>
+<v t="ekr.20220927115135.27"><vh>diff: Mode.putImportDict</vh>
+<v t="ekr.20220927115135.28"><vh>Old:Mode.putImportDict</vh></v>
 <v t="ekr.20060824111500.125"></v>
 </v>
-<v t="ekr.20220927112605.29"><vh>diff: Mode.putKeywordsData</vh>
-<v t="ekr.20220927112605.30"><vh>Old:putKeywordsData</vh></v>
+<v t="ekr.20220927115135.29"><vh>diff: Mode.putKeywordsData</vh>
+<v t="ekr.20220927115135.30"><vh>Old:Mode.putKeywordsData</vh></v>
 <v t="ekr.20060824111500.126"></v>
 </v>
-<v t="ekr.20220927112605.31"><vh>diff: Mode.putList</vh>
-<v t="ekr.20220927112605.32"><vh>Old:putList</vh></v>
+<v t="ekr.20220927115135.31"><vh>diff: Mode.putList</vh>
+<v t="ekr.20220927115135.32"><vh>Old:Mode.putList</vh></v>
 <v t="ekr.20060824111500.127"></v>
 </v>
-<v t="ekr.20220927112605.33"><vh>diff: Mode.putModeProperties</vh>
-<v t="ekr.20220927112605.34"><vh>Old:putModeProperties</vh></v>
+<v t="ekr.20220927115135.33"><vh>diff: Mode.putModeProperties</vh>
+<v t="ekr.20220927115135.34"><vh>Old:Mode.putModeProperties</vh></v>
 <v t="ekr.20060824111500.128"></v>
 </v>
-<v t="ekr.20220927112605.35"><vh>diff: Mode.putRule &amp; rule creators</vh>
-<v t="ekr.20220927112605.36"><vh>Old:putRule &amp; rule creators</vh></v>
-<v t="ekr.20060824111500.129"></v>
-</v>
-<v t="ekr.20220927112605.37"><vh>diff: Mode.putBadRule</vh>
-<v t="ekr.20220927112605.38"><vh>Old:putBadRule</vh></v>
+<v t="ekr.20220927115135.35"><vh>diff: Mode.putBadRule</vh>
+<v t="ekr.20220927115135.36"><vh>Old:Mode.putBadRule</vh></v>
 <v t="ekr.20060824111500.130"></v>
 </v>
-<v t="ekr.20220927112605.39"><vh>diff: Mode.putEolSpan</vh>
-<v t="ekr.20220927112605.40"><vh>Old:putEolSpan</vh></v>
+<v t="ekr.20220927115135.37"><vh>diff: Mode.putEolSpan</vh>
+<v t="ekr.20220927115135.38"><vh>Old:Mode.putEolSpan</vh></v>
 <v t="ekr.20060824111500.131"></v>
 </v>
-<v t="ekr.20220927112605.41"><vh>diff: Mode.putEolSpanRegexp</vh>
-<v t="ekr.20220927112605.42"><vh>Old:putEolSpanRegexp</vh></v>
+<v t="ekr.20220927115135.39"><vh>diff: Mode.putEolSpanRegexp</vh>
+<v t="ekr.20220927115135.40"><vh>Old:Mode.putEolSpanRegexp</vh></v>
 <v t="ekr.20060824111500.132"></v>
 </v>
-<v t="ekr.20220927112605.43"><vh>diff: Mode.putImport</vh>
-<v t="ekr.20220927112605.44"><vh>Old:putImport</vh></v>
+<v t="ekr.20220927115135.41"><vh>diff: Mode.putImport</vh>
+<v t="ekr.20220927115135.42"><vh>Old:Mode.putImport</vh></v>
 <v t="ekr.20060824111500.133"></v>
 </v>
-<v t="ekr.20220927112605.45"><vh>diff: Mode.putKeywords</vh>
-<v t="ekr.20220927112605.46"><vh>Old:putKeywords</vh></v>
+<v t="ekr.20220927115135.43"><vh>diff: Mode.putKeywords</vh>
+<v t="ekr.20220927115135.44"><vh>Old:Mode.putKeywords</vh></v>
 <v t="ekr.20060824111500.134"></v>
 </v>
-<v t="ekr.20220927112605.47"><vh>diff: Mode.putMarkFollowing</vh>
-<v t="ekr.20220927112605.48"><vh>Old:putMarkFollowing</vh></v>
+<v t="ekr.20220927115135.45"><vh>diff: Mode.putMarkFollowing</vh>
+<v t="ekr.20220927115135.46"><vh>Old:Mode.putMarkFollowing</vh></v>
 <v t="ekr.20060824111500.135"></v>
 </v>
-<v t="ekr.20220927112605.49"><vh>diff: Mode.putMarkPrevious</vh>
-<v t="ekr.20220927112605.50"><vh>Old:putMarkPrevious</vh></v>
+<v t="ekr.20220927115135.47"><vh>diff: Mode.putMarkPrevious</vh>
+<v t="ekr.20220927115135.48"><vh>Old:Mode.putMarkPrevious</vh></v>
 <v t="ekr.20060824111500.136"></v>
 </v>
-<v t="ekr.20220927112605.51"><vh>diff: Mode.putSeq</vh>
-<v t="ekr.20220927112605.52"><vh>Old:putSeq</vh></v>
+<v t="ekr.20220927115135.49"><vh>diff: Mode.putSeq</vh>
+<v t="ekr.20220927115135.50"><vh>Old:Mode.putSeq</vh></v>
 <v t="ekr.20060824111500.137"></v>
 </v>
-<v t="ekr.20220927112605.53"><vh>diff: Mode.putSeqRegexp</vh>
-<v t="ekr.20220927112605.54"><vh>Old:putSeqRegexp</vh></v>
+<v t="ekr.20220927115135.51"><vh>diff: Mode.putSeqRegexp</vh>
+<v t="ekr.20220927115135.52"><vh>Old:Mode.putSeqRegexp</vh></v>
 <v t="ekr.20060824111500.138"></v>
 </v>
-<v t="ekr.20220927112605.55"><vh>diff: Mode.putSpan</vh>
-<v t="ekr.20220927112605.56"><vh>Old:putSpan</vh></v>
+<v t="ekr.20220927115135.53"><vh>diff: Mode.putSpan</vh>
+<v t="ekr.20220927115135.54"><vh>Old:Mode.putSpan</vh></v>
 <v t="ekr.20060824111500.139"></v>
 </v>
-<v t="ekr.20220927112605.57"><vh>diff: Mode.putSpanRegexp</vh>
-<v t="ekr.20220927112605.58"><vh>Old:putSpanRegexp</vh></v>
+<v t="ekr.20220927115135.55"><vh>diff: Mode.putSpanRegexp</vh>
+<v t="ekr.20220927115135.56"><vh>Old:Mode.putSpanRegexp</vh></v>
 <v t="ekr.20060824111500.140"></v>
 </v>
-<v t="ekr.20220927112605.59"><vh>diff: Mode.putTerminate</vh>
-<v t="ekr.20220927112605.60"><vh>Old:putTerminate</vh></v>
+<v t="ekr.20220927115135.57"><vh>diff: Mode.putTerminate</vh>
+<v t="ekr.20220927115135.58"><vh>Old:Mode.putTerminate</vh></v>
 <v t="ekr.20060824111500.141"></v>
 </v>
-<v t="ekr.20220927112605.61"><vh>diff: Mode.putRules</vh>
-<v t="ekr.20220927112605.62"><vh>Old:putRules</vh></v>
+<v t="ekr.20220927115135.59"><vh>diff: Mode.putRules</vh>
+<v t="ekr.20220927115135.60"><vh>Old:Mode.putRules</vh></v>
 <v t="ekr.20060824111500.142"></v>
 </v>
-<v t="ekr.20220927112605.63"><vh>diff: Mode.write</vh>
-<v t="ekr.20220927112605.64"><vh>Old:write</vh></v>
+<v t="ekr.20220927115135.61"><vh>diff: Mode.write</vh>
+<v t="ekr.20220927115135.62"><vh>Old:Mode.write</vh></v>
 <v t="ekr.20060824111500.143"></v>
 </v>
-<v t="ekr.20220927112605.65"><vh>diff:  Mode:Printing...</vh>
-<v t="ekr.20220927112605.66"><vh>Old: Printing...</vh></v>
+<v t="ekr.20220927115135.63"><vh>diff:  Mode:Printing...</vh>
+<v t="ekr.20220927115135.64"><vh>Old: Mode:Printing...</vh></v>
 <v t="ekr.20060824111500.144"></v>
 </v>
-<v t="ekr.20220927112605.67"><vh>diff: Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh>
-<v t="ekr.20220927112605.68"><vh>Old:printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh></v>
+<v t="ekr.20220927115135.65"><vh>diff: Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh>
+<v t="ekr.20220927115135.66"><vh>Old:Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh></v>
 <v t="ekr.20060824111500.145"></v>
 </v>
-<v t="ekr.20220927112605.69"><vh>diff: Mode.printProperty</vh>
-<v t="ekr.20220927112605.70"><vh>Old:printProperty</vh></v>
+<v t="ekr.20220927115135.67"><vh>diff: Mode.printProperty</vh>
+<v t="ekr.20220927115135.68"><vh>Old:Mode.printProperty</vh></v>
 <v t="ekr.20060824111500.146"></v>
 </v>
-<v t="ekr.20220927112605.71"><vh>diff: Mode.printRule</vh>
-<v t="ekr.20220927112605.72"><vh>Old:printRule</vh></v>
+<v t="ekr.20220927115135.69"><vh>diff: Mode.printRule</vh>
+<v t="ekr.20220927115135.70"><vh>Old:Mode.printRule</vh></v>
 <v t="ekr.20060824111500.147"></v>
 </v>
-<v t="ekr.20220927112605.73"><vh>diff: Mode.printRuleset</vh>
-<v t="ekr.20220927112605.74"><vh>Old:printRuleset</vh></v>
+<v t="ekr.20220927115135.71"><vh>diff: Mode.printRuleset</vh>
+<v t="ekr.20220927115135.72"><vh>Old:Mode.printRuleset</vh></v>
 <v t="ekr.20060824111500.148"></v>
 </v>
-<v t="ekr.20220927112605.75"><vh>diff: Mode.doAttribute</vh>
-<v t="ekr.20220927112605.76"><vh>Old:doAttribute</vh></v>
+<v t="ekr.20220927115135.73"><vh>diff: Mode.doAttribute</vh>
+<v t="ekr.20220927115135.74"><vh>Old:Mode.doAttribute</vh></v>
 <v t="ekr.20060824111500.150"></v>
 </v>
-<v t="ekr.20220927112605.77"><vh>diff: Mode.doContent</vh>
-<v t="ekr.20220927112605.78"><vh>Old:doContent</vh></v>
+<v t="ekr.20220927115135.75"><vh>diff: Mode.doContent</vh>
+<v t="ekr.20220927115135.76"><vh>Old:Mode.doContent</vh></v>
 <v t="ekr.20060824111500.151"></v>
 </v>
-<v t="ekr.20220927112605.79"><vh>diff: Mode.endElement</vh>
-<v t="ekr.20220927112605.80"><vh>Old:endElement</vh></v>
+<v t="ekr.20220927115135.77"><vh>diff: Mode.endElement</vh>
+<v t="ekr.20220927115135.78"><vh>Old:Mode.endElement</vh></v>
 <v t="ekr.20060824111500.152"></v>
 </v>
-<v t="ekr.20220927112605.81"><vh>diff: Mode.error</vh>
-<v t="ekr.20220927112605.82"><vh>Old:error</vh></v>
+<v t="ekr.20220927115135.79"><vh>diff: Mode.error</vh>
+<v t="ekr.20220927115135.80"><vh>Old:Mode.error</vh></v>
 <v t="ekr.20060824111500.153"></v>
 </v>
-<v t="ekr.20220927112605.83"><vh>diff: Mode:getters</vh>
-<v t="ekr.20220927112605.84"><vh>Old:getters</vh></v>
+<v t="ekr.20220927115135.81"><vh>diff: Mode:getters</vh>
+<v t="ekr.20220927115135.82"><vh>Old:Mode:getters</vh></v>
 <v t="ekr.20060824111500.154"></v>
 </v>
-<v t="ekr.20220927112605.85"><vh>diff: Mode.inRule</vh>
-<v t="ekr.20220927112605.86"><vh>Old:inRule</vh></v>
+<v t="ekr.20220927115135.83"><vh>diff: Mode.inRule</vh>
+<v t="ekr.20220927115135.84"><vh>Old:Mode.inRule</vh></v>
 <v t="ekr.20060824111500.155"></v>
 </v>
-<v t="ekr.20220927112605.87"><vh>diff: Mode.startElement</vh>
-<v t="ekr.20220927112605.88"><vh>Old:startElement</vh></v>
+<v t="ekr.20220927115135.85"><vh>diff: Mode.startElement</vh>
+<v t="ekr.20220927115135.86"><vh>Old:Mode.startElement</vh></v>
 <v t="ekr.20060824111500.156"></v>
 </v>
-<v t="ekr.20220927112605.89"><vh>diff: ruleset.ctor &amp; __str__</vh>
-<v t="ekr.20220927112605.90"><vh>Old:ruleset.ctor &amp; __str__</vh></v>
+<v t="ekr.20220927115135.87"><vh>diff: ruleset.ctor &amp; __str__</vh>
+<v t="ekr.20220927115135.88"><vh>Old:ruleset.ctor &amp; __str__</vh></v>
 <v t="ekr.20060824111500.158"></v>
 </v>
-<v t="ekr.20220927112605.91"><vh>diff: class Rule</vh>
-<v t="ekr.20220927112605.92"><vh>Old:class Rule</vh></v>
+<v t="ekr.20220927115135.89"><vh>diff: class Rule</vh>
+<v t="ekr.20220927115135.90"><vh>Old:class Rule</vh></v>
 <v t="ekr.20060824111500.159"></v>
+</v>
+<v t="ekr.20220927115135.91"><vh>diff: rule.getters</vh>
+<v t="ekr.20220927115135.92"><vh>Old:rule.getters</vh></v>
+<v t="ekr.20060824111500.161"></v>
+</v>
+<v t="ekr.20220927115135.93"><vh>diff:  __init__ &amp; helpers</vh>
+<v t="ekr.20220927115135.94"><vh>Old: __init__ &amp; helpers</vh></v>
+<v t="ekr.20060824111500.163"></v>
+</v>
+<v t="ekr.20220927115135.95"><vh>diff: attrsToString</vh>
+<v t="ekr.20220927115135.96"><vh>Old:attrsToString</vh></v>
+<v t="ekr.20060824111500.166"></v>
+</v>
+<v t="ekr.20220927115135.97"><vh>diff: printStartElement</vh>
+<v t="ekr.20220927115135.98"><vh>Old:printStartElement</vh></v>
+<v t="ekr.20060824111500.169"></v>
+</v>
+<v t="ekr.20220927115135.99"><vh>diff:  Do nothing...</vh>
+<v t="ekr.20220927115135.100"><vh>Old: Do nothing...</vh></v>
+<v t="ekr.20060824111500.172"></v>
+</v>
+<v t="ekr.20220927115135.101"><vh>diff: characters</vh>
+<v t="ekr.20220927115135.102"><vh>Old:characters</vh></v>
+<v t="ekr.20060824111500.176"></v>
+</v>
+<v t="ekr.20220927115135.103"><vh>diff: doStartElement</vh>
+<v t="ekr.20220927115135.104"><vh>Old:doStartElement</vh></v>
+<v t="ekr.20060824111500.179"></v>
 </v>
 </v>
 </v>
@@ -605,10 +631,9 @@ g.cls()
 &lt;&lt; imports &gt;&gt;
 
 # Globals...
-trace = True
 files_list = ['ocaml.xml',]
 theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
-files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
+files = [g.os_path_abspath(g.os_path_join(theDir, s)) for s in files_list]
 
 @others
 
@@ -628,7 +653,7 @@ import xml.sax.saxutils
     if not mode:
         g.trace('FAIL: no mode', language, inputFileName)
         return
-    with open(outputFileName,'w') as f:
+    with open(outputFileName, 'w') as f:
         try:
             mode.write(f, language)
             g.es_print('wrote', outputFileName)
@@ -641,13 +666,13 @@ import xml.sax.saxutils
         return None
     if not inputFileName.endswith('.xml'):
         inputFileName = inputFileName + '.xml'
-    path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
+    path = g.os_path_join(g.app.loadDir, '../', 'modes', inputFileName)
     path = g.os_path_normpath(path)
     if not g.os_path_exists(path):
         g.es_print('not found:', path)
         return
     try:
-        f = open(path,'r')
+        f = open(path, 'r')
     except IOError:
         g.trace('can not open %s'%path)
         return None
@@ -658,8 +683,7 @@ import xml.sax.saxutils
                 # Do not include external general entities.
                 # The actual feature name is
                 # "http://xml.org/sax/features/external-general-entities"
-            parser.setFeature(xml.sax.handler.feature_external_ges,0)
-            ### handler = contentHandler(c, inputFileName, language)
+            parser.setFeature(xml.sax.handler.feature_external_ges, 0)
             handler = ContentHandler(inputFileName)
             parser.setContentHandler(handler)
             parser.parse(f)
@@ -667,7 +691,7 @@ import xml.sax.saxutils
                 # Fails with Python 2 when the file contains non-ascii characters.
             mode = handler.getMode()
         except:
-            g.es('unexpected exception parsing %s' % (inputFileName),color='red')
+            g.es('unexpected exception parsing %s' % (inputFileName), color='red')
             g.es_exception()
     finally:
         f.close()
@@ -681,50 +705,45 @@ import xml.sax.saxutils
     return ''.join([ch.lower() if ch in valid else '_' for ch in s])
 </t>
 <t tx="ekr.20060824111500.117">class Mode:
+    """
+    A class representing one jEdit language-description mode.
 
-    '''A class representing one jEdit language-description mode.
-
-    Use getters to access the attributes, properties and rules of this mode.'''
+    Use getters to access the attributes, properties and rules of this mode.
+    """
 
     @others
 </t>
 <t tx="ekr.20060824111500.118">def __init__ (self, contentHandler, fileName):
-
-    if trace:
-        print('mode:', fileName)
-
     self.contentHandler = contentHandler
     self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
     modeName, junk = g.os_path_splitext(self.fileName)
     self.fileModeName = modeName
     self.modeName = munge(modeName).lower()
     self.outputFile = None # The open output file to which Python statements get written.
-    self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
-
-    ###
-        # Mode statistics...
-        # self.numberOfAttributes = 0
-        # self.numberOfElements = 0
-        # self.numberOfErrors = 0
-        # self.numberOfPropertyAttributes = 0
-        # self.numberOfRuleAttributes = 0
 
     # List of boolean attributes.
     self.boolAttrs = [
-        'at_line_start','at_whitespace_end','at_word_start',
-        'exclude_match','highlight_digits','ignore_case',
-        'no_escape','no_line_break','no_word_break',]
+        'at_line_start', 'at_whitespace_end', 'at_word_start',
+        'exclude_match', 'highlight_digits', 'ignore_case',
+        'no_escape', 'no_line_break', 'no_word_break',
+    ]
 
     # List of elements that start a rule.
     self.ruleElements = [
-        'eol_span','eol_span_regexp','import','keywords',
-        'mark_following','mark_previous','seq','seq_regexp',
-        'span','span_regexp','terminate',]
+        'eol_span', 'eol_span_regexp',
+        'import', 'keywords',
+        'mark_following', 'mark_previous',
+        'seq', 'seq_regexp',
+        'span', 'span_regexp',
+        'terminate',
+    ]
 
     if 0: # Not used at present.
         self.seqSpanElements = [
-            'eol_span','eol_span_regexp','seq','seq_regexp',
-            'span','span_regexp',]
+            'eol_span', 'eol_span_regexp',
+            'seq', 'seq_regexp',
+            'span', 'span_regexp',
+        ]
 
     # Mode semantics.
     self.attributes = {}
@@ -757,7 +776,7 @@ __repr__ = __str__
         s = ''.join(s)
     s = g.toUnicode(s)
     # Order is important: escape backspaces first.
-    return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
+    return '"%s"' % s.replace('\\', '\\\\').replace('"', '\\"').replace('\t', '\\t')
 
 quoteString = escapeString
 </t>
@@ -768,20 +787,19 @@ quoteString = escapeString
 
     dd = {}
     data = (
-        ('default','null'),
-        ('digit_re',''),
-        ('escape',''),
-        ('highlight_digits',True),
-        ('ignore_case',True),
-        ('no_word_sep',None), # could be false or ''.
+        ('default', 'null'),
+        ('digit_re', ''),
+        ('escape', ''),
+        ('highlight_digits', True),
+        ('ignore_case', True),
+        ('no_word_sep', None), # could be false or ''.
     )
-
     for ruleset in self.rulesets:
         d = {}
-        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        prefix = '%s_%s' % (self.modeName, ruleset.name)
         self.put('# Attributes dict for %s ruleset.\n' % (prefix))
-        for key,default in data:
-            val = ruleset.attributes.get(key,default)
+        for key, default in data:
+            val = ruleset.attributes.get(key, default)
             if default == True:
                 val = 'true' if val else 'false'
             elif default == None:
@@ -790,11 +808,11 @@ quoteString = escapeString
                 else:
                     val = val or ''
             d [key] = val
-        self.putDict('%s_attributes_dict' % (prefix),d)
+        self.putDict('%s_attributes_dict' % (prefix), d)
         dd [ prefix ] = '%s_attributes_dict' % (prefix)
 
     self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
-    self.putDict('attributesDictDict',dd,escape=False)
+    self.putDict('attributesDictDict', dd, escape=False)
 </t>
 <t tx="ekr.20060824111500.124">def putDict (self, name, theDict, escape=True):
 
@@ -803,11 +821,11 @@ quoteString = escapeString
     keys = list(set((theDict.keys())))
     keys = sorted([g.toUnicode(z) for z in keys if z])
     s = ''.join([
-        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
+        '\t%s: %s,\n' % (esc(key), esc2(theDict.get(key)))
             for key in keys])
     if s:
         s = '\n' + s
-    self.put('%s = {%s}\n\n' % (name,s))
+    self.put('%s = {%s}\n\n' % (name, s))
 
 def putDictOfLists (self, name, theDict, strings=False):
 
@@ -821,36 +839,36 @@ def putDictOfLists (self, name, theDict, strings=False):
             s = ''.join(['"%s",' % (item) for item in theDict.get(key)])
         else:
              s = ''.join(['%s,' % (item) for item in theDict.get(key)])
-        theList.append('\t%s: [%s],\n' % (esc(key),s))
+        theList.append('\t%s: [%s],\n' % (esc(key), s))
     s = ''.join(theList)
     if s: s = '\n' + s
-    self.put('%s = {%s}\n\n' % (name,s))
+    self.put('%s = {%s}\n\n' % (name, s))
 </t>
 <t tx="ekr.20060824111500.125">def putImportDict (self):
 
     d = {}
     for ruleset in self.rulesets:
-        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        prefix = '%s_%s' % (self.modeName, ruleset.name)
         for rule in ruleset.rules:
             if rule.name == 'import':
                 delegate = rule.getStrAttrib('delegate').lower()
                 if delegate:
                     delegate_name = delegate if '::' in delegate else f"{prefix}::{delegate}"
-                    theList = d.get(prefix,[])
+                    theList = d.get(prefix, [])
                     if delegate_name not in theList:
                         theList.append(delegate_name)
                         d [prefix] = theList
 
     self.put('# Import dict for %s mode.\n' % (self.modeName))
-    self.putDictOfLists('importDict',d,strings=True)
+    self.putDictOfLists('importDict', d, strings=True)
 </t>
 <t tx="ekr.20060824111500.126">def putKeywordsData (self):
 
     dd = {}
     for ruleset in self.rulesets:
-        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        prefix = '%s_%s' % (self.modeName, ruleset.name)
         prefix = g.toUnicode(prefix)
-        ignore_case = ruleset.attributes.get('ignore_case','false')
+        ignore_case = ruleset.attributes.get('ignore_case', 'false')
         if not isinstance(ignore_case, bool):
             ignore_case = ignore_case.lower() == 'false'
         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
@@ -876,10 +894,10 @@ def putDictOfLists (self, name, theDict, strings=False):
                 break
         else:
             d = {}
-        self.putDict('%s_keywords_dict' % (prefix),d)
+        self.putDict('%s_keywords_dict' % (prefix), d)
         dd [ prefix ] = '%s_keywords_dict' % (prefix)
     self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
-    self.putDict('keywordsDictDict',dd,escape=False)
+    self.putDict('keywordsDictDict', dd, escape=False)
 </t>
 <t tx="ekr.20060824111500.127">def putList (self, name, theList, escape=True, lineCount=0):
 
@@ -887,24 +905,24 @@ def putDictOfLists (self, name, theDict, strings=False):
         return ','
 
     def nl(i):
-        return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+        ### return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+        return '\n' if lineCount == 0 or (i%lineCount)==lineCount-1 else ' '
 
-    def tab(i,n):
+    def tab(i, n):
         return '\t' if i &gt; 0 and nl(i-1) != ' ' else ''
 
-    # esc = g.choose(escape,self.escapeString,lambda a:a)
+    ### Remove escape kwarg?
     esc = self.escapeString if escape else lambda a:a
     result = []
     n = len(theList)
     for i in range(n):
-        result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
+        result.append('%s%s%s%s' % (tab(i, n), esc(theList[i]), comma(i), nl(i)))
     vals = ''.join(result)
-    self.put('%s = [%s]\n\n' % (name,vals))
+    self.put('%s = [%s]\n\n' % (name, vals))
 </t>
-<t tx="ekr.20060824111500.128">def putModeProperties (self,language):
+<t tx="ekr.20060824111500.128">def putModeProperties (self, language):
 
     d = {}
-    ### self.put('# Properties for %s mode.\n' % (language))
     self.put(f"# Properties for {language} mode.\n")
     for prop in self.modeProperties:
         d2 = prop.attributes
@@ -932,11 +950,11 @@ def putDictOfLists (self, name, theDict, strings=False):
     self.handlerCount += 1
     return val
 </t>
-<t tx="ekr.20060824111500.130">def putBadRule (self,rule):
+<t tx="ekr.20060824111500.130">def putBadRule (self, rule):
 
     self.put('\n\n# *****no output creator for %s*****' % rule.name)
 </t>
-<t tx="ekr.20060824111500.131">def putEolSpan (self,rule):
+<t tx="ekr.20060824111500.131">def putEolSpan (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -956,17 +974,14 @@ def %s_rule%d(colorer, s, i):
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
         rule.getBoolAttrib('exclude_match'),
     )
-
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20060824111500.132">def putEolSpanRegexp (self,rule):
+<t tx="ekr.20060824111500.132">def putEolSpanRegexp (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
     hash_char = rule.getStrAttrib('hash_char') or seq[0]
-    # g.trace('hash_char',hash_char)
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
@@ -977,38 +992,34 @@ def %s_rule%d(colorer, s, i):
         self.handlerCount,
         quote(rule.getStrAttrib('type').lower()),
         quote(seq),
-        # quote(rule.getStrAttrib('hash_char')),
         rule.getBoolAttrib('at_line_start'),
         rule.getBoolAttrib('at_whitespace_end'),
         rule.getBoolAttrib('at_word_end'),
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
         rule.getBoolAttrib('exclude_match'),
     )
-
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return hash_char
 </t>
 <t tx="ekr.20060824111500.133"># Do nothing here: putImportDict creates x.importDict.
 
-def putImport (self,rule):
+def putImport (self, rule):
 
     # Decrement the count to indicate that this method did not generate a rule.
     self.handlerCount -= 1
     return ''
 </t>
-<t tx="ekr.20060824111500.134">def putKeywords (self,rule):
+<t tx="ekr.20060824111500.134">def putKeywords (self, rule):
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
     return colorer.match_keywords(s, i)''' % (
     self.fileModeName,
     self.handlerCount)
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return 'keywords'
 </t>
-<t tx="ekr.20060824111500.135">def putMarkFollowing (self,rule):
+<t tx="ekr.20060824111500.135">def putMarkFollowing (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -1026,12 +1037,10 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         rule.getBoolAttrib('exclude_match'),
     )
-
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20060824111500.136">def putMarkPrevious (self,rule):
+<t tx="ekr.20060824111500.136">def putMarkPrevious (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -1049,11 +1058,10 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         rule.getBoolAttrib('exclude_match'),
     )
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20060824111500.137">def putSeq (self,rule):
+<t tx="ekr.20060824111500.137">def putSeq (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -1071,16 +1079,14 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
     )
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20060824111500.138">def putSeqRegexp (self,rule):
+<t tx="ekr.20060824111500.138">def putSeqRegexp (self, rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
     hash_char = rule.getStrAttrib('hash_char') or seq[0]
-    # g.trace('hash_char',hash_char)
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
@@ -1096,25 +1102,24 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
     )
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
-    return hash_char # Bug fix: was seq[0]
+    return hash_char
 </t>
-<t tx="ekr.20060824111500.139">def putSpan (self,rule):
+<t tx="ekr.20060824111500.139">def putSpan (self, rule):
 
     quote = self.quoteString
-    begin,end = rule.getSpan()
+    begin, end = rule.getSpan()
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
     return colorer.match_span(s, i, kind=%s, begin=%s, end=%s,
         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
-        delegate=%s,exclude_match=%s,
+        delegate=%s, exclude_match=%s,
         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
         self.fileModeName,
         self.handlerCount,
         quote(rule.getStrAttrib('type').lower()),
-        quote(begin),quote(end),
+        quote(begin), quote(end),
         rule.getBoolAttrib('at_line_start'),
         rule.getBoolAttrib('at_whitespace_end'),
         rule.getBoolAttrib('at_word_end'),
@@ -1124,27 +1129,25 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('no_line_break'),
         rule.getBoolAttrib('no_word_break'),
     )
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return begin[0]
 </t>
-<t tx="ekr.20060824111500.140">def putSpanRegexp (self,rule):
+<t tx="ekr.20060824111500.140">def putSpanRegexp (self, rule):
 
     quote = self.quoteString
-    begin,end = rule.getSpan()
+    begin, end = rule.getSpan()
     hash_char = rule.getStrAttrib('hash_char') or begin[0]
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind=%s, begin=%s, end=%s,
         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
-        delegate=%s,exclude_match=%s,
+        delegate=%s, exclude_match=%s,
         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
         self.fileModeName,
         self.handlerCount,
         quote(rule.getStrAttrib('type').lower()),
-        quote(begin),quote(end),
-        # quote(rule.getStrAttrib('hash_char')),
+        quote(begin), quote(end),
         rule.getBoolAttrib('at_line_start'),
         rule.getBoolAttrib('at_whitespace_end'),
         rule.getBoolAttrib('at_word_end'),
@@ -1154,25 +1157,24 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('no_line_break'),
         rule.getBoolAttrib('no_word_break'),
     )
-    ### self.putTripleString(s)
     self.put(textwrap.dedent(s))
     return hash_char
 </t>
-<t tx="ekr.20060824111500.141">def putTerminate (self,rule):
+<t tx="ekr.20060824111500.141">def putTerminate (self, rule):
 
     quote = self.quoteString
 
     n = rule.getIntAttrib('at_char')
-    if n == None: return
-
+    if n == None:
+        return
     s = '''\n\
 def %s_rule%d(colorer, s, i):
     return colorer.match_terminate(s, i, kind=%s, at_char=%d)''' % (
         self.fileModeName,
         self.handlerCount,
         quote(rule.getStrAttrib('type').lower()),
-        n)
-    ### self.putTripleString(s)
+        n,
+    )
     self.put(textwrap.dedent(s))
 </t>
 <t tx="ekr.20060824111500.142">def putRules (self):
@@ -1182,31 +1184,31 @@ def %s_rule%d(colorer, s, i):
     d = {} ; d2Count = 0
     for ruleset in self.rulesets:
         d2 = {}
-        prefix = '%s_%s'% (self.modeName,ruleset.name)
+        prefix = '%s_%s'% (self.modeName, ruleset.name)
         self.put('# Rules for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             ch = self.putRule(rule)
             self.put('\n')
             if ch == 'keywords':
                 for ch in self.keywordChars:
-                    theList = d2.get(ch,[])
+                    theList = d2.get(ch, [])
                     theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                     d2 [ch] = theList
             elif ch:
-                theList = d2.get(ch,[])
+                theList = d2.get(ch, [])
                 theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                 d2 [ch] = theList
         # Create the rules dict for the ruleset.
         self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
         d2Count += 1
         name = 'rulesDict%d' % d2Count
-        self.putDictOfLists(name,d2)
+        self.putDictOfLists(name, d2)
         d [prefix] = name
     # Create rulesDictDict.
     self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
     self.putDict('rulesDictDict', d, escape=False)
 </t>
-<t tx="ekr.20060824111500.143">def write (self,theFile,language):
+<t tx="ekr.20060824111500.143">def write (self, theFile, language):
 
     # Compute all the letters that can occur in a keyword.
     self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
@@ -1216,10 +1218,9 @@ def %s_rule%d(colorer, s, i):
             for key in list(d.keys()):
                 key = g.toUnicode(key)
                 for ch in key:
-                    if ch not in self.keywordChars and ch not in (' ','\t','\n'):
+                    if ch not in self.keywordChars and ch not in (' ', '\t', '\n'):
                         self.keywordChars.append(ch)
         
-    # g.trace('keywordChars',repr(self.keywordChars))
     self.keywordChars = ''.join(list(set(self.keywordChars)))
     self.outputFile = theFile
     self.put('# Leo colorizer control file for %s mode.\n' % language)
@@ -1230,51 +1231,53 @@ def %s_rule%d(colorer, s, i):
     self.putRules()
     self.putImportDict()
 </t>
-<t tx="ekr.20060824111500.144"></t>
+<t tx="ekr.20060824111500.144">### Remove these?</t>
 <t tx="ekr.20060824111500.145">def printModeAttributes (self):
     self.printAttributesHelper('mode attributes', self.attributes)
 
-def printRulesetAttributes (self,ruleset,tag=None):
+def printRulesetAttributes (self, ruleset, tag=None):
     if not tag:
         tag = 'main ruleset'
     self.printAttributesHelper(tag, ruleset.attributes)
 
 def printAttributesHelper (self, kind, attrs):
-    print('%-15s' % (kind),'attrs:',attrs)
+    print('%-15s' % (kind), 'attrs:', attrs)
 </t>
-<t tx="ekr.20060824111500.146">def printProperty (self,theProperty):
+<t tx="ekr.20060824111500.146">def printProperty (self, theProperty):
     # A property is a bunch.
     d = theProperty.attributes
     if d:
-        self.printAttributesHelper('property',d)
+        self.printAttributesHelper('property', d)
 </t>
-<t tx="ekr.20060824111500.147">def printRule (self,rule):
+<t tx="ekr.20060824111500.147">def printRule (self, rule):
 
     # A rule is a g.Bunch.
     if rule.name == 'keywords':
-        print('%-15s' % ('rule:keywords')) ## ,
+        print('%-15s' % ('rule:keywords'))
         d = rule.keywordsDict
         d2 = {}
         for key in d:
             val = d.get(key)
-            d2 [val] = d2.get(val,0) + 1
+            d2 [val] = d2.get(val, 0) + 1
         keys = list(d2.keys())
         keys.sort()
         for key in keys:
-            print('%s: %d' % (key,d2.get(key))) ## ,
+            print('%s: %d' % (key, d2.get(key)))
         print()
     else:
         d = rule.attributes
         d2 = rule.contents
         if d or d2:
-            print('%-15s' % ('rule:'+rule.name)) ## ,
-            if d:  print('attrs:',d) ## ,
-            if d2: print('contents:',d2) ## ,
+            print('%-15s' % ('rule:'+rule.name))
+            if d:
+                print('attrs:', d)
+            if d2:
+                print('contents:', d2)
             print()
 </t>
-<t tx="ekr.20060824111500.148">def printRuleset (self,ruleset,tag):
+<t tx="ekr.20060824111500.148">def printRuleset (self, ruleset, tag):
 
-    self.printRulesetAttributes(ruleset,tag)
+    self.printRulesetAttributes(ruleset, tag)
 
     for rule in self.rulesets[0].rules:
         self.printRule(rule)
@@ -1296,7 +1299,7 @@ def printAttributesHelper (self, kind, attrs):
 
     self.printRuleset(self.rulesets[0],tag='main ruleset')
 </t>
-<t tx="ekr.20060824111500.150">def doAttribute (self,name,val):
+<t tx="ekr.20060824111500.150">def doAttribute (self, name, val):
 
     name = str(name.lower())
     if name in self.boolAttrs:
@@ -1306,19 +1309,15 @@ def printAttributesHelper (self, kind, attrs):
     if self.rule:
         d = self.rule.attributes
         d [name] = val
-        ### self.numberOfRuleAttributes += 1
     elif self.presentProperty:
         d = self.presentProperty.get('attributes')
         d [name] = val
-        ### self.numberOfPropertyAttributes += 1
     elif self.inRules:
         self.rulesetAttributes[name] = val
-        ### self.numberOfAttributes += 1
     else:
         self.attributes[name] = val
-        ### self.numberOfAttributes += 1
 </t>
-<t tx="ekr.20060824111500.151">def doContent (self,elementName,content):
+<t tx="ekr.20060824111500.151">def doContent (self, elementName, content):
 
     if not content:
         return
@@ -1328,11 +1327,11 @@ def printAttributesHelper (self, kind, attrs):
         d [ content ] = name
     elif self.rule:
         d = self.rule.contents
-        s = d.get(name,'')
+        s = d.get(name, '')
         d [name] = s + g.toUnicode(content)
         self.contents = d
 </t>
-<t tx="ekr.20060824111500.152">def endElement (self,elementName):
+<t tx="ekr.20060824111500.152">def endElement (self, elementName):
 
     name = elementName.lower()
 
@@ -1340,7 +1339,7 @@ def printAttributesHelper (self, kind, attrs):
         self.inProps = True
     if name == 'rules':
         self.inRules = False
-        ruleset = Ruleset(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
+        ruleset = Ruleset(self.rulesetAttributes, self.keywords, self.rulesetProperties, self.rules)
         self.rulesets.append(ruleset)
     if name == 'property':
         bunch = self.presentProperty
@@ -1350,52 +1349,51 @@ def printAttributesHelper (self, kind, attrs):
             else:
                 self.modeProperties.append(bunch)
         else:
-            self.error('end %s not matched by start %s' % (name,name))
+            self.error('end %s not matched by start %s' % (name, name))
         self.presentProperty = None
     if name in self.ruleElements:
         if self.inRule(name):
             self.rules.append(self.rule)
             self.rule = None
         else:
-            self.error('end %s not matched by start %s' % (name,name))
+            self.error('end %s not matched by start %s' % (name, name))
 </t>
-<t tx="ekr.20060824111500.153">def error (self,message):
+<t tx="ekr.20060824111500.153">def error (self, message):
     self.contentHandler.error(message)
-    ### self.numberOfErrors += 1
 </t>
 <t tx="ekr.20060824111500.154">def getAttributes (self):
     return self.attributes
 
-def getAttributesForRuleset (self,ruleset):
+def getAttributesForRuleset (self, ruleset):
     bunch = ruleset
     return bunch.attributes
 
 def getFileName (self):
     return self.fileName
 
-def getKeywords (self,n,ruleset):
+def getKeywords (self, n, ruleset):
     bunch = ruleset
     keywords = bunch.keywords
     if keywords:
-        return keywords.get('keyword%d'%(n),[])
+        return keywords.get('keyword%d'%(n), [])
     return []
 
 def getLanguage (self):
-    path,name = g.os_path_split(self.fileName)
-    language,ext = g.os_path_splitext(name)
+    path, name = g.os_path_split(self.fileName)
+    language, ext = g.os_path_splitext(name)
     return language
 
 def getPropertiesForMode (self):
     return self.props
 
-def getPropertiesForRuleset (self,name=''):
+def getPropertiesForRuleset (self, name=''):
     bunch = self.getRuleset(name)
     if bunch:
         return bunch.properties
     else:
         return []
 
-def getRuleset(self,name=''):
+def getRuleset(self, name=''):
     if not name:
         return self.rulesets[0] # Return the main ruleset.
     for ruleset in self.rulesets:
@@ -1406,18 +1404,18 @@ def getRuleset(self,name=''):
 def getRulesets(self):
     return self.rulesets
 
-def getRulesForRuleset (self,name=''):
+def getRulesForRuleset (self, name=''):
     bunch = self.getRuleset(name)
     if bunch:
         return bunch.rules
     else:
         return []
 </t>
-<t tx="ekr.20060824111500.155">def inRule (self,elementName):
+<t tx="ekr.20060824111500.155">def inRule (self, elementName):
 
     return self.rule and self.rule.name == elementName
 </t>
-<t tx="ekr.20060824111500.156">def startElement (self,elementName):
+<t tx="ekr.20060824111500.156">def startElement (self, elementName):
 
     name = elementName.lower()
 
@@ -1431,7 +1429,7 @@ def getRulesForRuleset (self,name=''):
         self.rules=[]
     if name == 'property':
         if self.inProps:
-            self.presentProperty = g.bunch(name=name,attributes={})
+            self.presentProperty = g.bunch(name=name, attributes={})
         else:
             self.error('property not in props element')
     if name in self.ruleElements:
@@ -1447,16 +1445,13 @@ def getRulesForRuleset (self,name=''):
     @others
 </t>
 <t tx="ekr.20060824111500.158">def __init__ (self, attributes, keywords, properties, rules):
-
-    self.name=munge(attributes.get('set','main'))
+    
+    self.name=munge(attributes.get('set', 'main'))
     self.attributes=attributes.copy() # A dict.
     self.properties=properties[:] # A list.
     self.keywords=keywords # A bunch.
     self.rules=rules[:] # A list.
-    ### g.printObj(self.rules, tag='Rules')
     self.defaultColor = self.attributes.get('default')
-    if trace:
-        print('ruleset:', self.name or 'main')
 
 def __str__ (self):
     return '&lt;ruleset %s&gt;' % self.name
@@ -1467,16 +1462,12 @@ __repr__ = __str__
     """A class representing one xml rule."""
     
     def __init__ (self, name):
-        if trace:
-            print('rule', name)
         self.attributes = {}
         self.contents = {}
         self.keywordsDict = {}
         self.name = name
 
     def __str__ (self):
-        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
-            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
         return (
             f"&lt;Rule {self.name}\n"
             f"   attr: {g.dictToString(self.attributes)}\n"
@@ -1489,19 +1480,18 @@ __repr__ = __str__
 </t>
 <t tx="ekr.20060824111500.160">
 </t>
-<t tx="ekr.20060824111500.161">def getBoolAttrib(self,name):
+<t tx="ekr.20060824111500.161">def getBoolAttrib(self, name):
     d = self.attributes
     val = d.get(name)
     return 'True' if val else 'False'
 
-def getIntAttrib(self,name):
+def getIntAttrib(self, name):
     d = self.attributes
     val = d.get(name)
     if val is not None:
         try:
             val = int(val)
         except ValueError:
-            # g.trace('bad int argument: %s = %s' % (name,val))
             g.trace(f"bad int argument: {name} = {val!r}")
             val = None
     return val
@@ -1512,12 +1502,12 @@ def getSpan (self):
     end   = d.get('end', '')
     return begin, end
 
-def getStrAttrib(self,name):
+def getStrAttrib(self, name):
     d = self.attributes
     val = d.get(name, '')
     return str(val)
 
-def getSeq(self,kind):
+def getSeq(self, kind):
     d = self.contents
     return d.get(kind, '')
 </t>
@@ -1538,7 +1528,7 @@ def getSeq(self,kind):
     # Options...
     self.ignoreWs = True  # True: don't print contents with only ws.
     self.newLineAfterStartElement = [
-        'keywords','mode','props','property','rules','span','eol_span',
+        'keywords', 'mode', 'props', 'property', 'rules', 'span', 'eol_span',
     ]
 
     # Semantics: most of these should be mode ivars.
@@ -1559,7 +1549,7 @@ def getSeq(self,kind):
             for name in attrs.getNames()
     ]
 </t>
-<t tx="ekr.20060824111500.166">def attrsToString (self,attrs, sep='\n'):
+<t tx="ekr.20060824111500.166">def attrsToString (self, attrs, sep='\n'):
 
     '''Convert the attributes to a string.
 
@@ -1582,17 +1572,15 @@ def getSeq(self,kind):
     print(f"\n\nXML error: {message}\n")
     self.errors += 1
 </t>
-<t tx="ekr.20060824111500.169">def printStartElement(self, name, attrs):
+<t tx="ekr.20060824111500.169">### Remove ??
+
+def printStartElement(self, name, attrs):
 
     name_s = g.toEncodedString(name, "ascii").strip()
     if attrs.getLength() &gt; 0:
         attrs_s = self.attrsToString(attrs, sep=' ')
-        # print('&lt;%s %s&gt;' % (
-            # self.clean(name).strip(),
-            # self.attrsToString(attrs,sep=' ')))
         print(f"&lt;{name_s} {attrs_s}")
     else:
-        # print('&lt;%s&gt;' % (self.clean(name).strip()))
         print(f"&lt;{name_s}&gt;")
         
     if name.lower() in self.newLineAfterStartElement:
@@ -1617,29 +1605,26 @@ def startDocument(self):
 def ignorableWhitespace(self):
     g.trace()
 
-def processingInstruction (self,target,data):
+def processingInstruction (self, target, data):
     g.trace()
 
-def skippedEntity(self,name):
+def skippedEntity(self, name):
     g.trace(name)
 
-def startElementNS(self,name,qname,attrs):
+def startElementNS(self, name, qname, attrs):
     g.trace(name)
 
-def endElementNS(self,name,qname):
+def endElementNS(self, name, qname):
     g.trace(name)
 </t>
 <t tx="ekr.20060824111500.176">def characters(self, content):
     content = content.replace('\r', '')
     if content.strip():
         content = content.strip()
-    ### content = self.clean(content)
     content = g.toEncodedString(content, "ascii")
-
-    # elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
     elementName = self.elementStack[-1].lower() if self.elementStack else '&lt;no element name&gt;'
     if self.mode:
-        self.mode.doContent(elementName,content)
+        self.mode.doContent(elementName, content)
     else:
         self.error('characters outside of mode')
 </t>
@@ -1663,7 +1648,7 @@ def startElement(self, name, attrs):
     elif self.mode:
         self.mode.startElement(elementName)
         for bunch in self.attrsToList(attrs):
-            self.mode.doAttribute(bunch.name,bunch.val)
+            self.mode.doAttribute(bunch.name, bunch.val)
     else:
         self.error('Start element appears outside of Mode:%s' % elementName)
         for bunch in self.attrsToList(attrs):
@@ -1678,19 +1663,12 @@ def startElement(self, name, attrs):
 <t tx="ekr.20060824111500.181">def getMode (self):
     return None if self.errors else self.mode
 </t>
-<t tx="ekr.20060827162343">def fullDelegate (self,delegate):
+<t tx="ekr.20060827162343">def fullDelegate (self, delegate):
     if not delegate:
         return ''
     delegate = delegate.lower()
-    ###
-        # i = delegate.find('::')
-        # if i == -1:
-            # return '%s::%s' % (self.fileModeName.lower(),delegate)
-        # else:
-            # return delegate
     if '::' in delegate:
         return delegate
-    # return '%s::%s' % (self.fileModeName.lower(),delegate)
     return f"{self.fileModeName.lower()}::{delegate}"
 </t>
 <t tx="ekr.20061008055616"></t>
@@ -5339,38 +5317,322 @@ main()
     ### self.put(g.adjustTripleString(s,self.tab_width))
     self.put(textwrap.dedent(s))
 </t>
-<t tx="ekr.20220927112605.1">@ignore
+<t tx="ekr.20220927115135.1">@ignore
 @nosearch
-HEAD=7f86b6e14</t>
-<t tx="ekr.20220927112605.10"></t>
-<t tx="ekr.20220927112605.11">@ignore
+HEAD=0b7565a9a</t>
+<t tx="ekr.20220927115135.10">"""
+Convert jEdit description file (an .xml file) to an equivalent .py file.
+"""
+
+@language python
+@tabwidth -4
+@pagewidth 80
+g.cls()
+&lt;&lt; imports &gt;&gt;
+
+# Globals...
+trace = True
+files_list = ['ocaml.xml',]
+theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
+files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
+
+@others
+
+main()
+</t>
+<t tx="ekr.20220927115135.100"># Expected calls...
+def endDocument(self):
+    pass
+    
+def startDocument(self):
+    pass
+
+# Trace unexpected calls...
+def ignorableWhitespace(self):
+    g.trace()
+
+def processingInstruction (self,target,data):
+    g.trace()
+
+def skippedEntity(self,name):
+    g.trace(name)
+
+def startElementNS(self,name,qname,attrs):
+    g.trace(name)
+
+def endElementNS(self,name,qname):
+    g.trace(name)
+</t>
+<t tx="ekr.20220927115135.101">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -11,12 +11,13 @@
-     self.outputFile = None # The open output file to which Python statements get written.
-     self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
+@@ -2,12 +2,9 @@
+     content = content.replace('\r', '')
+     if content.strip():
+         content = content.strip()
+-    ### content = self.clean(content)
+     content = g.toEncodedString(content, "ascii")
+-
+-    # elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
+     elementName = self.elementStack[-1].lower() if self.elementStack else '&lt;no element name&gt;'
+     if self.mode:
+-        self.mode.doContent(elementName,content)
++        self.mode.doContent(elementName, content)
+     else:
+         self.error('characters outside of mode')
+@language python
+</t>
+<t tx="ekr.20220927115135.102">def characters(self, content):
+    content = content.replace('\r', '')
+    if content.strip():
+        content = content.strip()
+    ### content = self.clean(content)
+    content = g.toEncodedString(content, "ascii")
+
+    # elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
+    elementName = self.elementStack[-1].lower() if self.elementStack else '&lt;no element name&gt;'
+    if self.mode:
+        self.mode.doContent(elementName,content)
+    else:
+        self.error('characters outside of mode')
+</t>
+<t tx="ekr.20220927115135.103">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -9,7 +9,7 @@
+     elif self.mode:
+         self.mode.startElement(elementName)
+         for bunch in self.attrsToList(attrs):
+-            self.mode.doAttribute(bunch.name,bunch.val)
++            self.mode.doAttribute(bunch.name, bunch.val)
+     else:
+         self.error('Start element appears outside of Mode:%s' % elementName)
+         for bunch in self.attrsToList(attrs):
+@language python
+</t>
+<t tx="ekr.20220927115135.104">def doStartElement (self, elementName, attrs):
+
+    elementName = elementName.lower()
+    if elementName == 'mode':
+        if self.mode:
+            self.error('Multiple modes')
+        else:
+            self.mode = Mode(self, self.inputFileName)
+    elif self.mode:
+        self.mode.startElement(elementName)
+        for bunch in self.attrsToList(attrs):
+            self.mode.doAttribute(bunch.name,bunch.val)
+    else:
+        self.error('Start element appears outside of Mode:%s' % elementName)
+        for bunch in self.attrsToList(attrs):
+            self.error('Attribute appears outside of Mode:%s' % bunch.name)
+</t>
+<t tx="ekr.20220927115135.11">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -4,13 +4,13 @@
+         return None
+     if not inputFileName.endswith('.xml'):
+         inputFileName = inputFileName + '.xml'
+-    path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
++    path = g.os_path_join(g.app.loadDir, '../', 'modes', inputFileName)
+     path = g.os_path_normpath(path)
+     if not g.os_path_exists(path):
+         g.es_print('not found:', path)
+         return
+     try:
+-        f = open(path,'r')
++        f = open(path, 'r')
+     except IOError:
+         g.trace('can not open %s'%path)
+         return None
+@@ -21,8 +21,7 @@
+                 # Do not include external general entities.
+                 # The actual feature name is
+                 # "http://xml.org/sax/features/external-general-entities"
+-            parser.setFeature(xml.sax.handler.feature_external_ges,0)
+-            ### handler = contentHandler(c, inputFileName, language)
++            parser.setFeature(xml.sax.handler.feature_external_ges, 0)
+             handler = ContentHandler(inputFileName)
+             parser.setContentHandler(handler)
+             parser.parse(f)
+@@ -30,7 +29,7 @@
+                 # Fails with Python 2 when the file contains non-ascii characters.
+             mode = handler.getMode()
+         except:
+-            g.es('unexpected exception parsing %s' % (inputFileName),color='red')
++            g.es('unexpected exception parsing %s' % (inputFileName), color='red')
+             g.es_exception()
+     finally:
+         f.close()
+@language python
+</t>
+<t tx="ekr.20220927115135.12">def parse_jEdit_file(inputFileName, language):
+
+    if not inputFileName:
+        return None
+    if not inputFileName.endswith('.xml'):
+        inputFileName = inputFileName + '.xml'
+    path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
+    path = g.os_path_normpath(path)
+    if not g.os_path_exists(path):
+        g.es_print('not found:', path)
+        return
+    try:
+        f = open(path,'r')
+    except IOError:
+        g.trace('can not open %s'%path)
+        return None
+    try:
+        try:
+            mode = None
+            parser = xml.sax.make_parser()
+                # Do not include external general entities.
+                # The actual feature name is
+                # "http://xml.org/sax/features/external-general-entities"
+            parser.setFeature(xml.sax.handler.feature_external_ges,0)
+            ### handler = contentHandler(c, inputFileName, language)
+            handler = ContentHandler(inputFileName)
+            parser.setContentHandler(handler)
+            parser.parse(f)
+                # Works with Python 3.
+                # Fails with Python 2 when the file contains non-ascii characters.
+            mode = handler.getMode()
+        except:
+            g.es('unexpected exception parsing %s' % (inputFileName),color='red')
+            g.es_exception()
+    finally:
+        f.close()
+        return mode
+</t>
+<t tx="ekr.20220927115135.13">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -6,7 +6,7 @@
+     if not mode:
+         g.trace('FAIL: no mode', language, inputFileName)
+         return
+-    with open(outputFileName,'w') as f:
++    with open(outputFileName, 'w') as f:
+         try:
+             mode.write(f, language)
+             g.es_print('wrote', outputFileName)
+@language python
+</t>
+<t tx="ekr.20220927115135.14">def convert(inputFileName, outputFileName):
+
+    junk, fn = g.os_path_split(inputFileName)
+    language, junk = g.os_path_splitext(fn)
+    mode = parse_jEdit_file(inputFileName, language)
+    if not mode:
+        g.trace('FAIL: no mode', language, inputFileName)
+        return
+    with open(outputFileName,'w') as f:
+        try:
+            mode.write(f, language)
+            g.es_print('wrote', outputFileName)
+        except IOError:
+            g.es_print('can not create', outputFileName)
+</t>
+<t tx="ekr.20220927115135.15">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,7 +1,8 @@
+ class Mode:
++    """
++    A class representing one jEdit language-description mode.
  
--    # Mode statistics...
--    self.numberOfAttributes = 0
--    self.numberOfElements = 0
--    self.numberOfErrors = 0
--    self.numberOfPropertyAttributes = 0
--    self.numberOfRuleAttributes = 0
-+    ###
-+        # Mode statistics...
-+        # self.numberOfAttributes = 0
-+        # self.numberOfElements = 0
-+        # self.numberOfErrors = 0
-+        # self.numberOfPropertyAttributes = 0
-+        # self.numberOfRuleAttributes = 0
+-    '''A class representing one jEdit language-description mode.
+-
+-    Use getters to access the attributes, properties and rules of this mode.'''
++    Use getters to access the attributes, properties and rules of this mode.
++    """
+ 
+     @others
+@language python
+</t>
+<t tx="ekr.20220927115135.16">class Mode:
+
+    '''A class representing one jEdit language-description mode.
+
+    Use getters to access the attributes, properties and rules of this mode.'''
+
+    @others
+</t>
+<t tx="ekr.20220927115135.17">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,40 +1,34 @@
+ def __init__ (self, contentHandler, fileName):
+-
+-    if trace:
+-        print('mode:', fileName)
+-
+     self.contentHandler = contentHandler
+     self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
+     modeName, junk = g.os_path_splitext(self.fileName)
+     self.fileModeName = modeName
+     self.modeName = munge(modeName).lower()
+     self.outputFile = None # The open output file to which Python statements get written.
+-    self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
+-
+-    ###
+-        # Mode statistics...
+-        # self.numberOfAttributes = 0
+-        # self.numberOfElements = 0
+-        # self.numberOfErrors = 0
+-        # self.numberOfPropertyAttributes = 0
+-        # self.numberOfRuleAttributes = 0
  
      # List of boolean attributes.
      self.boolAttrs = [
+-        'at_line_start','at_whitespace_end','at_word_start',
+-        'exclude_match','highlight_digits','ignore_case',
+-        'no_escape','no_line_break','no_word_break',]
++        'at_line_start', 'at_whitespace_end', 'at_word_start',
++        'exclude_match', 'highlight_digits', 'ignore_case',
++        'no_escape', 'no_line_break', 'no_word_break',
++    ]
+ 
+     # List of elements that start a rule.
+     self.ruleElements = [
+-        'eol_span','eol_span_regexp','import','keywords',
+-        'mark_following','mark_previous','seq','seq_regexp',
+-        'span','span_regexp','terminate',]
++        'eol_span', 'eol_span_regexp',
++        'import', 'keywords',
++        'mark_following', 'mark_previous',
++        'seq', 'seq_regexp',
++        'span', 'span_regexp',
++        'terminate',
++    ]
+ 
+     if 0: # Not used at present.
+         self.seqSpanElements = [
+-            'eol_span','eol_span_regexp','seq','seq_regexp',
+-            'span','span_regexp',]
++            'eol_span', 'eol_span_regexp',
++            'seq', 'seq_regexp',
++            'span', 'span_regexp',
++        ]
+ 
+     # Mode semantics.
+     self.attributes = {}
 @language python
 </t>
-<t tx="ekr.20220927112605.12">def __init__ (self, contentHandler, fileName):
+<t tx="ekr.20220927115135.18">def __init__ (self, contentHandler, fileName):
 
     if trace:
         print('mode:', fileName)
@@ -5383,12 +5645,13 @@ HEAD=7f86b6e14</t>
     self.outputFile = None # The open output file to which Python statements get written.
     self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
 
-    # Mode statistics...
-    self.numberOfAttributes = 0
-    self.numberOfElements = 0
-    self.numberOfErrors = 0
-    self.numberOfPropertyAttributes = 0
-    self.numberOfRuleAttributes = 0
+    ###
+        # Mode statistics...
+        # self.numberOfAttributes = 0
+        # self.numberOfElements = 0
+        # self.numberOfErrors = 0
+        # self.numberOfPropertyAttributes = 0
+        # self.numberOfRuleAttributes = 0
 
     # List of boolean attributes.
     self.boolAttrs = [
@@ -5422,61 +5685,91 @@ HEAD=7f86b6e14</t>
     self.rulesetProperties = []
     self.rulesetAttributes = {} # The attributes of the present rules element.
 </t>
-<t tx="ekr.20220927112605.13">Only headline has changed</t>
-<t tx="ekr.20220927112605.14">def __str__ (self):
-
-    return '&lt;Mode for %s&gt;' % self.fileName
-
-__repr__ = __str__
-</t>
-<t tx="ekr.20220927112605.15">Only headline has changed</t>
-<t tx="ekr.20220927112605.16"># Similar to printing, but generates the output file.
-</t>
-<t tx="ekr.20220927112605.17">@ignore
+<t tx="ekr.20220927115135.19">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,11 +1,14 @@
- def fullDelegate (self,delegate):
--
--    if delegate:
--        delegate = delegate.lower()
--        i = delegate.find('::')
--        if i == -1:
--            return '%s::%s' % (self.fileModeName.lower(),delegate)
--        else:
--            return delegate
--    else:
-+    if not delegate:
+@@ -1,14 +1,7 @@
+-def fullDelegate (self,delegate):
++def fullDelegate (self, delegate):
+     if not delegate:
          return ''
-+    delegate = delegate.lower()
-+    ###
-+        # i = delegate.find('::')
-+        # if i == -1:
-+            # return '%s::%s' % (self.fileModeName.lower(),delegate)
-+        # else:
-+            # return delegate
-+    if '::' in delegate:
-+        return delegate
-+    # return '%s::%s' % (self.fileModeName.lower(),delegate)
-+    return f"{self.fileModeName.lower()}::{delegate}"
+     delegate = delegate.lower()
+-    ###
+-        # i = delegate.find('::')
+-        # if i == -1:
+-            # return '%s::%s' % (self.fileModeName.lower(),delegate)
+-        # else:
+-            # return delegate
+     if '::' in delegate:
+         return delegate
+-    # return '%s::%s' % (self.fileModeName.lower(),delegate)
+     return f"{self.fileModeName.lower()}::{delegate}"
 @language python
 </t>
-<t tx="ekr.20220927112605.18">def fullDelegate (self,delegate):
-
-    if delegate:
-        delegate = delegate.lower()
-        i = delegate.find('::')
-        if i == -1:
-            return '%s::%s' % (self.fileModeName.lower(),delegate)
-        else:
-            return delegate
-    else:
-        return ''
+<t tx="ekr.20220927115135.2">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1205,13 +1205,13 @@
+ def ocaml_rule0(colorer, s, i):
+     return colorer.match_span(s, i, kind="comment4", begin="(**", end="*)",
+         at_line_start=False, at_whitespace_end=False, at_word_start=False,
+-        delegate="",exclude_match=False,
++        delegate="", exclude_match=False,
+         no_escape=True, no_line_break=False, no_word_break=False)
+ 
+ def ocaml_rule1(colorer, s, i):
+     return colorer.match_span(s, i, kind="comment3", begin="(*", end="*)",
+         at_line_start=False, at_whitespace_end=False, at_word_start=False,
+-        delegate="",exclude_match=False,
++        delegate="", exclude_match=False,
+         no_escape=True, no_line_break=False, no_word_break=False)
+ 
+ def ocaml_rule2(colorer, s, i):
+@@ -1221,7 +1221,7 @@
+ def ocaml_rule3(colorer, s, i):
+     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
+         at_line_start=False, at_whitespace_end=False, at_word_start=False,
+-        delegate="",exclude_match=False,
++        delegate="", exclude_match=False,
+         no_escape=False, no_line_break=False, no_word_break=False)
+ 
+ def ocaml_rule4(colorer, s, i):
 </t>
-<t tx="ekr.20220927112605.19">Only headline has changed</t>
-<t tx="ekr.20220927112605.20">def escapeString (self, s):
+<t tx="ekr.20220927115135.20">def fullDelegate (self,delegate):
+    if not delegate:
+        return ''
+    delegate = delegate.lower()
+    ###
+        # i = delegate.find('::')
+        # if i == -1:
+            # return '%s::%s' % (self.fileModeName.lower(),delegate)
+        # else:
+            # return delegate
+    if '::' in delegate:
+        return delegate
+    # return '%s::%s' % (self.fileModeName.lower(),delegate)
+    return f"{self.fileModeName.lower()}::{delegate}"
+</t>
+<t tx="ekr.20220927115135.21">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -6,6 +6,6 @@
+         s = ''.join(s)
+     s = g.toUnicode(s)
+     # Order is important: escape backspaces first.
+-    return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
++    return '"%s"' % s.replace('\\', '\\\\').replace('"', '\\"').replace('\t', '\\t')
+ 
+ quoteString = escapeString
+@language python
+</t>
+<t tx="ekr.20220927115135.22">def escapeString (self, s):
     '''Return string s enclosed in double quotes.'''
     if not s:
         return '""'
@@ -5488,35 +5781,55 @@ __repr__ = __str__
 
 quoteString = escapeString
 </t>
-<t tx="ekr.20220927112605.21">@ignore
+<t tx="ekr.20220927115135.23">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,9 +1,2 @@
- def put (self, s):
+@@ -2,20 +2,19 @@
+ 
+     dd = {}
+     data = (
+-        ('default','null'),
+-        ('digit_re',''),
+-        ('escape',''),
+-        ('highlight_digits',True),
+-        ('ignore_case',True),
+-        ('no_word_sep',None), # could be false or ''.
++        ('default', 'null'),
++        ('digit_re', ''),
++        ('escape', ''),
++        ('highlight_digits', True),
++        ('ignore_case', True),
++        ('no_word_sep', None), # could be false or ''.
+     )
 -
-     self.outputFile.write(s)
--
--def putTripleString(self, s):
--    
--    return textwrap.dedent(s)
--
--    # self.put(g.adjustTripleString(s,self.tab_width))
+     for ruleset in self.rulesets:
+         d = {}
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         self.put('# Attributes dict for %s ruleset.\n' % (prefix))
+-        for key,default in data:
+-            val = ruleset.attributes.get(key,default)
++        for key, default in data:
++            val = ruleset.attributes.get(key, default)
+             if default == True:
+                 val = 'true' if val else 'false'
+             elif default == None:
+@@ -24,8 +23,8 @@
+                 else:
+                     val = val or ''
+             d [key] = val
+-        self.putDict('%s_attributes_dict' % (prefix),d)
++        self.putDict('%s_attributes_dict' % (prefix), d)
+         dd [ prefix ] = '%s_attributes_dict' % (prefix)
+ 
+     self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
+-    self.putDict('attributesDictDict',dd,escape=False)
++    self.putDict('attributesDictDict', dd, escape=False)
 @language python
 </t>
-<t tx="ekr.20220927112605.22">def put (self, s):
-
-    self.outputFile.write(s)
-
-def putTripleString(self, s):
-    
-    return textwrap.dedent(s)
-
-    # self.put(g.adjustTripleString(s,self.tab_width))
-</t>
-<t tx="ekr.20220927112605.23">Only headline has changed</t>
-<t tx="ekr.20220927112605.24">def putAttributes (self):
+<t tx="ekr.20220927115135.24">def putAttributes (self):
 
     dd = {}
     data = (
@@ -5548,8 +5861,38 @@ def putTripleString(self, s):
     self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('attributesDictDict',dd,escape=False)
 </t>
-<t tx="ekr.20220927112605.25">Only headline has changed</t>
-<t tx="ekr.20220927112605.26">def putDict (self, name, theDict, escape=True):
+<t tx="ekr.20220927115135.25">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -5,11 +5,11 @@
+     keys = list(set((theDict.keys())))
+     keys = sorted([g.toUnicode(z) for z in keys if z])
+     s = ''.join([
+-        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
++        '\t%s: %s,\n' % (esc(key), esc2(theDict.get(key)))
+             for key in keys])
+     if s:
+         s = '\n' + s
+-    self.put('%s = {%s}\n\n' % (name,s))
++    self.put('%s = {%s}\n\n' % (name, s))
+ 
+ def putDictOfLists (self, name, theDict, strings=False):
+ 
+@@ -23,7 +23,7 @@
+             s = ''.join(['"%s",' % (item) for item in theDict.get(key)])
+         else:
+              s = ''.join(['%s,' % (item) for item in theDict.get(key)])
+-        theList.append('\t%s: [%s],\n' % (esc(key),s))
++        theList.append('\t%s: [%s],\n' % (esc(key), s))
+     s = ''.join(theList)
+     if s: s = '\n' + s
+-    self.put('%s = {%s}\n\n' % (name,s))
++    self.put('%s = {%s}\n\n' % (name, s))
+@language python
+</t>
+<t tx="ekr.20220927115135.26">def putDict (self, name, theDict, escape=True):
 
     esc = self.escapeString
     esc2 = self.escapeString if escape else lambda a: a
@@ -5579,8 +5922,34 @@ def putDictOfLists (self, name, theDict, strings=False):
     if s: s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
 </t>
-<t tx="ekr.20220927112605.27">Only headline has changed</t>
-<t tx="ekr.20220927112605.28">def putImportDict (self):
+<t tx="ekr.20220927115135.27">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -2,16 +2,16 @@
+ 
+     d = {}
+     for ruleset in self.rulesets:
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         for rule in ruleset.rules:
+             if rule.name == 'import':
+                 delegate = rule.getStrAttrib('delegate').lower()
+                 if delegate:
+                     delegate_name = delegate if '::' in delegate else f"{prefix}::{delegate}"
+-                    theList = d.get(prefix,[])
++                    theList = d.get(prefix, [])
+                     if delegate_name not in theList:
+                         theList.append(delegate_name)
+                         d [prefix] = theList
+ 
+     self.put('# Import dict for %s mode.\n' % (self.modeName))
+-    self.putDictOfLists('importDict',d,strings=True)
++    self.putDictOfLists('importDict', d, strings=True)
+@language python
+</t>
+<t tx="ekr.20220927115135.28">def putImportDict (self):
 
     d = {}
     for ruleset in self.rulesets:
@@ -5598,580 +5967,994 @@ def putDictOfLists (self, name, theDict, strings=False):
     self.put('# Import dict for %s mode.\n' % (self.modeName))
     self.putDictOfLists('importDict',d,strings=True)
 </t>
-<t tx="ekr.20220927112605.29">@ignore
+<t tx="ekr.20220927115135.29">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -11,10 +11,11 @@
-         for rule in ruleset.rules:
-             if rule.name == 'keywords':
-                 # d = rule.keywordsDict
--                d = { g.toUnicode(key): g.toUnicode(val)
--                    for key, val in rule.keywordsDict.items() if key.strip() }
--                # g.trace()
--                # g.printObj(d)
-+                d = {
-+                    g.toUnicode(key): g.toUnicode(val)
-+                        for key, val in rule.keywordsDict.items()
-+                            if key.strip()
-+                }
-                 for key in sorted(set(d.keys())):
-                     if ' ' in key or '\t' in key:
-                         del d [key]
+@@ -2,9 +2,9 @@
+ 
+     dd = {}
+     for ruleset in self.rulesets:
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         prefix = g.toUnicode(prefix)
+-        ignore_case = ruleset.attributes.get('ignore_case','false')
++        ignore_case = ruleset.attributes.get('ignore_case', 'false')
+         if not isinstance(ignore_case, bool):
+             ignore_case = ignore_case.lower() == 'false'
+         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
+@@ -30,7 +30,7 @@
+                 break
+         else:
+             d = {}
+-        self.putDict('%s_keywords_dict' % (prefix),d)
++        self.putDict('%s_keywords_dict' % (prefix), d)
+         dd [ prefix ] = '%s_keywords_dict' % (prefix)
+     self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
+-    self.putDict('keywordsDictDict',dd,escape=False)
++    self.putDict('keywordsDictDict', dd, escape=False)
 @language python
 </t>
-<t tx="ekr.20220927112605.3">@ignore
+<t tx="ekr.20220927115135.3">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -4201,7 +4201,7 @@
-     Use getters to access the attributes, properties and rules of this mode.'''
+@@ -4091,10 +4091,9 @@
+ &lt;&lt; imports &gt;&gt;
+ 
+ # Globals...
+-trace = True
+ files_list = ['ocaml.xml',]
+ theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
+-files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
++files = [g.os_path_abspath(g.os_path_join(theDir, s)) for s in files_list]
+ 
+ @others
+ 
+@@ -4127,13 +4126,13 @@
+         return None
+     if not inputFileName.endswith('.xml'):
+         inputFileName = inputFileName + '.xml'
+-    path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
++    path = g.os_path_join(g.app.loadDir, '../', 'modes', inputFileName)
+     path = g.os_path_normpath(path)
+     if not g.os_path_exists(path):
+         g.es_print('not found:', path)
+         return
+     try:
+-        f = open(path,'r')
++        f = open(path, 'r')
+     except IOError:
+         g.trace('can not open %s'%path)
+         return None
+@@ -4144,8 +4143,7 @@
+                 # Do not include external general entities.
+                 # The actual feature name is
+                 # "http://xml.org/sax/features/external-general-entities"
+-            parser.setFeature(xml.sax.handler.feature_external_ges,0)
+-            ### handler = contentHandler(c, inputFileName, language)
++            parser.setFeature(xml.sax.handler.feature_external_ges, 0)
+             handler = ContentHandler(inputFileName)
+             parser.setContentHandler(handler)
+             parser.parse(f)
+@@ -4153,7 +4151,7 @@
+                 # Fails with Python 2 when the file contains non-ascii characters.
+             mode = handler.getMode()
+         except:
+-            g.es('unexpected exception parsing %s' % (inputFileName),color='red')
++            g.es('unexpected exception parsing %s' % (inputFileName), color='red')
+             g.es_exception()
+     finally:
+         f.close()
+@@ -4167,7 +4165,7 @@
+     if not mode:
+         g.trace('FAIL: no mode', language, inputFileName)
+         return
+-    with open(outputFileName,'w') as f:
++    with open(outputFileName, 'w') as f:
+         try:
+             mode.write(f, language)
+             g.es_print('wrote', outputFileName)
+@@ -4195,50 +4193,45 @@
+     g.es_print('done')
+ #@+node:ekr.20060824111500.117: *4* class Mode
+ class Mode:
+-
+-    '''A class representing one jEdit language-description mode.
+-
+-    Use getters to access the attributes, properties and rules of this mode.'''
++    """
++    A class representing one jEdit language-description mode.
++
++    Use getters to access the attributes, properties and rules of this mode.
++    """
  
      @others
--#@+node:ekr.20060824111500.118: *5*  mode.__init__
-+#@+node:ekr.20060824111500.118: *5*  Mode.__init__
+ #@+node:ekr.20060824111500.118: *5*  Mode.__init__
  def __init__ (self, contentHandler, fileName):
- 
-     if trace:
-@@ -4215,12 +4215,13 @@
+-
+-    if trace:
+-        print('mode:', fileName)
+-
+     self.contentHandler = contentHandler
+     self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
+     modeName, junk = g.os_path_splitext(self.fileName)
+     self.fileModeName = modeName
+     self.modeName = munge(modeName).lower()
      self.outputFile = None # The open output file to which Python statements get written.
-     self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
- 
--    # Mode statistics...
--    self.numberOfAttributes = 0
--    self.numberOfElements = 0
--    self.numberOfErrors = 0
--    self.numberOfPropertyAttributes = 0
--    self.numberOfRuleAttributes = 0
-+    ###
-+        # Mode statistics...
-+        # self.numberOfAttributes = 0
-+        # self.numberOfElements = 0
-+        # self.numberOfErrors = 0
-+        # self.numberOfPropertyAttributes = 0
-+        # self.numberOfRuleAttributes = 0
+-    self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
+-
+-    ###
+-        # Mode statistics...
+-        # self.numberOfAttributes = 0
+-        # self.numberOfElements = 0
+-        # self.numberOfErrors = 0
+-        # self.numberOfPropertyAttributes = 0
+-        # self.numberOfRuleAttributes = 0
  
      # List of boolean attributes.
      self.boolAttrs = [
-@@ -4253,27 +4254,30 @@
-     self.rules = [] # The rules of the present rules element.
-     self.rulesetProperties = []
-     self.rulesetAttributes = {} # The attributes of the present rules element.
--#@+node:ekr.20060824111500.119: *5*  mode.__str__ &amp; __repr__
-+#@+node:ekr.20060824111500.119: *5*  Mode.__str__ &amp; __repr__
- def __str__ (self):
+-        'at_line_start','at_whitespace_end','at_word_start',
+-        'exclude_match','highlight_digits','ignore_case',
+-        'no_escape','no_line_break','no_word_break',]
++        'at_line_start', 'at_whitespace_end', 'at_word_start',
++        'exclude_match', 'highlight_digits', 'ignore_case',
++        'no_escape', 'no_line_break', 'no_word_break',
++    ]
  
-     return '&lt;Mode for %s&gt;' % self.fileName
+     # List of elements that start a rule.
+     self.ruleElements = [
+-        'eol_span','eol_span_regexp','import','keywords',
+-        'mark_following','mark_previous','seq','seq_regexp',
+-        'span','span_regexp','terminate',]
++        'eol_span', 'eol_span_regexp',
++        'import', 'keywords',
++        'mark_following', 'mark_previous',
++        'seq', 'seq_regexp',
++        'span', 'span_regexp',
++        'terminate',
++    ]
  
- __repr__ = __str__
--#@+node:ekr.20060824111500.120: *5*  Output...
-+#@+node:ekr.20060824111500.120: *5*  Mode:Output...
+     if 0: # Not used at present.
+         self.seqSpanElements = [
+-            'eol_span','eol_span_regexp','seq','seq_regexp',
+-            'span','span_regexp',]
++            'eol_span', 'eol_span_regexp',
++            'seq', 'seq_regexp',
++            'span', 'span_regexp',
++        ]
+ 
+     # Mode semantics.
+     self.attributes = {}
+@@ -4263,19 +4256,12 @@
+ #@+node:ekr.20060824111500.120: *5*  Mode:Output...
  # Similar to printing, but generates the output file.
--#@+node:ekr.20060827162343: *6* fullDelegate
-+#@+node:ekr.20060827162343: *6* Mode.fullDelegate
- def fullDelegate (self,delegate):
--
--    if delegate:
--        delegate = delegate.lower()
--        i = delegate.find('::')
--        if i == -1:
--            return '%s::%s' % (self.fileModeName.lower(),delegate)
--        else:
--            return delegate
--    else:
-+    if not delegate:
+ #@+node:ekr.20060827162343: *6* Mode.fullDelegate
+-def fullDelegate (self,delegate):
++def fullDelegate (self, delegate):
+     if not delegate:
          return ''
--#@+node:ekr.20060824111500.121: *6* escapeString &amp; quoteString
-+    delegate = delegate.lower()
-+    ###
-+        # i = delegate.find('::')
-+        # if i == -1:
-+            # return '%s::%s' % (self.fileModeName.lower(),delegate)
-+        # else:
-+            # return delegate
-+    if '::' in delegate:
-+        return delegate
-+    # return '%s::%s' % (self.fileModeName.lower(),delegate)
-+    return f"{self.fileModeName.lower()}::{delegate}"
-+#@+node:ekr.20060824111500.121: *6* Mode.escapeString &amp; quoteString
+     delegate = delegate.lower()
+-    ###
+-        # i = delegate.find('::')
+-        # if i == -1:
+-            # return '%s::%s' % (self.fileModeName.lower(),delegate)
+-        # else:
+-            # return delegate
+     if '::' in delegate:
+         return delegate
+-    # return '%s::%s' % (self.fileModeName.lower(),delegate)
+     return f"{self.fileModeName.lower()}::{delegate}"
+ #@+node:ekr.20060824111500.121: *6* Mode.escapeString &amp; quoteString
  def escapeString (self, s):
-     '''Return string s enclosed in double quotes.'''
-     if not s:
-@@ -4285,17 +4289,10 @@
-     return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
+@@ -4286,7 +4272,7 @@
+         s = ''.join(s)
+     s = g.toUnicode(s)
+     # Order is important: escape backspaces first.
+-    return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
++    return '"%s"' % s.replace('\\', '\\\\').replace('"', '\\"').replace('\t', '\\t')
  
  quoteString = escapeString
--#@+node:ekr.20060824111500.122: *6* put, putTripleString
-+#@+node:ekr.20060824111500.122: *6* Mode.put
- def put (self, s):
--
-     self.outputFile.write(s)
--
--def putTripleString(self, s):
--    
--    return textwrap.dedent(s)
--
--    # self.put(g.adjustTripleString(s,self.tab_width))
--#@+node:ekr.20060824111500.123: *6* putAttributes
-+#@+node:ekr.20060824111500.123: *6* Mode.putAttributes
- def putAttributes (self):
+ #@+node:ekr.20060824111500.122: *6* Mode.put
+@@ -4297,20 +4283,19 @@
  
      dd = {}
-@@ -4327,7 +4324,7 @@
+     data = (
+-        ('default','null'),
+-        ('digit_re',''),
+-        ('escape',''),
+-        ('highlight_digits',True),
+-        ('ignore_case',True),
+-        ('no_word_sep',None), # could be false or ''.
++        ('default', 'null'),
++        ('digit_re', ''),
++        ('escape', ''),
++        ('highlight_digits', True),
++        ('ignore_case', True),
++        ('no_word_sep', None), # could be false or ''.
+     )
+-
+     for ruleset in self.rulesets:
+         d = {}
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         self.put('# Attributes dict for %s ruleset.\n' % (prefix))
+-        for key,default in data:
+-            val = ruleset.attributes.get(key,default)
++        for key, default in data:
++            val = ruleset.attributes.get(key, default)
+             if default == True:
+                 val = 'true' if val else 'false'
+             elif default == None:
+@@ -4319,11 +4304,11 @@
+                 else:
+                     val = val or ''
+             d [key] = val
+-        self.putDict('%s_attributes_dict' % (prefix),d)
++        self.putDict('%s_attributes_dict' % (prefix), d)
+         dd [ prefix ] = '%s_attributes_dict' % (prefix)
  
      self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
-     self.putDict('attributesDictDict',dd,escape=False)
--#@+node:ekr.20060824111500.124: *6* putDict &amp; putDictOfLists
-+#@+node:ekr.20060824111500.124: *6* Mode.putDict &amp; putDictOfLists
+-    self.putDict('attributesDictDict',dd,escape=False)
++    self.putDict('attributesDictDict', dd, escape=False)
+ #@+node:ekr.20060824111500.124: *6* Mode.putDict &amp; putDictOfLists
  def putDict (self, name, theDict, escape=True):
  
-     esc = self.escapeString
-@@ -4357,7 +4354,7 @@
+@@ -4332,11 +4317,11 @@
+     keys = list(set((theDict.keys())))
+     keys = sorted([g.toUnicode(z) for z in keys if z])
+     s = ''.join([
+-        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
++        '\t%s: %s,\n' % (esc(key), esc2(theDict.get(key)))
+             for key in keys])
+     if s:
+         s = '\n' + s
+-    self.put('%s = {%s}\n\n' % (name,s))
++    self.put('%s = {%s}\n\n' % (name, s))
+ 
+ def putDictOfLists (self, name, theDict, strings=False):
+ 
+@@ -4350,36 +4335,36 @@
+             s = ''.join(['"%s",' % (item) for item in theDict.get(key)])
+         else:
+              s = ''.join(['%s,' % (item) for item in theDict.get(key)])
+-        theList.append('\t%s: [%s],\n' % (esc(key),s))
++        theList.append('\t%s: [%s],\n' % (esc(key), s))
      s = ''.join(theList)
      if s: s = '\n' + s
-     self.put('%s = {%s}\n\n' % (name,s))
--#@+node:ekr.20060824111500.125: *6* putImportDict
-+#@+node:ekr.20060824111500.125: *6* Mode.putImportDict
+-    self.put('%s = {%s}\n\n' % (name,s))
++    self.put('%s = {%s}\n\n' % (name, s))
+ #@+node:ekr.20060824111500.125: *6* Mode.putImportDict
  def putImportDict (self):
  
      d = {}
-@@ -4375,7 +4372,7 @@
+     for ruleset in self.rulesets:
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         for rule in ruleset.rules:
+             if rule.name == 'import':
+                 delegate = rule.getStrAttrib('delegate').lower()
+                 if delegate:
+                     delegate_name = delegate if '::' in delegate else f"{prefix}::{delegate}"
+-                    theList = d.get(prefix,[])
++                    theList = d.get(prefix, [])
+                     if delegate_name not in theList:
+                         theList.append(delegate_name)
+                         d [prefix] = theList
  
      self.put('# Import dict for %s mode.\n' % (self.modeName))
-     self.putDictOfLists('importDict',d,strings=True)
--#@+node:ekr.20060824111500.126: *6* putKeywordsData
-+#@+node:ekr.20060824111500.126: *6* Mode.putKeywordsData
+-    self.putDictOfLists('importDict',d,strings=True)
++    self.putDictOfLists('importDict', d, strings=True)
+ #@+node:ekr.20060824111500.126: *6* Mode.putKeywordsData
  def putKeywordsData (self):
  
      dd = {}
-@@ -4389,10 +4386,11 @@
-         for rule in ruleset.rules:
-             if rule.name == 'keywords':
-                 # d = rule.keywordsDict
--                d = { g.toUnicode(key): g.toUnicode(val)
--                    for key, val in rule.keywordsDict.items() if key.strip() }
--                # g.trace()
--                # g.printObj(d)
-+                d = {
-+                    g.toUnicode(key): g.toUnicode(val)
-+                        for key, val in rule.keywordsDict.items()
-+                            if key.strip()
-+                }
-                 for key in sorted(set(d.keys())):
-                     if ' ' in key or '\t' in key:
-                         del d [key]
-@@ -4411,7 +4409,7 @@
+     for ruleset in self.rulesets:
+-        prefix = '%s_%s' % (self.modeName,ruleset.name)
++        prefix = '%s_%s' % (self.modeName, ruleset.name)
+         prefix = g.toUnicode(prefix)
+-        ignore_case = ruleset.attributes.get('ignore_case','false')
++        ignore_case = ruleset.attributes.get('ignore_case', 'false')
+         if not isinstance(ignore_case, bool):
+             ignore_case = ignore_case.lower() == 'false'
+         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
+@@ -4405,35 +4390,14 @@
+                 break
+         else:
+             d = {}
+-        self.putDict('%s_keywords_dict' % (prefix),d)
++        self.putDict('%s_keywords_dict' % (prefix), d)
          dd [ prefix ] = '%s_keywords_dict' % (prefix)
      self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
-     self.putDict('keywordsDictDict',dd,escape=False)
--#@+node:ekr.20060824111500.127: *6* putList
-+#@+node:ekr.20060824111500.127: *6* Mode.putList
- def putList (self, name, theList, escape=True, lineCount=0):
- 
-     def comma(i):
-@@ -4431,7 +4429,7 @@
-         result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
-     vals = ''.join(result)
-     self.put('%s = [%s]\n\n' % (name,vals))
--#@+node:ekr.20060824111500.128: *6* putModeProperties
-+#@+node:ekr.20060824111500.128: *6* Mode.putModeProperties
- def putModeProperties (self,language):
+-    self.putDict('keywordsDictDict',dd,escape=False)
+-#@+node:ekr.20060824111500.127: *6* Mode.putList
+-def putList (self, name, theList, escape=True, lineCount=0):
+-
+-    def comma(i):
+-        return ','
+-
+-    def nl(i):
+-        return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+-
+-    def tab(i,n):
+-        return '\t' if i &gt; 0 and nl(i-1) != ' ' else ''
+-
+-    # esc = g.choose(escape,self.escapeString,lambda a:a)
+-    esc = self.escapeString if escape else lambda a:a
+-    result = []
+-    n = len(theList)
+-    for i in range(n):
+-        result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
+-    vals = ''.join(result)
+-    self.put('%s = [%s]\n\n' % (name,vals))
++    self.putDict('keywordsDictDict', dd, escape=False)
+ #@+node:ekr.20060824111500.128: *6* Mode.putModeProperties
+-def putModeProperties (self,language):
++def putModeProperties (self, language):
  
      d = {}
-@@ -4442,7 +4440,7 @@
-         name = d2.get('name')
-         d [name] = d2.get('value')
-     self.putDict('properties', d)
--#@+node:ekr.20060824111500.129: *6* putRule &amp; rule creators
-+#@+node:ekr.20060824111500.129: *6* Mode.putRule &amp; rule creators
- def putRule (self, rule):
-     """Call the rule creator for the given rule."""
-     d = {
-@@ -4458,15 +4456,15 @@
-         'span_regexp':      self.putSpanRegexp,
-         'terminate':        self.putTerminate,
-     }
--    f = d.get(rule.name,self.putBadRule)
-+    f = d.get(rule.name, self.putBadRule)
-     val = f (rule)
+-    ### self.put('# Properties for %s mode.\n' % (language))
+     self.put(f"# Properties for {language} mode.\n")
+     for prop in self.modeProperties:
+         d2 = prop.attributes
+@@ -4461,11 +4425,11 @@
      self.handlerCount += 1
      return val
--#@+node:ekr.20060824111500.130: *7* putBadRule
-+#@+node:ekr.20060824111500.130: *7* Mode.putBadRule
- def putBadRule (self,rule):
+ #@+node:ekr.20060824111500.130: *7* Mode.putBadRule
+-def putBadRule (self,rule):
++def putBadRule (self, rule):
  
      self.put('\n\n# *****no output creator for %s*****' % rule.name)
--#@+node:ekr.20060824111500.131: *7* putEolSpan
-+#@+node:ekr.20060824111500.131: *7* Mode.putEolSpan
- def putEolSpan (self,rule):
+ #@+node:ekr.20060824111500.131: *7* Mode.putEolSpan
+-def putEolSpan (self,rule):
++def putEolSpan (self, rule):
  
      quote = self.quoteString
-@@ -4488,9 +4486,10 @@
+     seq = rule.getSeq(rule.name)
+@@ -4485,17 +4449,14 @@
+         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
          rule.getBoolAttrib('exclude_match'),
      )
- 
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
--#@+node:ekr.20060824111500.132: *7* putEolSpanRegexp
-+#@+node:ekr.20060824111500.132: *7* Mode.putEolSpanRegexp
- def putEolSpanRegexp (self,rule):
+ #@+node:ekr.20060824111500.132: *7* Mode.putEolSpanRegexp
+-def putEolSpanRegexp (self,rule):
++def putEolSpanRegexp (self, rule):
  
      quote = self.quoteString
-@@ -4515,9 +4514,10 @@
+     seq = rule.getSeq(rule.name)
+     hash_char = rule.getStrAttrib('hash_char') or seq[0]
+-    # g.trace('hash_char',hash_char)
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+@@ -4506,38 +4467,34 @@
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+         quote(seq),
+-        # quote(rule.getStrAttrib('hash_char')),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
          rule.getBoolAttrib('exclude_match'),
      )
- 
--    self.putTripleString(s)
--    return hash_char  # Bug fix: was seq[0]
--#@+node:ekr.20060824111500.133: *7* putImport
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-+    return hash_char
-+#@+node:ekr.20060824111500.133: *7* Mode.putImport
+-
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return hash_char
+ #@+node:ekr.20060824111500.133: *7* Mode.putImport
  # Do nothing here: putImportDict creates x.importDict.
  
- def putImport (self,rule):
-@@ -4525,7 +4525,7 @@
+-def putImport (self,rule):
++def putImport (self, rule):
+ 
      # Decrement the count to indicate that this method did not generate a rule.
      self.handlerCount -= 1
      return ''
--#@+node:ekr.20060824111500.134: *7* putKeywords
-+#@+node:ekr.20060824111500.134: *7* Mode.putKeywords
- def putKeywords (self,rule):
+ #@+node:ekr.20060824111500.134: *7* Mode.putKeywords
+-def putKeywords (self,rule):
++def putKeywords (self, rule):
  
      s = '''\n\
-@@ -4533,10 +4533,10 @@
+ def %s_rule%d(colorer, s, i):
      return colorer.match_keywords(s, i)''' % (
      self.fileModeName,
      self.handlerCount)
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return 'keywords'
--#@+node:ekr.20060824111500.135: *7* putMarkFollowing
-+#@+node:ekr.20060824111500.135: *7* Mode.putMarkFollowing
- def putMarkFollowing (self,rule):
+ #@+node:ekr.20060824111500.135: *7* Mode.putMarkFollowing
+-def putMarkFollowing (self,rule):
++def putMarkFollowing (self, rule):
  
      quote = self.quoteString
-@@ -4556,9 +4556,10 @@
-         rule.getBoolAttrib('exclude_match'),
-     )
- 
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-     return seq[0]
--#@+node:ekr.20060824111500.136: *7* putMarkPrevious
-+#@+node:ekr.20060824111500.136: *7* Mode.putMarkPrevious
- def putMarkPrevious (self,rule):
- 
-     quote = self.quoteString
-@@ -4577,10 +4578,10 @@
+     seq = rule.getSeq(rule.name)
+@@ -4555,12 +4512,10 @@
          rule.getBoolAttrib('at_word_end'),
          rule.getBoolAttrib('exclude_match'),
      )
 -
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
--#@+node:ekr.20060824111500.137: *7* putSeq
-+#@+node:ekr.20060824111500.137: *7* Mode.putSeq
- def putSeq (self,rule):
+ #@+node:ekr.20060824111500.136: *7* Mode.putMarkPrevious
+-def putMarkPrevious (self,rule):
++def putMarkPrevious (self, rule):
  
      quote = self.quoteString
-@@ -4599,10 +4600,10 @@
+     seq = rule.getSeq(rule.name)
+@@ -4578,11 +4533,10 @@
+         rule.getBoolAttrib('at_word_end'),
+         rule.getBoolAttrib('exclude_match'),
+     )
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return seq[0]
+ #@+node:ekr.20060824111500.137: *7* Mode.putSeq
+-def putSeq (self,rule):
++def putSeq (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+@@ -4600,16 +4554,14 @@
          rule.getBoolAttrib('at_word_end'),
          quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
--#@+node:ekr.20060824111500.138: *7* putSeqRegexp
-+#@+node:ekr.20060824111500.138: *7* Mode.putSeqRegexp
- def putSeqRegexp (self,rule):
+ #@+node:ekr.20060824111500.138: *7* Mode.putSeqRegexp
+-def putSeqRegexp (self,rule):
++def putSeqRegexp (self, rule):
  
      quote = self.quoteString
-@@ -4624,10 +4625,10 @@
+     seq = rule.getSeq(rule.name)
+     hash_char = rule.getStrAttrib('hash_char') or seq[0]
+-    # g.trace('hash_char',hash_char)
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+@@ -4625,25 +4577,24 @@
          rule.getBoolAttrib('at_word_end'),
          quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-     return hash_char # Bug fix: was seq[0]
--#@+node:ekr.20060824111500.139: *7* putSpan
-+#@+node:ekr.20060824111500.139: *7* Mode.putSpan
- def putSpan (self,rule):
- 
-     quote = self.quoteString
-@@ -4652,10 +4653,10 @@
-         rule.getBoolAttrib('no_line_break'),
-         rule.getBoolAttrib('no_word_break'),
-     )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-     return begin[0]
--#@+node:ekr.20060824111500.140: *7* putSpanRegexp
-+#@+node:ekr.20060824111500.140: *7* Mode.putSpanRegexp
- def putSpanRegexp (self,rule):
- 
-     quote = self.quoteString
-@@ -4682,10 +4683,10 @@
-         rule.getBoolAttrib('no_line_break'),
-         rule.getBoolAttrib('no_word_break'),
-     )
--
--    self.putTripleString(s)
--    return hash_char # Bug fix: was begin[0]
--#@+node:ekr.20060824111500.141: *7* putTerminate
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+-    return hash_char # Bug fix: was seq[0]
 +    return hash_char
-+#@+node:ekr.20060824111500.141: *7* Mode.putTerminate
- def putTerminate (self,rule):
+ #@+node:ekr.20060824111500.139: *7* Mode.putSpan
+-def putSpan (self,rule):
++def putSpan (self, rule):
  
      quote = self.quoteString
-@@ -4700,9 +4701,9 @@
+-    begin,end = rule.getSpan()
++    begin, end = rule.getSpan()
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_span(s, i, kind=%s, begin=%s, end=%s,
+         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+-        delegate=%s,exclude_match=%s,
++        delegate=%s, exclude_match=%s,
+         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+         self.fileModeName,
          self.handlerCount,
          quote(rule.getStrAttrib('type').lower()),
-         n)
--
--    self.putTripleString(s)
--#@+node:ekr.20060824111500.142: *6* putRules
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-+#@+node:ekr.20060824111500.142: *6* Mode.putRules
- def putRules (self):
+-        quote(begin),quote(end),
++        quote(begin), quote(end),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+@@ -4653,27 +4604,25 @@
+         rule.getBoolAttrib('no_line_break'),
+         rule.getBoolAttrib('no_word_break'),
+     )
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return begin[0]
+ #@+node:ekr.20060824111500.140: *7* Mode.putSpanRegexp
+-def putSpanRegexp (self,rule):
++def putSpanRegexp (self, rule):
  
-     '''Create all rule matchers, a rules dict for each ruleset and x.rulesDictDict.'''
-@@ -4718,11 +4719,11 @@
+     quote = self.quoteString
+-    begin,end = rule.getSpan()
++    begin, end = rule.getSpan()
+     hash_char = rule.getStrAttrib('hash_char') or begin[0]
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_span_regexp(s, i, kind=%s, begin=%s, end=%s,
+         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+-        delegate=%s,exclude_match=%s,
++        delegate=%s, exclude_match=%s,
+         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+         self.fileModeName,
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+-        quote(begin),quote(end),
+-        # quote(rule.getStrAttrib('hash_char')),
++        quote(begin), quote(end),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+@@ -4683,25 +4632,24 @@
+         rule.getBoolAttrib('no_line_break'),
+         rule.getBoolAttrib('no_word_break'),
+     )
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return hash_char
+ #@+node:ekr.20060824111500.141: *7* Mode.putTerminate
+-def putTerminate (self,rule):
++def putTerminate (self, rule):
+ 
+     quote = self.quoteString
+ 
+     n = rule.getIntAttrib('at_char')
+-    if n == None: return
+-
++    if n == None:
++        return
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_terminate(s, i, kind=%s, at_char=%d)''' % (
+         self.fileModeName,
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+-        n)
+-    ### self.putTripleString(s)
++        n,
++    )
+     self.put(textwrap.dedent(s))
+ #@+node:ekr.20060824111500.142: *6* Mode.putRules
+ def putRules (self):
+@@ -4711,31 +4659,31 @@
+     d = {} ; d2Count = 0
+     for ruleset in self.rulesets:
+         d2 = {}
+-        prefix = '%s_%s'% (self.modeName,ruleset.name)
++        prefix = '%s_%s'% (self.modeName, ruleset.name)
+         self.put('# Rules for %s ruleset.\n' % (prefix))
+         for rule in ruleset.rules:
+             ch = self.putRule(rule)
+             self.put('\n')
              if ch == 'keywords':
                  for ch in self.keywordChars:
-                     theList = d2.get(ch,[])
--                    theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
-+                    theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
+-                    theList = d2.get(ch,[])
++                    theList = d2.get(ch, [])
+                     theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                      d2 [ch] = theList
              elif ch:
-                 theList = d2.get(ch,[])
--                theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
-+                theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
+-                theList = d2.get(ch,[])
++                theList = d2.get(ch, [])
+                 theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                  d2 [ch] = theList
          # Create the rules dict for the ruleset.
          self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
-@@ -4733,7 +4734,7 @@
+         d2Count += 1
+         name = 'rulesDict%d' % d2Count
+-        self.putDictOfLists(name,d2)
++        self.putDictOfLists(name, d2)
+         d [prefix] = name
      # Create rulesDictDict.
      self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
      self.putDict('rulesDictDict', d, escape=False)
--#@+node:ekr.20060824111500.143: *6* write
-+#@+node:ekr.20060824111500.143: *6* Mode.write
- def write (self,theFile,language):
+ #@+node:ekr.20060824111500.143: *6* Mode.write
+-def write (self,theFile,language):
++def write (self, theFile, language):
  
      # Compute all the letters that can occur in a keyword.
-@@ -4757,29 +4758,25 @@
+     self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
+@@ -4745,10 +4693,9 @@
+             for key in list(d.keys()):
+                 key = g.toUnicode(key)
+                 for ch in key:
+-                    if ch not in self.keywordChars and ch not in (' ','\t','\n'):
++                    if ch not in self.keywordChars and ch not in (' ', '\t', '\n'):
+                         self.keywordChars.append(ch)
+         
+-    # g.trace('keywordChars',repr(self.keywordChars))
+     self.keywordChars = ''.join(list(set(self.keywordChars)))
+     self.outputFile = theFile
+     self.put('# Leo colorizer control file for %s mode.\n' % language)
+@@ -4758,57 +4705,81 @@
      self.putKeywordsData()
      self.putRules()
      self.putImportDict()
--#@+node:ekr.20060824111500.144: *5*  Printing...
--#@+node:ekr.20060824111500.145: *6* printModeAttributes, printRulesetAttributes &amp; printAttributesHelper
-+#@+node:ekr.20060824111500.144: *5*  Mode:Printing...
-+#@+node:ekr.20060824111500.145: *6* Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper
- def printModeAttributes (self):
--
--    self.printAttributesHelper('mode attributes',self.attributes)
-+    self.printAttributesHelper('mode attributes', self.attributes)
- 
- def printRulesetAttributes (self,ruleset,tag=None):
--
--    if not tag: tag = 'main ruleset'
--
--    self.printAttributesHelper(tag,ruleset.attributes)
--
--def printAttributesHelper (self,kind,attrs):
--
-+    if not tag:
-+        tag = 'main ruleset'
-+    self.printAttributesHelper(tag, ruleset.attributes)
++#@+node:ekr.20060824111500.127: *5* Mode.putList
++def putList (self, name, theList, escape=True, lineCount=0):
 +
-+def printAttributesHelper (self, kind, attrs):
-     print('%-15s' % (kind),'attrs:',attrs)
--#@+node:ekr.20060824111500.146: *6* printProperty
-+#@+node:ekr.20060824111500.146: *6* Mode.printProperty
- def printProperty (self,theProperty):
--
++    def comma(i):
++        return ','
++
++    def nl(i):
++        ### return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
++        return '\n' if lineCount == 0 or (i%lineCount)==lineCount-1 else ' '
++
++    def tab(i, n):
++        return '\t' if i &gt; 0 and nl(i-1) != ' ' else ''
++
++    ### Remove escape kwarg?
++    esc = self.escapeString if escape else lambda a:a
++    result = []
++    n = len(theList)
++    for i in range(n):
++        result.append('%s%s%s%s' % (tab(i, n), esc(theList[i]), comma(i), nl(i)))
++    vals = ''.join(result)
++    self.put('%s = [%s]\n\n' % (name, vals))
+ #@+node:ekr.20060824111500.144: *5*  Mode:Printing...
++### Remove these?
+ #@+node:ekr.20060824111500.145: *6* Mode.printModeAttributes, printRulesetAttributes &amp; printAttributesHelper
+ def printModeAttributes (self):
+     self.printAttributesHelper('mode attributes', self.attributes)
+ 
+-def printRulesetAttributes (self,ruleset,tag=None):
++def printRulesetAttributes (self, ruleset, tag=None):
+     if not tag:
+         tag = 'main ruleset'
+     self.printAttributesHelper(tag, ruleset.attributes)
+ 
+ def printAttributesHelper (self, kind, attrs):
+-    print('%-15s' % (kind),'attrs:',attrs)
++    print('%-15s' % (kind), 'attrs:', attrs)
+ #@+node:ekr.20060824111500.146: *6* Mode.printProperty
+-def printProperty (self,theProperty):
++def printProperty (self, theProperty):
      # A property is a bunch.
      d = theProperty.attributes
      if d:
-         self.printAttributesHelper('property',d)
--#@+node:ekr.20060824111500.147: *6* printRule
-+#@+node:ekr.20060824111500.147: *6* Mode.printRule
- def printRule (self,rule):
+-        self.printAttributesHelper('property',d)
++        self.printAttributesHelper('property', d)
+ #@+node:ekr.20060824111500.147: *6* Mode.printRule
+-def printRule (self,rule):
++def printRule (self, rule):
  
      # A rule is a g.Bunch.
-@@ -4803,56 +4800,50 @@
-             if d:  print('attrs:',d) ## ,
-             if d2: print('contents:',d2) ## ,
+     if rule.name == 'keywords':
+-        print('%-15s' % ('rule:keywords')) ## ,
++        print('%-15s' % ('rule:keywords'))
+         d = rule.keywordsDict
+         d2 = {}
+         for key in d:
+             val = d.get(key)
+-            d2 [val] = d2.get(val,0) + 1
++            d2 [val] = d2.get(val, 0) + 1
+         keys = list(d2.keys())
+         keys.sort()
+         for key in keys:
+-            print('%s: %d' % (key,d2.get(key))) ## ,
++            print('%s: %d' % (key, d2.get(key)))
+         print()
+     else:
+         d = rule.attributes
+         d2 = rule.contents
+         if d or d2:
+-            print('%-15s' % ('rule:'+rule.name)) ## ,
+-            if d:  print('attrs:',d) ## ,
+-            if d2: print('contents:',d2) ## ,
++            print('%-15s' % ('rule:'+rule.name))
++            if d:
++                print('attrs:', d)
++            if d2:
++                print('contents:', d2)
              print()
--#@+node:ekr.20060824111500.148: *6* printRuleset
-+#@+node:ekr.20060824111500.148: *6* Mode.printRuleset
- def printRuleset (self,ruleset,tag):
- 
-     self.printRulesetAttributes(ruleset,tag)
+ #@+node:ekr.20060824111500.148: *6* Mode.printRuleset
+-def printRuleset (self,ruleset,tag):
+-
+-    self.printRulesetAttributes(ruleset,tag)
++def printRuleset (self, ruleset, tag):
++
++    self.printRulesetAttributes(ruleset, tag)
  
      for rule in self.rulesets[0].rules:
          self.printRule(rule)
--#@+node:ekr.20060824111500.150: *5* doAttribute
-+#@+node:ekr.20060824111500.150: *5* Mode.doAttribute
- def doAttribute (self,name,val):
+ #@+node:ekr.20060824111500.150: *5* Mode.doAttribute
+-def doAttribute (self,name,val):
++def doAttribute (self, name, val):
  
      name = str(name.lower())
--
      if name in self.boolAttrs:
-         val = True if val.lower() == 'true' else False
-     else:
-         val = str(val) # Do NOT lower this value!
--
+@@ -4818,19 +4789,15 @@
      if self.rule:
          d = self.rule.attributes
          d [name] = val
--        self.numberOfRuleAttributes += 1
-+        ### self.numberOfRuleAttributes += 1
+-        ### self.numberOfRuleAttributes += 1
      elif self.presentProperty:
          d = self.presentProperty.get('attributes')
          d [name] = val
--        self.numberOfPropertyAttributes += 1
-+        ### self.numberOfPropertyAttributes += 1
+-        ### self.numberOfPropertyAttributes += 1
      elif self.inRules:
          self.rulesetAttributes[name] = val
--        self.numberOfAttributes += 1
-+        ### self.numberOfAttributes += 1
+-        ### self.numberOfAttributes += 1
      else:
          self.attributes[name] = val
--        self.numberOfAttributes += 1
--#@+node:ekr.20060824111500.151: *5* doContent
-+        ### self.numberOfAttributes += 1
-+#@+node:ekr.20060824111500.151: *5* Mode.doContent
- def doContent (self,elementName,content):
+-        ### self.numberOfAttributes += 1
+ #@+node:ekr.20060824111500.151: *5* Mode.doContent
+-def doContent (self,elementName,content):
++def doContent (self, elementName, content):
  
      if not content:
          return
--
-     name = str(elementName.lower())
--
-     if self.inRule('keywords'):
--        # g.trace('in keywords',name,content)
-         d = self.rule.keywordsDict
+@@ -4840,11 +4807,11 @@
          d [ content ] = name
--
      elif self.rule:
          d = self.rule.contents
-         s = d.get(name,'')
+-        s = d.get(name,'')
++        s = d.get(name, '')
          d [name] = s + g.toUnicode(content)
          self.contents = d
--#@+node:ekr.20060824111500.152: *5* endElement
-+#@+node:ekr.20060824111500.152: *5* Mode.endElement
- def endElement (self,elementName):
+ #@+node:ekr.20060824111500.152: *5* Mode.endElement
+-def endElement (self,elementName):
++def endElement (self, elementName):
  
      name = elementName.lower()
-@@ -4879,13 +4870,11 @@
+ 
+@@ -4852,7 +4819,7 @@
+         self.inProps = True
+     if name == 'rules':
+         self.inRules = False
+-        ruleset = Ruleset(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
++        ruleset = Ruleset(self.rulesetAttributes, self.keywords, self.rulesetProperties, self.rules)
+         self.rulesets.append(ruleset)
+     if name == 'property':
+         bunch = self.presentProperty
+@@ -4862,52 +4829,51 @@
+             else:
+                 self.modeProperties.append(bunch)
+         else:
+-            self.error('end %s not matched by start %s' % (name,name))
++            self.error('end %s not matched by start %s' % (name, name))
+         self.presentProperty = None
+     if name in self.ruleElements:
+         if self.inRule(name):
+             self.rules.append(self.rule)
              self.rule = None
          else:
-             self.error('end %s not matched by start %s' % (name,name))
--#@+node:ekr.20060824111500.153: *5* error
-+#@+node:ekr.20060824111500.153: *5* Mode.error
- def error (self,message):
--
--    self.numberOfErrors += 1
--
+-            self.error('end %s not matched by start %s' % (name,name))
++            self.error('end %s not matched by start %s' % (name, name))
+ #@+node:ekr.20060824111500.153: *5* Mode.error
+-def error (self,message):
++def error (self, message):
      self.contentHandler.error(message)
--#@+node:ekr.20060824111500.154: *5* getters
-+    ### self.numberOfErrors += 1
-+#@+node:ekr.20060824111500.154: *5* Mode:getters
+-    ### self.numberOfErrors += 1
+ #@+node:ekr.20060824111500.154: *5* Mode:getters
  def getAttributes (self):
      return self.attributes
  
-@@ -4935,11 +4924,11 @@
+-def getAttributesForRuleset (self,ruleset):
++def getAttributesForRuleset (self, ruleset):
+     bunch = ruleset
+     return bunch.attributes
+ 
+ def getFileName (self):
+     return self.fileName
+ 
+-def getKeywords (self,n,ruleset):
++def getKeywords (self, n, ruleset):
+     bunch = ruleset
+     keywords = bunch.keywords
+     if keywords:
+-        return keywords.get('keyword%d'%(n),[])
++        return keywords.get('keyword%d'%(n), [])
+     return []
+ 
+ def getLanguage (self):
+-    path,name = g.os_path_split(self.fileName)
+-    language,ext = g.os_path_splitext(name)
++    path, name = g.os_path_split(self.fileName)
++    language, ext = g.os_path_splitext(name)
+     return language
+ 
+ def getPropertiesForMode (self):
+     return self.props
+ 
+-def getPropertiesForRuleset (self,name=''):
++def getPropertiesForRuleset (self, name=''):
+     bunch = self.getRuleset(name)
+     if bunch:
+         return bunch.properties
+     else:
+         return []
+ 
+-def getRuleset(self,name=''):
++def getRuleset(self, name=''):
+     if not name:
+         return self.rulesets[0] # Return the main ruleset.
+     for ruleset in self.rulesets:
+@@ -4918,18 +4884,18 @@
+ def getRulesets(self):
+     return self.rulesets
+ 
+-def getRulesForRuleset (self,name=''):
++def getRulesForRuleset (self, name=''):
+     bunch = self.getRuleset(name)
+     if bunch:
          return bunch.rules
      else:
          return []
--#@+node:ekr.20060824111500.155: *5* inRule
-+#@+node:ekr.20060824111500.155: *5* Mode.inRule
- def inRule (self,elementName):
+ #@+node:ekr.20060824111500.155: *5* Mode.inRule
+-def inRule (self,elementName):
++def inRule (self, elementName):
  
      return self.rule and self.rule.name == elementName
--#@+node:ekr.20060824111500.156: *5* startElement
-+#@+node:ekr.20060824111500.156: *5* Mode.startElement
- def startElement (self,elementName):
+ #@+node:ekr.20060824111500.156: *5* Mode.startElement
+-def startElement (self,elementName):
++def startElement (self, elementName):
  
      name = elementName.lower()
-@@ -4976,6 +4965,7 @@
+ 
+@@ -4943,7 +4909,7 @@
+         self.rules=[]
+     if name == 'property':
+         if self.inProps:
+-            self.presentProperty = g.bunch(name=name,attributes={})
++            self.presentProperty = g.bunch(name=name, attributes={})
+         else:
+             self.error('property not in props element')
+     if name in self.ruleElements:
+@@ -4959,16 +4925,13 @@
+     @others
+ #@+node:ekr.20060824111500.158: *5* ruleset.ctor &amp; __str__
+ def __init__ (self, attributes, keywords, properties, rules):
+-
+-    self.name=munge(attributes.get('set','main'))
++    
++    self.name=munge(attributes.get('set', 'main'))
+     self.attributes=attributes.copy() # A dict.
      self.properties=properties[:] # A list.
      self.keywords=keywords # A bunch.
      self.rules=rules[:] # A list.
-+    ### g.printObj(self.rules, tag='Rules')
+-    ### g.printObj(self.rules, tag='Rules')
      self.defaultColor = self.attributes.get('default')
-     if trace:
-         print('ruleset:', self.name or 'main')
-@@ -4986,26 +4976,28 @@
- __repr__ = __str__
- #@+node:ekr.20060824111500.159: *4* class Rule
- class Rule:
--
--    '''A class to represent one xml rule.'''
-+    """A class representing one xml rule."""
-+    
-+    def __init__ (self, name):
-+        if trace:
-+            print('rule', name)
-+        self.attributes = {}
-+        self.contents = {}
-+        self.keywordsDict = {}
-+        self.name = name
-+
-+    def __str__ (self):
-+        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
-+            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
-+        return (
-+            f"&lt;Rule {self.name}\n"
-+            f"   attr: {g.dictToString(self.attributes)}\n"
-+            f"conents: {g.dictToString(self.contents)}"
-+        )
-+
-+    __repr__ = __str__
+-    if trace:
+-        print('ruleset:', self.name or 'main')
+ 
+ def __str__ (self):
+     return '&lt;ruleset %s&gt;' % self.name
+@@ -4979,16 +4942,12 @@
+     """A class representing one xml rule."""
+     
+     def __init__ (self, name):
+-        if trace:
+-            print('rule', name)
+         self.attributes = {}
+         self.contents = {}
+         self.keywordsDict = {}
+         self.name = name
+ 
+     def __str__ (self):
+-        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
+-            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
+         return (
+             f"&lt;Rule {self.name}\n"
+             f"   attr: {g.dictToString(self.attributes)}\n"
+@@ -4999,19 +4958,18 @@
  
      @others
--#@+node:ekr.20060824111500.160: *5* rule.ctor &amp; __str__
--def __init__ (self, name):
--
--    if trace:
--        print('rule', name)
--    self.attributes = {}
--    self.contents = {}
--    self.keywordsDict = {}
--    self.name = name
--
--def __str__ (self):
--
--    return '&lt;rule %s\nattr: %s\ncontents: %s&gt;' % (
--        self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
--
--__repr__ = __str__
  #@+node:ekr.20060824111500.161: *5* rule.getters
- def getBoolAttrib(self,name):
+-def getBoolAttrib(self,name):
++def getBoolAttrib(self, name):
      d = self.attributes
+     val = d.get(name)
+     return 'True' if val else 'False'
+ 
+-def getIntAttrib(self,name):
++def getIntAttrib(self, name):
+     d = self.attributes
+     val = d.get(name)
+     if val is not None:
+         try:
+             val = int(val)
+         except ValueError:
+-            # g.trace('bad int argument: %s = %s' % (name,val))
+             g.trace(f"bad int argument: {name} = {val!r}")
+             val = None
+     return val
+@@ -5022,12 +4980,12 @@
+     end   = d.get('end', '')
+     return begin, end
+ 
+-def getStrAttrib(self,name):
++def getStrAttrib(self, name):
+     d = self.attributes
+     val = d.get(name, '')
+     return str(val)
+ 
+-def getSeq(self,kind):
++def getSeq(self, kind):
+     d = self.contents
+     return d.get(kind, '')
+ #@+node:ekr.20060824111500.162: *4* class ContentHandler(xml.sax.saxutils.XMLGenerator)
+@@ -5048,7 +5006,7 @@
+     # Options...
+     self.ignoreWs = True  # True: don't print contents with only ws.
+     self.newLineAfterStartElement = [
+-        'keywords','mode','props','property','rules','span','eol_span',
++        'keywords', 'mode', 'props', 'property', 'rules', 'span', 'eol_span',
+     ]
+ 
+     # Semantics: most of these should be mode ivars.
+@@ -5069,7 +5027,7 @@
+             for name in attrs.getNames()
+     ]
+ #@+node:ekr.20060824111500.166: *6* attrsToString
+-def attrsToString (self,attrs, sep='\n'):
++def attrsToString (self, attrs, sep='\n'):
+ 
+     '''Convert the attributes to a string.
+ 
+@@ -5088,17 +5046,15 @@
+     print(f"\n\nXML error: {message}\n")
+     self.errors += 1
+ #@+node:ekr.20060824111500.169: *6* printStartElement
++### Remove ??
++
+ def printStartElement(self, name, attrs):
+ 
+     name_s = g.toEncodedString(name, "ascii").strip()
+     if attrs.getLength() &gt; 0:
+         attrs_s = self.attrsToString(attrs, sep=' ')
+-        # print('&lt;%s %s&gt;' % (
+-            # self.clean(name).strip(),
+-            # self.attrsToString(attrs,sep=' ')))
+         print(f"&lt;{name_s} {attrs_s}")
+     else:
+-        # print('&lt;%s&gt;' % (self.clean(name).strip()))
+         print(f"&lt;{name_s}&gt;")
+         
+     if name.lower() in self.newLineAfterStartElement:
+@@ -5116,29 +5072,26 @@
+ def ignorableWhitespace(self):
+     g.trace()
+ 
+-def processingInstruction (self,target,data):
++def processingInstruction (self, target, data):
+     g.trace()
+ 
+-def skippedEntity(self,name):
++def skippedEntity(self, name):
+     g.trace(name)
+ 
+-def startElementNS(self,name,qname,attrs):
++def startElementNS(self, name, qname, attrs):
+     g.trace(name)
+ 
+-def endElementNS(self,name,qname):
++def endElementNS(self, name, qname):
+     g.trace(name)
+ #@+node:ekr.20060824111500.176: *6* characters
+ def characters(self, content):
+     content = content.replace('\r', '')
+     if content.strip():
+         content = content.strip()
+-    ### content = self.clean(content)
+     content = g.toEncodedString(content, "ascii")
+-
+-    # elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
+     elementName = self.elementStack[-1].lower() if self.elementStack else '&lt;no element name&gt;'
+     if self.mode:
+-        self.mode.doContent(elementName,content)
++        self.mode.doContent(elementName, content)
+     else:
+         self.error('characters outside of mode')
+ #@+node:ekr.20060824111500.177: *6* elements &amp; helpers
+@@ -5162,7 +5115,7 @@
+     elif self.mode:
+         self.mode.startElement(elementName)
+         for bunch in self.attrsToList(attrs):
+-            self.mode.doAttribute(bunch.name,bunch.val)
++            self.mode.doAttribute(bunch.name, bunch.val)
+     else:
+         self.error('Start element appears outside of Mode:%s' % elementName)
+         for bunch in self.attrsToList(attrs):
 @language python
 </t>
-<t tx="ekr.20220927112605.30">def putKeywordsData (self):
+<t tx="ekr.20220927115135.30">def putKeywordsData (self):
 
     dd = {}
     for ruleset in self.rulesets:
@@ -6184,10 +6967,11 @@ def putDictOfLists (self, name, theDict, strings=False):
         for rule in ruleset.rules:
             if rule.name == 'keywords':
                 # d = rule.keywordsDict
-                d = { g.toUnicode(key): g.toUnicode(val)
-                    for key, val in rule.keywordsDict.items() if key.strip() }
-                # g.trace()
-                # g.printObj(d)
+                d = {
+                    g.toUnicode(key): g.toUnicode(val)
+                        for key, val in rule.keywordsDict.items()
+                            if key.strip()
+                }
                 for key in sorted(set(d.keys())):
                     if ' ' in key or '\t' in key:
                         del d [key]
@@ -6207,8 +6991,37 @@ def putDictOfLists (self, name, theDict, strings=False):
     self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
     self.putDict('keywordsDictDict',dd,escape=False)
 </t>
-<t tx="ekr.20220927112605.31">Only headline has changed</t>
-<t tx="ekr.20220927112605.32">def putList (self, name, theList, escape=True, lineCount=0):
+<t tx="ekr.20220927115135.31">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -4,16 +4,17 @@
+         return ','
+ 
+     def nl(i):
+-        return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
++        ### return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
++        return '\n' if lineCount == 0 or (i%lineCount)==lineCount-1 else ' '
+ 
+-    def tab(i,n):
++    def tab(i, n):
+         return '\t' if i &gt; 0 and nl(i-1) != ' ' else ''
+ 
+-    # esc = g.choose(escape,self.escapeString,lambda a:a)
++    ### Remove escape kwarg?
+     esc = self.escapeString if escape else lambda a:a
+     result = []
+     n = len(theList)
+     for i in range(n):
+-        result.append('%s%s%s%s' % (tab(i,n), esc(theList[i]), comma(i), nl(i)))
++        result.append('%s%s%s%s' % (tab(i, n), esc(theList[i]), comma(i), nl(i)))
+     vals = ''.join(result)
+-    self.put('%s = [%s]\n\n' % (name,vals))
++    self.put('%s = [%s]\n\n' % (name, vals))
+@language python
+</t>
+<t tx="ekr.20220927115135.32">def putList (self, name, theList, escape=True, lineCount=0):
 
     def comma(i):
         return ','
@@ -6228,8 +7041,23 @@ def putDictOfLists (self, name, theDict, strings=False):
     vals = ''.join(result)
     self.put('%s = [%s]\n\n' % (name,vals))
 </t>
-<t tx="ekr.20220927112605.33">Only headline has changed</t>
-<t tx="ekr.20220927112605.34">def putModeProperties (self,language):
+<t tx="ekr.20220927115135.33">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,7 +1,6 @@
+-def putModeProperties (self,language):
++def putModeProperties (self, language):
+ 
+     d = {}
+-    ### self.put('# Properties for %s mode.\n' % (language))
+     self.put(f"# Properties for {language} mode.\n")
+     for prop in self.modeProperties:
+         d2 = prop.attributes
+@language python
+</t>
+<t tx="ekr.20220927115135.34">def putModeProperties (self,language):
 
     d = {}
     ### self.put('# Properties for %s mode.\n' % (language))
@@ -6240,63 +7068,44 @@ def putDictOfLists (self, name, theDict, strings=False):
         d [name] = d2.get('value')
     self.putDict('properties', d)
 </t>
-<t tx="ekr.20220927112605.35">@ignore
+<t tx="ekr.20220927115135.35">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -13,7 +13,7 @@
-         'span_regexp':      self.putSpanRegexp,
-         'terminate':        self.putTerminate,
-     }
--    f = d.get(rule.name,self.putBadRule)
-+    f = d.get(rule.name, self.putBadRule)
-     val = f (rule)
-     self.handlerCount += 1
-     return val
+@@ -1,3 +1,3 @@
+-def putBadRule (self,rule):
++def putBadRule (self, rule):
+ 
+     self.put('\n\n# *****no output creator for %s*****' % rule.name)
 @language python
 </t>
-<t tx="ekr.20220927112605.36">def putRule (self, rule):
-    """Call the rule creator for the given rule."""
-    d = {
-        'eol_span':         self.putEolSpan,
-        'eol_span_regexp':  self.putEolSpanRegexp,
-        'import':           self.putImport,
-        'keywords':         self.putKeywords,
-        'mark_following':   self.putMarkFollowing,
-        'mark_previous':    self.putMarkPrevious,
-        'seq':              self.putSeq,
-        'seq_regexp':       self.putSeqRegexp,
-        'span':             self.putSpan,
-        'span_regexp':      self.putSpanRegexp,
-        'terminate':        self.putTerminate,
-    }
-    f = d.get(rule.name,self.putBadRule)
-    val = f (rule)
-    self.handlerCount += 1
-    return val
-</t>
-<t tx="ekr.20220927112605.37">Only headline has changed</t>
-<t tx="ekr.20220927112605.38">def putBadRule (self,rule):
+<t tx="ekr.20220927115135.36">def putBadRule (self,rule):
 
     self.put('\n\n# *****no output creator for %s*****' % rule.name)
 </t>
-<t tx="ekr.20220927112605.39">@ignore
+<t tx="ekr.20220927115135.37">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -19,5 +19,6 @@
+@@ -1,4 +1,4 @@
+-def putEolSpan (self,rule):
++def putEolSpan (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+@@ -18,7 +18,5 @@
+         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
          rule.getBoolAttrib('exclude_match'),
      )
- 
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
 @language python
 </t>
-<t tx="ekr.20220927112605.40">def putEolSpan (self,rule):
+<t tx="ekr.20220927115135.38">def putEolSpan (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6317,26 +7126,44 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('exclude_match'),
     )
 
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20220927112605.41">@ignore
+<t tx="ekr.20220927115135.39">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -22,5 +22,6 @@
+@@ -1,9 +1,8 @@
+-def putEolSpanRegexp (self,rule):
++def putEolSpanRegexp (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+     hash_char = rule.getStrAttrib('hash_char') or seq[0]
+-    # g.trace('hash_char',hash_char)
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+@@ -14,14 +13,11 @@
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+         quote(seq),
+-        # quote(rule.getStrAttrib('hash_char')),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
          rule.getBoolAttrib('exclude_match'),
      )
- 
--    self.putTripleString(s)
--    return hash_char  # Bug fix: was seq[0]
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-+    return hash_char
+-
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return hash_char
 @language python
 </t>
-<t tx="ekr.20220927112605.42">def putEolSpanRegexp (self,rule):
+<t tx="ekr.20220927115135.40">def putEolSpanRegexp (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6360,11 +7187,26 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('exclude_match'),
     )
 
-    self.putTripleString(s)
-    return hash_char  # Bug fix: was seq[0]
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
+    return hash_char
 </t>
-<t tx="ekr.20220927112605.43">Only headline has changed</t>
-<t tx="ekr.20220927112605.44"># Do nothing here: putImportDict creates x.importDict.
+<t tx="ekr.20220927115135.41">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,6 +1,6 @@
+ # Do nothing here: putImportDict creates x.importDict.
+ 
+-def putImport (self,rule):
++def putImport (self, rule):
+ 
+     # Decrement the count to indicate that this method did not generate a rule.
+     self.handlerCount -= 1
+@language python
+</t>
+<t tx="ekr.20220927115135.42"># Do nothing here: putImportDict creates x.importDict.
 
 def putImport (self,rule):
 
@@ -6372,49 +7214,58 @@ def putImport (self,rule):
     self.handlerCount -= 1
     return ''
 </t>
-<t tx="ekr.20220927112605.45">@ignore
+<t tx="ekr.20220927115135.43">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -5,6 +5,6 @@
+@@ -1,10 +1,9 @@
+-def putKeywords (self,rule):
++def putKeywords (self, rule):
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
      return colorer.match_keywords(s, i)''' % (
      self.fileModeName,
      self.handlerCount)
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return 'keywords'
 @language python
 </t>
-<t tx="ekr.20220927112605.46">def putKeywords (self,rule):
+<t tx="ekr.20220927115135.44">def putKeywords (self,rule):
 
     s = '''\n\
 def %s_rule%d(colorer, s, i):
     return colorer.match_keywords(s, i)''' % (
     self.fileModeName,
     self.handlerCount)
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return 'keywords'
 </t>
-<t tx="ekr.20220927112605.47">@ignore
+<t tx="ekr.20220927115135.45">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -17,5 +17,6 @@
+@@ -1,4 +1,4 @@
+-def putMarkFollowing (self,rule):
++def putMarkFollowing (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+@@ -16,7 +16,5 @@
+         rule.getBoolAttrib('at_word_end'),
          rule.getBoolAttrib('exclude_match'),
      )
- 
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
 @language python
 </t>
-<t tx="ekr.20220927112605.48">def putMarkFollowing (self,rule):
+<t tx="ekr.20220927115135.46">def putMarkFollowing (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6433,26 +7284,31 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('exclude_match'),
     )
 
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20220927112605.49">@ignore
+<t tx="ekr.20220927115135.47">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -16,6 +16,6 @@
+@@ -1,4 +1,4 @@
+-def putMarkPrevious (self,rule):
++def putMarkPrevious (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+@@ -16,6 +16,5 @@
          rule.getBoolAttrib('at_word_end'),
          rule.getBoolAttrib('exclude_match'),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
 @language python
 </t>
-<t tx="ekr.20220927112605.50">def putMarkPrevious (self,rule):
+<t tx="ekr.20220927115135.48">def putMarkPrevious (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6470,27 +7326,31 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         rule.getBoolAttrib('exclude_match'),
     )
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20220927112605.51">@ignore
+<t tx="ekr.20220927115135.49">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -16,6 +16,6 @@
+@@ -1,4 +1,4 @@
+-def putSeq (self,rule):
++def putSeq (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+@@ -16,6 +16,5 @@
          rule.getBoolAttrib('at_word_end'),
          quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return seq[0]
 @language python
 </t>
-<t tx="ekr.20220927112605.52">def putSeq (self,rule):
+<t tx="ekr.20220927115135.50">def putSeq (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6508,27 +7368,37 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
     )
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return seq[0]
 </t>
-<t tx="ekr.20220927112605.53">@ignore
+<t tx="ekr.20220927115135.51">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -19,6 +19,6 @@
+@@ -1,9 +1,8 @@
+-def putSeqRegexp (self,rule):
++def putSeqRegexp (self, rule):
+ 
+     quote = self.quoteString
+     seq = rule.getSeq(rule.name)
+     hash_char = rule.getStrAttrib('hash_char') or seq[0]
+-    # g.trace('hash_char',hash_char)
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+@@ -19,6 +18,5 @@
          rule.getBoolAttrib('at_word_end'),
          quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-     return hash_char # Bug fix: was seq[0]
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+-    return hash_char # Bug fix: was seq[0]
++    return hash_char
 @language python
 </t>
-<t tx="ekr.20220927112605.54">def putSeqRegexp (self,rule):
+<t tx="ekr.20220927115135.52">def putSeqRegexp (self,rule):
 
     quote = self.quoteString
     seq = rule.getSeq(rule.name)
@@ -6549,27 +7419,48 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('at_word_end'),
         quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
     )
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return hash_char # Bug fix: was seq[0]
 </t>
-<t tx="ekr.20220927112605.55">@ignore
+<t tx="ekr.20220927115135.53">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -22,6 +22,6 @@
+@@ -1,18 +1,18 @@
+-def putSpan (self,rule):
++def putSpan (self, rule):
+ 
+     quote = self.quoteString
+-    begin,end = rule.getSpan()
++    begin, end = rule.getSpan()
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_span(s, i, kind=%s, begin=%s, end=%s,
+         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+-        delegate=%s,exclude_match=%s,
++        delegate=%s, exclude_match=%s,
+         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+         self.fileModeName,
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+-        quote(begin),quote(end),
++        quote(begin), quote(end),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+@@ -22,6 +22,5 @@
          rule.getBoolAttrib('no_line_break'),
          rule.getBoolAttrib('no_word_break'),
      )
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
      return begin[0]
 @language python
 </t>
-<t tx="ekr.20220927112605.56">def putSpan (self,rule):
+<t tx="ekr.20220927115135.54">def putSpan (self,rule):
 
     quote = self.quoteString
     begin,end = rule.getSpan()
@@ -6593,28 +7484,50 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('no_line_break'),
         rule.getBoolAttrib('no_word_break'),
     )
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
     return begin[0]
 </t>
-<t tx="ekr.20220927112605.57">@ignore
+<t tx="ekr.20220927115135.55">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -24,6 +24,6 @@
+@@ -1,20 +1,19 @@
+-def putSpanRegexp (self,rule):
++def putSpanRegexp (self, rule):
+ 
+     quote = self.quoteString
+-    begin,end = rule.getSpan()
++    begin, end = rule.getSpan()
+     hash_char = rule.getStrAttrib('hash_char') or begin[0]
+ 
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_span_regexp(s, i, kind=%s, begin=%s, end=%s,
+         at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+-        delegate=%s,exclude_match=%s,
++        delegate=%s, exclude_match=%s,
+         no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+         self.fileModeName,
+         self.handlerCount,
+         quote(rule.getStrAttrib('type').lower()),
+-        quote(begin),quote(end),
+-        # quote(rule.getStrAttrib('hash_char')),
++        quote(begin), quote(end),
+         rule.getBoolAttrib('at_line_start'),
+         rule.getBoolAttrib('at_whitespace_end'),
+         rule.getBoolAttrib('at_word_end'),
+@@ -24,6 +23,5 @@
          rule.getBoolAttrib('no_line_break'),
          rule.getBoolAttrib('no_word_break'),
      )
--
--    self.putTripleString(s)
--    return hash_char # Bug fix: was begin[0]
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
-+    return hash_char
+-    ### self.putTripleString(s)
+     self.put(textwrap.dedent(s))
+     return hash_char
 @language python
 </t>
-<t tx="ekr.20220927112605.58">def putSpanRegexp (self,rule):
+<t tx="ekr.20220927115135.56">def putSpanRegexp (self,rule):
 
     quote = self.quoteString
     begin,end = rule.getSpan()
@@ -6640,26 +7553,40 @@ def %s_rule%d(colorer, s, i):
         rule.getBoolAttrib('no_line_break'),
         rule.getBoolAttrib('no_word_break'),
     )
-
-    self.putTripleString(s)
-    return hash_char # Bug fix: was begin[0]
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
+    return hash_char
 </t>
-<t tx="ekr.20220927112605.59">@ignore
+<t tx="ekr.20220927115135.57">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -12,5 +12,5 @@
+@@ -1,16 +1,16 @@
+-def putTerminate (self,rule):
++def putTerminate (self, rule):
+ 
+     quote = self.quoteString
+ 
+     n = rule.getIntAttrib('at_char')
+-    if n == None: return
+-
++    if n == None:
++        return
+     s = '''\n\
+ def %s_rule%d(colorer, s, i):
+     return colorer.match_terminate(s, i, kind=%s, at_char=%d)''' % (
+         self.fileModeName,
          self.handlerCount,
          quote(rule.getStrAttrib('type').lower()),
-         n)
--
--    self.putTripleString(s)
-+    ### self.putTripleString(s)
-+    self.put(textwrap.dedent(s))
+-        n)
+-    ### self.putTripleString(s)
++        n,
++    )
+     self.put(textwrap.dedent(s))
 @language python
 </t>
-<t tx="ekr.20220927112605.60">def putTerminate (self,rule):
+<t tx="ekr.20220927115135.58">def putTerminate (self,rule):
 
     quote = self.quoteString
 
@@ -6673,31 +7600,47 @@ def %s_rule%d(colorer, s, i):
         self.handlerCount,
         quote(rule.getStrAttrib('type').lower()),
         n)
-
-    self.putTripleString(s)
+    ### self.putTripleString(s)
+    self.put(textwrap.dedent(s))
 </t>
-<t tx="ekr.20220927112605.61">@ignore
+<t tx="ekr.20220927115135.59">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -13,11 +13,11 @@
+@@ -5,25 +5,25 @@
+     d = {} ; d2Count = 0
+     for ruleset in self.rulesets:
+         d2 = {}
+-        prefix = '%s_%s'% (self.modeName,ruleset.name)
++        prefix = '%s_%s'% (self.modeName, ruleset.name)
+         self.put('# Rules for %s ruleset.\n' % (prefix))
+         for rule in ruleset.rules:
+             ch = self.putRule(rule)
+             self.put('\n')
              if ch == 'keywords':
                  for ch in self.keywordChars:
-                     theList = d2.get(ch,[])
--                    theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
-+                    theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
+-                    theList = d2.get(ch,[])
++                    theList = d2.get(ch, [])
+                     theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                      d2 [ch] = theList
              elif ch:
-                 theList = d2.get(ch,[])
--                theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
-+                theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
+-                theList = d2.get(ch,[])
++                theList = d2.get(ch, [])
+                 theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                  d2 [ch] = theList
          # Create the rules dict for the ruleset.
          self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
+         d2Count += 1
+         name = 'rulesDict%d' % d2Count
+-        self.putDictOfLists(name,d2)
++        self.putDictOfLists(name, d2)
+         d [prefix] = name
+     # Create rulesDictDict.
+     self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
 @language python
 </t>
-<t tx="ekr.20220927112605.62">def putRules (self):
+<t tx="ekr.20220927115135.60">def putRules (self):
 
     '''Create all rule matchers, a rules dict for each ruleset and x.rulesDictDict.'''
 
@@ -6712,11 +7655,11 @@ def %s_rule%d(colorer, s, i):
             if ch == 'keywords':
                 for ch in self.keywordChars:
                     theList = d2.get(ch,[])
-                    theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
+                    theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                     d2 [ch] = theList
             elif ch:
                 theList = d2.get(ch,[])
-                theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
+                theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                 d2 [ch] = theList
         # Create the rules dict for the ruleset.
         self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
@@ -6728,8 +7671,32 @@ def %s_rule%d(colorer, s, i):
     self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
     self.putDict('rulesDictDict', d, escape=False)
 </t>
-<t tx="ekr.20220927112605.63">Only headline has changed</t>
-<t tx="ekr.20220927112605.64">def write (self,theFile,language):
+<t tx="ekr.20220927115135.61">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+-def write (self,theFile,language):
++def write (self, theFile, language):
+ 
+     # Compute all the letters that can occur in a keyword.
+     self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
+@@ -8,10 +8,9 @@
+             for key in list(d.keys()):
+                 key = g.toUnicode(key)
+                 for ch in key:
+-                    if ch not in self.keywordChars and ch not in (' ','\t','\n'):
++                    if ch not in self.keywordChars and ch not in (' ', '\t', '\n'):
+                         self.keywordChars.append(ch)
+         
+-    # g.trace('keywordChars',repr(self.keywordChars))
+     self.keywordChars = ''.join(list(set(self.keywordChars)))
+     self.outputFile = theFile
+     self.put('# Leo colorizer control file for %s mode.\n' % language)
+@language python
+</t>
+<t tx="ekr.20220927115135.62">def write (self,theFile,language):
 
     # Compute all the letters that can occur in a keyword.
     self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
@@ -6753,70 +7720,109 @@ def %s_rule%d(colorer, s, i):
     self.putRules()
     self.putImportDict()
 </t>
-<t tx="ekr.20220927112605.65">Only headline has changed</t>
-<t tx="ekr.20220927112605.66"></t>
-<t tx="ekr.20220927112605.67">@ignore
+<t tx="ekr.20220927115135.63">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,13 +1,10 @@
- def printModeAttributes (self):
--
--    self.printAttributesHelper('mode attributes',self.attributes)
-+    self.printAttributesHelper('mode attributes', self.attributes)
- 
- def printRulesetAttributes (self,ruleset,tag=None):
-+    if not tag:
-+        tag = 'main ruleset'
-+    self.printAttributesHelper(tag, ruleset.attributes)
- 
--    if not tag: tag = 'main ruleset'
--
--    self.printAttributesHelper(tag,ruleset.attributes)
--
--def printAttributesHelper (self,kind,attrs):
--
-+def printAttributesHelper (self, kind, attrs):
-     print('%-15s' % (kind),'attrs:',attrs)
+@@ -0,0 +1 @@
++### Remove these?
 @language python
 </t>
-<t tx="ekr.20220927112605.68">def printModeAttributes (self):
-
-    self.printAttributesHelper('mode attributes',self.attributes)
-
-def printRulesetAttributes (self,ruleset,tag=None):
-
-    if not tag: tag = 'main ruleset'
-
-    self.printAttributesHelper(tag,ruleset.attributes)
-
-def printAttributesHelper (self,kind,attrs):
-
-    print('%-15s' % (kind),'attrs:',attrs)
-</t>
-<t tx="ekr.20220927112605.69">@ignore
+<t tx="ekr.20220927115135.64"></t>
+<t tx="ekr.20220927115135.65">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,5 +1,4 @@
- def printProperty (self,theProperty):
--
+@@ -1,10 +1,10 @@
+ def printModeAttributes (self):
+     self.printAttributesHelper('mode attributes', self.attributes)
+ 
+-def printRulesetAttributes (self,ruleset,tag=None):
++def printRulesetAttributes (self, ruleset, tag=None):
+     if not tag:
+         tag = 'main ruleset'
+     self.printAttributesHelper(tag, ruleset.attributes)
+ 
+ def printAttributesHelper (self, kind, attrs):
+-    print('%-15s' % (kind),'attrs:',attrs)
++    print('%-15s' % (kind), 'attrs:', attrs)
+@language python
+</t>
+<t tx="ekr.20220927115135.66">def printModeAttributes (self):
+    self.printAttributesHelper('mode attributes', self.attributes)
+
+def printRulesetAttributes (self,ruleset,tag=None):
+    if not tag:
+        tag = 'main ruleset'
+    self.printAttributesHelper(tag, ruleset.attributes)
+
+def printAttributesHelper (self, kind, attrs):
+    print('%-15s' % (kind),'attrs:',attrs)
+</t>
+<t tx="ekr.20220927115135.67">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,5 +1,5 @@
+-def printProperty (self,theProperty):
++def printProperty (self, theProperty):
      # A property is a bunch.
      d = theProperty.attributes
      if d:
+-        self.printAttributesHelper('property',d)
++        self.printAttributesHelper('property', d)
 @language python
 </t>
-<t tx="ekr.20220927112605.70">def printProperty (self,theProperty):
-
+<t tx="ekr.20220927115135.68">def printProperty (self,theProperty):
     # A property is a bunch.
     d = theProperty.attributes
     if d:
         self.printAttributesHelper('property',d)
 </t>
-<t tx="ekr.20220927112605.71">Only headline has changed</t>
-<t tx="ekr.20220927112605.72">def printRule (self,rule):
+<t tx="ekr.20220927115135.69">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,23 +1,25 @@
+-def printRule (self,rule):
++def printRule (self, rule):
+ 
+     # A rule is a g.Bunch.
+     if rule.name == 'keywords':
+-        print('%-15s' % ('rule:keywords')) ## ,
++        print('%-15s' % ('rule:keywords'))
+         d = rule.keywordsDict
+         d2 = {}
+         for key in d:
+             val = d.get(key)
+-            d2 [val] = d2.get(val,0) + 1
++            d2 [val] = d2.get(val, 0) + 1
+         keys = list(d2.keys())
+         keys.sort()
+         for key in keys:
+-            print('%s: %d' % (key,d2.get(key))) ## ,
++            print('%s: %d' % (key, d2.get(key)))
+         print()
+     else:
+         d = rule.attributes
+         d2 = rule.contents
+         if d or d2:
+-            print('%-15s' % ('rule:'+rule.name)) ## ,
+-            if d:  print('attrs:',d) ## ,
+-            if d2: print('contents:',d2) ## ,
++            print('%-15s' % ('rule:'+rule.name))
++            if d:
++                print('attrs:', d)
++            if d2:
++                print('contents:', d2)
+             print()
+@language python
+</t>
+<t tx="ekr.20220927115135.70">def printRule (self,rule):
 
     # A rule is a g.Bunch.
     if rule.name == 'keywords':
@@ -6840,116 +7846,151 @@ def printAttributesHelper (self,kind,attrs):
             if d2: print('contents:',d2) ## ,
             print()
 </t>
-<t tx="ekr.20220927112605.73">Only headline has changed</t>
-<t tx="ekr.20220927112605.74">def printRuleset (self,ruleset,tag):
+<t tx="ekr.20220927115135.71">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,6 +1,6 @@
+-def printRuleset (self,ruleset,tag):
++def printRuleset (self, ruleset, tag):
+ 
+-    self.printRulesetAttributes(ruleset,tag)
++    self.printRulesetAttributes(ruleset, tag)
+ 
+     for rule in self.rulesets[0].rules:
+         self.printRule(rule)
+@language python
+</t>
+<t tx="ekr.20220927115135.72">def printRuleset (self,ruleset,tag):
 
     self.printRulesetAttributes(ruleset,tag)
 
     for rule in self.rulesets[0].rules:
         self.printRule(rule)
 </t>
-<t tx="ekr.20220927112605.75">@ignore
+<t tx="ekr.20220927115135.73">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,23 +1,21 @@
- def doAttribute (self,name,val):
+@@ -1,4 +1,4 @@
+-def doAttribute (self,name,val):
++def doAttribute (self, name, val):
  
      name = str(name.lower())
--
      if name in self.boolAttrs:
-         val = True if val.lower() == 'true' else False
-     else:
-         val = str(val) # Do NOT lower this value!
--
+@@ -8,14 +8,10 @@
      if self.rule:
          d = self.rule.attributes
          d [name] = val
--        self.numberOfRuleAttributes += 1
-+        ### self.numberOfRuleAttributes += 1
+-        ### self.numberOfRuleAttributes += 1
      elif self.presentProperty:
          d = self.presentProperty.get('attributes')
          d [name] = val
--        self.numberOfPropertyAttributes += 1
-+        ### self.numberOfPropertyAttributes += 1
+-        ### self.numberOfPropertyAttributes += 1
      elif self.inRules:
          self.rulesetAttributes[name] = val
--        self.numberOfAttributes += 1
-+        ### self.numberOfAttributes += 1
+-        ### self.numberOfAttributes += 1
      else:
          self.attributes[name] = val
--        self.numberOfAttributes += 1
-+        ### self.numberOfAttributes += 1
+-        ### self.numberOfAttributes += 1
 @language python
 </t>
-<t tx="ekr.20220927112605.76">def doAttribute (self,name,val):
+<t tx="ekr.20220927115135.74">def doAttribute (self,name,val):
 
     name = str(name.lower())
-
     if name in self.boolAttrs:
         val = True if val.lower() == 'true' else False
     else:
         val = str(val) # Do NOT lower this value!
-
     if self.rule:
         d = self.rule.attributes
         d [name] = val
-        self.numberOfRuleAttributes += 1
+        ### self.numberOfRuleAttributes += 1
     elif self.presentProperty:
         d = self.presentProperty.get('attributes')
         d [name] = val
-        self.numberOfPropertyAttributes += 1
+        ### self.numberOfPropertyAttributes += 1
     elif self.inRules:
         self.rulesetAttributes[name] = val
-        self.numberOfAttributes += 1
+        ### self.numberOfAttributes += 1
     else:
         self.attributes[name] = val
-        self.numberOfAttributes += 1
+        ### self.numberOfAttributes += 1
 </t>
-<t tx="ekr.20220927112605.77">@ignore
+<t tx="ekr.20220927115135.75">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -2,14 +2,10 @@
+@@ -1,4 +1,4 @@
+-def doContent (self,elementName,content):
++def doContent (self, elementName, content):
  
      if not content:
          return
--
-     name = str(elementName.lower())
--
-     if self.inRule('keywords'):
--        # g.trace('in keywords',name,content)
-         d = self.rule.keywordsDict
+@@ -8,6 +8,6 @@
          d [ content ] = name
--
      elif self.rule:
          d = self.rule.contents
-         s = d.get(name,'')
+-        s = d.get(name,'')
++        s = d.get(name, '')
+         d [name] = s + g.toUnicode(content)
+         self.contents = d
 @language python
 </t>
-<t tx="ekr.20220927112605.78">def doContent (self,elementName,content):
+<t tx="ekr.20220927115135.76">def doContent (self,elementName,content):
 
     if not content:
         return
-
     name = str(elementName.lower())
-
     if self.inRule('keywords'):
-        # g.trace('in keywords',name,content)
         d = self.rule.keywordsDict
         d [ content ] = name
-
     elif self.rule:
         d = self.rule.contents
         s = d.get(name,'')
         d [name] = s + g.toUnicode(content)
         self.contents = d
 </t>
-<t tx="ekr.20220927112605.79">Only headline has changed</t>
-<t tx="ekr.20220927112605.8"></t>
-<t tx="ekr.20220927112605.80">def endElement (self,elementName):
+<t tx="ekr.20220927115135.77">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+-def endElement (self,elementName):
++def endElement (self, elementName):
+ 
+     name = elementName.lower()
+ 
+@@ -6,7 +6,7 @@
+         self.inProps = True
+     if name == 'rules':
+         self.inRules = False
+-        ruleset = Ruleset(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
++        ruleset = Ruleset(self.rulesetAttributes, self.keywords, self.rulesetProperties, self.rules)
+         self.rulesets.append(ruleset)
+     if name == 'property':
+         bunch = self.presentProperty
+@@ -16,11 +16,11 @@
+             else:
+                 self.modeProperties.append(bunch)
+         else:
+-            self.error('end %s not matched by start %s' % (name,name))
++            self.error('end %s not matched by start %s' % (name, name))
+         self.presentProperty = None
+     if name in self.ruleElements:
+         if self.inRule(name):
+             self.rules.append(self.rule)
+             self.rule = None
+         else:
+-            self.error('end %s not matched by start %s' % (name,name))
++            self.error('end %s not matched by start %s' % (name, name))
+@language python
+</t>
+<t tx="ekr.20220927115135.78">def endElement (self,elementName):
 
     name = elementName.lower()
 
@@ -6976,28 +8017,84 @@ def printAttributesHelper (self,kind,attrs):
         else:
             self.error('end %s not matched by start %s' % (name,name))
 </t>
-<t tx="ekr.20220927112605.81">@ignore
+<t tx="ekr.20220927115135.79">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,5 +1,3 @@
- def error (self,message):
--
--    self.numberOfErrors += 1
--
+@@ -1,3 +1,2 @@
+-def error (self,message):
++def error (self, message):
      self.contentHandler.error(message)
-+    ### self.numberOfErrors += 1
+-    ### self.numberOfErrors += 1
 @language python
 </t>
-<t tx="ekr.20220927112605.82">def error (self,message):
-
-    self.numberOfErrors += 1
-
+<t tx="ekr.20220927115135.8"></t>
+<t tx="ekr.20220927115135.80">def error (self,message):
     self.contentHandler.error(message)
+    ### self.numberOfErrors += 1
 </t>
-<t tx="ekr.20220927112605.83">Only headline has changed</t>
-<t tx="ekr.20220927112605.84">def getAttributes (self):
+<t tx="ekr.20220927115135.81">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,36 +1,36 @@
+ def getAttributes (self):
+     return self.attributes
+ 
+-def getAttributesForRuleset (self,ruleset):
++def getAttributesForRuleset (self, ruleset):
+     bunch = ruleset
+     return bunch.attributes
+ 
+ def getFileName (self):
+     return self.fileName
+ 
+-def getKeywords (self,n,ruleset):
++def getKeywords (self, n, ruleset):
+     bunch = ruleset
+     keywords = bunch.keywords
+     if keywords:
+-        return keywords.get('keyword%d'%(n),[])
++        return keywords.get('keyword%d'%(n), [])
+     return []
+ 
+ def getLanguage (self):
+-    path,name = g.os_path_split(self.fileName)
+-    language,ext = g.os_path_splitext(name)
++    path, name = g.os_path_split(self.fileName)
++    language, ext = g.os_path_splitext(name)
+     return language
+ 
+ def getPropertiesForMode (self):
+     return self.props
+ 
+-def getPropertiesForRuleset (self,name=''):
++def getPropertiesForRuleset (self, name=''):
+     bunch = self.getRuleset(name)
+     if bunch:
+         return bunch.properties
+     else:
+         return []
+ 
+-def getRuleset(self,name=''):
++def getRuleset(self, name=''):
+     if not name:
+         return self.rulesets[0] # Return the main ruleset.
+     for ruleset in self.rulesets:
+@@ -41,7 +41,7 @@
+ def getRulesets(self):
+     return self.rulesets
+ 
+-def getRulesForRuleset (self,name=''):
++def getRulesForRuleset (self, name=''):
+     bunch = self.getRuleset(name)
+     if bunch:
+         return bunch.rules
+@language python
+</t>
+<t tx="ekr.20220927115135.82">def getAttributes (self):
     return self.attributes
 
 def getAttributesForRuleset (self,ruleset):
@@ -7047,13 +8144,45 @@ def getRulesForRuleset (self,name=''):
     else:
         return []
 </t>
-<t tx="ekr.20220927112605.85">Only headline has changed</t>
-<t tx="ekr.20220927112605.86">def inRule (self,elementName):
+<t tx="ekr.20220927115135.83">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,3 +1,3 @@
+-def inRule (self,elementName):
++def inRule (self, elementName):
+ 
+     return self.rule and self.rule.name == elementName
+@language python
+</t>
+<t tx="ekr.20220927115135.84">def inRule (self,elementName):
 
     return self.rule and self.rule.name == elementName
 </t>
-<t tx="ekr.20220927112605.87">Only headline has changed</t>
-<t tx="ekr.20220927112605.88">def startElement (self,elementName):
+<t tx="ekr.20220927115135.85">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+-def startElement (self,elementName):
++def startElement (self, elementName):
+ 
+     name = elementName.lower()
+ 
+@@ -12,7 +12,7 @@
+         self.rules=[]
+     if name == 'property':
+         if self.inProps:
+-            self.presentProperty = g.bunch(name=name,attributes={})
++            self.presentProperty = g.bunch(name=name, attributes={})
+         else:
+             self.error('property not in props element')
+     if name in self.ruleElements:
+@language python
+</t>
+<t tx="ekr.20220927115135.86">def startElement (self,elementName):
 
     name = elementName.lower()
 
@@ -7078,44 +8207,38 @@ def getRulesForRuleset (self,name=''):
         else:
             self.error('%s not in rules element' % name)
 </t>
-<t tx="ekr.20220927112605.89">@ignore
+<t tx="ekr.20220927115135.87">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -5,6 +5,7 @@
+@@ -1,14 +1,11 @@
+ def __init__ (self, attributes, keywords, properties, rules):
+-
+-    self.name=munge(attributes.get('set','main'))
++    
++    self.name=munge(attributes.get('set', 'main'))
+     self.attributes=attributes.copy() # A dict.
      self.properties=properties[:] # A list.
      self.keywords=keywords # A bunch.
      self.rules=rules[:] # A list.
-+    ### g.printObj(self.rules, tag='Rules')
+-    ### g.printObj(self.rules, tag='Rules')
      self.defaultColor = self.attributes.get('default')
-     if trace:
-         print('ruleset:', self.name or 'main')
+-    if trace:
+-        print('ruleset:', self.name or 'main')
+ 
+ def __str__ (self):
+     return '&lt;ruleset %s&gt;' % self.name
 @language python
 </t>
-<t tx="ekr.20220927112605.9">def __init__ (self, name):
-
-    if trace:
-        print('rule', name)
-    self.attributes = {}
-    self.contents = {}
-    self.keywordsDict = {}
-    self.name = name
-
-def __str__ (self):
-
-    return '&lt;rule %s\nattr: %s\ncontents: %s&gt;' % (
-        self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
-
-__repr__ = __str__
-</t>
-<t tx="ekr.20220927112605.90">def __init__ (self, attributes, keywords, properties, rules):
+<t tx="ekr.20220927115135.88">def __init__ (self, attributes, keywords, properties, rules):
 
     self.name=munge(attributes.get('set','main'))
     self.attributes=attributes.copy() # A dict.
     self.properties=properties[:] # A list.
     self.keywords=keywords # A bunch.
     self.rules=rules[:] # A list.
+    ### g.printObj(self.rules, tag='Rules')
     self.defaultColor = self.attributes.get('default')
     if trace:
         print('ruleset:', self.name or 'main')
@@ -7125,43 +8248,272 @@ def __str__ (self):
 
 __repr__ = __str__
 </t>
-<t tx="ekr.20220927112605.91">@ignore
+<t tx="ekr.20220927115135.89">@ignore
 @nosearch
 @language patch
 --- HEAD
 +++ uncommitted
-@@ -1,5 +1,23 @@
- class Rule:
-+    """A class representing one xml rule."""
-+    
-+    def __init__ (self, name):
-+        if trace:
-+            print('rule', name)
-+        self.attributes = {}
-+        self.contents = {}
-+        self.keywordsDict = {}
-+        self.name = name
+@@ -2,16 +2,12 @@
+     """A class representing one xml rule."""
+     
+     def __init__ (self, name):
+-        if trace:
+-            print('rule', name)
+         self.attributes = {}
+         self.contents = {}
+         self.keywordsDict = {}
+         self.name = name
  
--    '''A class to represent one xml rule.'''
-+    def __str__ (self):
-+        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
-+            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
-+        return (
-+            f"&lt;Rule {self.name}\n"
-+            f"   attr: {g.dictToString(self.attributes)}\n"
-+            f"conents: {g.dictToString(self.contents)}"
-+        )
-+
-+    __repr__ = __str__
- 
-     @others
+     def __str__ (self):
+-        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
+-            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
+         return (
+             f"&lt;Rule {self.name}\n"
+             f"   attr: {g.dictToString(self.attributes)}\n"
 @language python
 </t>
-<t tx="ekr.20220927112605.92">class Rule:
+<t tx="ekr.20220927115135.9">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -9,10 +9,9 @@
+ &lt;&lt; imports &gt;&gt;
+ 
+ # Globals...
+-trace = True
+ files_list = ['ocaml.xml',]
+ theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'modes'))
+-files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in files_list]
++files = [g.os_path_abspath(g.os_path_join(theDir, s)) for s in files_list]
+ 
+ @others
+ 
+@language python
+</t>
+<t tx="ekr.20220927115135.90">class Rule:
+    """A class representing one xml rule."""
+    
+    def __init__ (self, name):
+        if trace:
+            print('rule', name)
+        self.attributes = {}
+        self.contents = {}
+        self.keywordsDict = {}
+        self.name = name
 
-    '''A class to represent one xml rule.'''
+    def __str__ (self):
+        # return '&lt;Rule %s\nattr: %s\ncontents: %s&gt;' % (
+            # self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
+        return (
+            f"&lt;Rule {self.name}\n"
+            f"   attr: {g.dictToString(self.attributes)}\n"
+            f"conents: {g.dictToString(self.contents)}"
+        )
+
+    __repr__ = __str__
 
     @others
+</t>
+<t tx="ekr.20220927115135.91">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,16 +1,15 @@
+-def getBoolAttrib(self,name):
++def getBoolAttrib(self, name):
+     d = self.attributes
+     val = d.get(name)
+     return 'True' if val else 'False'
+ 
+-def getIntAttrib(self,name):
++def getIntAttrib(self, name):
+     d = self.attributes
+     val = d.get(name)
+     if val is not None:
+         try:
+             val = int(val)
+         except ValueError:
+-            # g.trace('bad int argument: %s = %s' % (name,val))
+             g.trace(f"bad int argument: {name} = {val!r}")
+             val = None
+     return val
+@@ -21,11 +20,11 @@
+     end   = d.get('end', '')
+     return begin, end
+ 
+-def getStrAttrib(self,name):
++def getStrAttrib(self, name):
+     d = self.attributes
+     val = d.get(name, '')
+     return str(val)
+ 
+-def getSeq(self,kind):
++def getSeq(self, kind):
+     d = self.contents
+     return d.get(kind, '')
+@language python
+</t>
+<t tx="ekr.20220927115135.92">def getBoolAttrib(self,name):
+    d = self.attributes
+    val = d.get(name)
+    return 'True' if val else 'False'
+
+def getIntAttrib(self,name):
+    d = self.attributes
+    val = d.get(name)
+    if val is not None:
+        try:
+            val = int(val)
+        except ValueError:
+            # g.trace('bad int argument: %s = %s' % (name,val))
+            g.trace(f"bad int argument: {name} = {val!r}")
+            val = None
+    return val
+
+def getSpan (self):
+    d = self.contents
+    begin = d.get('begin', '')
+    end   = d.get('end', '')
+    return begin, end
+
+def getStrAttrib(self,name):
+    d = self.attributes
+    val = d.get(name, '')
+    return str(val)
+
+def getSeq(self,kind):
+    d = self.contents
+    return d.get(kind, '')
+</t>
+<t tx="ekr.20220927115135.93">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -7,7 +7,7 @@
+     # Options...
+     self.ignoreWs = True  # True: don't print contents with only ws.
+     self.newLineAfterStartElement = [
+-        'keywords','mode','props','property','rules','span','eol_span',
++        'keywords', 'mode', 'props', 'property', 'rules', 'span', 'eol_span',
+     ]
+ 
+     # Semantics: most of these should be mode ivars.
+@language python
+</t>
+<t tx="ekr.20220927115135.94">def __init__ (self, inputFileName):
+
+    # Init the base class.
+    xml.sax.saxutils.XMLGenerator.__init__(self)
+    self.inputFileName = inputFileName
+
+    # Options...
+    self.ignoreWs = True  # True: don't print contents with only ws.
+    self.newLineAfterStartElement = [
+        'keywords','mode','props','property','rules','span','eol_span',
+    ]
+
+    # Semantics: most of these should be mode ivars.
+    self.elementStack = []
+    self.errors = 0
+    self.mode = None # The present mode, or None if outside all modes.
+    self.modes = [] # All modes defined here or by imports.
+</t>
+<t tx="ekr.20220927115135.95">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,4 +1,4 @@
+-def attrsToString (self,attrs, sep='\n'):
++def attrsToString (self, attrs, sep='\n'):
+ 
+     '''Convert the attributes to a string.
+ 
+@language python
+</t>
+<t tx="ekr.20220927115135.96">def attrsToString (self,attrs, sep='\n'):
+
+    '''Convert the attributes to a string.
+
+    attrs: an Attributes item passed to startElement.
+
+    sep: the separator charater between attributes.'''
+
+    result = [
+        '%s="%s"' % (
+            bunch.name, bunch.val)
+                for bunch in self.attrsToList(attrs)
+    ]
+    return sep.join(result)
+</t>
+<t tx="ekr.20220927115135.97">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -1,14 +1,12 @@
++### Remove ??
++
+ def printStartElement(self, name, attrs):
+ 
+     name_s = g.toEncodedString(name, "ascii").strip()
+     if attrs.getLength() &gt; 0:
+         attrs_s = self.attrsToString(attrs, sep=' ')
+-        # print('&lt;%s %s&gt;' % (
+-            # self.clean(name).strip(),
+-            # self.attrsToString(attrs,sep=' ')))
+         print(f"&lt;{name_s} {attrs_s}")
+     else:
+-        # print('&lt;%s&gt;' % (self.clean(name).strip()))
+         print(f"&lt;{name_s}&gt;")
+         
+     if name.lower() in self.newLineAfterStartElement:
+@language python
+</t>
+<t tx="ekr.20220927115135.98">def printStartElement(self, name, attrs):
+
+    name_s = g.toEncodedString(name, "ascii").strip()
+    if attrs.getLength() &gt; 0:
+        attrs_s = self.attrsToString(attrs, sep=' ')
+        # print('&lt;%s %s&gt;' % (
+            # self.clean(name).strip(),
+            # self.attrsToString(attrs,sep=' ')))
+        print(f"&lt;{name_s} {attrs_s}")
+    else:
+        # print('&lt;%s&gt;' % (self.clean(name).strip()))
+        print(f"&lt;{name_s}&gt;")
+        
+    if name.lower() in self.newLineAfterStartElement:
+        print('')
+</t>
+<t tx="ekr.20220927115135.99">@ignore
+@nosearch
+@language patch
+--- HEAD
++++ uncommitted
+@@ -9,14 +9,14 @@
+ def ignorableWhitespace(self):
+     g.trace()
+ 
+-def processingInstruction (self,target,data):
++def processingInstruction (self, target, data):
+     g.trace()
+ 
+-def skippedEntity(self,name):
++def skippedEntity(self, name):
+     g.trace(name)
+ 
+-def startElementNS(self,name,qname,attrs):
++def startElementNS(self, name, qname, attrs):
+     g.trace(name)
+ 
+-def endElementNS(self,name,qname):
++def endElementNS(self, name, qname):
+     g.trace(name)
+@language python
 </t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
