@@ -4080,9 +4080,9 @@ popd
 @set prompt=%_p%
 #@+node:ekr.20060824111500: ** jEdit2Py
 #@+node:ekr.20060824111500.108: *3* @@button jEdit2Py
-"""Convert jEdit language description file to an equivalent .py file."""
-
-# This script is obsolete: the .xml files do not exist.
+"""
+Convert jEdit description file (an .xml file) to an equivalent .py file.
+"""
 
 @language python
 @tabwidth -4
@@ -4090,53 +4090,23 @@ popd
 
 << imports >>
 << to do >>
-<< version history >>
-<< set files to convert >>
+theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
+files = [g.os_path_abspath(g.os_path_join(theDir,s))
+    for s in ['ocaml.xml',]]
+
 opt_print_summary = False # True: print summary in doEndElement.
 opt_print_elements = False
 @others
 main()
 #@+node:ekr.20060824111500.109: *4* << imports >>
-import glob
-import os
 import string
+import textwrap
 import xml.sax
 import xml.sax.saxutils
 #@+node:ekr.20060824111500.110: *4* << to do >>
-@nocolor
-@
-
-AT_LINE_START, AT_WHITESPACE_END and AT_WORD_START attributes can also be used
-on the BEGIN and END elements. Setting these attributes to the same value on
-both elements has the same effect as setting them on the SPAN element.
-#@+node:ekr.20060824111500.111: *4* << version history >>
-@nocolor
-@
-
-7/23/06 EKR: Ignore keywords containing whitespace.
-7/30/06 EKR: Compute keywordChars properly.  This fixes erlang bug, e.g.
-8/24/06 EKR: Lowercase all keywords if ignore_case is true.
-8/25/06 EKR: Prefixed all rule names with fileName (w/o extension) so I can makes sense of imported rules.
-8/26/06 EKR: No need for hash_char in pattern matchers, because they are called only if the hash_char matches.
-9/4/06  EKR: Added support for ESCAPE attribute of RULES element.
-             This is required so the new colorizer plugin can support the no_escape argument to pattern matchers.
-#@+node:ekr.20060824111500.112: *4* << set files to convert >>
-# theDir = r'c:\prog\tigris-cvs\leo\modes'
-theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
-fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shellscript','ssharp','text']
-errors = [] # 'cil',] # End keyword not matched by start.
-errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
-# for s in errors: print(s)
-if 1: # A a list of files.
-    short_files = ['asciidoc']
-    files = [rf"{theDir}{os.path.sep}{z}.xml" for z in short_files]
-elif 1: # translate all files.
-    files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
-elif 1: # error files
-    files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in errors]
-else: # translate two representative files.
-    files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in ('python','php')]
-# for s in files: print(s)
+# AT_LINE_START, AT_WHITESPACE_END and AT_WORD_START attributes can also be used
+# on the BEGIN and END elements. Setting these attributes to the same value on
+# both elements has the same effect as setting them on the SPAN element.
 #@+node:ekr.20060824111500.113: *4* top-level
 #@+node:ekr.20160319080102.1: *5* cleanSaxInputString
 def cleanSaxInputString(s):
@@ -4215,10 +4185,8 @@ def munge(s):
 #@+node:ekr.20160319081141.1: *5* main
 def main():
     for path1 in files:
-        if path1 in errors:
-            print(f"skipping {path1}")
-            continue
-        path2 = path1[:-3] + 'py'
+        if path1.endswith('.xml'):
+            path2 = path1[:-4] + '.py'
         try:
             convert (c, path1, path2)
         except Exception:
@@ -4245,7 +4213,7 @@ def __init__ (self,contentHandler,fileName):
     self.fileModeName = modeName
     self.modeName = munge(modeName).lower()
     self.outputFile = None # The open output file to which Python statements get written.
-    self.tab_width = c.scanAllDirectives().get('tab_width')
+    self.tab_width = -4 # c.scanAllDirectives(c.p).get('tab_width')
 
     # Mode statistics...
     self.numberOfAttributes = 0
@@ -4322,8 +4290,10 @@ def put (self,s):
     self.outputFile.write(s)
 
 def putTripleString(self,s):
+    
+    return textwrap.dedent(s)
 
-    self.put(g.adjustTripleString(s,self.tab_width))
+    # self.put(g.adjustTripleString(s,self.tab_width))
 #@+node:ekr.20060824111500.123: *6* putAttributes
 def putAttributes (self):
 
