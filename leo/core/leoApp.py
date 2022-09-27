@@ -381,8 +381,8 @@ class LeoApp:
             "ly":       "lilypond",
             "m":        "matlab",
             "mak":      "makefile",
-            "md":       "md", # PeckJ 2013/02/07
-            "ml":       "ml",
+            "md":       "md",  # PeckJ 2013/02/07
+            "ml":       "ml",  # Also ocaml.
             "mm":       "objective_c", # Only one extension is valid: .m
             "mod":      "modula3",
             "mpl":      "maple",
@@ -594,6 +594,7 @@ class LeoApp:
             "objective_c"        : "// /* */",
             "objectrexx"         : "-- /* */",
             "occam"              : "--",
+            "ocaml"              : "--",
             "omnimark"           : ";",
             "pandoc"             : "<!-- -->",
             "pascal"             : "// { }",
@@ -759,7 +760,7 @@ class LeoApp:
             "maple"         : "mpl",
             "matlab"        : "m",
             "md"            : "md", # PeckJ: 2013/02/07
-            "ml"            : "ml",
+            "ml"            : "ml",  # Also ocaml.
             "modula3"       : "mod",
             "moin"          : "wiki",
             "mqsc"          : "mqsc",
@@ -770,6 +771,7 @@ class LeoApp:
             "objective_c"   : "mm", # Only one extension is valid: .m
             "objectrexx"    : "rex",
             "occam"         : "occ",
+            "ocaml"         : "ml",
             "omnimark"      : "xom",
             "pascal"        : "p",
             "perl"          : "pl",

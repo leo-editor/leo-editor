@@ -591,7 +591,7 @@ quoteString = escapeString
     keys = list(set((theDict.keys())))
     keys = sorted([g.toUnicode(z) for z in keys if z])
     s = ''.join([
-        '\t%s: %s,\n' % (esc(key), esc2(theDict.get(key)))
+        '    %s: %s,\n' % (esc(key), esc2(theDict.get(key)))
             for key in keys])
     if s:
         s = '\n' + s
@@ -609,7 +609,7 @@ def putDictOfLists (self, name, theDict, strings=False):
             s = ''.join(['"%s",' % (item) for item in theDict.get(key)])
         else:
              s = ''.join(['%s,' % (item) for item in theDict.get(key)])
-        theList.append('\t%s: [%s],\n' % (esc(key), s))
+        theList.append('    %s: [%s],\n' % (esc(key), s))
     s = ''.join(theList)
     if s: s = '\n' + s
     self.put('%s = {%s}\n\n' % (name, s))
@@ -980,7 +980,8 @@ def %s_rule%d(colorer, s, i):
     self.putRules()
     self.putImportDict()
 </t>
-<t tx="ekr.20060824111500.144"># Not used.</t>
+<t tx="ekr.20060824111500.144"># Not used.
+</t>
 <t tx="ekr.20060824111500.145">def printModeAttributes (self):
     self.printAttributesHelper('mode attributes', self.attributes)
 
