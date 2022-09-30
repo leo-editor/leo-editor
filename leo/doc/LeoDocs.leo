@@ -31351,7 +31351,7 @@ Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/pre
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
 
-Leo, http://leoeditor.com is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.7.0**
 
@@ -31371,8 +31371,8 @@ The 6.7.0 version denotes significant changes to Leo's code base.
 
 **Links**
 
-- 6.7.0 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
-- 6.7.0 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0
+- [6.7.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+)
+- [6.7.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0)
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
