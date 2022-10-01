@@ -298,6 +298,10 @@ class BridgeController:
             g.app.db = g.NullObject()
         fileName = self.completeFileName(fileName)
         c = g.openWithFileName(fileName)  # #2489.
+        if not c:
+            if not self.silentMode:
+                print(f"File not found: {fileName}")
+            return None
         # Leo 6.3: support leoInteg.
         g.app.windowList.append(c.frame)
         if not self.useCaches:
