@@ -1876,7 +1876,10 @@ class LoadManager:
                 return letter
         if lm.theme_path and path.endswith(lm.theme_path.lower()):
             return 'T'
-        if path == 'register-command' or path.find('mode') > -1:
+        tag = 'register-command:'
+        if path.startswith(tag):
+            return self.computeBindingLetter(c, path=path[len(tag) :])
+        if path.endswith('-mode'):
             return '@'
         return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings

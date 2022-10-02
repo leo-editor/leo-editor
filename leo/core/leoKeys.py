@@ -2560,6 +2560,9 @@ class KeyHandlerClass:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
                 assert isinstance(bi, g.BindingInfo), repr(bi)
+                # #2899: Adjust scope for @command and @button.
+                if bi.commandName.startswith(('@button-', '@command-')):
+                    scope = 'all'
                 data.append((scope, k.prettyPrintKey(stroke), bi.commandName, bi.kind))
         # Print keys by type.
         result = []
@@ -2994,7 +2997,7 @@ class KeyHandlerClass:
         allowBinding: bool=False,
         pane: str='all',
         shortcut: str=None,  # Must be None unless allowBindings is True.
-        **kwargs: Any,
+        **kwargs: Any,  # Used only to warn about deprecated kwargs.
     ) -> None:
         """
         Make the function available as a minibuffer command.
@@ -3066,7 +3069,7 @@ class KeyHandlerClass:
                     pane = bi.pane  # 2015/05/11.
                     break
         if stroke:
-            k.bindKey(pane, stroke, func, commandName, tag='register-command')  # Must be a stroke.
+            k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{c.shortFileName()}")
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
