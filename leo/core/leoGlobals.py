@@ -2975,7 +2975,10 @@ def comment_delims_from_extension(filename: str) -> Tuple[str, str, str]:
     return '', '', ''
 #@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
 def findAllValidLanguageDirectives(s: str) -> List:
-    """Return list of all valid @language directives in p.b"""
+    """
+    Return list of all languages for which there is a valid @language
+    directive in s.
+    """
     if not s.strip():
         return []
     languages = set()
@@ -3008,7 +3011,10 @@ def findTabWidthDirectives(c: Cmdr, p: Position) -> Optional[str]:
     return w
 #@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
 def findFirstValidAtLanguageDirective(s: str) -> Optional[str]:
-    """Return the first *valid* @language directive ins."""
+    """
+    Return the first language for which there is a valid @language
+    directive in s.
+    """
     if not s.strip():
         return None
     for m in g.g_language_pat.finditer(s):
