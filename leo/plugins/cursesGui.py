@@ -183,7 +183,7 @@ class TextFrame(leoFrame.LeoFrame):
         #
         v = leoNodes.vnode(context=c)
         p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
+        v.initHeadString("newHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong:
         # the node hasn't been linked yet.
         p._linkAsRoot()
