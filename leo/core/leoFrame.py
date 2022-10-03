@@ -762,7 +762,7 @@ class LeoFrame:
         # Create the first node.
         v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
-        v.initHeadString("NewHeadline")
+        v.initHeadString("newHeadline")
         #
         # New in Leo 4.5: p.moveToRoot would be wrong:
         #                 the node hasn't been linked yet.
