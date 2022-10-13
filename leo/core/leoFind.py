@@ -228,10 +228,6 @@ class LeoFind:
         self.suboutline_only = settings.suboutline_only
         self.whole_word = settings.whole_word
         # self.wrapping = settings.wrapping
-    #@+node:ekr.20210110073117.5: *5* NEW:find.init_settings
-    def init_settings(self, settings: Settings) -> None:
-        """Initialize all user settings."""
-
     #@+node:ekr.20171113164709.1: *4* find.reload_settings
     def reload_settings(self) -> None:
         """LeoFind.reload_settings."""
