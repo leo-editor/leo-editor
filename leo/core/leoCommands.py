@@ -4058,7 +4058,7 @@ class Commands:
         elif iconPath:
             g.trace('bad icon path', iconPath)
     #@+node:ekr.20160201075438.1: *5* c.createCloneFindPredicateRoot
-    def createCloneFindPredicateRoot(self, flatten: Any, undoType: Any) -> Position:
+    def createCloneFindPredicateRoot(self, flatten: bool, undoType: str) -> Position:
         """Create a root node for clone-find-predicate."""
         c = self
         root = c.lastTopLevel().insertAfter()
