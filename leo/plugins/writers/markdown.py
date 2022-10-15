@@ -44,7 +44,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         if kind == '!':
             pass  # The signal for a declaration node.
         else:
-            self.put(f"{'#' * level}{p.h}")  # Leo 6.6.4: preserve spacing.
+            self.put(f"{'#' * level} {p.h}")  # Leo 6.6.4: preserve spacing.
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
     def write_root(self, root: Position) -> None:
         """Write the root @auto-org node."""
