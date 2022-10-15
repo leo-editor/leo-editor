@@ -3481,7 +3481,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
                     else:
                         headline = header
-                    headline_str = '##' + headline
+                    headline_str = '## ' + headline
                     s = headline_str + '\n' + s
                 lines = s.split('\n')
 
