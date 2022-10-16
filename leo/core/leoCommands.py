@@ -3468,7 +3468,7 @@ class Commands:
         if 'focus' in g.app.debug:
             c.trace_focus_count += 1
             g.pr(f"{c.trace_focus_count:4d}", c.widget_name(w), g.callers(8))
-    #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper
+    #@+node:ekr.20070226121510: *5* c.treeFocusHelper & initialFocusHelper
     def treeFocusHelper(self) -> None:
         c = self
         if c.stayInTreeAfterSelect:

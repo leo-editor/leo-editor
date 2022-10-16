@@ -777,8 +777,6 @@
 <v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
-<v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
 <v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
 <v t="ekr.20140721165014.19169"><vh>@mode tree-undo</vh></v>
@@ -7109,13 +7107,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
-False: Body pane gets focus when a new window is opened.</t>
-<t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
-
-If this is False it will be harder to use the arrow keys in the headline.
-    
-False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20140721165014.19168">#Miscellaneous vi commands
 #---------------------------------
 
