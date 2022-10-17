@@ -1459,7 +1459,6 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
@@ -5823,7 +5822,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
 <t tx="ekr.20131213135427.22340"></t>
-<t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
 <t tx="ekr.20131213135427.22343"></t>
 <t tx="ekr.20131213135427.22344"></t>
