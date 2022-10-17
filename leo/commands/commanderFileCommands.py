@@ -288,7 +288,6 @@ def open_outline(self: Self, event: Event=None) -> None:
                 c.createNodeFromExternalFile(fileName)
         c.raise_error_dialogs(kind='write')
         g.app.runAlreadyOpenDialog(c)
-
     #@-others
     table = [
         ("Leo files", "*.leo *.leojs *.db"),
