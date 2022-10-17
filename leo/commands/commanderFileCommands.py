@@ -276,7 +276,7 @@ def open_outline(self: Self, event: Event=None) -> None:
                     c = c2  # #2906: Switch c here!
                     c.init_error_dialogs()
                     # Fix #579: Key bindings don't take for commands defined in plugins.
-                    c2.k.makeAllBindings()
+                    c.k.makeAllBindings()
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
                     c.initialFocusHelper()
