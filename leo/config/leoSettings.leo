@@ -729,7 +729,7 @@
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
-<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = False</vh></v>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
