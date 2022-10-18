@@ -2219,27 +2219,28 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
 
+        # Must be in standard form, with a space after '#'.
         s = """\
-            #Top
+            # Top
             The top section
 
-            ##Section 1
+            ## Section 1
             section 1, line 1
             section 1, line 2
 
-            ##Section 2
+            ## Section 2
             section 2, line 1
 
-            ###Section 2.1
+            ### Section 2.1
             section 2.1, line 1
 
-            ####Section 2.1.1
+            #### Section 2.1.1
             section 2.2.1 line 1
             The next section is empty. It must not be deleted.
 
-            ###Section 2.2
+            ### Section 2.2
 
-            ##Section 3
+            ## Section 3
             Section 3, line 1
         """
         p = self.run_test(s)
@@ -2362,14 +2363,14 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
 
-        # insert test for markdown here.
+        # Must be in standard form, with a space after '#'.
         s = """
             Decl line.
-            #Header
+            # Header
 
             After header text
 
-            ##Subheader
+            ## Subheader
 
             Not an underline
 
@@ -2377,7 +2378,7 @@ class TestMarkdown(BaseTestImporter):
 
             After subheader text
 
-            #Last header: no text
+            # Last header: no text
         """
         p = self.run_test(s)
         self.check_outline(p, (
@@ -2461,9 +2462,10 @@ class TestMarkdown(BaseTestImporter):
     #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
 
+        # Must be in standard form, with a space after '#'.
         s = """
             Decl line.
-            #Header
+            # Header
 
             ```python
             loads.init = {
@@ -2471,7 +2473,7 @@ class TestMarkdown(BaseTestImporter):
                 TotalP: 0.002,
             }
             ```
-            #Last header
+            # Last header
         """
         p = self.run_test(s)
         self.check_outline(p, (
