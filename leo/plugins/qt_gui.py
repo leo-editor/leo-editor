@@ -185,13 +185,9 @@ class LeoQtGui(leoGui.LeoGui):
         Set the clipboard selection to s.
         There are problems with PyQt5.
         """
-        if isQt5 or isQt6:
-            # Alas, returning s reopens #218.
-            return
-        if s:
-            # This code generates a harmless, but annoying warning on PyQt5.
-            cb = self.qtApp.clipboard()
-            cb.setText(s, mode=cb.Selection)
+        # Alas, returning s reopens #218.
+        return
+
     #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
     #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
     def alert(self, c: Cmdr, message: str) -> None:
@@ -639,8 +635,8 @@ class LeoQtGui(leoGui.LeoGui):
                 c.in_qt_dialog = False
         else:
             val = func(parent=None, caption=title, directory=startpath, filter=filter_)
-        if isQt5 or isQt6:  # This is a *Py*Qt change rather than a Qt change
-            val, junk_selected_filter = val
+        # This is a *PyQt* change, not a Qt change.
+        val, junk_selected_filter = val
         if multiple:
             files = [g.os_path_normslashes(s) for s in val]
             if c and files:
