@@ -107,7 +107,7 @@ class AtFile:
         self.page_width: int = None
         self.root: Position = None  # The root (a position) of tree being read or written.
         self.startSentinelComment = ""
-        self.startSentinelComment = ""
+        self.endSentinelComment = ""
         self.tab_width: int = c.tab_width or -4
         self.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
