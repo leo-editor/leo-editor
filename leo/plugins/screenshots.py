@@ -325,7 +325,7 @@ import textwrap
 import xml.etree.ElementTree as etree
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtGui
+from leo.core.leoQt import QtGui
 # Third-party imports.
 # Warnings are given later.
 try:
@@ -403,13 +403,8 @@ def make_screen_shot(path):
     """Create a screenshot of the present Leo outline and save it to path.
     This is a callback called from make_screen_shot in runLeo.py"""
     app = g.app.gui.qtApp
-    # pylint: disable=no-member
-    if isQt5 or isQt6:
-        screen = QtGui.QScreen()
-        w = screen.grabWindow(app.activeWindow().winId())
-    else:
-        pix = QtGui.QPixmap
-        w = pix.grabWindow(app.activeWindow().winId())
+    screen = QtGui.QScreen()
+    w = screen.grabWindow(app.activeWindow().winId())
     w.save(path, 'png')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController:
