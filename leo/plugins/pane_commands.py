@@ -60,16 +60,16 @@ def topOfPane(event=None):
 
     # create a QPoint of the top of the widget (client area)
     top_left = QtCore.QPoint(0, 0)
-   
+
     # get the (text)'position' within the widget of the top left QPoint
     start_pos = w.cursorForPosition(top_left).position()
-   
+
     # create a cursor and set it to this position
     cursor = w.textCursor()
     cursor.setPosition(start_pos)
     # set the Leo cursor from this
     w.setTextCursor(cursor)
-   
+
     c.bodyWantsFocusNow()
 
 #@-others
