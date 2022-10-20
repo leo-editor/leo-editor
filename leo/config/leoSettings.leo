@@ -729,7 +729,7 @@
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
-<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = False</vh></v>
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
@@ -777,8 +777,6 @@
 <v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
-<v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
 <v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
 <v t="ekr.20140721165014.19169"><vh>@mode tree-undo</vh></v>
@@ -1461,7 +1459,6 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
@@ -5825,7 +5822,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
 <t tx="ekr.20131213135427.22340"></t>
-<t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
 <t tx="ekr.20131213135427.22343"></t>
 <t tx="ekr.20131213135427.22344"></t>
@@ -7109,13 +7105,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
-False: Body pane gets focus when a new window is opened.</t>
-<t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
-
-If this is False it will be harder to use the arrow keys in the headline.
-    
-False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20140721165014.19168">#Miscellaneous vi commands
 #---------------------------------
 

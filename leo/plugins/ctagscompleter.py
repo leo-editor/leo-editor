@@ -30,14 +30,10 @@ search.
 import os
 from typing import Any, Dict, List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
-if isQt5 or isQt6:
-    QCompleter = QtWidgets.QCompleter
-    QStringListModel = QtCore.QStringListModel
-else:
-    QCompleter = QtGui.QCompleter
-    QStringListModel = QtWidgets.QStringListModel
-#
+from leo.core.leoQt import QtCore, QtWidgets
+QCompleter = QtWidgets.QCompleter
+QStringListModel = QtCore.QStringListModel
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< ctagscompleter imports >>

@@ -511,47 +511,6 @@ class TestFind(LeoUnitTest):
         x.do_clone_find_all(settings)
         x.find_next_match(p=None)
         x.do_change_all(settings)
-    #@+node:ekr.20210110073117.74: *4* TestFind.test_batch_plain_replace
-    def test_batch_plain_replace(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'b'
-        settings.change_text = 'B'
-        for ignore in (True, False):
-            settings.ignore_case = ignore
-            x.init_ivars_from_settings(settings)
-            s = 'abc b z'
-            count, s2 = x.batch_plain_replace(s)
-            self.assertEqual(count, 2, msg=f"ignore: {ignore}")
-            self.assertEqual(s2, 'aBc B z', msg=f"ignore: {ignore}")
-    #@+node:ekr.20210110073117.75: *4* TestFind.test_batch_regex_replace
-    def test_batch_regex_replace(self):
-        settings, x = self.settings, self.x
-        s = 'abc b z'
-        table = (
-            (1, 2, 'B', 'B', 'aBc B z'),
-            (0, 2, 'b', 'B', 'aBc B z'),
-            (1, 2, r'([BX])', 'B', 'aBc B z'),
-        )
-        for ignore, count, find, change, expected_s in table:
-            settings.ignore_case = bool(ignore)
-            settings.find_text = find
-            settings.change_text = change
-            x.init_ivars_from_settings(settings)
-            actual_count, actual_s = x.batch_regex_replace(s)
-            self.assertEqual(actual_count, count, msg=find)
-            self.assertEqual(actual_s, expected_s, msg=find)
-    #@+node:ekr.20210110073117.73: *4* TestFind.test_batch_word_replace
-    def test_batch_word_replace(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'b'
-        settings.change_text = 'B'
-        for ignore in (True, False):
-            settings.ignore_case = ignore
-            x.init_ivars_from_settings(settings)
-            s = 'abc b z'
-            count, s2 = x.batch_word_replace(s)
-            self.assertEqual(count, 1)
-            self.assertEqual(s2, 'abc B z')
     #@+node:ekr.20210110073117.71: *4* TestFind.test_cfa_backwards_search
     def test_cfa_backwards_search(self):
         settings, x = self.settings, self.x
@@ -807,19 +766,6 @@ class TestFind(LeoUnitTest):
                 settings.wrapping = wrapping
                 x.init_ivars_from_settings(settings)
                 x._fnm_next_after_fail(settings.p)
-    #@+node:ekr.20210110073117.86: *4* TestFind.test_replace_all_helper
-    def test_replace_all_helper(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'xyzzy'
-        settings.change_text = 'xYzzy'
-        s = 'abc xyzzy done'
-        x.replace_all_helper('')  # Error test.
-        for regex in (True, False):
-            settings.pattern_match = regex
-            for word in (True, False):
-                settings.whole_word = word
-                x.init_ivars_from_settings(settings)
-                x.replace_all_helper(s)
     #@+node:ekr.20210829203927.2: *4* TestFind.test_replace_all_plain_search
     def test_replace_all_plain_search(self):
         c = self.c

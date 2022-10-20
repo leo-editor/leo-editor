@@ -615,15 +615,13 @@ class LeoFind:
         return p, pos, newpos for unit tests.
         """
         c, find, ftm = self.c, self, self.ftm
-        #
         # Recompute find_text for unit tests.
         if def_flag:
             prefix = 'class' if word[0].isupper() else 'def'
             self.find_text = settings.find_text = prefix + ' ' + word
         else:
+            prefix = ''
             self.find_text = settings.find_text = word + ' ='
-        # g.printObj(settings, tag='_fd_helper: settings')
-        #
         # Just search body text.
         self.search_headline = False
         self.search_body = True
@@ -875,7 +873,7 @@ class LeoFind:
         if not word:
             return
         # Settings...
-        self.find_pattern = find_pattern = word + ' ='
+        find_pattern = word + ' ='
         ftm.set_find_text(find_pattern)
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
@@ -1003,7 +1001,7 @@ class LeoFind:
     @cmd('toggle-find-mark-finds-option')
     def toggle_mark_finds_option(self, event: Event) -> None:  # pragma: no cover (cmd)
         """Toggle the 'Mark Finds' checkbox in the Find tab."""
-        return self.toggle_option('mark_finds')
+        self.toggle_option('mark_finds')
 
     @cmd('toggle-find-regex-option')
     def toggle_regex_option(self, event: Event) -> None:  # pragma: no cover (cmd)
@@ -1013,7 +1011,7 @@ class LeoFind:
     @cmd('toggle-find-in-body-option')
     def toggle_search_body_option(self, event: Event) -> None:  # pragma: no cover (cmd)
         """Set the 'Search Body' checkbox in the Find tab."""
-        return self.toggle_option('search_body')
+        self.toggle_option('search_body')
 
     @cmd('toggle-find-in-headline-option')
     def toggle_search_headline_option(self, event: Event) -> None:  # pragma: no cover (cmd)
@@ -1274,114 +1272,6 @@ class LeoFind:
             else:
                 result.append(find0)
             prev_i = i + len(find)
-        # #1166: Complete the result using s0.
-        result.append(s0[prev_i:])
-        return count, ''.join(result)
-    #@+node:ekr.20210110073117.23: *6* new:find.replace_all_helper & helpers (merge & delete)
-    def replace_all_helper(self, s: str) -> Tuple[int, str]:
-        """
-        Search s for self.find_text and replace with self.change_text.
-
-        Return (found, new text)
-        """
-        # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
-        if sys.platform.lower().startswith('win'):
-            # Ignore '\r' characters, which may appear in @edit nodes.
-            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
-            s = s.replace('\r', '')
-        if not s:
-            return False, None
-        # Order matters: regex matches ignore whole-word.
-        if self.pattern_match:
-            return self.batch_regex_replace(s)
-        if self.whole_word:
-            return self.batch_word_replace(s)
-        return self.batch_plain_replace(s)
-    #@+node:ekr.20210110073117.24: *7* new:find.batch_plain_replace
-    def batch_plain_replace(self, s: str) -> Tuple[int, str]:
-        """
-        Perform all plain find/replace on s.
-        return (count, new_s)
-        """
-        find, change = self.find_text, self.change_text
-        # #1166: s0 and find0 aren't affected by ignore-case.
-        s0 = s
-        find0 = self.replace_back_slashes(find)
-        if self.ignore_case:
-            s = s0.lower()
-            find = find0.lower()
-        count, prev_i, result = 0, 0, []
-        while True:
-            progress = prev_i
-            # #1166: Scan using s and find.
-            i = s.find(find, prev_i)
-            if i == -1:
-                break
-            # #1166: Replace using s0 & change.
-            count += 1
-            result.append(s0[prev_i:i])
-            result.append(change)
-            prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
-            assert prev_i > progress, prev_i
-        # #1166: Complete the result using s0.
-        result.append(s0[prev_i:])
-        return count, ''.join(result)
-    #@+node:ekr.20210110073117.25: *7* new:find.batch_regex_replace
-    def batch_regex_replace(self, s: str) -> Tuple[int, str]:
-        """
-        Perform all regex find/replace on s.
-        return (count, new_s)
-        """
-        count, prev_i, result = 0, 0, []
-
-        flags = re.MULTILINE
-        if self.ignore_case:
-            flags |= re.IGNORECASE
-        for m in re.finditer(self.find_text, s, flags):
-            count += 1
-            i = m.start()
-            result.append(s[prev_i:i])
-            # #1748.
-            groups = m.groups()
-            if groups:
-                change_text = self.make_regex_subs(self.change_text, groups)
-            else:
-                change_text = self.change_text
-            result.append(change_text)
-            prev_i = m.end()
-        # Compute the result.
-        result.append(s[prev_i:])
-        s = ''.join(result)
-        return count, s
-    #@+node:ekr.20210110073117.26: *7* new:find.batch_word_replace
-    def batch_word_replace(self, s: str) -> Tuple[int, str]:
-        """
-        Perform all whole word find/replace on s.
-        return (count, new_s)
-        """
-        find, change = self.find_text, self.change_text
-        # #1166: s0 and find0 aren't affected by ignore-case.
-        s0 = s
-        find0 = self.replace_back_slashes(find)
-        if self.ignore_case:
-            s = s0.lower()
-            find = find0.lower()
-        count, prev_i, result = 0, 0, []
-        while True:
-            progress = prev_i
-            # #1166: Scan using s and find.
-            i = s.find(find, prev_i)
-            if i == -1:
-                break
-            # #1166: Replace using s0, change & find0.
-            result.append(s0[prev_i:i])
-            if g.match_word(s, i, find):
-                count += 1
-                result.append(change)
-            else:
-                result.append(find0)
-            prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
-            assert prev_i > progress, prev_i
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)

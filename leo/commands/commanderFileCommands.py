@@ -269,28 +269,25 @@ def open_outline(self: Self, event: Event=None) -> None:
 
         c.bringToFront()
         c.init_error_dialogs()
-        ok = False
         if fileName:
             if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
+                    c = c2  # #2906: Switch c here!
+                    c.init_error_dialogs()
                     # Fix #579: Key bindings don't take for commands defined in plugins.
-                    c2.k.makeAllBindings()
+                    c.k.makeAllBindings()
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
+                    c.initialFocusHelper()
             elif c.looksLikeDerivedFile(fileName):
                 # Create an @file node for files containing Leo sentinels.
-                p = c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
-                ok = bool(p)
+                c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
             else:
                 # otherwise, create an @edit node.
                 c.createNodeFromExternalFile(fileName)
-                ok = True
         c.raise_error_dialogs(kind='write')
         g.app.runAlreadyOpenDialog(c)
-        # openWithFileName sets focus if ok.
-        if not ok:
-            c.initialFocusHelper()
     #@-others
     table = [
         ("Leo files", "*.leo *.leojs *.db"),

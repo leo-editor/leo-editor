@@ -20,7 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
@@ -990,12 +990,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s: str) -> str:
-        # pylint: disable=no-member
-        if isQt5 or isQt6:
-            # QApplication.UnicodeUTF8 no longer exists.
-            return QtWidgets.QApplication.translate('MainWindow', s, None)
-        return QtWidgets.QApplication.translate(
-            'MainWindow', s, None, QtWidgets.QApplication.UnicodeUTF8)
+        return QtWidgets.QApplication.translate('MainWindow', s, None)
+
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
@@ -1363,18 +1359,16 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
                 return
             menu = QtWidgets.QMenu()
             # #310: Create new file on right-click in file tab in UI.
-            if True:
-                a = menu.addAction("New Outline")
-                a.triggered.connect(lambda checked: self.new_outline(index))
+            a = menu.addAction("New Outline")
+            a.triggered.connect(lambda checked: self.new_outline(index))
             if self.count() > 1:
                 a = menu.addAction("Detach")
                 a.triggered.connect(lambda checked: self.detach(index))
-                a = menu.addAction("Horizontal tile")
-                a.triggered.connect(
-                    lambda checked: self.tile(index, orientation='H'))
-                a = menu.addAction("Vertical tile")
-                a.triggered.connect(
-                    lambda checked: self.tile(index, orientation='V'))
+                # #2914: These no longer make sense.
+                    # a = menu.addAction("Horizontal tile")
+                    # a.triggered.connect(lambda checked: self.tile(index, orientation='H'))
+                    # a = menu.addAction("Vertical tile")
+                    # a.triggered.connect(lambda checked: self.tile(index, orientation='V'))
             if self.detached:
                 a = menu.addAction("Re-attach All")
                 a.triggered.connect(lambda checked: self.reattach_all())
@@ -1407,32 +1401,6 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
             # Windows (XP and 7) put the windows title bar off screen.
             w.move(20, 20)
         return w
-    #@+node:ekr.20131115120119.17392: *3* qt_base_tab.tile
-    def tile(self, index: int, orientation: str='V') -> None:
-        """detach tab and tile with parent window"""
-        w = self.widget(index)
-        window = w.window()
-        # window.showMaximized()
-        # this doesn't happen until we've returned to main even loop
-        # user needs to do it before using this function
-        fg = window.frameGeometry()
-        geom = window.geometry()
-        x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
-        ww, wh = geom.width(), geom.height()
-        w = self.detach(index)
-        if window.isMaximized():
-            window.showNormal()
-        if orientation == 'V':
-            # follow MS Windows convention for which way is horizontal/vertical
-            window.resize(ww / 2, wh)
-            window.move(x, y)
-            w.resize(ww / 2, wh)
-            w.move(x + fw / 2, y)
-        else:
-            window.resize(ww, wh / 2)
-            window.move(x, y)
-            w.resize(ww, wh / 2)
-            w.move(x, y + fh / 2)
     #@+node:ekr.20131115120119.17393: *3* qt_base_tab.reattach_all
     def reattach_all(self) -> None:
         """reattach all detached tabs"""
@@ -2171,34 +2139,24 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.app.initStyleFlag = True
         c = self.c
         trace = 'themes' in g.app.debug
-        #
         # Get the requested style name.
         stylename = c.config.getString('qt-style-name') or ''
         if trace:
             g.trace(repr(stylename))
         if not stylename:
             return
-        #
         # Return if the style does not exist.
         styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
         if stylename.lower() not in styles:
             g.es_print(f"ignoring unknown Qt style name: {stylename!r}")
             g.printObj(styles)
             return
-        #
         # Change the style and palette.
         app = g.app.gui.qtApp
-        if isQt5 or isQt6:
-            qstyle = app.setStyle(stylename)
-            if not qstyle:
-                g.es_print(f"failed to set Qt style name: {stylename!r}")
-        else:
-            QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
-            qstyle = QtWidgets.qApp.setStyle(stylename)
-            if not qstyle:
-                g.es_print(f"failed to set Qt style name: {stylename!r}")
-                return
-            app.setPalette(QtWidgets.qApp.nativePalette)
+        qstyle = app.setStyle(stylename)
+        if not qstyle:
+            g.es_print(f"failed to set Qt style name: {stylename!r}")
+
     #@+node:ekr.20110605121601.18252: *4* qtFrame.initCompleteHint
     def initCompleteHint(self) -> None:
         """A kludge: called to enable text changed events."""
@@ -2424,24 +2382,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c.bodyWantsFocus()
         else:
             c.treeWantsFocus()
-    #@+node:ekr.20110605121601.18303: *5* qtFrame.cascade
-    @frame_cmd('cascade-windows')
-    def cascade(self, event: Event=None) -> None:
-        """Cascade all Leo windows."""
-        x, y, delta = 50, 50, 50
-        for frame in g.app.windowList:
-            w = frame and frame.top
-            if w:
-                r = w.geometry()  # a Qt.Rect
-                # 2011/10/26: Fix bug 823601: cascade-windows fails.
-                w.setGeometry(QtCore.QRect(x, y, r.width(), r.height()))
-                # Compute the new offsets.
-                x += 30
-                y += 30
-                if x > 200:
-                    x = 10 + delta
-                    y = 40 + delta
-                    delta += 10
     #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes
     @frame_cmd('equal-sized-panes')
     def equalSizedPanes(self, event: Event=None) -> None:
