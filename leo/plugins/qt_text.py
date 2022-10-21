@@ -1730,6 +1730,7 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         w = self.widget
         cursor = w.textCursor()
+        g.trace('(qtew)', i, repr(s))  ###
         try:
             self.changingText = True  # Disable onTextChanged.
             cursor.setPosition(i)
