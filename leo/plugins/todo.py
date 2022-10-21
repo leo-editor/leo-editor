@@ -126,7 +126,7 @@ def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
 
     if hasattr(c, 'cleo'):  # #2856.
         c.cleo.addPopupMenu(c, p, menu)
-#@+node:tbrown.20090119215428.8: ** class todoQtUI
+#@+node:tbrown.20090119215428.8: ** class todoQtUI(QWidget)
 if g.app.gui.guiName() == "qt":
 
     class todoQtUI(QtWidgets.QWidget):  # type:ignore

@@ -500,22 +500,11 @@ class AutoCompleterClass:
             options = self.get_completions(prefix)
         tabList, common_prefix = g.itemsMatchingPrefixInList(
             prefix, options, matchEmptyPrefix=False)
-        g.trace(  ###
-            'prefix', repr(prefix),
-            'options', len(options),
-            'tabList', len(tabList),
-            'common_prefix', repr(common_prefix))
         if not common_prefix:
             tabList, common_prefix = g.itemsMatchingPrefixInList(
                 prefix, options, matchEmptyPrefix=True)
         if tabList:
             self.show_completion_list(common_prefix, prefix, tabList)
-        g.trace(  ###
-            'prefix', repr(prefix),
-            'options', len(options),
-            'tabList', len(tabList),
-            'common_prefix', repr(common_prefix))
-        g.trace('=====')
         return common_prefix, prefix, tabList
     #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
     def get_cached_options(self, prefix: str) -> Tuple[str, List[str]]:
@@ -542,6 +531,7 @@ class AutoCompleterClass:
             self.exit()
             return
         w.delete(i - 1, i)
+        c.p.b = w.getAllText()  # #2927
         w.setInsertPoint(i - 1)
         if i <= 1:
             self.exit()
@@ -951,10 +941,12 @@ class AutoCompleterClass:
             # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
+        c.p.b = w.getAllText() # #2927
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
-        g.trace(w == c.frame.body.wrapper, i, repr(s))
+        else:
+            w.setInsertPoint(i + len(s))
         #
         # Don't make this undoable.
             # if 0:
