@@ -941,7 +941,7 @@ class AutoCompleterClass:
             # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
-        c.p.b = w.getAllText() # #2927
+        c.p.b = w.getAllText()  # #2927
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
