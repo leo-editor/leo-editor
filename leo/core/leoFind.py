@@ -1887,11 +1887,11 @@ class LeoFind:
             if not g.unitTesting:  # pragma: no cover (skip)
                 g.es_print('nodetags not active')
             return
+        n = p.numberOfChildren()
         for p in p.children():
             tc.add_tag(p, tag)
         if not g.unitTesting:  # pragma: no cover (skip)
-            g.es_print(f"Added {tag} tag to {len(list(c.p.children()))} nodes")
-
+            g.es_print(f"Added {tag} tag to {n} node{g.plural(n)}")
     #@+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
