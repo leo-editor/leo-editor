@@ -2176,8 +2176,7 @@ class LoadManager:
             if d:
                 print('')
         else:
-            # print(d)
-            print(f"{d.name} {len(d.d.keys())}")
+            print(f"{d.name()} {len(d.keys())}")
     #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
     def traceShortcutsDict(self, d: Dict[str, str], verbose: bool=False) -> None:
         if verbose:
