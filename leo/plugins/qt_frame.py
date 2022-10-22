@@ -2967,7 +2967,6 @@ class LeoQtLog(leoFrame.LeoLog):
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:
-            g.trace('***Create***', tabName, g.callers())
             self.createTab(tabName, wrap=wrap)
             self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)

@@ -324,7 +324,7 @@ class AutoCompleterClass:
             g.trace('(AutoCompleterClass)')
         c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
-        c.k.keyboardQuit()  # Deletes completer tabs.
+        c.k.keyboardQuit()  # #2927: Deletes completer tabs.
         if self.use_qcompleter:
             if self.qw:
                 self.qw.end_completer()
