@@ -2884,6 +2884,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
+        ### g.trace('text?', createText, tabName, widget.__class__.__name__, g.callers())
         c = self.c
         contents: Any
         if widget is None:
@@ -2944,6 +2945,20 @@ class LeoQtLog(leoFrame.LeoLog):
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         w = self.tabWidget
         return [w.tabText(i) for i in range(w.count())]
+    #@+node:ekr.20221022062949.1: *4* LeoQtLog.renameTab
+    def renameTab(self, oldTabName: str, tabName: str) -> None:
+        """Rename the text tab"""
+        w = self.tabWidget
+        i = self.findTabIndex(oldTabName)
+        if i is None:
+            self.createTab(tabName)
+        else:
+            # Update the dict.
+            self.logDict[tabName] = self.logDict[oldTabName]
+            del self.logDict[oldTabName]
+            # Update the tab's name.
+            w.setTabText(i, tabName)
+            self.tabName = tabName
     #@+node:ekr.20110605121601.18330: *4* LeoQtLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self) -> int:
         # **Note**: the base-class version of this uses frameDict.
@@ -2953,6 +2968,7 @@ class LeoQtLog(leoFrame.LeoLog):
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:
+            g.trace('***Create***', tabName, g.callers())
             self.createTab(tabName, wrap=wrap)
             self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)
