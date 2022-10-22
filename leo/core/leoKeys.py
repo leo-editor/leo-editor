@@ -534,7 +534,7 @@ class AutoCompleterClass:
             self.exit()
             return
         w.delete(i - 1, i)
-        c.p.b = w.getAllText()  # #2927
+        ### c.p.b = w.getAllText()  # #2927
         w.setInsertPoint(i - 1)
         if i <= 1:
             self.exit()
@@ -944,7 +944,7 @@ class AutoCompleterClass:
             # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
-        c.p.b = w.getAllText()  # #2927
+        ### c.p.b = w.getAllText()  # #2927
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
