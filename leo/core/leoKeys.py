@@ -364,11 +364,14 @@ class AutoCompleterClass:
     # Underscores are not valid in Pmw tab names!
 
     def setTabName(self, s: str) -> None:
-        c = self.c
-        if self.tabName:
-            c.frame.log.deleteTab(self.tabName)
-        self.tabName = s.replace('_', '') or ''
-        c.frame.log.clearTab(self.tabName)
+       
+        log = self.c.frame.log
+        newTabName = s.replace('_', '') or ''
+        if newTabName != self.tabName:
+            # #2927: Rename the tab.
+            log.renameTab(self.tabName, newTabName)
+            self.tabName = newTabName
+            log.clearTab(self.tabName)
     #@+node:ekr.20110509064011.14556: *4* ac.attr_matches
     def attr_matches(self, s: str, namespace: Any) -> Optional[List[str]]:
         """Compute matches when string s is of the form name.name....name.
