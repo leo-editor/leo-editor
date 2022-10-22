@@ -361,7 +361,7 @@ class AutoCompleterClass:
     # Underscores are not valid in Pmw tab names!
 
     def setTabName(self, s: str) -> None:
-       
+
         log = self.c.frame.log
         newTabName = s.replace('_', '') or ''
         if newTabName != self.tabName:
