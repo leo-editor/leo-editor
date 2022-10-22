@@ -329,7 +329,7 @@ class AutoCompleterClass:
             if self.qw:
                 self.qw.end_completer()
                 self.qw = None  # Bug fix: 2013/09/24.
-        else:
+        elif 0:  # #2927: keyboardQuit calls self.deleteTab.
             for name in (self.tabName, 'Modules', 'Info'):
                 c.frame.log.deleteTab(name)
         # Restore the selection range that may have been destroyed by changing tabs.
@@ -2919,6 +2919,7 @@ class KeyHandlerClass:
     def keyboardQuit(self, event: Event=None, setFocus: bool=True) -> None:
         """Clears the state and the minibuffer label."""
         c, k = self.c, self
+        ac = k.autoCompleter
         if g.app.quitting:
             return
         c.endEditing()
@@ -2926,6 +2927,8 @@ class KeyHandlerClass:
         if setFocus:
             c.frame.log.deleteTab('Mode')
             c.frame.log.hideTab('Completion')
+            if ac:
+                c.frame.log.deleteTab(ac.tabName)
         if k.inputModeName:
             k.endMode()
         # Complete clear the state.
