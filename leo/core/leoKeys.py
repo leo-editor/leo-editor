@@ -324,14 +324,11 @@ class AutoCompleterClass:
             g.trace('(AutoCompleterClass)')
         c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
-        c.k.keyboardQuit()
+        c.k.keyboardQuit()  # Deletes completer tabs.
         if self.use_qcompleter:
             if self.qw:
                 self.qw.end_completer()
                 self.qw = None  # Bug fix: 2013/09/24.
-        elif 0:  # #2927: keyboardQuit calls self.deleteTab.
-            for name in (self.tabName, 'Modules', 'Info'):
-                c.frame.log.deleteTab(name)
         # Restore the selection range that may have been destroyed by changing tabs.
         c.widgetWantsFocusNow(w)
         i, j = w.getSelectionRange()
@@ -534,7 +531,6 @@ class AutoCompleterClass:
             self.exit()
             return
         w.delete(i - 1, i)
-        ### c.p.b = w.getAllText()  # #2927
         w.setInsertPoint(i - 1)
         if i <= 1:
             self.exit()
@@ -944,7 +940,6 @@ class AutoCompleterClass:
             # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
-        ### c.p.b = w.getAllText()  # #2927
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)

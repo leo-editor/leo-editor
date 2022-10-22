@@ -2884,7 +2884,6 @@ class LeoQtLog(leoFrame.LeoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
-        ### g.trace('text?', createText, tabName, widget.__class__.__name__, g.callers())
         c = self.c
         contents: Any
         if widget is None:
