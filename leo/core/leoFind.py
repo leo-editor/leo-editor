@@ -51,7 +51,7 @@ UndoData = g.Bunch
 #    This means that when the user changes the nodes, or selects new
 #    text in headline or body text, those changes will affect the next
 #    invocation of any Find or Change command. Failure to follow this
-#    principle caused all kinds of problems earlier versions.
+#    principle caused all kinds of problems in earlier versions.
 #
 #    This principle simplifies the code because most ivars do not
 #    persist. However, each command must ensure that the Leo window is
