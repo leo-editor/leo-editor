@@ -2028,7 +2028,7 @@ class LeoFind:
     #@+node:ekr.20031218072017.3070: *4* find.change_selection
     def change_selection(self, p: Position) -> bool:
         """Replace selection with self.change_text."""
-        c, p, u = self.c, self.c.p, self.c.undoer
+        c, u = self.c, self.c.undoer
         wrapper = c.frame.body and c.frame.body.wrapper
         gui_w = c.edit_widget(p) if self.in_headline else wrapper
         if not gui_w:  # pragma: no cover
