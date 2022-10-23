@@ -1037,7 +1037,7 @@ class JEditColorizer(BaseColorizer):
         """
         Initialize the keywords for the present language.
 
-         Set self.word_chars ivar to string.letters + string.digits
+         Set self.word_chars ivar to string.letters + string.digits + '_'
          plus any other character appearing in any keyword.
          """
         # Add any new user keywords to leoKeywordsDict.
@@ -1049,6 +1049,7 @@ class JEditColorizer(BaseColorizer):
                 d[key] = 'leokeyword'
         # Create a temporary chars list.  It will be converted to a dict later.
         chars = [z for z in string.ascii_letters + string.digits]
+        chars.append('_')  # #2933.
         for key in list(d.keys()):
             for ch in key:
                 if ch not in chars:
