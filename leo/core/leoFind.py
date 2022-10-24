@@ -285,7 +285,7 @@ class LeoFind:
         if not self.search_headline and not self.search_body:
             return 0  # pragma: no cover
         if self.pattern_match:
-            ok = self.precompile_pattern()
+            ok = self.compile_pattern()
             if not ok:  # pragma: no cover
                 return 0
         # Init...
@@ -1128,7 +1128,7 @@ class LeoFind:
             return 0
         self.change_text = self.replace_back_slashes(self.change_text)
         if self.pattern_match:
-            ok = self.precompile_pattern()
+            ok = self.compile_pattern()
             if not ok:
                 return 0
         # #1428: Honor limiters in replace-all.
@@ -1546,7 +1546,7 @@ class LeoFind:
         self.work_s = s
         self.work_sel = (ins, ins, ins)
         if self.pattern_match:
-            ok = self.precompile_pattern()
+            ok = self.compile_pattern()
             if not ok:  # pragma: no cover
                 return count
         if self.suboutline_only:
@@ -2126,7 +2126,7 @@ class LeoFind:
             return None, None, None
         attempts = 0
         if self.pattern_match:
-            ok = self.precompile_pattern()
+            ok = self.compile_pattern()
             if not ok:
                 return None, None, None
         while p:
@@ -2412,28 +2412,6 @@ class LeoFind:
 
         result = re.sub(r'\\([0-9])', repl, change_text)
         return result
-    #@+node:ekr.20131123071505.16467: *4* find.precompile_pattern
-    def precompile_pattern(self) -> bool:
-        """Precompile the regexp pattern if necessary."""
-        try:  # Precompile the regexp.
-            # pylint: disable=no-member
-            flags = re.MULTILINE
-            if self.ignore_case:
-                flags |= re.IGNORECASE
-            # Escape the search text.
-            # Ignore the whole_word option.
-            s = self.find_text
-            # A bad idea: insert \b automatically.
-                # b, s = '\\b', self.find_text
-                # if self.whole_word:
-                    # if not s.startswith(b): s = b + s
-                    # if not s.endswith(b): s = s + b
-            self.re_obj = re.compile(s, flags)
-            return True
-        except Exception:
-            if not g.unitTesting:
-                g.warning('invalid regular expression:', self.find_text)  # pragma: no cover
-            return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s: str) -> str:
         """Carefully replace backslashes in a search pattern."""
