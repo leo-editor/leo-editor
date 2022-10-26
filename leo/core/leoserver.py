@@ -64,12 +64,13 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 4)
+version_tuple = (1, 0, 5)
 # Version History
 # 1.0.1 Initial commit
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info
 # 1.0.3 July 2022: Fixed original node selection upon opening a file.
 # 1.0.4 September 2022: Full type checking
+# 1.0.5 October 2022: Fixed node commands when used from client's context menu
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2392,6 +2393,13 @@ class LeoServer:
             c.clone()
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+                    
         # return selected node either ways
         return self._make_response()
 
@@ -2531,6 +2539,12 @@ class LeoServer:
             c.insertHeadline()  # Handles undo, sets c.p
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
 
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
@@ -2575,6 +2589,12 @@ class LeoServer:
         if oldPosition:
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
 
         c.setChanged()
         return self._make_response()
