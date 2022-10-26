@@ -157,6 +157,12 @@ class LeoMenu:
         """
         # Called from createMenuBar.
         c = self.c
+
+        # Prevent this outline's local menus from being reused by later outlines
+        lm = g.app.loadManager
+        lm.globalSettingsDict['menus'] = None
+        c.config.set(None, 'menus', 'menus', None)
+
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
