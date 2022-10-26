@@ -2399,7 +2399,7 @@ class LeoServer:
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
-                    
+
         # return selected node either ways
         return self._make_response()
 
