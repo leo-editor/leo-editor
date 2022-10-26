@@ -2392,6 +2392,13 @@ class LeoServer:
             c.clone()
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+                    
         # return selected node either ways
         return self._make_response()
 
@@ -2531,6 +2538,12 @@ class LeoServer:
             c.insertHeadline()  # Handles undo, sets c.p
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
 
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
@@ -2575,6 +2588,12 @@ class LeoServer:
         if oldPosition:
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
 
         c.setChanged()
         return self._make_response()
