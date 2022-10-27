@@ -2694,7 +2694,7 @@ class LeoFind:
             g.es(f"not found: {pattern}")
             if not again:
                 event = g.app.gui.create_key_event(
-                    c, binding='BackSpace', char='\b', w=w)
+                    c, binding='BackSpace', char='\b', w=None)
                 k.updateLabel(event)
     #@+node:ekr.20131117164142.16950: *5* find.isearch_state_handler
     def isearch_state_handler(self, event: Event) -> None:  # pragma: no cover (cmd)
