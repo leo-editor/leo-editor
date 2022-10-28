@@ -18945,7 +18945,7 @@ Searches creating clones:
 
     Alt+R isearch-backward
           isearch-backward-regexp
-    Alt+S isearch-forward
+    Alt+I isearch-forward
           isearch-forward-regexp
           isearch-with-present-options
 </t>
