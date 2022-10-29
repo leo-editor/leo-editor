@@ -404,7 +404,14 @@ class ParserBaseClass:
             targetPath, mode, source = parts
             if not targetPath.startswith('/'):
                 targetPath = '/' + targetPath
-            ans = self.patchMenuTree(g.app.config.menusList, targetPath)
+            is_local = 'leosettings' not in self.c.mFileName.lower()
+            if is_local:
+                mlist = g.app.config.menusList[:]
+                self.c.config.set(None, 'menus', 'menus', mlist)
+            else:
+                mlist = g.app.config.menusList
+            # ans = self.patchMenuTree(g.app.config.menusList, targetPath)
+            ans = self.patchMenuTree(mlist, targetPath)
             if ans:
                 # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
@@ -440,6 +447,7 @@ class ParserBaseClass:
             pass  # #48: Not an error.
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
+
     #@+node:tbrown.20080514180046.9: *5* pbc.getName
     def getName(self, val: str, val2: str=None) -> str:
         if val2 and val2.strip():
