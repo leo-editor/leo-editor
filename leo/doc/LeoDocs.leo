@@ -18329,17 +18329,10 @@ These commands work with either headline or body text.</t>
     
 **@tabwidth**: The ``convert-*`` commands convert between tabs and blanks using the @tabwidth setting presently in effect.
 
-``flush-lines``
-    Deletes each line that contains a match for regexp, operating on the text after point.
-    In Transient Mark mode, if the region is active, the command operates on the region instead.
-
 ``insert-body-time`` and ``insert-headline-time``
     Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime.
     
 **Time format**: For format options see `Python's time module`_. By default, the commands use ``%m/%d/%Y %H:%M:%S``, giving timestamps like ``1/30/2003 8:31:55``.
-
-``keep-lines``
-    Deletes each line that does not contain a match for regexp, operating on the text after point. In Transient Mark mode, if the region is active, the command operates on the region instead. 
 
 ``pretty-print-python-code`` and ``pretty-print-all-python-code``
     Pretty prints body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py::
