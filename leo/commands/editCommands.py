@@ -2151,44 +2151,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             ins = i + n
         w.setSelectionRange(ins, ins, insert=ins)
     #@+node:ekr.20150514063305.280: *3* ec: lines
-    #@+node:ekr.20150514063305.281: *4* ec.flushLines (doesn't work)
-    @cmd('flush-lines')
-    def flushLines(self, event: Event) -> None:
-        """
-        Delete each line that contains a match for regexp, operating on the
-        text after point.
-
-        In Transient Mark mode, if the region is active, the command operates
-        on the region instead.
-        """
-        k = self.c.k
-        k.setLabelBlue('Flush lines regexp: ')
-        k.get1Arg(event, handler=self.flushLines1)
-
-    def flushLines1(self, event: Event) -> None:
-        k = self.c.k
-        k.clearState()
-        k.resetLabel()
-        self.linesHelper(event, k.arg, 'flush')
-    #@+node:ekr.20150514063305.282: *4* ec.keepLines (doesn't work)
-    @cmd('keep-lines')
-    def keepLines(self, event: Event) -> None:
-        """
-        Delete each line that does not contain a match for regexp, operating on
-        the text after point.
-
-        In Transient Mark mode, if the region is active, the command operates
-        on the region instead.
-        """
-        k = self.c.k
-        k.setLabelBlue('Keep lines regexp: ')
-        k.get1Arg(event, handler=self.keepLines1)
-
-    def keepLines1(self, event: Event) -> None:
-        k = self.c.k
-        k.clearState()
-        k.resetLabel()
-        self.linesHelper(event, k.arg, 'keep')
     #@+node:ekr.20150514063305.283: *4* ec.linesHelper
     def linesHelper(self, event: Event, pattern: str, which: str) -> None:
         w = self.editWidget(event)
