@@ -2642,22 +2642,54 @@ class LeoServer:
     #@+node:felix.20210621233316.57: *5* server.page_down
     def page_down(self, param: Param) -> Response:
         """
-        Selects a node "n" steps down in the tree to simulate page down.
+        Tree page-down command:
+        If no 'n steps' are passed, this selects last sibling or next vis if already last sibling.
+        Otherwise selects a node "n" steps down in the tree to simulate page down.
         """
         c = self._check_c()
-        n = param.get("n", 3)
-        for z in range(n):
-            c.selectVisNext()
+        n = param.get("n", 0)
+        if n:
+            for z in range(n):
+                c.selectVisNext()
+        else:
+            parent = c.p.parent()
+            if not parent:
+                c.goToLastSibling()
+                return self._make_response()
+
+            siblings = [* parent.children(copy=True)]
+            lastSibling = siblings[-1]
+            if lastSibling == c.p:
+                c.selectVisNext()  # already last sibling
+            else:
+                c.goToLastSibling()
+
         return self._make_response()
     #@+node:felix.20210621233316.58: *5* server.page_up
     def page_up(self, param: Param) -> Response:
         """
-        Selects a node "N" steps up in the tree to simulate page up.
+        Tree page-up command:
+        If no 'n steps' are passed, this selects first sibling, or previous vis if already first sibling.
+        Otherwise selects a node "N" steps up in the tree to simulate page up.
         """
         c = self._check_c()
-        n = param.get("n", 3)
-        for z in range(n):
-            c.selectVisBack()
+        n = param.get("n", 0)
+        if n:
+            for z in range(n):
+                c.selectVisBack()
+        else:
+            parent = c.p.parent()
+            if not parent:
+                c.goToFirstSibling()
+                return self._make_response()
+
+            siblings = [* parent.children(copy=True)]
+            firstSibling = siblings[0]
+            if firstSibling == c.p:
+                c.selectVisBack()  # already first sibling
+            else:
+                c.goToFirstSibling()
+
         return self._make_response()
     #@+node:felix.20220222173659.1: *5* server.paste_node
     def paste_node(self, param: Param) -> Response:
