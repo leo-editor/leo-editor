@@ -2657,7 +2657,7 @@ class LeoServer:
                 c.goToLastSibling()
                 return self._make_response()
 
-            siblings = [*parent.children(copy=True)]
+            siblings = [* parent.children(copy=True)]
             lastSibling = siblings[-1]
             if lastSibling == c.p:
                 c.selectVisNext()  # already last sibling
@@ -2683,7 +2683,7 @@ class LeoServer:
                 c.goToFirstSibling()
                 return self._make_response()
 
-            siblings = [*parent.children(copy=True)]
+            siblings = [* parent.children(copy=True)]
             firstSibling = siblings[0]
             if firstSibling == c.p:
                 c.selectVisBack()  # already first sibling
