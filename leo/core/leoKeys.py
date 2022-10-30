@@ -3774,7 +3774,7 @@ class KeyHandlerClass:
         ch, stroke = event.char, event.stroke
         if ch in "\n\r":
             return
-        if stroke and not k.isPlainKey(stroke):
+        if ch != '\b' and stroke and not k.isPlainKey(stroke):
             return  # #2041.
         c.widgetWantsFocusNow(w)
         i, j = w.getSelectionRange()
