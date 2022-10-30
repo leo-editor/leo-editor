@@ -2151,36 +2151,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             ins = i + n
         w.setSelectionRange(ins, ins, insert=ins)
     #@+node:ekr.20150514063305.280: *3* ec: lines
-    #@+node:ekr.20150514063305.283: *4* ec.linesHelper
-    def linesHelper(self, event: Event, pattern: str, which: str) -> None:
-        w = self.editWidget(event)
-        if not w:
-            return  # pragma: no cover (defensive)
-        self.beginCommand(w, undoType=which + '-lines')
-        if w.hasSelection():
-            i, end = w.getSelectionRange()
-        else:
-            i = w.getInsertPoint()
-            end = w.getLastIndex()
-        txt = w.get(i, end)
-        tlines = txt.splitlines(True)
-        keeplines = list(tlines) if which == 'flush' else []
-        try:
-            regex = re.compile(pattern)
-            for n, z in enumerate(tlines):
-                f = regex.findall(z)
-                if which == 'flush' and f:
-                    keeplines[n] = None
-                elif f:
-                    keeplines.append(z)
-        except Exception:
-            return
-        if which == 'flush':
-            keeplines = [x for x in keeplines if x is not None]
-        w.delete(i, end)
-        w.insert(i, ''.join(keeplines))
-        w.setInsertPoint(i)
-        self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode
     @cmd('move-lines-to-next-node')
     def moveLineToNextNode(self, event: Event) -> None:
