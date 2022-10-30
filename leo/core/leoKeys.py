@@ -519,6 +519,7 @@ class AutoCompleterClass:
                 return key, []
             options = d.get(key)
             if options:
+                ### g.trace(len(options), repr(key))
                 return key, options
         return None, []
     #@+node:ekr.20061031131434.29: *4* ac.do_backspace
@@ -527,18 +528,16 @@ class AutoCompleterClass:
         c, w = self.c, self.w
         c.bodyWantsFocusNow()
         i = w.getInsertPoint()
-        if i <= 0:
-            self.exit()
-            return
-        w.delete(i - 1, i)
-        w.setInsertPoint(i - 1)
-        if i <= 1:
-            self.exit()
+        while i > 1:
+            w.delete(i - 1, i)
+            w.setInsertPoint(i - 1)
+            i -= 1
+            prefix = self.get_autocompleter_prefix()
+            common_prefix, prefix2, tabList = self.compute_completion_list()
+            if len(tabList) > 1 and prefix == prefix2:
+                return
         else:
-            # Update the list. Abort if there is no prefix.
-            common_prefix, prefix, tabList = self.compute_completion_list()
-            if not prefix:
-                self.exit()
+            self.exit()
     #@+node:ekr.20110509064011.14561: *4* ac.get_autocompleter_prefix
     def get_autocompleter_prefix(self) -> str:
         # Only the body pane supports auto-completion.
