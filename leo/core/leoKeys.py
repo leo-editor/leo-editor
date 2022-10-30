@@ -534,10 +534,9 @@ class AutoCompleterClass:
             i -= 1
             prefix = self.get_autocompleter_prefix()
             common_prefix, prefix2, tabList = self.compute_completion_list()
-            if len(tabList) > 1 and prefix == prefix2:
+            if len(tabList) > 1 and prefix == common_prefix:
                 return
-        else:
-            self.exit()
+        self.exit()
     #@+node:ekr.20110509064011.14561: *4* ac.get_autocompleter_prefix
     def get_autocompleter_prefix(self) -> str:
         # Only the body pane supports auto-completion.
