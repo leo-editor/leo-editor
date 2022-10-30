@@ -539,12 +539,6 @@ class AutoCompleterClass:
             common_prefix, prefix, tabList = self.compute_completion_list()
             if not prefix:
                 self.exit()
-    #@+node:ekr.20110510133719.14548: *4* ac.do_qcompleter_tab (not used)
-    def do_qcompleter_tab(self, prefix: str, options: List[str]) -> str:
-        """Return the longest common prefix of all the options."""
-        matches, common_prefix = g.itemsMatchingPrefixInList(
-            prefix, options, matchEmptyPrefix=False)
-        return common_prefix
     #@+node:ekr.20110509064011.14561: *4* ac.get_autocompleter_prefix
     def get_autocompleter_prefix(self) -> str:
         # Only the body pane supports auto-completion.
