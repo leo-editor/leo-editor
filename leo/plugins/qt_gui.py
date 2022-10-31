@@ -220,7 +220,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.globalFindDialog = dialog
             # Fix #516: Do the following only once...
             if c:
-                dialog.setStyleSheet(c.active_stylesheet)
+                # dialog.setStyleSheet(c.active_stylesheet)
                 # Set the commander's FindTabManager.
                 assert g.app.globalFindTabManager
                 c.ftm = g.app.globalFindTabManager
@@ -259,7 +259,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(dialog)
         dialog.setLayout(layout)
         if c:
-            c.styleSheetManager.set_style_sheets(w=dialog)
+            # c.styleSheetManager.set_style_sheets(w=dialog)
             g.app.gui.setFilter(c, dialog, dialog, 'find-dialog')
             # This makes most standard bindings available.
         dialog.setModal(False)
@@ -289,6 +289,12 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        ssm = g.app.gui.styleSheetManagerClass(c)
+        w = ssm.get_master_widget()
+        sheet = w.styleSheet()
+        if sheet:
+            dialog.setStyleSheet(sheet)
+
         dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         dialog.setIcon(Icon.Information)
         yes = dialog.addButton('Ok', ButtonRole.YesRole)
@@ -381,6 +387,11 @@ class LeoQtGui(leoGui.LeoGui):
             init = datetime.datetime.now()
         dialog = Calendar(c and c.frame.top, message=message, init=init, step_min=step_min)
         if c:
+            ssm = g.app.gui.styleSheetManagerClass(c)
+            w = ssm.get_master_widget()
+            sheet = w.styleSheet()
+            if sheet:
+                dialog.setStyleSheet(sheet)
             dialog.setStyleSheet(c.active_stylesheet)
             dialog.setWindowTitle(title)
             try:
@@ -411,6 +422,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = None
         title = 'Enter Leo id'
         s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
+
         return s
     #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self,
@@ -421,8 +433,11 @@ class LeoQtGui(leoGui.LeoGui):
             return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
         dialog = QtWidgets.QInputDialog()
-        if c:
-            dialog.setStyleSheet(c.active_stylesheet)
+        ssm = g.app.gui.styleSheetManagerClass(c)
+        w = ssm.get_master_widget()
+        sheet = w.styleSheet()
+        if sheet:
+            dialog.setStyleSheet(sheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         if cancelButtonText:
@@ -456,8 +471,11 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         dialog = QtWidgets.QInputDialog()
-        if c:
-            dialog.setStyleSheet(c.active_stylesheet)
+        ssm = g.app.gui.styleSheetManagerClass(c)
+        w = ssm.get_master_widget()
+        sheet = w.styleSheet()
+        if sheet:
+            dialog.setStyleSheet(sheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         dialog.setTextValue(default)
@@ -477,9 +495,6 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
-        stylesheet = getattr(c, 'active_stylesheet', None)
-        if stylesheet:
-            dialog.setStyleSheet(stylesheet)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
@@ -512,9 +527,6 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
-        stylesheet = getattr(c, 'active_stylesheet', None)
-        if stylesheet:
-            dialog.setStyleSheet(stylesheet)
         if message:
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
@@ -568,8 +580,6 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.addButton('Yes To All', ButtonRole.YesRole)
         if no_all:
             dialog.addButton('No To All', ButtonRole.NoRole)
-        if c:
-            dialog.setStyleSheet(c.active_stylesheet)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
@@ -623,8 +633,6 @@ class LeoQtGui(leoGui.LeoGui):
             startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
-        if c:
-            dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
         if c:
@@ -668,7 +676,7 @@ class LeoQtGui(leoGui.LeoGui):
             return ''
         dialog = QtWidgets.QFileDialog()
         if c:
-            dialog.setStyleSheet(c.active_stylesheet)
+            # dialog.setStyleSheet(c.active_stylesheet)
             self.attachLeoIcon(dialog)
             try:
                 c.in_qt_dialog = True
