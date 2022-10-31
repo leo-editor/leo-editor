@@ -2130,6 +2130,15 @@ class LeoServer:
         c = self._check_c()
         all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_minimal_response({"gnx": all_gnx})
+    #@+node:felix.20221031010236.1: *5* server.get_branch
+    def get_branch(self, param: Param) -> Response:
+            """
+            Return the branch and commit of the currently opened document, if any.
+            """
+            c = self._check_c()
+            fileName = c.fileName()
+            branch, commit = g.gitInfoForFile(fileName)
+            return self._make_minimal_response({"branch": branch, "commit": commit})
     #@+node:felix.20210621233316.39: *5* server.get_body
     def get_body(self, param: Param) -> Response:
         """
