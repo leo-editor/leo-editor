@@ -2427,30 +2427,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 w.setWindowState(WindowState.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
-    #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
-    @frame_cmd('open-offline-tutorial')
-    def leoHelp(self, event: Event=None) -> None:
-        """Open Leo's offline tutorial."""
-        frame = self
-        c = frame.c
-        theFile = g.os_path_join(g.app.loadDir, "..", "doc", "sbooks.chm")
-        if g.os_path_exists(theFile) and sys.platform.startswith('win'):
-            # pylint: disable=no-member
-            os.startfile(theFile)
-        else:
-            answer = g.app.gui.runAskYesNoDialog(c,
-                "Download Tutorial?",
-                "Download tutorial (sbooks.chm) from SourceForge?")
-            if answer == "yes":
-                try:
-                    url = "http://prdownloads.sourceforge.net/leo/sbooks.chm?download"
-                    import webbrowser
-                    os.chdir(g.app.loadDir)
-                    webbrowser.open_new(url)
-                except Exception:
-                    if 0:
-                        g.es("exception downloading", "sbooks.chm")
-                        g.es_exception()
     #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
     # The ratio and secondary_ratio properties are read-only.
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property

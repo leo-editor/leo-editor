@@ -3395,9 +3395,8 @@ toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
-# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
-# universal-argument    = Alt-u   # Usually Ctrl-u, conflicts with move-outline-up.
+
 
 
 
@@ -3514,22 +3513,18 @@ forward-sentence-extend-selection   = None # Alt-Shift-e
 forward-word                        = None # Alt-f
 forward-word-extend-selection       = None # Alt-Shift-f
 goto-global-line                    = Alt-g
-# match-brackets                    = Ctrl-K    # kill-line
 move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
 move-past-close-extend-selection    = None
 
-# Brian Theado
 # next-or-end-of-line                 ! text = Down
 # next-or-end-of-line-extend-selection ! text = Shift-Down
-
 # next-line                         = Ctrl-N
 # next-line-extend-selection        = Ctrl-Shift-N
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
-
-# Brian Theado
 # previous-or-beginning-of-line                   ! text = Up
 # previous-or-beginning-of-line-extend-selection  ! text = Shift-Up
+
 select-all                          = Ctrl-a</t>
 <t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
 # expand-pane         = Alt-Ctrl-=
@@ -3598,7 +3593,6 @@ indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
 newline-and-indent                  = Ctrl-j
-### newline-and-indent              !text = Tab
 focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
@@ -4037,10 +4031,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2"># cycle-focus                       = None
-# cycle-all-focus                   = Ctrl-Shift-tab
-
-back-word                           = Ctrl-LtArrow
+<t tx="ekr.20080510072134.2">back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
 beginning-of-buffer                 = Ctrl-Home
 beginning-of-buffer-extend-selection= Ctrl-Shift-Home
@@ -4058,7 +4049,7 @@ end-of-buffer                       = Keypad+Ctrl-End
 end-of-buffer-extend-selection      = Keypad+Ctrl-Shift-End
 forward-word                        = Keypad+Ctrl-RtArrow
 forward-word-extend-selection       = Keypad+Ctrl-Shift-RtArrow
-
+#
 # beginning-of-line                   = Home
 back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
@@ -5889,7 +5880,6 @@ beginning-of-line                   = Alt-Up
 beginning-of-line                   = Ctrl-a
 beginning-of-line-extend-selection  = None
 capitalize-word                     = Alt-c
-cascade-windows                     = None
 center-line                         = Alt-s
 center-region                       = None
 check-outline                       = None
@@ -5972,7 +5962,6 @@ find-next                           = F3
 find-prev                           = F2
 find-tab-open                       = None
 flatten-outline                     = None
-flush-lines                         = None
 focus-to-body                       = None
 focus-to-find                       = None
 focus-to-log                        = None
@@ -6030,7 +6019,6 @@ isearch-backward                    = Ctrl-R
 isearch-backward-regexp             = Alt-Ctrl-r
 isearch-forward                     = Ctrl-S
 isearch-forward-regexp              = Alt-Ctrl-s
-keep-lines                          = None
 keyboard-quit                       = Ctrl-g
 kill-line                           = Ctrl-k
 kill-paragraph                      = None
@@ -6060,7 +6048,6 @@ open-leo-docs-leo               = None
 open-leo-dist-leo               = None
 open-leo-settings               = None
 open-scripts-leo                = None
-open-offline-tutorial           = None
 open-online-home                = None
 open-outline                    = None         # Ctrl-O conflicts with insert-newline
 open-python-window              = None         # Removed Alt-P: not useful enough.
@@ -6244,7 +6231,6 @@ beginning-of-buffer-extend-selection= None
 beginning-of-line                   = None
 beginning-of-line-extend-selection  = None
 capitalize-word                     = None
-cascade-windows                     = None
 center-line                         = None
 center-region                       = None
 chapter-select                      = None
@@ -6376,7 +6362,6 @@ find-tab-open                       = None
 find-word                           = None
 find-word-in-line                   = None
 flatten-outline                     = None
-flush-lines                         = None
 focus-to-body                       = None
 focus-to-log                        = None
 focus-to-find                       = None
@@ -6466,7 +6451,6 @@ isearch-backward                    = None
 isearch-backward-regexp             = None
 isearch-forward                     = None
 isearch-forward-regexp              = None
-keep-lines                          = None
 keyboard-quit                       = None
 kill-line                           = None
 kill-paragraph                      = None
@@ -6503,7 +6487,6 @@ open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-settings                   = None
 open-scripts-leo                    = None
-open-offline-tutorial               = None
 open-online-home                    = None
 open-outline                        = None
 open-python-window                  = None

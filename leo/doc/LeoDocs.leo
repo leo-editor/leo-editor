@@ -31349,9 +31349,10 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.7.1**
 
-- @bool plain-key-outline-search = False by default.
-  This disables a confusing feature.
+- Several enhancements to leoserver.py.
+- @bool plain-key-outline-search is False by default, disabling a confusing feature.
 - Several minor code cleanups.
+- Remove several unused commands.
 
 **Links**
 
@@ -31371,9 +31372,10 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @nowrap
 @language md
 </t>
-<t tx="ekr.20221018092915.1">- @bool plain-key-outline-search = False by default.
-  This disables a confusing feature.
-- Several minor code cleanups.</t>
+<t tx="ekr.20221018092915.1">- Several enhancements to leoserver.py.
+- @bool plain-key-outline-search = False by default.
+- Several minor code cleanups.
+- Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
