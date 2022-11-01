@@ -31350,6 +31350,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 **The highlights of Leo 6.7.1**
 
 - Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
 - @bool plain-key-outline-search is False by default, disabling a confusing feature.
 - Several minor code cleanups.
 - Remove four unused commands.
@@ -31373,6 +31375,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 @language md
 </t>
 <t tx="ekr.20221018092915.1">- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
 - @bool plain-key-outline-search = False by default.
 - Several minor code cleanups.
 - Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
