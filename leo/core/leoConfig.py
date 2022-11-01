@@ -492,7 +492,6 @@ class ParserBaseClass:
         return None
     #@+node:ekr.20070925144337.2: *4* pbc.doMenus & helper
     def doMenus(self, p: Position, kind: str, name: str, val: Any) -> None:
-
         c = self.c
         p = p.copy()
         aList: List[Any] = []  # This entire logic is mysterious, and likely buggy.
@@ -1787,10 +1786,56 @@ class LocalConfigManager:
         return language
     #@+node:ekr.20120215072959.12534: *5* c.config.getMenusList
     def getMenusList(self) -> List:
-        """Return the list of entries for the @menus tree."""
+        """Return the list of entries for the @menus tree.
+        
+        This method gets called twice when an outline is loaded.
+        After the second pass, it deletes all local menu settings
+        to prevent them from getting reused by the next outline.
+        """
         aList = self.get('menus', 'menus')
-        # aList is typically empty.
+        # aList is typically empty, unless there is an @menuat setting.
+
+        if not hasattr(self.c, 'menulist_pass'):
+            self.c.menulist_pass = 0
+        self.c.menulist_pass += 1
+
+        # Remove this outline's "doMenuat" settings so they won't get reused
+        # by later outlines.
+        if self.c.menulist_pass == 2:
+            lm = g.app.loadManager
+            lm.globalSettingsDict['menus'] = None
+            self.set(None, 'menus', 'menus', None)
+            self.c.menulist_pass = 0
+
         return aList or g.app.config.menusList
+
+
+    # def getMenusList(self) -> List:
+        # """Return the list of entries for the @menus tree."""
+        # aList = self.get('menus', 'menus')
+        # # aList is typically empty, unless there was an @menuat setting.
+        # # Remove this outline's "doMenuat" settings so they won't get reused
+        # # by later outlines.
+        # if not hasattr(self.c, 'menulist_pass'):
+            # self.c.menulist_pass = 0
+        # self.c.menulist_pass += 1
+        # fn = g.shortFileName(self.c.mFileName) or '[new outline]'
+        # g.trace(f'----- [local menulist] [pass {self.c.menulist_pass}] {fn}')
+        # print(f'  showing global menus - pass {self.c.menulist_pass}')
+        # self.c.k.simulateCommand('x-show-global-menus')
+        # msg = '\n    '.join([it[0] for it in aList]) if aList else '[no local menuList]'
+        # print('   ', msg)
+        # if not aList:
+            # msg = 'global menus: ' + '\n'.join([it[0] for it in aList])\
+                    # if aList else '[None]'
+            # print('    ', fn, 'pass', self.c.menulist_pass, msg)
+        # if self.c.menulist_pass == 2:
+            # self.set(None, 'menus', 'menus', None)
+            # lm = g.app.loadManager
+            # lm.globalSettingsDict['menus'] = None
+            # self.c.menulist_pass = 0
+        # g.trace('--------- end')
+        # return aList or g.app.config.menusList
     #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
     def getOpenWith(self) -> List[Dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
@@ -1958,9 +2003,10 @@ class LocalConfigManager:
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
-            if warn and g.os_path_finalize(
-                c.mFileName) != g.os_path_finalize(path):  # #1341.
-                g.es("over-riding setting:", name, "from", path)
+            if warn and g.os_path_finalize(c.mFileName) \
+                        != g.os_path_finalize(path):  # #1341.
+                g.trace("over-riding setting:", name, "from", path)
+                print('    Comparing', c.mFileName, g.os_path_finalize(path))
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
     def settingIsActiveInPath(self, gs: str, target_path: str) -> bool:
