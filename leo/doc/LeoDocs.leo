@@ -31352,7 +31352,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Several enhancements to leoserver.py.
 - @bool plain-key-outline-search is False by default, disabling a confusing feature.
 - Several minor code cleanups.
-- Remove several unused commands.
+- Remove four unused commands.
 
 **Links**
 
