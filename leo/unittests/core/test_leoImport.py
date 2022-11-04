@@ -56,7 +56,7 @@ class TestLeoImport(BaseTestImporter):
             return new_func
         """)
         x.parse_body(target)
-        
+
         # self.dump_tree(target, tag='Actual results...')
 
         self.check_outline(target, (
