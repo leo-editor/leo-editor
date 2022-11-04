@@ -188,7 +188,7 @@ class Python_Importer(Importer):
 #@+node:vitalije.20211201230203.1: ** function: token_based_python_importer
 SPLIT_THRESHOLD = 10  # Don't split blocks shorter than this threshold.
 
-def token_based_python_importer(c: Cmdr, root: Any, s: str) -> None:
+def token_based_python_importer(c: Cmdr, root: Position, s: str) -> None:
     """
     An importer that uses python's tokenizer module to analyze program structure.
     By Виталије Милошевић, (Vitalije Milosevic).

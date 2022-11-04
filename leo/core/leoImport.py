@@ -1190,7 +1190,7 @@ class LeoImportCommands:
         s = p.b
         p.b = ''
         try:
-            parser(c, s, p)  # 2357.
+            parser(c, p, s)
             c.undoer.afterChangeTree(p, 'parse-body', bunch)
             p.expand()
             c.selectPosition(p)
