@@ -40,6 +40,43 @@ class TestLeoImport(BaseTestImporter):
             (1, 'a1', ''),
             (1, 'a2', ''),
         ))
+    #@+node:ekr.20221104065722.1: *3* TestLeoImport.test_parse_body
+    def test_parse_body(self):
+
+        c = self.c
+        x = c.importCommands
+        target = c.p.insertAfter()
+        target.h = 'target'
+        target.b = textwrap.dedent("""\
+            import os
+
+            def macro(func):
+                def new_func(*args, **kwds):
+                    raise RuntimeError('blah blah blah')
+            return new_func
+        """)
+        x.parse_body(target)
+        
+        # self.dump_tree(target, tag='Actual results...')
+
+        self.check_outline(target, (
+            (0, '',  # check_outline ignores the top-level headline.
+                'import os\n'
+                '\n'
+                '@others\n'
+                'return new_func\n'
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'macro',
+                'def macro(func):\n'
+                '    @others\n'
+            ),
+            (2, 'new_func',
+                'def new_func(*args, **kwds):\n'
+                "    raise RuntimeError('blah blah blah')\n"
+            ),
+        ))
     #@-others
 #@-others
 #@-leo
