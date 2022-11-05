@@ -18197,6 +18197,104 @@ def strip_comments(aString):
                 if tail.strip():
                     result.append(tail.rstrip() + '\n')
     return ''.join(result)
+#@+node:ekr.20221105063835.1: ** script: insert-macros
+"""
+script: Insert text-based macros in python code.
+
+- Add traces at start of each def.
+- Add traces at end of each def.
+- Add traces before each return.
+"""
+# This is prototype code. I have no plans to improve it.
+g.cls()
+import re
+from typing import List
+@others
+
+target = g.findNodeInChildren(c, p, 'macro-test')
+for p in target.self_and_subtree():
+    add_macros(p)
+print('Done!')
+#@+node:ekr.20221105063835.2: *3* add_macros
+def_pat = re.compile(r'^def\s+(\w+)\(.*\).*:')
+ret_pat = re.compile(r'^\s*return\b(.*)')
+
+def add_macros(p):
+    if not p.b.strip():
+        return
+    result: List[str] = []  # List of lines, with added traces.
+    indents: List[int] = []  # Indentation of def statements.
+    names: List[str] = []  # Names of defs.
+    returns: List[bool] = []  # True if def has any minimally indented returns.
+    indent, last_indent = 0, 0
+    for i, line in enumerate(g.splitLines(p.b.rstrip() + '\n')):
+        s = line.lstrip()
+        indent = len(line) - len(s)
+        indent_s = indent * ' '
+        if not s:
+            result.append(line)
+            continue  # Blank lines don't affect indentation.
+        # End any previous def at this level.
+        while indents and indent < last_indent:
+            last_indent = indents.pop()
+            last_name = names.pop()
+            last_return = returns.pop()
+            if not last_return:
+                indent_s = last_indent * ' '
+                result.append(f"{indent_s}g.trace('end {last_name}')\n")
+        def_m = def_pat.match(s)
+        if def_m:
+            # End any previous entry at this level.
+            if indents and indents[-1] == indent:
+                indents.pop()
+                names.pop()
+                returns.pop()
+            # Enter this def.
+            indents.append(indent)
+            name = def_m.group(1)
+            names.append(name)
+            returns.append(False)
+            last_indent = indent
+            indent_s = (indent + 4) * ' '
+            result.append(line)
+            result.append(f"{indent_s}g.trace('enter: {name}')\n")
+            continue
+        ret_m = ret_pat.match(s)
+        if ret_m:
+            if indents:
+                if indents[-1] + 4 == indent:
+                    returns[-1] = True
+                    # g.trace(f"Suppress end trace: {line!r}")
+                val = ret_m.group(1).strip()
+                result.append(f"{indent_s}g.trace('return {val}')\n")
+            else:
+                result.append(f"### Line: {i} Return outside of def. {p.h}\n")
+        result.append(line)
+    if indents:
+        indent_s = (indents[-1] + 4) * ' '
+        name = names[-1]
+        if not returns[-1]:
+            result.append(f"{indent_s}g.trace('end {name}')\n")
+    g.printObj(result, tag=f"{p.h}:")
+#@+node:ekr.20221105063835.3: *3* macro-test
+#@+node:ekr.20221105063835.4: *4* multiple defs
+def test_1():
+    return 'a'
+    
+def test_2():
+    return 'b'
+    
+def test_3():
+    if 1:
+        return 1
+    else:
+        return 2
+#@+node:ekr.20221105063835.5: *4* spam
+def spam():
+    print("spam")
+#@+node:ekr.20221105063835.6: *4* eggs
+def eggs(a=None):
+    print('eggs')
 #@-all
 #@@language python
 #@@tabwidth -4
