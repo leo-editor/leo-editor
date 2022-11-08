@@ -3145,8 +3145,7 @@
 <v t="ekr.20180227003757.132"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20180406011314.1"><vh>Leo 5.7.1 Themes</vh>
+<v t="ekr.20180406011314.1"><vh>5.7.1 Themes</vh>
 <v t="ekr.20180406011314.2"><vh>Bugs</vh>
 <v t="ekr.20180406011314.3"><vh>#780: @tabwidth -2 in @data qt-gui-plugin-style-sheet crashes Leo</vh></v>
 <v t="ekr.20180406011314.4"><vh>#781: ViewRendered Plugin fails on Python 2.7 (Bad Import Statement)</vh></v>
@@ -3184,8 +3183,8 @@
 </v>
 <v t="ekr.20180406011314.33"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20180507105516.1"><vh>Leo 5.7.2 New key code</vh></v>
-<v t="ekr.20180527085214.1"><vh>Leo 5.7.3 Jedi, leo_babel, python_terminal</vh>
+<v t="ekr.20180507105516.1"><vh>5.7.2 New key code</vh></v>
+<v t="ekr.20180527085214.1"><vh>5.7.3 Jedi, leo_babel, python_terminal</vh>
 <v t="ekr.20180527085214.2"><vh>Bugs</vh>
 <v t="ekr.20180527085214.3"><vh>#841: Python importer does not always handle decorators properly </vh></v>
 <v t="ekr.20180527085214.4"><vh>#892: Crash in checkForChangedNodes</vh></v>
@@ -3215,7 +3214,7 @@
 <v t="ekr.20180527085214.25"><vh>Smart searches for functions and methods</vh></v>
 </v>
 </v>
-<v t="ekr.20180828034324.1"><vh>Leo 5.8 Big code revisions, no more caching </vh>
+<v t="ekr.20180828034324.1"><vh>5.8 Big code revisions, no more caching </vh>
 <v t="ekr.20180828034324.2"><vh>Bugs</vh>
 <v t="ekr.20180828034324.3"><vh>#841: Python importer does not always handle decorators properly</vh></v>
 <v t="ekr.20180828034324.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
@@ -3279,7 +3278,7 @@
 <v t="ekr.20180828034324.56"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
 </v>
-<v t="ekr.20190122052932.1"><vh>Leo 5.9: LeoWapp, debugger, pygments TravisCI</vh>
+<v t="ekr.20190122052932.1"><vh>5.9: LeoWapp, debugger, pygments TravisCI</vh>
 <v t="ekr.20190122052932.2"><vh>5.8.1: Bugs fixed</vh>
 <v t="ekr.20190122052932.3"><vh>#0804: ~= in style sheets</vh></v>
 <v t="ekr.20190122052932.4"><vh>#0998: Fix recursive import problems</vh></v>
@@ -3309,6 +3308,7 @@
 <v t="ekr.20190122052932.27"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
 </v>
 <v t="ekr.20190122052932.28"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
+</v>
 </v>
 <v t="ekr.20190617074238.1"><vh>Leo 6.0: Python 3, dock-based gui</vh></v>
 <v t="ekr.20191026200311.1"><vh>Leo 6.1: Pyzo, markup support</vh>
@@ -3394,10 +3394,11 @@
 </v>
 <v t="ekr.20211110122850.1"><vh>Leo 6.6: Remove @raw, @end-raw. Add @section-delims. section refs</vh></v>
 <v t="ekr.20220427143957.1"><vh>Leo 6.6.1: Improve links, mypy</vh></v>
-<v t="ekr.20220524044513.1"><vh>Leo 6.6.2: Maintenance release 2</vh></v>
-<v t="ekr.20220719105058.1"><vh>Leo 6.6.3: Maintenance release 3</vh></v>
+<v t="ekr.20220524044513.1"><vh>Leo 6.6.2: Support for leoInteg</vh></v>
+<v t="ekr.20220719105058.1"><vh>Leo 6.6.3: Support for leoInteg</vh></v>
 <v t="ekr.20220831114826.1"><vh>Leo 6.6.4: Support for leoInteg, leoJS</vh></v>
-<v t="ekr.20220922123340.1"><vh>Leo 6.7.0: mypy annotations, other code improvements</vh></v>
+<v t="ekr.20220922123340.1"><vh>Leo 6.7.0: Big cleanups to code</vh></v>
+<v t="ekr.20221108065046.1"><vh>Leo 6.7.1: Support for leoInteg</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26676,6 +26677,39 @@ The 6.7.0 version denotes significant changes to Leo's code base.
 
 - 6.7.0 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.0+
 - 6.7.0 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.0
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+
+@nowrap
+@language md
+</t>
+<t tx="ekr.20221108065046.1">Leo http://leoeditor.com 6.7.1 is now available on
+[GitHub](https://github.com/leo-editor/leo-editor/releases) and
+[pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.7.1**
+
+- Several enhancements to leoserver.py.
+- Add support for ocaml syntax coloring.
+- Improve markdown importer.
+- @bool plain-key-outline-search is False by default, disabling a confusing feature.
+- Several minor code cleanups.
+- Remove four unused commands.
+
+**Links**
+
+- [6.7.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.1+)
+- [6.7.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.1)
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)

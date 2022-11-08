@@ -1533,17 +1533,21 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
+<v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6.x</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
 <v t="ekr.20220523145755.1"><vh>What's new in Leo 6.6.2</vh></v>
 <v t="ekr.20220427143133.1"><vh>What's new in Leo 6.6.1</vh></v>
 <v t="ekr.20211105051309.1"><vh>What's new in Leo 6.6</vh></v>
+</v>
 <v t="ekr.20210921103230.1"><vh>What's new in Leo 6.5</vh></v>
 <v t="ekr.20210405104357.1"><vh>What's new in Leo 6.4</vh></v>
 <v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
+<v t="ekr.20221108064344.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
 <v t="ekr.20180821154658.1"><vh>What's new in Leo 5.8</vh></v>
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
@@ -1560,7 +1564,6 @@
 <v t="ekr.20180126003617.1"><vh>Plugins</vh></v>
 <v t="ekr.20180126003420.1"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
-<v t="ekr.20180404015721.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20170911082347.1"><vh>What's new in Leo 5.6</vh>
 <v t="ekr.20170911082432.2"><vh>Highlights</vh>
 <v t="ekr.20170911082432.3"><vh>#488: Created a console gui for Leo</vh></v>
@@ -2386,7 +2389,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20221018092737.1"><vh>Leo 6.7.1 release notes</vh></v>
 </vnodes>
@@ -25332,7 +25334,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
   This setting adds @path directives to the root node of imported files.
 </t>
 <t tx="ekr.20180404015644.1"></t>
-<t tx="ekr.20180404015721.1"></t>
 <t tx="ekr.20180404015841.10">https://github.com/leo-editor/leo-editor/issues/812
 PickleShareDB.keys should definitely not call g.glob_glob.
 </t>
@@ -31380,6 +31381,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - @bool plain-key-outline-search = False by default.
 - Several minor code cleanups.
 - Delete cascade-windows, flush-lines, keep-lines and open-offline-tutorial commands.</t>
+<t tx="ekr.20221108064344.1"></t>
+<t tx="ekr.20221108064449.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
