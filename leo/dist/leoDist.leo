@@ -1426,10 +1426,10 @@ g.es_print('done')
 
 First: Create release branch. Change version in this checklist to match.
 
-*Never* merge devel into 6.7.0!
+*Never* merge devel into 6.7.2!
 
-- It's OK to merge bug fix branches into both devel and 6.7.0
-- It's OK to merge the 6.7.0 branch into devel after the release.
+- It's OK to merge bug fix branches into both devel and 6.7.2
+- It's OK to merge the 6.7.2 branch into devel after the release.
 
 @language rest
 </t>
@@ -1447,7 +1447,7 @@ First: Create release branch. Change version in this checklist to match.
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for ##version
-  The final version in PKG-INFO.TXT must be called 6.7.0, not 7.6.0-final.
+  The final version in PKG-INFO.TXT must be called 6.7.2, not 6.7.2-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Check 'PKG-INFO.TXT'
@@ -1481,7 +1481,7 @@ LeoPyRef.leo:
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.7.0 -m "Added v6.7.0 tag"
+git tag -a v6.7.2 -m "Added v6.7.2 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1490,17 +1490,17 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout devel
-git merge 6.7.0
+git merge 6.7.2
 update version in leoVersion.py.
-git tag -a v6.7.0-devel -m "Added v6.7.0-devel tag"
+git tag -a v6.7.2-devel -m "Added v6.7.2-devel tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.0 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.2 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.0</t>
+- git merge 6.7.2</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1583,12 +1583,12 @@ password:  EKR: Copy contents of leo_pypi_token.txt
            
 File names must be unique.
 If there are conflicting names, add -NNN to the filename, like this:
-    leo-6.7.0-2-py3-none-any.whl
-    leo-6.7.0-2.tar.gz
+    leo-6.7.2-2-py3-none-any.whl
+    leo-6.7.2-2.tar.gz
 
 **install**
 
-python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.0
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.2
 
 **test**
 
