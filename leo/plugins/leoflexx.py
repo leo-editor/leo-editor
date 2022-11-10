@@ -563,7 +563,7 @@ class LeoBrowserApp(flx.PyComponent):
             (self.gnx_to_vnode[d['gnx']], d['childIndex'])
                 for d in ap['stack']
         ]
-        return leoNodes.position(v, childIndex, stack)
+        return leoNodes.Position(v, childIndex, stack)
     #@+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
         """Dump the top-level nodes."""

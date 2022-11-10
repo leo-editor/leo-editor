@@ -182,7 +182,7 @@ class TextFrame(leoFrame.LeoFrame):
         c.fileCommands.gnxDict = {}
         #
         v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
+        p = leoNodes.Position(v)
         v.initHeadString("newHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong:
         # the node hasn't been linked yet.
