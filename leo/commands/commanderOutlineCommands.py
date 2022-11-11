@@ -1781,6 +1781,7 @@ def sortSiblings(
         p = c.p
     if not p:
         return
+    start_gnx = p.v.gnx
     c.endEditing()
     undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
     parent_v = p._parentVnode()
@@ -1802,7 +1803,20 @@ def sortSiblings(
     parent_v.children = newChildren
     u.afterSort(p, bunch)
     # Sorting destroys position p, and possibly the root position.
-    p = c.setPositionAfterSort(sortChildren)
+    # Restore the focus to its pre-sort node
+    found_gnx = False
+    for p1 in c.all_unique_positions():
+        if p1.v.gnx == start_gnx:
+            found_gnx = True
+            break
+    if found_gnx:
+        if sortChildren:
+            p = p1.parent()
+        else:
+            p = p1
+    else:
+        p = c.setPositionAfterSort(sortChildren)
+
     if p.parent():
         p.parent().setDirty()
     c.redraw(p)
