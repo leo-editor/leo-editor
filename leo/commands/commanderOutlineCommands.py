@@ -1763,7 +1763,7 @@ def sortChildren(
     self: Self,
     event: Event=None,
     key: Callable=None,  # Not used in Leo's core.
-    p: Position=None,   # Not used in Leo's core.
+    p: Position=None,  # Not used in Leo's core.
     reverse: bool=False,  # Not used in Leo's core.
 ) -> None:
 
@@ -1806,11 +1806,10 @@ def sortSiblings(
     def lowerKey(v: VNode) -> str:
         return v.h.lower()
 
-    oldP = p.copy()
-    old_gnx = p.v.gnx
+    oldP, newP = p.copy(), p.copy()
     c.endEditing()
     parent_v = p._parentVnode()
-    oldSiblings = p.v.children[:]
+    oldSiblings = parent_v.children[:]
     newSiblings: List[VNode] = sorted(
         parent_v.children, key=key or lowerKey, reverse=reverse)
     if oldSiblings == newSiblings:
@@ -1818,17 +1817,14 @@ def sortSiblings(
     c.setChanged()
     parent_v.children = newSiblings
     # Sorting destroys position p, and possibly the root position.
-    # Restore the focus to its pre-sort node
-    for child in p.children():
-        if child.v.gnx == old_gnx:
-            newP = child
-    else:
-        g.trace('Can not happen')
-        newP = p
-    u.afterSort(oldP, newP, oldSiblings)
-    if p.parent():
-        p.parent().setDirty()
-    c.redraw(p)
+    # Only the child index of new position changes!
+    for i, v in enumerate(newSiblings):
+        if v.gnx == oldP.v.gnx:
+            newP._childIndex = i
+            break
+    u.afterSortSiblings(oldP, newP, oldSiblings, newSiblings)
+    newP.setDirty()
+    c.redraw(newP)
 #@+node:ekr.20070420092425: ** def cantMoveMessage
 def cantMoveMessage(c: Cmdr) -> None:
     h = c.rootPosition().h
