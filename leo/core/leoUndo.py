@@ -119,6 +119,7 @@ class Undoer:
         self.newParent_v = None
         self.newRecentFiles = None
         self.newSel = None
+        self.newSiblings = None
         self.newTree = None
         self.newYScroll = None
         self.oldBack = None
@@ -132,6 +133,7 @@ class Undoer:
         self.oldParent_v = None
         self.oldRecentFiles = None
         self.oldSel = None
+        self.oldSiblings = None
         self.oldTree = None
         self.oldYScroll = None
         self.pasteAsClone = None
@@ -735,13 +737,37 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-    #@+node:ekr.20080425060424.2: *5* u.afterSort
-    def afterSort(self, p: Position, bunch: g.Bunch) -> None:
-        """Create an undo node for sort operations"""
-        u = self
-        # c = self.c
+    #@+node:ekr.20080425060424.2: *5* u.afterSort*
+    def afterSortChildren(self, oldChildren: List[VNode], newChildren: List[VNode]) -> None:
+        """Push the undo bead for sort-children."""
+        p, u = self.p, self
         if u.redoing or u.undoing:
             return  # pragma: no cover
+        bunch = u.createCommonBunch(p)
+        bunch.kind = 'sort'
+        bunch.undoType = 'Sort Children'
+        bunch.oldChildren = oldChildren
+        bunch.newChildren = newChildren
+        bunch.undoHelper = u.undoSortChildren
+        bunch.redoHelper = u.redoSortChildren
+        # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
+        # Recalculate the menu labels.
+        u.setUndoTypes()
+
+    def afterSortSiblings(self, p: Position, bunch: g.Bunch) -> None:
+        """Create an undo node for sort operations"""
+        u = self
+        if u.redoing or u.undoing:
+            return  # pragma: no cover
+        bunch.kind = 'sort'
+        bunch.undoType = 'Sort Siblings'
+        bunch.undoHelper = u.undoSortChildren
+        bunch.redoHelper = u.redoSortChildren
+        # # Push the bunch.
+        u.bead += 1
+        u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
@@ -855,29 +881,6 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
-        return bunch
-    #@+node:ekr.20080425060424.3: *5* u.beforeSort
-    def beforeSort(self,
-        p: Position,
-        undoType: str,
-        oldChildren: List[VNode],
-        newChildren: List[VNode],
-        sortChildren: List[VNode],
-    ) -> None:
-        """Create an undo node for sort operations."""
-        u = self
-        bunch = u.createCommonBunch(p)
-        # Set types.
-        bunch.kind = 'sort'
-        bunch.undoType = undoType
-        bunch.undoHelper = u.undoSort
-        bunch.redoHelper = u.redoSort
-        bunch.oldChildren = oldChildren
-        bunch.newChildren = newChildren
-        bunch.sortChildren = sortChildren  # A bool
-        # Push the bunch.
-        u.bead += 1
-        u.beads[u.bead:] = [bunch]
         return bunch
     #@+node:ekr.20050318085432.2: *5* u.createCommonBunch
     def createCommonBunch(self, p: Position) -> None:
@@ -1567,12 +1570,18 @@ class Undoer:
             child.parents.append(parent_v)
         u.p.setDirty()
         c.setCurrentPosition(u.p)
-    #@+node:ekr.20080425060424.4: *4* u.redoSort
-    def redoSort(self) -> None:
+    #@+node:ekr.20080425060424.4: *4* u.redoSort*
+    def redoSortChildren(self) -> None:
+        c, p, u = self.c, self.c.p, self
+        p.v.children = u.newChildren[:]
+        p.setAllAncestorAtFileNodesDirty()
+        c.setCurrentPosition(p)
+
+    def redoSortSiblings(self) -> None:
         u = self
         c = u.c
         parent_v = u.p._parentVnode()
-        parent_v.children = u.newChildren
+        parent_v.children = u.oldSiblings
         p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
@@ -1983,13 +1992,18 @@ class Undoer:
         u.restoreTree(old_data)
         c.setBodyString(p, p.b)  # This is not a do-nothing.
         return p  # Nothing really changes.
-    #@+node:ekr.20080425060424.5: *4* u.undoSort
-    def undoSort(self) -> None:
-        u = self
-        c = u.c
+    #@+node:ekr.20080425060424.5: *4* u.undoSort*
+    def undoSortChildren(self) -> None:
+        c, p, u = self.c, self.c.p, self
+        p.v.children = u.oldChildren[:]
+        p.setAllAncestorAtFileNodesDirty()
+        c.setCurrentPosition(p)
+
+    def undoSortSiblings(self) -> None:
+        c, p, u = self.c, self.c.p, self
         parent_v = u.p._parentVnode()
         parent_v.children = u.oldChildren
-        p = c.setPositionAfterSort(u.sortChildren)
+        ### p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
     #@+node:ekr.20050318085713.2: *4* u.undoTree

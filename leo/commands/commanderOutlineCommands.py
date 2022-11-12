@@ -1759,21 +1759,42 @@ def toggleSparseMove(self: Self, event: Event=None) -> None:
 #@+node:ekr.20080425060424.1: ** c_oc.Sort commands
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
-def sortChildren(self: Self, event: Event=None, key: str=None, reverse: bool=False) -> None:
-    """Sort the children of a node."""
-    # This method no longer supports the 'cmp' keyword arg.
-    c, p = self, self.p
-    if p and p.hasChildren():
-        c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
+def sortChildren(
+    self: Self,
+    event: Event=None,
+    key: Callable=None,  # Not used in Leo's core.
+    p: Position=None,   # Not used in Leo's core.
+    reverse: bool=False,  # Not used in Leo's core.
+) -> None:
+
+    """Sort the siblings of p."""
+    c, u = self, self.undoer
+    if not p:
+        p = c.p
+    if not p:
+        return
+
+    def lowerKey(v: VNode) -> str:
+        return v.h.lower()
+
+    c.endEditing()
+    oldChildren: List[VNode] = p.v.children[:]
+    newChildren: List[VNode] = sorted(p.v.children, key=key or lowerKey, reverse=reverse)
+    if p.v.children == newChildren:
+        return
+    c.setChanged()
+    p.v.children = newChildren
+    u.afterSortChildren(oldChildren, newChildren)
+    p.setDirty()
+    c.redraw(p)
 #@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
 @g.commander_command('sort-siblings')
 def sortSiblings(
     self: Self,
-    event: Event=None,  # cmp keyword is no longer supported.
-    key: Callable=None,
-    p: Position=None,
-    sortChildren: bool=False,
-    reverse: bool=False,
+    event: Event=None,
+    key: Callable=None,  # Not used in Leo's core.
+    p: Position=None,  # Required.
+    reverse: bool=False,  # Not used in Leo's core.
 ) -> None:
     """Sort the siblings of a node."""
     c, u = self, self.undoer
@@ -1781,42 +1802,30 @@ def sortSiblings(
         p = c.p
     if not p:
         return
-    start_gnx = p.v.gnx
+
+    def lowerKey(v: VNode) -> str:
+        return v.h.lower()
+
+    oldP = p.copy()
+    old_gnx = p.v.gnx
     c.endEditing()
-    undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
     parent_v = p._parentVnode()
-    oldChildren = parent_v.children[:]
-    newChildren = parent_v.children[:]
-    if key is None:
-
-        def lowerKey(self: Self) -> str:
-            return self.h.lower()
-
-        key = lowerKey
-
-    newChildren.sort(key=key, reverse=reverse)  # type:ignore
-    if oldChildren == newChildren:
+    oldSiblings = p.v.children[:]
+    newSiblings: List[VNode] = sorted(
+        parent_v.children, key=key or lowerKey, reverse=reverse)
+    if oldSiblings == newSiblings:
         return
-    # 2010/01/20. Fix bug 510148.
     c.setChanged()
-    bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
-    parent_v.children = newChildren
-    u.afterSort(p, bunch)
+    parent_v.children = newSiblings
     # Sorting destroys position p, and possibly the root position.
     # Restore the focus to its pre-sort node
-    found_gnx = False
-    for p1 in c.all_unique_positions():
-        if p1.v.gnx == start_gnx:
-            found_gnx = True
-            break
-    if found_gnx:
-        if sortChildren:
-            p = p1.parent()
-        else:
-            p = p1
+    for child in p.children():
+        if child.v.gnx == old_gnx:
+            newP = child
     else:
-        p = c.setPositionAfterSort(sortChildren)
-
+        g.trace('Can not happen')
+        newP = p
+    u.afterSort(oldP, newP, oldSiblings)
     if p.parent():
         p.parent().setDirty()
     c.redraw(p)

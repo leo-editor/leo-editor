@@ -333,6 +333,8 @@ class TestUndo(LeoUnitTest):
             u.redo()
             self.assertEqual(p.b, newText)
             self.assertEqual(p.isMarked(), oldMarked)
+    #@+node:ekr.20221112051634.1: *3* TestUndo.test_sort_children
+    #@+node:ekr.20221112051650.1: *3* TestUndo.test_sort_siblings
     #@+node:ekr.20210906172626.17: *3* TestUndo.test_undo_group
     def test_undo_group(self):
         # Test an off-by-one error in c.undoer.bead.
