@@ -1767,7 +1767,7 @@ def sortChildren(
     reverse: bool=False,  # Not used in Leo's core.
 ) -> None:
 
-    """Sort the siblings of p."""
+    """Sort the children of p."""
     c, u = self, self.undoer
     if not p:
         p = c.p
