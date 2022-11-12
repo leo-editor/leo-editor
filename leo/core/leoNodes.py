@@ -10,6 +10,8 @@ import copy
 import time
 from typing import Any, Callable, Dict, Generator, List, Optional, Set, Tuple
 from typing import TYPE_CHECKING
+import urllib.parse
+
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 if TYPE_CHECKING:  # pragma: no cover
@@ -802,11 +804,15 @@ class Position:
         - Never translate '-->' to '--%3E'.
         - Never generate child indices.
         """
-        return (
-            'unl://'
-            + self.v.context.fileName() + '#'
-            + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        base_unl = (self.v.context.fileName() + '#'
+                 + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
         )
+        # This will change "-->" to "--%3E", which we don't want:
+        escaped = urllib.parse.quote(base_unl)
+        # Restore "-->", since other code may depend on it
+        encoded = escaped.replace('--%3E', '-->')
+
+        return 'unl://' + encoded
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
