@@ -1810,8 +1810,7 @@ def sortSiblings(
     c.endEditing()
     parent_v = p._parentVnode()
     oldSiblings = parent_v.children[:]
-    newSiblings: List[VNode] = sorted(
-        parent_v.children, key=key or lowerKey, reverse=reverse)
+    newSiblings: List[VNode] = sorted(parent_v.children, key=key or lowerKey, reverse=reverse)
     if oldSiblings == newSiblings:
         return
     c.setChanged()
