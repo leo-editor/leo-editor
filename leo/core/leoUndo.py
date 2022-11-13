@@ -129,6 +129,7 @@ class Undoer:
         self.oldIns = None
         self.oldMarked = None
         self.oldN = None
+        self.oldP = None
         self.oldParent = None
         self.oldParent_v = None
         self.oldRecentFiles = None
