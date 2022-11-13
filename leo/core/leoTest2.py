@@ -178,6 +178,29 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
+    #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
+    def dump_string(self, s: str, tag: str=None) -> None:
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
+    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
+    def dump_headlines(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+        """Dump root's tree just as as Importer.dump_tree."""
+        print('')
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('level:', p.level(), p.h)
+    #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
+    def dump_tree(self, root: Position, tag: str=None) -> None:  # pragma: no cover
+        """Dump root's tree just as as Importer.dump_tree."""
+        print('')
+        if tag:
+            print(tag)
+        for p in root.self_and_subtree():
+            print('')
+            print('level:', p.level(), p.h)
+            g.printObj(g.splitLines(p.v.b))
     #@-others
 #@-others
 #@-leo

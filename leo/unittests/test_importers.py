@@ -107,29 +107,6 @@ class BaseTestImporter(LeoUnitTest):
     def dedent(self, s):
         """Remove common leading whitespace from all lines of s."""
         return textwrap.dedent(s)
-    #@+node:ekr.20220806170537.1: *3* BaseTestImporter.dump_string
-    def dump_string(self, s, tag=None):
-        if tag:
-            print(tag)
-        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* BaseTestImporter.dump_headlines
-    def dump_headlines(self, root, tag=None):  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
-        print('')
-        if tag:
-            print(tag)
-        for p in root.self_and_subtree():
-            print('level:', p.level(), p.h)
-    #@+node:ekr.20211129062220.1: *3* BaseTestImporter.dump_tree
-    def dump_tree(self, root, tag=None):  # pragma: no cover
-        """Dump root's tree just as as Importer.dump_tree."""
-        print('')
-        if tag:
-            print(tag)
-        for p in root.self_and_subtree():
-            print('')
-            print('level:', p.level(), p.h)
-            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str, check_flag: bool=True, strict_flag: bool=False) -> Position:
         """
