@@ -681,7 +681,7 @@ class StringFindTabManager:
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
-            if val != w.isChecked():
+            if not w.isChecked():
                 w.toggle()
     #@+node:ekr.20210312122351.1: *3* sftm.set_body_and_headline_checkbox
     def set_body_and_headline_checkbox(self) -> None:
