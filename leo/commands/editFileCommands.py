@@ -936,10 +936,11 @@ class GitDiffController:
                 if new_p:  # Make a clone, if possible.
                     p = new_p.clone()
                     p.moveToLastChildOf(parent)
+                    # #2950: do not change p.b.
                 else:
                     p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
+                    p.h = v.h
+                    p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
