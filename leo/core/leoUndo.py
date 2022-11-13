@@ -248,9 +248,6 @@ class Undoer:
             for key in list(bunch.keys()):
                 g.trace(f"{key:20} {bunch.get(key)!r}")
             print('-' * 20)
-        if g.unitTesting:  # #1694: An ever-present unit test.
-            val = bunch.get('oldMarked')
-            assert val in (True, False), f"{val!r} {g.callers()!s}"
         # bunch is not a dict, so bunch.keys() is required.
         for key in list(bunch.keys()):
             val = bunch.get(key)
