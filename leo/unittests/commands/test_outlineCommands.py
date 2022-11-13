@@ -37,8 +37,8 @@ class TestOutlineCommands(LeoUnitTest):
         for h in table:
             child = p.insertAsLastChild()
             child.h = h
-        
-       
+
+
     #@+node:ekr.20221112051634.1: *3* TestOutlineCommands.test_sort_children
     def test_sort_children(self):
         c, u = self.c, self.c.undoer
