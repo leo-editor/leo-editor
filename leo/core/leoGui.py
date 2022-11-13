@@ -679,7 +679,7 @@ class StringFindTabManager:
                 if val != w.isChecked():
                     w.toggle()
         # Ensure one radio button is set.
-        if not find.node_only and not find.suboutline_only:
+        if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
             if val != w.isChecked():
                 w.toggle()
