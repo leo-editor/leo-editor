@@ -802,11 +802,11 @@ class Position:
         - Never translate '-->' to '--%3E'.
         - Never generate child indices.
         """
-        return (
-            'unl://'
-            + self.v.context.fileName() + '#'
+        base_unl = (self.v.context.fileName() + '#'
             + '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        )
+                    )
+        encoded = base_unl.replace("'", "%27")
+        return 'unl://' + encoded
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
