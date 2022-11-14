@@ -1194,7 +1194,7 @@ class FindTabManager:
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
             w.toggle()
-    #@+node:ekr.20210923060904.1: *3* ftm.init_widgets_from_dict
+    #@+node:ekr.20210923060904.1: *3* ftm.set_widgets_from_dict
     def set_widgets_from_dict(self, d: g.Bunch) -> None:
         """Set all settings from d."""
         # Similar to ftm.init_widgets, which has already been called.
