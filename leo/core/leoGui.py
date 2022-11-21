@@ -203,7 +203,7 @@ class LeoGui:
         """Create a hidden Font panel."""
         self.oops()
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> None:
+    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
         """Create a new Leo frame."""
         self.oops()
     #@+node:ekr.20031218072017.3729: *4* LeoGui.runMainLoop

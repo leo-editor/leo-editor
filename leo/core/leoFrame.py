@@ -26,6 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import ChapterController
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
     from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
     from leo.core.cursesGui2 import CoreBody, CoreLog, CoreMenu, CoreStatusLine, CoreTree, TopFrame
@@ -43,6 +44,7 @@ else:
     CoreTree = Any
     DynamicWindow = Any
     Event = Any
+    LeoGui = Any
     LeoMenu = Any
     LeoQtBody = Any
     LeoQtLog = Any
@@ -723,7 +725,7 @@ class LeoFrame:
     instances = 0
     #@+others
     #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, gui: Any) -> None:
+    def __init__(self, c: Cmdr, gui: LeoGui) -> None:
         self.c = c
         self.gui = gui
         # Types...
@@ -1853,7 +1855,7 @@ class NullFrame(LeoFrame):
     """A null frame class for tests and batch execution."""
     #@+others
     #@+node:ekr.20040327105706: *3* NullFrame.ctor
-    def __init__(self, c: Cmdr, title: str, gui: Any) -> None:
+    def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c

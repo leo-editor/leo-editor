@@ -78,7 +78,7 @@ class textGui(leoGui.LeoGui):
 
         return leoKeys.KeyHandlerClass(c)
     #@+node:ekr.20150107090324.9: *3* createLeoFrame
-    def createLeoFrame(self, c, title=None):
+    def createLeoFrame(self, c, title=None) -> Any:
         gui = self
         ret = TextFrame(c, gui)
         self.frames.append(ret)

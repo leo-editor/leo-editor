@@ -56,6 +56,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.rstCommands import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
+    from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
@@ -69,6 +70,7 @@ else:
     FileCommands = Any
     InternalIPKernel = Any
     LeoFind = Any
+    LeoGui = Any
     LeoImportCommands = Any
     KeyHandlerClass = Any
     NodeHistory = Any
@@ -129,7 +131,7 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: Any=None,  # A Union.
+        gui: LeoGui=None,  # A Union.
         parentFrame: Wrapper=None,
         previousSettings: "PreviousSettings"=None,
         relativeFileName: str=None,
@@ -294,7 +296,7 @@ class Commands:
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
-    def initObjects(self, gui: Any) -> None:
+    def initObjects(self, gui: LeoGui) -> None:
 
         c = self
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')

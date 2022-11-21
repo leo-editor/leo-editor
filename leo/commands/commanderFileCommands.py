@@ -17,10 +17,12 @@ from leo.core import leoImport
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
     Event = Any
+    LeoGui = Any
     Position = Any
     VNode = Any
 Self = Cmdr  # For @g.commander_command.
@@ -206,7 +208,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
 #@+node:ekr.20031218072017.1623: *3* c_file.new
 @g.commander_command('file-new')
 @g.commander_command('new')
-def new(self: Self, event: Event=None, gui: Any=None) -> Cmdr:
+def new(self: Self, event: Event=None, gui: LeoGui=None) -> Cmdr:
     """Create a new Leo window."""
     t1 = time.process_time()
     from leo.core import leoApp

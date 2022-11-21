@@ -32,6 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position, VNode
     from leo.core.leoPlugins import PluginsManager
@@ -46,6 +47,7 @@ else:
     GlobalCacher = Any
     GlobalConfigManager = Any
     InternalIPKernel = Any
+    LeoGui = Any
     NodeIndices = Any
     PluginsManager = Any
     Position = Any
@@ -1501,7 +1503,7 @@ class LeoApp:
     def newCommander(
         self,
         fileName: str,
-        gui: str=None,
+        gui: LeoGui=None,
         parentFrame: Wrapper=None,
         previousSettings: "PreviousSettings"=None,
         relativeFileName: str=None,
@@ -2952,7 +2954,7 @@ class LoadManager:
             traceback.print_exc()
             return False
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn: str, gui: str, old_c: Optional[Cmdr]) -> Optional[Cmdr]:
+    def loadLocalFile(self, fn: str, gui: LeoGui, old_c: Optional[Cmdr]) -> Optional[Cmdr]:
         """Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
@@ -2981,7 +2983,7 @@ class LoadManager:
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
         return c
     #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, gui: str, old_c: Optional[Cmdr]) -> Cmdr:
+    def openEmptyLeoFile(self, gui: LeoGui, old_c: Optional[Cmdr]) -> Cmdr:
         """Open an empty, untitled, new Leo file."""
         lm = self
         # Disable the log.
@@ -3022,7 +3024,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self,
         fn: str,
-        gui: str,
+        gui: LeoGui,
         old_c: Optional[Cmdr],
         previousSettings: "PreviousSettings",
     ) -> Optional[Cmdr]:

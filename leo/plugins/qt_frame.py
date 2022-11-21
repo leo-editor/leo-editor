@@ -39,11 +39,13 @@ from leo.plugins.nested_splitter import NestedSplitter
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 else:
     Cmdr = Any
     Event = Any
+    LeoGui = Any
     Position = Any
     Wrapper = Any
 Widget = Any
@@ -2046,8 +2048,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+others
     #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
     #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, title: str, gui: Any) -> None:
-
+    def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         super().__init__(c, gui)
         assert self.c == c
         leoFrame.LeoFrame.instances += 1  # Increment the class var.

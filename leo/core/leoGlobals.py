@@ -56,9 +56,11 @@ StringIO = io.StringIO
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position, VNode
 else:
     Cmdr = Any
+    LeoGui = Any
     Position = Any
     VNode = Any
 Event = Any
@@ -3776,7 +3778,7 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
         return s
     return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName: str, old_c: Cmdr=None, gui: str=None) -> Cmdr:
+def openWithFileName(fileName: str, old_c: Cmdr=None, gui: LeoGui=None) -> Cmdr:
     """
     Create a Leo Frame for the indicated fileName if the file exists.
 
