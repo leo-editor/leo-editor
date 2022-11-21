@@ -300,7 +300,7 @@ class LeoGui:
     #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
     def widget_name(self, w: Widget) -> str:
         # First try the widget's getName method.
-        if not 'w':
+        if not w:
             return '<no widget>'
         if hasattr(w, 'getName'):
             return w.getName()

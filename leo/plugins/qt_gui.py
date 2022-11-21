@@ -1403,7 +1403,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w: Wrapper) -> str:
         # First try the widget's getName method.
-        if not 'w':
+        if not w:
             name = '<no widget>'
         elif hasattr(w, 'getName'):
             name = w.getName()
