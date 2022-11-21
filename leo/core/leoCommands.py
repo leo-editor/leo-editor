@@ -131,7 +131,7 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: LeoGui=None,  # A Union.
+        gui: LeoGui=None,
         parentFrame: Wrapper=None,
         previousSettings: "PreviousSettings"=None,
         relativeFileName: str=None,
@@ -143,7 +143,7 @@ class Commands:
         self._topPosition: Optional[Position] = None
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
-        self.gui: Any = gui or g.app.gui  # A Union.
+        self.gui: LeoGui = gui or g.app.gui
         self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
